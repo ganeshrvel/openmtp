@@ -3,6 +3,7 @@
 import React, { Component } from 'react';
 import { styles } from '../styles/ToolbarAreaPane';
 import { imgsrc } from '../../../utils/imgsrc.js';
+import MenuIcon from '@material-ui/icons/Menu';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import { withStyles } from '@material-ui/core/styles';
@@ -19,8 +20,19 @@ import { makeIsLoading, makeToolbarList } from '../selectors';
 class ToolbarAreaPane extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      open: false,
+      anchor: 'left'
+    };
   }
+
+  handleDrawerOpen = () => {
+    this.setState({ open: true });
+  };
+
+  handleDrawerClose = () => {
+    this.setState({ open: false });
+  };
 
   render() {
     const { classes: styles, toolbarList } = this.props;
@@ -29,24 +41,31 @@ class ToolbarAreaPane extends React.Component {
       <div className={styles.root}>
         <AppBar position="static" elevation={0} className={styles.appBar}>
           <Toolbar className={styles.toolbar} disableGutters={true}>
+            <IconButton
+              color="inherit"
+              aria-label="Open drawer"
+              onClick={this.handleDrawerOpen}
+            >
+              <MenuIcon />
+            </IconButton>
             <div className={styles.toolbarInnerWrapper}>
               {Object.keys(toolbarList).map(a => {
                 const item = toolbarList[a];
                 return (
                   <Tooltip key={a} title={item.label}>
                     <div>
-                        <IconButton
-                          aria-label={item.label}
-                          disabled={!item.enabled}
-                          className={classNames({
-                            [styles.invertedNavBtns]: item.invert
-                          })}
-                        >
-                          <img
-                            src={imgsrc(item.imgSrc, false)}
-                            className={classNames(styles.navBtns)}
-                          />
-                        </IconButton>
+                      <IconButton
+                        aria-label={item.label}
+                        disabled={!item.enabled}
+                        className={classNames({
+                          [styles.invertedNavBtns]: item.invert
+                        })}
+                      >
+                        <img
+                          src={imgsrc(item.imgSrc, false)}
+                          className={classNames(styles.navBtns)}
+                        />
+                      </IconButton>
                     </div>
                   </Tooltip>
                 );
@@ -73,7 +92,7 @@ const mapStateToProps = (state, props) => {
   };
 };
 
-export default withReducer('App', reducers)(
+export default withReducer('Home', reducers)(
   connect(
     mapStateToProps,
     mapDispatchToProps

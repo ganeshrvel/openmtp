@@ -3,7 +3,6 @@
 import React from 'react';
 import { Switch, Route } from 'react-router';
 import HomePage from '../containers/HomePage/Loadable';
-import CounterPage from '../containers/CounterPage/Loadable';
 import NotFoundPage from '../containers/NotFoundPage/Loadable';
 
 const _routes = {
@@ -11,11 +10,6 @@ const _routes = {
     path: '/',
     exact: true,
     component: HomePage
-  },
-  Counter: {
-    path: '/counter',
-    exact: true,
-    component: CounterPage
   },
   NotFound: {
     component: NotFoundPage

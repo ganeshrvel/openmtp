@@ -5,6 +5,8 @@ const { variables } = base();
 
 export const styles = theme => {
   return {
-    root: {},
+    root: {
+      flexGrow: 1
+    }
   };
 };

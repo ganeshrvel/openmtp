@@ -1,6 +1,7 @@
 'use strict';
 
 import { actionTypes } from './actions';
+import { PATHS } from '../../utils/paths';
 
 export const initialState = {
   /* <Meta Data> */
@@ -10,6 +11,78 @@ export const initialState = {
   ___timeLastModified: null,
   ___error: null,
   /* </Meta Data> */
+
+  toolbarList: {
+    up: {
+      enabled: true,
+      label: 'Folder Up',
+      imgSrc: 'Toolbar/up.svg',
+      invert: false
+    },
+    refresh: {
+      enabled: true,
+      label: 'Refresh',
+      imgSrc: 'Toolbar/refresh.svg',
+      invert: false
+    },
+    rename: {
+      enabled: true,
+      label: 'Rename',
+      imgSrc: 'Toolbar/rename.svg',
+      invert: false
+    },
+    delete: {
+      enabled: true,
+      label: 'Delete',
+      imgSrc: 'Toolbar/delete.svg'
+    },
+    info: {
+      enabled: true,
+      label: 'Information',
+      imgSrc: 'Toolbar/info.svg',
+      invert: false
+    }
+  },
+  sidebarFavouriteList: {
+    top: [
+      {
+        label: 'Home',
+        path: PATHS.homeDir,
+        icon: 'folder',
+        selected: true,
+        enabled: true
+      },
+      {
+        label: 'usr',
+        path: '/usr/',
+        icon: 'folder',
+        selected: false,
+        enabled: true
+      },
+      {
+        label: 'Root',
+        path: '/',
+        icon: 'folder',
+        selected: false,
+        enabled: true
+      },
+      {
+        label: 'Folder 4',
+        path: '/tmp/',
+        icon: 'folder',
+        selected: false,
+        enabled: true
+      },
+      {
+        label: 'Folder 5',
+        path: '/tmp/',
+        icon: 'folder',
+        selected: false,
+        enabled: true
+      }
+    ],
+    bottom: []
+  },
 
   directoryLists: {
     order: 'asc',

@@ -1,11 +1,14 @@
 'use strict';
 
-import { base } from '../../../styles/js';
+import { base } from '../../../styles/js/index';
 const { variables } = base();
+const drawerWidth = 240;
 
 export const styles = theme => {
   return {
-    root: {},
+    root: {
+      //flexGrow: 1
+    },
     grow: {
       flexGrow: 1
     },
@@ -18,7 +21,12 @@ export const styles = theme => {
     },
     appBar: {
       width: 'unset',
-      paddingLeft: 11
+      paddingLeft: 11,
+      position: 'absolute',
+      transition: theme.transitions.create(['margin', 'width'], {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.leavingScreen
+      })
     },
     navBtns: {
       height: 25,

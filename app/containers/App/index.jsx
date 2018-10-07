@@ -2,13 +2,14 @@
 
 import React, { Component } from 'react';
 import { theme, styles } from './styles';
-import ToolbarAreaPane from './components/ToolbarAreaPane';
-import SidebarAreaPane from './components/SidebarAreaPane';
-import MainAreaPane from './components/MainAreaPane';
+/*import ToolbarAreaPane from '../HomePage/components/ToolbarAreaPane';
+import SidebarAreaPane from '../HomePage/components/SidebarAreaPane';
+import MainAreaPane from './components/MainAreaPane';*/
 import Alerts from '../Alerts';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { withStyles } from '@material-ui/core/styles';
+import Routes from '../../routing';
 
 const appTheme = createMuiTheme(theme());
 
@@ -25,14 +26,17 @@ class App extends Component {
       <React.Fragment>
         <CssBaseline>
           <MuiThemeProvider theme={appTheme}>
-            <div className={styles.appContainer}>
-              <Alerts />
+            <Alerts />
+            <Routes />
+            {/*<div className={styles.appContainer}>
+              
+              
               <SidebarAreaPane />
               <div>
                 <ToolbarAreaPane />
                 <MainAreaPane />
               </div>
-            </div>
+            </div>*/}
           </MuiThemeProvider>
         </CssBaseline>
       </React.Fragment>
