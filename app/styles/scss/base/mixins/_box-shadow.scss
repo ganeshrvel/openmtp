@@ -1,0 +1,19 @@
+//------ SASS Useful Mixins ---------------------------------------------
+
+// by Ryan Burgess
+// https://github.com/ryanburgess/SASS-Useful-Mixins
+// MIT © Ryan Burgess
+
+// ----------------------------------------------------------------------
+
+  // Box Shadow
+
+// ----------------------------------------------------------------------
+
+ // example: @include box-shadow(1px, 2px, 2px, 2px, #000);
+
+@mixin box-shadow($hoff: false, $voff: false, $blur: false, $spread: false, $color: false){
+  -webkit-box-shadow: $hoff $voff $blur $spread $color;
+     -moz-box-shadow: $hoff $voff $blur $spread $color;
+          box-shadow: $hoff $voff $blur $spread $color;
+}

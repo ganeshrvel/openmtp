@@ -1,0 +1,27 @@
+{
+  "presets": [
+    [
+      "env",
+      {
+        "targets": { "node": 10 },
+        "useBuiltIns": true
+      }
+    ],
+    "stage-2",
+    "react"
+  ],
+  "plugins": ["add-module-exports"],
+  "env": {
+    "production": {
+      "presets": ["react-optimize"],
+      "plugins": [
+        "dev-expression",
+        "transform-class-properties",
+        "transform-es2015-classes"
+      ]
+    },
+    "development": {
+      "plugins": ["transform-class-properties", "transform-es2015-classes"]
+    }
+  }
+}

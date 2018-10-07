@@ -1,0 +1,10 @@
+@mixin display($value) {
+  display: $value;
+}
+
+@mixin display-none($important) {
+  @if $important {
+    $important: !important;
+  }
+  display: none $important;
+}

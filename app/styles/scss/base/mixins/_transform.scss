@@ -1,0 +1,34 @@
+//------ SASS Useful Mixins ---------------------------------------------
+
+// by Ryan Burgess
+// https://github.com/ryanburgess/SASS-Useful-Mixins
+// MIT © Ryan Burgess
+
+// ----------------------------------------------------------------------
+
+  // Transform
+
+// ----------------------------------------------------------------------
+
+// example: @include transform("origin", 0, 0);
+
+@mixin transform($type, $values...) {
+  $n: length($values);
+  $i: 1;
+
+  $originVal: ();
+
+  @while $i <= $n {
+    $itemVal: (nth($values, $i));
+    @if $type == "rotate" or $type == "rotateY" or $type == "rotateX" {
+      $originVal: append($originVal, $itemVal + deg);
+    } @else {
+      $originVal: append($originVal, $itemVal + px);
+    }
+
+    $i: $i + 1;
+  }
+  -webkit-transform: #{$type}($originVal);
+     -moz-transform: #{$type}($originVal);
+          transform: #{$type}($originVal);
+}

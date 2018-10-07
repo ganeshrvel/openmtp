@@ -1,0 +1,19 @@
+//------ SASS Useful Mixins ---------------------------------------------
+
+// by Ryan Burgess
+// https://github.com/ryanburgess/SASS-Useful-Mixins
+// MIT © Ryan Burgess
+
+// ----------------------------------------------------------------------
+
+  // Hide Text
+
+// ----------------------------------------------------------------------
+
+// example: @include hide-text();
+
+@mixin hide-text() {
+  position: relative;
+  text-indent: -99999px;
+  display: inline-block;
+}

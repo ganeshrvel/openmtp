@@ -1,0 +1,19 @@
+//------ SASS Useful Mixins ---------------------------------------------
+
+// by Ryan Burgess
+// https://github.com/ryanburgess/SASS-Useful-Mixins
+// MIT © Ryan Burgess
+
+// -----------------------------------------------------------------------
+
+  // Hover and Focus
+
+// ----------------------------------------------------------------------
+
+ // example @include hoverFocus('text-decoration', 'none');
+
+@mixin hoverFocus($property, $value) {
+  &:hover, &:focus {
+    #{$property}: $value;
+  }
+}

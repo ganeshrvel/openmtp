@@ -1,0 +1,17 @@
+//------ SASS Useful Mixins ---------------------------------------------
+
+// by Ryan Burgess
+// https://github.com/ryanburgess/SASS-Useful-Mixins
+// MIT © Ryan Burgess
+
+// ----------------------------------------------------------------------
+
+  // Text Shadow
+
+// ----------------------------------------------------------------------
+
+ // example: @include single-text-shadow(1px, 2px, 2px, #000);
+
+@mixin single-text-shadow($hoff: false, $voff: false, $blur: false, $color: false) {
+  text-shadow: $hoff $voff $blur $color;
+}

@@ -1,0 +1,75 @@
+//------ SASS Useful Mixins ---------------------------------------------
+
+// by Ryan Burgess
+// https://github.com/ryanburgess/SASS-Useful-Mixins
+// MIT © Ryan Burgess
+
+// ----------------------------------------------------------------------
+
+  // Rounded Corners
+
+// ----------------------------------------------------------------------
+
+ // example: @include roundedCorners(10);
+
+@mixin roundedCorners($size) {
+  -webkit-border-radius: $size + px;
+     -moz-border-radius: $size + px;
+      border-radius: $size + px;
+}
+
+// Rounded Corners Top Only
+@mixin roundedTop($size) {
+  -webkit-border-radius: $size + px $size + px 0 0;
+     -moz-border-radius: $size + px $size + px 0 0;
+      border-radius: $size + px $size + px 0 0;
+}
+
+// Rounded Corner Top Left Only
+@mixin roundedTopLeft($size) {
+  -webkit-border-radius: $size + px 0 0 0;
+     -moz-border-radius: $size + px 0 0 0;
+      border-radius: $size + px 0 0 0;
+}
+
+// Rounded Corner Top Right Only
+@mixin roundedTopRight($size) {
+  -webkit-border-radius: 0 $size + px 0 0;
+     -moz-border-radius: 0 $size + px 0 0;
+      border-radius: 0 $size + px 0 0;
+}
+
+// Rounded Corners Bottom Only
+@mixin roundedBottom($size) {
+  -webkit-border-radius: 0 0 $size + px $size + px;
+     -moz-border-radius: 0 0 $size + px $size + px;
+      border-radius: 0 0 $size + px $size + px;
+}
+
+// Rounded Corner Bottom Left Only
+@mixin roundedBottomLeft($size) {
+  -webkit-border-radius: 0 0 0 $size + px;
+     -moz-border-radius: 0 0 0 $size + px;
+      border-radius: 0 0 0 $size + px;
+}
+
+// Rounded Corner Bottom Right Only
+@mixin roundedBottomRight($size) {
+  -webkit-border-radius: 0 0 $size + px 0;
+     -moz-border-radius: 0 0 $size + px 0;
+      border-radius: 0 0 $size + px 0;
+}
+
+// Rounded Corners Left Only
+@mixin roundedLeft($size) {
+  -webkit-border-radius: 0 0 $size + px $size + px;
+     -moz-border-radius: 0 0 $size + px $size + px;
+      border-radius: $size + px 0 0 $size + px;
+}
+
+// Rounded Corners Right Only
+@mixin roundedRight($size) {
+  -webkit-border-radius: 0 $size + px $size + px 0;
+     -moz-border-radius: 0 $size + px $size + px 0;
+      border-radius: 0 $size + px $size + px 0;
+}

@@ -1,0 +1,179 @@
+{
+  "name": "openmtp",
+  "productName": "OpenMTP",
+  "version": "0.0.1",
+  "description": "OpenMTP | Android File Transfer for macOS",
+  "scripts": {
+    "build": "concurrently \"yarn build-main\" \"yarn build-renderer\"",
+    "build-dll": "cross-env NODE_ENV=development node --trace-warnings -r babel-register ./node_modules/webpack/bin/webpack --config webpack/config.renderer.dev.dll.js --colors",
+    "build-main": "cross-env NODE_ENV=production node --trace-warnings -r babel-register ./node_modules/webpack/bin/webpack --config webpack/config.main.prod.js --colors",
+    "build-renderer": "cross-env NODE_ENV=production node --trace-warnings -r babel-register ./node_modules/webpack/bin/webpack --config webpack/config.renderer.prod.js --colors",
+    "dev": "cross-env START_HOT=1 node -r babel-register ./internals/scripts/CheckPortInUse.js && cross-env START_HOT=1 yarn start-renderer-dev",
+    "electron-rebuild": "electron-rebuild --parallel --force --types prod,dev,optional --module-dir app",
+    "package": "yarn build && electron-builder build --publish never",
+    "package-all": "yarn build && electron-builder build -mwl",
+    "package-linux": "yarn build && electron-builder build --linux",
+    "package-win": "yarn build && electron-builder build --win --x64",
+    "postinstall": "node -r babel-register internals/scripts/CheckNativeDep.js && yarn build-dll && electron-builder install-app-deps package.json",
+    "prestart": "yarn build",
+    "start": "cross-env NODE_ENV=production electron ./app/",
+    "start-main-dev": "cross-env HOT=1 NODE_ENV=development electron -r babel-register ./app/main.dev.js",
+    "start-renderer-dev": "cross-env NODE_ENV=development node --trace-warnings -r babel-register ./node_modules/webpack-dev-server/bin/webpack-dev-server --config webpack/config.renderer.dev.js"
+  },
+  "browserslist": "electron 3.0",
+  "build": {
+    "productName": "OpenMTP",
+    "appId": "io.ganeshrvel.openmtp",
+    "files": [
+      "dist/",
+      "node_modules/",
+      "app.html",
+      "main.prod.js",
+      "main.prod.js.map",
+      "package.json"
+    ],
+    "dmg": {
+      "contents": [
+        {
+          "x": 130,
+          "y": 220
+        },
+        {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ]
+    },
+    "linux": {
+      "target": [
+        "deb",
+        "AppImage"
+      ],
+      "category": "Development"
+    },
+    "directories": {
+      "buildResources": "resources",
+      "output": "release"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ganeshrvel/openmtp.git"
+  },
+  "author": {
+    "name": "Ganesh Rathinavel",
+    "email": "ganeshrvel@outlook.com",
+    "url": "https://github.com/ganeshrvel"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ganeshrvel/openmtp/issues"
+  },
+  "keywords": [
+    "openmtp",
+    "archive",
+    "zip",
+    "unzip",
+    "rar",
+    "unrar",
+    "compress",
+    "decompress"
+  ],
+  "homepage": "https://github.com/ganeshrvel/openmtp#readme",
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.5",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-plugin-dev-expression": "^0.2.1",
+    "babel-plugin-import": "^1.9.1",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-es2015-classes": "^6.24.1",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-react-optimize": "^1.0.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "babel-register": "^6.26.0",
+    "chalk": "^2.4.1",
+    "clean-webpack-plugin": "^0.1.19",
+    "concurrently": "^3.6.1",
+    "cross-env": "^5.2.0",
+    "cross-spawn": "^6.0.5",
+    "css-loader": "^1.0.0",
+    "detect-port": "^1.2.3",
+    "electron": "^3.0.2",
+    "electron-builder": "^20.28.4",
+    "electron-devtools-installer": "^2.2.4",
+    "electron-rebuild": "^1.8.2",
+    "express": "^4.16.3",
+    "fbjs-scripts": "^0.8.3",
+    "file-loader": "^1.1.11",
+    "husky": "^0.14.3",
+    "identity-obj-proxy": "^3.0.0",
+    "jsx-to-string": "^1.4.0",
+    "mini-css-extract-plugin": "^0.4.1",
+    "minimist": "^1.2.0",
+    "node-sass": "^4.9.2",
+    "npm-logical-tree": "^1.2.1",
+    "optimize-css-assets-webpack-plugin": "^5.0.0",
+    "prettier": "^1.14.2",
+    "react-test-renderer": "^16.4.1",
+    "redux-logger": "^3.0.6",
+    "rimraf": "^2.6.2",
+    "sass-loader": "^7.0.3",
+    "sinon": "^6.1.4",
+    "spectron": "^3.8.0",
+    "style-loader": "^0.21.0",
+    "uglifyjs-webpack-plugin": "1.2.7",
+    "url-loader": "^1.0.1",
+    "webpack": "^4.16.3",
+    "webpack-bundle-analyzer": "^2.13.1",
+    "webpack-cli": "^3.1.0",
+    "webpack-dev-server": "^3.1.5",
+    "webpack-merge": "^4.1.3",
+    "yarn": "^1.9.2"
+  },
+  "dependencies": {
+    "@babel/polyfill": "^7.0.0",
+    "@fortawesome/fontawesome-free": "^5.2.0",
+    "@material-ui/core": "^3.1.1",
+    "@material-ui/icons": "^3.0.1",
+    "@material-ui/lab": "^3.0.0-alpha.18",
+    "bluebird": "^3.5.2",
+    "classnames": "^2.2.6",
+    "devtron": "^1.4.0",
+    "electron-debug": "^2.0.0",
+    "history": "^4.7.2",
+    "lodash": "^4.17.11",
+    "moment": "^2.22.2",
+    "nanoid": "^1.2.4",
+    "node-shell-parser": "^0.2.1",
+    "prop-types": "^15.6.2",
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1",
+    "react-helmet": "^5.2.0",
+    "react-hot-loader": "^4.3.4",
+    "react-imported-component": "^4.6.2",
+    "react-redux": "^5.0.7",
+    "react-router": "^4.3.1",
+    "react-router-dom": "^4.3.1",
+    "react-router-redux": "^5.0.0-alpha.6",
+    "redux": "^4.0.0",
+    "redux-thunk": "^2.3.0",
+    "reselect": "^3.0.1",
+    "roboto-fontface": "^0.10.0",
+    "source-map-support": "^0.5.6",
+    "spawn-promise": "^0.1.8"
+  },
+  "devEngines": {
+    "node": ">=7.x",
+    "npm": ">=4.x",
+    "yarn": ">=0.21.3"
+  }
+}

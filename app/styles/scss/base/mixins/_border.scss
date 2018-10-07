@@ -1,0 +1,9 @@
+@mixin border-radius($value) {
+  -moz-border-radius: $value;
+  -webkit-border-radius: $value;
+  border-radius: $value;
+}
+
+@mixin border($value) {
+  border: $value;
+}
