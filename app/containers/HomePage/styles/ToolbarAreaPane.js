@@ -2,7 +2,6 @@
 
 import { base } from '../../../styles/js/index';
 const { variables } = base();
-const drawerWidth = 240;
 
 export const styles = theme => {
   return {
@@ -20,13 +19,9 @@ export const styles = theme => {
       height: variables.sizes.toolbarHeight
     },
     appBar: {
-      width: 'unset',
+      // width: 'unset',
       paddingLeft: 11,
-      position: 'absolute',
-      transition: theme.transitions.create(['margin', 'width'], {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen
-      })
+      position: 'absolute'
     },
     navBtns: {
       height: 25,

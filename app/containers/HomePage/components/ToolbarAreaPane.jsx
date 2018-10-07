@@ -7,44 +7,59 @@ import MenuIcon from '@material-ui/icons/Menu';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import { withStyles } from '@material-ui/core/styles';
+import Drawer from '@material-ui/core/Drawer';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withReducer } from '../../../store/reducers/withReducer';
+import SidebarAreaPaneLists from './SidebarAreaPaneLists';
 import reducers from '../reducers';
-//import {} from '../actions';
-import { makeIsLoading, makeToolbarList } from '../selectors';
+import {} from '../actions';
+import {
+  makeIsLoading,
+  makeSidebarFavouriteList,
+  makeToolbarList
+} from '../selectors';
 
 class ToolbarAreaPane extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      open: false,
-      anchor: 'left'
+      toggleDrawer: false
     };
   }
 
-  handleDrawerOpen = () => {
-    this.setState({ open: true });
-  };
-
-  handleDrawerClose = () => {
-    this.setState({ open: false });
+  toggleDrawer = status => () => {
+    this.setState({
+      toggleDrawer: status
+    });
   };
 
   render() {
-    const { classes: styles, toolbarList } = this.props;
+    const { classes: styles, toolbarList, sidebarFavouriteList } = this.props;
 
     return (
       <div className={styles.root}>
+        <Drawer
+          open={this.state.toggleDrawer}
+          onClose={this.toggleDrawer(false)}
+        >
+          <div
+            tabIndex={0}
+            role="button"
+            onClick={this.toggleDrawer(false)}
+            onKeyDown={this.toggleDrawer(false)}
+          />
+          <SidebarAreaPaneLists sidebarFavouriteList={sidebarFavouriteList} />
+        </Drawer>
         <AppBar position="static" elevation={0} className={styles.appBar}>
           <Toolbar className={styles.toolbar} disableGutters={true}>
             <IconButton
               color="inherit"
               aria-label="Open drawer"
-              onClick={this.handleDrawerOpen}
+              onClick={this.toggleDrawer(true)}
             >
               <MenuIcon />
             </IconButton>
@@ -78,15 +93,11 @@ class ToolbarAreaPane extends React.Component {
   }
 }
 const mapDispatchToProps = (dispatch, ownProps) =>
-  bindActionCreators(
-    {
-      handleClick: (key, event) => (_, getState) => {}
-    },
-    dispatch
-  );
+  bindActionCreators({}, dispatch);
 
 const mapStateToProps = (state, props) => {
   return {
+    sidebarFavouriteList: makeSidebarFavouriteList(state),
     toolbarList: makeToolbarList(state),
     isLoading: makeIsLoading(state)
   };

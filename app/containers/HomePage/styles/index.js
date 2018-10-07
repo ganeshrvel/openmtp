@@ -6,7 +6,7 @@ const { variables } = base();
 export const styles = theme => {
   return {
     root: {
-      flexGrow: 1
+      paddingTop: 64
     }
   };
 };

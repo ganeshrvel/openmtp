@@ -13,25 +13,23 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withReducer } from '../../../store/reducers/withReducer';
 import reducers from '../reducers';
-//import {} from '../actions';
-import { makeSidebarFavouriteList } from '../selectors';
+import {} from '../actions';
 
 class SidebarAreaPaneLists extends Component {
   constructor(props) {
     super(props);
+    this.sidebarBottom = this.props.sidebarFavouriteList.bottom;
+    this.sidebarTop = this.props.sidebarFavouriteList.top;
   }
 
   render() {
     const { classes: styles } = this.props;
-    const {
-      top: sidebarTop,
-      bottom: sidebarBottom
-    } = this.props.sidebarFavouriteList;
+
     return (
       <React.Fragment>
-        {sidebarTop.length > 1 && (
+        {this.sidebarTop.length > 1 && (
           <List component="nav" dense={true}>
-            {sidebarTop.map((item, index) => {
+            {this.sidebarTop.map((item, index) => {
               return (
                 <ListItem
                   key={index}
@@ -49,11 +47,11 @@ class SidebarAreaPaneLists extends Component {
           </List>
         )}
 
-        {sidebarBottom.length > 1 && (
+        {this.sidebarBottom.length > 1 && (
           <React.Fragment>
             <Divider />
             <List component="nav" dense={true}>
-              {sidebarBottom.map((item, index) => {
+              {this.sidebarBottom.map((item, index) => {
                 return (
                   <ListItem
                     key={index}
@@ -76,23 +74,4 @@ class SidebarAreaPaneLists extends Component {
   }
 }
 
-const mapDispatchToProps = (dispatch, ownProps) =>
-  bindActionCreators(
-    {
-      handleClick: (key, event) => (_, getState) => {}
-    },
-    dispatch
-  );
-
-const mapStateToProps = (state, props) => {
-  return {
-    sidebarFavouriteList: makeSidebarFavouriteList(state)
-  };
-};
-
-export default withReducer('Home', reducers)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(withStyles(styles)(SidebarAreaPaneLists))
-);
+export default withStyles(styles)(SidebarAreaPaneLists);

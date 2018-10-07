@@ -43,6 +43,7 @@ export const initialState = {
       invert: false
     }
   },
+
   sidebarFavouriteList: {
     top: [
       {

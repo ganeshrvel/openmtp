@@ -2,7 +2,6 @@
 
 import React, { Component } from 'react';
 import { styles } from '../styles/DirectoryLists';
-import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -14,6 +13,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import FolderIcon from '@material-ui/icons/Folder';
 import InsertDriveFile from '@material-ui/icons/InsertDriveFile';
 import classNames from 'classnames';
+import { withStyles } from '@material-ui/core/styles';
 import nanoid from 'nanoid';
 import DirectoryListsTableHead from './DirectoryListsTableHead';
 import { connect } from 'react-redux';
