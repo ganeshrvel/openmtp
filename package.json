@@ -78,13 +78,9 @@
   },
   "keywords": [
     "openmtp",
-    "archive",
-    "zip",
-    "unzip",
-    "rar",
-    "unrar",
-    "compress",
-    "decompress"
+    "android",
+    "file-transfer",
+    "macOS"
   ],
   "homepage": "https://github.com/ganeshrvel/openmtp#readme",
   "devDependencies": {

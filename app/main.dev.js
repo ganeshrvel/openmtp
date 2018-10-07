@@ -63,8 +63,6 @@ app.on('ready', async () => {
     title: 'OpenMTP',
     center: true,
     show: false,
-    width: 854,
-    height: 640,
     minWidth: 854,
     minHeight: 640
     //frame: false
@@ -81,6 +79,7 @@ app.on('ready', async () => {
     if (process.env.START_MINIMIZED) {
       mainWindow.minimize();
     } else {
+      mainWindow.maximize();
       mainWindow.show();
       mainWindow.focus();
     }

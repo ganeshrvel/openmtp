@@ -18,42 +18,6 @@ export const initialState = {
       imgSrc: 'Toolbar/up.svg',
       invert: false
     },
-    queueMode: {
-      enabled: true,
-      label: 'Toggle Queue Mode',
-      imgSrc: 'Toolbar/queue-mode.svg',
-      invert: false
-    },
-    excludeFromQueue: {
-      enabled: true,
-      label: 'Exclude Item from Queue',
-      imgSrc: 'Toolbar/exclude-from-queue.svg',
-      invert: false
-    },
-    emptyQueue: {
-      enabled: true,
-      label: 'Empty Queue',
-      imgSrc: 'Toolbar/empty-queue.svg',
-      invert: false
-    },
-    compress: {
-      enabled: true,
-      label: 'Compress',
-      imgSrc: 'Toolbar/compress.svg',
-      invert: false
-    },
-    extractArchive: {
-      enabled: true,
-      label: 'Extract Archive',
-      imgSrc: 'Toolbar/extract.svg',
-      invert: false
-    },
-    testArchive: {
-      enabled: true,
-      label: 'Test Archive',
-      imgSrc: 'Toolbar/test.svg',
-      invert: false
-    },
     refresh: {
       enabled: true,
       label: 'Refresh',
