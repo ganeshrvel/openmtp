@@ -187,7 +187,6 @@ const mapDispatchToProps = (dispatch, ownProps) =>
       },
 
       handleSelectAllClick: (deviceType, event) => (_, getState) => {
-        console.log(deviceType);
         if (event.target.checked) {
           dispatch(
             setSelectedDirLists(

@@ -4,9 +4,9 @@ import React, { Component } from 'react';
 import { styles } from './styles';
 import { Helmet } from 'react-helmet';
 import { log } from '@Log';
-import { withStyles } from '@material-ui/core/styles';
 import DirectoryLists from './components/DirectoryLists';
 import ToolbarAreaPane from './components/ToolbarAreaPane';
+import { withStyles } from '@material-ui/core/styles';
 import { withReducer } from '../../store/reducers/withReducer';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -37,24 +37,29 @@ class Home extends Component {
       },
       'local'
     );
+    this.props.handleFetchDirList(
+      {
+        filePath: '/',
+        ignoreHidden: true
+      },
+      'mtp'
+    );
   }
 
   render() {
     const { classes: styles } = this.props;
     return (
       <React.Fragment>
-        <ToolbarAreaPane deviceType="local" />
-        <div className={styles.root}>
-          <DirectoryLists deviceType="local" />
-          {/* <Grid container spacing={0}>
-            <Grid item xs={6}>
-              <DirectoryLists />
-            </Grid>
-            <Grid item xs={6}>
-              <DirectoryLists />
-            </Grid>
-          </Grid>*/}
-        </div>
+        <Grid container spacing={0}>
+          <Grid item xs={6}>
+            <ToolbarAreaPane showMenu={true} deviceType="local" />
+            <DirectoryLists deviceType="local" />
+          </Grid>
+          <Grid item xs={6}>
+            <ToolbarAreaPane showMenu={false} deviceType="mtp" />
+            <DirectoryLists deviceType="mtp" />
+          </Grid>
+        </Grid>
       </React.Fragment>
     );
   }

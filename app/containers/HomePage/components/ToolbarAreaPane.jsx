@@ -42,9 +42,10 @@ class ToolbarAreaPane extends React.Component {
       classes: styles,
       toolbarList,
       sidebarFavouriteList,
-      deviceType
+      deviceType,
+      showMenu
     } = this.props;
-
+    
     return (
       <div className={styles.root}>
         <Drawer
@@ -61,13 +62,16 @@ class ToolbarAreaPane extends React.Component {
         </Drawer>
         <AppBar position="static" elevation={0} className={styles.appBar}>
           <Toolbar className={styles.toolbar} disableGutters={true}>
-            <IconButton
-              color="inherit"
-              aria-label="Open drawer"
-              onClick={this.toggleDrawer(true)}
-            >
-              <MenuIcon />
-            </IconButton>
+            {showMenu && (
+              <IconButton
+                color="inherit"
+                aria-label="Open drawer"
+                onClick={this.toggleDrawer(true)}
+              >
+                <MenuIcon />
+              </IconButton>
+            )}
+
             <div className={styles.toolbarInnerWrapper}>
               {Object.keys(toolbarList[deviceType]).map(a => {
                 const item = toolbarList[deviceType][a];

@@ -170,7 +170,6 @@ export default function Home(state = initialState, action) {
       };
 
     case actionTypes.FETCH_DIR_LIST:
-      console.log(payload);
       return {
         ...state,
         ...setLoadedMetaData(state),
