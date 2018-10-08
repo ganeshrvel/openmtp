@@ -78,19 +78,15 @@ export const asyncReadLocalDir = async ({ filePath, ignoreHidden }) => {
 };
 
 const promisifiedExec = command => {
-  return exec(command)
-    .then(stdout => {
-      return {
+  return new Promise(function(resolve, reject) {
+    exec(command, (error, stdout, stderr) =>
+      resolve({
         data: stdout,
-        error: null
-      };
-    })
-    .catch(e => {
-      return {
-        data: null,
-        error: e
-      };
-    });
+        stderr: stderr,
+        error: error
+      })
+    );
+  });
 };
 
 const fetchExtension = (fileName, isFolder) => {
@@ -102,6 +98,10 @@ const fetchExtension = (fileName, isFolder) => {
     : fileName.substring(fileName.lastIndexOf('.') + 1);
 };
 
+const escapeShell = cmd => {
+  return cmd.replace(/"/g, '\\"');
+};
+
 export const asyncReadMtpDir = async ({ filePath, ignoreHidden }) => {
   const mtpCmdChop = {
     type: 2,
@@ -111,29 +111,64 @@ export const asyncReadMtpDir = async ({ filePath, ignoreHidden }) => {
   };
   let response = [];
 
-  let { data, error } = await promisifiedExec(
-    `${mtp} "lsext ${filePath}" | tr -s " "`
+  const {
+    data: fileListData,
+    error: fileListError,
+    stderr: fileListStderr
+  } = await promisifiedExec(`${mtp} "ls \\"${escapeShell(filePath)}\\""`);
+
+  const {
+    data: filePropsData,
+    error: filePropsError,
+    stderr: filePropsStderr
+  } = await promisifiedExec(
+    `${mtp} "lsext \\"${escapeShell(filePath)}\\"" | tr -s " "`
   );
-  if (error) {
-    log.error(error, `asyncReadLocalDir`);
-    return { error: error.message, data: null };
+
+  if (fileListError || fileListStderr) {
+    log.error(
+      `${fileListError} : ${fileListStderr}`,
+      `asyncReadMtpDir -> ls error`
+    );
+    return { error: fileListError, stderr: fileListStderr, data: null };
   }
 
-  const lines = data.split(/(\r?\n)/g);
-  for (let i = 0; i < lines.length; i++) {
-    if (lines[i] === '\n' || lines[i] === '\r\n' || data[i] === '') {
+  if (filePropsError || filePropsStderr) {
+    log.error(
+      `${filePropsError} : ${filePropsStderr}`,
+      `asyncReadMtpDir -> lsext error`
+    );
+    return { error: filePropsError, stderr: filePropsStderr, data: null };
+  }
+
+  const fileList = fileListData.split(/(\r?\n)/g).map(a => {
+    return a.replace(/(^|\.\s+)\d+\s+/, '');
+  });
+  const fileProps = filePropsData.split(/(\r?\n)/g);
+
+  for (let i = 0; i < fileProps.length; i++) {
+    if (
+      fileProps[i] === '\n' ||
+      fileProps[i] === '\r\n' ||
+      filePropsData[i] === ''
+    ) {
       continue;
     }
 
-    let linesList = lines[i].split(' ');
-    if (typeof linesList[mtpCmdChop.name] === 'undefined') {
+    let filePropsList = fileProps[i].split(' ');
+    if (typeof filePropsList[mtpCmdChop.name] === 'undefined') {
       continue;
     }
-    const fileName = linesList[mtpCmdChop.name];
+    const fileName = fileList[i];
+
+    if (ignoreHidden && /(^|\/)\.[^\/\.]/g.test(fileName)) {
+      continue;
+    }
+
     let fullPath = path.resolve(filePath, fileName);
-    let isFolder = linesList[mtpCmdChop.type] === '3001';
-    let dateTime = `${linesList[mtpCmdChop.dateAdded]} ${
-      linesList[mtpCmdChop.timeAdded]
+    let isFolder = filePropsList[mtpCmdChop.type] === '3001';
+    let dateTime = `${filePropsList[mtpCmdChop.dateAdded]} ${
+      filePropsList[mtpCmdChop.timeAdded]
     }`;
 
     response.push({
@@ -146,5 +181,5 @@ export const asyncReadMtpDir = async ({ filePath, ignoreHidden }) => {
     });
   }
 
-  return { error, data: response };
+  return { error: null, stderr: null, data: response };
 };

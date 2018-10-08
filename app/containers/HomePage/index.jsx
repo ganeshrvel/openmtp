@@ -25,13 +25,13 @@ class Home extends Component {
     const { defaultSelectedPath } = this.props;
 
     /*
-    Todo: throw alerts for fetchDirList errors
     todo: make a const for mtp and local
     todo: make a const for default mtp filePath
-    todo: show no data available error/message for mtp device
+    todo: show no data available error/message in table for mtp device
     todo: checkbox is selected for no data in the list
     todo: add menu btn fot mtp
     todo: binary for production
+    todo: mtp and local hidden state values
     
     
     asyncReadLocalDir('filePath')

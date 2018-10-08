@@ -66,10 +66,13 @@ export function fetchDirList({ ...args }, deviceType) {
 
     case 'mtp':
       return async dispatch => {
-        const { error, data } = await asyncReadMtpDir({ ...args });
-
-        if (error) {
-          log.error(error, 'fetchDirList -> asyncReadMtpDir');
+        const { error, stderr, data } = await asyncReadMtpDir({ ...args });
+        if (stderr) {
+          log.error(stderr, 'stderr -> fetchDirList -> asyncReadMtpDir');
+          dispatch(throwAlert({ message: stderr }));
+          return;
+        } else if (error) {
+          log.error(error, 'error -> fetchDirList -> asyncReadMtpDir');
           dispatch(
             throwAlert({ message: `Unable fetch data from the MTP device.` })
           );
