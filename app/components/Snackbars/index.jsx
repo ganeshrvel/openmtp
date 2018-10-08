@@ -38,21 +38,19 @@ class Snackbars extends React.Component {
     } = this.props;
 
     return (
-      <div>
-        <Snackbar
-          className={styles.root}
-          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-          open={this.state.open}
-          autoHideDuration={autoHideDuration}
+      <Snackbar
+        className={styles.root}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        open={this.state.open}
+        autoHideDuration={autoHideDuration}
+        onClose={this.handleClose}
+      >
+        <SnackbarThemeWrapper
           onClose={this.handleClose}
-        >
-          <SnackbarThemeWrapper
-            onClose={this.handleClose}
-            variant={variant}
-            message={message}
-          />
-        </Snackbar>
-      </div>
+          variant={variant}
+          message={message}
+        />
+      </Snackbar>
     );
   }
 }

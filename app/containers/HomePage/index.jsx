@@ -13,7 +13,7 @@ import { bindActionCreators } from 'redux';
 import reducers from './reducers';
 import { fetchDirList } from './actions';
 import { throwAlert } from '@Alerts';
-import {} from './selectors';
+import { makeDefaultSelectedPath } from './selectors';
 import Grid from '@material-ui/core/Grid';
 
 class Home extends Component {
@@ -22,6 +22,8 @@ class Home extends Component {
   }
 
   componentWillMount() {
+    const { defaultSelectedPath } = this.props;
+
     /*
     Todo: throw alerts for fetchDirList errors
     todo: show no data available error/message for mtp device
@@ -37,14 +39,14 @@ class Home extends Component {
 
     this.props.handleFetchDirList(
       {
-        filePath: '/',
+        filePath: defaultSelectedPath.path,
         ignoreHidden: true
       },
       'local'
     );
     this.props.handleFetchDirList(
       {
-        filePath: '/',
+        filePath: defaultSelectedPath.path,
         ignoreHidden: true
       },
       'mtp'
@@ -84,7 +86,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
   );
 
 const mapStateToProps = (state, props) => {
-  return {};
+  return { defaultSelectedPath: makeDefaultSelectedPath(state) };
 };
 
 export default withReducer('Home', reducers)(

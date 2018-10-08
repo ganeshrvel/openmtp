@@ -138,7 +138,7 @@
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
     "@fortawesome/fontawesome-free": "^5.2.0",
-    "@material-ui/core": "3.2.0",
+    "@material-ui/core": "3.1.1",
     "@material-ui/icons": "^3.0.1",
     "@material-ui/lab": "3.0.0-alpha.19",
     "bluebird": "^3.5.2",

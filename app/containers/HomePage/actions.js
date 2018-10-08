@@ -2,6 +2,7 @@
 import prefixer from '../../utils/reducerPrefixer.js';
 import { asyncReadDir } from '../../api/sys';
 import { log } from '@Log';
+import { throwAlert } from '../Alerts/actions';
 
 const prefix = '@@counter';
 const actionTypesList = [
@@ -41,6 +42,7 @@ export function fetchDirList({ ...args }, deviceType) {
 
     if (error) {
       log.error(error, 'fetchDirList -> asyncReadDir');
+      dispatch(throwAlert({ message: `Unable fetch data from the source.` }));
       return;
     }
 

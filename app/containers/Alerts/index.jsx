@@ -21,14 +21,12 @@ class Alerts extends React.Component {
     const { message, variant, autoHideDuration } = this.props.Alerts;
     return (
       message && (
-        <React.Fragment>
-          <Snackbars
-            OnSnackBarsCloseAlerts={a => this.handleClose()}
-            message={message}
-            variant={variant}
-            autoHideDuration={autoHideDuration}
-          />
-        </React.Fragment>
+        <Snackbars
+          OnSnackBarsCloseAlerts={a => this.handleClose()}
+          message={message}
+          variant={variant}
+          autoHideDuration={autoHideDuration}
+        />
       )
     );
   }
