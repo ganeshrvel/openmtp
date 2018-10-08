@@ -11,7 +11,7 @@ import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
 import Tooltip from '@material-ui/core/Tooltip';
 import FolderIcon from '@material-ui/icons/Folder';
-import InsertDriveFile from '@material-ui/icons/InsertDriveFile';
+import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 import nanoid from 'nanoid';
@@ -29,7 +29,7 @@ class DirectoryLists extends React.Component {
   }
 
   render() {
-    const { classes: styles, deviceType } = this.props;
+    const { classes: styles, deviceType, hideColList } = this.props;
     const { nodes, order, orderBy, queue } = this.props.directoryLists[
       deviceType
     ];
@@ -54,6 +54,7 @@ class DirectoryLists extends React.Component {
                   deviceType
                 )}
                 rowCount={nodes ? nodes.length : 0}
+                hideColList={hideColList}
               />
               <TableBody>
                 {this.stableSort(nodes, this.getSorting(order, orderBy)).map(
@@ -76,7 +77,7 @@ class DirectoryLists extends React.Component {
   }
 
   TableRowsRender = (n, isSelected) => {
-    const { classes: styles, deviceType } = this.props;
+    const { classes: styles, deviceType, hideColList } = this.props;
     return (
       <TableRow
         role="checkbox"
@@ -97,31 +98,40 @@ class DirectoryLists extends React.Component {
             onClick={event => this.props.handleClick(n.path, deviceType, event)}
           />
         </TableCell>
-        <TableCell padding="default" className={`${styles.tableCell} nameCell`}>
-          {n.isFolder ? (
-            <Tooltip title="Folder">
-              <FolderIcon className={styles.tableCellIcon} fontSize="small" />
-            </Tooltip>
-          ) : (
-            <Tooltip title="File">
-              <InsertDriveFile
-                className={styles.tableCellIcon}
-                fontSize="small"
-              />
-            </Tooltip>
-          )}
-          &nbsp;&nbsp;
-          {n.name}
-        </TableCell>
-        <TableCell padding="none" className={`${styles.tableCell} sizeCell`}>
-          {n.size}
-        </TableCell>
-        <TableCell
-          padding="none"
-          className={`${styles.tableCell} dateAddedCell`}
-        >
-          {n.dateAdded}
-        </TableCell>
+        {hideColList.indexOf('name') < 0 && (
+          <TableCell
+            padding="default"
+            className={`${styles.tableCell} nameCell`}
+          >
+            {n.isFolder ? (
+              <Tooltip title="Folder">
+                <FolderIcon className={styles.tableCellIcon} fontSize="small" />
+              </Tooltip>
+            ) : (
+              <Tooltip title="File">
+                <InsertDriveFileIcon
+                  className={styles.tableCellIcon}
+                  fontSize="small"
+                />
+              </Tooltip>
+            )}
+            &nbsp;&nbsp;
+            {n.name}
+          </TableCell>
+        )}
+        {hideColList.indexOf('size') < 0 && (
+          <TableCell padding="none" className={`${styles.tableCell} sizeCell`}>
+            {n.size} KB
+          </TableCell>
+        )}
+        {hideColList.indexOf('dateAdded') < 0 && (
+          <TableCell
+            padding="none"
+            className={`${styles.tableCell} dateAddedCell`}
+          >
+            {n.dateAdded}
+          </TableCell>
+        )}
       </TableRow>
     );
   };

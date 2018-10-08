@@ -49,7 +49,7 @@ class Home extends Component {
     this.props.handleFetchDirList(
       {
         filePath: '/',
-        ignoreHidden: true
+        ignoreHidden: false
       },
       'mtp'
     );
@@ -62,11 +62,11 @@ class Home extends Component {
         <Grid container spacing={0}>
           <Grid item xs={6}>
             <ToolbarAreaPane showMenu={true} deviceType="local" />
-            <DirectoryLists deviceType="local" />
+            <DirectoryLists hideColList={[]} deviceType="local" />
           </Grid>
           <Grid item xs={6}>
             <ToolbarAreaPane showMenu={false} deviceType="mtp" />
-            <DirectoryLists deviceType="mtp" />
+            <DirectoryLists hideColList={['size']} deviceType="mtp" />
           </Grid>
         </Grid>
       </React.Fragment>

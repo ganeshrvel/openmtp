@@ -3,6 +3,7 @@
 import fs from 'fs';
 import Promise from 'bluebird';
 import path from 'path';
+import moment from 'moment';
 import { log } from '@Log';
 import { mtp } from '@Binaries';
 import childProcess from 'child_process';
@@ -59,15 +60,18 @@ export const asyncReadLocalDir = async ({ filePath, ignoreHidden }) => {
     if (!fs.existsSync(fullPath)) {
       continue;
     }
+    const stat = fs.statSync(fullPath);
     const isFolder = fs.lstatSync(fullPath).isDirectory();
     const extension = path.extname(fullPath);
-    const size = fs.statSync(fullPath).size;
+    const size = stat.size;
+    const dateTime = stat.atime;
     response.push({
       name: file,
       path: fullPath,
       extension: extension,
       size: size,
-      isFolder: isFolder
+      isFolder: isFolder,
+      dateAdded: moment(dateTime).format('YYYY-MM-DD HH:mm:ss')
     });
   }
   return { error, data: response };
@@ -90,7 +94,6 @@ const promisifiedExec = command => {
 };
 
 const fetchExtension = (fileName, isFolder) => {
-  console.log(fileName);
   if (isFolder) {
     return null;
   }
@@ -129,15 +132,19 @@ export const asyncReadMtpDir = async ({ filePath, ignoreHidden }) => {
     const fileName = linesList[mtpCmdChop.name];
     let fullPath = path.resolve(filePath, fileName);
     let isFolder = linesList[mtpCmdChop.type] === '3001';
+    let dateTime = `${linesList[mtpCmdChop.dateAdded]} ${
+      linesList[mtpCmdChop.timeAdded]
+    }`;
 
     response.push({
       name: fileName,
       path: fullPath,
       extension: fetchExtension(filePath, isFolder),
       size: null,
-      isFolder: isFolder
+      isFolder: isFolder,
+      dateAdded: moment(dateTime).format('YYYY-MM-DD HH:mm:ss')
     });
   }
-  console.log(response);
+
   return { error, data: response };
 };

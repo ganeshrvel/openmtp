@@ -47,7 +47,8 @@ class DirectoryListsTableHead extends React.Component {
       order,
       orderBy,
       numSelected,
-      rowCount
+      rowCount,
+      hideColList
     } = this.props;
 
     return (
@@ -61,7 +62,7 @@ class DirectoryListsTableHead extends React.Component {
             />
           </TableCell>
           {rows.map(row => {
-            return (
+            return hideColList.indexOf(row.id) < 0 ? (
               <TableCell
                 key={row.id}
                 numeric={row.numeric}
@@ -83,6 +84,8 @@ class DirectoryListsTableHead extends React.Component {
                   </TableSortLabel>
                 </Tooltip>
               </TableCell>
+            ) : (
+              <React.Fragment key={row.id} />
             );
           }, this)}
         </TableRow>
