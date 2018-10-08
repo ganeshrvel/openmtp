@@ -30,7 +30,8 @@ class Home extends Component {
     todo: make a const for default mtp filePath
     todo: show no data available error/message for mtp device
     todo: checkbox is selected for no data in the list
-    todo: handle sort logic separately.
+    todo: add menu btn fot mtp 
+    
     
     asyncReadLocalDir('filePath')
       .then(res => console.log(res))
