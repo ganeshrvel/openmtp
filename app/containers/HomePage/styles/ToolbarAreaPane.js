@@ -5,9 +5,7 @@ const { variables } = base();
 
 export const styles = theme => {
   return {
-    root: {
-      //flexGrow: 1
-    },
+    root: {},
     grow: {
       flexGrow: 1
     },
@@ -18,11 +16,7 @@ export const styles = theme => {
       width: `auto`,
       height: variables.sizes.toolbarHeight
     },
-    appBar: {
-      // width: 'unset',
-      paddingLeft: 11,
-      position: 'absolute'
-    },
+    appBar: {},
     navBtns: {
       height: 25,
       width: `auto`

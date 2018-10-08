@@ -3,33 +3,31 @@
 import React, { Component } from 'react';
 import { styles } from '../styles/SidebarAreaPaneLists';
 import { withStyles } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
 import FolderIcon from '@material-ui/icons/Folder';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { withReducer } from '../../../store/reducers/withReducer';
-import reducers from '../reducers';
-import {} from '../actions';
 
 class SidebarAreaPaneLists extends Component {
   constructor(props) {
     super(props);
-    this.sidebarBottom = this.props.sidebarFavouriteList.bottom;
-    this.sidebarTop = this.props.sidebarFavouriteList.top;
   }
 
   render() {
-    const { classes: styles } = this.props;
+    const { classes: styles, sidebarFavouriteList } = this.props;
+    const { top: sidebarTop, bottom: sidebarBottom } = sidebarFavouriteList;
 
     return (
-      <React.Fragment>
-        {this.sidebarTop.length > 1 && (
+      <div className={styles.listsWrapper}>
+        <Typography variant="caption" className={styles.listsCaption}>
+          Favourites
+        </Typography>
+        {sidebarTop.length > 1 && (
           <List component="nav" dense={true}>
-            {this.sidebarTop.map((item, index) => {
+            {sidebarTop.map((item, index) => {
               return (
                 <ListItem
                   key={index}
@@ -47,11 +45,11 @@ class SidebarAreaPaneLists extends Component {
           </List>
         )}
 
-        {this.sidebarBottom.length > 1 && (
+        {sidebarBottom.length > 1 && (
           <React.Fragment>
             <Divider />
-            <List component="nav" dense={true}>
-              {this.sidebarBottom.map((item, index) => {
+            <List component="nav" dense={true} className={styles.listsBottom}>
+              {sidebarBottom.map((item, index) => {
                 return (
                   <ListItem
                     key={index}
@@ -69,7 +67,7 @@ class SidebarAreaPaneLists extends Component {
             </List>
           </React.Fragment>
         )}
-      </React.Fragment>
+      </div>
     );
   }
 }

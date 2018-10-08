@@ -4,8 +4,8 @@ export const variables = args => {
   return {
     sizes: {
       toolbarHeight: 64,
-      sidebarAreaPaneMaxWidth: 220,
-      sidebarAreaPaneMinWidth: 220
+      sidebarAreaPaneWidth: 300,
+      sidebarAreaPaddingTop: 40
     },
     styles: {
       regularFontSize: 14,

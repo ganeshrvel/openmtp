@@ -5,8 +5,6 @@ const { variables } = base();
 
 export const styles = theme => {
   return {
-    root: {
-      paddingTop: 64
-    }
+    root: {}
   };
 };

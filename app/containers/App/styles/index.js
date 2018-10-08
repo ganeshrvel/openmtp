@@ -14,6 +14,7 @@ export const theme = args => {
       }
     },
     typography: {
+      useNextVariants: true,
       fontSize: variables.regularFontSize,
       fontFamily: [
         'Roboto',
