@@ -15,7 +15,6 @@ import { fetchDirList } from './actions';
 import { throwAlert } from '@Alerts';
 import {} from './selectors';
 import Grid from '@material-ui/core/Grid';
-import { asyncReadDir } from '../../api/sys';
 
 class Home extends Component {
   constructor(props) {
@@ -23,7 +22,13 @@ class Home extends Component {
   }
 
   componentWillMount() {
-    /* asyncReadDir('filePath')
+    /*
+    Todo: throw alerts for fetchDirList errors
+    todo: show no data available error/message for mtp device
+    todo: checkbox is selected for no data in the list
+    todo: handle sort logic separately.
+    
+    asyncReadDir('filePath')
       .then(res => console.log(res))
       .catch(e => {
         this.props.throwAlert(e.message);
