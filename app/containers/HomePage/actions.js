@@ -15,18 +15,20 @@ const actionTypesList = [
 
 export const actionTypes = prefixer(prefix, actionTypesList);
 
-export function setSortingDirLists(data) {
+export function setSortingDirLists(data, deviceType) {
   return {
     type: actionTypes.SET_SORTING_DIR_LISTS,
+    deviceType,
     payload: {
       ...data
     }
   };
 }
 
-export function setSelectedDirLists(data) {
+export function setSelectedDirLists(data, deviceType) {
   return {
     type: actionTypes.SET_SELECTED_DIR_LISTS,
+    deviceType,
     payload: {
       ...data
     }

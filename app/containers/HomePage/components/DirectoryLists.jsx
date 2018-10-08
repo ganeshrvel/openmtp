@@ -36,7 +36,6 @@ class DirectoryLists extends React.Component {
     const { selected } = queue;
 
     const emptyRows = nodes.length < 1;
-    console.log(selected);
     return (
       <div>
         <Paper elevation={0} square={true} className={styles.root}>
@@ -138,8 +137,9 @@ class DirectoryLists extends React.Component {
   };
 
   isSelected = path =>
-    this.props.directoryLists[this.props.deviceType].selected.indexOf(path) !==
-    -1;
+    this.props.directoryLists[this.props.deviceType].queue.selected.indexOf(
+      path
+    ) !== -1;
 
   stableSort = (array, cmp) => {
     const stabilizedThis = array.map((el, index) => [el, index]);
@@ -171,7 +171,7 @@ class DirectoryLists extends React.Component {
 const mapDispatchToProps = (dispatch, ownProps) =>
   bindActionCreators(
     {
-      handleRequestSort: (property, event, deviceType) => (_, getState) => {
+      handleRequestSort: (deviceType, property, event) => (_, getState) => {
         const orderBy = property;
         const {
           orderBy: _orderBy,
@@ -183,22 +183,26 @@ const mapDispatchToProps = (dispatch, ownProps) =>
           order = 'asc';
         }
 
-        dispatch(setSortingDirLists({ order, orderBy }));
+        dispatch(setSortingDirLists({ order, orderBy }, deviceType));
       },
 
-      handleSelectAllClick: (event, deviceType) => (_, getState) => {
+      handleSelectAllClick: (deviceType, event) => (_, getState) => {
+        console.log(deviceType);
         if (event.target.checked) {
           dispatch(
-            setSelectedDirLists({
-              selected: getState().Home.directoryLists[deviceType].nodes.map(
-                n => n.path
-              )
-            })
+            setSelectedDirLists(
+              {
+                selected: getState().Home.directoryLists[deviceType].nodes.map(
+                  n => n.path
+                )
+              },
+              deviceType
+            )
           );
           return;
         }
 
-        dispatch(setSelectedDirLists({ selected: [] }));
+        dispatch(setSelectedDirLists({ selected: [] }, deviceType));
       },
 
       handleClick: (path, deviceType, event) => (_, getState) => {
@@ -218,7 +222,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
             selected.slice(selectedIndex + 1)
           );
         }
-        dispatch(setSelectedDirLists({ selected: newSelected }));
+        dispatch(setSelectedDirLists({ selected: newSelected }, deviceType));
       }
     },
     dispatch

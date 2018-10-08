@@ -147,7 +147,10 @@ export default function Home(state = initialState, action) {
         ...setLoadedMetaData(state),
         directoryLists: {
           ...state.directoryLists,
-          ...payload
+          [deviceType]: {
+            ...state.directoryLists[deviceType],
+            ...payload
+          }
         }
       };
 
@@ -157,21 +160,26 @@ export default function Home(state = initialState, action) {
         ...setLoadedMetaData(state),
         directoryLists: {
           ...state.directoryLists,
-          queue: {
-            ...payload
+          [deviceType]: {
+            ...state.directoryLists[deviceType],
+            queue: {
+              selected: payload.selected
+            }
           }
         }
       };
 
     case actionTypes.FETCH_DIR_LIST:
+      console.log(payload);
       return {
         ...state,
         ...setLoadedMetaData(state),
         directoryLists: {
           ...state.directoryLists,
-          /*[deviceType]: {
-            ...payload
-          }*/
+          [deviceType]: {
+            ...state.directoryLists[deviceType],
+            nodes: [...payload.nodes]
+          }
         }
       };
 
