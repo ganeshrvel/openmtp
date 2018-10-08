@@ -26,15 +26,17 @@ class Home extends Component {
 
     /*
     Todo: throw alerts for fetchDirList errors
+    todo: make a const for mtp and local
+    todo: make a const for default mtp filePath
     todo: show no data available error/message for mtp device
     todo: checkbox is selected for no data in the list
     todo: handle sort logic separately.
     
-    asyncReadDir('filePath')
+    asyncReadLocalDir('filePath')
       .then(res => console.log(res))
       .catch(e => {
         this.props.throwAlert(e.message);
-        log.error(e, `Homepage asyncReadDir`);
+        log.error(e, `Homepage asyncReadLocalDir`);
       });*/
 
     this.props.handleFetchDirList(
@@ -46,7 +48,7 @@ class Home extends Component {
     );
     this.props.handleFetchDirList(
       {
-        filePath: defaultSelectedPath.path,
+        filePath: '/',
         ignoreHidden: true
       },
       'mtp'

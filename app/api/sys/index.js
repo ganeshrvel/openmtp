@@ -1,13 +1,17 @@
 'use strict';
 
-const fs = require('fs');
+import fs from 'fs';
 import Promise from 'bluebird';
 import path from 'path';
 import { log } from '@Log';
-const readdir = Promise.promisify(fs.readdir);
+import { mtp } from '@Binaries';
+import childProcess from 'child_process';
 import spawn from 'spawn-promise';
 
-export const asyncCmd = cmd => {
+const readdir = Promise.promisify(fs.readdir);
+const exec = Promise.promisify(childProcess.exec);
+
+export const promisifiedSpawn = cmd => {
   return spawn(...cmd)
     .then(res => {
       return {
@@ -23,7 +27,7 @@ export const asyncCmd = cmd => {
     });
 };
 
-export const asyncReadDir = async ({ filePath, ignoreHidden }) => {
+export const asyncReadLocalDir = async ({ filePath, ignoreHidden }) => {
   let response = [];
   const { error, data } = await readdir(filePath, 'utf8')
     .then(res => {
@@ -40,8 +44,8 @@ export const asyncReadDir = async ({ filePath, ignoreHidden }) => {
     });
 
   if (error) {
-    log.error(error, `asyncReadDir`);
-    return { error: error.message, data: null };
+    log.error(error, `asyncReadLocalDir`);
+    return { error: true, data: null };
   }
 
   let files = data;
@@ -66,5 +70,74 @@ export const asyncReadDir = async ({ filePath, ignoreHidden }) => {
       isFolder: isFolder
     });
   }
+  return { error, data: response };
+};
+
+const promisifiedExec = command => {
+  return exec(command)
+    .then(stdout => {
+      return {
+        data: stdout,
+        error: null
+      };
+    })
+    .catch(e => {
+      return {
+        data: null,
+        error: e
+      };
+    });
+};
+
+const fetchExtension = (fileName, isFolder) => {
+  console.log(fileName);
+  if (isFolder) {
+    return null;
+  }
+  return fileName.indexOf('.') === -1
+    ? null
+    : fileName.substring(fileName.lastIndexOf('.') + 1);
+};
+
+export const asyncReadMtpDir = async ({ filePath, ignoreHidden }) => {
+  const mtpCmdChop = {
+    type: 2,
+    dateAdded: 4,
+    timeAdded: 5,
+    name: 6
+  };
+  let response = [];
+
+  let { data, error } = await promisifiedExec(
+    `${mtp} "lsext ${filePath}" | tr -s " "`
+  );
+  if (error) {
+    log.error(error, `asyncReadLocalDir`);
+    return { error: error.message, data: null };
+  }
+
+  const lines = data.split(/(\r?\n)/g);
+  for (let i = 0; i < lines.length; i++) {
+    if (lines[i] === '\n' || lines[i] === '\r\n' || data[i] === '') {
+      continue;
+    }
+
+    let linesList = lines[i].split(' ');
+    if (typeof linesList[mtpCmdChop.name] === 'undefined') {
+      continue;
+    }
+    const fileName = linesList[mtpCmdChop.name];
+    let fullPath = path.resolve(filePath, fileName);
+    let isFolder = linesList[mtpCmdChop.type] === '3001';
+
+    response.push({
+      name: fileName,
+      path: fullPath,
+      extension: fetchExtension(filePath, isFolder),
+      size: null,
+      isFolder: isFolder
+    });
+  }
+  console.log(response);
   return { error, data: response };
 };

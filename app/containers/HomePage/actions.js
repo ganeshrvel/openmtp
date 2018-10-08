@@ -1,6 +1,6 @@
 'use strict';
 import prefixer from '../../utils/reducerPrefixer.js';
-import { asyncReadDir } from '../../api/sys';
+import { asyncReadLocalDir, asyncReadMtpDir } from '../../api/sys';
 import { log } from '@Log';
 import { throwAlert } from '../Alerts/actions';
 
@@ -36,24 +36,49 @@ export function setSelectedDirLists(data, deviceType) {
   };
 }
 
-export function fetchDirList({ ...args }, deviceType) {
-  return async dispatch => {
-    const { error, data } = await asyncReadDir({ ...args });
-
-    if (error) {
-      log.error(error, 'fetchDirList -> asyncReadDir');
-      dispatch(throwAlert({ message: `Unable fetch data from the source.` }));
-      return;
+function _fetchDirList(data, deviceType) {
+  return {
+    type: actionTypes.FETCH_DIR_LIST,
+    deviceType,
+    payload: {
+      nodes: data
     }
-
-    dispatch({
-      type: actionTypes.FETCH_DIR_LIST,
-      deviceType,
-      payload: {
-        nodes: data
-      }
-    });
   };
+}
+
+export function fetchDirList({ ...args }, deviceType) {
+  switch (deviceType) {
+    case 'local':
+    default:
+      return async dispatch => {
+        const { error, data } = await asyncReadLocalDir({ ...args });
+
+        if (error) {
+          log.error(error, 'fetchDirList -> asyncReadLocalDir');
+          dispatch(
+            throwAlert({ message: `Unable fetch data from the Local disk.` })
+          );
+          return;
+        }
+
+        dispatch(_fetchDirList(data, deviceType));
+      };
+
+    case 'mtp':
+      return async dispatch => {
+        const { error, data } = await asyncReadMtpDir({ ...args });
+
+        if (error) {
+          log.error(error, 'fetchDirList -> asyncReadMtpDir');
+          dispatch(
+            throwAlert({ message: `Unable fetch data from the MTP device.` })
+          );
+          return;
+        }
+
+        dispatch(_fetchDirList(data, deviceType));
+      };
+  }
 }
 
 export function reqLoadHome() {
