@@ -12,21 +12,9 @@ export const makeDefaultSelectedPath = createSelector(make, state => {
   return find(state.sidebarFavouriteList.top, { selected: true });
 });
 
-export const makeNodes = createSelector(
+export const makeDirectoryLists = createSelector(
   make,
-  state => state.directoryLists.nodes
-);
-export const makeOrder = createSelector(
-  make,
-  state => state.directoryLists.order
-);
-export const makeOrderBy = createSelector(
-  make,
-  state => state.directoryLists.orderBy
-);
-export const makeSelected = createSelector(
-  make,
-  state => state.directoryLists.queue.selected
+  state => state.directoryLists
 );
 
 export const makeIsLoading = createSelector(make, state => state.___isLoading);

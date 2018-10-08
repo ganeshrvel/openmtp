@@ -21,13 +21,7 @@ import { bindActionCreators } from 'redux';
 import { withReducer } from '../../../store/reducers/withReducer';
 import reducers from '../reducers';
 import { setSortingDirLists, setSelectedDirLists } from '../actions';
-import {
-  makeNodes,
-  makeOrder,
-  makeOrderBy,
-  makeSelected,
-  makeIsLoading
-} from '../selectors';
+import { makeDirectoryLists, makeIsLoading } from '../selectors';
 
 class DirectoryLists extends React.Component {
   constructor(props) {
@@ -35,11 +29,14 @@ class DirectoryLists extends React.Component {
   }
 
   render() {
-    const { classes: styles } = this.props;
-    const { nodes, order, orderBy } = this.props.directoryLists;
-    const { selected } = this.props.directoryLists;
-    const emptyRows = nodes.length < 1;
+    const { classes: styles, deviceType } = this.props;
+    const { nodes, order, orderBy, queue } = this.props.directoryLists[
+      deviceType
+    ];
+    const { selected } = queue;
 
+    const emptyRows = nodes.length < 1;
+    console.log(selected);
     return (
       <div>
         <Paper elevation={0} square={true} className={styles.root}>
@@ -49,8 +46,14 @@ class DirectoryLists extends React.Component {
                 numSelected={selected.length}
                 order={order}
                 orderBy={orderBy}
-                onSelectAllClick={this.props.handleSelectAllClick}
-                onRequestSort={this.props.handleRequestSort}
+                onSelectAllClick={this.props.handleSelectAllClick.bind(
+                  this,
+                  deviceType
+                )}
+                onRequestSort={this.props.handleRequestSort.bind(
+                  this,
+                  deviceType
+                )}
                 rowCount={nodes ? nodes.length : 0}
               />
               <TableBody>
@@ -74,7 +77,7 @@ class DirectoryLists extends React.Component {
   }
 
   TableRowsRender = (n, isSelected) => {
-    const { classes: styles } = this.props;
+    const { classes: styles, deviceType } = this.props;
     return (
       <TableRow
         role="checkbox"
@@ -92,7 +95,7 @@ class DirectoryLists extends React.Component {
         >
           <Checkbox
             checked={isSelected}
-            onClick={event => this.props.handleClick(n.path, event)}
+            onClick={event => this.props.handleClick(n.path, deviceType, event)}
           />
         </TableCell>
         <TableCell padding="default" className={`${styles.tableCell} nameCell`}>
@@ -134,7 +137,9 @@ class DirectoryLists extends React.Component {
     );
   };
 
-  isSelected = path => this.props.directoryLists.selected.indexOf(path) !== -1;
+  isSelected = path =>
+    this.props.directoryLists[this.props.deviceType].selected.indexOf(path) !==
+    -1;
 
   stableSort = (array, cmp) => {
     const stabilizedThis = array.map((el, index) => [el, index]);
@@ -166,12 +171,12 @@ class DirectoryLists extends React.Component {
 const mapDispatchToProps = (dispatch, ownProps) =>
   bindActionCreators(
     {
-      handleRequestSort: (property, event) => (_, getState) => {
+      handleRequestSort: (property, event, deviceType) => (_, getState) => {
         const orderBy = property;
         const {
           orderBy: _orderBy,
           order: _order
-        } = getState().Home.directoryLists;
+        } = getState().Home.directoryLists[deviceType];
         let order = 'desc';
 
         if (_orderBy === property && _order === 'desc') {
@@ -181,11 +186,13 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         dispatch(setSortingDirLists({ order, orderBy }));
       },
 
-      handleSelectAllClick: event => (_, getState) => {
+      handleSelectAllClick: (event, deviceType) => (_, getState) => {
         if (event.target.checked) {
           dispatch(
             setSelectedDirLists({
-              selected: getState().Home.directoryLists.nodes.map(n => n.path)
+              selected: getState().Home.directoryLists[deviceType].nodes.map(
+                n => n.path
+              )
             })
           );
           return;
@@ -194,8 +201,8 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         dispatch(setSelectedDirLists({ selected: [] }));
       },
 
-      handleClick: (path, event) => (_, getState) => {
-        const { selected } = getState().Home.directoryLists.queue;
+      handleClick: (path, deviceType, event) => (_, getState) => {
+        const { selected } = getState().Home.directoryLists[deviceType].queue;
         const selectedIndex = selected.indexOf(path);
         let newSelected = [];
 
@@ -219,12 +226,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
 
 const mapStateToProps = (state, props) => {
   return {
-    directoryLists: {
-      nodes: makeNodes(state),
-      order: makeOrder(state),
-      orderBy: makeOrderBy(state),
-      selected: makeSelected(state)
-    },
+    directoryLists: makeDirectoryLists(state),
     isLoading: makeIsLoading(state)
   };
 };

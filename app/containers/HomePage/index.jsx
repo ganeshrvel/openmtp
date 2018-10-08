@@ -30,7 +30,13 @@ class Home extends Component {
         log.error(e, `Homepage asyncReadDir`);
       });*/
 
-    this.props.handleFetchDirList({ filePath: '/', ignoreHidden: true });
+    this.props.handleFetchDirList(
+      {
+        filePath: '/',
+        ignoreHidden: true
+      },
+      'local'
+    );
   }
 
   render() {
@@ -39,7 +45,7 @@ class Home extends Component {
       <React.Fragment>
         <ToolbarAreaPane deviceType="local" />
         <div className={styles.root}>
-          <DirectoryLists />
+          <DirectoryLists deviceType="local" />
           {/* <Grid container spacing={0}>
             <Grid item xs={6}>
               <DirectoryLists />
@@ -60,8 +66,8 @@ const mapDispatchToProps = (dispatch, ownProps) =>
       throwAlert: (message, event) => (_, getState) => {
         dispatch(throwAlert({ message: message }));
       },
-      handleFetchDirList: ({ ...args }) => (_, getState) => {
-        dispatch(fetchDirList(args));
+      handleFetchDirList: ({ ...args }, deviceType) => (_, getState) => {
+        dispatch(fetchDirList(args, deviceType));
       }
     },
     dispatch

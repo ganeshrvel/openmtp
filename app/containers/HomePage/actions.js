@@ -33,7 +33,7 @@ export function setSelectedDirLists(data) {
   };
 }
 
-export function fetchDirList({ ...args }) {
+export function fetchDirList({ ...args }, deviceType) {
   return async dispatch => {
     const { error, data } = await asyncReadDir({ ...args });
 
@@ -44,6 +44,7 @@ export function fetchDirList({ ...args }) {
 
     dispatch({
       type: actionTypes.FETCH_DIR_LIST,
+      deviceType,
       payload: {
         nodes: data
       }

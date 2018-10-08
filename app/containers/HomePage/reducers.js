@@ -119,19 +119,27 @@ export const initialState = {
   },
 
   directoryLists: {
-    order: 'asc',
-    orderBy: 'path',
-    queue: {
-      selected: [],
-      excluded: [],
-      queueModeOn: true
+    local: {
+      order: 'asc',
+      orderBy: 'path',
+      queue: {
+        selected: []
+      },
+      nodes: []
     },
-    nodes: []
+    mtp: {
+      order: 'asc',
+      orderBy: 'path',
+      queue: {
+        selected: []
+      },
+      nodes: []
+    }
   }
 };
 
 export default function Home(state = initialState, action) {
-  let { type, payload } = action;
+  let { type, payload, deviceType = null } = action;
   switch (type) {
     case actionTypes.SET_SORTING_DIR_LISTS:
       return {
@@ -161,7 +169,9 @@ export default function Home(state = initialState, action) {
         ...setLoadedMetaData(state),
         directoryLists: {
           ...state.directoryLists,
-          ...payload
+          /*[deviceType]: {
+            ...payload
+          }*/
         }
       };
 
