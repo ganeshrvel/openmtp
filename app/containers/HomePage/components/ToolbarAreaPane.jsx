@@ -38,7 +38,12 @@ class ToolbarAreaPane extends React.Component {
   };
 
   render() {
-    const { classes: styles, toolbarList, sidebarFavouriteList } = this.props;
+    const {
+      classes: styles,
+      toolbarList,
+      sidebarFavouriteList,
+      deviceType
+    } = this.props;
 
     return (
       <div className={styles.root}>
@@ -64,8 +69,8 @@ class ToolbarAreaPane extends React.Component {
               <MenuIcon />
             </IconButton>
             <div className={styles.toolbarInnerWrapper}>
-              {Object.keys(toolbarList).map(a => {
-                const item = toolbarList[a];
+              {Object.keys(toolbarList[deviceType]).map(a => {
+                const item = toolbarList[deviceType][a];
                 return (
                   <Tooltip key={a} title={item.label}>
                     <div>

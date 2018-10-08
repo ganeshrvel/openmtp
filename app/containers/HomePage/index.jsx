@@ -37,7 +37,7 @@ class Home extends Component {
     const { classes: styles } = this.props;
     return (
       <React.Fragment>
-        <ToolbarAreaPane />
+        <ToolbarAreaPane deviceType="local" />
         <div className={styles.root}>
           <DirectoryLists />
           {/* <Grid container spacing={0}>

@@ -12,38 +12,6 @@ export const initialState = {
   ___error: null,
   /* </Meta Data> */
 
-  toolbarList: {
-    up: {
-      enabled: true,
-      label: 'Folder Up',
-      imgSrc: 'Toolbar/up.svg',
-      invert: false
-    },
-    refresh: {
-      enabled: true,
-      label: 'Refresh',
-      imgSrc: 'Toolbar/refresh.svg',
-      invert: false
-    },
-    rename: {
-      enabled: true,
-      label: 'Rename',
-      imgSrc: 'Toolbar/rename.svg',
-      invert: false
-    },
-    delete: {
-      enabled: true,
-      label: 'Delete',
-      imgSrc: 'Toolbar/delete.svg'
-    },
-    info: {
-      enabled: true,
-      label: 'Information',
-      imgSrc: 'Toolbar/info.svg',
-      invert: false
-    }
-  },
-
   sidebarFavouriteList: {
     top: [
       {
@@ -83,6 +51,71 @@ export const initialState = {
       }
     ],
     bottom: []
+  },
+
+  toolbarList: {
+    local: {
+      up: {
+        enabled: true,
+        label: 'Folder Up',
+        imgSrc: 'Toolbar/up.svg',
+        invert: false
+      },
+      refresh: {
+        enabled: true,
+        label: 'Refresh',
+        imgSrc: 'Toolbar/refresh.svg',
+        invert: false
+      },
+      rename: {
+        enabled: true,
+        label: 'Rename',
+        imgSrc: 'Toolbar/rename.svg',
+        invert: false
+      },
+      delete: {
+        enabled: true,
+        label: 'Delete',
+        imgSrc: 'Toolbar/delete.svg'
+      },
+      info: {
+        enabled: true,
+        label: 'Information',
+        imgSrc: 'Toolbar/info.svg',
+        invert: false
+      }
+    },
+    mtp: {
+      up: {
+        enabled: true,
+        label: 'Folder Up',
+        imgSrc: 'Toolbar/up.svg',
+        invert: false
+      },
+      refresh: {
+        enabled: true,
+        label: 'Refresh',
+        imgSrc: 'Toolbar/refresh.svg',
+        invert: false
+      },
+      rename: {
+        enabled: true,
+        label: 'Rename',
+        imgSrc: 'Toolbar/rename.svg',
+        invert: false
+      },
+      delete: {
+        enabled: true,
+        label: 'Delete',
+        imgSrc: 'Toolbar/delete.svg'
+      },
+      info: {
+        enabled: true,
+        label: 'Information',
+        imgSrc: 'Toolbar/info.svg',
+        invert: false
+      }
+    }
   },
 
   directoryLists: {

@@ -28,12 +28,5 @@ export const makeSelected = createSelector(
   make,
   state => state.directoryLists.queue.selected
 );
-export const makeExcluded = createSelector(
-  make,
-  state => state.directoryLists.queue.excluded
-);
-export const makeQueueModeOn = createSelector(
-  make,
-  state => state.directoryLists.queue.queueModeOn
-);
+
 export const makeIsLoading = createSelector(make, state => state.___isLoading);

@@ -26,8 +26,6 @@ import {
   makeOrder,
   makeOrderBy,
   makeSelected,
-  makeExcluded,
-  makeQueueModeOn,
   makeIsLoading
 } from '../selectors';
 
@@ -225,9 +223,7 @@ const mapStateToProps = (state, props) => {
       nodes: makeNodes(state),
       order: makeOrder(state),
       orderBy: makeOrderBy(state),
-      selected: makeSelected(state),
-      excluded: makeExcluded(state),
-      queueModeOn: makeQueueModeOn(state)
+      selected: makeSelected(state)
     },
     isLoading: makeIsLoading(state)
   };
