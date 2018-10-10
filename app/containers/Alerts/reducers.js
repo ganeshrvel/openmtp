@@ -3,7 +3,7 @@ import { actionTypes } from './actions';
 
 export const initialState = {
   message: null,
-  autoHideDuration: 6000,
+  autoHideDuration: 60000,
   variant: `error`
 };
 

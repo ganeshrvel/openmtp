@@ -1,8 +1,8 @@
 import React from 'react';
+import { styles } from './styles';
 import Snackbar from '@material-ui/core/Snackbar';
 import { withStyles } from '@material-ui/core/styles';
 import SnackbarThemeWrapper from './components/SnackbarThemeWrapper';
-import { styles } from './styles';
 
 class Snackbars extends React.Component {
   constructor(props) {
@@ -34,7 +34,7 @@ class Snackbars extends React.Component {
       classes: styles,
       message,
       variant,
-      autoHideDuration = 6000
+      autoHideDuration
     } = this.props;
 
     return (

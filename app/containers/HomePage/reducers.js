@@ -68,22 +68,10 @@ export const initialState = {
         imgSrc: 'Toolbar/refresh.svg',
         invert: false
       },
-      rename: {
-        enabled: true,
-        label: 'Rename',
-        imgSrc: 'Toolbar/rename.svg',
-        invert: false
-      },
       delete: {
         enabled: true,
         label: 'Delete',
         imgSrc: 'Toolbar/delete.svg'
-      },
-      info: {
-        enabled: true,
-        label: 'Information',
-        imgSrc: 'Toolbar/info.svg',
-        invert: false
       }
     },
     mtp: {
@@ -99,22 +87,10 @@ export const initialState = {
         imgSrc: 'Toolbar/refresh.svg',
         invert: false
       },
-      rename: {
-        enabled: true,
-        label: 'Rename',
-        imgSrc: 'Toolbar/rename.svg',
-        invert: false
-      },
       delete: {
         enabled: true,
         label: 'Delete',
         imgSrc: 'Toolbar/delete.svg'
-      },
-      info: {
-        enabled: true,
-        label: 'Information',
-        imgSrc: 'Toolbar/info.svg',
-        invert: false
       }
     }
   },

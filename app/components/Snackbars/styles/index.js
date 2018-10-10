@@ -9,6 +9,7 @@ export const styles = theme => ({
   },
   root: {
     top: 10,
-    right: 15
+    right: 15,
+    left: `unset`
   }
 });

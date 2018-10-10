@@ -11,9 +11,7 @@ import { withReducer } from '../../store/reducers/withReducer';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import reducers from './reducers';
-import { fetchDirList } from './actions';
 import { throwAlert } from '@Alerts';
-import { makeSelectedPath } from './selectors';
 import Grid from '@material-ui/core/Grid';
 import { deviceType } from '../../constants';
 
@@ -24,13 +22,10 @@ class Home extends Component {
 
   componentWillMount() {
     /*
-    todo: make a const for mtp and local
-    todo: make a const for default mtp filePath
     todo: show no data available error/message in table for mtp device
     todo: checkbox is selected for no data in the list
     todo: add menu btn fot mtp
     todo: binary for production
-    todo: mtp and local hidden state values
     todo: Side bar menu sdcard
    */
   }

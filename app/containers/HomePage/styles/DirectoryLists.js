@@ -15,7 +15,8 @@ export const styles = theme => ({
     height: `calc(100vh - 116px)`,
     overflowY: 'auto',
     overflowX: 'auto',
-    borderBottom: variables.styles.borderThinDividerColor
+    borderBottom: variables.styles.borderThinDividerColor,
+    borderLeft: variables.styles.borderThinDividerColor,
   },
   emptyTableRowWrapper: {
     height: `calc(100vh - 175px)`

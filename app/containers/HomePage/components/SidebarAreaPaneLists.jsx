@@ -16,8 +16,13 @@ class SidebarAreaPaneLists extends Component {
     super(props);
   }
 
+  _fetchDirList({ ...args }) {
+    const { onClickHandler } = this.props;
+    onClickHandler({ ...args });
+  }
+
   render() {
-    const { classes: styles, sidebarFavouriteList } = this.props;
+    const { classes: styles, sidebarFavouriteList, deviceType } = this.props;
     const { top: sidebarTop, bottom: sidebarBottom } = sidebarFavouriteList;
 
     return (
@@ -34,6 +39,13 @@ class SidebarAreaPaneLists extends Component {
                   button
                   selected={item.selected}
                   disabled={!item.enabled}
+                  onClick={e =>
+                    this._fetchDirList({
+                      path: item.path,
+                      deviceType: deviceType,
+                      isSidemenu: true
+                    })
+                  }
                 >
                   <ListItemIcon>
                     {item.icon === 'folder' && <FolderIcon />}
@@ -56,6 +68,13 @@ class SidebarAreaPaneLists extends Component {
                     button
                     selected={item.selected}
                     disabled={!item.enabled}
+                    onClick={e =>
+                      this._fetchDirList({
+                        path: item.path,
+                        deviceType: deviceType,
+                        isSidemenu: true
+                      })
+                    }
                   >
                     <ListItemIcon>
                       {item.icon === 'folder' && <FolderIcon />}

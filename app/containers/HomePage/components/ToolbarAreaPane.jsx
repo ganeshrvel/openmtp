@@ -17,12 +17,14 @@ import { withReducer } from '../../../store/reducers/withReducer';
 import SidebarAreaPaneLists from './SidebarAreaPaneLists';
 import reducers from '../reducers';
 import {} from '../actions';
+import { fetchDirList } from '../actions';
 import {
   makeIsLoading,
   makeSidebarFavouriteList,
   makeToolbarList
 } from '../selectors';
-
+import { makeSelectedPath } from '../selectors';
+import { makeToggleHiddenFiles } from '../../Settings/selectors';
 class ToolbarAreaPane extends React.Component {
   constructor(props) {
     super(props);
@@ -31,10 +33,44 @@ class ToolbarAreaPane extends React.Component {
     };
   }
 
-  toggleDrawer = status => () => {
+  handleToggleDrawer = status => () => {
     this.setState({
       toggleDrawer: status
     });
+  };
+
+  handleToolbarAction = itemType => {
+    const { selectedPath, deviceType } = this.props;
+    let path = '/';
+    switch (itemType) {
+      case 'up':
+        path =
+          selectedPath[deviceType].replace(/\/$/, '').replace(/\/[^/]+$/, '') ||
+          '/';
+        this._fetchDirList({ path, deviceType });
+        break;
+      case 'refresh':
+        path = selectedPath[deviceType];
+        this._fetchDirList({ path, deviceType });
+        break;
+      default:
+        break;
+    }
+  };
+
+  _fetchDirList = ({ path, deviceType, isSidemenu = false }) => {
+    const { handleFetchDirList, toggleHiddenFiles } = this.props;
+
+    handleFetchDirList(
+      {
+        filePath: path,
+        ignoreHidden: toggleHiddenFiles[deviceType]
+      },
+      deviceType
+    );
+    if (isSidemenu) {
+      this.handleToggleDrawer(false)();
+    }
   };
 
   render() {
@@ -45,20 +81,24 @@ class ToolbarAreaPane extends React.Component {
       deviceType,
       showMenu
     } = this.props;
-    
+
     return (
       <div className={styles.root}>
         <Drawer
           open={this.state.toggleDrawer}
-          onClose={this.toggleDrawer(false)}
+          onClose={this.handleToggleDrawer(false)}
         >
           <div
             tabIndex={0}
             role="button"
-            onClick={this.toggleDrawer(false)}
-            onKeyDown={this.toggleDrawer(false)}
+            onClick={this.handleToggleDrawer(false)}
+            onKeyDown={this.handleToggleDrawer(false)}
           />
-          <SidebarAreaPaneLists sidebarFavouriteList={sidebarFavouriteList} />
+          <SidebarAreaPaneLists
+            onClickHandler={this._fetchDirList}
+            sidebarFavouriteList={sidebarFavouriteList}
+            deviceType={deviceType}
+          />
         </Drawer>
         <AppBar position="static" elevation={0} className={styles.appBar}>
           <Toolbar className={styles.toolbar} disableGutters={true}>
@@ -66,7 +106,7 @@ class ToolbarAreaPane extends React.Component {
               <IconButton
                 color="inherit"
                 aria-label="Open drawer"
-                onClick={this.toggleDrawer(true)}
+                onClick={this.handleToggleDrawer(true)}
               >
                 <MenuIcon />
               </IconButton>
@@ -81,6 +121,7 @@ class ToolbarAreaPane extends React.Component {
                       <IconButton
                         aria-label={item.label}
                         disabled={!item.enabled}
+                        onClick={events => this.handleToolbarAction(a)}
                         className={classNames({
                           [styles.invertedNavBtns]: item.invert
                         })}
@@ -102,13 +143,22 @@ class ToolbarAreaPane extends React.Component {
   }
 }
 const mapDispatchToProps = (dispatch, ownProps) =>
-  bindActionCreators({}, dispatch);
+  bindActionCreators(
+    {
+      handleFetchDirList: ({ ...args }, deviceType) => (_, getState) => {
+        dispatch(fetchDirList(args, deviceType));
+      }
+    },
+    dispatch
+  );
 
 const mapStateToProps = (state, props) => {
   return {
     sidebarFavouriteList: makeSidebarFavouriteList(state),
     toolbarList: makeToolbarList(state),
-    isLoading: makeIsLoading(state)
+    isLoading: makeIsLoading(state),
+    selectedPath: makeSelectedPath(state),
+    toggleHiddenFiles: makeToggleHiddenFiles(state)
   };
 };
 

@@ -71,6 +71,7 @@ export function fetchDirList({ ...args }, deviceType) {
         }
 
         dispatch(_fetchDirList(data, deviceType));
+        dispatch(setSelectedPath(args.filePath, deviceType));
       };
 
     case _deviceType.mtp:
@@ -89,6 +90,7 @@ export function fetchDirList({ ...args }, deviceType) {
         }
 
         dispatch(_fetchDirList(data, deviceType));
+        dispatch(setSelectedPath(args.filePath, deviceType));
       };
   }
 }

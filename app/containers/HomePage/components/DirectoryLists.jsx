@@ -23,7 +23,6 @@ import reducers from '../reducers';
 import {
   setSortingDirLists,
   setSelectedDirLists,
-  setSelectedPath,
   fetchDirList
 } from '../actions';
 import {
@@ -31,7 +30,7 @@ import {
   makeIsLoading,
   makeSelectedPath
 } from '../selectors';
-//import { makeToggleHiddenFiles } from '../../Settings/selectors';
+import { makeToggleHiddenFiles } from '../../Settings/selectors';
 
 class DirectoryLists extends React.Component {
   constructor(props) {
@@ -39,36 +38,32 @@ class DirectoryLists extends React.Component {
   }
 
   componentWillMount() {
-    const { selectedPath, deviceType, toggleHiddenFiles } = this.props;
+    const { selectedPath, deviceType } = this.props;
 
     this._fetchDirList({
       path: selectedPath[deviceType],
-      deviceType: deviceType,
-      ignoreHidden: true //toggleHiddenFiles[deviceType]
+      deviceType: deviceType
     });
   }
 
-  _handleDoubleClick({ path, deviceType, isFolder }) {
+  handleDoubleClick({ path, deviceType, isFolder }) {
     if (!isFolder) {
       return null;
     }
-    const { handleDoubleClick } = this.props;
 
-    handleDoubleClick(path, deviceType);
     this._fetchDirList({
       path: path,
-      deviceType: deviceType,
-      ignoreHidden: true
+      deviceType: deviceType
     });
   }
 
-  _fetchDirList({ path, deviceType, ignoreHidden = true }) {
-    const { handleFetchDirList } = this.props;
-
+  _fetchDirList({ path, deviceType }) {
+    const { handleFetchDirList, toggleHiddenFiles } = this.props;
+    
     handleFetchDirList(
       {
         filePath: path,
-        ignoreHidden: ignoreHidden
+        ignoreHidden: toggleHiddenFiles[deviceType]
       },
       deviceType
     );
@@ -135,7 +130,7 @@ class DirectoryLists extends React.Component {
           [styles.tableRowSelected]: isSelected
         })}
         onDoubleClick={event =>
-          this._handleDoubleClick({
+          this.handleDoubleClick({
             path: n.path,
             deviceType: deviceType,
             isFolder: n.isFolder,
@@ -268,10 +263,6 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         dispatch(setSelectedDirLists({ selected: [] }, deviceType));
       },
 
-      handleDoubleClick: (path, deviceType, event) => (_, getState) => {
-        dispatch(setSelectedPath(path, deviceType));
-      },
-
       handleClick: (path, deviceType, event) => (_, getState) => {
         const { selected } = getState().Home.directoryLists[deviceType].queue;
         const selectedIndex = selected.indexOf(path);
@@ -291,6 +282,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         }
         dispatch(setSelectedDirLists({ selected: newSelected }, deviceType));
       },
+
       handleFetchDirList: ({ ...args }, deviceType) => (_, getState) => {
         dispatch(fetchDirList(args, deviceType));
       }
@@ -302,8 +294,8 @@ const mapStateToProps = (state, props) => {
   return {
     selectedPath: makeSelectedPath(state),
     directoryLists: makeDirectoryLists(state),
-    isLoading: makeIsLoading(state)
-    // toggleHiddenFiles: makeToggleHiddenFiles(state)
+    isLoading: makeIsLoading(state),
+    toggleHiddenFiles: makeToggleHiddenFiles(state)
   };
 };
 
