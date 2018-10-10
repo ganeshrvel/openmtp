@@ -3,7 +3,8 @@ import prefixer from '../../utils/reducerPrefixer.js';
 import { asyncReadLocalDir, asyncReadMtpDir } from '../../api/sys';
 import { log } from '@Log';
 import { throwAlert } from '../Alerts/actions';
-import { deviceType as _deviceType } from '../../constants';
+import { deviceTypeConst } from '../../constants';
+import processMtpBuffer from '../../utils/processMtpBuffer';
 
 const prefix = '@@Home';
 const actionTypesList = [
@@ -13,7 +14,10 @@ const actionTypesList = [
   'SET_SELECTED_PATH',
   'SET_SORTING_DIR_LISTS',
   'SET_SELECTED_DIR_LISTS',
-  'FETCH_DIR_LIST'
+  'FETCH_DIR_LIST',
+  'SET_MTP_ERRORS',
+  'CLEAR_MTP_ERRORS',
+  'SET_MTP_STATUS'
 ];
 
 export const actionTypes = prefixer(prefix, actionTypesList);
@@ -45,6 +49,7 @@ export function setSelectedPath(path, deviceType) {
     payload: path
   };
 }
+
 function _fetchDirList(data, deviceType) {
   return {
     type: actionTypes.FETCH_DIR_LIST,
@@ -55,45 +60,70 @@ function _fetchDirList(data, deviceType) {
   };
 }
 
+export function setMtpStatus(data) {
+  return {
+    type: actionTypes.SET_MTP_STATUS,
+    payload: data
+  };
+}
+
 export function fetchDirList({ ...args }, deviceType) {
-  switch (deviceType) {
-    case _deviceType.local:
-    default:
-      return async dispatch => {
-        const { error, data } = await asyncReadLocalDir({ ...args });
+  try {
+    switch (deviceType) {
+      case deviceTypeConst.local:
+      default:
+        return async dispatch => {
+          const { error, data } = await asyncReadLocalDir({ ...args });
 
-        if (error) {
-          log.error(error, 'fetchDirList -> asyncReadLocalDir');
-          dispatch(
-            throwAlert({ message: `Unable fetch data from the Local disk.` })
-          );
-          return;
-        }
+          if (error) {
+            log.error(error, 'fetchDirList -> asyncReadLocalDir');
+            dispatch(
+              throwAlert({ message: `Unable fetch data from the Local disk.` })
+            );
+            return;
+          }
 
-        dispatch(_fetchDirList(data, deviceType));
-        dispatch(setSelectedPath(args.filePath, deviceType));
-        dispatch(setSelectedDirLists({ selected: [] }, deviceType));
-      };
+          dispatch(_fetchDirList(data, deviceType));
+          dispatch(setSelectedPath(args.filePath, deviceType));
+          dispatch(setSelectedDirLists({ selected: [] }, deviceType));
+        };
 
-    case _deviceType.mtp:
-      return async dispatch => {
-        const { error, stderr, data } = await asyncReadMtpDir({ ...args });
-        if (stderr) {
-          log.error(stderr, 'stderr -> fetchDirList -> asyncReadMtpDir');
-          dispatch(throwAlert({ message: stderr }));
-          return;
-        } else if (error) {
-          log.error(error, 'error -> fetchDirList -> asyncReadMtpDir');
-          dispatch(
-            throwAlert({ message: `Unable fetch data from the MTP device.` })
-          );
-          return;
-        }
+      case deviceTypeConst.mtp:
+        return async dispatch => {
+          const { error, stderr, data } = await asyncReadMtpDir({ ...args });
+          const {
+            status: mtpStatus,
+            error: mtpError,
+            throwAlert: mtpThrowAlert
+          } = processMtpBuffer({ error, stderr });
 
-        dispatch(_fetchDirList(data, deviceType));
-        dispatch(setSelectedPath(args.filePath, deviceType));
-        dispatch(setSelectedDirLists({ selected: [] }, deviceType));
-      };
+          dispatch(setMtpStatus(mtpStatus));
+          if (!mtpStatus) {
+            dispatch(_fetchDirList([], deviceType));
+            dispatch(setSelectedDirLists({ selected: [] }, deviceType));
+          }
+
+          if (error || stderr) {
+            if (mtpError) {
+              log.error(
+                mtpError,
+                'mtpStderr -> fetchDirList -> asyncReadMtpDir'
+              );
+              if (mtpThrowAlert) {
+                dispatch(throwAlert({ message: mtpError }));
+              }
+            }
+
+            return;
+          }
+
+          dispatch(_fetchDirList(data, deviceType));
+          dispatch(setSelectedPath(args.filePath, deviceType));
+          dispatch(setSelectedDirLists({ selected: [] }, deviceType));
+        };
+    }
+  } catch (e) {
+    log.error(e, 'fetchDirList');
   }
 }
 

@@ -51,7 +51,7 @@ export const asyncReadLocalDir = async ({ filePath, ignoreHidden }) => {
   }
 
   let files = data;
-  
+
   files = data.filter(junk.not);
   if (ignoreHidden) {
     files = data.filter(item => !/(^|\/)\.[^\/\.]/g.test(item));
@@ -144,20 +144,26 @@ export const asyncReadMtpDir = async ({ filePath, ignoreHidden }) => {
     return { error: filePropsError, stderr: filePropsStderr, data: null };
   }
 
-  const fileList = fileListData.split(/(\r?\n)/g).map(a => {
-    return a.replace(/(^|\.\s+)\d+\s+/, '');
+  let fileList = fileListData.split(/(\r?\n)/g);
+  let fileProps = filePropsData.split(/(\r?\n)/g);
+
+  fileList = fileList
+    .filter(a => {
+      return !(a === '\n' || a === '\r\n' || a === '');
+    })
+    .map(a => {
+      return a.replace(/(^|\.\s+)\d+\s+/, '');
+    });
+
+  fileProps = fileProps.filter(a => {
+    return !(a === '\n' || a === '\r\n' || a === '');
   });
-  const fileProps = filePropsData.split(/(\r?\n)/g);
+
+  if (fileList.length > fileProps.length) {
+    fileList.shift();
+  }
 
   for (let i = 0; i < fileProps.length; i++) {
-    if (
-      fileProps[i] === '\n' ||
-      fileProps[i] === '\r\n' ||
-      filePropsData[i] === ''
-    ) {
-      continue;
-    }
-
     let filePropsList = fileProps[i].split(' ');
     if (typeof filePropsList[mtpCmdChop.name] === 'undefined') {
       continue;

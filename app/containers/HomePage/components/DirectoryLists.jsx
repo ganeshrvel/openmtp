@@ -8,6 +8,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableFooter from '@material-ui/core/TableFooter';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
 import Checkbox from '@material-ui/core/Checkbox';
 import Tooltip from '@material-ui/core/Tooltip';
 import FolderIcon from '@material-ui/icons/Folder';
@@ -28,9 +29,11 @@ import {
 import {
   makeDirectoryLists,
   makeIsLoading,
-  makeSelectedPath
+  makeSelectedPath,
+  makeMtpDevice
 } from '../selectors';
 import { makeToggleHiddenFiles } from '../../Settings/selectors';
+import { deviceTypeConst } from '../../../constants';
 
 class DirectoryLists extends React.Component {
   constructor(props) {
@@ -75,8 +78,9 @@ class DirectoryLists extends React.Component {
       deviceType
     ];
     const { selected } = queue;
-
     const emptyRows = nodes.length < 1;
+    const isMtp = deviceType === deviceTypeConst.mtp;
+
     return (
       <div>
         <Paper elevation={0} square={true} className={styles.root}>
@@ -98,16 +102,13 @@ class DirectoryLists extends React.Component {
                 hideColList={hideColList}
               />
               <TableBody>
-                {this.stableSort(nodes, this.getSorting(order, orderBy)).map(
-                  n => {
-                    return this.TableRowsRender(n, this.isSelected(n.path));
-                  }
-                )}
-                {emptyRows && (
-                  <TableRow className={styles.emptyTableRowWrapper}>
-                    <TableCell colSpan={6} className={styles.tableCell} />
-                  </TableRow>
-                )}
+                {emptyRows
+                  ? this.EmptyRowRender(isMtp)
+                  : this.stableSort(nodes, this.getSorting(order, orderBy)).map(
+                      n => {
+                        return this.TableRowsRender(n, this.isSelected(n.path));
+                      }
+                    )}
               </TableBody>
             </Table>
           </div>
@@ -117,10 +118,51 @@ class DirectoryLists extends React.Component {
     );
   }
 
+  EmptyRowRender = isMtp => {
+    const { classes: styles, mtpDevice } = this.props;
+    if (isMtp && !mtpDevice.isAvailable) {
+      return (
+        <TableRow className={styles.emptyTableRowWrapper}>
+          <TableCell colSpan={6} className={styles.tableCell}>
+            <Paper elevation={0}>
+              <Typography variant="subheading">
+                Android device is not connected.
+              </Typography>
+              <ul>
+                <li>
+                  Use the USB cable that came with your Android device and
+                  connect it to your Mac.
+                </li>
+                <li>Unlock your Android device.</li>
+                <li>With a USB cable, connect your device to your computer.</li>
+                <li>
+                  On your device, tap the "Charging this device via USB"
+                  notification.
+                </li>
+                <li>Under "Use USB for" select File Transfer.</li>
+                <li>Click Reload.</li>
+                <li>
+                  Reconnect the cable and redo all the steps if you keep seeing
+                  this message.
+                </li>
+              </ul>
+            </Paper>
+          </TableCell>
+        </TableRow>
+      );
+    }
+    return (
+      <TableRow className={styles.emptyTableRowWrapper}>
+        <TableCell colSpan={6} className={styles.tableCell} />
+      </TableRow>
+    );
+  };
+
   TableRowsRender = (n, isSelected) => {
     const { classes: styles, deviceType, hideColList } = this.props;
     return (
       <TableRow
+        hover={true}
         role="checkbox"
         aria-checked={isSelected}
         tabIndex={-1}
@@ -295,6 +337,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
 const mapStateToProps = (state, props) => {
   return {
     selectedPath: makeSelectedPath(state),
+    mtpDevice: makeMtpDevice(state),
     directoryLists: makeDirectoryLists(state),
     isLoading: makeIsLoading(state),
     toggleHiddenFiles: makeToggleHiddenFiles(state)

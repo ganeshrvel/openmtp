@@ -35,19 +35,19 @@ class SidebarAreaPaneLists extends Component {
         <Typography variant="caption" className={styles.listsCaption}>
           Favourites
         </Typography>
-        {sidebarTop.length > 1 && this.RenderLists(sidebarTop)}
+        {sidebarTop.length > 1 && this.ListsRender(sidebarTop)}
 
         {sidebarBottom.length > 1 && (
           <React.Fragment>
             <Divider />
-            {this.RenderLists(sidebarBottom)}
+            {this.ListsRender(sidebarBottom)}
           </React.Fragment>
         )}
       </div>
     );
   }
 
-  RenderLists = listData => {
+  ListsRender = listData => {
     const { classes: styles, deviceType, selectedPath } = this.props;
     return (
       <List component="nav" dense={true} className={styles.listsBottom}>

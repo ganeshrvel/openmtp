@@ -13,7 +13,7 @@ import { bindActionCreators } from 'redux';
 import reducers from './reducers';
 import { throwAlert } from '@Alerts';
 import Grid from '@material-ui/core/Grid';
-import { deviceType } from '../../constants';
+import { deviceTypeConst } from '../../constants';
 
 class Home extends Component {
   constructor(props) {
@@ -22,7 +22,6 @@ class Home extends Component {
 
   componentWillMount() {
     /*
-    todo: show no data available error/message in table for mtp device
     todo: add menu btn fot mtp
     todo: binary for production
     todo: Side bar menu sdcard
@@ -35,14 +34,14 @@ class Home extends Component {
       <React.Fragment>
         <Grid container spacing={0}>
           <Grid item xs={6}>
-            <ToolbarAreaPane showMenu={true} deviceType={deviceType.local} />
-            <DirectoryLists hideColList={[]} deviceType={deviceType.local} />
+            <ToolbarAreaPane showMenu={true} deviceType={deviceTypeConst.local} />
+            <DirectoryLists hideColList={[]} deviceType={deviceTypeConst.local} />
           </Grid>
           <Grid item xs={6}>
-            <ToolbarAreaPane showMenu={false} deviceType={deviceType.mtp} />
+            <ToolbarAreaPane showMenu={false} deviceType={deviceTypeConst.mtp} />
             <DirectoryLists
               hideColList={['size']}
-              deviceType={deviceType.mtp}
+              deviceType={deviceTypeConst.mtp}
             />
           </Grid>
         </Grid>

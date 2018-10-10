@@ -1,3 +1,3 @@
 'use strict';
 
-export const deviceType = { mtp: 'mtp', local: 'local' };
+export const deviceTypeConst = { mtp: 'mtp', local: 'local' };

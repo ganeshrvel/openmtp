@@ -2,7 +2,7 @@
 
 import { actionTypes } from './actions';
 import { PATHS } from '../../utils/paths';
-import { deviceType } from '../../constants';
+import { deviceTypeConst } from '../../constants';
 import path from 'path';
 
 export const initialState = {
@@ -86,7 +86,7 @@ export const initialState = {
   },
 
   directoryLists: {
-    [deviceType.local]: {
+    [deviceTypeConst.local]: {
       order: 'asc',
       orderBy: 'path',
       queue: {
@@ -94,7 +94,7 @@ export const initialState = {
       },
       nodes: []
     },
-    [deviceType.mtp]: {
+    [deviceTypeConst.mtp]: {
       order: 'asc',
       orderBy: 'path',
       queue: {
@@ -105,8 +105,12 @@ export const initialState = {
   },
 
   selectedPath: {
-    [deviceType.local]: PATHS.homeDir,
-    [deviceType.mtp]: '/'
+    [deviceTypeConst.local]: PATHS.homeDir,
+    [deviceTypeConst.mtp]: '/'
+  },
+
+  mtpDevice: {
+    isAvailable: false
   }
 };
 
@@ -148,6 +152,16 @@ export default function Home(state = initialState, action) {
         selectedPath: {
           ...state.selectedPath,
           [deviceType]: payload
+        }
+      };
+
+    case actionTypes.SET_MTP_STATUS:
+      return {
+        ...state,
+        ...setLoadedMetaData(state),
+        mtpDevice: {
+          ...state.mtpDevice,
+          isAvailable: payload
         }
       };
 
