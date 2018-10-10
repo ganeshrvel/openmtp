@@ -23,7 +23,6 @@ class Home extends Component {
   componentWillMount() {
     /*
     todo: show no data available error/message in table for mtp device
-    todo: checkbox is selected for no data in the list
     todo: add menu btn fot mtp
     todo: binary for production
     todo: Side bar menu sdcard

@@ -59,7 +59,7 @@ class DirectoryLists extends React.Component {
 
   _fetchDirList({ path, deviceType }) {
     const { handleFetchDirList, toggleHiddenFiles } = this.props;
-    
+
     handleFetchDirList(
       {
         filePath: path,
@@ -195,10 +195,12 @@ class DirectoryLists extends React.Component {
     );
   };
 
-  isSelected = path =>
-    this.props.directoryLists[this.props.deviceType].queue.selected.indexOf(
-      path
-    ) !== -1;
+  isSelected = path => {
+    const { directoryLists, deviceType } = this.props;
+    const _directoryLists = directoryLists[deviceType].queue.selected;
+
+    return _directoryLists.indexOf(path) !== -1;
+  };
 
   stableSort = (array, cmp) => {
     const stabilizedThis = array.map((el, index) => [el, index]);

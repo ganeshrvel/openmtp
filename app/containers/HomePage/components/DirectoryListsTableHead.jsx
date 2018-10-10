@@ -57,7 +57,7 @@ class DirectoryListsTableHead extends React.Component {
           <TableCell padding="none" className={styles.tableHeadCell}>
             <Checkbox
               indeterminate={numSelected > 0 && numSelected < rowCount}
-              checked={numSelected === rowCount}
+              checked={rowCount > 0 && numSelected === rowCount}
               onChange={onSelectAllClick}
             />
           </TableCell>
