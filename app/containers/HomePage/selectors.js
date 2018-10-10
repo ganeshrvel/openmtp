@@ -1,5 +1,4 @@
 import { createSelector } from 'reselect';
-import find from 'lodash/find';
 
 const make = (state, props) => state.Home;
 
@@ -8,9 +7,10 @@ export const makeSidebarFavouriteList = createSelector(
   make,
   state => state.sidebarFavouriteList
 );
-export const makeDefaultSelectedPath = createSelector(make, state => {
-  return find(state.sidebarFavouriteList.top, { selected: true });
-});
+export const makeSelectedPath = createSelector(
+  make,
+  state => state.selectedPath
+);
 
 export const makeDirectoryLists = createSelector(
   make,

@@ -5,13 +5,14 @@ const { variables } = base();
 
 export const styles = theme => ({
   root: {
-    width: '100%'
+    width: '100%',
+    ...variables.mixins.noselect
   },
   table: {
     //minWidth: 1020
   },
   tableWrapper: {
-    maxHeight: `calc(100vh - 116px)`,
+    height: `calc(100vh - 116px)`,
     overflowY: 'auto',
     overflowX: 'auto',
     borderBottom: variables.styles.borderThinDividerColor

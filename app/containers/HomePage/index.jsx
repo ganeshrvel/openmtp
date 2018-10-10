@@ -13,8 +13,9 @@ import { bindActionCreators } from 'redux';
 import reducers from './reducers';
 import { fetchDirList } from './actions';
 import { throwAlert } from '@Alerts';
-import { makeDefaultSelectedPath } from './selectors';
+import { makeSelectedPath } from './selectors';
 import Grid from '@material-ui/core/Grid';
+import { deviceType } from '../../constants';
 
 class Home extends Component {
   constructor(props) {
@@ -22,8 +23,6 @@ class Home extends Component {
   }
 
   componentWillMount() {
-    const { defaultSelectedPath } = this.props;
-
     /*
     todo: make a const for mtp and local
     todo: make a const for default mtp filePath
@@ -32,29 +31,8 @@ class Home extends Component {
     todo: add menu btn fot mtp
     todo: binary for production
     todo: mtp and local hidden state values
-    
-    
-    asyncReadLocalDir('filePath')
-      .then(res => console.log(res))
-      .catch(e => {
-        this.props.throwAlert(e.message);
-        log.error(e, `Homepage asyncReadLocalDir`);
-      });*/
-
-    this.props.handleFetchDirList(
-      {
-        filePath: defaultSelectedPath.path,
-        ignoreHidden: true
-      },
-      'local'
-    );
-    this.props.handleFetchDirList(
-      {
-        filePath: '/',
-        ignoreHidden: false
-      },
-      'mtp'
-    );
+    todo: Side bar menu sdcard
+   */
   }
 
   render() {
@@ -63,12 +41,15 @@ class Home extends Component {
       <React.Fragment>
         <Grid container spacing={0}>
           <Grid item xs={6}>
-            <ToolbarAreaPane showMenu={true} deviceType="local" />
-            <DirectoryLists hideColList={[]} deviceType="local" />
+            <ToolbarAreaPane showMenu={true} deviceType={deviceType.local} />
+            <DirectoryLists hideColList={[]} deviceType={deviceType.local} />
           </Grid>
           <Grid item xs={6}>
-            <ToolbarAreaPane showMenu={false} deviceType="mtp" />
-            <DirectoryLists hideColList={['size']} deviceType="mtp" />
+            <ToolbarAreaPane showMenu={false} deviceType={deviceType.mtp} />
+            <DirectoryLists
+              hideColList={['size']}
+              deviceType={deviceType.mtp}
+            />
           </Grid>
         </Grid>
       </React.Fragment>
@@ -82,15 +63,12 @@ const mapDispatchToProps = (dispatch, ownProps) =>
       throwAlert: (message, event) => (_, getState) => {
         dispatch(throwAlert({ message: message }));
       },
-      handleFetchDirList: ({ ...args }, deviceType) => (_, getState) => {
-        dispatch(fetchDirList(args, deviceType));
-      }
     },
     dispatch
   );
 
 const mapStateToProps = (state, props) => {
-  return { defaultSelectedPath: makeDefaultSelectedPath(state) };
+  return {};
 };
 
 export default withReducer('Home', reducers)(

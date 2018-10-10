@@ -2,6 +2,7 @@
 
 import fs from 'fs';
 import Promise from 'bluebird';
+import junk from 'junk';
 import path from 'path';
 import moment from 'moment';
 import { log } from '@Log';
@@ -50,6 +51,8 @@ export const asyncReadLocalDir = async ({ filePath, ignoreHidden }) => {
   }
 
   let files = data;
+  
+  files = data.filter(junk.not);
   if (ignoreHidden) {
     files = data.filter(item => !/(^|\/)\.[^\/\.]/g.test(item));
   }

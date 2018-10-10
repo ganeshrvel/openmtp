@@ -147,6 +147,7 @@
     "electron-debug": "^2.0.0",
     "history": "^4.7.2",
     "immutable": "^3.8.2",
+    "junk": "^2.1.0",
     "lodash": "^4.17.11",
     "moment": "^2.22.2",
     "nanoid": "^1.2.4",

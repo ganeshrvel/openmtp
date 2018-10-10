@@ -2,6 +2,7 @@
 
 import { actionTypes } from './actions';
 import { PATHS } from '../../utils/paths';
+import { deviceType } from '../../constants';
 
 export const initialState = {
   /* <Meta Data> */
@@ -119,7 +120,7 @@ export const initialState = {
   },
 
   directoryLists: {
-    local: {
+    [deviceType.local]: {
       order: 'asc',
       orderBy: 'path',
       queue: {
@@ -127,7 +128,7 @@ export const initialState = {
       },
       nodes: []
     },
-    mtp: {
+    [deviceType.mtp]: {
       order: 'asc',
       orderBy: 'path',
       queue: {
@@ -135,6 +136,11 @@ export const initialState = {
       },
       nodes: []
     }
+  },
+
+  selectedPath: {
+    [deviceType.local]: PATHS.homeDir,
+    [deviceType.mtp]: '/'
   }
 };
 
@@ -166,6 +172,16 @@ export default function Home(state = initialState, action) {
               selected: payload.selected
             }
           }
+        }
+      };
+
+    case actionTypes.SET_SELECTED_PATH:
+      return {
+        ...state,
+        ...setLoadedMetaData(state),
+        selectedPath: {
+          ...state.selectedPath,
+          [deviceType]: payload
         }
       };
 
