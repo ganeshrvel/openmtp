@@ -3,6 +3,7 @@
 import { actionTypes } from './actions';
 import { PATHS } from '../../utils/paths';
 import { deviceType } from '../../constants';
+import path from 'path';
 
 export const initialState = {
   /* <Meta Data> */
@@ -19,35 +20,24 @@ export const initialState = {
         label: 'Home',
         path: PATHS.homeDir,
         icon: 'folder',
-        selected: true,
         enabled: true
       },
       {
-        label: 'usr',
-        path: '/usr/',
+        label: 'Desktop',
+        path: path.join(PATHS.homeDir, `/Desktop`),
         icon: 'folder',
-        selected: false,
+        enabled: true
+      },
+      {
+        label: 'Downloads',
+        path: path.join(PATHS.homeDir, `/Downloads`),
+        icon: 'folder',
         enabled: true
       },
       {
         label: 'Root',
         path: '/',
         icon: 'folder',
-        selected: false,
-        enabled: true
-      },
-      {
-        label: 'Folder 4',
-        path: '/tmp/',
-        icon: 'folder',
-        selected: false,
-        enabled: true
-      },
-      {
-        label: 'Folder 5',
-        path: '/tmp/',
-        icon: 'folder',
-        selected: false,
         enabled: true
       }
     ],

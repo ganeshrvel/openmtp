@@ -79,7 +79,8 @@ class ToolbarAreaPane extends React.Component {
       toolbarList,
       sidebarFavouriteList,
       deviceType,
-      showMenu
+      showMenu,
+      selectedPath
     } = this.props;
 
     return (
@@ -98,6 +99,7 @@ class ToolbarAreaPane extends React.Component {
             onClickHandler={this._fetchDirList}
             sidebarFavouriteList={sidebarFavouriteList}
             deviceType={deviceType}
+            selectedPath={selectedPath[deviceType]}
           />
         </Drawer>
         <AppBar position="static" elevation={0} className={styles.appBar}>

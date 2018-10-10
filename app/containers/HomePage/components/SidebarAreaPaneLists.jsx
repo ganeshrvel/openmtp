@@ -22,7 +22,12 @@ class SidebarAreaPaneLists extends Component {
   }
 
   render() {
-    const { classes: styles, sidebarFavouriteList, deviceType } = this.props;
+    const {
+      classes: styles,
+      sidebarFavouriteList,
+      deviceType,
+      selectedPath
+    } = this.props;
     const { top: sidebarTop, bottom: sidebarBottom } = sidebarFavouriteList;
 
     return (
@@ -30,65 +35,47 @@ class SidebarAreaPaneLists extends Component {
         <Typography variant="caption" className={styles.listsCaption}>
           Favourites
         </Typography>
-        {sidebarTop.length > 1 && (
-          <List component="nav" dense={true}>
-            {sidebarTop.map((item, index) => {
-              return (
-                <ListItem
-                  key={index}
-                  button
-                  selected={item.selected}
-                  disabled={!item.enabled}
-                  onClick={e =>
-                    this._fetchDirList({
-                      path: item.path,
-                      deviceType: deviceType,
-                      isSidemenu: true
-                    })
-                  }
-                >
-                  <ListItemIcon>
-                    {item.icon === 'folder' && <FolderIcon />}
-                  </ListItemIcon>
-                  <ListItemText primary={item.label} />
-                </ListItem>
-              );
-            })}
-          </List>
-        )}
+        {sidebarTop.length > 1 && this.RenderLists(sidebarTop)}
 
         {sidebarBottom.length > 1 && (
           <React.Fragment>
             <Divider />
-            <List component="nav" dense={true} className={styles.listsBottom}>
-              {sidebarBottom.map((item, index) => {
-                return (
-                  <ListItem
-                    key={index}
-                    button
-                    selected={item.selected}
-                    disabled={!item.enabled}
-                    onClick={e =>
-                      this._fetchDirList({
-                        path: item.path,
-                        deviceType: deviceType,
-                        isSidemenu: true
-                      })
-                    }
-                  >
-                    <ListItemIcon>
-                      {item.icon === 'folder' && <FolderIcon />}
-                    </ListItemIcon>
-                    <ListItemText primary={item.label} />
-                  </ListItem>
-                );
-              })}
-            </List>
+            {this.RenderLists(sidebarBottom)}
           </React.Fragment>
         )}
       </div>
     );
   }
+
+  RenderLists = listData => {
+    const { classes: styles, deviceType, selectedPath } = this.props;
+    return (
+      <List component="nav" dense={true} className={styles.listsBottom}>
+        {listData.map((item, index) => {
+          return (
+            <ListItem
+              key={index}
+              button
+              selected={selectedPath === item.path}
+              disabled={!item.enabled}
+              onClick={e =>
+                this._fetchDirList({
+                  path: item.path,
+                  deviceType: deviceType,
+                  isSidemenu: true
+                })
+              }
+            >
+              <ListItemIcon>
+                {item.icon === 'folder' && <FolderIcon />}
+              </ListItemIcon>
+              <ListItemText primary={item.label} />
+            </ListItem>
+          );
+        })}
+      </List>
+    );
+  };
 }
 
 export default withStyles(styles)(SidebarAreaPaneLists);
