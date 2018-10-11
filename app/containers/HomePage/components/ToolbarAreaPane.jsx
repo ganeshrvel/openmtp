@@ -17,7 +17,7 @@ import { withReducer } from '../../../store/reducers/withReducer';
 import SidebarAreaPaneLists from './SidebarAreaPaneLists';
 import reducers from '../reducers';
 import {} from '../actions';
-import { fetchDirList } from '../actions';
+import { fetchDirList, processMtpOutput } from '../actions';
 import {
   makeDirectoryLists,
   makeIsLoading,
@@ -28,11 +28,15 @@ import { makeSelectedPath } from '../selectors';
 import { makeToggleHiddenFiles } from '../../Settings/selectors';
 import { delMtpFiles } from '../../../api/sys';
 import { deviceTypeConst } from '../../../constants';
+import { Confirm as ConfirmDialog } from '../../../components/DialogBox';
+import Alerts from '../../Alerts';
+
 class ToolbarAreaPane extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      toggleDrawer: false
+      toggleDrawer: false,
+      toggleConfirmDialog: false
     };
   }
 
@@ -40,6 +44,23 @@ class ToolbarAreaPane extends React.Component {
     this.setState({
       toggleDrawer: status
     });
+  };
+
+  handleToggleConfirmDialog = status => {
+    this.setState({
+      toggleConfirmDialog: status
+    });
+  };
+
+  handleDeleteConfirmDialog = confirm => {
+    const { deviceType } = this.props;
+
+    this.handleToggleConfirmDialog(false);
+    if (!confirm) {
+      return null;
+    }
+
+    this._delFiles({ deviceType });
   };
 
   handleToolbarAction = itemType => {
@@ -57,7 +78,7 @@ class ToolbarAreaPane extends React.Component {
         this._fetchDirList({ path, deviceType });
         break;
       case 'delete':
-        this._delFiles({ deviceType });
+        this.handleToggleConfirmDialog(true);
         break;
       default:
         break;
@@ -108,8 +129,14 @@ class ToolbarAreaPane extends React.Component {
       selectedPath
     } = this.props;
 
+    const { toggleConfirmDialog } = this.state;
     return (
       <div className={styles.root}>
+        <ConfirmDialog
+          bodyText="Are you sure you want to delete the items?"
+          trigger={toggleConfirmDialog}
+          onClickHandler={this.handleDeleteConfirmDialog}
+        />
         <Drawer
           open={this.state.toggleDrawer}
           onClose={this.handleToggleDrawer(false)}
