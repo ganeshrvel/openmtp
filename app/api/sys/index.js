@@ -30,69 +30,109 @@ export const promisifiedSpawn = cmd => {
 };
 
 const promisifiedExec = command => {
-  return new Promise(function(resolve, reject) {
-    exec(command, (error, stdout, stderr) =>
-      resolve({
-        data: stdout,
-        stderr: stderr,
-        error: error
-      })
-    );
-  });
+  try {
+    return new Promise(function(resolve, reject) {
+      exec(command, (error, stdout, stderr) =>
+        resolve({
+          data: stdout,
+          stderr: stderr,
+          error: error
+        })
+      );
+    });
+  } catch (e) {
+    log.error(e);
+  }
 };
 
 /**
   Local device ->
  */
-export const asyncReadLocalDir = async ({ filePath, ignoreHidden }) => {
-  let response = [];
-  const { error, data } = await readdir(filePath, 'utf8')
-    .then(res => {
-      return {
-        data: res,
-        error: null
-      };
-    })
-    .catch(e => {
-      return {
-        data: null,
-        error: e
-      };
-    });
-
-  if (error) {
-    log.error(error, `asyncReadLocalDir`);
-    return { error: true, data: null };
-  }
-
-  let files = data;
-
-  files = data.filter(junk.not);
-  if (ignoreHidden) {
-    files = data.filter(item => !/(^|\/)\.[^\/\.]/g.test(item));
-  }
-
-  for (let file of files) {
-    let fullPath = path.resolve(filePath, file);
-
-    if (!fs.existsSync(fullPath)) {
-      continue;
+export const delLocalFiles = async ({ fileList }) => {
+  try {
+    if (!fileList || fileList.length < 1) {
+      return { error: `No files selected.`, stderr: null, data: null };
     }
-    const stat = fs.statSync(fullPath);
-    const isFolder = fs.lstatSync(fullPath).isDirectory();
-    const extension = path.extname(fullPath);
-    const size = stat.size;
-    const dateTime = stat.atime;
-    response.push({
-      name: file,
-      path: fullPath,
-      extension: extension,
-      size: size,
-      isFolder: isFolder,
-      dateAdded: moment(dateTime).format('YYYY-MM-DD HH:mm:ss')
-    });
+
+    const escapedCmd = fileList
+      .map(a => {
+        return `"${escapeShell(a)}"`;
+      })
+      .join(' ');
+
+    let {
+      data: fileListData,
+      error: fileListError,
+      stderr: fileListStderr
+    } = await promisifiedExec(`rm -rf ${escapedCmd}`);
+
+    if (fileListError || fileListStderr) {
+      log.error(
+        `${fileListError} : ${fileListStderr}`,
+        `delLocalFiles -> rm error`
+      );
+      return { error: fileListError, stderr: fileListStderr, data: false };
+    }
+
+    return { error: null, stderr: null, data: true };
+  } catch (e) {
+    log.error(e);
   }
-  return { error, data: response };
+};
+
+export const asyncReadLocalDir = async ({ filePath, ignoreHidden }) => {
+  try {
+    let response = [];
+    const { error, data } = await readdir(filePath, 'utf8')
+      .then(res => {
+        return {
+          data: res,
+          error: null
+        };
+      })
+      .catch(e => {
+        return {
+          data: null,
+          error: e
+        };
+      });
+
+    if (error) {
+      log.error(error, `asyncReadLocalDir`);
+      return { error: true, data: null };
+    }
+
+    let files = data;
+
+    files = data.filter(junk.not);
+    if (ignoreHidden) {
+      files = data.filter(item => !/(^|\/)\.[^\/\.]/g.test(item));
+    }
+
+    for (let file of files) {
+      let fullPath = path.resolve(filePath, file);
+
+      if (!fs.existsSync(fullPath)) {
+        continue;
+      }
+      const stat = fs.statSync(fullPath);
+      const isFolder = fs.lstatSync(fullPath).isDirectory();
+      const extension = path.extname(fullPath);
+      const size = stat.size;
+      const dateTime = stat.atime;
+      response.push({
+        name: file,
+        path: fullPath,
+        extension: extension,
+        size: size,
+        isFolder: isFolder,
+        dateAdded: moment(dateTime).format('YYYY-MM-DD HH:mm:ss')
+      });
+    }
+    return { error, data: response };
+  } catch (e) {
+    log.error(e);
+  }
 };
 
 /**
@@ -100,115 +140,125 @@ export const asyncReadLocalDir = async ({ filePath, ignoreHidden }) => {
  */
 
 export const delMtpFiles = async ({ fileList }) => {
-  if (!fileList || fileList.length < 1) {
-    return { error: `No files selected.`, stderr: null, data: null };
+  try {
+    if (!fileList || fileList.length < 1) {
+      return { error: `No files selected.`, stderr: null, data: null };
+    }
+
+    for (let i in fileList) {
+      let {
+        data: fileListData,
+        error: fileListError,
+        stderr: fileListStderr
+      } = await promisifiedExec(
+        `${mtp} "rm \\"${escapeShell(fileList[i])}\\""`
+      );
+
+      if (fileListError || fileListStderr) {
+        log.error(
+          `${fileListError} : ${fileListStderr}`,
+          `delMtpDir -> rm error`
+        );
+        return { error: fileListError, stderr: fileListStderr, data: false };
+      }
+    }
+
+    return { error: null, stderr: null, data: true };
+  } catch (e) {
+    log.error(e);
   }
-  
-  for (let i in fileList) {
-    let {
+};
+
+export const asyncReadMtpDir = async ({ filePath, ignoreHidden }) => {
+  try {
+    const mtpCmdChop = {
+      type: 2,
+      dateAdded: 4,
+      timeAdded: 5,
+      name: 6
+    };
+    let response = [];
+
+    const {
       data: fileListData,
       error: fileListError,
       stderr: fileListStderr
-    } = await promisifiedExec(`${mtp} "rm \\"${escapeShell(fileList[i])}\\""`);
+    } = await promisifiedExec(`${mtp} "ls \\"${escapeShell(filePath)}\\""`);
+
+    const {
+      data: filePropsData,
+      error: filePropsError,
+      stderr: filePropsStderr
+    } = await promisifiedExec(
+      `${mtp} "lsext \\"${escapeShell(filePath)}\\"" | tr -s " "`
+    );
 
     if (fileListError || fileListStderr) {
       log.error(
         `${fileListError} : ${fileListStderr}`,
-        `delMtpDir -> rm error`
+        `asyncReadMtpDir -> ls error`
       );
-      return { error: fileListError, stderr: fileListStderr, data: false };
+      return { error: fileListError, stderr: fileListStderr, data: null };
     }
-  }
 
-  return { error: null, stderr: null, data: true };
-};
+    if (filePropsError || filePropsStderr) {
+      log.error(
+        `${filePropsError} : ${filePropsStderr}`,
+        `asyncReadMtpDir -> lsext error`
+      );
+      return { error: filePropsError, stderr: filePropsStderr, data: null };
+    }
 
-export const asyncReadMtpDir = async ({ filePath, ignoreHidden }) => {
-  const mtpCmdChop = {
-    type: 2,
-    dateAdded: 4,
-    timeAdded: 5,
-    name: 6
-  };
-  let response = [];
+    let fileList = fileListData.split(/(\r?\n)/g);
+    let fileProps = filePropsData.split(/(\r?\n)/g);
 
-  const {
-    data: fileListData,
-    error: fileListError,
-    stderr: fileListStderr
-  } = await promisifiedExec(`${mtp} "ls \\"${escapeShell(filePath)}\\""`);
+    fileList = fileList
+      .filter(a => {
+        return !(a === '\n' || a === '\r\n' || a === '');
+      })
+      .map(a => {
+        return a.replace(/(^|\.\s+)\d+\s+/, '');
+      });
 
-  const {
-    data: filePropsData,
-    error: filePropsError,
-    stderr: filePropsStderr
-  } = await promisifiedExec(
-    `${mtp} "lsext \\"${escapeShell(filePath)}\\"" | tr -s " "`
-  );
-
-  if (fileListError || fileListStderr) {
-    log.error(
-      `${fileListError} : ${fileListStderr}`,
-      `asyncReadMtpDir -> ls error`
-    );
-    return { error: fileListError, stderr: fileListStderr, data: null };
-  }
-
-  if (filePropsError || filePropsStderr) {
-    log.error(
-      `${filePropsError} : ${filePropsStderr}`,
-      `asyncReadMtpDir -> lsext error`
-    );
-    return { error: filePropsError, stderr: filePropsStderr, data: null };
-  }
-
-  let fileList = fileListData.split(/(\r?\n)/g);
-  let fileProps = filePropsData.split(/(\r?\n)/g);
-
-  fileList = fileList
-    .filter(a => {
+    fileProps = fileProps.filter(a => {
       return !(a === '\n' || a === '\r\n' || a === '');
-    })
-    .map(a => {
-      return a.replace(/(^|\.\s+)\d+\s+/, '');
     });
 
-  fileProps = fileProps.filter(a => {
-    return !(a === '\n' || a === '\r\n' || a === '');
-  });
-
-  if (fileList.length > fileProps.length) {
-    fileList.shift();
-  }
-
-  for (let i = 0; i < fileProps.length; i++) {
-    let filePropsList = fileProps[i].split(' ');
-    if (typeof filePropsList[mtpCmdChop.name] === 'undefined') {
-      continue;
-    }
-    const fileName = fileList[i];
-
-    if (ignoreHidden && /(^|\/)\.[^\/\.]/g.test(fileName)) {
-      continue;
+    if (fileList.length > fileProps.length) {
+      fileList.shift();
     }
 
-    let fullPath = path.resolve(filePath, fileName);
-    let isFolder = filePropsList[mtpCmdChop.type] === '3001';
-    let dateTime = `${filePropsList[mtpCmdChop.dateAdded]} ${
-      filePropsList[mtpCmdChop.timeAdded]
-    }`;
+    for (let i = 0; i < fileProps.length; i++) {
+      let filePropsList = fileProps[i].split(' ');
+      if (typeof filePropsList[mtpCmdChop.name] === 'undefined') {
+        continue;
+      }
+      const fileName = fileList[i];
 
-    response.push({
-      name: fileName,
-      path: fullPath,
-      extension: fetchExtension(filePath, isFolder),
-      size: null,
-      isFolder: isFolder,
-      dateAdded: moment(dateTime).format('YYYY-MM-DD HH:mm:ss')
-    });
+      if (ignoreHidden && /(^|\/)\.[^\/\.]/g.test(fileName)) {
+        continue;
+      }
+
+      let fullPath = path.resolve(filePath, fileName);
+      let isFolder = filePropsList[mtpCmdChop.type] === '3001';
+      let dateTime = `${filePropsList[mtpCmdChop.dateAdded]} ${
+        filePropsList[mtpCmdChop.timeAdded]
+      }`;
+
+      response.push({
+        name: fileName,
+        path: fullPath,
+        extension: fetchExtension(filePath, isFolder),
+        size: null,
+        isFolder: isFolder,
+        dateAdded: moment(dateTime).format('YYYY-MM-DD HH:mm:ss')
+      });
+    }
+
+    return { error: null, stderr: null, data: response };
+  } catch (e) {
+    log.error(e);
   }
-
-  return { error: null, stderr: null, data: response };
 };
 
 const fetchExtension = (fileName, isFolder) => {

@@ -75,28 +75,54 @@ export function processMtpOutput({
   callback
 }) {
   return dispatch => {
-    const {
-      status: mtpStatus,
-      error: mtpError,
-      throwAlert: mtpThrowAlert
-    } = processMtpBuffer({ error, stderr });
+    try {
+      const {
+        status: mtpStatus,
+        error: mtpError,
+        throwAlert: mtpThrowAlert
+      } = processMtpBuffer({ error, stderr });
 
-    dispatch(setMtpStatus(mtpStatus));
+      dispatch(setMtpStatus(mtpStatus));
 
-    if (!mtpStatus) {
-      dispatch(_fetchDirList([], deviceType));
-      dispatch(setSelectedDirLists({ selected: [] }, deviceType));
-    }
-
-    if (mtpError) {
-      log.error(mtpError, 'processMtpOutput');
-      if (mtpThrowAlert) {
-        dispatch(throwAlert({ message: mtpError }));
+      if (!mtpStatus) {
+        dispatch(_fetchDirList([], deviceType));
+        dispatch(setSelectedDirLists({ selected: [] }, deviceType));
       }
-      return false;
-    }
 
-    callback();
+      if (mtpError) {
+        log.error(mtpError, 'processMtpOutput');
+        if (mtpThrowAlert) {
+          dispatch(throwAlert({ message: mtpError }));
+        }
+        return false;
+      }
+
+      callback();
+    } catch (e) {
+      log.error(e);
+    }
+  };
+}
+
+export function processLocalOutput({
+  deviceType,
+  error,
+  stderr,
+  data,
+  callback
+}) {
+  return dispatch => {
+    try {
+      if (error) {
+        log.error(error, 'processLocalOutput');
+        dispatch(throwAlert({ message: error }));
+        return false;
+      }
+
+      callback();
+    } catch (e) {
+      log.error(e);
+    }
   };
 }
 
@@ -104,7 +130,6 @@ export function fetchDirList({ ...args }, deviceType) {
   try {
     switch (deviceType) {
       case deviceTypeConst.local:
-      default:
         return async dispatch => {
           const { error, data } = await asyncReadLocalDir({ ...args });
 
@@ -121,6 +146,7 @@ export function fetchDirList({ ...args }, deviceType) {
           dispatch(setSelectedDirLists({ selected: [] }, deviceType));
         };
 
+        break;
       case deviceTypeConst.mtp:
         return async dispatch => {
           const { error, stderr, data } = await asyncReadMtpDir({ ...args });
@@ -139,9 +165,13 @@ export function fetchDirList({ ...args }, deviceType) {
             })
           );
         };
+
+        break;
+      default:
+        break;
     }
   } catch (e) {
-    log.error(e, 'fetchDirList');
+    log.error(e);
   }
 }
 
