@@ -27,6 +27,8 @@ export default class MenuBuilder {
   }
 
   setupDevelopmentEnvironment() {
+    //disabling 'Inspect element'
+    return;
     this.mainWindow.webContents.on('context-menu', (e, props) => {
       const { x, y } = props;
 

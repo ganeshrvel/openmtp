@@ -22,10 +22,11 @@ class Home extends Component {
 
   componentWillMount() {
     /*
-    todo: confirm dialog on delete
-    todo: delete for local
+    todo: focus the datatable
+    todo: delete for local error for permission error/not found etc
+    todo: folder/files different color
     todo: fix sorting algorithm
-    todo: selection blur action for delete, up (/) and reload btns
+    todo: selection blur or hide action for delete, up (/) and reload btns
     todo: add menu btn fot mtp
     todo: binary for production
     todo: Side bar menu sdcard

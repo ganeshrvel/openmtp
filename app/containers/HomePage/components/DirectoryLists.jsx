@@ -17,6 +17,7 @@ import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 import nanoid from 'nanoid';
 import DirectoryListsTableHead from './DirectoryListsTableHead';
+import ContextMenu from './ContextMenu';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withReducer } from '../../../store/reducers/withReducer';
@@ -34,12 +35,22 @@ import {
 } from '../selectors';
 import { makeToggleHiddenFiles } from '../../Settings/selectors';
 import { deviceTypeConst } from '../../../constants';
+import { styles as contextMenuStyles } from '../styles/ContextMenu';
 
 class DirectoryLists extends React.Component {
   constructor(props) {
     super(props);
+    this.directoryListsRef = React.createRef();
+    this.state = {
+      contextMenu: false,
+      contextMenuPos: {
+        top: 0,
+        left: 0
+      }
+    };
   }
 
+  componentDidMount() {}
   componentWillMount() {
     const { selectedPath, deviceType } = this.props;
 
@@ -49,7 +60,64 @@ class DirectoryLists extends React.Component {
     });
   }
 
-  handleDoubleClick({ path, deviceType, isFolder }) {
+  handleRootContextMenuClick = event => {
+    if (event.type !== 'contextmenu') {
+      return null;
+    }
+    this.createContextMenu(event);
+    this.toggleContextMenu(true);
+  };
+
+  toggleContextMenu = trigger => {
+    this.setState({
+      contextMenu: trigger
+    });
+  };
+
+  setContextMenuPos = ({ ...args }) => {
+    this.setState({
+      contextMenuPos: {
+        ...args
+      }
+    });
+  };
+
+  createContextMenu = event => {
+    const { root } = contextMenuStyles(null);
+
+    const screenW = window.innerWidth;
+    const screenH = window.innerHeight;
+    const clickX = event.clientX;
+    const clickY = event.clientY;
+    const rootW = root.width;
+    const rootH = root.height;
+
+    const right = screenW - clickX > rootW;
+    const left = !right;
+    const top = screenH - clickY > rootH;
+    const bottom = !top;
+
+    let pos = {
+      left: 0,
+      top: 0
+    };
+
+    if (right) {
+      pos['left'] = clickX + 5;
+    } else if (left) {
+      pos['left'] = clickX - rootW - 5;
+    }
+
+    if (top) {
+      pos['top'] = clickY + 5;
+    } else if (bottom) {
+      pos['top'] = clickY - rootH - 5;
+    }
+
+    this.setContextMenuPos({ ...pos });
+  };
+
+  handleTableDoubleClick({ path, deviceType, isFolder }) {
     if (!isFolder) {
       return null;
     }
@@ -80,10 +148,21 @@ class DirectoryLists extends React.Component {
     const { selected } = queue;
     const emptyRows = nodes.length < 1;
     const isMtp = deviceType === deviceTypeConst.mtp;
+    const { contextMenu: contextMenuTrigger, contextMenuPos } = this.state;
 
     return (
-      <div>
-        <Paper elevation={0} square={true} className={styles.root}>
+      <React.Fragment>
+        <ContextMenu
+          contextMenuPos={contextMenuPos}
+          trigger={contextMenuTrigger}
+          deviceType={deviceType}
+        />
+        <Paper
+          className={styles.root}
+          elevation={0}
+          square={true}
+          onContextMenu={this.handleRootContextMenuClick}
+        >
           <div className={styles.tableWrapper}>
             <Table className={styles.table} aria-labelledby="tableTitle">
               <DirectoryListsTableHead
@@ -114,7 +193,7 @@ class DirectoryLists extends React.Component {
           </div>
           {this.TableFooter()}
         </Paper>
-      </div>
+      </React.Fragment>
     );
   }
 
@@ -172,7 +251,7 @@ class DirectoryLists extends React.Component {
           [styles.tableRowSelected]: isSelected
         })}
         onDoubleClick={event =>
-          this.handleDoubleClick({
+          this.handleTableDoubleClick({
             path: n.path,
             deviceType: deviceType,
             isFolder: n.isFolder,
@@ -186,7 +265,9 @@ class DirectoryLists extends React.Component {
         >
           <Checkbox
             checked={isSelected}
-            onClick={event => this.props.handleClick(n.path, deviceType, event)}
+            onClick={event =>
+              this.props.handleTableClick(n.path, deviceType, event)
+            }
           />
         </TableCell>
         {hideColList.indexOf('name') < 0 && (
@@ -307,7 +388,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         dispatch(setSelectedDirLists({ selected: [] }, deviceType));
       },
 
-      handleClick: (path, deviceType, event) => (_, getState) => {
+      handleTableClick: (path, deviceType, event) => (_, getState) => {
         const { selected } = getState().Home.directoryLists[deviceType].queue;
         const selectedIndex = selected.indexOf(path);
         let newSelected = [];
