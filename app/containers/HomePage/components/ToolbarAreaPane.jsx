@@ -26,12 +26,8 @@ import {
 } from '../selectors';
 import { makeSelectedPath } from '../selectors';
 import { makeToggleHiddenFiles } from '../../Settings/selectors';
-import { asyncReadMtpDir, delMtpFiles } from '../../../api/sys';
-import processMtpBuffer from '../../../utils/processMtpBuffer';
-import { throwAlert } from '../../Alerts/actions';
-import { setMtpStatus } from '../actions';
-import { setSelectedDirLists, processMtpOutput } from '../actions';
-import { setSelectedPath } from '../actions';
+import { delMtpFiles } from '../../../api/sys';
+import { deviceTypeConst } from '../../../constants';
 class ToolbarAreaPane extends React.Component {
   constructor(props) {
     super(props);
@@ -183,21 +179,27 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         _,
         getState
       ) => {
-        const { error, stderr, data } = await delMtpFiles({
-          fileList
-        });
+        switch (deviceType) {
+          case deviceTypeConst.mtp:
+            const { error, stderr, data } = await delMtpFiles({
+              fileList
+            });
 
-        dispatch(
-          processMtpOutput({
-            deviceType,
-            error,
-            stderr,
-            data,
-            callback: a => {
-              dispatch(fetchDirList(fetchDirListArgs, deviceType));
-            }
-          })
-        );
+            dispatch(
+              processMtpOutput({
+                deviceType,
+                error,
+                stderr,
+                data,
+                callback: a => {
+                  dispatch(fetchDirList(fetchDirListArgs, deviceType));
+                }
+              })
+            );
+            break;
+          default:
+            break;
+        }
       }
     },
     dispatch

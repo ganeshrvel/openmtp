@@ -22,6 +22,9 @@ class Home extends Component {
 
   componentWillMount() {
     /*
+    todo: confirm dialog on delete
+    todo: delete for local
+    todo: fix sorting algorithm
     todo: selection blur action for delete, up (/) and reload btns
     todo: add menu btn fot mtp
     todo: binary for production
