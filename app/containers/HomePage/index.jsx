@@ -22,6 +22,7 @@ class Home extends Component {
 
   componentWillMount() {
     /*
+    todo: selection blur action for delete, up (/) and reload btns
     todo: add menu btn fot mtp
     todo: binary for production
     todo: Side bar menu sdcard

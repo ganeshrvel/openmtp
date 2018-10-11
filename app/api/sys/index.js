@@ -29,6 +29,21 @@ export const promisifiedSpawn = cmd => {
     });
 };
 
+const promisifiedExec = command => {
+  return new Promise(function(resolve, reject) {
+    exec(command, (error, stdout, stderr) =>
+      resolve({
+        data: stdout,
+        stderr: stderr,
+        error: error
+      })
+    );
+  });
+};
+
+/**
+  Local device ->
+ */
 export const asyncReadLocalDir = async ({ filePath, ignoreHidden }) => {
   let response = [];
   const { error, data } = await readdir(filePath, 'utf8')
@@ -80,29 +95,32 @@ export const asyncReadLocalDir = async ({ filePath, ignoreHidden }) => {
   return { error, data: response };
 };
 
-const promisifiedExec = command => {
-  return new Promise(function(resolve, reject) {
-    exec(command, (error, stdout, stderr) =>
-      resolve({
-        data: stdout,
-        stderr: stderr,
-        error: error
-      })
-    );
-  });
-};
+/**
+ MTP device ->
+ */
 
-const fetchExtension = (fileName, isFolder) => {
-  if (isFolder) {
-    return null;
+export const delMtpFiles = async ({ fileList }) => {
+  if (!fileList || fileList.length < 1) {
+    return { error: `No files selected.`, stderr: null, data: null };
   }
-  return fileName.indexOf('.') === -1
-    ? null
-    : fileName.substring(fileName.lastIndexOf('.') + 1);
-};
+  
+  for (let i in fileList) {
+    let {
+      data: fileListData,
+      error: fileListError,
+      stderr: fileListStderr
+    } = await promisifiedExec(`${mtp} "rm \\"${escapeShell(fileList[i])}\\""`);
 
-const escapeShell = cmd => {
-  return cmd.replace(/"/g, '\\"');
+    if (fileListError || fileListStderr) {
+      log.error(
+        `${fileListError} : ${fileListStderr}`,
+        `delMtpDir -> rm error`
+      );
+      return { error: fileListError, stderr: fileListStderr, data: false };
+    }
+  }
+
+  return { error: null, stderr: null, data: true };
 };
 
 export const asyncReadMtpDir = async ({ filePath, ignoreHidden }) => {
@@ -191,4 +209,17 @@ export const asyncReadMtpDir = async ({ filePath, ignoreHidden }) => {
   }
 
   return { error: null, stderr: null, data: response };
+};
+
+const fetchExtension = (fileName, isFolder) => {
+  if (isFolder) {
+    return null;
+  }
+  return fileName.indexOf('.') === -1
+    ? null
+    : fileName.substring(fileName.lastIndexOf('.') + 1);
+};
+
+const escapeShell = cmd => {
+  return cmd.replace(/"/g, '\\"');
 };

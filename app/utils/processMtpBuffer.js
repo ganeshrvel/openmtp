@@ -12,11 +12,20 @@ export default function processMtpBuffer({ error, stderr }) {
     invalidObjectHandle: `invalid response code InvalidObjectHandle`,
     invalidStorageID: `invalid response code InvalidStorageID`,
     fileNotFound: `could not find`,
+    noFilesSelected: `No files selected`,
     writePipe: `WritePipe`
   };
 
   const errorStringified = (error !== null && error.toString()) || '';
   const stderrStringified = (stderr !== null && stderr.toString()) || '';
+
+  if (!errorStringified || !stderrStringified) {
+    return {
+      error: null,
+      throwAlert: false,
+      status: true
+    };
+  }
 
   if (
     /*No MTP device found*/
@@ -29,8 +38,7 @@ export default function processMtpBuffer({ error, stderr }) {
       throwAlert: false,
       status: false
     };
-  }
-  if (
+  } else if (
     /*Path not found*/
     stderrStringified
       .toLowerCase()
@@ -41,6 +49,20 @@ export default function processMtpBuffer({ error, stderr }) {
   ) {
     return {
       error: sanitizeErrors(stderrStringified),
+      throwAlert: true,
+      status: true
+    };
+  } else if (
+    /*No files selected*/
+    stderrStringified
+      .toLowerCase()
+      .indexOf(errorTpl.noFilesSelected.toLowerCase()) !== -1 ||
+    errorStringified
+      .toLowerCase()
+      .indexOf(errorTpl.noFilesSelected.toLowerCase()) !== -1
+  ) {
+    return {
+      error: errorStringified,
       throwAlert: true,
       status: true
     };

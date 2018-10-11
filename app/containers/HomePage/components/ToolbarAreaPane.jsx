@@ -19,12 +19,18 @@ import reducers from '../reducers';
 import {} from '../actions';
 import { fetchDirList } from '../actions';
 import {
+  makeDirectoryLists,
   makeIsLoading,
   makeSidebarFavouriteList,
   makeToolbarList
 } from '../selectors';
 import { makeSelectedPath } from '../selectors';
 import { makeToggleHiddenFiles } from '../../Settings/selectors';
+import { asyncReadMtpDir, delMtpFiles } from '../../../api/sys';
+import processMtpBuffer from '../../../utils/processMtpBuffer';
+import { throwAlert } from '../../Alerts/actions';
+import { setMtpStatus } from '../actions';
+import { setSelectedDirLists } from '../actions';
 class ToolbarAreaPane extends React.Component {
   constructor(props) {
     super(props);
@@ -53,6 +59,9 @@ class ToolbarAreaPane extends React.Component {
         path = selectedPath[deviceType];
         this._fetchDirList({ path, deviceType });
         break;
+      case 'delete':
+        this._delFiles({ deviceType });
+        break;
       default:
         break;
     }
@@ -71,6 +80,14 @@ class ToolbarAreaPane extends React.Component {
     if (isSidemenu) {
       this.handleToggleDrawer(false)();
     }
+  };
+
+  _delFiles = ({ deviceType }) => {
+    const { directoryLists, delFiles } = this.props;
+    delFiles({
+      fileList: directoryLists[deviceType].queue.selected,
+      deviceType
+    });
   };
 
   render() {
@@ -149,6 +166,37 @@ const mapDispatchToProps = (dispatch, ownProps) =>
     {
       handleFetchDirList: ({ ...args }, deviceType) => (_, getState) => {
         dispatch(fetchDirList(args, deviceType));
+      },
+      delFiles: ({ fileList, deviceType }) => async (_, getState) => {
+        const { error, stderr, data } = await delMtpFiles({
+          fileList
+        });
+
+        const {
+          status: mtpStatus,
+          error: mtpError,
+          throwAlert: mtpThrowAlert
+        } = processMtpBuffer({ error, stderr });
+
+        console.log(mtpStatus, mtpError, mtpThrowAlert);
+        return;
+
+        dispatch(setMtpStatus(mtpStatus));
+        if (!mtpStatus) {
+          dispatch(_fetchDirList([], deviceType));
+          dispatch(setSelectedDirLists({ selected: [] }, deviceType));
+        }
+
+        if (error || stderr) {
+          if (mtpError) {
+            log.error(mtpError, 'mtpStderr -> fetchDirList -> asyncReadMtpDir');
+            if (mtpThrowAlert) {
+              dispatch(throwAlert({ message: mtpError }));
+            }
+          }
+
+          return;
+        }
       }
     },
     dispatch
@@ -160,7 +208,8 @@ const mapStateToProps = (state, props) => {
     toolbarList: makeToolbarList(state),
     isLoading: makeIsLoading(state),
     selectedPath: makeSelectedPath(state),
-    toggleHiddenFiles: makeToggleHiddenFiles(state)
+    toggleHiddenFiles: makeToggleHiddenFiles(state),
+    directoryLists: makeDirectoryLists(state)
   };
 };
 

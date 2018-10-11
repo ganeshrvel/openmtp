@@ -67,6 +67,46 @@ export function setMtpStatus(data) {
   };
 }
 
+export function processMtpOutput({
+  deviceType,
+  error,
+  stderr,
+  data,
+  setSelectedPath
+}) {
+  return dispatch => {
+    const {
+      status: mtpStatus,
+      error: mtpError,
+      throwAlert: mtpThrowAlert
+    } = processMtpBuffer({ error, stderr });
+
+    dispatch(setMtpStatus(mtpStatus));
+
+    if (!mtpStatus) {
+      dispatch(_fetchDirList([], deviceType));
+      dispatch(setSelectedDirLists({ selected: [] }, deviceType));
+    }
+
+    if (mtpError) {
+      log.error(mtpError, 'processMtpOutput');
+      if (mtpThrowAlert) {
+        dispatch(throwAlert({ message: mtpError }));
+      }
+      return null;
+    }
+
+    dispatch(_fetchDirList(data, deviceType));
+    dispatch(setSelectedDirLists({ selected: [] }, deviceType));
+
+    if (setSelectedPath.trigger) {
+      dispatch(
+        setSelectedPath(setSelectedPath.filePath, setSelectedPath.deviceType)
+      );
+    }
+  };
+}
+
 export function fetchDirList({ ...args }, deviceType) {
   try {
     switch (deviceType) {
@@ -91,35 +131,19 @@ export function fetchDirList({ ...args }, deviceType) {
       case deviceTypeConst.mtp:
         return async dispatch => {
           const { error, stderr, data } = await asyncReadMtpDir({ ...args });
-          const {
-            status: mtpStatus,
-            error: mtpError,
-            throwAlert: mtpThrowAlert
-          } = processMtpBuffer({ error, stderr });
 
-          dispatch(setMtpStatus(mtpStatus));
-          if (!mtpStatus) {
-            dispatch(_fetchDirList([], deviceType));
-            dispatch(setSelectedDirLists({ selected: [] }, deviceType));
-          }
-
-          if (error || stderr) {
-            if (mtpError) {
-              log.error(
-                mtpError,
-                'mtpStderr -> fetchDirList -> asyncReadMtpDir'
-              );
-              if (mtpThrowAlert) {
-                dispatch(throwAlert({ message: mtpError }));
+          dispatch(
+            processMtpOutput({
+              deviceType,
+              error,
+              stderr,
+              data,
+              setSelectedPath: {
+                trigger: true,
+                filePath: args.filePath
               }
-            }
-
-            return;
-          }
-
-          dispatch(_fetchDirList(data, deviceType));
-          dispatch(setSelectedPath(args.filePath, deviceType));
-          dispatch(setSelectedDirLists({ selected: [] }, deviceType));
+            })
+          );
         };
     }
   } catch (e) {
