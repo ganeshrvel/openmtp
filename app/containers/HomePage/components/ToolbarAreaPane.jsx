@@ -30,7 +30,8 @@ import { asyncReadMtpDir, delMtpFiles } from '../../../api/sys';
 import processMtpBuffer from '../../../utils/processMtpBuffer';
 import { throwAlert } from '../../Alerts/actions';
 import { setMtpStatus } from '../actions';
-import { setSelectedDirLists } from '../actions';
+import { setSelectedDirLists, processMtpOutput } from '../actions';
+import { setSelectedPath } from '../actions';
 class ToolbarAreaPane extends React.Component {
   constructor(props) {
     super(props);
@@ -83,11 +84,22 @@ class ToolbarAreaPane extends React.Component {
   };
 
   _delFiles = ({ deviceType }) => {
-    const { directoryLists, delFiles } = this.props;
-    delFiles({
-      fileList: directoryLists[deviceType].queue.selected,
-      deviceType
-    });
+    const {
+      directoryLists,
+      delFiles,
+      toggleHiddenFiles,
+      selectedPath
+    } = this.props;
+    delFiles(
+      {
+        fileList: directoryLists[deviceType].queue.selected,
+        deviceType
+      },
+      {
+        filePath: selectedPath[deviceType],
+        ignoreHidden: toggleHiddenFiles[deviceType]
+      }
+    );
   };
 
   render() {
@@ -167,36 +179,25 @@ const mapDispatchToProps = (dispatch, ownProps) =>
       handleFetchDirList: ({ ...args }, deviceType) => (_, getState) => {
         dispatch(fetchDirList(args, deviceType));
       },
-      delFiles: ({ fileList, deviceType }) => async (_, getState) => {
+      delFiles: ({ fileList, deviceType }, { ...fetchDirListArgs }) => async (
+        _,
+        getState
+      ) => {
         const { error, stderr, data } = await delMtpFiles({
           fileList
         });
 
-        const {
-          status: mtpStatus,
-          error: mtpError,
-          throwAlert: mtpThrowAlert
-        } = processMtpBuffer({ error, stderr });
-
-        console.log(mtpStatus, mtpError, mtpThrowAlert);
-        return;
-
-        dispatch(setMtpStatus(mtpStatus));
-        if (!mtpStatus) {
-          dispatch(_fetchDirList([], deviceType));
-          dispatch(setSelectedDirLists({ selected: [] }, deviceType));
-        }
-
-        if (error || stderr) {
-          if (mtpError) {
-            log.error(mtpError, 'mtpStderr -> fetchDirList -> asyncReadMtpDir');
-            if (mtpThrowAlert) {
-              dispatch(throwAlert({ message: mtpError }));
+        dispatch(
+          processMtpOutput({
+            deviceType,
+            error,
+            stderr,
+            data,
+            callback: a => {
+              dispatch(fetchDirList(fetchDirListArgs, deviceType));
             }
-          }
-
-          return;
-        }
+          })
+        );
       }
     },
     dispatch

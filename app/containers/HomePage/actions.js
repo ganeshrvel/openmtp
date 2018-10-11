@@ -72,7 +72,7 @@ export function processMtpOutput({
   error,
   stderr,
   data,
-  setSelectedPath
+  callback
 }) {
   return dispatch => {
     const {
@@ -93,17 +93,10 @@ export function processMtpOutput({
       if (mtpThrowAlert) {
         dispatch(throwAlert({ message: mtpError }));
       }
-      return null;
+      return false;
     }
 
-    dispatch(_fetchDirList(data, deviceType));
-    dispatch(setSelectedDirLists({ selected: [] }, deviceType));
-
-    if (setSelectedPath.trigger) {
-      dispatch(
-        setSelectedPath(setSelectedPath.filePath, setSelectedPath.deviceType)
-      );
-    }
+    callback();
   };
 }
 
@@ -138,9 +131,10 @@ export function fetchDirList({ ...args }, deviceType) {
               error,
               stderr,
               data,
-              setSelectedPath: {
-                trigger: true,
-                filePath: args.filePath
+              callback: a => {
+                dispatch(_fetchDirList(data, deviceType));
+                dispatch(setSelectedDirLists({ selected: [] }, deviceType));
+                dispatch(setSelectedPath(args.filePath, deviceType));
               }
             })
           );
