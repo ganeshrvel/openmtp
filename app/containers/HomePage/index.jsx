@@ -22,6 +22,7 @@ class Home extends Component {
 
   componentWillMount() {
     /*
+    todo: onscroll clear context menu
     todo: focus the datatable
     todo: new folder actions
     todo: delete for local error for permission error/not found etc

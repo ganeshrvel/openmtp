@@ -69,17 +69,18 @@ class DirectoryLists extends React.Component {
       if (_target === 'tableWrapper' && event.target !== event.currentTarget) {
         return null;
       }
-      this._setContextMenuFocussedRow({ ...args }, deviceType);
+      this._setContextMenuFocussedRow({ ...args });
       this.createContextMenu(event);
       return null;
     }
 
     if (this._checkOpenContextMenu(contextMenuPos)) {
+      this._setContextMenuFocussedRow({});
       handleClearContextMenuClick(deviceType);
     }
   };
 
-  _setContextMenuFocussedRow = ({ ...args }, deviceType) => {
+  _setContextMenuFocussedRow = ({ ...args }) => {
     this.setState({
       contextMenuFocussedRow: { ...args }
     });
