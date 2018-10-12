@@ -13,6 +13,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { log } from '@Log';
 import { withReducer } from '../../../store/reducers/withReducer';
 import SidebarAreaPaneLists from './SidebarAreaPaneLists';
 import reducers from '../reducers';
@@ -28,6 +29,7 @@ import { makeToggleHiddenFiles } from '../../Settings/selectors';
 import { delLocalFiles, delMtpFiles } from '../../../api/sys';
 import { deviceTypeConst } from '../../../constants';
 import { Confirm as ConfirmDialog } from '../../../components/DialogBox';
+import { pathUp } from '../../../utils/paths';
 
 class ToolbarAreaPane extends React.Component {
   constructor(props) {
@@ -66,9 +68,7 @@ class ToolbarAreaPane extends React.Component {
     let path = '/';
     switch (itemType) {
       case 'up':
-        path =
-          selectedPath[deviceType].replace(/\/$/, '').replace(/\/[^/]+$/, '') ||
-          '/';
+        path = pathUp(selectedPath[deviceType]);
         this._fetchDirList({ path, deviceType });
         break;
       case 'refresh':
@@ -101,11 +101,11 @@ class ToolbarAreaPane extends React.Component {
   _delFiles = ({ deviceType }) => {
     const {
       directoryLists,
-      delFiles,
+      handleDelFiles,
       toggleHiddenFiles,
       selectedPath
     } = this.props;
-    delFiles(
+    handleDelFiles(
       {
         fileList: directoryLists[deviceType].queue.selected,
         deviceType
@@ -200,55 +200,59 @@ const mapDispatchToProps = (dispatch, ownProps) =>
       handleFetchDirList: ({ ...args }, deviceType) => (_, getState) => {
         dispatch(fetchDirList({ ...args }, deviceType));
       },
-      delFiles: ({ fileList, deviceType }, { ...fetchDirListArgs }) => async (
-        _,
-        getState
-      ) => {
-        switch (deviceType) {
-          case deviceTypeConst.mtp:
-            const {
-              error: mtpError,
-              stderr: mtpStderr,
-              data: mtpData
-            } = await delMtpFiles({
-              fileList
-            });
-
-            dispatch(
-              processMtpOutput({
-                deviceType,
+      handleDelFiles: (
+        { fileList, deviceType },
+        { ...fetchDirListArgs }
+      ) => async (_, getState) => {
+        try {
+          switch (deviceType) {
+            case deviceTypeConst.mtp:
+              const {
                 error: mtpError,
                 stderr: mtpStderr,
-                data: mtpData,
-                callback: a => {
-                  dispatch(fetchDirList({ ...fetchDirListArgs }, deviceType));
-                }
-              })
-            );
-            break;
-          case deviceTypeConst.local:
-            const {
-              error: localError,
-              stderr: localStderr,
-              data: localData
-            } = await delLocalFiles({
-              fileList
-            });
+                data: mtpData
+              } = await delMtpFiles({
+                fileList
+              });
 
-            dispatch(
-              processLocalOutput({
-                deviceType,
+              dispatch(
+                processMtpOutput({
+                  deviceType,
+                  error: mtpError,
+                  stderr: mtpStderr,
+                  data: mtpData,
+                  callback: a => {
+                    dispatch(fetchDirList({ ...fetchDirListArgs }, deviceType));
+                  }
+                })
+              );
+              break;
+            case deviceTypeConst.local:
+              const {
                 error: localError,
                 stderr: localStderr,
-                data: localData,
-                callback: a => {
-                  dispatch(fetchDirList({ ...fetchDirListArgs }, deviceType));
-                }
-              })
-            );
-            break;
-          default:
-            break;
+                data: localData
+              } = await delLocalFiles({
+                fileList
+              });
+
+              dispatch(
+                processLocalOutput({
+                  deviceType,
+                  error: localError,
+                  stderr: localStderr,
+                  data: localData,
+                  callback: a => {
+                    dispatch(fetchDirList({ ...fetchDirListArgs }, deviceType));
+                  }
+                })
+              );
+              break;
+            default:
+              break;
+          }
+        } catch (e) {
+          log.error(e);
         }
       }
     },

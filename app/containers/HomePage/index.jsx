@@ -22,6 +22,9 @@ class Home extends Component {
 
   componentWillMount() {
     /*
+    todo: do a mtp " directory name test
+    todo: primary and secondary color to vars
+    todo: multiple mtp devices at same time
     todo: onscroll clear context menu
     todo: focus the datatable
     todo: new folder actions

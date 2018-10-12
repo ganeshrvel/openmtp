@@ -1,0 +1,95 @@
+import React from 'react';
+import { styles } from '../styles/EditDialog';
+import { withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import TextField from '@material-ui/core/TextField';
+
+class EditDialog extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      textFieldValue: null
+    };
+  }
+
+  handleClick = ({ confirm = false }) => {
+    const { textFieldValue } = this.state;
+    const { onClickHandler } = this.props;
+
+    onClickHandler({ confirm, textFieldValue });
+  };
+
+  handleChange = event => {
+    this.setState({
+      textFieldValue: event.target.value
+    });
+  };
+
+  render() {
+    const {
+      classes: styles,
+      bodyText,
+      trigger,
+      titleText,
+      defaultValue,
+      label,
+      multiline,
+      fullWidthDialog,
+      maxWidthDialog,
+      fullWidthTextField,
+      autoFocus,
+      required,
+      id,
+      btnPositiveText,
+      btnNegativeText,
+      errors
+    } = this.props;
+
+    return (
+      <Dialog
+        className={styles.root}
+        open={trigger}
+        fullWidth={fullWidthDialog}
+        maxWidth={maxWidthDialog}
+      >
+        <DialogTitle>{titleText}</DialogTitle>
+        <DialogContent>
+          <DialogContentText className={styles.dialogContentText}>{bodyText}</DialogContentText>
+          <TextField
+            id={id}
+            required={required}
+            label={errors.toggle ? errors.message : label}
+            fullWidth={fullWidthTextField}
+            autoFocus={autoFocus}
+            autoComplete="off"
+            defaultValue={defaultValue}
+            multiline={multiline}
+            onChange={e => this.handleChange(e)}
+            error={errors.toggle}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={e => this.handleClick({ confirm: true })}
+            color="secondary"
+          >
+            {btnPositiveText}
+          </Button>
+          <Button
+            onClick={e => this.handleClick({ confirm: false })}
+            color="secondary"
+          >
+            {btnNegativeText}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
+}
+
+export default withStyles(styles)(EditDialog);

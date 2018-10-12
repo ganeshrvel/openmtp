@@ -11,3 +11,11 @@ export const PATHS = {
   nodeModules: path.resolve(root, './node_modules'),
   homeDir: os.homedir()
 };
+
+export const pathUp = filePath => {
+  return filePath.replace(/\/$/, '').replace(/\/[^/]+$/, '') || '/';
+};
+
+export const sanitizePath = filePath => {
+  return filePath.replace(/\/\/+/g, '/');
+};

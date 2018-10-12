@@ -19,6 +19,11 @@ class ContextMenu extends React.Component {
 
   componentDidMount() {}
 
+  _handleOnListClick({ ...args }) {
+    const { onContextMenuListActions } = this.props;
+    onContextMenuListActions({ ...args });
+  }
+
   render() {
     const {
       classes: styles,
@@ -27,7 +32,7 @@ class ContextMenu extends React.Component {
       contextMenuList,
       deviceType
     } = this.props;
-    console.log(contextMenuList, deviceType);
+
     return trigger ? (
       <div
         className={styles.root}
@@ -43,14 +48,13 @@ class ContextMenu extends React.Component {
                 key={a}
                 button
                 disabled={!item.enabled}
-                onClick={
-                  e => {}
-                  /*this._fetchDirList({
-                    path: item.path,
-                    deviceType: deviceType,
-                    isSidemenu: true
-                  })*/
-                }
+                onClick={e => {
+                  this._handleOnListClick({
+                    [a]: {
+                      ...item
+                    }
+                  });
+                }}
               >
                 <ListItemText primary={item.label} />
               </ListItem>

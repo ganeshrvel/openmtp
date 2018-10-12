@@ -131,7 +131,7 @@ export function processLocalOutput({
     try {
       if (error) {
         log.error(error, 'processLocalOutput');
-        dispatch(throwAlert({ message: error }));
+        dispatch(throwAlert({ message: error.toString() }));
         return false;
       }
 

@@ -48,38 +48,6 @@ const promisifiedExec = command => {
 /**
   Local device ->
  */
-export const delLocalFiles = async ({ fileList }) => {
-  try {
-    if (!fileList || fileList.length < 1) {
-      return { error: `No files selected.`, stderr: null, data: null };
-    }
-
-    const escapedCmd = fileList
-      .map(a => {
-        return `"${escapeShell(a)}"`;
-      })
-      .join(' ');
-
-    let {
-      data: fileListData,
-      error: fileListError,
-      stderr: fileListStderr
-    } = await promisifiedExec(`rm -rf ${escapedCmd}`);
-
-    if (fileListError || fileListStderr) {
-      log.error(
-        `${fileListError} : ${fileListStderr}`,
-        `delLocalFiles -> rm error`
-      );
-      return { error: fileListError, stderr: fileListStderr, data: false };
-    }
-
-    return { error: null, stderr: null, data: true };
-  } catch (e) {
-    log.error(e);
-  }
-};
-
 export const asyncReadLocalDir = async ({ filePath, ignoreHidden }) => {
   try {
     let response = [];
@@ -135,32 +103,30 @@ export const asyncReadLocalDir = async ({ filePath, ignoreHidden }) => {
   }
 };
 
-/**
- MTP device ->
- */
-
-export const delMtpFiles = async ({ fileList }) => {
+export const delLocalFiles = async ({ fileList }) => {
   try {
     if (!fileList || fileList.length < 1) {
       return { error: `No files selected.`, stderr: null, data: null };
     }
 
-    for (let i in fileList) {
-      let {
-        data: fileListData,
-        error: fileListError,
-        stderr: fileListStderr
-      } = await promisifiedExec(
-        `${mtp} "rm \\"${escapeShell(fileList[i])}\\""`
-      );
+    const escapedCmd = fileList
+      .map(a => {
+        return `"${escapeShell(a)}"`;
+      })
+      .join(' ');
 
-      if (fileListError || fileListStderr) {
-        log.error(
-          `${fileListError} : ${fileListStderr}`,
-          `delMtpDir -> rm error`
-        );
-        return { error: fileListError, stderr: fileListStderr, data: false };
-      }
+    let {
+      data: fileListData,
+      error: fileListError,
+      stderr: fileListStderr
+    } = await promisifiedExec(`rm -rf ${escapedCmd}`);
+
+    if (fileListError || fileListStderr) {
+      log.error(
+        `${fileListError} : ${fileListStderr}`,
+        `delLocalFiles -> rm error`
+      );
+      return { error: fileListError, stderr: fileListStderr, data: false };
     }
 
     return { error: null, stderr: null, data: true };
@@ -169,6 +135,43 @@ export const delMtpFiles = async ({ fileList }) => {
   }
 };
 
+export const renameLocalFiles = async ({ oldFilePath, newFilePath }) => {
+  try {
+    if (
+      typeof oldFilePath === 'undefined' ||
+      oldFilePath === null ||
+      typeof newFilePath === 'undefined' ||
+      newFilePath === null
+    ) {
+      return { error: `No files selected.`, stderr: null, data: null };
+    }
+
+    const escapedOldFilePath = `"${escapeShell(oldFilePath)}"`;
+    const escapedNewFilePath = `"${escapeShell(newFilePath)}"`;
+    
+    let {
+      data: fileListData,
+      error: fileListError,
+      stderr: fileListStderr
+    } = await promisifiedExec(`mv ${escapedOldFilePath} ${escapedNewFilePath}`);
+
+    if (fileListError || fileListStderr) {
+      log.error(
+        `${fileListError} : ${fileListStderr}`,
+        `renameLocalFiles -> mv error`
+      );
+      return { error: fileListError, stderr: fileListStderr, data: false };
+    }
+
+    return { error: null, stderr: null, data: true };
+  } catch (e) {
+    log.error(e);
+  }
+};
+
+/**
+ MTP device ->
+ */
 export const asyncReadMtpDir = async ({ filePath, ignoreHidden }) => {
   try {
     const mtpCmdChop = {
@@ -256,6 +259,36 @@ export const asyncReadMtpDir = async ({ filePath, ignoreHidden }) => {
     }
 
     return { error: null, stderr: null, data: response };
+  } catch (e) {
+    log.error(e);
+  }
+};
+
+export const delMtpFiles = async ({ fileList }) => {
+  try {
+    if (!fileList || fileList.length < 1) {
+      return { error: `No files selected.`, stderr: null, data: null };
+    }
+
+    for (let i in fileList) {
+      let {
+        data: fileListData,
+        error: fileListError,
+        stderr: fileListStderr
+      } = await promisifiedExec(
+        `${mtp} "rm \\"${escapeShell(fileList[i])}\\""`
+      );
+
+      if (fileListError || fileListStderr) {
+        log.error(
+          `${fileListError} : ${fileListStderr}`,
+          `delMtpDir -> rm error`
+        );
+        return { error: fileListError, stderr: fileListStderr, data: false };
+      }
+    }
+
+    return { error: null, stderr: null, data: true };
   } catch (e) {
     log.error(e);
   }

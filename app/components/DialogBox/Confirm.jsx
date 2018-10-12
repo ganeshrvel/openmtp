@@ -24,14 +24,13 @@ class Confirm extends React.Component {
       <div>
         <Dialog
           open={trigger}
-          aria-labelledby="alert-dialog-slide-title"
-          aria-describedby="alert-dialog-slide-description"
+          aria-labelledby="confirm-dialogbox"
         >
-          <DialogTitle id="alert-dialog-slide-title">
+          <DialogTitle>
             Confirm Action!
           </DialogTitle>
           <DialogContent>
-            <DialogContentText id="alert-dialog-slide-description">
+            <DialogContentText>
               {bodyText}
             </DialogContentText>
           </DialogContent>

@@ -18,8 +18,10 @@ import { withStyles } from '@material-ui/core/styles';
 import nanoid from 'nanoid';
 import DirectoryListsTableHead from './DirectoryListsTableHead';
 import ContextMenu from './ContextMenu';
+import EditDialog from './EditDialog';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { log } from '@Log';
 import { withReducer } from '../../../store/reducers/withReducer';
 import reducers from '../reducers';
 import {
@@ -27,7 +29,9 @@ import {
   setSelectedDirLists,
   fetchDirList,
   setContextMenuPos,
-  clearContextMenuPos
+  clearContextMenuPos,
+  processMtpOutput,
+  processLocalOutput
 } from '../actions';
 import {
   makeDirectoryLists,
@@ -40,16 +44,25 @@ import {
 import { makeToggleHiddenFiles } from '../../Settings/selectors';
 import { deviceTypeConst } from '../../../constants';
 import { styles as contextMenuStyles } from '../styles/ContextMenu';
+import { renameLocalFiles } from '../../../api/sys';
+import { pathUp, sanitizePath } from '../../../utils/paths';
 
 class DirectoryLists extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      contextMenuFocussedRow: {}
+      contextMenuFocussedRow: {},
+      renameDialog: {
+        errors: {
+          toggle: false,
+          message: null
+        },
+        toggle: false,
+        data: {}
+      }
     };
   }
 
-  componentDidMount() {}
   componentWillMount() {
     const { selectedPath, deviceType } = this.props;
 
@@ -59,6 +72,116 @@ class DirectoryLists extends React.Component {
     });
   }
 
+  handleToggleRenameEditDialog = ({ ...args }) => {
+    const { renameDialog } = this.state;
+    this.setState({
+      renameDialog: {
+        ...renameDialog,
+        ...args
+      }
+    });
+  };
+
+  handleErrorsRenameEditDialog = ({ ...args }) => {
+    const { renameDialog } = this.state;
+    this.setState({
+      renameDialog: {
+        ...renameDialog,
+        errors: { ...args }
+      }
+    });
+  };
+
+  clearRenameEditDialog = () => {
+    this.setState({
+      renameDialog: {
+        errors: {
+          toggle: false,
+          message: null
+        },
+        toggle: false,
+        data: {}
+      }
+    });
+  };
+
+  handleRenameEditDialog = ({ ...args }) => {
+    const {
+      deviceType,
+      handleRenameFile,
+      toggleHiddenFiles,
+      selectedPath
+    } = this.props;
+    const { data } = this.state.renameDialog;
+    const { confirm, textFieldValue } = args;
+
+    if (!confirm || textFieldValue === null) {
+      this.clearRenameEditDialog();
+      return null;
+    }
+
+    if (textFieldValue.trim() === '' || /[/\\?%*:|"<>]/g.test(textFieldValue)) {
+      this.handleErrorsRenameEditDialog({
+        toggle: true,
+        message: `Error: Illegal characters.`
+      });
+      return null;
+    }
+
+    //same file name; no change
+    const _pathUp = pathUp(data.path);
+    const newFilePath = sanitizePath(`${_pathUp}/${textFieldValue}`);
+    const oldFilePath = data.path;
+
+    if (newFilePath === data.path) {
+      this.clearRenameEditDialog();
+      return null;
+    }
+
+    handleRenameFile(
+      {
+        oldFilePath: oldFilePath,
+        newFilePath: newFilePath,
+        deviceType
+      },
+      {
+        filePath: selectedPath[deviceType],
+        ignoreHidden: toggleHiddenFiles[deviceType]
+      }
+    );
+
+    this.clearRenameEditDialog();
+  };
+
+  _handleContextMenuListActions = ({ ...args }) => {
+    const { deviceType, handleClearContextMenuClick } = this.props;
+
+    this._setContextMenuFocussedRow({});
+    handleClearContextMenuClick(deviceType);
+
+    Object.keys(args).map(a => {
+      const item = args[a];
+      switch (a) {
+        case 'rename':
+          this.handleToggleRenameEditDialog({
+            toggle: true,
+            data: {
+              ...item.data
+            }
+          });
+          break;
+        case 'copy':
+          console.log(item);
+          break;
+        case 'newFolder':
+          console.log(item);
+          break;
+        default:
+          break;
+      }
+    });
+  };
+
   _handleContextMenuClick = (event, { ...args }, _target) => {
     const {
       handleClearContextMenuClick,
@@ -66,7 +189,10 @@ class DirectoryLists extends React.Component {
       contextMenuPos
     } = this.props;
     if (event.type === 'contextmenu') {
-      if (_target === 'tableWrapper' && event.target !== event.currentTarget) {
+      if (
+        _target === 'tableWrapperTarget' &&
+        event.target !== event.currentTarget
+      ) {
         return null;
       }
       this._setContextMenuFocussedRow({ ...args });
@@ -206,8 +332,10 @@ class DirectoryLists extends React.Component {
     const { selected } = queue;
     const emptyRows = nodes.length < 1;
     const isMtp = deviceType === deviceTypeConst.mtp;
-    const _contextMenuPos = contextMenuPos[deviceTypeConst[deviceType]];
+    const _contextMenuPos = contextMenuPos[deviceType];
     const contextMenuTrigger = Object.keys(_contextMenuPos).length > 0;
+    const _eventTarget = 'tableWrapperTarget';
+    const { renameDialog } = this.state;
     return (
       <React.Fragment>
         <ContextMenu
@@ -215,13 +343,34 @@ class DirectoryLists extends React.Component {
           contextMenuPos={_contextMenuPos}
           trigger={contextMenuTrigger}
           deviceType={deviceType}
+          onContextMenuListActions={this._handleContextMenuListActions}
+        />
+        <EditDialog
+          titleText="Rename?"
+          bodyText={`Path: ${renameDialog.data.path}`}
+          trigger={renameDialog.toggle}
+          defaultValue={renameDialog.data.name}
+          label={
+            renameDialog.data.isFolder ? `New folder name` : `New file name`
+          }
+          id="renameDialog"
+          required={true}
+          multiline={false}
+          fullWidthDialog={true}
+          maxWidthDialog="sm"
+          fullWidthTextField={true}
+          autoFocus={true}
+          onClickHandler={this.handleRenameEditDialog}
+          btnPositiveText="Rename"
+          btnNegativeText="Cancel"
+          errors={renameDialog.errors}
         />
         <Paper className={styles.root} elevation={0} square={true}>
           <div
             className={styles.tableWrapper}
             onClick={this._handleContextMenuClick}
             onContextMenu={event =>
-              this._handleContextMenuClick(event, {}, 'tableWrapper')
+              this._handleContextMenuClick(event, {}, _eventTarget)
             }
           >
             <Table className={styles.table} aria-labelledby="tableTitle">
@@ -299,6 +448,8 @@ class DirectoryLists extends React.Component {
 
   TableRowsRender = (n, isSelected) => {
     const { classes: styles, deviceType, hideColList } = this.props;
+    const _eventTarget = 'tableCellTarget';
+
     return (
       <TableRow
         hover={true}
@@ -323,7 +474,7 @@ class DirectoryLists extends React.Component {
           padding="none"
           className={`${styles.tableCell} checkboxCell`}
           onContextMenu={event =>
-            this._handleContextMenuClick(event, { ...n }, 'tableCell')
+            this._handleContextMenuClick(event, { ...n }, _eventTarget)
           }
         >
           <Checkbox
@@ -338,7 +489,7 @@ class DirectoryLists extends React.Component {
             padding="default"
             className={`${styles.tableCell} nameCell`}
             onContextMenu={event =>
-              this._handleContextMenuClick(event, { ...n }, 'tableCell')
+              this._handleContextMenuClick(event, { ...n }, _eventTarget)
             }
           >
             {n.isFolder ? (
@@ -362,7 +513,7 @@ class DirectoryLists extends React.Component {
             padding="none"
             className={`${styles.tableCell} sizeCell`}
             onContextMenu={event =>
-              this._handleContextMenuClick(event, { ...n }, 'tableCell')
+              this._handleContextMenuClick(event, { ...n }, _eventTarget)
             }
           >
             {n.size} KB
@@ -373,7 +524,7 @@ class DirectoryLists extends React.Component {
             padding="none"
             className={`${styles.tableCell} dateAddedCell`}
             onContextMenu={event =>
-              this._handleContextMenuClick(event, { ...n }, 'tableCell')
+              this._handleContextMenuClick(event, { ...n }, _eventTarget)
             }
           >
             {n.dateAdded}
@@ -492,6 +643,62 @@ const mapDispatchToProps = (dispatch, ownProps) =>
       },
       handleClearContextMenuClick: deviceType => (_, getState) => {
         dispatch(clearContextMenuPos(deviceType));
+      },
+      handleRenameFile: (
+        { oldFilePath, newFilePath, deviceType },
+        { ...fetchDirListArgs }
+      ) => async (_, getState) => {
+        try {
+          switch (deviceType) {
+            case deviceTypeConst.mtp:
+              /* const {
+              error: mtpError,
+              stderr: mtpStderr,
+              data: mtpData
+            } = await delMtpFiles({
+              fileList
+            });
+
+            dispatch(
+              processMtpOutput({
+                deviceType,
+                error: mtpError,
+                stderr: mtpStderr,
+                data: mtpData,
+                callback: a => {
+                  dispatch(fetchDirList({ ...fetchDirListArgs }, deviceType));
+                }
+              })
+            );*/
+              break;
+            case deviceTypeConst.local:
+              const {
+                error: localError,
+                stderr: localStderr,
+                data: localData
+              } = await renameLocalFiles({
+                oldFilePath,
+                newFilePath
+              });
+
+              dispatch(
+                processLocalOutput({
+                  deviceType,
+                  error: localError,
+                  stderr: localStderr,
+                  data: localData,
+                  callback: a => {
+                    dispatch(fetchDirList({ ...fetchDirListArgs }, deviceType));
+                  }
+                })
+              );
+              break;
+            default:
+              break;
+          }
+        } catch (e) {
+          log.error(e);
+        }
       }
     },
     dispatch
