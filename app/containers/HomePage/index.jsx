@@ -22,10 +22,7 @@ class Home extends Component {
 
   componentWillMount() {
     /*
-    todo: rename btn on enter
-    todo: confirm dialog in toolbar change to itsown local name
     todo: do a mtp " directory name test
-    todo: primary and secondary color to vars
     todo: multiple mtp devices at same time
     todo: onscroll clear context menu
     todo: focus the datatable
