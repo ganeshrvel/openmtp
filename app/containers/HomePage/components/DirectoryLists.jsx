@@ -107,6 +107,7 @@ class DirectoryLists extends React.Component {
     const { contextMenuList } = this.props;
     const _contextMenuList = contextMenuList[deviceType];
     const contextMenuActiveList = {};
+    const { queue } = this.props.directoryLists[deviceType];
 
     Object.keys(_contextMenuList).map(a => {
       const item = _contextMenuList[a];
@@ -115,25 +116,20 @@ class DirectoryLists extends React.Component {
           break;
         case 'rename':
           contextMenuActiveList[a] = {
-            ...item,
-            enabled: true,
-            invert: false
+            ...item
           };
           break;
 
         case 'copy':
           contextMenuActiveList[a] = {
             ...item,
-            enabled: true,
-            invert: false
+            enabled: queue.selected.length > 0
           };
           break;
 
         case 'newFolder':
           contextMenuActiveList[a] = {
-            ...item,
-            enabled: true,
-            invert: false
+            ...item
           };
           break;
       }

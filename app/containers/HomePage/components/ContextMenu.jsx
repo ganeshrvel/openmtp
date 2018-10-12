@@ -27,7 +27,7 @@ class ContextMenu extends React.Component {
       contextMenuList,
       deviceType
     } = this.props;
-    console.log(contextMenuList);
+    
     return trigger ? (
       <div
         className={styles.root}
