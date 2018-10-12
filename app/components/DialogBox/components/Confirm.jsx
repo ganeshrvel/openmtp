@@ -1,5 +1,5 @@
 import React from 'react';
-import { styles } from './styles';
+import { styles } from '../styles/index';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';

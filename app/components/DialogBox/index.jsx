@@ -1,1 +1,2 @@
-export { default as Confirm } from './Confirm';
+export { default as Confirm } from './components/Confirm';
+export { default as TextFieldEdit } from './components/TextFieldEdit';

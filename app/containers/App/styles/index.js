@@ -7,10 +7,10 @@ export const theme = args => {
   return {
     palette: {
       primary: {
-        main: '#ffffff'
+        ...variables.styles.primaryColor
       },
       secondary: {
-        main: '#007af5'
+        ...variables.styles.secondaryColor
       }
     },
     typography: {

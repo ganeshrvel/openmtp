@@ -8,6 +8,12 @@ export const variables = args => {
       sidebarAreaPaddingTop: 40
     },
     styles: {
+      primaryColor: {
+        main: '#ffffff'
+      },
+      secondaryColor: {
+        main: '#007af5'
+      },
       regularFontSize: 14,
       borderThinDividerColor:
         'solid 1px var(--black-transparent-12,rgba(0,0,0,.12))'

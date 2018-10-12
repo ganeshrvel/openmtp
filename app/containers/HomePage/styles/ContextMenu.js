@@ -9,7 +9,7 @@ export const styles = theme => ({
     height: 115,
     border: `1px solid`,
     position: `absolute`,
-    background: `#fff`,
+    background: variables.styles.primaryColor.main,
     zIndex: 100,
     top: 10,
     left: 10

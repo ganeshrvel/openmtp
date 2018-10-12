@@ -18,7 +18,7 @@ import { withStyles } from '@material-ui/core/styles';
 import nanoid from 'nanoid';
 import DirectoryListsTableHead from './DirectoryListsTableHead';
 import ContextMenu from './ContextMenu';
-import EditDialog from './EditDialog';
+import { TextFieldEdit } from '../../../components/DialogBox';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { log } from '@Log';
@@ -345,7 +345,7 @@ class DirectoryLists extends React.Component {
           deviceType={deviceType}
           onContextMenuListActions={this._handleContextMenuListActions}
         />
-        <EditDialog
+        <TextFieldEdit
           titleText="Rename?"
           bodyText={`Path: ${renameDialog.data.path}`}
           trigger={renameDialog.toggle}

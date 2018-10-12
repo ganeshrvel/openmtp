@@ -27,7 +27,7 @@ export const styles = theme => {
       },
       [`&:not(:hover)`]: {
         filter: `invert(100)`,
-        background: `#fff`
+        background: variables.styles.primaryColor.main
       }
     }
   };
