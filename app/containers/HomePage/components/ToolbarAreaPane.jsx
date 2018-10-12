@@ -36,7 +36,7 @@ class ToolbarAreaPane extends React.Component {
     super(props);
     this.state = {
       toggleDrawer: false,
-      toggleConfirmDialog: false
+      toggleDeleteConfirmDialog: false
     };
   }
 
@@ -46,16 +46,16 @@ class ToolbarAreaPane extends React.Component {
     });
   };
 
-  handleToggleConfirmDialog = status => {
+  handleToggleDeleteConfirmDialog = status => {
     this.setState({
-      toggleConfirmDialog: status
+      toggleDeleteConfirmDialog: status
     });
   };
 
   handleDeleteConfirmDialog = confirm => {
     const { deviceType } = this.props;
 
-    this.handleToggleConfirmDialog(false);
+    this.handleToggleDeleteConfirmDialog(false);
     if (!confirm) {
       return null;
     }
@@ -76,7 +76,7 @@ class ToolbarAreaPane extends React.Component {
         this._fetchDirList({ path, deviceType });
         break;
       case 'delete':
-        this.handleToggleConfirmDialog(true);
+        this.handleToggleDeleteConfirmDialog(true);
         break;
       default:
         break;
@@ -127,12 +127,12 @@ class ToolbarAreaPane extends React.Component {
       selectedPath
     } = this.props;
 
-    const { toggleConfirmDialog } = this.state;
+    const { toggleDeleteConfirmDialog } = this.state;
     return (
       <div className={styles.root}>
         <ConfirmDialog
           bodyText="Are you sure you want to delete the items?"
-          trigger={toggleConfirmDialog}
+          trigger={toggleDeleteConfirmDialog}
           onClickHandler={this.handleDeleteConfirmDialog}
         />
         <Drawer
