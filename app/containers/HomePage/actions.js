@@ -4,7 +4,10 @@ import { asyncReadLocalDir, asyncReadMtpDir } from '../../api/sys';
 import { log } from '@Log';
 import { throwAlert } from '../Alerts/actions';
 import { deviceTypeConst } from '../../constants';
-import processMtpBuffer from '../../utils/processMtpBuffer';
+import {
+  processMtpBuffer,
+  processLocalBuffer
+} from '../../utils/processBufferOutput';
 
 const prefix = '@@Home';
 const actionTypesList = [
@@ -129,9 +132,17 @@ export function processLocalOutput({
 }) {
   return dispatch => {
     try {
-      if (error) {
-        log.error(error, 'processLocalOutput');
-        dispatch(throwAlert({ message: error.toString() }));
+      const {
+        error: localError,
+        throwAlert: localThrowAlert
+      } = processLocalBuffer({ error, stderr });
+
+      if (localError) {
+        log.error(localError, 'processLocalOutput');
+
+        if (localThrowAlert) {
+          dispatch(throwAlert({ message: localError.toString() }));
+        }
         return false;
       }
 

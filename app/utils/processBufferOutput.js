@@ -1,6 +1,6 @@
 'use strict';
 
-export default function processMtpBuffer({ error, stderr }) {
+export const processMtpBuffer = ({ error, stderr }) => {
   const errorDictionary = {
     noMtp: `No MTP device found.`,
     common: `Oops.. Your MTP device has gone crazy! Try again.`,
@@ -115,7 +115,62 @@ export default function processMtpBuffer({ error, stderr }) {
       status: true
     };
   }
-}
+};
+
+export const processLocalBuffer = ({ error, stderr }) => {
+  const errorDictionary = {
+    noPerm: `Operation not permitted.`,
+    commandFailed: `Could not complete! Try again.`,
+    common: `Oops.. Your device has gone crazy! Try again.`,
+    unResponsive: `Device is not responding! Reload`
+  };
+
+  const errorTpl = {
+    noPerm: `Operation not permitted`,
+    commandFailed: `Command failed`
+  };
+
+  const errorStringified = (error !== null && error.toString()) || '';
+  const stderrStringified = (stderr !== null && stderr.toString()) || '';
+
+  if (!errorStringified || !stderrStringified) {
+    return {
+      error: null,
+      throwAlert: false
+    };
+  }
+  
+  if (
+    /*No Permission*/
+    stderrStringified.toLowerCase().indexOf(errorTpl.noPerm.toLowerCase()) !==
+      -1 ||
+    errorStringified.toLowerCase().indexOf(errorTpl.noPerm.toLowerCase()) !== -1
+  ) {
+    return {
+      error: errorDictionary.noPerm,
+      throwAlert: true
+    };
+  } else if (
+    /*Command failed*/
+    stderrStringified
+      .toLowerCase()
+      .indexOf(errorTpl.commandFailed.toLowerCase()) !== -1 ||
+    errorStringified
+      .toLowerCase()
+      .indexOf(errorTpl.commandFailed.toLowerCase()) !== -1
+  ) {
+    return {
+      error: errorDictionary.commandFailed,
+      throwAlert: true
+    };
+  } else {
+    /*common errors*/
+    return {
+      error: errorDictionary.common,
+      throwAlert: true
+    };
+  }
+};
 
 const sanitizeErrors = string => {
   if (string === null) {

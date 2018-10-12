@@ -22,6 +22,8 @@ class Home extends Component {
 
   componentWillMount() {
     /*
+    todo: rename btn on enter
+    todo: confirm dialog in toolbar change to itsown local name
     todo: do a mtp " directory name test
     todo: primary and secondary color to vars
     todo: multiple mtp devices at same time
@@ -30,6 +32,8 @@ class Home extends Component {
     todo: new folder actions
     todo: delete for local error for permission error/not found etc
     todo: folder/files different color
+    todo: fix sizes in local
+    todo: sometimes folders are mistaken as files eg: /Volume/Mac-SSD
     todo: fix sorting algorithm
     todo: selection blur or hide action for delete, up (/) and reload btns
     todo: add menu btn fot mtp
