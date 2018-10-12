@@ -34,12 +34,12 @@ import {
   makeIsLoading,
   makeSelectedPath,
   makeMtpDevice,
-  makeContextMenuPos
+  makeContextMenuPos,
+  makeContextMenuList
 } from '../selectors';
 import { makeToggleHiddenFiles } from '../../Settings/selectors';
 import { deviceTypeConst } from '../../../constants';
 import { styles as contextMenuStyles } from '../styles/ContextMenu';
-import dev from '../../../store/configureStore/dev';
 
 class DirectoryLists extends React.Component {
   constructor(props) {
@@ -103,6 +103,45 @@ class DirectoryLists extends React.Component {
     handleContextMenuClick({ ...pos }, deviceType);
   };
 
+  contextMenuActiveList = deviceType => {
+    const { contextMenuList } = this.props;
+    const _contextMenuList = contextMenuList[deviceType];
+    const contextMenuActiveList = {};
+
+    Object.keys(_contextMenuList).map(a => {
+      const item = _contextMenuList[a];
+      switch (a) {
+        default:
+          break;
+        case 'rename':
+          contextMenuActiveList[a] = {
+            ...item,
+            enabled: true,
+            invert: false
+          };
+          break;
+
+        case 'copy':
+          contextMenuActiveList[a] = {
+            ...item,
+            enabled: true,
+            invert: false
+          };
+          break;
+
+        case 'newFolder':
+          contextMenuActiveList[a] = {
+            ...item,
+            enabled: true,
+            invert: false
+          };
+          break;
+      }
+    });
+
+    return contextMenuActiveList;
+  };
+
   handleTableDoubleClick({ path, deviceType, isFolder }) {
     if (!isFolder) {
       return null;
@@ -141,10 +180,10 @@ class DirectoryLists extends React.Component {
     const isMtp = deviceType === deviceTypeConst.mtp;
     const _contextMenuPos = contextMenuPos[deviceTypeConst[deviceType]];
     const contextMenuTrigger = Object.keys(_contextMenuPos).length > 0;
-
     return (
       <React.Fragment>
         <ContextMenu
+          contextMenuList={this.contextMenuActiveList(deviceType) || {}}
           contextMenuPos={_contextMenuPos}
           trigger={contextMenuTrigger}
           deviceType={deviceType}
@@ -425,7 +464,8 @@ const mapStateToProps = (state, props) => {
     directoryLists: makeDirectoryLists(state),
     isLoading: makeIsLoading(state),
     toggleHiddenFiles: makeToggleHiddenFiles(state),
-    contextMenuPos: makeContextMenuPos(state)
+    contextMenuPos: makeContextMenuPos(state),
+    contextMenuList: makeContextMenuList(state)
   };
 };
 

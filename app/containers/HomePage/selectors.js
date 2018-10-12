@@ -22,5 +22,9 @@ export const makeContextMenuPos = createSelector(
   make,
   state => state.contextMenuPos
 );
+export const makeContextMenuList = createSelector(
+  make,
+  state => state.contextMenuList
+);
 
 export const makeIsLoading = createSelector(make, state => state.___isLoading);

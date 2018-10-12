@@ -20,24 +20,42 @@ class ContextMenu extends React.Component {
   componentDidMount() {}
 
   render() {
-    const { classes: styles, trigger, contextMenuPos } = this.props;
-
+    const {
+      classes: styles,
+      trigger,
+      contextMenuPos,
+      contextMenuList,
+      deviceType
+    } = this.props;
+    console.log(contextMenuList);
     return trigger ? (
       <div
         className={styles.root}
         style={contextMenuPos}
         ref={this.contextMenuRef}
       >
-        <List dense={true} component="nav">
-          <ListItem button>
-            <ListItemText primary="Rename" />
-          </ListItem>
-          <ListItem button>
-            <ListItemText primary="Copy" />
-          </ListItem>
-          <ListItem button>
-            <ListItemText primary="Move" />
-          </ListItem>
+        <List dense={true}>
+          {Object.keys(contextMenuList).map(a => {
+            const item = contextMenuList[a];
+
+            return (
+              <ListItem
+                key={a}
+                button
+                disabled={!item.enabled}
+                onClick={
+                  e => {}
+                  /*this._fetchDirList({
+                    path: item.path,
+                    deviceType: deviceType,
+                    isSidemenu: true
+                  })*/
+                }
+              >
+                <ListItemText primary={item.label} />
+              </ListItem>
+            );
+          })}
         </List>
       </div>
     ) : (

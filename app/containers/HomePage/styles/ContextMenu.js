@@ -5,7 +5,7 @@ const { variables } = base();
 
 export const styles = theme => ({
   root: {
-    width: 100,
+    width: 170,
     height: 115,
     border: `1px solid`,
     position: `absolute`,

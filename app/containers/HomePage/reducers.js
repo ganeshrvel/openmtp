@@ -113,8 +113,40 @@ export const initialState = {
     isAvailable: false
   },
   contextMenuList: {
-    [deviceTypeConst.local]: {},
-    [deviceTypeConst.mtp]: {}
+    [deviceTypeConst.local]: {
+      rename: {
+        enabled: true,
+        label: 'Rename',
+        invert: false
+      },
+      copy: {
+        enabled: true,
+        label: 'Copy',
+        invert: false
+      },
+      newFolder: {
+        enabled: true,
+        label: 'New Folder',
+        invert: false
+      }
+    },
+    [deviceTypeConst.mtp]: {
+      rename: {
+        enabled: true,
+        label: 'Rename',
+        invert: false
+      },
+      copy: {
+        enabled: true,
+        label: 'Copy',
+        invert: false
+      },
+      newFolder: {
+        enabled: true,
+        label: 'New Folder',
+        invert: false
+      }
+    }
   },
 
   contextMenuPos: {
