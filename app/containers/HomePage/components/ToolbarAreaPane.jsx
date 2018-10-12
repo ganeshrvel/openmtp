@@ -65,15 +65,15 @@ class ToolbarAreaPane extends React.Component {
 
   handleToolbarAction = itemType => {
     const { selectedPath, deviceType } = this.props;
-    let path = '/';
+    let filePath = '/';
     switch (itemType) {
       case 'up':
-        path = pathUp(selectedPath[deviceType]);
-        this._fetchDirList({ path, deviceType });
+        filePath = pathUp(selectedPath[deviceType]);
+        this._fetchDirList({ filePath, deviceType });
         break;
       case 'refresh':
-        path = selectedPath[deviceType];
-        this._fetchDirList({ path, deviceType });
+        filePath = selectedPath[deviceType];
+        this._fetchDirList({ filePath, deviceType });
         break;
       case 'delete':
         this.handleToggleDeleteConfirmDialog(true);
@@ -83,12 +83,12 @@ class ToolbarAreaPane extends React.Component {
     }
   };
 
-  _fetchDirList = ({ path, deviceType, isSidemenu = false }) => {
+  _fetchDirList = ({ filePath, deviceType, isSidemenu = false }) => {
     const { handleFetchDirList, toggleHiddenFiles } = this.props;
 
     handleFetchDirList(
       {
-        filePath: path,
+        filePath,
         ignoreHidden: toggleHiddenFiles[deviceType]
       },
       deviceType

@@ -60,7 +60,7 @@ class SidebarAreaPaneLists extends Component {
               disabled={!item.enabled}
               onClick={e =>
                 this._fetchDirList({
-                  path: item.path,
+                  filePath: item.path,
                   deviceType: deviceType,
                   isSidemenu: true
                 })
