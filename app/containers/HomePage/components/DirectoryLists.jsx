@@ -59,12 +59,29 @@ class DirectoryLists extends React.Component {
   }
 
   _handleContextMenuClick = event => {
-    const { handleClearContextMenuClick, deviceType } = this.props;
+    const {
+      handleClearContextMenuClick,
+      deviceType,
+      contextMenuPos
+    } = this.props;
     if (event.type === 'contextmenu') {
       this.createContextMenu(event);
       return null;
     }
-    handleClearContextMenuClick(deviceType);
+
+    if (this._checkOpenContextMenu(contextMenuPos)) {
+      handleClearContextMenuClick(deviceType);
+    }
+  };
+
+  _checkOpenContextMenu = contextMenuPos => {
+    return (
+      Object.keys(contextMenuPos).filter(a => {
+        const item = contextMenuPos[a];
+
+        return Object.keys(item).length > 0;
+      }).length > 0
+    );
   };
 
   createContextMenu = event => {
