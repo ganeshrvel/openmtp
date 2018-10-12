@@ -18,5 +18,9 @@ export const makeDirectoryLists = createSelector(
 );
 
 export const makeMtpDevice = createSelector(make, state => state.mtpDevice);
+export const makeContextMenuPos = createSelector(
+  make,
+  state => state.contextMenuPos
+);
 
 export const makeIsLoading = createSelector(make, state => state.___isLoading);

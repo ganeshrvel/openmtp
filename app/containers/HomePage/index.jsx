@@ -23,6 +23,7 @@ class Home extends Component {
   componentWillMount() {
     /*
     todo: focus the datatable
+    todo: new folder actions
     todo: delete for local error for permission error/not found etc
     todo: folder/files different color
     todo: fix sorting algorithm

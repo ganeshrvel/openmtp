@@ -45,7 +45,7 @@ export const initialState = {
   },
 
   toolbarList: {
-    local: {
+    [deviceTypeConst.local]: {
       up: {
         enabled: true,
         label: 'Folder Up',
@@ -64,7 +64,7 @@ export const initialState = {
         imgSrc: 'Toolbar/delete.svg'
       }
     },
-    mtp: {
+    [deviceTypeConst.mtp]: {
       up: {
         enabled: true,
         label: 'Folder Up',
@@ -111,6 +111,15 @@ export const initialState = {
 
   mtpDevice: {
     isAvailable: false
+  },
+  contextMenuList: {
+    [deviceTypeConst.local]: {},
+    [deviceTypeConst.mtp]: {}
+  },
+
+  contextMenuPos: {
+    [deviceTypeConst.local]: {},
+    [deviceTypeConst.mtp]: {}
   }
 };
 
@@ -162,6 +171,27 @@ export default function Home(state = initialState, action) {
         mtpDevice: {
           ...state.mtpDevice,
           isAvailable: payload
+        }
+      };
+
+    case actionTypes.SET_CONTEXT_MENU_POS:
+      return {
+        ...state,
+        ...setLoadedMetaData(state),
+        contextMenuPos: {
+          ...initialState.contextMenuPos,
+          [deviceType]: {
+            ...payload
+          }
+        }
+      };
+
+    case actionTypes.CLEAR_CONTEXT_MENU_POS:
+      return {
+        ...state,
+        ...setLoadedMetaData(state),
+        contextMenuPos: {
+          ...initialState.contextMenuPos
         }
       };
 
