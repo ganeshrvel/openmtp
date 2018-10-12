@@ -117,34 +117,34 @@ export const initialState = {
       rename: {
         enabled: true,
         label: 'Rename',
-        invert: false
+        data: {}
       },
       copy: {
         enabled: true,
         label: 'Copy',
-        invert: false
+        data: {}
       },
       newFolder: {
         enabled: true,
         label: 'New Folder',
-        invert: false
+        data: {}
       }
     },
     [deviceTypeConst.mtp]: {
       rename: {
         enabled: true,
         label: 'Rename',
-        invert: false
+        data: {}
       },
       copy: {
         enabled: true,
         label: 'Copy',
-        invert: false
+        data: {}
       },
       newFolder: {
         enabled: true,
         label: 'New Folder',
-        invert: false
+        data: {}
       }
     }
   },

@@ -16,10 +16,10 @@ export const styles = theme => ({
     overflowY: 'auto',
     overflowX: 'auto',
     borderBottom: variables.styles.borderThinDividerColor,
-    borderLeft: variables.styles.borderThinDividerColor,
+    borderLeft: variables.styles.borderThinDividerColor
   },
   emptyTableRowWrapper: {
-    // height: `calc(100vh - 175px)`
+    //height: `calc(100vh - 175px)`
   },
   tableRowSelected: {
     backgroundColor: 'rgba(41, 121, 255, 0.15) !important'

@@ -44,8 +44,9 @@ import { styles as contextMenuStyles } from '../styles/ContextMenu';
 class DirectoryLists extends React.Component {
   constructor(props) {
     super(props);
-    this.directoryListsRef = React.createRef();
-    this.state = {};
+    this.state = {
+      contextMenuFocussedRow: {}
+    };
   }
 
   componentDidMount() {}
@@ -58,13 +59,17 @@ class DirectoryLists extends React.Component {
     });
   }
 
-  _handleContextMenuClick = event => {
+  _handleContextMenuClick = (event, { ...args }, _target) => {
     const {
       handleClearContextMenuClick,
       deviceType,
       contextMenuPos
     } = this.props;
     if (event.type === 'contextmenu') {
+      if (_target === 'tableWrapper' && event.target !== event.currentTarget) {
+        return null;
+      }
+      this._setContextMenuFocussedRow({ ...args }, deviceType);
       this.createContextMenu(event);
       return null;
     }
@@ -72,6 +77,12 @@ class DirectoryLists extends React.Component {
     if (this._checkOpenContextMenu(contextMenuPos)) {
       handleClearContextMenuClick(deviceType);
     }
+  };
+
+  _setContextMenuFocussedRow = ({ ...args }, deviceType) => {
+    this.setState({
+      contextMenuFocussedRow: { ...args }
+    });
   };
 
   _checkOpenContextMenu = contextMenuPos => {
@@ -122,6 +133,7 @@ class DirectoryLists extends React.Component {
 
   contextMenuActiveList = deviceType => {
     const { contextMenuList } = this.props;
+    const { contextMenuFocussedRow } = this.state;
     const _contextMenuList = contextMenuList[deviceType];
     const contextMenuActiveList = {};
     const { queue } = this.props.directoryLists[deviceType];
@@ -133,7 +145,9 @@ class DirectoryLists extends React.Component {
           break;
         case 'rename':
           contextMenuActiveList[a] = {
-            ...item
+            ...item,
+            enabled: Object.keys(contextMenuFocussedRow).length > 0,
+            data: contextMenuFocussedRow
           };
           break;
 
@@ -201,13 +215,14 @@ class DirectoryLists extends React.Component {
           trigger={contextMenuTrigger}
           deviceType={deviceType}
         />
-        <Paper
-          className={styles.root}
-          elevation={0}
-          square={true}
-          onClick={this._handleContextMenuClick}
-        >
-          <div className={styles.tableWrapper}>
+        <Paper className={styles.root} elevation={0} square={true}>
+          <div
+            className={styles.tableWrapper}
+            onClick={this._handleContextMenuClick}
+            onContextMenu={event =>
+              this._handleContextMenuClick(event, {}, 'tableWrapper')
+            }
+          >
             <Table className={styles.table} aria-labelledby="tableTitle">
               <DirectoryListsTableHead
                 numSelected={selected.length}
@@ -275,10 +290,7 @@ class DirectoryLists extends React.Component {
       );
     }
     return (
-      <TableRow
-        className={styles.emptyTableRowWrapper}
-        onContextMenu={this._handleContextMenuClick}
-      >
+      <TableRow className={styles.emptyTableRowWrapper}>
         <TableCell colSpan={6} className={styles.tableCell} />
       </TableRow>
     );
@@ -297,7 +309,6 @@ class DirectoryLists extends React.Component {
         className={classNames({
           [styles.tableRowSelected]: isSelected
         })}
-        onContextMenu={this._handleContextMenuClick}
         onDoubleClick={event =>
           this.handleTableDoubleClick({
             path: n.path,
@@ -310,6 +321,9 @@ class DirectoryLists extends React.Component {
         <TableCell
           padding="none"
           className={`${styles.tableCell} checkboxCell`}
+          onContextMenu={event =>
+            this._handleContextMenuClick(event, { ...n }, 'tableCell')
+          }
         >
           <Checkbox
             checked={isSelected}
@@ -322,6 +336,9 @@ class DirectoryLists extends React.Component {
           <TableCell
             padding="default"
             className={`${styles.tableCell} nameCell`}
+            onContextMenu={event =>
+              this._handleContextMenuClick(event, { ...n }, 'tableCell')
+            }
           >
             {n.isFolder ? (
               <Tooltip title="Folder">
@@ -340,7 +357,13 @@ class DirectoryLists extends React.Component {
           </TableCell>
         )}
         {hideColList.indexOf('size') < 0 && (
-          <TableCell padding="none" className={`${styles.tableCell} sizeCell`}>
+          <TableCell
+            padding="none"
+            className={`${styles.tableCell} sizeCell`}
+            onContextMenu={event =>
+              this._handleContextMenuClick(event, { ...n }, 'tableCell')
+            }
+          >
             {n.size} KB
           </TableCell>
         )}
@@ -348,6 +371,9 @@ class DirectoryLists extends React.Component {
           <TableCell
             padding="none"
             className={`${styles.tableCell} dateAddedCell`}
+            onContextMenu={event =>
+              this._handleContextMenuClick(event, { ...n }, 'tableCell')
+            }
           >
             {n.dateAdded}
           </TableCell>
