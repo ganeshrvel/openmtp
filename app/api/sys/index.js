@@ -175,6 +175,34 @@ export const renameLocalFiles = async ({ oldFilePath, newFilePath }) => {
   }
 };
 
+export const newFolderLocalFiles = async ({ newFolderPath }) => {
+  try {
+    if (typeof newFolderPath === 'undefined' || newFolderPath === null) {
+      return { error: `No files selected.`, stderr: null, data: null };
+    }
+
+    const escapednewFolderPath = `"${escapeShell(newFolderPath)}"`;
+
+    let {
+      data: fileListData,
+      error: fileListError,
+      stderr: fileListStderr
+    } = await promisifiedExec(`mkdir -p ${escapednewFolderPath}`);
+
+    if (fileListError || fileListStderr) {
+      log.error(
+        `${fileListError} : ${fileListStderr}`,
+        `newFolderLocalFiles -> mkdir error`
+      );
+      return { error: fileListError, stderr: fileListStderr, data: false };
+    }
+
+    return { error: null, stderr: null, data: true };
+  } catch (e) {
+    log.error(e);
+  }
+};
+
 /**
  MTP device ->
  */

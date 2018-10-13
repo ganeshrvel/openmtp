@@ -44,16 +44,31 @@ import {
 import { makeToggleHiddenFiles } from '../../Settings/selectors';
 import { deviceTypeConst } from '../../../constants';
 import { styles as contextMenuStyles } from '../styles/ContextMenu';
-import { renameLocalFiles, checkFileExists } from '../../../api/sys';
+import {
+  renameLocalFiles,
+  checkFileExists,
+  newFolderLocalFiles
+} from '../../../api/sys';
 import { pathUp, sanitizePath } from '../../../utils/paths';
 
 class DirectoryLists extends React.Component {
   constructor(props) {
     super(props);
     this.initialState = {
-      contextMenuFocussedRow: {},
+      contextMenuFocussedRow: {
+        rowData: {},
+        tableData: {}
+      },
       toggleDialog: {
         rename: {
+          errors: {
+            toggle: false,
+            message: null
+          },
+          toggle: false,
+          data: {}
+        },
+        newFolder: {
           errors: {
             toggle: false,
             message: null
@@ -177,10 +192,64 @@ class DirectoryLists extends React.Component {
     this.clearEditDialog(targetAction);
   };
 
+  handleNewFolderEditDialog = ({ ...args }) => {
+    const {
+      deviceType,
+      handleNewFolder,
+      toggleHiddenFiles,
+      selectedPath
+    } = this.props;
+    const { data } = this.state.toggleDialog.newFolder;
+    const { confirm, textFieldValue: newFolderName } = args;
+    const targetAction = 'newFolder';
+    console.log(args, data);
+    if (!confirm || newFolderName === null) {
+      this.clearEditDialog(targetAction);
+      return null;
+    }
+
+    if (newFolderName.trim() === '' || /[/\\?%*:|"<>]/g.test(newFolderName)) {
+      this.handleErrorsEditDialog(
+        {
+          toggle: true,
+          message: `Error: Illegal characters.`
+        },
+        targetAction
+      );
+      return null;
+    }
+
+    const newFolderPath = sanitizePath(`${data.path}/${newFolderName}`);
+
+    if (checkFileExists(newFolderPath)) {
+      this.handleErrorsEditDialog(
+        {
+          toggle: true,
+          message: `Error: The name "${newFolderName}" is already taken.`
+        },
+        targetAction
+      );
+      return null;
+    }
+
+    handleNewFolder(
+      {
+        newFolderPath: newFolderPath,
+        deviceType
+      },
+      {
+        filePath: selectedPath[deviceType],
+        ignoreHidden: toggleHiddenFiles[deviceType]
+      }
+    );
+
+    this.clearEditDialog(targetAction);
+  };
+
   _handleContextMenuListActions = ({ ...args }) => {
     const { deviceType, handleClearContextMenuClick } = this.props;
 
-    this._setContextMenuFocussedRow({});
+    this._setContextMenuFocussedRow({}, {});
     handleClearContextMenuClick(deviceType);
 
     Object.keys(args).map(a => {
@@ -200,8 +269,19 @@ class DirectoryLists extends React.Component {
         case 'copy':
           console.log(item);
           break;
-        case 'newFolder':
+        case 'paste':
           console.log(item);
+          break;
+        case 'newFolder':
+          this.handleToggleEditDialog(
+            {
+              toggle: true,
+              data: {
+                ...item.data
+              }
+            },
+            'newFolder'
+          );
           break;
         default:
           break;
@@ -209,7 +289,12 @@ class DirectoryLists extends React.Component {
     });
   };
 
-  _handleContextMenuClick = (event, { ...args }, _target) => {
+  _handleContextMenuClick = (
+    event,
+    { ...rowData },
+    { ...tableData },
+    _target
+  ) => {
     const {
       handleClearContextMenuClick,
       deviceType,
@@ -222,7 +307,8 @@ class DirectoryLists extends React.Component {
       ) {
         return null;
       }
-      this._setContextMenuFocussedRow({ ...args });
+
+      this._setContextMenuFocussedRow({ ...rowData }, { ...tableData });
       this.createContextMenu(event);
       return null;
     }
@@ -233,9 +319,12 @@ class DirectoryLists extends React.Component {
     }
   };
 
-  _setContextMenuFocussedRow = ({ ...args }) => {
+  _setContextMenuFocussedRow = ({ ...rowData }, { ...tableData }) => {
     this.setState({
-      contextMenuFocussedRow: { ...args }
+      contextMenuFocussedRow: {
+        rowData: { ...rowData },
+        tableData: { ...tableData }
+      }
     });
   };
 
@@ -304,8 +393,8 @@ class DirectoryLists extends React.Component {
         case 'rename':
           contextMenuActiveList[a] = {
             ...item,
-            enabled: Object.keys(contextMenuFocussedRow).length > 0,
-            data: contextMenuFocussedRow
+            enabled: Object.keys(contextMenuFocussedRow.rowData).length > 0,
+            data: contextMenuFocussedRow.rowData
           };
           break;
 
@@ -325,7 +414,8 @@ class DirectoryLists extends React.Component {
 
         case 'newFolder':
           contextMenuActiveList[a] = {
-            ...item
+            ...item,
+            data: contextMenuFocussedRow.tableData
           };
           break;
         default:
@@ -364,11 +454,11 @@ class DirectoryLists extends React.Component {
       classes: styles,
       deviceType,
       hideColList,
-      contextMenuPos
+      contextMenuPos,
+      selectedPath,
+      directoryLists
     } = this.props;
-    const { nodes, order, orderBy, queue } = this.props.directoryLists[
-      deviceType
-    ];
+    const { nodes, order, orderBy, queue } = directoryLists[deviceType];
     const { selected } = queue;
     const emptyRows = nodes.length < 1;
     const isMtp = deviceType === deviceTypeConst.mtp;
@@ -376,7 +466,12 @@ class DirectoryLists extends React.Component {
     const contextMenuTrigger = Object.keys(_contextMenuPos).length > 0;
     const _eventTarget = 'tableWrapperTarget';
     const { toggleDialog } = this.state;
-    const { rename } = toggleDialog;
+    const { rename, newFolder } = toggleDialog;
+    const tableData = {
+      path: selectedPath[deviceType],
+      directoryLists: directoryLists[deviceType]
+    };
+
     return (
       <React.Fragment>
         <ContextMenu
@@ -404,12 +499,37 @@ class DirectoryLists extends React.Component {
           btnNegativeText="Cancel"
           errors={rename.errors}
         />
+
+        <TextFieldEdit
+          titleText="New folder"
+          bodyText={`Path: ${newFolder.data.path || ''}`}
+          trigger={newFolder.toggle}
+          defaultValue={''}
+          label={`New folder name`}
+          id="newFolderDialog"
+          required={true}
+          multiline={false}
+          fullWidthDialog={true}
+          maxWidthDialog="sm"
+          fullWidthTextField={true}
+          autoFocus={true}
+          onClickHandler={this.handleNewFolderEditDialog}
+          btnPositiveText="Create"
+          btnNegativeText="Cancel"
+          errors={newFolder.errors}
+        />
+
         <Paper className={styles.root} elevation={0} square={true}>
           <div
             className={styles.tableWrapper}
             onClick={this._handleContextMenuClick}
             onContextMenu={event =>
-              this._handleContextMenuClick(event, {}, _eventTarget)
+              this._handleContextMenuClick(
+                event,
+                {},
+                { ...tableData },
+                _eventTarget
+              )
             }
           >
             <Table className={styles.table} aria-labelledby="tableTitle">
@@ -486,8 +606,19 @@ class DirectoryLists extends React.Component {
   };
 
   TableRowsRender = (n, isSelected) => {
-    const { classes: styles, deviceType, hideColList } = this.props;
+    const {
+      classes: styles,
+      deviceType,
+      hideColList,
+      selectedPath,
+      directoryLists
+    } = this.props;
     const _eventTarget = 'tableCellTarget';
+
+    const tableData = {
+      path: selectedPath[deviceType],
+      directoryLists: directoryLists[deviceType]
+    };
 
     return (
       <TableRow
@@ -513,7 +644,12 @@ class DirectoryLists extends React.Component {
           padding="none"
           className={`${styles.tableCell} checkboxCell`}
           onContextMenu={event =>
-            this._handleContextMenuClick(event, { ...n }, _eventTarget)
+            this._handleContextMenuClick(
+              event,
+              { ...n },
+              { ...tableData },
+              _eventTarget
+            )
           }
         >
           <Checkbox
@@ -528,7 +664,12 @@ class DirectoryLists extends React.Component {
             padding="default"
             className={`${styles.tableCell} nameCell`}
             onContextMenu={event =>
-              this._handleContextMenuClick(event, { ...n }, _eventTarget)
+              this._handleContextMenuClick(
+                event,
+                { ...n },
+                { ...tableData },
+                _eventTarget
+              )
             }
           >
             {n.isFolder ? (
@@ -552,7 +693,12 @@ class DirectoryLists extends React.Component {
             padding="none"
             className={`${styles.tableCell} sizeCell`}
             onContextMenu={event =>
-              this._handleContextMenuClick(event, { ...n }, _eventTarget)
+              this._handleContextMenuClick(
+                event,
+                { ...n },
+                { ...tableData },
+                _eventTarget
+              )
             }
           >
             {n.size} KB
@@ -563,7 +709,12 @@ class DirectoryLists extends React.Component {
             padding="none"
             className={`${styles.tableCell} dateAddedCell`}
             onContextMenu={event =>
-              this._handleContextMenuClick(event, { ...n }, _eventTarget)
+              this._handleContextMenuClick(
+                event,
+                { ...n },
+                { ...tableData },
+                _eventTarget
+              )
             }
           >
             {n.dateAdded}
@@ -697,6 +848,40 @@ const mapDispatchToProps = (dispatch, ownProps) =>
               } = await renameLocalFiles({
                 oldFilePath,
                 newFilePath
+              });
+
+              dispatch(
+                processLocalOutput({
+                  deviceType,
+                  error: localError,
+                  stderr: localStderr,
+                  data: localData,
+                  callback: a => {
+                    dispatch(fetchDirList({ ...fetchDirListArgs }, deviceType));
+                  }
+                })
+              );
+              break;
+            default:
+              break;
+          }
+        } catch (e) {
+          log.error(e);
+        }
+      },
+      handleNewFolder: (
+        { newFolderPath, deviceType },
+        { ...fetchDirListArgs }
+      ) => async (_, getState) => {
+        try {
+          switch (deviceType) {
+            case deviceTypeConst.local:
+              const {
+                error: localError,
+                stderr: localStderr,
+                data: localData
+              } = await newFolderLocalFiles({
+                newFolderPath
               });
 
               dispatch(
