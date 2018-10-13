@@ -47,7 +47,8 @@ import { styles as contextMenuStyles } from '../styles/ContextMenu';
 import {
   renameLocalFiles,
   checkFileExists,
-  newFolderLocalFiles
+  newLocalFolder,
+  newMtpFolder
 } from '../../../api/sys';
 import { pathUp, sanitizePath } from '../../../utils/paths';
 
@@ -167,7 +168,7 @@ class DirectoryLists extends React.Component {
       return null;
     }
 
-    if (checkFileExists(newFilePath)) {
+    if (checkFileExists(newFilePath, deviceType)) {
       this.handleErrorsEditDialog(
         {
           toggle: true,
@@ -192,7 +193,7 @@ class DirectoryLists extends React.Component {
     this.clearEditDialog(targetAction);
   };
 
-  handleNewFolderEditDialog = ({ ...args }) => {
+  handleNewFolderEditDialog = async ({ ...args }) => {
     const {
       deviceType,
       handleNewFolder,
@@ -202,7 +203,7 @@ class DirectoryLists extends React.Component {
     const { data } = this.state.toggleDialog.newFolder;
     const { confirm, textFieldValue: newFolderName } = args;
     const targetAction = 'newFolder';
-    console.log(args, data);
+
     if (!confirm || newFolderName === null) {
       this.clearEditDialog(targetAction);
       return null;
@@ -221,7 +222,7 @@ class DirectoryLists extends React.Component {
 
     const newFolderPath = sanitizePath(`${data.path}/${newFolderName}`);
 
-    if (checkFileExists(newFolderPath)) {
+    if (await checkFileExists(newFolderPath, deviceType)) {
       this.handleErrorsEditDialog(
         {
           toggle: true,
@@ -880,7 +881,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
                 error: localError,
                 stderr: localStderr,
                 data: localData
-              } = await newFolderLocalFiles({
+              } = await newLocalFolder({
                 newFolderPath
               });
 
@@ -890,6 +891,27 @@ const mapDispatchToProps = (dispatch, ownProps) =>
                   error: localError,
                   stderr: localStderr,
                   data: localData,
+                  callback: a => {
+                    dispatch(fetchDirList({ ...fetchDirListArgs }, deviceType));
+                  }
+                })
+              );
+              break;
+            case deviceTypeConst.mtp:
+              const {
+                error: mtpError,
+                stderr: mtpStderr,
+                data: mtpData
+              } = await newMtpFolder({
+                newFolderPath
+              });
+
+              dispatch(
+                processMtpOutput({
+                  deviceType,
+                  error: mtpError,
+                  stderr: mtpStderr,
+                  data: mtpData,
                   callback: a => {
                     dispatch(fetchDirList({ ...fetchDirListArgs }, deviceType));
                   }

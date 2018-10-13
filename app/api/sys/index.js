@@ -9,6 +9,8 @@ import { log } from '@Log';
 import { mtp } from '@Binaries';
 import childProcess from 'child_process';
 import spawn from 'spawn-promise';
+import findLodash from 'lodash/find';
+import { deviceTypeConst } from '../../constants';
 
 const readdir = Promise.promisify(fs.readdir);
 const exec = Promise.promisify(childProcess.exec);
@@ -45,10 +47,42 @@ const promisifiedExec = command => {
   }
 };
 
-export const checkFileExists = filePath => {
-  let fullPath = path.resolve(filePath);
+const promisifiedExecNoCatch = command => {
+  return new Promise(function(resolve, reject) {
+    exec(command, (error, stdout, stderr) =>
+      resolve({
+        data: stdout,
+        stderr: stderr,
+        error: error
+      })
+    );
+  });
+};
 
-  return fs.existsSync(fullPath);
+const checkMtpFileExists = async filePath => {
+  const escapedFilePath = `${escapeShell(filePath)}`;
+
+  const { data, error, stderr } = await promisifiedExecNoCatch(
+    `${mtp} "properties \\"${escapedFilePath}\\""`
+  );
+
+  return data && data.toString().trim() !== '';
+};
+
+export const checkFileExists = async (filePath, deviceType) => {
+  let fullPath = path.resolve(filePath);
+  switch (deviceType) {
+    case deviceTypeConst.local:
+      return fs.existsSync(fullPath);
+      break;
+    case deviceTypeConst.mtp:
+      return await checkMtpFileExists(fullPath);
+      break;
+    default:
+      break;
+  }
+
+  return true;
 };
 
 /**
@@ -94,6 +128,11 @@ export const asyncReadLocalDir = async ({ filePath, ignoreHidden }) => {
       const extension = path.extname(fullPath);
       const size = stat.size;
       const dateTime = stat.atime;
+
+      if (findLodash(response, { path: fullPath })) {
+        continue;
+      }
+
       response.push({
         name: file,
         path: fullPath,
@@ -121,18 +160,13 @@ export const delLocalFiles = async ({ fileList }) => {
       })
       .join(' ');
 
-    let {
-      data: fileListData,
-      error: fileListError,
-      stderr: fileListStderr
-    } = await promisifiedExec(`rm -rf ${escapedCmd}`);
+    const { data, error, stderr } = await promisifiedExec(
+      `rm -rf ${escapedCmd}`
+    );
 
-    if (fileListError || fileListStderr) {
-      log.error(
-        `${fileListError} : ${fileListStderr}`,
-        `delLocalFiles -> rm error`
-      );
-      return { error: fileListError, stderr: fileListStderr, data: false };
+    if (error || stderr) {
+      log.error(`${error} : ${stderr}`, `delLocalFiles -> rm error`);
+      return { error, stderr, data: false };
     }
 
     return { error: null, stderr: null, data: true };
@@ -155,18 +189,13 @@ export const renameLocalFiles = async ({ oldFilePath, newFilePath }) => {
     const escapedOldFilePath = `"${escapeShell(oldFilePath)}"`;
     const escapedNewFilePath = `"${escapeShell(newFilePath)}"`;
 
-    let {
-      data: fileListData,
-      error: fileListError,
-      stderr: fileListStderr
-    } = await promisifiedExec(`mv ${escapedOldFilePath} ${escapedNewFilePath}`);
+    const { data, error, stderr } = await promisifiedExec(
+      `mv ${escapedOldFilePath} ${escapedNewFilePath}`
+    );
 
-    if (fileListError || fileListStderr) {
-      log.error(
-        `${fileListError} : ${fileListStderr}`,
-        `renameLocalFiles -> mv error`
-      );
-      return { error: fileListError, stderr: fileListStderr, data: false };
+    if (error || stderr) {
+      log.error(`${error} : ${stderr}`, `renameLocalFiles -> mv error`);
+      return { error, stderr, data: false };
     }
 
     return { error: null, stderr: null, data: true };
@@ -175,26 +204,21 @@ export const renameLocalFiles = async ({ oldFilePath, newFilePath }) => {
   }
 };
 
-export const newFolderLocalFiles = async ({ newFolderPath }) => {
+export const newLocalFolder = async ({ newFolderPath }) => {
   try {
     if (typeof newFolderPath === 'undefined' || newFolderPath === null) {
       return { error: `No files selected.`, stderr: null, data: null };
     }
 
-    const escapednewFolderPath = `"${escapeShell(newFolderPath)}"`;
+    const escapedNewFolderPath = `"${escapeShell(newFolderPath)}"`;
 
-    let {
-      data: fileListData,
-      error: fileListError,
-      stderr: fileListStderr
-    } = await promisifiedExec(`mkdir -p ${escapednewFolderPath}`);
+    const { data, error, stderr } = await promisifiedExec(
+      `mkdir -p ${escapedNewFolderPath}`
+    );
 
-    if (fileListError || fileListStderr) {
-      log.error(
-        `${fileListError} : ${fileListStderr}`,
-        `newFolderLocalFiles -> mkdir error`
-      );
-      return { error: fileListError, stderr: fileListStderr, data: false };
+    if (error || stderr) {
+      log.error(`${error} : ${stderr}`, `newLocalFolder -> mkdir error`);
+      return { error, stderr, data: false };
     }
 
     return { error: null, stderr: null, data: true };
@@ -281,7 +305,11 @@ export const asyncReadMtpDir = async ({ filePath, ignoreHidden }) => {
       let dateTime = `${filePropsList[mtpCmdChop.dateAdded]} ${
         filePropsList[mtpCmdChop.timeAdded]
       }`;
-
+      
+      //avoid duplicate values
+      if (findLodash(response, { path: fullPath })) {
+        continue;
+      }
       response.push({
         name: fileName,
         path: fullPath,
@@ -305,21 +333,36 @@ export const delMtpFiles = async ({ fileList }) => {
     }
 
     for (let i in fileList) {
-      let {
-        data: fileListData,
-        error: fileListError,
-        stderr: fileListStderr
-      } = await promisifiedExec(
+      const { data, error, stderr } = await promisifiedExec(
         `${mtp} "rm \\"${escapeShell(fileList[i])}\\""`
       );
 
-      if (fileListError || fileListStderr) {
-        log.error(
-          `${fileListError} : ${fileListStderr}`,
-          `delMtpDir -> rm error`
-        );
-        return { error: fileListError, stderr: fileListStderr, data: false };
+      if (error || stderr) {
+        log.error(`${error} : ${stderr}`, `delMtpDir -> rm error`);
+        return { error, stderr, data: false };
       }
+    }
+
+    return { error: null, stderr: null, data: true };
+  } catch (e) {
+    log.error(e);
+  }
+};
+
+export const newMtpFolder = async ({ newFolderPath }) => {
+  try {
+    if (typeof newFolderPath === 'undefined' || newFolderPath === null) {
+      return { error: `No files selected.`, stderr: null, data: null };
+    }
+
+    const escapedNewFolderPath = `${escapeShell(newFolderPath)}`;
+    const { data, error, stderr } = await promisifiedExec(
+      `${mtp} "mkpath \\"${escapedNewFolderPath}\\""`
+    );
+
+    if (error || stderr) {
+      log.error(`${error} : ${stderr}`, `newMtpFolder -> mkpath error`);
+      return { error, stderr, data: false };
     }
 
     return { error: null, stderr: null, data: true };

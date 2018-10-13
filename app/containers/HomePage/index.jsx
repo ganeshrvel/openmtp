@@ -27,6 +27,7 @@ class Home extends Component {
     todo: onscroll clear context menu
     todo: focus the datatable
     todo: new folder actions
+    todo: togglehiddenfolders to showhiddenfolders
     todo: delete for local error for permission error/not found etc
     todo: folder/files different color
     todo: fix sizes in local
