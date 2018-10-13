@@ -251,15 +251,21 @@ class DirectoryLists extends React.Component {
 
   createContextMenu = event => {
     const { handleContextMenuClick, deviceType } = this.props;
-    const { root } = contextMenuStyles(null);
+    const {
+      root: rootStyles,
+      heightDeviceLocal: deviceLocalStyles,
+      heightDeviceMtp: deviceMtpStyles
+    } = contextMenuStyles(null);
 
     const screenW = window.innerWidth;
     const screenH = window.innerHeight;
     const clickX = event.clientX;
     const clickY = event.clientY;
-    const rootW = root.width;
-    const rootH = root.height;
-
+    const rootW = rootStyles.width;
+    const rootH =
+      deviceType === deviceTypeConst.local
+        ? deviceLocalStyles.height
+        : deviceMtpStyles.height;
     const right = screenW - clickX > rootW;
     const left = !right;
     const top = screenH - clickY > rootH;
@@ -295,8 +301,6 @@ class DirectoryLists extends React.Component {
     Object.keys(_contextMenuList).map(a => {
       const item = _contextMenuList[a];
       switch (a) {
-        default:
-          break;
         case 'rename':
           contextMenuActiveList[a] = {
             ...item,
@@ -312,10 +316,19 @@ class DirectoryLists extends React.Component {
           };
           break;
 
+        case 'paste':
+          contextMenuActiveList[a] = {
+            ...item,
+            enabled: false
+          };
+          break;
+
         case 'newFolder':
           contextMenuActiveList[a] = {
             ...item
           };
+          break;
+        default:
           break;
       }
     });
@@ -676,27 +689,6 @@ const mapDispatchToProps = (dispatch, ownProps) =>
       ) => async (_, getState) => {
         try {
           switch (deviceType) {
-            case deviceTypeConst.mtp:
-              /* const {
-              error: mtpError,
-              stderr: mtpStderr,
-              data: mtpData
-            } = await delMtpFiles({
-              fileList
-            });
-
-            dispatch(
-              processMtpOutput({
-                deviceType,
-                error: mtpError,
-                stderr: mtpStderr,
-                data: mtpData,
-                callback: a => {
-                  dispatch(fetchDirList({ ...fetchDirListArgs }, deviceType));
-                }
-              })
-            );*/
-              break;
             case deviceTypeConst.local:
               const {
                 error: localError,

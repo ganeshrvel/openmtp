@@ -124,6 +124,11 @@ export const initialState = {
         label: 'Copy',
         data: {}
       },
+      paste: {
+        enabled: true,
+        label: 'Paste',
+        data: {}
+      },
       newFolder: {
         enabled: true,
         label: 'New Folder',
@@ -131,14 +136,14 @@ export const initialState = {
       }
     },
     [deviceTypeConst.mtp]: {
-      rename: {
-        enabled: true,
-        label: 'Rename',
-        data: {}
-      },
       copy: {
         enabled: true,
         label: 'Copy',
+        data: {}
+      },
+      paste: {
+        enabled: true,
+        label: 'Paste',
         data: {}
       },
       newFolder: {

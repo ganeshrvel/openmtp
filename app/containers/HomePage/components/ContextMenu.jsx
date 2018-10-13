@@ -1,11 +1,13 @@
 'use strict';
 
 import React, { Component } from 'react';
+import classNames from 'classnames';
 import { styles } from '../styles/ContextMenu';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { withStyles } from '@material-ui/core/styles';
+import { deviceTypeConst } from '../../../constants';
 
 class ContextMenu extends React.Component {
   constructor(props) {
@@ -35,7 +37,10 @@ class ContextMenu extends React.Component {
 
     return trigger ? (
       <div
-        className={styles.root}
+        className={classNames(styles.root, {
+          [styles.heightDeviceLocal]: deviceType === deviceTypeConst.local,
+          [styles.heightDeviceMtp]: deviceType === deviceTypeConst.mtp
+        })}
         style={contextMenuPos}
         ref={this.contextMenuRef}
       >
