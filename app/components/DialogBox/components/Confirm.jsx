@@ -1,5 +1,5 @@
 import React from 'react';
-import { styles } from '../styles/index';
+import { styles } from '../styles/Confirm';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -22,17 +22,10 @@ class Confirm extends React.Component {
     const { bodyText, trigger } = this.props;
     return (
       <div>
-        <Dialog
-          open={trigger}
-          aria-labelledby="confirm-dialogbox"
-        >
-          <DialogTitle>
-            Confirm Action!
-          </DialogTitle>
+        <Dialog open={trigger} aria-labelledby="confirm-dialogbox">
+          <DialogTitle>Confirm Action!</DialogTitle>
           <DialogContent>
-            <DialogContentText>
-              {bodyText}
-            </DialogContentText>
+            <DialogContentText>{bodyText}</DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button

@@ -4,8 +4,8 @@ import { deviceTypeConst } from '../../constants';
 
 export const initialState = {
   hideHiddenFiles: {
-    [deviceTypeConst.local]: false,
-    [deviceTypeConst.mtp]: false
+    [deviceTypeConst.local]: true,
+    [deviceTypeConst.mtp]: true
   }
 };
 

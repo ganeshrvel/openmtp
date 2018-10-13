@@ -17,10 +17,16 @@ import { log } from '@Log';
 import { withReducer } from '../../../store/reducers/withReducer';
 import SidebarAreaPaneLists from './SidebarAreaPaneLists';
 import reducers from '../reducers';
-import { fetchDirList, processMtpOutput, processLocalOutput } from '../actions';
+import {
+  fetchDirList,
+  processMtpOutput,
+  processLocalOutput,
+  setMtpStorage
+} from '../actions';
 import {
   makeDirectoryLists,
   makeIsLoading,
+  makeMtpStoragesList,
   makeSidebarFavouriteList,
   makeToolbarList
 } from '../selectors';
@@ -29,14 +35,19 @@ import { makeHideHiddenFiles } from '../../Settings/selectors';
 import { delLocalFiles, delMtpFiles } from '../../../api/sys';
 import { deviceTypeConst } from '../../../constants';
 import { Confirm as ConfirmDialog } from '../../../components/DialogBox';
+import { Selection as SelectionDialog } from '../../../components/DialogBox';
 import { pathUp } from '../../../utils/paths';
 
 class ToolbarAreaPane extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
+    this.initialState = {
       toggleDrawer: false,
-      toggleDeleteConfirmDialog: false
+      toggleDeleteConfirmDialog: false,
+      toggleMtpStorageSelectionDialog: false
+    };
+    this.state = {
+      ...this.initialState
     };
   }
 
@@ -50,6 +61,19 @@ class ToolbarAreaPane extends React.Component {
     this.setState({
       toggleDeleteConfirmDialog: status
     });
+  };
+
+  handleToggleMtpStorageSelectionDialog = status => {
+    this.setState({
+      toggleMtpStorageSelectionDialog: status
+    });
+  };
+
+  handleMtpStoragesListClick = selected => {
+    const { handleSetMtpStorage, mtpStoragesList } = this.props;
+    this.handleToggleMtpStorageSelectionDialog(false);
+
+    handleSetMtpStorage({ selected, mtpStoragesList });
   };
 
   handleDeleteConfirmDialog = confirm => {
@@ -77,6 +101,9 @@ class ToolbarAreaPane extends React.Component {
         break;
       case 'delete':
         this.handleToggleDeleteConfirmDialog(true);
+        break;
+      case 'storage':
+        this.handleToggleMtpStorageSelectionDialog(true);
         break;
       default:
         break;
@@ -124,16 +151,30 @@ class ToolbarAreaPane extends React.Component {
       sidebarFavouriteList,
       deviceType,
       showMenu,
-      selectedPath
+      selectedPath,
+      mtpStoragesList
     } = this.props;
 
-    const { toggleDeleteConfirmDialog } = this.state;
+    const {
+      toggleDeleteConfirmDialog,
+      toggleMtpStorageSelectionDialog
+    } = this.state;
     return (
       <div className={styles.root}>
         <ConfirmDialog
           bodyText="Are you sure you want to delete the items?"
           trigger={toggleDeleteConfirmDialog}
           onClickHandler={this.handleDeleteConfirmDialog}
+        />
+        <SelectionDialog
+          titleText="Select Storage Option"
+          list={mtpStoragesList}
+          id="selectionDialog"
+          open={
+            deviceType === deviceTypeConst.mtp &&
+            toggleMtpStorageSelectionDialog
+          }
+          onClose={this.handleMtpStoragesListClick}
         />
         <Drawer
           open={this.state.toggleDrawer}
@@ -254,6 +295,34 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         } catch (e) {
           log.error(e);
         }
+      },
+
+      handleSetMtpStorage: ({ selected, mtpStoragesList }) => (_, getState) => {
+        if (Object.keys(mtpStoragesList).length < 1) {
+          return null;
+        }
+
+        let _mtpStoragesList = {};
+
+        Object.keys(mtpStoragesList).map(a => {
+          const item = mtpStoragesList[a];
+          let _selected = false;
+          if (selected === a) {
+            _selected = true;
+          }
+
+          _mtpStoragesList = {
+            ...mtpStoragesList,
+            ..._mtpStoragesList,
+            [a]: {
+              ...item,
+              selected: _selected
+            }
+          };
+          return null;
+        });
+        
+        dispatch(setMtpStorage({ ..._mtpStoragesList }));
       }
     },
     dispatch
@@ -266,7 +335,8 @@ const mapStateToProps = (state, props) => {
     isLoading: makeIsLoading(state),
     selectedPath: makeSelectedPath(state),
     hideHiddenFiles: makeHideHiddenFiles(state),
-    directoryLists: makeDirectoryLists(state)
+    directoryLists: makeDirectoryLists(state),
+    mtpStoragesList: makeMtpStoragesList(state)
   };
 };
 

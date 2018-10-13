@@ -21,7 +21,8 @@ const actionTypesList = [
   'SET_MTP_ERRORS',
   'SET_MTP_STATUS',
   'SET_CONTEXT_MENU_POS',
-  'CLEAR_CONTEXT_MENU_POS'
+  'CLEAR_CONTEXT_MENU_POS',
+  'SET_MTP_STORAGE'
 ];
 
 export const actionTypes = prefixer(prefix, actionTypesList);
@@ -70,6 +71,14 @@ export function setMtpStatus(data) {
     payload: data
   };
 }
+
+export function setMtpStorage({ ...data }) {
+  return {
+    type: actionTypes.SET_MTP_STORAGE,
+    payload: data
+  };
+}
+
 export function setContextMenuPos({ ...data }, deviceType) {
   return {
     type: actionTypes.SET_CONTEXT_MENU_POS,
@@ -79,6 +88,7 @@ export function setContextMenuPos({ ...data }, deviceType) {
     }
   };
 }
+
 export function clearContextMenuPos(deviceType) {
   return {
     type: actionTypes.CLEAR_CONTEXT_MENU_POS,

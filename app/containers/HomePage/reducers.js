@@ -81,6 +81,11 @@ export const initialState = {
         enabled: true,
         label: 'Delete',
         imgSrc: 'Toolbar/delete.svg'
+      },
+      storage: {
+        enabled: true,
+        label: 'Storage',
+        imgSrc: 'Toolbar/storage.svg'
       }
     }
   },
@@ -157,6 +162,17 @@ export const initialState = {
   contextMenuPos: {
     [deviceTypeConst.local]: {},
     [deviceTypeConst.mtp]: {}
+  },
+
+  mtpStoragesList: {
+    65537: {
+      name: `Internal shared storage`,
+      selected: true
+    },
+    3163619329: {
+      name: `SD card`,
+      selected: false
+    }
   }
 };
 
@@ -242,6 +258,16 @@ export default function Home(state = initialState, action) {
             ...state.directoryLists[deviceType],
             nodes: [...payload.nodes]
           }
+        }
+      };
+
+    case actionTypes.SET_MTP_STORAGE:
+      return {
+        ...state,
+        ...setLoadedMetaData(state),
+        mtpStoragesList: {
+          ...initialState.mtpStoragesList,
+          ...payload
         }
       };
 
