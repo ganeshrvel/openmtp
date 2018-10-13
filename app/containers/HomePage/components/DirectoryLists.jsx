@@ -44,22 +44,27 @@ import {
 import { makeToggleHiddenFiles } from '../../Settings/selectors';
 import { deviceTypeConst } from '../../../constants';
 import { styles as contextMenuStyles } from '../styles/ContextMenu';
-import { renameLocalFiles } from '../../../api/sys';
+import { renameLocalFiles, checkFileExists } from '../../../api/sys';
 import { pathUp, sanitizePath } from '../../../utils/paths';
 
 class DirectoryLists extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
+    this.initialState = {
       contextMenuFocussedRow: {},
-      renameDialog: {
-        errors: {
+      toggleDialog: {
+        rename: {
+          errors: {
+            toggle: false,
+            message: null
+          },
           toggle: false,
-          message: null
-        },
-        toggle: false,
-        data: {}
+          data: {}
+        }
       }
+    };
+    this.state = {
+      ...this.initialState
     };
   }
 
@@ -72,35 +77,40 @@ class DirectoryLists extends React.Component {
     });
   }
 
-  handleToggleRenameEditDialog = ({ ...args }) => {
-    const { renameDialog } = this.state;
+  handleToggleEditDialog = ({ ...args }, targetAction) => {
+    const { toggleDialog } = this.state;
     this.setState({
-      renameDialog: {
-        ...renameDialog,
-        ...args
+      toggleDialog: {
+        ...toggleDialog,
+        [targetAction]: {
+          ...toggleDialog[targetAction],
+          ...args
+        }
       }
     });
   };
 
-  handleErrorsRenameEditDialog = ({ ...args }) => {
-    const { renameDialog } = this.state;
+  handleErrorsEditDialog = ({ ...args }, targetAction) => {
+    const { toggleDialog } = this.state;
     this.setState({
-      renameDialog: {
-        ...renameDialog,
-        errors: { ...args }
+      toggleDialog: {
+        ...toggleDialog,
+        [targetAction]: {
+          ...toggleDialog[targetAction],
+          errors: { ...args }
+        }
       }
     });
   };
 
-  clearRenameEditDialog = () => {
+  clearEditDialog = targetAction => {
+    const { toggleDialog } = this.state;
     this.setState({
-      renameDialog: {
-        errors: {
-          toggle: false,
-          message: null
-        },
-        toggle: false,
-        data: {}
+      toggleDialog: {
+        ...toggleDialog,
+        [targetAction]: {
+          ...this.initialState.toggleDialog[targetAction]
+        }
       }
     });
   };
@@ -112,32 +122,46 @@ class DirectoryLists extends React.Component {
       toggleHiddenFiles,
       selectedPath
     } = this.props;
-    const { data } = this.state.renameDialog;
-    const { confirm, textFieldValue } = args;
+    const { data } = this.state.toggleDialog.rename;
+    const { confirm, textFieldValue: newFileName } = args;
+    const targetAction = 'rename';
 
-    if (!confirm || textFieldValue === null) {
-      this.clearRenameEditDialog();
+    if (!confirm || newFileName === null) {
+      this.clearEditDialog(targetAction);
       return null;
     }
 
-    if (textFieldValue.trim() === '' || /[/\\?%*:|"<>]/g.test(textFieldValue)) {
-      this.handleErrorsRenameEditDialog({
-        toggle: true,
-        message: `Error: Illegal characters.`
-      });
+    if (newFileName.trim() === '' || /[/\\?%*:|"<>]/g.test(newFileName)) {
+      this.handleErrorsEditDialog(
+        {
+          toggle: true,
+          message: `Error: Illegal characters.`
+        },
+        targetAction
+      );
       return null;
     }
 
     //same file name; no change
     const _pathUp = pathUp(data.path);
-    const newFilePath = sanitizePath(`${_pathUp}/${textFieldValue}`);
+    const newFilePath = sanitizePath(`${_pathUp}/${newFileName}`);
     const oldFilePath = data.path;
 
     if (newFilePath === data.path) {
-      this.clearRenameEditDialog();
+      this.clearEditDialog(targetAction);
       return null;
     }
 
+    if (checkFileExists(newFilePath)) {
+      this.handleErrorsEditDialog(
+        {
+          toggle: true,
+          message: `Error: The name "${newFileName}" is already taken.`
+        },
+        targetAction
+      );
+      return null;
+    }
     handleRenameFile(
       {
         oldFilePath: oldFilePath,
@@ -150,7 +174,7 @@ class DirectoryLists extends React.Component {
       }
     );
 
-    this.clearRenameEditDialog();
+    this.clearEditDialog(targetAction);
   };
 
   _handleContextMenuListActions = ({ ...args }) => {
@@ -163,12 +187,15 @@ class DirectoryLists extends React.Component {
       const item = args[a];
       switch (a) {
         case 'rename':
-          this.handleToggleRenameEditDialog({
-            toggle: true,
-            data: {
-              ...item.data
-            }
-          });
+          this.handleToggleEditDialog(
+            {
+              toggle: true,
+              data: {
+                ...item.data
+              }
+            },
+            'rename'
+          );
           break;
         case 'copy':
           console.log(item);
@@ -335,7 +362,8 @@ class DirectoryLists extends React.Component {
     const _contextMenuPos = contextMenuPos[deviceType];
     const contextMenuTrigger = Object.keys(_contextMenuPos).length > 0;
     const _eventTarget = 'tableWrapperTarget';
-    const { renameDialog } = this.state;
+    const { toggleDialog } = this.state;
+    const { rename } = toggleDialog;
     return (
       <React.Fragment>
         <ContextMenu
@@ -347,12 +375,10 @@ class DirectoryLists extends React.Component {
         />
         <TextFieldEdit
           titleText="Rename?"
-          bodyText={`Path: ${renameDialog.data.path}`}
-          trigger={renameDialog.toggle}
-          defaultValue={renameDialog.data.name}
-          label={
-            renameDialog.data.isFolder ? `New folder name` : `New file name`
-          }
+          bodyText={`Path: ${rename.data.path || ''}`}
+          trigger={rename.toggle}
+          defaultValue={rename.data.name || ''}
+          label={rename.data.isFolder ? `New folder name` : `New file name`}
           id="renameDialog"
           required={true}
           multiline={false}
@@ -363,7 +389,7 @@ class DirectoryLists extends React.Component {
           onClickHandler={this.handleRenameEditDialog}
           btnPositiveText="Rename"
           btnNegativeText="Cancel"
-          errors={renameDialog.errors}
+          errors={rename.errors}
         />
         <Paper className={styles.root} elevation={0} square={true}>
           <div

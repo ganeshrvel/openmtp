@@ -111,7 +111,7 @@ export function processMtpOutput({
       if (mtpError) {
         log.error(mtpError, 'processMtpOutput');
         if (mtpThrowAlert) {
-          dispatch(throwAlert({ message: mtpError }));
+          dispatch(throwAlert({ message: mtpError.toString() }));
         }
         return false;
       }

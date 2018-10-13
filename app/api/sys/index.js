@@ -45,6 +45,12 @@ const promisifiedExec = command => {
   }
 };
 
+export const checkFileExists = filePath => {
+  let fullPath = path.resolve(filePath);
+
+  return fs.existsSync(fullPath);
+};
+
 /**
   Local device ->
  */
@@ -148,7 +154,7 @@ export const renameLocalFiles = async ({ oldFilePath, newFilePath }) => {
 
     const escapedOldFilePath = `"${escapeShell(oldFilePath)}"`;
     const escapedNewFilePath = `"${escapeShell(newFilePath)}"`;
-    
+
     let {
       data: fileListData,
       error: fileListError,

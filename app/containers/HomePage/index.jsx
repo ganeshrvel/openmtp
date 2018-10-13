@@ -36,6 +36,8 @@ class Home extends Component {
     todo: add menu btn fot mtp
     todo: binary for production
     todo: Side bar menu sdcard
+    todo: error boundary
+    todo: copy paste cut redo undo in prod
    */
   }
 

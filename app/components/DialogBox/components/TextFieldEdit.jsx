@@ -17,10 +17,11 @@ class TextFieldEdit extends React.Component {
     };
   }
 
-  handleClick = ({ confirm = false }) => {
+  handleClick = ({ confirm = false }, e) => {
     const { textFieldValue } = this.state;
     const { onClickHandler } = this.props;
 
+    e.preventDefault();
     onClickHandler({ confirm, textFieldValue });
   };
 
@@ -58,7 +59,11 @@ class TextFieldEdit extends React.Component {
         maxWidth={maxWidthDialog}
       >
         <DialogTitle>{titleText}</DialogTitle>
-        <form onSubmit={e => this.handleClick({ confirm: true })}>
+        <form
+          onSubmit={e => this.handleClick({ confirm: true }, e)}
+          noValidate
+          autoComplete="off"
+        >
           <DialogContent>
             <DialogContentText className={styles.dialogContentText}>
               {bodyText}
@@ -78,13 +83,13 @@ class TextFieldEdit extends React.Component {
           </DialogContent>
           <DialogActions>
             <Button
-              onClick={e => this.handleClick({ confirm: true })}
+              onClick={e => this.handleClick({ confirm: true }, e)}
               color="secondary"
             >
               {btnPositiveText}
             </Button>
             <Button
-              onClick={e => this.handleClick({ confirm: false })}
+              onClick={e => this.handleClick({ confirm: false }, e)}
               color="secondary"
             >
               {btnNegativeText}
