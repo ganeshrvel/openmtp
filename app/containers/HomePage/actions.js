@@ -1,6 +1,10 @@
 'use strict';
 import prefixer from '../../utils/reducerPrefixer.js';
-import { asyncReadLocalDir, asyncReadMtpDir } from '../../api/sys';
+import {
+  asyncReadLocalDir,
+  asyncReadMtpDir,
+  fetchMtpStorageOptions
+} from '../../api/sys';
 import { log } from '@Log';
 import { throwAlert } from '../Alerts/actions';
 import { deviceTypeConst } from '../../constants';
@@ -22,7 +26,7 @@ const actionTypesList = [
   'SET_MTP_STATUS',
   'SET_CONTEXT_MENU_POS',
   'CLEAR_CONTEXT_MENU_POS',
-  'SET_MTP_STORAGE'
+  'CHANGE_MTP_STORAGE'
 ];
 
 export const actionTypes = prefixer(prefix, actionTypesList);
@@ -65,16 +69,39 @@ function _fetchDirList(data, deviceType) {
   };
 }
 
-export function setMtpStatus(data) {
+export function setMtpStorageOptions({ ...args }, deviceType) {
+  return async dispatch => {
+    try {
+      const { error, stderr, data } = await fetchMtpStorageOptions();
+
+      dispatch(
+        processMtpOutput({
+          deviceType,
+          error,
+          stderr,
+          data,
+          callback: a => {
+            dispatch(changeMtpStorage({ ...data }));
+            dispatch(fetchDirList({ ...args }, deviceType));
+          }
+        })
+      );
+    } catch (e) {
+      log.error(e);
+    }
+  };
+}
+
+export function changeMtpStorage({ ...data }) {
   return {
-    type: actionTypes.SET_MTP_STATUS,
+    type: actionTypes.CHANGE_MTP_STORAGE,
     payload: data
   };
 }
 
-export function setMtpStorage({ ...data }) {
+export function setMtpStatus(data) {
   return {
-    type: actionTypes.SET_MTP_STORAGE,
+    type: actionTypes.SET_MTP_STATUS,
     payload: data
   };
 }

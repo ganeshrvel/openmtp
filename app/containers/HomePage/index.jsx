@@ -22,7 +22,7 @@ class Home extends Component {
 
   componentWillMount() {
     /*
-    todo: reload check mtp storage ids, and on device change, change mtp ids, also for onclick dialog on storage list
+    todo: device storage ids change on device change, onclick dialog on storage list ->  fetch root, change selected path after that
     todo: do a mtp " directory name test
     todo: multiple mtp devices at same time
     todo: onscroll clear context menu

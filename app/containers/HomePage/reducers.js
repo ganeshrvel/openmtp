@@ -252,7 +252,7 @@ export default function Home(state = initialState, action) {
         }
       };
 
-    case actionTypes.SET_MTP_STORAGE:
+    case actionTypes.CHANGE_MTP_STORAGE:
       return {
         ...state,
         ...setLoadedMetaData(state),

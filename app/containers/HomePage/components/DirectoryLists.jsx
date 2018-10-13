@@ -32,7 +32,7 @@ import {
   clearContextMenuPos,
   processMtpOutput,
   processLocalOutput,
-  setMtpStorage
+  setMtpStorageOptions
 } from '../actions';
 import {
   makeDirectoryLists,
@@ -49,8 +49,7 @@ import {
   renameLocalFiles,
   checkFileExists,
   newLocalFolder,
-  newMtpFolder,
-  fetchMtpStorageOptions
+  newMtpFolder
 } from '../../../api/sys';
 import { pathUp, sanitizePath } from '../../../utils/paths';
 
@@ -842,24 +841,11 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         dispatch(setSelectedDirLists({ selected: newSelected }, deviceType));
       },
 
-      handleFetchMtpStorageOptions: ({ ...args }, deviceType) => async (
+      handleFetchMtpStorageOptions: ({ ...args }, deviceType) => (
         _,
         getState
       ) => {
-        const { error, stderr, data } = await fetchMtpStorageOptions();
-
-        dispatch(
-          processMtpOutput({
-            deviceType,
-            error,
-            stderr,
-            data,
-            callback: a => {
-              dispatch(setMtpStorage({ ...data }));
-              dispatch(fetchDirList({ ...args }, deviceType));
-            }
-          })
-        );
+        dispatch(setMtpStorageOptions({ ...args }, deviceType));
       },
 
       handleFetchDirList: ({ ...args }, deviceType) => (_, getState) => {

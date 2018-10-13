@@ -21,7 +21,8 @@ import {
   fetchDirList,
   processMtpOutput,
   processLocalOutput,
-  setMtpStorage
+  changeMtpStorage,
+  setMtpStorageOptions
 } from '../actions';
 import {
   makeDirectoryLists,
@@ -88,7 +89,12 @@ class ToolbarAreaPane extends React.Component {
   };
 
   handleToolbarAction = itemType => {
-    const { selectedPath, deviceType } = this.props;
+    const {
+      selectedPath,
+      deviceType,
+      hideHiddenFiles,
+      handleReloadDirList
+    } = this.props;
     let filePath = '/';
     switch (itemType) {
       case 'up':
@@ -97,7 +103,13 @@ class ToolbarAreaPane extends React.Component {
         break;
       case 'refresh':
         filePath = selectedPath[deviceType];
-        this._fetchDirList({ filePath, deviceType });
+        handleReloadDirList(
+          {
+            filePath,
+            ignoreHidden: hideHiddenFiles[deviceType]
+          },
+          deviceType
+        );
         break;
       case 'delete':
         this.handleToggleDeleteConfirmDialog(true);
@@ -241,6 +253,11 @@ const mapDispatchToProps = (dispatch, ownProps) =>
       handleFetchDirList: ({ ...args }, deviceType) => (_, getState) => {
         dispatch(fetchDirList({ ...args }, deviceType));
       },
+
+      handleReloadDirList: ({ ...args }, deviceType) => (_, getState) => {
+        dispatch(setMtpStorageOptions({ ...args }, deviceType));
+      },
+
       handleDelFiles: (
         { fileList, deviceType },
         { ...fetchDirListArgs }
@@ -321,8 +338,8 @@ const mapDispatchToProps = (dispatch, ownProps) =>
           };
           return null;
         });
-        
-        dispatch(setMtpStorage({ ..._mtpStoragesList }));
+
+        dispatch(changeMtpStorage({ ..._mtpStoragesList }));
       }
     },
     dispatch
