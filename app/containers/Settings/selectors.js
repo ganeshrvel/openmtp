@@ -2,7 +2,7 @@ import { createSelector } from 'reselect';
 
 const make = (state, props) => state.Settings;
 
-export const makeToggleHiddenFiles = createSelector(
+export const makeHideHiddenFiles = createSelector(
   make,
-  state => state.toggleHiddenFiles
+  state => state.hideHiddenFiles
 );

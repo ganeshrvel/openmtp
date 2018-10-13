@@ -25,7 +25,7 @@ import {
   makeToolbarList
 } from '../selectors';
 import { makeSelectedPath } from '../selectors';
-import { makeToggleHiddenFiles } from '../../Settings/selectors';
+import { makeHideHiddenFiles } from '../../Settings/selectors';
 import { delLocalFiles, delMtpFiles } from '../../../api/sys';
 import { deviceTypeConst } from '../../../constants';
 import { Confirm as ConfirmDialog } from '../../../components/DialogBox';
@@ -84,12 +84,12 @@ class ToolbarAreaPane extends React.Component {
   };
 
   _fetchDirList = ({ filePath, deviceType, isSidemenu = false }) => {
-    const { handleFetchDirList, toggleHiddenFiles } = this.props;
+    const { handleFetchDirList, hideHiddenFiles } = this.props;
 
     handleFetchDirList(
       {
         filePath,
-        ignoreHidden: toggleHiddenFiles[deviceType]
+        ignoreHidden: hideHiddenFiles[deviceType]
       },
       deviceType
     );
@@ -102,7 +102,7 @@ class ToolbarAreaPane extends React.Component {
     const {
       directoryLists,
       handleDelFiles,
-      toggleHiddenFiles,
+      hideHiddenFiles,
       selectedPath
     } = this.props;
     handleDelFiles(
@@ -112,7 +112,7 @@ class ToolbarAreaPane extends React.Component {
       },
       {
         filePath: selectedPath[deviceType],
-        ignoreHidden: toggleHiddenFiles[deviceType]
+        ignoreHidden: hideHiddenFiles[deviceType]
       }
     );
   };
@@ -265,7 +265,7 @@ const mapStateToProps = (state, props) => {
     toolbarList: makeToolbarList(state),
     isLoading: makeIsLoading(state),
     selectedPath: makeSelectedPath(state),
-    toggleHiddenFiles: makeToggleHiddenFiles(state),
+    hideHiddenFiles: makeHideHiddenFiles(state),
     directoryLists: makeDirectoryLists(state)
   };
 };

@@ -73,7 +73,7 @@ export const checkFileExists = async (filePath, deviceType) => {
   let fullPath = path.resolve(filePath);
   switch (deviceType) {
     case deviceTypeConst.local:
-      return fs.existsSync(fullPath);
+      return await fs.existsSync(fullPath);
       break;
     case deviceTypeConst.mtp:
       return await checkMtpFileExists(fullPath);
@@ -305,7 +305,7 @@ export const asyncReadMtpDir = async ({ filePath, ignoreHidden }) => {
       let dateTime = `${filePropsList[mtpCmdChop.dateAdded]} ${
         filePropsList[mtpCmdChop.timeAdded]
       }`;
-      
+
       //avoid duplicate values
       if (findLodash(response, { path: fullPath })) {
         continue;

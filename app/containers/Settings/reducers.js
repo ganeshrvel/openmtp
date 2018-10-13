@@ -3,9 +3,9 @@ import { actionTypes } from './actions';
 import { deviceTypeConst } from '../../constants';
 
 export const initialState = {
-  toggleHiddenFiles: {
-    [deviceTypeConst.local]: true,
-    [deviceTypeConst.mtp]: true
+  hideHiddenFiles: {
+    [deviceTypeConst.local]: false,
+    [deviceTypeConst.mtp]: false
   }
 };
 
@@ -15,8 +15,8 @@ export default function Settings(state = initialState, action) {
     case actionTypes.TOGGLE_HIDDEN_FILES:
       return {
         ...state,
-        toggleHiddenFiles: {
-          ...state.toggleHiddenFiles,
+        hideHiddenFiles: {
+          ...state.hideHiddenFiles,
           [deviceTypeConst]: {
             ...state.directoryLists[deviceTypeConst],
             payload

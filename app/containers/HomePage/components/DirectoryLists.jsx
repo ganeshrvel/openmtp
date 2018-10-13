@@ -41,7 +41,7 @@ import {
   makeContextMenuPos,
   makeContextMenuList
 } from '../selectors';
-import { makeToggleHiddenFiles } from '../../Settings/selectors';
+import { makeHideHiddenFiles } from '../../Settings/selectors';
 import { deviceTypeConst } from '../../../constants';
 import { styles as contextMenuStyles } from '../styles/ContextMenu';
 import {
@@ -131,11 +131,11 @@ class DirectoryLists extends React.Component {
     });
   };
 
-  handleRenameEditDialog = ({ ...args }) => {
+  handleRenameEditDialog = async ({ ...args }) => {
     const {
       deviceType,
       handleRenameFile,
-      toggleHiddenFiles,
+      hideHiddenFiles,
       selectedPath
     } = this.props;
     const { data } = this.state.toggleDialog.rename;
@@ -168,7 +168,7 @@ class DirectoryLists extends React.Component {
       return null;
     }
 
-    if (checkFileExists(newFilePath, deviceType)) {
+    if (await checkFileExists(newFilePath, deviceType)) {
       this.handleErrorsEditDialog(
         {
           toggle: true,
@@ -186,7 +186,7 @@ class DirectoryLists extends React.Component {
       },
       {
         filePath: selectedPath[deviceType],
-        ignoreHidden: toggleHiddenFiles[deviceType]
+        ignoreHidden: hideHiddenFiles[deviceType]
       }
     );
 
@@ -197,7 +197,7 @@ class DirectoryLists extends React.Component {
     const {
       deviceType,
       handleNewFolder,
-      toggleHiddenFiles,
+      hideHiddenFiles,
       selectedPath
     } = this.props;
     const { data } = this.state.toggleDialog.newFolder;
@@ -240,7 +240,7 @@ class DirectoryLists extends React.Component {
       },
       {
         filePath: selectedPath[deviceType],
-        ignoreHidden: toggleHiddenFiles[deviceType]
+        ignoreHidden: hideHiddenFiles[deviceType]
       }
     );
 
@@ -439,12 +439,12 @@ class DirectoryLists extends React.Component {
   }
 
   _fetchDirList({ path, deviceType }) {
-    const { handleFetchDirList, toggleHiddenFiles } = this.props;
+    const { handleFetchDirList, hideHiddenFiles } = this.props;
 
     handleFetchDirList(
       {
         filePath: path,
-        ignoreHidden: toggleHiddenFiles[deviceType]
+        ignoreHidden: hideHiddenFiles[deviceType]
       },
       deviceType
     );
@@ -935,7 +935,7 @@ const mapStateToProps = (state, props) => {
     mtpDevice: makeMtpDevice(state),
     directoryLists: makeDirectoryLists(state),
     isLoading: makeIsLoading(state),
-    toggleHiddenFiles: makeToggleHiddenFiles(state),
+    hideHiddenFiles: makeHideHiddenFiles(state),
     contextMenuPos: makeContextMenuPos(state),
     contextMenuList: makeContextMenuList(state)
   };
