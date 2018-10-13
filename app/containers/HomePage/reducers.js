@@ -164,16 +164,7 @@ export const initialState = {
     [deviceTypeConst.mtp]: {}
   },
 
-  mtpStoragesList: {
-    65537: {
-      name: `Internal shared storage`,
-      selected: true
-    },
-    3163619329: {
-      name: `SD card`,
-      selected: false
-    }
-  }
+  mtpStoragesList: {}
 };
 
 export default function Home(state = initialState, action) {

@@ -13,7 +13,8 @@ export const processMtpBuffer = ({ error, stderr }) => {
     invalidStorageID: `invalid response code InvalidStorageID`,
     fileNotFound: `could not find`,
     noFilesSelected: `No files selected`,
-    writePipe: `WritePipe`
+    writePipe: `WritePipe`,
+    mtpStorageNotAccessible: `MTP storage not accessible`
   };
 
   const errorStringified = (error !== null && error.toString()) || '';
@@ -107,6 +108,20 @@ export const processMtpBuffer = ({ error, stderr }) => {
       throwAlert: true,
       status: false
     };
+  } else if (
+    /*MTP storage not accessible*/
+    stderrStringified
+      .toLowerCase()
+      .indexOf(errorTpl.mtpStorageNotAccessible.toLowerCase()) !== -1 ||
+    errorStringified
+      .toLowerCase()
+      .indexOf(errorTpl.mtpStorageNotAccessible.toLowerCase()) !== -1
+  ) {
+    return {
+      error: errorStringified,
+      throwAlert: true,
+      status: false
+    };
   } else {
     /*common errors*/
     return {
@@ -139,7 +154,7 @@ export const processLocalBuffer = ({ error, stderr }) => {
       throwAlert: false
     };
   }
-  
+
   if (
     /*No Permission*/
     stderrStringified.toLowerCase().indexOf(errorTpl.noPerm.toLowerCase()) !==

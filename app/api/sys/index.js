@@ -230,6 +230,73 @@ export const newLocalFolder = async ({ newFolderPath }) => {
 /**
  MTP device ->
  */
+export const fetchMtpStorageOptions = async () => {
+  try {
+    const { data, error, stderr } = await promisifiedExec(
+      `${mtp} "storage-list"`
+    );
+
+    if (error || stderr) {
+      log.error(
+        `${error} : ${stderr}`,
+        `fetchMtpStorageOptions -> storage-list error`
+      );
+      return { error, stderr, data: null };
+    }
+
+    const _storageList = data.split(/(\r?\n)/g);
+
+    let descMatchPattern = /description:(.*)/i;
+    let storageIdMatchPattern = /([^\D]+)/;
+
+    let storageList = {};
+    _storageList
+      .filter(a => {
+        return !(a === '\n' || a === '\r\n' || a === '');
+      })
+      .map((a, index) => {
+        if (!a) {
+          return null;
+        }
+        const _matchDesc = descMatchPattern.exec(a);
+        const _matchedStorageId = storageIdMatchPattern.exec(a);
+
+        if (
+          typeof _matchDesc === 'undefined' ||
+          _matchDesc === null ||
+          typeof _matchDesc[1] === 'undefined' ||
+          typeof _matchedStorageId === 'undefined' ||
+          _matchedStorageId === null ||
+          typeof _matchedStorageId[1] === 'undefined'
+        ) {
+          return null;
+        }
+
+        const matchDesc = _matchDesc[1].trim();
+        const matchedStorageId = _matchedStorageId[1].trim();
+        storageList = {
+          ...storageList,
+          [matchedStorageId]: {
+            name: matchDesc,
+            selected: index === 0
+          }
+        };
+      });
+
+    if (
+      typeof storageList === 'undefined' ||
+      storageList === null ||
+      storageList.length < 1
+    ) {
+      return { error: `MTP storage not accessible`, stderr: null, data: null };
+    }
+
+    return { error: null, stderr: null, data: storageList };
+  } catch (e) {
+    log.error(e);
+  }
+};
+
 export const asyncReadMtpDir = async ({ filePath, ignoreHidden }) => {
   try {
     const mtpCmdChop = {
