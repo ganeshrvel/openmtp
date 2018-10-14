@@ -464,6 +464,50 @@ class DirectoryLists extends React.Component {
     return contextMenuActiveList;
   };
 
+  _handleRequestSort = (deviceType, property, event) => {
+    const { directoryLists, handleRequestSort } = this.props;
+    const orderBy = property;
+    const { orderBy: _orderBy, order: _order } = directoryLists[deviceType];
+    let order = 'desc';
+
+    if (_orderBy === property && _order === 'desc') {
+      order = 'asc';
+    }
+
+    handleRequestSort({ order, orderBy }, deviceType);
+  };
+
+  _handleSelectAllClick = (deviceType, event) => {
+    const { directoryLists, handleSelectAllClick } = this.props;
+    const selected = directoryLists[deviceType].nodes.map(n => n.path) || [];
+    const isChecked = event.target.checked;
+
+    handleSelectAllClick({ selected }, isChecked, deviceType);
+  };
+
+  _handleTableClick = (path, deviceType, event) => {
+    const { directoryLists, handleTableClick } = this.props;
+
+    const { selected } = directoryLists[deviceType].queue;
+    const selectedIndex = selected.indexOf(path);
+    let newSelected = [];
+
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selected, path);
+    } else if (selectedIndex === 0) {
+      newSelected = newSelected.concat(selected.slice(1));
+    } else if (selectedIndex === selected.length - 1) {
+      newSelected = newSelected.concat(selected.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelected = newSelected.concat(
+        selected.slice(0, selectedIndex),
+        selected.slice(selectedIndex + 1)
+      );
+    }
+
+    handleTableClick({ selected: newSelected }, deviceType);
+  };
+
   handleTableDoubleClick({ path, deviceType, isFolder }) {
     if (!isFolder) {
       return null;
@@ -474,6 +518,39 @@ class DirectoryLists extends React.Component {
       deviceType: deviceType
     });
   }
+
+  isSelected = path => {
+    const { directoryLists, deviceType } = this.props;
+    const _directoryLists = directoryLists[deviceType].queue.selected;
+
+    return _directoryLists.indexOf(path) !== -1;
+  };
+
+  stableSort = (array, cmp) => {
+    const stabilizedThis = array.map((el, index) => [el, index]);
+    stabilizedThis.sort((a, b) => {
+      const order = cmp(a[0], b[0]);
+      if (order !== 0) return order;
+      return a[1] - b[1];
+    });
+    return stabilizedThis.map(el => el[0]);
+  };
+
+  desc = (a, b, orderBy) => {
+    if (b[orderBy] < a[orderBy]) {
+      return -1;
+    }
+    if (b[orderBy] > a[orderBy]) {
+      return 1;
+    }
+    return 0;
+  };
+
+  getSorting = (order, orderBy) => {
+    return order === 'desc'
+      ? (a, b) => this.desc(a, b, orderBy)
+      : (a, b) => -this.desc(a, b, orderBy);
+  };
 
   render() {
     const {
@@ -563,14 +640,11 @@ class DirectoryLists extends React.Component {
                 numSelected={selected.length}
                 order={order}
                 orderBy={orderBy}
-                onSelectAllClick={this.props.handleSelectAllClick.bind(
+                onSelectAllClick={this._handleSelectAllClick.bind(
                   this,
                   deviceType
                 )}
-                onRequestSort={this.props.handleRequestSort.bind(
-                  this,
-                  deviceType
-                )}
+                onRequestSort={this._handleRequestSort.bind(this, deviceType)}
                 rowCount={nodes ? nodes.length : 0}
                 hideColList={hideColList}
               />
@@ -680,9 +754,7 @@ class DirectoryLists extends React.Component {
         >
           <Checkbox
             checked={isSelected}
-            onClick={event =>
-              this.props.handleTableClick(n.path, deviceType, event)
-            }
+            onClick={event => this._handleTableClick(n.path, deviceType, event)}
           />
         </TableCell>
         {hideColList.indexOf('name') < 0 && (
@@ -759,67 +831,24 @@ class DirectoryLists extends React.Component {
       </React.Fragment>
     );
   };
-
-  isSelected = path => {
-    const { directoryLists, deviceType } = this.props;
-    const _directoryLists = directoryLists[deviceType].queue.selected;
-
-    return _directoryLists.indexOf(path) !== -1;
-  };
-
-  stableSort = (array, cmp) => {
-    const stabilizedThis = array.map((el, index) => [el, index]);
-    stabilizedThis.sort((a, b) => {
-      const order = cmp(a[0], b[0]);
-      if (order !== 0) return order;
-      return a[1] - b[1];
-    });
-    return stabilizedThis.map(el => el[0]);
-  };
-
-  desc = (a, b, orderBy) => {
-    if (b[orderBy] < a[orderBy]) {
-      return -1;
-    }
-    if (b[orderBy] > a[orderBy]) {
-      return 1;
-    }
-    return 0;
-  };
-
-  getSorting = (order, orderBy) => {
-    return order === 'desc'
-      ? (a, b) => this.desc(a, b, orderBy)
-      : (a, b) => -this.desc(a, b, orderBy);
-  };
 }
 
 const mapDispatchToProps = (dispatch, ownProps) =>
   bindActionCreators(
     {
-      handleRequestSort: (deviceType, property, event) => (_, getState) => {
-        const orderBy = property;
-        const {
-          orderBy: _orderBy,
-          order: _order
-        } = getState().Home.directoryLists[deviceType];
-        let order = 'desc';
-
-        if (_orderBy === property && _order === 'desc') {
-          order = 'asc';
-        }
-
-        dispatch(setSortingDirLists({ order, orderBy }, deviceType));
+      handleRequestSort: ({ ...args }, deviceType) => (_, getState) => {
+        dispatch(setSortingDirLists({ ...args }, deviceType));
       },
 
-      handleSelectAllClick: (deviceType, event) => (_, getState) => {
-        if (event.target.checked) {
+      handleSelectAllClick: ({ selected }, isChecked, deviceType) => (
+        _,
+        getState
+      ) => {
+        if (isChecked) {
           dispatch(
             setSelectedDirLists(
               {
-                selected: getState().Home.directoryLists[deviceType].nodes.map(
-                  n => n.path
-                )
+                selected
               },
               deviceType
             )
@@ -830,24 +859,8 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         dispatch(setSelectedDirLists({ selected: [] }, deviceType));
       },
 
-      handleTableClick: (path, deviceType, event) => (_, getState) => {
-        const { selected } = getState().Home.directoryLists[deviceType].queue;
-        const selectedIndex = selected.indexOf(path);
-        let newSelected = [];
-
-        if (selectedIndex === -1) {
-          newSelected = newSelected.concat(selected, path);
-        } else if (selectedIndex === 0) {
-          newSelected = newSelected.concat(selected.slice(1));
-        } else if (selectedIndex === selected.length - 1) {
-          newSelected = newSelected.concat(selected.slice(0, -1));
-        } else if (selectedIndex > 0) {
-          newSelected = newSelected.concat(
-            selected.slice(0, selectedIndex),
-            selected.slice(selectedIndex + 1)
-          );
-        }
-        dispatch(setSelectedDirLists({ selected: newSelected }, deviceType));
+      handleTableClick: ({ selected }, deviceType) => (_, getState) => {
+        dispatch(setSelectedDirLists({ selected }, deviceType));
       },
 
       handleFetchMtpStorageOptions: ({ ...args }, deviceType) => (

@@ -23,6 +23,7 @@ class Home extends Component {
   componentWillMount() {
     /*
     todo: loader for mtp!
+    todo: TableFooter
     todo: remove these lines => //todo: remove this after testing is done
     todo: do a mtp " directory name test
     todo: onscroll clear context menu
@@ -35,6 +36,11 @@ class Home extends Component {
     todo: binary for production
     todo: error boundary
     todo: copy paste cut redo undo in prod
+    
+    
+    todo: optimization: add drive icons to list
+    todo: optimization: move sidebar menu to select dialog
+    
    */
   }
 
@@ -44,11 +50,20 @@ class Home extends Component {
       <React.Fragment>
         <Grid container spacing={0}>
           <Grid item xs={6}>
-            <ToolbarAreaPane showMenu={true} deviceType={deviceTypeConst.local} />
-            <DirectoryLists hideColList={[]} deviceType={deviceTypeConst.local} />
+            <ToolbarAreaPane
+              showMenu={true}
+              deviceType={deviceTypeConst.local}
+            />
+            <DirectoryLists
+              hideColList={[]}
+              deviceType={deviceTypeConst.local}
+            />
           </Grid>
           <Grid item xs={6}>
-            <ToolbarAreaPane showMenu={false} deviceType={deviceTypeConst.mtp} />
+            <ToolbarAreaPane
+              showMenu={false}
+              deviceType={deviceTypeConst.mtp}
+            />
             <DirectoryLists
               hideColList={['size']}
               deviceType={deviceTypeConst.mtp}
@@ -65,7 +80,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
     {
       throwAlert: (message, event) => (_, getState) => {
         dispatch(throwAlert({ message: message }));
-      },
+      }
     },
     dispatch
   );
