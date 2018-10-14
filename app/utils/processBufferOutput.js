@@ -30,11 +30,20 @@ export const processMtpBuffer = ({ error, stderr }) => {
     };
   }
 
+  const checkError = errorTplKey => {
+    return (
+      stderrStringified
+        .toLowerCase()
+        .indexOf(errorTpl[errorTplKey].toLowerCase()) !== -1 ||
+      errorStringified
+        .toLowerCase()
+        .indexOf(errorTpl[errorTplKey].toLowerCase()) !== -1
+    );
+  };
+
   if (
     /*No MTP device found*/
-    stderrStringified.toLowerCase().indexOf(errorTpl.noMtp.toLowerCase()) !==
-      -1 ||
-    errorStringified.toLowerCase().indexOf(errorTpl.noMtp.toLowerCase()) !== -1
+    checkError('noMtp')
   ) {
     return {
       error: errorDictionary.noMtp,
@@ -42,61 +51,8 @@ export const processMtpBuffer = ({ error, stderr }) => {
       status: false
     };
   } else if (
-    /*MTP storage not accessible*/
-    stderrStringified
-      .toLowerCase()
-      .indexOf(errorTpl.mtpStorageNotAccessible1.toLowerCase()) !== -1 ||
-    errorStringified
-      .toLowerCase()
-      .indexOf(errorTpl.mtpStorageNotAccessible1.toLowerCase()) !== -1 ||
-    stderrStringified
-      .toLowerCase()
-      .indexOf(errorTpl.mtpStorageNotAccessible2.toLowerCase()) !== -1 ||
-    errorStringified
-      .toLowerCase()
-      .indexOf(errorTpl.mtpStorageNotAccessible2.toLowerCase()) !== -1
-  ) {
-    return {
-      error: errorDictionary.mtpStorageNotAccessible,
-      throwAlert: true,
-      status: false
-    };
-  } else if (
-    /*Path not found*/
-    stderrStringified
-      .toLowerCase()
-      .indexOf(errorTpl.fileNotFound.toLowerCase()) !== -1 ||
-    errorStringified
-      .toLowerCase()
-      .indexOf(errorTpl.fileNotFound.toLowerCase()) !== -1
-  ) {
-    return {
-      error: sanitizeErrors(stderrStringified),
-      throwAlert: true,
-      status: true
-    };
-  } else if (
-    /*No files selected*/
-    stderrStringified
-      .toLowerCase()
-      .indexOf(errorTpl.noFilesSelected.toLowerCase()) !== -1 ||
-    errorStringified
-      .toLowerCase()
-      .indexOf(errorTpl.noFilesSelected.toLowerCase()) !== -1
-  ) {
-    return {
-      error: errorStringified,
-      throwAlert: true,
-      status: true
-    };
-  } else if (
     /*error: Get: invalid response code InvalidObjectHandle (0x2009)*/
-    stderrStringified
-      .toLowerCase()
-      .indexOf(errorTpl.invalidObjectHandle.toLowerCase()) !== -1 ||
-    errorStringified
-      .toLowerCase()
-      .indexOf(errorTpl.invalidObjectHandle.toLowerCase()) !== -1
+    checkError('invalidObjectHandle')
   ) {
     return {
       error: errorDictionary.unResponsive,
@@ -105,12 +61,7 @@ export const processMtpBuffer = ({ error, stderr }) => {
     };
   } else if (
     /*error: Get: invalid response code InvalidStorageID*/
-    stderrStringified
-      .toLowerCase()
-      .indexOf(errorTpl.invalidStorageID.toLowerCase()) !== -1 ||
-    errorStringified
-      .toLowerCase()
-      .indexOf(errorTpl.invalidStorageID.toLowerCase()) !== -1
+    checkError('invalidStorageID')
   ) {
     return {
       error: errorDictionary.unResponsive,
@@ -119,16 +70,40 @@ export const processMtpBuffer = ({ error, stderr }) => {
     };
   } else if (
     /*error: (*interface)->WritePipe(interface, ep->GetRefIndex(), buffer.data(), r): error 0xe00002eb*/
-    stderrStringified
-      .toLowerCase()
-      .indexOf(errorTpl.writePipe.toLowerCase()) !== -1 ||
-    errorStringified.toLowerCase().indexOf(errorTpl.writePipe.toLowerCase()) !==
-      -1
+    checkError('writePipe')
   ) {
     return {
       error: errorDictionary.unResponsive,
       throwAlert: true,
       status: false
+    };
+  } else if (
+    /*MTP storage not accessible*/
+    checkError('mtpStorageNotAccessible1') ||
+    checkError('mtpStorageNotAccessible2')
+  ) {
+    return {
+      error: errorDictionary.mtpStorageNotAccessible,
+      throwAlert: true,
+      status: false
+    };
+  } else if (
+    /*Path not found*/
+    checkError('fileNotFound')
+  ) {
+    return {
+      error: sanitizeErrors(stderrStringified),
+      throwAlert: true,
+      status: true
+    };
+  } else if (
+    /*No files selected*/
+    checkError('noFilesSelected')
+  ) {
+    return {
+      error: errorStringified,
+      throwAlert: true,
+      status: true
     };
   } else {
     /*common errors*/
@@ -149,7 +124,8 @@ export const processLocalBuffer = ({ error, stderr }) => {
   };
 
   const errorTpl = {
-    noPerm: `Operation not permitted`,
+    noPerm1: `Operation not permitted`,
+    noPerm2: `Permission denied`,
     commandFailed: `Command failed`
   };
 
@@ -163,11 +139,21 @@ export const processLocalBuffer = ({ error, stderr }) => {
     };
   }
 
+  const checkError = errorTplKey => {
+    return (
+      stderrStringified
+        .toLowerCase()
+        .indexOf(errorTpl[errorTplKey].toLowerCase()) !== -1 ||
+      errorStringified
+        .toLowerCase()
+        .indexOf(errorTpl[errorTplKey].toLowerCase()) !== -1
+    );
+  };
+
   if (
     /*No Permission*/
-    stderrStringified.toLowerCase().indexOf(errorTpl.noPerm.toLowerCase()) !==
-      -1 ||
-    errorStringified.toLowerCase().indexOf(errorTpl.noPerm.toLowerCase()) !== -1
+    checkError('noPerm1') ||
+    checkError('noPerm2')
   ) {
     return {
       error: errorDictionary.noPerm,
@@ -175,12 +161,7 @@ export const processLocalBuffer = ({ error, stderr }) => {
     };
   } else if (
     /*Command failed*/
-    stderrStringified
-      .toLowerCase()
-      .indexOf(errorTpl.commandFailed.toLowerCase()) !== -1 ||
-    errorStringified
-      .toLowerCase()
-      .indexOf(errorTpl.commandFailed.toLowerCase()) !== -1
+    checkError('commandFailed')
   ) {
     return {
       error: errorDictionary.commandFailed,
@@ -197,7 +178,7 @@ export const processLocalBuffer = ({ error, stderr }) => {
 
 const sanitizeErrors = string => {
   if (string === null) {
-    return 'Oops.. Try again';
+    return `Oops.. Try again`;
   }
   string = string.replace(/^(error: )/, '').trim();
 

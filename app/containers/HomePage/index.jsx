@@ -22,6 +22,7 @@ class Home extends Component {
 
   componentWillMount() {
     /*
+    todo: loader for mtp!
     todo: remove these lines => //todo: remove this after testing is done
     todo: do a mtp " directory name test
     todo: onscroll clear context menu
