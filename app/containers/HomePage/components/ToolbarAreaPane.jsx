@@ -34,7 +34,7 @@ import {
 import { makeSelectedPath } from '../selectors';
 import { makeHideHiddenFiles } from '../../Settings/selectors';
 import { delLocalFiles, delMtpFiles } from '../../../api/sys';
-import { deviceTypeConst } from '../../../constants';
+import { devicesDefaultPaths, deviceTypeConst } from '../../../constants';
 import { Confirm as ConfirmDialog } from '../../../components/DialogBox';
 import { Selection as SelectionDialog } from '../../../components/DialogBox';
 import { pathUp } from '../../../utils/paths';
@@ -71,10 +71,23 @@ class ToolbarAreaPane extends React.Component {
   };
 
   handleMtpStoragesListClick = selected => {
-    const { handleSetMtpStorage, mtpStoragesList } = this.props;
+    const {
+      handleSetMtpStorage,
+      mtpStoragesList,
+      selectedPath,
+      deviceType,
+      hideHiddenFiles
+    } = this.props;
     this.handleToggleMtpStorageSelectionDialog(false);
 
-    handleSetMtpStorage({ selected, mtpStoragesList });
+    handleSetMtpStorage(
+      { selected, mtpStoragesList },
+      {
+        filePath: devicesDefaultPaths.mtp,
+        ignoreHidden: hideHiddenFiles[deviceType]
+      },
+      deviceType
+    );
   };
 
   handleDeleteConfirmDialog = confirm => {
@@ -324,7 +337,11 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         }
       },
 
-      handleSetMtpStorage: ({ selected, mtpStoragesList }) => (_, getState) => {
+      handleSetMtpStorage: (
+        { selected, mtpStoragesList },
+        { ...fetchDirArgs },
+        deviceType
+      ) => (_, getState) => {
         if (Object.keys(mtpStoragesList).length < 1) {
           return null;
         }
@@ -350,6 +367,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         });
 
         dispatch(changeMtpStorage({ ..._mtpStoragesList }));
+        dispatch(fetchDirList({ ...fetchDirArgs }, deviceType));
       }
     },
     dispatch

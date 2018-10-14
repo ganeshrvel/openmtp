@@ -2,7 +2,7 @@
 
 import { actionTypes } from './actions';
 import { PATHS } from '../../utils/paths';
-import { deviceTypeConst } from '../../constants';
+import { devicesDefaultPaths, deviceTypeConst } from '../../constants';
 import path from 'path';
 
 export const initialState = {
@@ -110,8 +110,8 @@ export const initialState = {
   },
 
   selectedPath: {
-    [deviceTypeConst.local]: PATHS.homeDir,
-    [deviceTypeConst.mtp]: '/'
+    [deviceTypeConst.local]: devicesDefaultPaths.local,
+    [deviceTypeConst.mtp]: devicesDefaultPaths.mtp
   },
 
   mtpDevice: {
