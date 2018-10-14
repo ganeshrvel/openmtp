@@ -70,7 +70,7 @@ class ToolbarAreaPane extends React.Component {
     });
   };
 
-  handleMtpStoragesListClick = selected => {
+  handleMtpStoragesListClick = ({ ...args }) => {
     const {
       handleSetMtpStorage,
       mtpStoragesList,
@@ -78,10 +78,16 @@ class ToolbarAreaPane extends React.Component {
       deviceType,
       hideHiddenFiles
     } = this.props;
+
+    const { selectedValue, triggerChange } = args;
     this.handleToggleMtpStorageSelectionDialog(false);
 
+    if (!triggerChange) {
+      return null;
+    }
+
     handleSetMtpStorage(
-      { selected, mtpStoragesList },
+      { selectedValue, mtpStoragesList },
       {
         filePath: devicesDefaultPaths.mtp,
         ignoreHidden: hideHiddenFiles[deviceType]

@@ -10,9 +10,9 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
 
 class Selection extends React.Component {
-  handleListItemClick = value => {
+  handleListItemClick = ({ ...args }) => {
     const { onClose } = this.props;
-    onClose(value);
+    onClose({ ...args });
   };
 
   render() {
@@ -21,7 +21,15 @@ class Selection extends React.Component {
       return <React.Fragment />;
     }
     return (
-      <Dialog open={open}>
+      <Dialog
+        onClose={() =>
+          this.handleListItemClick({
+            selectedValue: null,
+            triggerChange: false
+          })
+        }
+        open={open}
+      >
         <DialogTitle id={id}>{titleText}</DialogTitle>
         <div>
           <List>
@@ -30,7 +38,12 @@ class Selection extends React.Component {
               return (
                 <ListItem
                   button
-                  onClick={() => this.handleListItemClick(a)}
+                  onClick={() =>
+                    this.handleListItemClick({
+                      selectedValue: a,
+                      triggerChange: true
+                    })
+                  }
                   key={a}
                 >
                   <ListItemText primary={item.name} />
