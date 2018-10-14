@@ -659,7 +659,7 @@ class DirectoryLists extends React.Component {
               </TableBody>
             </Table>
           </div>
-          {this.TableFooter()}
+          {this.TableFooterRender()}
         </Paper>
       </React.Fragment>
     );
@@ -822,7 +822,7 @@ class DirectoryLists extends React.Component {
     );
   };
 
-  TableFooter = () => {
+  TableFooterRender = () => {
     return (
       <React.Fragment>
         <TableFooter component="div" className={styles.tableFooter}>
