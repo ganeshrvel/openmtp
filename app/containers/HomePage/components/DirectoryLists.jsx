@@ -54,6 +54,7 @@ import {
   newMtpFolder
 } from '../../../api/sys';
 import { pathUp, sanitizePath } from '../../../utils/paths';
+import { doSort } from '../../../utils/funcs';
 
 class DirectoryLists extends React.Component {
   constructor(props) {
@@ -526,30 +527,21 @@ class DirectoryLists extends React.Component {
     return _directoryLists.indexOf(path) !== -1;
   };
 
-  stableSort = (array, cmp) => {
-    const stabilizedThis = array.map((el, index) => [el, index]);
-    stabilizedThis.sort((a, b) => {
-      const order = cmp(a[0], b[0]);
-      if (order !== 0) return order;
-      return a[1] - b[1];
-    });
-    return stabilizedThis.map(el => el[0]);
-  };
+  tableSort = ({ ...args }) => {
+    const { nodes, order, orderBy } = args;
 
-  desc = (a, b, orderBy) => {
-    if (b[orderBy] < a[orderBy]) {
-      return -1;
+    if (typeof nodes === 'undefined' || !nodes.length < 0) {
+      return [];
     }
-    if (b[orderBy] > a[orderBy]) {
-      return 1;
-    }
-    return 0;
-  };
-
-  getSorting = (order, orderBy) => {
-    return order === 'desc'
-      ? (a, b) => this.desc(a, b, orderBy)
-      : (a, b) => -this.desc(a, b, orderBy);
+    return nodes.sort(
+      doSort({
+        field: orderBy,
+        reverse: order === 'asc',
+        primer: a => {
+          return a.toUpperCase();
+        }
+      })
+    );
   };
 
   render() {
@@ -651,11 +643,14 @@ class DirectoryLists extends React.Component {
               <TableBody>
                 {emptyRows
                   ? this.EmptyRowRender(isMtp)
-                  : this.stableSort(nodes, this.getSorting(order, orderBy)).map(
-                      n => {
-                        return this.TableRowsRender(n, this.isSelected(n.path));
-                      }
-                    )}
+                  : this.tableSort({
+                      nodes,
+                      order,
+                      orderBy,
+                      deviceType
+                    }).map(n => {
+                      return this.TableRowsRender(n, this.isSelected(n.path));
+                    })}
               </TableBody>
             </Table>
           </div>

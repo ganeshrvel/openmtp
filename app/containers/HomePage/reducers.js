@@ -93,7 +93,7 @@ export const initialState = {
   directoryLists: {
     [deviceTypeConst.local]: {
       order: 'asc',
-      orderBy: 'path',
+      orderBy: 'name',
       queue: {
         selected: []
       },
@@ -101,7 +101,7 @@ export const initialState = {
     },
     [deviceTypeConst.mtp]: {
       order: 'asc',
-      orderBy: 'path',
+      orderBy: 'name',
       queue: {
         selected: []
       },
