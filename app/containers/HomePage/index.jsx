@@ -22,6 +22,7 @@ class Home extends Component {
 
   componentWillMount() {
     /*
+    todo: only reload storage ids on reload iff device changes ie, ids changes else just fetch directory with current device id
     todo: device storage ids change on device change, onclick dialog on storage list ->  fetch root, change selected path after that
     todo: do a mtp " directory name test
     todo: multiple mtp devices at same time

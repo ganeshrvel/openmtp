@@ -12,6 +12,7 @@ import {
   processMtpBuffer,
   processLocalBuffer
 } from '../../utils/processBufferOutput';
+import { isArraysEqual } from '../../utils/funcs';
 
 const prefix = '@@Home';
 const actionTypesList = [
@@ -64,16 +65,19 @@ function _fetchDirList(data, deviceType) {
     type: actionTypes.FETCH_DIR_LIST,
     deviceType,
     payload: {
-      nodes: data
+      nodes: data || {}
     }
   };
 }
 
-export function setMtpStorageOptions({ ...args }, deviceType) {
+export function setMtpStorageOptions(
+  { ...args },
+  deviceType,
+  { ...deviceChangeCheck }
+) {
   return async dispatch => {
     try {
       const { error, stderr, data } = await fetchMtpStorageOptions();
-
       dispatch(
         processMtpOutput({
           deviceType,
@@ -81,7 +85,23 @@ export function setMtpStorageOptions({ ...args }, deviceType) {
           stderr,
           data,
           callback: a => {
-            dispatch(changeMtpStorage({ ...data }));
+            let changeMtpIdsFlag = true;
+            if (
+              Object.keys(deviceChangeCheck).length > 0 &&
+              deviceChangeCheck.changeMtpStorageIdsOnlyOnDeviceChange &&
+              Object.keys(deviceChangeCheck.mtpStoragesList).length > 0 &&
+              isArraysEqual(
+                Object.keys(data),
+                Object.keys(deviceChangeCheck.mtpStoragesList)
+              )
+            ) {
+              changeMtpIdsFlag = false;
+            }
+
+            if (changeMtpIdsFlag) {
+              dispatch(changeMtpStorage({ ...data }));
+            }
+
             dispatch(fetchDirList({ ...args }, deviceType));
           }
         })

@@ -845,7 +845,12 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         _,
         getState
       ) => {
-        dispatch(setMtpStorageOptions({ ...args }, deviceType));
+        dispatch(
+          setMtpStorageOptions({ ...args }, deviceType, {
+            changeMtpStorageIdsOnlyOnDeviceChange: false,
+            mtpStoragesList: {}
+          })
+        );
       },
 
       handleFetchDirList: ({ ...args }, deviceType) => (_, getState) => {

@@ -93,7 +93,8 @@ class ToolbarAreaPane extends React.Component {
       selectedPath,
       deviceType,
       hideHiddenFiles,
-      handleReloadDirList
+      handleReloadDirList,
+      mtpStoragesList
     } = this.props;
     let filePath = '/';
     switch (itemType) {
@@ -108,7 +109,8 @@ class ToolbarAreaPane extends React.Component {
             filePath,
             ignoreHidden: hideHiddenFiles[deviceType]
           },
-          deviceType
+          deviceType,
+          mtpStoragesList
         );
         break;
       case 'delete':
@@ -254,8 +256,16 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         dispatch(fetchDirList({ ...args }, deviceType));
       },
 
-      handleReloadDirList: ({ ...args }, deviceType) => (_, getState) => {
-        dispatch(setMtpStorageOptions({ ...args }, deviceType));
+      handleReloadDirList: ({ ...args }, deviceType, mtpStoragesList) => (
+        _,
+        getState
+      ) => {
+        dispatch(
+          setMtpStorageOptions({ ...args }, deviceType, {
+            changeMtpStorageIdsOnlyOnDeviceChange: true,
+            mtpStoragesList
+          })
+        );
       },
 
       handleDelFiles: (
