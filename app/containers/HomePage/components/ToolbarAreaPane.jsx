@@ -22,7 +22,8 @@ import {
   processMtpOutput,
   processLocalOutput,
   changeMtpStorage,
-  setMtpStorageOptions
+  setMtpStorageOptions,
+  getMtpStoragesListSelected
 } from '../actions';
 import {
   makeDirectoryLists,
@@ -74,7 +75,6 @@ class ToolbarAreaPane extends React.Component {
     const {
       handleSetMtpStorage,
       mtpStoragesList,
-      selectedPath,
       deviceType,
       hideHiddenFiles
     } = this.props;
@@ -272,7 +272,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
   bindActionCreators(
     {
       handleFetchDirList: ({ ...args }, deviceType) => (_, getState) => {
-        dispatch(fetchDirList({ ...args }, deviceType));
+        dispatch(fetchDirList({ ...args }, deviceType, getState));
       },
 
       handleReloadDirList: ({ ...args }, deviceType, mtpStoragesList) => (
@@ -280,10 +280,15 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         getState
       ) => {
         dispatch(
-          setMtpStorageOptions({ ...args }, deviceType, {
-            changeMtpStorageIdsOnlyOnDeviceChange: true,
-            mtpStoragesList
-          })
+          setMtpStorageOptions(
+            { ...args },
+            deviceType,
+            {
+              changeMtpStorageIdsOnlyOnDeviceChange: true,
+              mtpStoragesList
+            },
+            getState
+          )
         );
       },
 
@@ -293,27 +298,6 @@ const mapDispatchToProps = (dispatch, ownProps) =>
       ) => async (_, getState) => {
         try {
           switch (deviceType) {
-            case deviceTypeConst.mtp:
-              const {
-                error: mtpError,
-                stderr: mtpStderr,
-                data: mtpData
-              } = await delMtpFiles({
-                fileList
-              });
-
-              dispatch(
-                processMtpOutput({
-                  deviceType,
-                  error: mtpError,
-                  stderr: mtpStderr,
-                  data: mtpData,
-                  callback: a => {
-                    dispatch(fetchDirList({ ...fetchDirListArgs }, deviceType));
-                  }
-                })
-              );
-              break;
             case deviceTypeConst.local:
               const {
                 error: localError,
@@ -330,7 +314,44 @@ const mapDispatchToProps = (dispatch, ownProps) =>
                   stderr: localStderr,
                   data: localData,
                   callback: a => {
-                    dispatch(fetchDirList({ ...fetchDirListArgs }, deviceType));
+                    dispatch(
+                      fetchDirList(
+                        { ...fetchDirListArgs },
+                        deviceType,
+                        getState
+                      )
+                    );
+                  }
+                })
+              );
+              break;
+            case deviceTypeConst.mtp:
+              const mtpStoragesListSelected = getMtpStoragesListSelected(
+                getState().Home
+              );
+              const {
+                error: mtpError,
+                stderr: mtpStderr,
+                data: mtpData
+              } = await delMtpFiles({
+                fileList,
+                mtpStoragesListSelected
+              });
+
+              dispatch(
+                processMtpOutput({
+                  deviceType,
+                  error: mtpError,
+                  stderr: mtpStderr,
+                  data: mtpData,
+                  callback: a => {
+                    dispatch(
+                      fetchDirList(
+                        { ...fetchDirListArgs },
+                        deviceType,
+                        getState
+                      )
+                    );
                   }
                 })
               );
@@ -344,7 +365,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
       },
 
       handleSetMtpStorage: (
-        { selected, mtpStoragesList },
+        { selectedValue, mtpStoragesList },
         { ...fetchDirArgs },
         deviceType
       ) => (_, getState) => {
@@ -353,12 +374,12 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         }
 
         let _mtpStoragesList = {};
-
+        console.log(selectedValue);
         Object.keys(mtpStoragesList).map(a => {
           const item = mtpStoragesList[a];
-          let _selected = false;
-          if (selected === a) {
-            _selected = true;
+          let _selectedValue = false;
+          if (selectedValue === a) {
+            _selectedValue = true;
           }
 
           _mtpStoragesList = {
@@ -366,14 +387,14 @@ const mapDispatchToProps = (dispatch, ownProps) =>
             ..._mtpStoragesList,
             [a]: {
               ...item,
-              selected: _selected
+              selected: _selectedValue
             }
           };
           return null;
         });
 
         dispatch(changeMtpStorage({ ..._mtpStoragesList }));
-        dispatch(fetchDirList({ ...fetchDirArgs }, deviceType));
+        dispatch(fetchDirList({ ...fetchDirArgs }, deviceType, getState));
       }
     },
     dispatch

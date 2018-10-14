@@ -6,7 +6,7 @@ import junk from 'junk';
 import path from 'path';
 import moment from 'moment';
 import { log } from '@Log';
-import { mtp } from '@Binaries';
+import { mtp as mtpCli } from '@Binaries';
 import childProcess from 'child_process';
 import spawn from 'spawn-promise';
 import findLodash from 'lodash/find';
@@ -34,13 +34,15 @@ export const promisifiedSpawn = cmd => {
 const promisifiedExec = command => {
   try {
     return new Promise(function(resolve, reject) {
-      exec(command, (error, stdout, stderr) =>
-        resolve({
+      exec(command, (error, stdout, stderr) => {
+        //todo: remove this after testing is done
+        console.log(command);
+        return resolve({
           data: stdout,
           stderr: stderr,
           error: error
-        })
-      );
+        });
+      });
     });
   } catch (e) {
     log.error(e);
@@ -59,30 +61,53 @@ const promisifiedExecNoCatch = command => {
   });
 };
 
-const checkMtpFileExists = async filePath => {
+const checkMtpFileExists = async (filePath, mtpStoragesListSelected) => {
+  //todo: remove this after testing is done
+  if (typeof mtpStoragesListSelected === 'undefined') {
+    log.error(mtpStoragesListSelected, 'mtpStoragesListSelected is undefined');
+    return null;
+  }
+  const storageSelectCmd = `"storage ${mtpStoragesListSelected}"`;
   const escapedFilePath = `${escapeShell(filePath)}`;
 
   const { data, error, stderr } = await promisifiedExecNoCatch(
-    `${mtp} "properties \\"${escapedFilePath}\\""`
+    `${mtpCli} ${storageSelectCmd} "properties \\"${escapedFilePath}\\""`
   );
 
-  return data && data.toString().trim() !== '';
+  return !stderr;
 };
 
-export const checkFileExists = async (filePath, deviceType) => {
-  let fullPath = path.resolve(filePath);
-  switch (deviceType) {
-    case deviceTypeConst.local:
-      return await fs.existsSync(fullPath);
-      break;
-    case deviceTypeConst.mtp:
-      return await checkMtpFileExists(fullPath);
-      break;
-    default:
-      break;
-  }
+export const checkFileExists = async (
+  filePath,
+  deviceType,
+  mtpStoragesListSelected
+) => {
+  try {
+    let fullPath = path.resolve(filePath);
+    switch (deviceType) {
+      case deviceTypeConst.local:
+        return await fs.existsSync(fullPath);
+        break;
+      case deviceTypeConst.mtp:
+        //todo: remove this after testing is done
+        if (typeof mtpStoragesListSelected === 'undefined') {
+          log.error(
+            mtpStoragesListSelected,
+            'mtpStoragesListSelected is undefined'
+          );
+          return null;
+        }
 
-  return true;
+        return await checkMtpFileExists(fullPath, mtpStoragesListSelected);
+        break;
+      default:
+        break;
+    }
+
+    return true;
+  } catch (e) {
+    log.error(e);
+  }
 };
 
 /**
@@ -230,10 +255,14 @@ export const newLocalFolder = async ({ newFolderPath }) => {
 /**
  MTP device ->
  */
+const checkFilterStorageLine = string => {
+  return string.indexOf(`selected storage`) !== -1;
+};
+
 export const fetchMtpStorageOptions = async () => {
   try {
     const { data, error, stderr } = await promisifiedExec(
-      `${mtp} "storage-list"`
+      `${mtpCli} "storage-list"`
     );
 
     if (error || stderr) {
@@ -297,7 +326,11 @@ export const fetchMtpStorageOptions = async () => {
   }
 };
 
-export const asyncReadMtpDir = async ({ filePath, ignoreHidden }) => {
+export const asyncReadMtpDir = async ({
+  filePath,
+  ignoreHidden,
+  mtpStoragesListSelected
+}) => {
   try {
     const mtpCmdChop = {
       type: 2,
@@ -306,19 +339,33 @@ export const asyncReadMtpDir = async ({ filePath, ignoreHidden }) => {
       name: 6
     };
     let response = [];
+    const storageSelectCmd = `"storage ${mtpStoragesListSelected}"`;
+
+    //todo: remove this after testing is done
+    if (typeof mtpStoragesListSelected === 'undefined') {
+      log.error(
+        mtpStoragesListSelected,
+        'mtpStoragesListSelected is undefined'
+      );
+      return null;
+    }
 
     const {
       data: fileListData,
       error: fileListError,
       stderr: fileListStderr
-    } = await promisifiedExec(`${mtp} "ls \\"${escapeShell(filePath)}\\""`);
+    } = await promisifiedExec(
+      `${mtpCli} ${storageSelectCmd} "ls \\"${escapeShell(filePath)}\\""`
+    );
 
     const {
       data: filePropsData,
       error: filePropsError,
       stderr: filePropsStderr
     } = await promisifiedExec(
-      `${mtp} "lsext \\"${escapeShell(filePath)}\\"" | tr -s " "`
+      `${mtpCli} ${storageSelectCmd} "lsext \\"${escapeShell(
+        filePath
+      )}\\"" | tr -s " "`
     );
 
     if (fileListError || fileListStderr) {
@@ -342,14 +389,24 @@ export const asyncReadMtpDir = async ({ filePath, ignoreHidden }) => {
 
     fileList = fileList
       .filter(a => {
-        return !(a === '\n' || a === '\r\n' || a === '');
+        return !(
+          a === '\n' ||
+          a === '\r\n' ||
+          a === '' ||
+          checkFilterStorageLine(a)
+        );
       })
       .map(a => {
         return a.replace(/(^|\.\s+)\d+\s+/, '');
       });
 
     fileProps = fileProps.filter(a => {
-      return !(a === '\n' || a === '\r\n' || a === '');
+      return !(
+        a === '\n' ||
+        a === '\r\n' ||
+        a === '' ||
+        checkFilterStorageLine(a)
+      );
     });
 
     if (fileList.length > fileProps.length) {
@@ -393,15 +450,25 @@ export const asyncReadMtpDir = async ({ filePath, ignoreHidden }) => {
   }
 };
 
-export const delMtpFiles = async ({ fileList }) => {
+export const delMtpFiles = async ({ fileList, mtpStoragesListSelected }) => {
   try {
     if (!fileList || fileList.length < 1) {
       return { error: `No files selected.`, stderr: null, data: null };
     }
 
+    //todo: remove this after testing is done
+    if (typeof mtpStoragesListSelected === 'undefined') {
+      log.error(
+        mtpStoragesListSelected,
+        'mtpStoragesListSelected is undefined'
+      );
+      return null;
+    }
+
+    const storageSelectCmd = `"storage ${mtpStoragesListSelected}"`;
     for (let i in fileList) {
       const { data, error, stderr } = await promisifiedExec(
-        `${mtp} "rm \\"${escapeShell(fileList[i])}\\""`
+        `${mtpCli} ${storageSelectCmd} "rm \\"${escapeShell(fileList[i])}\\""`
       );
 
       if (error || stderr) {
@@ -416,15 +483,28 @@ export const delMtpFiles = async ({ fileList }) => {
   }
 };
 
-export const newMtpFolder = async ({ newFolderPath }) => {
+export const newMtpFolder = async ({
+  newFolderPath,
+  mtpStoragesListSelected
+}) => {
   try {
     if (typeof newFolderPath === 'undefined' || newFolderPath === null) {
       return { error: `No files selected.`, stderr: null, data: null };
     }
 
+    //todo: remove this after testing is done
+    if (typeof mtpStoragesListSelected === 'undefined') {
+      log.error(
+        mtpStoragesListSelected,
+        'mtpStoragesListSelected is undefined'
+      );
+      return null;
+    }
+
+    const storageSelectCmd = `"storage ${mtpStoragesListSelected}"`;
     const escapedNewFolderPath = `${escapeShell(newFolderPath)}`;
     const { data, error, stderr } = await promisifiedExec(
-      `${mtp} "mkpath \\"${escapedNewFolderPath}\\""`
+      `${mtpCli} ${storageSelectCmd} "mkpath \\"${escapedNewFolderPath}\\""`
     );
 
     if (error || stderr) {

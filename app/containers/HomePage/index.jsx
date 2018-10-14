@@ -22,22 +22,16 @@ class Home extends Component {
 
   componentWillMount() {
     /*
-    todo: device storage ids change on device change, onclick dialog on storage list ->  fetch root, change selected path after that
+    todo: remove these lines => //todo: remove this after testing is done
     todo: do a mtp " directory name test
-    todo: multiple mtp devices at same time
     todo: onscroll clear context menu
     todo: focus the datatable
-    todo: new folder actions
-    todo: togglehiddenfolders to showhiddenfolders
-    todo: delete for local error for permission error/not found etc
     todo: folder/files different color
     todo: fix sizes in local
     todo: sometimes folders are mistaken as files eg: /Volume/Mac-SSD
     todo: fix sorting algorithm
     todo: selection blur or hide action for delete, up (/) and reload btns
-    todo: add menu btn fot mtp
     todo: binary for production
-    todo: Side bar menu sdcard
     todo: error boundary
     todo: copy paste cut redo undo in prod
    */

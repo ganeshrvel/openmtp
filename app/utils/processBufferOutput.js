@@ -4,7 +4,8 @@ export const processMtpBuffer = ({ error, stderr }) => {
   const errorDictionary = {
     noMtp: `No MTP device found.`,
     common: `Oops.. Your MTP device has gone crazy! Try again.`,
-    unResponsive: `MTP device is not responding. Reload or reconnect device.`
+    unResponsive: `MTP device is not responding. Reload or reconnect device.`,
+    mtpStorageNotAccessible: `MTP storage not accessible.`
   };
 
   const errorTpl = {
@@ -14,7 +15,8 @@ export const processMtpBuffer = ({ error, stderr }) => {
     fileNotFound: `could not find`,
     noFilesSelected: `No files selected`,
     writePipe: `WritePipe`,
-    mtpStorageNotAccessible: `MTP storage not accessible`
+    mtpStorageNotAccessible1: `MTP storage not accessible`,
+    mtpStorageNotAccessible2: `error: storage`
   };
 
   const errorStringified = (error !== null && error.toString()) || '';
@@ -37,6 +39,26 @@ export const processMtpBuffer = ({ error, stderr }) => {
     return {
       error: errorDictionary.noMtp,
       throwAlert: false,
+      status: false
+    };
+  } else if (
+    /*MTP storage not accessible*/
+    stderrStringified
+      .toLowerCase()
+      .indexOf(errorTpl.mtpStorageNotAccessible1.toLowerCase()) !== -1 ||
+    errorStringified
+      .toLowerCase()
+      .indexOf(errorTpl.mtpStorageNotAccessible1.toLowerCase()) !== -1 ||
+    stderrStringified
+      .toLowerCase()
+      .indexOf(errorTpl.mtpStorageNotAccessible2.toLowerCase()) !== -1 ||
+    errorStringified
+      .toLowerCase()
+      .indexOf(errorTpl.mtpStorageNotAccessible2.toLowerCase()) !== -1
+  ) {
+    return {
+      error: errorDictionary.mtpStorageNotAccessible,
+      throwAlert: true,
       status: false
     };
   } else if (
@@ -105,20 +127,6 @@ export const processMtpBuffer = ({ error, stderr }) => {
   ) {
     return {
       error: errorDictionary.unResponsive,
-      throwAlert: true,
-      status: false
-    };
-  } else if (
-    /*MTP storage not accessible*/
-    stderrStringified
-      .toLowerCase()
-      .indexOf(errorTpl.mtpStorageNotAccessible.toLowerCase()) !== -1 ||
-    errorStringified
-      .toLowerCase()
-      .indexOf(errorTpl.mtpStorageNotAccessible.toLowerCase()) !== -1
-  ) {
-    return {
-      error: errorStringified,
       throwAlert: true,
       status: false
     };

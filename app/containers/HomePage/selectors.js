@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect';
+import { getMtpStoragesListSelected } from './actions';
 
 const make = (state, props) => state.Home;
 
@@ -31,6 +32,13 @@ export const makeContextMenuList = createSelector(
   state => state.contextMenuList
 );
 
-export const makeMtpStoragesList = createSelector(make, state => state.mtpStoragesList);
+export const makeMtpStoragesList = createSelector(
+  make,
+  state => state.mtpStoragesList
+);
+
+export const makeMtpStoragesListSelected = createSelector(make, state => {
+  return getMtpStoragesListSelected(state);
+});
 
 export const makeIsLoading = createSelector(make, state => state.___isLoading);

@@ -32,7 +32,8 @@ import {
   clearContextMenuPos,
   processMtpOutput,
   processLocalOutput,
-  setMtpStorageOptions
+  setMtpStorageOptions,
+  getMtpStoragesListSelected
 } from '../actions';
 import {
   makeDirectoryLists,
@@ -40,7 +41,8 @@ import {
   makeSelectedPath,
   makeMtpDevice,
   makeContextMenuPos,
-  makeContextMenuList
+  makeContextMenuList,
+  makeMtpStoragesListSelected
 } from '../selectors';
 import { makeHideHiddenFiles } from '../../Settings/selectors';
 import { deviceTypeConst } from '../../../constants';
@@ -109,8 +111,9 @@ class DirectoryLists extends React.Component {
     }
   }
 
-  _fetchDirList({ path, deviceType }) {
+  _fetchDirList({ ...args }) {
     const { handleFetchDirList, hideHiddenFiles } = this.props;
+    const { path, deviceType } = args;
 
     handleFetchDirList(
       {
@@ -164,7 +167,8 @@ class DirectoryLists extends React.Component {
       deviceType,
       handleRenameFile,
       hideHiddenFiles,
-      selectedPath
+      selectedPath,
+      mtpStoragesListSelected
     } = this.props;
     const { data } = this.state.toggleDialog.rename;
     const { confirm, textFieldValue: newFileName } = args;
@@ -196,7 +200,9 @@ class DirectoryLists extends React.Component {
       return null;
     }
 
-    if (await checkFileExists(newFilePath, deviceType)) {
+    if (
+      await checkFileExists(newFilePath, deviceType, mtpStoragesListSelected)
+    ) {
       this.handleErrorsEditDialog(
         {
           toggle: true,
@@ -226,7 +232,8 @@ class DirectoryLists extends React.Component {
       deviceType,
       handleNewFolder,
       hideHiddenFiles,
-      selectedPath
+      selectedPath,
+      mtpStoragesListSelected
     } = this.props;
     const { data } = this.state.toggleDialog.newFolder;
     const { confirm, textFieldValue: newFolderName } = args;
@@ -250,7 +257,9 @@ class DirectoryLists extends React.Component {
 
     const newFolderPath = sanitizePath(`${data.path}/${newFolderName}`);
 
-    if (await checkFileExists(newFolderPath, deviceType)) {
+    if (
+      await checkFileExists(newFolderPath, deviceType, mtpStoragesListSelected)
+    ) {
       this.handleErrorsEditDialog(
         {
           toggle: true,
@@ -846,15 +855,20 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         getState
       ) => {
         dispatch(
-          setMtpStorageOptions({ ...args }, deviceType, {
-            changeMtpStorageIdsOnlyOnDeviceChange: false,
-            mtpStoragesList: {}
-          })
+          setMtpStorageOptions(
+            { ...args },
+            deviceType,
+            {
+              changeMtpStorageIdsOnlyOnDeviceChange: false,
+              mtpStoragesList: {}
+            },
+            getState
+          )
         );
       },
 
       handleFetchDirList: ({ ...args }, deviceType) => (_, getState) => {
-        dispatch(fetchDirList({ ...args }, deviceType));
+        dispatch(fetchDirList({ ...args }, deviceType, getState));
       },
 
       handleContextMenuClick: ({ ...args }, deviceType) => (_, getState) => {
@@ -888,7 +902,13 @@ const mapDispatchToProps = (dispatch, ownProps) =>
                   stderr: localStderr,
                   data: localData,
                   callback: a => {
-                    dispatch(fetchDirList({ ...fetchDirListArgs }, deviceType));
+                    dispatch(
+                      fetchDirList(
+                        { ...fetchDirListArgs },
+                        deviceType,
+                        getState
+                      )
+                    );
                   }
                 })
               );
@@ -922,18 +942,28 @@ const mapDispatchToProps = (dispatch, ownProps) =>
                   stderr: localStderr,
                   data: localData,
                   callback: a => {
-                    dispatch(fetchDirList({ ...fetchDirListArgs }, deviceType));
+                    dispatch(
+                      fetchDirList(
+                        { ...fetchDirListArgs },
+                        deviceType,
+                        getState
+                      )
+                    );
                   }
                 })
               );
               break;
             case deviceTypeConst.mtp:
+              const mtpStoragesListSelected = getMtpStoragesListSelected(
+                getState().Home
+              );
               const {
                 error: mtpError,
                 stderr: mtpStderr,
                 data: mtpData
               } = await newMtpFolder({
-                newFolderPath
+                newFolderPath,
+                mtpStoragesListSelected
               });
 
               dispatch(
@@ -943,7 +973,13 @@ const mapDispatchToProps = (dispatch, ownProps) =>
                   stderr: mtpStderr,
                   data: mtpData,
                   callback: a => {
-                    dispatch(fetchDirList({ ...fetchDirListArgs }, deviceType));
+                    dispatch(
+                      fetchDirList(
+                        { ...fetchDirListArgs },
+                        deviceType,
+                        getState
+                      )
+                    );
                   }
                 })
               );
@@ -967,7 +1003,8 @@ const mapStateToProps = (state, props) => {
     isLoading: makeIsLoading(state),
     hideHiddenFiles: makeHideHiddenFiles(state),
     contextMenuPos: makeContextMenuPos(state),
-    contextMenuList: makeContextMenuList(state)
+    contextMenuList: makeContextMenuList(state),
+    mtpStoragesListSelected: makeMtpStoragesListSelected(state)
   };
 };
 

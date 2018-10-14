@@ -70,10 +70,32 @@ function _fetchDirList(data, deviceType) {
   };
 }
 
+export function getMtpStoragesListSelected(state) {
+  if (
+    typeof Object.keys(state.mtpStoragesList).length === 'undefined' ||
+    Object.keys(state.mtpStoragesList).length < 1
+  ) {
+    return null;
+  }
+
+  const mtpStoragesList = state.mtpStoragesList;
+  const mtpStoragesListKeys = Object.keys(mtpStoragesList);
+
+  for (let i in mtpStoragesListKeys) {
+    const itemKey = mtpStoragesListKeys[i];
+    if (mtpStoragesList[itemKey].selected) {
+      return itemKey;
+    }
+  }
+
+  return null;
+}
+
 export function setMtpStorageOptions(
-  { ...args },
+  { ...fetchDirArgs },
   deviceType,
-  { ...deviceChangeCheck }
+  { ...deviceChangeCheck },
+  getState
 ) {
   return async dispatch => {
     try {
@@ -101,8 +123,7 @@ export function setMtpStorageOptions(
             if (changeMtpIdsFlag) {
               dispatch(changeMtpStorage({ ...data }));
             }
-
-            dispatch(fetchDirList({ ...args }, deviceType));
+            dispatch(fetchDirList({ ...fetchDirArgs }, deviceType, getState));
           }
         })
       );
@@ -210,7 +231,7 @@ export function processLocalOutput({
   };
 }
 
-export function fetchDirList({ ...args }, deviceType) {
+export function fetchDirList({ ...args }, deviceType, getState) {
   try {
     switch (deviceType) {
       case deviceTypeConst.local:
@@ -232,8 +253,20 @@ export function fetchDirList({ ...args }, deviceType) {
 
         break;
       case deviceTypeConst.mtp:
+        //todo: remove this after testing is done
+        if (typeof getState === 'undefined') {
+          log.error(getState, 'mtpStoragesListSelected is undefined');
+          return null;
+        }
+
         return async dispatch => {
-          const { error, stderr, data } = await asyncReadMtpDir({ ...args });
+          const mtpStoragesListSelected = getMtpStoragesListSelected(
+            getState().Home
+          );
+          const { error, stderr, data } = await asyncReadMtpDir({
+            ...args,
+            mtpStoragesListSelected
+          });
 
           dispatch(
             processMtpOutput({
