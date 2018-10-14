@@ -36,7 +36,7 @@ const promisifiedExec = command => {
     return new Promise(function(resolve, reject) {
       exec(command, (error, stdout, stderr) => {
         //todo: remove this after testing is done
-        console.log(command);
+        
         return resolve({
           data: stdout,
           stderr: stderr,

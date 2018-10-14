@@ -471,10 +471,10 @@ class DirectoryLists extends React.Component {
     const { directoryLists, handleRequestSort } = this.props;
     const orderBy = property;
     const { orderBy: _orderBy, order: _order } = directoryLists[deviceType];
-    let order = 'desc';
+    let order = 'asc';
 
-    if (_orderBy === property && _order === 'desc') {
-      order = 'asc';
+    if (_orderBy === property && _order === 'asc') {
+      order = 'desc';
     }
 
     handleRequestSort({ order, orderBy }, deviceType);
@@ -553,13 +553,13 @@ class DirectoryLists extends React.Component {
   };
 
   tableSort = ({ ...args }) => {
-    const { nodes, order, orderBy, deviceType } = args;
+    const { nodes, order, orderBy } = args;
 
     if (typeof nodes === 'undefined' || !nodes.length < 0) {
       return [];
     }
 
-    if (order === 'desc') {
+    if (order === 'asc') {
       return lodashSortBy(nodes, [
         value => this._lodashSortConstraints({ value, orderBy })
       ]);
@@ -671,8 +671,7 @@ class DirectoryLists extends React.Component {
                   : this.tableSort({
                       nodes,
                       order,
-                      orderBy,
-                      deviceType
+                      orderBy
                     }).map(n => {
                       return this.TableRowsRender(n, this.isSelected(n.path));
                     })}

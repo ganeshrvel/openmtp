@@ -374,7 +374,6 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         }
 
         let _mtpStoragesList = {};
-        console.log(selectedValue);
         Object.keys(mtpStoragesList).map(a => {
           const item = mtpStoragesList[a];
           let _selectedValue = false;

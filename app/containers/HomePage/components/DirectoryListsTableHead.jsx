@@ -12,7 +12,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 
 const rows = [
   {
-    id: 'path',
+    id: 'name',
     numeric: false,
     disablePadding: false,
     label: 'Name'

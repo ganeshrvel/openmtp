@@ -29,9 +29,7 @@ class Home extends Component {
     todo: onscroll clear context menu
     todo: focus the datatable
     todo: folder/files different color
-    todo: fix sizes in local
     todo: sometimes folders are mistaken as files eg: /Volume/Mac-SSD
-    todo: fix sorting algorithm
     todo: selection blur or hide action for delete, up (/) and reload btns
     todo: binary for production
     todo: error boundary
