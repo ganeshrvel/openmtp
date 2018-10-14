@@ -16,6 +16,7 @@ import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 import nanoid from 'nanoid';
+import lodashSortBy from 'lodash/sortBy';
 import DirectoryListsTableHead from './DirectoryListsTableHead';
 import ContextMenu from './ContextMenu';
 import { TextFieldEdit } from '../../../components/DialogBox';
@@ -54,7 +55,8 @@ import {
   newMtpFolder
 } from '../../../api/sys';
 import { pathUp, sanitizePath } from '../../../utils/paths';
-import { doSort } from '../../../utils/funcs';
+import { doSort, isFloat, isInt, niceBytes } from '../../../utils/funcs';
+import { isNumber } from 'util';
 
 class DirectoryLists extends React.Component {
   constructor(props) {
@@ -527,21 +529,44 @@ class DirectoryLists extends React.Component {
     return _directoryLists.indexOf(path) !== -1;
   };
 
+  _lodashSortConstraints = ({ value, orderBy }) => {
+    if (orderBy === 'size' && value['isFolder']) {
+      return 0;
+    }
+
+    const item = value[orderBy];
+    let _primer = null;
+
+    if (isNumber(item)) {
+      if (isInt(item)) {
+        _primer = parseInt(item);
+      } else if (isFloat) {
+        _primer = parseFloat(item);
+      }
+    }
+
+    if (_primer === null) {
+      _primer = item.toLowerCase();
+    }
+
+    return _primer;
+  };
+
   tableSort = ({ ...args }) => {
-    const { nodes, order, orderBy } = args;
+    const { nodes, order, orderBy, deviceType } = args;
 
     if (typeof nodes === 'undefined' || !nodes.length < 0) {
       return [];
     }
-    return nodes.sort(
-      doSort({
-        field: orderBy,
-        reverse: order === 'asc',
-        primer: a => {
-          return a.toUpperCase();
-        }
-      })
-    );
+
+    if (order === 'desc') {
+      return lodashSortBy(nodes, [
+        value => this._lodashSortConstraints({ value, orderBy })
+      ]);
+    }
+    return lodashSortBy(nodes, [
+      value => this._lodashSortConstraints({ value, orderBy })
+    ]).reverse();
   };
 
   render() {
@@ -794,7 +819,7 @@ class DirectoryLists extends React.Component {
               )
             }
           >
-            {n.size} KB
+            {n.isFolder ? `--` : `${niceBytes(n.size)}`}
           </TableCell>
         )}
         {hideColList.indexOf('dateAdded') < 0 && (

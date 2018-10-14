@@ -1,7 +1,5 @@
 'use strict';
 
-import { isNumber, isString } from 'util';
-
 export const isArraysEqual = (a, b) => {
   if (a === b) {
     return true;
@@ -35,34 +33,13 @@ export const isFloat = n => {
   return Number(n) === n && n % 1 !== 0;
 };
 
-export const doSort = ({ field, reverse, primer }) => {
-  let key = x => {
-    const item = x[field];
-
-    if (typeof item === 'undefined' || item === null) {
-      return null;
-    }
-
-    let _primer = null;
-
-    if (isNumber(item)) {
-      if (isInt(item)) {
-        _primer = parseInt(item);
-      } else if (isFloat) {
-        _primer = parseFloat(item);
-      }
-    }
-
-    if (_primer === null) {
-      _primer = primer(item);
-    }
-
-    return primer ? _primer : item;
-  };
-
-  return (a, b) => {
-    let A = key(a),
-      B = key(b);
-    return (A < B ? -1 : A > B ? 1 : 0) * [-1, 1][+!!reverse];
-  };
+export const niceBytes = (a, b) => {
+  if (0 === a) {
+    return '0 Bytes';
+  }
+  const c = 1024,
+    d = b || 2,
+    e = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
+    f = Math.floor(Math.log(a) / Math.log(c));
+  return parseFloat((a / Math.pow(c, f)).toFixed(d)) + ' ' + e[f];
 };
