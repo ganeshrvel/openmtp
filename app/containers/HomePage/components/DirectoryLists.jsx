@@ -150,7 +150,7 @@ class DirectoryLists extends React.Component {
       contextMenuPos,
       mtpDevice
     } = this.props;
-
+    
     if (
       deviceType === deviceTypeConst.mtp &&
       !mtpDevice.isAvailable &&
@@ -161,7 +161,7 @@ class DirectoryLists extends React.Component {
 
       return null;
     }
-
+   
     if (event.type === 'contextmenu') {
       if (
         _target === 'tableWrapperTarget' &&
@@ -320,7 +320,15 @@ class DirectoryLists extends React.Component {
           handleCopy({ selected, deviceType });
           break;
         case 'paste':
-          console.log(item);
+          this.handleToggleDialogBox(
+            {
+              toggle: true,
+              data: {
+                ...item.data
+              }
+            },
+            'paste'
+          );
           break;
         case 'newFolder':
           this.handleToggleDialogBox(
@@ -672,13 +680,14 @@ class DirectoryLists extends React.Component {
         />
 
         <ProgressBar
-          titleText="Copy files"
+          titleText="Copying files"
           bodyText={`Filnames here---`}
           trigger={paste.toggle}
           fullWidthDialog={true}
           maxWidthDialog="sm"
           onClickHandler={this.handleNewFolderEditDialog}
           errors={paste.errors}
+          progressValue={50}
         />
 
         <Paper className={styles.root} elevation={0} square={true}>
@@ -1081,10 +1090,10 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         }
       },
 
-      handlePaste: (
-        { newFolderPath, deviceType },
-        { ...fetchDirListArgs }
-      ) => async (_, getState) => {
+      handlePaste: ({ destinationFolder, deviceType }) => async (
+        _,
+        getState
+      ) => {
         return;
 
         try {

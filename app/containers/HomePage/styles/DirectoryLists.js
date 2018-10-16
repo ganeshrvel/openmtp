@@ -19,8 +19,8 @@ export const styles = theme => ({
     borderLeft: variables.styles.borderThinDividerColor
   },
   emptyTableRowWrapper: {
-    height: `calc(100vh - 173px)`,
-    verticalAlign: `text-top`
+    /*height: `calc(100vh - 173px)`,
+    verticalAlign: `text-top`*/
   },
   tableRowSelected: {
     backgroundColor: 'rgba(41, 121, 255, 0.15) !important'
