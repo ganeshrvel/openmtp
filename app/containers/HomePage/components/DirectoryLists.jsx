@@ -1068,45 +1068,14 @@ const mapDispatchToProps = (dispatch, ownProps) =>
 
       handleCopy: ({ selected, deviceType }) => async (_, getState) => {
         try {
-          switch (deviceType) {
-            case deviceTypeConst.local:
-              dispatch(
-                setFileTransferClipboard(
-                  {
-                    queue: selected || [],
-                    source: deviceType
-                  },
-                  deviceType
-                )
-              );
+          dispatch(
+            setFileTransferClipboard({
+              queue: selected || [],
+              source: deviceType
+            })
+          );
 
-              dispatch(setSelectedDirLists({ selected: [] }, deviceType));
-
-              break;
-            case deviceTypeConst.mtp:
-              return;
-
-              dispatch(
-                processMtpOutput({
-                  deviceType,
-                  error: mtpError,
-                  stderr: mtpStderr,
-                  data: mtpData,
-                  callback: a => {
-                    dispatch(
-                      fetchDirList(
-                        { ...fetchDirListArgs },
-                        deviceType,
-                        getState
-                      )
-                    );
-                  }
-                })
-              );
-              break;
-            default:
-              break;
-          }
+          dispatch(setSelectedDirLists({ selected: [] }, deviceType));
         } catch (e) {
           log.error(e);
         }

@@ -295,7 +295,7 @@ export function fetchDirList({ ...args }, deviceType, getState) {
   }
 }
 
-export function setFileTransferClipboard({ ...data }, deviceType) {
+export function setFileTransferClipboard({ ...data }) {
 
   return {
     type: actionTypes.SET_FILE_TRANSFER_CLIPBOARD,
