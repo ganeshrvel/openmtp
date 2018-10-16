@@ -19,7 +19,7 @@ import nanoid from 'nanoid';
 import lodashSortBy from 'lodash/sortBy';
 import DirectoryListsTableHead from './DirectoryListsTableHead';
 import ContextMenu from './ContextMenu';
-import { TextFieldEdit } from '../../../components/DialogBox';
+import { TextFieldEdit, ProgressBar } from '../../../components/DialogBox';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { log } from '@Log';
@@ -34,7 +34,8 @@ import {
   processMtpOutput,
   processLocalOutput,
   setMtpStorageOptions,
-  getMtpStoragesListSelected
+  getMtpStoragesListSelected,
+  setFileTransferClipboard
 } from '../actions';
 import {
   makeDirectoryLists,
@@ -43,7 +44,9 @@ import {
   makeMtpDevice,
   makeContextMenuPos,
   makeContextMenuList,
-  makeMtpStoragesListSelected
+  makeMtpStoragesListSelected,
+  makeFileTransferClipboard,
+  makeFileTransferProgess
 } from '../selectors';
 import { makeHideHiddenFiles } from '../../Settings/selectors';
 import { deviceTypeConst } from '../../../constants';
@@ -55,7 +58,7 @@ import {
   newMtpFolder
 } from '../../../api/sys';
 import { pathUp, sanitizePath } from '../../../utils/paths';
-import { doSort, isFloat, isInt, niceBytes } from '../../../utils/funcs';
+import { isFloat, isInt, niceBytes } from '../../../utils/funcs';
 import { isNumber } from 'util';
 
 class DirectoryLists extends React.Component {
@@ -76,6 +79,14 @@ class DirectoryLists extends React.Component {
           data: {}
         },
         newFolder: {
+          errors: {
+            toggle: false,
+            message: null
+          },
+          toggle: false,
+          data: {}
+        },
+        paste: {
           errors: {
             toggle: false,
             message: null
@@ -127,7 +138,208 @@ class DirectoryLists extends React.Component {
     );
   }
 
-  handleToggleEditDialog = ({ ...args }, targetAction) => {
+  _handleContextMenuClick = (
+    event,
+    { ...rowData },
+    { ...tableData },
+    _target
+  ) => {
+    const {
+      handleClearContextMenuClick,
+      deviceType,
+      contextMenuPos,
+      mtpDevice
+    } = this.props;
+
+    if (
+      deviceType === deviceTypeConst.mtp &&
+      !mtpDevice.isAvailable &&
+      this._checkOpenContextMenu(contextMenuPos)
+    ) {
+      this._setContextMenuFocussedRow({}, {});
+      handleClearContextMenuClick(deviceType);
+
+      return null;
+    }
+
+    if (event.type === 'contextmenu') {
+      if (
+        _target === 'tableWrapperTarget' &&
+        event.target !== event.currentTarget
+      ) {
+        return null;
+      }
+
+      this._setContextMenuFocussedRow({ ...rowData }, { ...tableData });
+      this.createContextMenu(event);
+      return null;
+    }
+
+    if (this._checkOpenContextMenu(contextMenuPos)) {
+      this._setContextMenuFocussedRow({}, {});
+      handleClearContextMenuClick(deviceType);
+    }
+  };
+
+  _setContextMenuFocussedRow = ({ ...rowData }, { ...tableData }) => {
+    this.setState({
+      contextMenuFocussedRow: {
+        rowData: { ...rowData },
+        tableData: { ...tableData }
+      }
+    });
+  };
+
+  _checkOpenContextMenu = contextMenuPos => {
+    return (
+      Object.keys(contextMenuPos).filter(a => {
+        const item = contextMenuPos[a];
+
+        return Object.keys(item).length > 0;
+      }).length > 0
+    );
+  };
+
+  createContextMenu = event => {
+    const { handleContextMenuClick, deviceType } = this.props;
+    const {
+      root: rootStyles,
+      heightDeviceLocal: deviceLocalStyles,
+      heightDeviceMtp: deviceMtpStyles
+    } = contextMenuStyles(null);
+
+    const screenW = window.innerWidth;
+    const screenH = window.innerHeight;
+    const clickX = event.clientX;
+    const clickY = event.clientY;
+    const rootW = rootStyles.width;
+    const rootH =
+      deviceType === deviceTypeConst.local
+        ? deviceLocalStyles.height
+        : deviceMtpStyles.height;
+    const right = screenW - clickX > rootW;
+    const left = !right;
+    const top = screenH - clickY > rootH;
+    const bottom = !top;
+
+    let pos = {
+      left: 0,
+      top: 0
+    };
+
+    if (right) {
+      pos['left'] = clickX + 5;
+    } else if (left) {
+      pos['left'] = clickX - rootW - 5;
+    }
+
+    if (top) {
+      pos['top'] = clickY + 5;
+    } else if (bottom) {
+      pos['top'] = clickY - rootH - 5;
+    }
+
+    handleContextMenuClick({ ...pos }, deviceType);
+  };
+
+  contextMenuActiveList = deviceType => {
+    const { contextMenuList, fileTransferClipboard } = this.props;
+    const { contextMenuFocussedRow } = this.state;
+    const _contextMenuList = contextMenuList[deviceType];
+    const contextMenuActiveList = {};
+    const { queue } = this.props.directoryLists[deviceType];
+
+    Object.keys(_contextMenuList).map(a => {
+      const item = _contextMenuList[a];
+      switch (a) {
+        case 'rename':
+          contextMenuActiveList[a] = {
+            ...item,
+            enabled: Object.keys(contextMenuFocussedRow.rowData).length > 0,
+            data: contextMenuFocussedRow.rowData
+          };
+          break;
+
+        case 'copy':
+          contextMenuActiveList[a] = {
+            ...item,
+            enabled: queue.selected.length > 0
+          };
+          break;
+
+        case 'paste':
+          contextMenuActiveList[a] = {
+            ...item,
+            enabled:
+              fileTransferClipboard.queue.length > 0 &&
+              fileTransferClipboard.source !== deviceType
+          };
+          break;
+
+        case 'newFolder':
+          contextMenuActiveList[a] = {
+            ...item,
+            data: contextMenuFocussedRow.tableData
+          };
+          break;
+        default:
+          break;
+      }
+    });
+
+    return contextMenuActiveList;
+  };
+
+  _handleContextMenuListActions = ({ ...args }) => {
+    const {
+      deviceType,
+      directoryLists,
+      handleClearContextMenuClick,
+      handleCopy
+    } = this.props;
+
+    this._setContextMenuFocussedRow({}, {});
+    handleClearContextMenuClick(deviceType);
+
+    Object.keys(args).map(a => {
+      const item = args[a];
+      switch (a) {
+        case 'rename':
+          this.handleToggleDialogBox(
+            {
+              toggle: true,
+              data: {
+                ...item.data
+              }
+            },
+            'rename'
+          );
+          break;
+        case 'copy':
+          const selected = directoryLists[deviceType].queue.selected;
+          handleCopy({ selected, deviceType });
+          break;
+        case 'paste':
+          console.log(item);
+          break;
+        case 'newFolder':
+          this.handleToggleDialogBox(
+            {
+              toggle: true,
+              data: {
+                ...item.data
+              }
+            },
+            'newFolder'
+          );
+          break;
+        default:
+          break;
+      }
+    });
+  };
+
+  handleToggleDialogBox = ({ ...args }, targetAction) => {
     const { toggleDialog } = this.state;
     this.setState({
       toggleDialog: {
@@ -135,31 +347,6 @@ class DirectoryLists extends React.Component {
         [targetAction]: {
           ...toggleDialog[targetAction],
           ...args
-        }
-      }
-    });
-  };
-
-  handleErrorsEditDialog = ({ ...args }, targetAction) => {
-    const { toggleDialog } = this.state;
-    this.setState({
-      toggleDialog: {
-        ...toggleDialog,
-        [targetAction]: {
-          ...toggleDialog[targetAction],
-          errors: { ...args }
-        }
-      }
-    });
-  };
-
-  clearEditDialog = targetAction => {
-    const { toggleDialog } = this.state;
-    this.setState({
-      toggleDialog: {
-        ...toggleDialog,
-        [targetAction]: {
-          ...this.initialState.toggleDialog[targetAction]
         }
       }
     });
@@ -230,6 +417,31 @@ class DirectoryLists extends React.Component {
     this.clearEditDialog(targetAction);
   };
 
+  handleErrorsEditDialog = ({ ...args }, targetAction) => {
+    const { toggleDialog } = this.state;
+    this.setState({
+      toggleDialog: {
+        ...toggleDialog,
+        [targetAction]: {
+          ...toggleDialog[targetAction],
+          errors: { ...args }
+        }
+      }
+    });
+  };
+
+  clearEditDialog = targetAction => {
+    const { toggleDialog } = this.state;
+    this.setState({
+      toggleDialog: {
+        ...toggleDialog,
+        [targetAction]: {
+          ...this.initialState.toggleDialog[targetAction]
+        }
+      }
+    });
+  };
+
   handleNewFolderEditDialog = async ({ ...args }) => {
     const {
       deviceType,
@@ -285,186 +497,6 @@ class DirectoryLists extends React.Component {
     );
 
     this.clearEditDialog(targetAction);
-  };
-
-  _handleContextMenuListActions = ({ ...args }) => {
-    const { deviceType, handleClearContextMenuClick } = this.props;
-
-    this._setContextMenuFocussedRow({}, {});
-    handleClearContextMenuClick(deviceType);
-
-    Object.keys(args).map(a => {
-      const item = args[a];
-      switch (a) {
-        case 'rename':
-          this.handleToggleEditDialog(
-            {
-              toggle: true,
-              data: {
-                ...item.data
-              }
-            },
-            'rename'
-          );
-          break;
-        case 'copy':
-          console.log(item);
-          break;
-        case 'paste':
-          console.log(item);
-          break;
-        case 'newFolder':
-          this.handleToggleEditDialog(
-            {
-              toggle: true,
-              data: {
-                ...item.data
-              }
-            },
-            'newFolder'
-          );
-          break;
-        default:
-          break;
-      }
-    });
-  };
-
-  _handleContextMenuClick = (
-    event,
-    { ...rowData },
-    { ...tableData },
-    _target
-  ) => {
-    const {
-      handleClearContextMenuClick,
-      deviceType,
-      contextMenuPos
-    } = this.props;
-    if (event.type === 'contextmenu') {
-      if (
-        _target === 'tableWrapperTarget' &&
-        event.target !== event.currentTarget
-      ) {
-        return null;
-      }
-
-      this._setContextMenuFocussedRow({ ...rowData }, { ...tableData });
-      this.createContextMenu(event);
-      return null;
-    }
-
-    if (this._checkOpenContextMenu(contextMenuPos)) {
-      this._setContextMenuFocussedRow({});
-      handleClearContextMenuClick(deviceType);
-    }
-  };
-
-  _setContextMenuFocussedRow = ({ ...rowData }, { ...tableData }) => {
-    this.setState({
-      contextMenuFocussedRow: {
-        rowData: { ...rowData },
-        tableData: { ...tableData }
-      }
-    });
-  };
-
-  _checkOpenContextMenu = contextMenuPos => {
-    return (
-      Object.keys(contextMenuPos).filter(a => {
-        const item = contextMenuPos[a];
-
-        return Object.keys(item).length > 0;
-      }).length > 0
-    );
-  };
-
-  createContextMenu = event => {
-    const { handleContextMenuClick, deviceType } = this.props;
-    const {
-      root: rootStyles,
-      heightDeviceLocal: deviceLocalStyles,
-      heightDeviceMtp: deviceMtpStyles
-    } = contextMenuStyles(null);
-
-    const screenW = window.innerWidth;
-    const screenH = window.innerHeight;
-    const clickX = event.clientX;
-    const clickY = event.clientY;
-    const rootW = rootStyles.width;
-    const rootH =
-      deviceType === deviceTypeConst.local
-        ? deviceLocalStyles.height
-        : deviceMtpStyles.height;
-    const right = screenW - clickX > rootW;
-    const left = !right;
-    const top = screenH - clickY > rootH;
-    const bottom = !top;
-
-    let pos = {
-      left: 0,
-      top: 0
-    };
-
-    if (right) {
-      pos['left'] = clickX + 5;
-    } else if (left) {
-      pos['left'] = clickX - rootW - 5;
-    }
-
-    if (top) {
-      pos['top'] = clickY + 5;
-    } else if (bottom) {
-      pos['top'] = clickY - rootH - 5;
-    }
-
-    handleContextMenuClick({ ...pos }, deviceType);
-  };
-
-  contextMenuActiveList = deviceType => {
-    const { contextMenuList } = this.props;
-    const { contextMenuFocussedRow } = this.state;
-    const _contextMenuList = contextMenuList[deviceType];
-    const contextMenuActiveList = {};
-    const { queue } = this.props.directoryLists[deviceType];
-
-    Object.keys(_contextMenuList).map(a => {
-      const item = _contextMenuList[a];
-      switch (a) {
-        case 'rename':
-          contextMenuActiveList[a] = {
-            ...item,
-            enabled: Object.keys(contextMenuFocussedRow.rowData).length > 0,
-            data: contextMenuFocussedRow.rowData
-          };
-          break;
-
-        case 'copy':
-          contextMenuActiveList[a] = {
-            ...item,
-            enabled: queue.selected.length > 0
-          };
-          break;
-
-        case 'paste':
-          contextMenuActiveList[a] = {
-            ...item,
-            enabled: false
-          };
-          break;
-
-        case 'newFolder':
-          contextMenuActiveList[a] = {
-            ...item,
-            data: contextMenuFocussedRow.tableData
-          };
-          break;
-        default:
-          break;
-      }
-    });
-
-    return contextMenuActiveList;
   };
 
   _handleRequestSort = (deviceType, property, event) => {
@@ -586,7 +618,7 @@ class DirectoryLists extends React.Component {
     const contextMenuTrigger = Object.keys(_contextMenuPos).length > 0;
     const _eventTarget = 'tableWrapperTarget';
     const { toggleDialog } = this.state;
-    const { rename, newFolder } = toggleDialog;
+    const { rename, newFolder, paste } = toggleDialog;
     const tableData = {
       path: selectedPath[deviceType],
       directoryLists: directoryLists[deviceType]
@@ -625,7 +657,7 @@ class DirectoryLists extends React.Component {
           bodyText={`Path: ${newFolder.data.path || ''}`}
           trigger={newFolder.toggle}
           defaultValue={''}
-          label={`New folder name`}
+          label="New folder name"
           id="newFolderDialog"
           required={true}
           multiline={false}
@@ -637,6 +669,16 @@ class DirectoryLists extends React.Component {
           btnPositiveText="Create"
           btnNegativeText="Cancel"
           errors={newFolder.errors}
+        />
+
+        <ProgressBar
+          titleText="Copy files"
+          bodyText={`Filnames here---`}
+          trigger={paste.toggle}
+          fullWidthDialog={true}
+          maxWidthDialog="sm"
+          onClickHandler={this.handleNewFolderEditDialog}
+          errors={paste.errors}
         />
 
         <Paper className={styles.root} elevation={0} square={true}>
@@ -690,7 +732,7 @@ class DirectoryLists extends React.Component {
       return (
         <TableRow className={styles.emptyTableRowWrapper}>
           <TableCell colSpan={6} className={styles.tableCell}>
-            <Paper elevation={0}>
+            <Paper style={{ height: `100%` }} elevation={0}>
               <Typography variant="subheading">
                 Android device is not connected.
               </Typography>
@@ -1022,6 +1064,126 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         } catch (e) {
           log.error(e);
         }
+      },
+
+      handleCopy: ({ selected, deviceType }) => async (_, getState) => {
+        try {
+          switch (deviceType) {
+            case deviceTypeConst.local:
+              dispatch(
+                setFileTransferClipboard(
+                  {
+                    queue: selected || [],
+                    source: deviceType
+                  },
+                  deviceType
+                )
+              );
+
+              dispatch(setSelectedDirLists({ selected: [] }, deviceType));
+
+              break;
+            case deviceTypeConst.mtp:
+              return;
+
+              dispatch(
+                processMtpOutput({
+                  deviceType,
+                  error: mtpError,
+                  stderr: mtpStderr,
+                  data: mtpData,
+                  callback: a => {
+                    dispatch(
+                      fetchDirList(
+                        { ...fetchDirListArgs },
+                        deviceType,
+                        getState
+                      )
+                    );
+                  }
+                })
+              );
+              break;
+            default:
+              break;
+          }
+        } catch (e) {
+          log.error(e);
+        }
+      },
+
+      handlePaste: (
+        { newFolderPath, deviceType },
+        { ...fetchDirListArgs }
+      ) => async (_, getState) => {
+        return;
+
+        try {
+          switch (deviceType) {
+            case deviceTypeConst.local:
+              const {
+                error: localError,
+                stderr: localStderr,
+                data: localData
+              } = await newLocalFolder({
+                newFolderPath
+              });
+
+              dispatch(
+                processLocalOutput({
+                  deviceType,
+                  error: localError,
+                  stderr: localStderr,
+                  data: localData,
+                  callback: a => {
+                    dispatch(
+                      fetchDirList(
+                        { ...fetchDirListArgs },
+                        deviceType,
+                        getState
+                      )
+                    );
+                  }
+                })
+              );
+              break;
+            case deviceTypeConst.mtp:
+              const mtpStoragesListSelected = getMtpStoragesListSelected(
+                getState().Home
+              );
+              const {
+                error: mtpError,
+                stderr: mtpStderr,
+                data: mtpData
+              } = await newMtpFolder({
+                newFolderPath,
+                mtpStoragesListSelected
+              });
+
+              dispatch(
+                processMtpOutput({
+                  deviceType,
+                  error: mtpError,
+                  stderr: mtpStderr,
+                  data: mtpData,
+                  callback: a => {
+                    dispatch(
+                      fetchDirList(
+                        { ...fetchDirListArgs },
+                        deviceType,
+                        getState
+                      )
+                    );
+                  }
+                })
+              );
+              break;
+            default:
+              break;
+          }
+        } catch (e) {
+          log.error(e);
+        }
       }
     },
     dispatch
@@ -1036,7 +1198,9 @@ const mapStateToProps = (state, props) => {
     hideHiddenFiles: makeHideHiddenFiles(state),
     contextMenuPos: makeContextMenuPos(state),
     contextMenuList: makeContextMenuList(state),
-    mtpStoragesListSelected: makeMtpStoragesListSelected(state)
+    mtpStoragesListSelected: makeMtpStoragesListSelected(state),
+    fileTransferClipboard: makeFileTransferClipboard(state),
+    fileTransferProgess: makeFileTransferProgess(state)
   };
 };
 

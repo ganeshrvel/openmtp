@@ -34,8 +34,6 @@ class Home extends Component {
     todo: binary for production
     todo: error boundary
     todo: copy paste cut redo undo in prod
-    
-    
     todo: optimization: add drive icons to list
     todo: optimization: move sidebar menu to select dialog
     

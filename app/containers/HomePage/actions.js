@@ -27,7 +27,10 @@ const actionTypesList = [
   'SET_MTP_STATUS',
   'SET_CONTEXT_MENU_POS',
   'CLEAR_CONTEXT_MENU_POS',
-  'CHANGE_MTP_STORAGE'
+  'CHANGE_MTP_STORAGE',
+  'SET_FILE_TRANSFER_CLIPBOARD',
+  'SET_FILE_TRANSFER_PROGRESS',
+  'CLEAR_FILE_TRANSFER'
 ];
 
 export const actionTypes = prefixer(prefix, actionTypesList);
@@ -290,6 +293,31 @@ export function fetchDirList({ ...args }, deviceType, getState) {
   } catch (e) {
     log.error(e);
   }
+}
+
+export function setFileTransferClipboard({ ...data }, deviceType) {
+
+  return {
+    type: actionTypes.SET_FILE_TRANSFER_CLIPBOARD,
+    payload: {
+      ...data
+    }
+  };
+}
+
+export function setFileTransferProgress({ data }) {
+  return {
+    type: actionTypes.SET_FILE_TRANSFER_PROGRESS,
+    payload: {
+      ...data
+    }
+  };
+}
+
+export function clearFileTransfer() {
+  return {
+    type: actionTypes.CLEAR_FILE_TRANSFER
+  };
 }
 
 export function reqLoadHome() {

@@ -164,7 +164,18 @@ export const initialState = {
     [deviceTypeConst.mtp]: {}
   },
 
-  mtpStoragesList: {}
+  mtpStoragesList: {},
+
+  fileTransfer: {
+    clipboard: {
+      queue: [],
+      source: null
+    },
+    progress: {
+      currentFile: null,
+      percentage: 0
+    }
+  }
 };
 
 export default function Home(state = initialState, action) {
@@ -259,6 +270,39 @@ export default function Home(state = initialState, action) {
         mtpStoragesList: {
           ...initialState.mtpStoragesList,
           ...payload
+        }
+      };
+
+    case actionTypes.SET_FILE_TRANSFER_CLIPBOARD:
+      return {
+        ...state,
+        ...setLoadedMetaData(state),
+        fileTransfer: {
+          ...state.fileTransfer,
+          clipboard: {
+            ...payload
+          }
+        }
+      };
+
+    case actionTypes.SET_FILE_TRANSFER_PROGRESS:
+      return {
+        ...state,
+        ...setLoadedMetaData(state),
+        fileTransfer: {
+          ...state.fileTransfer,
+          progress: {
+            ...payload
+          }
+        }
+      };
+
+    case actionTypes.CLEAR_FILE_TRANSFER:
+      return {
+        ...state,
+        ...setLoadedMetaData(state),
+        fileTransfer: {
+          ...initialState.fileTransfer
         }
       };
 

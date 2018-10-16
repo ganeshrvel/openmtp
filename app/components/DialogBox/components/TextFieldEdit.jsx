@@ -1,5 +1,5 @@
 import React from 'react';
-import { styles } from '../styles/EditDialog';
+import { styles } from '../styles/TextFieldEdit';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';

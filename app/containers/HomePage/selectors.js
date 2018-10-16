@@ -41,4 +41,14 @@ export const makeMtpStoragesListSelected = createSelector(make, state => {
   return getMtpStoragesListSelected(state);
 });
 
+export const makeFileTransferClipboard = createSelector(
+  make,
+  state => state.fileTransfer.clipboard
+);
+
+export const makeFileTransferProgess = createSelector(
+  make,
+  state => state.fileTransfer.progress
+);
+
 export const makeIsLoading = createSelector(make, state => state.___isLoading);
