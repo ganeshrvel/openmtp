@@ -92,6 +92,7 @@ export const checkFileExists = async (
             fullPath = path.resolve(item);
             return await fs.existsSync(fullPath);
           }
+          return null;
         }
 
         fullPath = path.resolve(filePath);
@@ -113,6 +114,7 @@ export const checkFileExists = async (
             fullPath = path.resolve(item);
             return await checkMtpFileExists(fullPath, mtpStoragesListSelected);
           }
+          return null;
         }
 
         fullPath = path.resolve(filePath);

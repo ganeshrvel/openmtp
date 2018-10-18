@@ -266,7 +266,7 @@ export function fetchDirList({ ...args }, deviceType, getState) {
           const mtpStoragesListSelected = getMtpStoragesListSelected(
             getState().Home
           );
-          
+
           const { error, stderr, data } = await asyncReadMtpDir({
             ...args,
             mtpStoragesListSelected
