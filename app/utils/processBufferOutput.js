@@ -26,7 +26,7 @@ export const processMtpBuffer = ({ error, stderr }) => {
 
   const errorStringified = (error !== null && error.toString()) || '';
   const stderrStringified = (stderr !== null && stderr.toString()) || '';
-
+ 
   if (!errorStringified && !stderrStringified) {
     return {
       error: null,
@@ -34,7 +34,7 @@ export const processMtpBuffer = ({ error, stderr }) => {
       status: true
     };
   }
-
+ 
   const checkError = errorTplKey => {
     return (
       stderrStringified
@@ -97,7 +97,7 @@ export const processMtpBuffer = ({ error, stderr }) => {
     checkError('fileNotFound')
   ) {
     return {
-      error: sanitizeErrors(stderrStringified),
+      error: sanitizeErrors(stderrStringified || errorStringified),
       throwAlert: true,
       status: true
     };
@@ -116,7 +116,7 @@ export const processMtpBuffer = ({ error, stderr }) => {
     checkError('invalidPath')
   ) {
     return {
-      error: sanitizeErrors(stderrStringified),
+      error: sanitizeErrors(stderrStringified || errorStringified),
       throwAlert: true,
       status: true
     };
