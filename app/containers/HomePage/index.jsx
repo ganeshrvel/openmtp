@@ -22,6 +22,7 @@ class Home extends Component {
 
   componentWillMount() {
     /*
+    todo: scan for mountable devices
     todo: loader for mtp!
     todo: TableFooter
     todo: remove these lines => //todo: remove this after testing is done

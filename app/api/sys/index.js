@@ -659,7 +659,7 @@ export const pasteFiles = (
   }
 };
 
-export const _pasteFiles = (
+const _pasteFiles = (
   { ...pasteArgs },
   { ...fetchDirListArgs },
   { ...cmdArgs },
