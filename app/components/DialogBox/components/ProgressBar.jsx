@@ -10,24 +10,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 class ProgressBar extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      textFieldValue: null
-    };
   }
-
-  handleClick = ({ confirm = false }, e) => {
-    const { textFieldValue } = this.state;
-    const { onClickHandler } = this.props;
-
-    e.preventDefault();
-    onClickHandler({ confirm, textFieldValue });
-  };
-
-  handleChange = event => {
-    this.setState({
-      textFieldValue: event.target.value
-    });
-  };
 
   render() {
     const {
@@ -37,15 +20,19 @@ class ProgressBar extends React.Component {
       titleText,
       fullWidthDialog,
       maxWidthDialog,
-      progressValue
+      progressValue,
+      variant
     } = this.props;
-
+    
     return (
       <Dialog
+        disableBackdropClick
+        disableEscapeKeyDown
         className={styles.root}
         open={trigger}
         fullWidth={fullWidthDialog}
         maxWidth={maxWidthDialog}
+        aria-labelledby="progressbar-dialogbox"
       >
         <DialogTitle>{titleText}</DialogTitle>
 
@@ -56,7 +43,7 @@ class ProgressBar extends React.Component {
 
           <LinearProgress
             color="secondary"
-            variant="determinate"
+            variant={variant}
             value={progressValue}
           />
         </DialogContent>

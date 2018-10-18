@@ -68,7 +68,7 @@ function _fetchDirList(data, deviceType) {
     type: actionTypes.FETCH_DIR_LIST,
     deviceType,
     payload: {
-      nodes: data || {}
+      nodes: data || []
     }
   };
 }
@@ -266,6 +266,7 @@ export function fetchDirList({ ...args }, deviceType, getState) {
           const mtpStoragesListSelected = getMtpStoragesListSelected(
             getState().Home
           );
+          
           const { error, stderr, data } = await asyncReadMtpDir({
             ...args,
             mtpStoragesListSelected
@@ -296,7 +297,6 @@ export function fetchDirList({ ...args }, deviceType, getState) {
 }
 
 export function setFileTransferClipboard({ ...data }) {
-
   return {
     type: actionTypes.SET_FILE_TRANSFER_CLIPBOARD,
     payload: {
@@ -305,7 +305,7 @@ export function setFileTransferClipboard({ ...data }) {
   };
 }
 
-export function setFileTransferProgress({ data }) {
+export function setFileTransferProgress({ ...data }) {
   return {
     type: actionTypes.SET_FILE_TRANSFER_PROGRESS,
     payload: {

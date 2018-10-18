@@ -10,7 +10,7 @@
     "build-renderer": "cross-env NODE_ENV=production node --trace-warnings -r babel-register ./node_modules/webpack/bin/webpack --config webpack/config.renderer.prod.js --colors",
     "dev": "cross-env START_HOT=1 node -r babel-register ./internals/scripts/CheckPortInUse.js && cross-env START_HOT=1 yarn start-renderer-dev",
     "electron-rebuild": "electron-rebuild --parallel --force --types prod,dev,optional --module-dir app",
-    "package": "yarn build && electron-builder build --publish never",
+    "package": "yarn build && electron-buaft-mtp-cliilder build --publish never",
     "package-all": "yarn build && electron-builder build -mwl",
     "package-linux": "yarn build && electron-builder build --linux",
     "package-win": "yarn build && electron-builder build --win --x64",
@@ -142,7 +142,10 @@
     "@material-ui/icons": "^3.0.1",
     "@material-ui/lab": "3.0.0-alpha.19",
     "bluebird": "^3.5.2",
+    "buffered-spawn": "^3.3.2",
+    "capture-spawn": "^1.0.1",
     "classnames": "^2.2.6",
+    "cross-spawn-async": "^2.2.5",
     "devtron": "^1.4.0",
     "electron-debug": "^2.0.0",
     "history": "^4.7.2",
@@ -152,6 +155,7 @@
     "moment": "^2.22.2",
     "nanoid": "^1.2.4",
     "node-shell-parser": "^0.2.1",
+    "procstreams": "^0.3.0",
     "prop-types": "^15.6.2",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
@@ -167,7 +171,9 @@
     "reselect": "^3.0.1",
     "roboto-fontface": "^0.10.0",
     "source-map-support": "^0.5.6",
-    "spawn-promise": "^0.1.8"
+    "spawn-promise": "^0.1.8",
+    "std-pour": "^1.1.0",
+    "superchild": "^0.1.10"
   },
   "devEngines": {
     "node": ">=7.x",

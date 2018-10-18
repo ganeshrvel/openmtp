@@ -19,3 +19,11 @@ export const pathUp = filePath => {
 export const sanitizePath = filePath => {
   return filePath.replace(/\/\/+/g, '/');
 };
+
+export const baseName = filePath => {
+  if (typeof filePath === 'undefined' || filePath === null) {
+    return null;
+  }
+  filePath = path.resolve(filePath);
+  return filePath.split(/[\\/]/).pop();
+};

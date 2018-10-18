@@ -7,36 +7,26 @@ import path from 'path';
 import moment from 'moment';
 import { log } from '@Log';
 import { mtp as mtpCli } from '@Binaries';
-import childProcess from 'child_process';
-import spawn from 'spawn-promise';
+import { spawn, exec } from 'child_process';
 import findLodash from 'lodash/find';
 import { deviceTypeConst } from '../../constants';
+import { baseName } from '../../utils/paths';
+import {
+  clearFileTransfer,
+  fetchDirList,
+  processMtpOutput,
+  setFileTransferProgress
+} from '../../containers/HomePage/actions';
 
 const readdir = Promise.promisify(fs.readdir);
-const exec = Promise.promisify(childProcess.exec);
-
-export const promisifiedSpawn = cmd => {
-  return spawn(...cmd)
-    .then(res => {
-      return {
-        data: res.toString(),
-        error: null
-      };
-    })
-    .catch(e => {
-      return {
-        data: null,
-        error: e.toString()
-      };
-    });
-};
+const execPromise = Promise.promisify(exec);
 
 const promisifiedExec = command => {
   try {
     return new Promise(function(resolve, reject) {
-      exec(command, (error, stdout, stderr) => {
+      execPromise(command, (error, stdout, stderr) => {
         //todo: remove this after testing is done
-        
+
         return resolve({
           data: stdout,
           stderr: stderr,
@@ -51,7 +41,7 @@ const promisifiedExec = command => {
 
 const promisifiedExecNoCatch = command => {
   return new Promise(function(resolve, reject) {
-    exec(command, (error, stdout, stderr) =>
+    execPromise(command, (error, stdout, stderr) =>
       resolve({
         data: stdout,
         stderr: stderr,
@@ -232,7 +222,7 @@ export const renameLocalFiles = async ({ oldFilePath, newFilePath }) => {
 export const newLocalFolder = async ({ newFolderPath }) => {
   try {
     if (typeof newFolderPath === 'undefined' || newFolderPath === null) {
-      return { error: `No files selected.`, stderr: null, data: null };
+      return { error: `Invalid path.`, stderr: null, data: null };
     }
 
     const escapedNewFolderPath = `"${escapeShell(newFolderPath)}"`;
@@ -255,8 +245,11 @@ export const newLocalFolder = async ({ newFolderPath }) => {
 /**
  MTP device ->
  */
-const checkFilterStorageLine = string => {
-  return string.indexOf(`selected storage`) !== -1;
+const filterOutMtpLines = string => {
+  return (
+    string.indexOf(`selected storage`) !== -1 ||
+    string.indexOf(`Device::Find failed`) !== -1
+  );
 };
 
 export const fetchMtpStorageOptions = async () => {
@@ -281,7 +274,12 @@ export const fetchMtpStorageOptions = async () => {
     let storageList = {};
     _storageList
       .filter(a => {
-        return !(a === '\n' || a === '\r\n' || a === '');
+        return !(
+          a === '\n' ||
+          a === '\r\n' ||
+          a === '' ||
+          filterOutMtpLines(a)
+        );
       })
       .map((a, index) => {
         if (!a) {
@@ -393,7 +391,7 @@ export const asyncReadMtpDir = async ({
           a === '\n' ||
           a === '\r\n' ||
           a === '' ||
-          checkFilterStorageLine(a)
+          filterOutMtpLines(a)
         );
       })
       .map(a => {
@@ -401,12 +399,7 @@ export const asyncReadMtpDir = async ({
       });
 
     fileProps = fileProps.filter(a => {
-      return !(
-        a === '\n' ||
-        a === '\r\n' ||
-        a === '' ||
-        checkFilterStorageLine(a)
-      );
+      return !(a === '\n' || a === '\r\n' || a === '' || filterOutMtpLines(a));
     });
 
     if (fileList.length > fileProps.length) {
@@ -489,7 +482,7 @@ export const newMtpFolder = async ({
 }) => {
   try {
     if (typeof newFolderPath === 'undefined' || newFolderPath === null) {
-      return { error: `No files selected.`, stderr: null, data: null };
+      return { error: `Invalid path.`, stderr: null, data: null };
     }
 
     //todo: remove this after testing is done
@@ -518,6 +511,119 @@ export const newMtpFolder = async ({
   }
 };
 
+export const pasteMtpFiles = (
+  { ...pasteArgs },
+  { ...fetchDirListArgs },
+  deviceType,
+  dispatch,
+  getState
+) => {
+  try {
+    const {
+      destinationFolder,
+      mtpStoragesListSelected,
+      fileTransferClipboard
+    } = pasteArgs;
+
+    if (
+      typeof destinationFolder === 'undefined' ||
+      destinationFolder === null
+    ) {
+      dispatch(
+        processMtpOutput({
+          deviceType,
+          error: `Invalid path.`,
+          stderr: null,
+          data: null,
+          callback: a => {
+            dispatch(
+              fetchDirList({ ...fetchDirListArgs }, deviceType, getState)
+            );
+          }
+        })
+      );
+
+      return null;
+    }
+
+    //todo: remove this after testing is done
+    if (typeof mtpStoragesListSelected === 'undefined') {
+      log.error(
+        mtpStoragesListSelected,
+        'mtpStoragesListSelected is undefined'
+      );
+      return null;
+    }
+    let { queue } = fileTransferClipboard;
+
+    if (typeof queue === 'undefined' || queue === null || queue.length < 1) {
+      dispatch(
+        processMtpOutput({
+          deviceType,
+          error: `No files selected`,
+          stderr: null,
+          data: null,
+          callback: a => {
+            dispatch(
+              fetchDirList({ ...fetchDirListArgs }, deviceType, getState)
+            );
+          }
+        })
+      );
+    }
+
+    const storageSelectCmd = `"storage ${mtpStoragesListSelected}"`;
+
+    const _queue = queue.map(sourcePath => {
+      const destinationPath = path.resolve(destinationFolder);
+      const escapedDestinationPath = `${escapeShell(destinationPath)}`;
+      const escapedSourcePath = `${escapeShell(sourcePath)}`;
+
+      return `${storageSelectCmd} "put \\"${escapedSourcePath}\\" \\"${escapedDestinationPath}\\""`;
+    });
+
+    const cmd = spawn(mtpCli, [..._queue], {
+      shell: true
+    });
+
+    cmd.stdout.on('data', data => {
+      dispatch(
+        setFileTransferProgress({
+          toggle: true,
+          currentFile: null,
+          percentage: 0
+        })
+      );
+    });
+
+    cmd.stderr.on('data', e => {
+      dispatch(
+        processMtpOutput({
+          deviceType,
+          error: e,
+          stderr: null,
+          data: null,
+          callback: a => {
+            dispatch(clearFileTransfer());
+            dispatch(
+              fetchDirList({ ...fetchDirListArgs }, deviceType, getState)
+            );
+          }
+        })
+      );
+    });
+
+    cmd.on('exit', code => {
+      dispatch(clearFileTransfer());
+      dispatch(fetchDirList({ ...fetchDirListArgs }, deviceType, getState));
+    });
+
+    return { error: null, stderr: null, data: true };
+  } catch (e) {
+    log.error(e);
+  }
+};
+
 const fetchExtension = (fileName, isFolder) => {
   if (isFolder) {
     return null;
@@ -527,6 +633,6 @@ const fetchExtension = (fileName, isFolder) => {
     : fileName.substring(fileName.lastIndexOf('.') + 1);
 };
 
-const escapeShell = cmd => {
+export const escapeShell = cmd => {
   return cmd.replace(/"/g, '\\"');
 };

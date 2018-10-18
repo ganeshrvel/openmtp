@@ -55,7 +55,8 @@ import {
   renameLocalFiles,
   checkFileExists,
   newLocalFolder,
-  newMtpFolder
+  newMtpFolder,
+  pasteMtpFiles
 } from '../../../api/sys';
 import { pathUp, sanitizePath } from '../../../utils/paths';
 import { isFloat, isInt, niceBytes } from '../../../utils/funcs';
@@ -79,14 +80,6 @@ class DirectoryLists extends React.Component {
           data: {}
         },
         newFolder: {
-          errors: {
-            toggle: false,
-            message: null
-          },
-          toggle: false,
-          data: {}
-        },
-        paste: {
           errors: {
             toggle: false,
             message: null
@@ -150,7 +143,7 @@ class DirectoryLists extends React.Component {
       contextMenuPos,
       mtpDevice
     } = this.props;
-    
+
     if (
       deviceType === deviceTypeConst.mtp &&
       !mtpDevice.isAvailable &&
@@ -161,7 +154,7 @@ class DirectoryLists extends React.Component {
 
       return null;
     }
-   
+    
     if (event.type === 'contextmenu') {
       if (
         _target === 'tableWrapperTarget' &&
@@ -320,15 +313,7 @@ class DirectoryLists extends React.Component {
           handleCopy({ selected, deviceType });
           break;
         case 'paste':
-          this.handleToggleDialogBox(
-            {
-              toggle: true,
-              data: {
-                ...item.data
-              }
-            },
-            'paste'
-          );
+          this._handlePaste();
           break;
         case 'newFolder':
           this.handleToggleDialogBox(
@@ -448,6 +433,32 @@ class DirectoryLists extends React.Component {
         }
       }
     });
+  };
+
+  _handlePaste = () => {
+    const {
+      deviceType,
+      hideHiddenFiles,
+      selectedPath,
+      mtpStoragesListSelected,
+      handlePaste,
+      fileTransferClipboard
+    } = this.props;
+
+    const destinationFolder = selectedPath[deviceType];
+
+    handlePaste(
+      {
+        destinationFolder,
+        mtpStoragesListSelected,
+        fileTransferClipboard
+      },
+      {
+        filePath: destinationFolder,
+        ignoreHidden: hideHiddenFiles[deviceType]
+      },
+      deviceType
+    );
   };
 
   handleNewFolderEditDialog = async ({ ...args }) => {
@@ -616,7 +627,8 @@ class DirectoryLists extends React.Component {
       hideColList,
       contextMenuPos,
       selectedPath,
-      directoryLists
+      directoryLists,
+      fileTransferProgess
     } = this.props;
     const { nodes, order, orderBy, queue } = directoryLists[deviceType];
     const { selected } = queue;
@@ -626,11 +638,14 @@ class DirectoryLists extends React.Component {
     const contextMenuTrigger = Object.keys(_contextMenuPos).length > 0;
     const _eventTarget = 'tableWrapperTarget';
     const { toggleDialog } = this.state;
-    const { rename, newFolder, paste } = toggleDialog;
+    const { rename, newFolder } = toggleDialog;
     const tableData = {
       path: selectedPath[deviceType],
       directoryLists: directoryLists[deviceType]
     };
+
+    const togglePasteDialog =
+      deviceType === deviceTypeConst.mtp && fileTransferProgess.toggle;
 
     return (
       <React.Fragment>
@@ -680,14 +695,15 @@ class DirectoryLists extends React.Component {
         />
 
         <ProgressBar
-          titleText="Copying files"
-          bodyText={`Filnames here---`}
-          trigger={paste.toggle}
+          titleText="Transferring..."
+          bodyText={``}
+          trigger={togglePasteDialog}
           fullWidthDialog={true}
           maxWidthDialog="sm"
           onClickHandler={this.handleNewFolderEditDialog}
-          errors={paste.errors}
-          progressValue={50}
+          variant="indeterminate"
+          errors={``}
+          progressValue={fileTransferProgess.percentage}
         />
 
         <Paper className={styles.root} elevation={0} square={true}>
@@ -737,15 +753,17 @@ class DirectoryLists extends React.Component {
 
   EmptyRowRender = isMtp => {
     const { classes: styles, mtpDevice } = this.props;
+    const _eventTarget = 'emptyRowTarget';
     if (isMtp && !mtpDevice.isAvailable) {
       return (
         <TableRow className={styles.emptyTableRowWrapper}>
           <TableCell colSpan={6} className={styles.tableCell}>
             <Paper style={{ height: `100%` }} elevation={0}>
               <Typography variant="subheading">
-                Android device is not connected.
+                Android device is busy or not connected.
               </Typography>
               <ul>
+                <li>Close other MTP applications.</li>
                 <li>
                   Use the USB cable that came with your Android device and
                   connect it to your Mac.
@@ -770,7 +788,13 @@ class DirectoryLists extends React.Component {
     }
     return (
       <TableRow className={styles.emptyTableRowWrapper}>
-        <TableCell colSpan={6} className={styles.tableCell} />
+        <TableCell
+          colSpan={6}
+          className={styles.tableCell}
+          onContextMenu={event =>
+            this._handleContextMenuClick(event, {}, {}, _eventTarget)
+          }
+        />
       </TableRow>
     );
   };
@@ -1090,70 +1114,24 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         }
       },
 
-      handlePaste: ({ destinationFolder, deviceType }) => async (
+      handlePaste: ({ ...pasteArgs }, { ...fetchDirListArgs }, deviceType) => (
         _,
         getState
       ) => {
-        return;
-
         try {
           switch (deviceType) {
             case deviceTypeConst.local:
-              const {
-                error: localError,
-                stderr: localStderr,
-                data: localData
-              } = await newLocalFolder({
-                newFolderPath
-              });
+              return;
+              pasteMtpFiles({ destinationFolder, dispatch, deviceType });
 
-              dispatch(
-                processLocalOutput({
-                  deviceType,
-                  error: localError,
-                  stderr: localStderr,
-                  data: localData,
-                  callback: a => {
-                    dispatch(
-                      fetchDirList(
-                        { ...fetchDirListArgs },
-                        deviceType,
-                        getState
-                      )
-                    );
-                  }
-                })
-              );
               break;
             case deviceTypeConst.mtp:
-              const mtpStoragesListSelected = getMtpStoragesListSelected(
-                getState().Home
-              );
-              const {
-                error: mtpError,
-                stderr: mtpStderr,
-                data: mtpData
-              } = await newMtpFolder({
-                newFolderPath,
-                mtpStoragesListSelected
-              });
-
-              dispatch(
-                processMtpOutput({
-                  deviceType,
-                  error: mtpError,
-                  stderr: mtpStderr,
-                  data: mtpData,
-                  callback: a => {
-                    dispatch(
-                      fetchDirList(
-                        { ...fetchDirListArgs },
-                        deviceType,
-                        getState
-                      )
-                    );
-                  }
-                })
+              pasteMtpFiles(
+                { ...pasteArgs },
+                { ...fetchDirListArgs },
+                deviceType,
+                dispatch,
+                getState
               );
               break;
             default:

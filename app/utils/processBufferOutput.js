@@ -14,6 +14,7 @@ export const processMtpBuffer = ({ error, stderr }) => {
     invalidStorageID: `invalid response code InvalidStorageID`,
     fileNotFound: `could not find`,
     noFilesSelected: `No files selected`,
+    invalidPath: `Invalid path`,
     writePipe: `WritePipe`,
     mtpStorageNotAccessible1: `MTP storage not accessible`,
     mtpStorageNotAccessible2: `error: storage`
@@ -98,7 +99,8 @@ export const processMtpBuffer = ({ error, stderr }) => {
     };
   } else if (
     /*No files selected*/
-    checkError('noFilesSelected')
+    checkError('noFilesSelected') ||
+    checkError('invalidPath')
   ) {
     return {
       error: errorStringified,
@@ -120,7 +122,8 @@ export const processLocalBuffer = ({ error, stderr }) => {
     noPerm: `Operation not permitted.`,
     commandFailed: `Could not complete! Try again.`,
     common: `Oops.. Your device has gone crazy! Try again.`,
-    unResponsive: `Device is not responding! Reload`
+    unResponsive: `Device is not responding! Reload`,
+    invalidPath: `Invalid path`
   };
 
   const errorTpl = {
@@ -165,6 +168,14 @@ export const processLocalBuffer = ({ error, stderr }) => {
   ) {
     return {
       error: errorDictionary.commandFailed,
+      throwAlert: true
+    };
+  } else if (
+    /*No files selected*/
+    checkError('invalidPath')
+  ) {
+    return {
+      error: errorStringified,
       throwAlert: true
     };
   } else {
