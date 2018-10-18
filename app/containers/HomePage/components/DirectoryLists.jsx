@@ -19,7 +19,11 @@ import nanoid from 'nanoid';
 import lodashSortBy from 'lodash/sortBy';
 import DirectoryListsTableHead from './DirectoryListsTableHead';
 import ContextMenu from './ContextMenu';
-import { TextFieldEdit, ProgressBar } from '../../../components/DialogBox';
+import {
+  TextFieldEdit as TextFieldEditDialog,
+  ProgressBar as ProgressBarDialog,
+  Confirm as ConfirmDialog
+} from '../../../components/DialogBox';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { log } from '@Log';
@@ -58,7 +62,7 @@ import {
   newMtpFolder,
   pasteMtpFiles
 } from '../../../api/sys';
-import { pathUp, sanitizePath } from '../../../utils/paths';
+import { baseName, pathUp, sanitizePath } from '../../../utils/paths';
 import { isFloat, isInt, niceBytes } from '../../../utils/funcs';
 import { isNumber } from 'util';
 
@@ -66,6 +70,7 @@ class DirectoryLists extends React.Component {
   constructor(props) {
     super(props);
     this.initialState = {
+      togglePasteConfirmDialog: false,
       contextMenuFocussedRow: {
         rowData: {},
         tableData: {}
@@ -154,7 +159,7 @@ class DirectoryLists extends React.Component {
 
       return null;
     }
-    
+
     if (event.type === 'contextmenu') {
       if (
         _target === 'tableWrapperTarget' &&
@@ -435,30 +440,10 @@ class DirectoryLists extends React.Component {
     });
   };
 
-  _handlePaste = () => {
-    const {
-      deviceType,
-      hideHiddenFiles,
-      selectedPath,
-      mtpStoragesListSelected,
-      handlePaste,
-      fileTransferClipboard
-    } = this.props;
-
-    const destinationFolder = selectedPath[deviceType];
-
-    handlePaste(
-      {
-        destinationFolder,
-        mtpStoragesListSelected,
-        fileTransferClipboard
-      },
-      {
-        filePath: destinationFolder,
-        ignoreHidden: hideHiddenFiles[deviceType]
-      },
-      deviceType
-    );
+  handleTogglePasteConfirmDialog = status => {
+    this.setState({
+      togglePasteConfirmDialog: status
+    });
   };
 
   handleNewFolderEditDialog = async ({ ...args }) => {
@@ -516,6 +501,59 @@ class DirectoryLists extends React.Component {
     );
 
     this.clearEditDialog(targetAction);
+  };
+
+  _handlePaste = async () => {
+    const {
+      deviceType,
+      selectedPath,
+      mtpStoragesListSelected,
+      fileTransferClipboard
+    } = this.props;
+    let { queue } = fileTransferClipboard;
+    const destinationFolder = selectedPath[deviceType];
+
+    queue = queue.map(a => {
+      return `${destinationFolder}/${baseName(a)}`;
+    });
+
+    if (await checkFileExists(queue, deviceType, mtpStoragesListSelected)) {
+      this.handleTogglePasteConfirmDialog(true);
+      return null;
+    }
+
+    this.handlePasteConfirmDialog(true);
+  };
+
+  handlePasteConfirmDialog = confirm => {
+    const {
+      deviceType,
+      hideHiddenFiles,
+      selectedPath,
+      mtpStoragesListSelected,
+      handlePaste,
+      fileTransferClipboard
+    } = this.props;
+    const destinationFolder = selectedPath[deviceType];
+
+    this.handleTogglePasteConfirmDialog(false);
+
+    if (!confirm) {
+      return null;
+    }
+
+    handlePaste(
+      {
+        destinationFolder,
+        mtpStoragesListSelected,
+        fileTransferClipboard
+      },
+      {
+        filePath: destinationFolder,
+        ignoreHidden: hideHiddenFiles[deviceType]
+      },
+      deviceType
+    );
   };
 
   _handleRequestSort = (deviceType, property, event) => {
@@ -637,7 +675,7 @@ class DirectoryLists extends React.Component {
     const _contextMenuPos = contextMenuPos[deviceType];
     const contextMenuTrigger = Object.keys(_contextMenuPos).length > 0;
     const _eventTarget = 'tableWrapperTarget';
-    const { toggleDialog } = this.state;
+    const { toggleDialog, togglePasteConfirmDialog } = this.state;
     const { rename, newFolder } = toggleDialog;
     const tableData = {
       path: selectedPath[deviceType],
@@ -656,7 +694,7 @@ class DirectoryLists extends React.Component {
           deviceType={deviceType}
           onContextMenuListActions={this._handleContextMenuListActions}
         />
-        <TextFieldEdit
+        <TextFieldEditDialog
           titleText="Rename?"
           bodyText={`Path: ${rename.data.path || ''}`}
           trigger={rename.toggle}
@@ -675,7 +713,7 @@ class DirectoryLists extends React.Component {
           errors={rename.errors}
         />
 
-        <TextFieldEdit
+        <TextFieldEditDialog
           titleText="New folder"
           bodyText={`Path: ${newFolder.data.path || ''}`}
           trigger={newFolder.toggle}
@@ -694,7 +732,7 @@ class DirectoryLists extends React.Component {
           errors={newFolder.errors}
         />
 
-        <ProgressBar
+        <ProgressBarDialog
           titleText="Transferring..."
           bodyText={``}
           trigger={togglePasteDialog}
@@ -704,6 +742,14 @@ class DirectoryLists extends React.Component {
           variant="indeterminate"
           errors={``}
           progressValue={fileTransferProgess.percentage}
+        />
+
+        <ConfirmDialog
+          fullWidthDialog={true}
+          maxWidthDialog="xs"
+          bodyText="Replace and merge the existing items?"
+          trigger={togglePasteConfirmDialog}
+          onClickHandler={this.handlePasteConfirmDialog}
         />
 
         <Paper className={styles.root} elevation={0} square={true}>

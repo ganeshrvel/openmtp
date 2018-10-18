@@ -17,6 +17,7 @@ import {
   processMtpOutput,
   setFileTransferProgress
 } from '../../containers/HomePage/actions';
+import { isArray } from 'util';
 
 const readdir = Promise.promisify(fs.readdir);
 const execPromise = Promise.promisify(exec);
@@ -73,9 +74,27 @@ export const checkFileExists = async (
   mtpStoragesListSelected
 ) => {
   try {
-    let fullPath = path.resolve(filePath);
+    if (typeof filePath === 'undefined' || filePath === null) {
+      return null;
+    }
+
+    let _isArray = false;
+    if (isArray(filePath)) {
+      _isArray = true;
+    }
+
+    let fullPath = null;
     switch (deviceType) {
       case deviceTypeConst.local:
+        if (_isArray) {
+          for (let i in filePath) {
+            let item = filePath[i];
+            fullPath = path.resolve(item);
+            return await fs.existsSync(fullPath);
+          }
+        }
+
+        fullPath = path.resolve(filePath);
         return await fs.existsSync(fullPath);
         break;
       case deviceTypeConst.mtp:
@@ -88,6 +107,15 @@ export const checkFileExists = async (
           return null;
         }
 
+        if (_isArray) {
+          for (let i in filePath) {
+            let item = filePath[i];
+            fullPath = path.resolve(item);
+            return await checkMtpFileExists(fullPath, mtpStoragesListSelected);
+          }
+        }
+
+        fullPath = path.resolve(filePath);
         return await checkMtpFileExists(fullPath, mtpStoragesListSelected);
         break;
       default:

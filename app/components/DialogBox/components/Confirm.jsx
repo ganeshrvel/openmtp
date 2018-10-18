@@ -7,6 +7,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import { Confirm as ConfirmDialog } from '../index';
 
 class Confirm extends React.Component {
   constructor(props) {
@@ -19,11 +20,16 @@ class Confirm extends React.Component {
   };
 
   render() {
-    const { bodyText, trigger } = this.props;
+    const { bodyText, trigger, fullWidthDialog, maxWidthDialog } = this.props;
     return (
       <div>
-        <Dialog open={trigger} aria-labelledby="confirm-dialogbox">
-          <DialogTitle>Confirm Action!</DialogTitle>
+        <Dialog
+          open={trigger}
+          fullWidth={fullWidthDialog}
+          maxWidth={maxWidthDialog}
+          aria-labelledby="confirm-dialogbox"
+        >
+          <DialogTitle>Confirm Action</DialogTitle>
           <DialogContent>
             <DialogContentText>{bodyText}</DialogContentText>
           </DialogContent>

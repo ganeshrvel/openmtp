@@ -195,6 +195,8 @@ class ToolbarAreaPane extends React.Component {
     return (
       <div className={styles.root}>
         <ConfirmDialog
+          fullWidthDialog={true}
+          maxWidthDialog="xs"
           bodyText="Are you sure you want to delete the items?"
           trigger={toggleDeleteConfirmDialog}
           onClickHandler={this.handleDeleteConfirmDialog}

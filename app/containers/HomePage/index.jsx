@@ -22,6 +22,7 @@ class Home extends Component {
 
   componentWillMount() {
     /*
+    todo: cmd.stderr.on('data', e => { in api
     todo: loader for mtp!
     todo: TableFooter
     todo: remove these lines => //todo: remove this after testing is done
