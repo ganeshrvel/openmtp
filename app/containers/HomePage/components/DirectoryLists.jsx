@@ -18,6 +18,7 @@ import { withStyles } from '@material-ui/core/styles';
 import nanoid from 'nanoid';
 import lodashSortBy from 'lodash/sortBy';
 import DirectoryListsTableHead from './DirectoryListsTableHead';
+import DirectoryListsTableFooter from './DirectoryListsTableFooter';
 import ContextMenu from './ContextMenu';
 import {
   TextFieldEdit as TextFieldEditDialog,
@@ -966,7 +967,7 @@ class DirectoryLists extends React.Component {
     return (
       <React.Fragment>
         <TableFooter component="div" className={styles.tableFooter}>
-          <p>Breadcrumb</p>
+          <DirectoryListsTableFooter />
         </TableFooter>
       </React.Fragment>
     );
