@@ -541,9 +541,10 @@ export const newMtpFolder = async ({
   }
 };
 
-export const pasteMtpToLocalFiles = (
+export const pasteFiles = (
   { ...pasteArgs },
   { ...fetchDirListArgs },
+  direction,
   deviceType,
   dispatch,
   getState
@@ -572,8 +573,6 @@ export const pasteMtpToLocalFiles = (
           }
         })
       );
-
-      return null;
     }
 
     //todo: remove this after testing is done
@@ -603,16 +602,73 @@ export const pasteMtpToLocalFiles = (
     }
 
     const storageSelectCmd = `"storage ${mtpStoragesListSelected}"`;
+    let _queue = [],
+      cmdArgs = {};
+    switch (direction) {
+      case 'mtpToLocal':
+        _queue = queue.map(sourcePath => {
+          const destinationPath = path.resolve(destinationFolder);
+          const escapedDestinationPath = escapeShell(
+            `${destinationPath}/${baseName(sourcePath)}`
+          );
+          const escapedSourcePath = `${escapeShell(sourcePath)}`;
 
-    const _queue = queue.map(sourcePath => {
-      const destinationPath = path.resolve(destinationFolder);
-      const escapedDestinationPath = escapeShell(
-        `${destinationPath}/${baseName(sourcePath)}`
-      );
-      const escapedSourcePath = `${escapeShell(sourcePath)}`;
+          return `${storageSelectCmd} "get \\"${escapedSourcePath}\\" \\"${escapedDestinationPath}\\""`;
+        });
 
-      return `${storageSelectCmd} "get \\"${escapedSourcePath}\\" \\"${escapedDestinationPath}\\""`;
-    });
+        cmdArgs = {
+          _queue
+        };
+        return _pasteFiles(
+          { ...pasteArgs },
+          { ...fetchDirListArgs },
+          { ...cmdArgs },
+          deviceType,
+          dispatch,
+          getState
+        );
+        break;
+
+      case 'localtoMtp':
+        _queue = queue.map(sourcePath => {
+          const destinationPath = path.resolve(destinationFolder);
+          const escapedDestinationPath = `${escapeShell(destinationPath)}`;
+          const escapedSourcePath = `${escapeShell(sourcePath)}`;
+
+          return `${storageSelectCmd} "put \\"${escapedSourcePath}\\" \\"${escapedDestinationPath}\\""`;
+        });
+
+        cmdArgs = {
+          _queue
+        };
+
+        return _pasteFiles(
+          { ...pasteArgs },
+          { ...fetchDirListArgs },
+          { ...cmdArgs },
+          deviceType,
+          dispatch,
+          getState
+        );
+        break;
+      default:
+        break;
+    }
+  } catch (e) {
+    log.error(e);
+  }
+};
+
+export const _pasteFiles = (
+  { ...pasteArgs },
+  { ...fetchDirListArgs },
+  { ...cmdArgs },
+  deviceType,
+  dispatch,
+  getState
+) => {
+  try {
+    const { _queue } = cmdArgs;
 
     const cmd = spawn(mtpCli, [..._queue], {
       shell: true
@@ -630,118 +686,6 @@ export const pasteMtpToLocalFiles = (
 
     cmd.stderr.on('data', e => {
       console.log(e.toString());
-      dispatch(
-        processMtpOutput({
-          deviceType,
-          error: e,
-          stderr: null,
-          data: null,
-          callback: a => {
-            dispatch(clearFileTransfer());
-            dispatch(
-              fetchDirList({ ...fetchDirListArgs }, deviceType, getState)
-            );
-          }
-        })
-      );
-    });
-
-    cmd.on('exit', code => {
-      dispatch(clearFileTransfer());
-      dispatch(fetchDirList({ ...fetchDirListArgs }, deviceType, getState));
-    });
-
-    return { error: null, stderr: null, data: true };
-  } catch (e) {
-    log.error(e);
-  }
-};
-export const pasteLocaltoMtpFiles = (
-  { ...pasteArgs },
-  { ...fetchDirListArgs },
-  deviceType,
-  dispatch,
-  getState
-) => {
-  try {
-    const {
-      destinationFolder,
-      mtpStoragesListSelected,
-      fileTransferClipboard
-    } = pasteArgs;
-
-    if (
-      typeof destinationFolder === 'undefined' ||
-      destinationFolder === null
-    ) {
-      dispatch(
-        processMtpOutput({
-          deviceType,
-          error: `Invalid path.`,
-          stderr: null,
-          data: null,
-          callback: a => {
-            dispatch(
-              fetchDirList({ ...fetchDirListArgs }, deviceType, getState)
-            );
-          }
-        })
-      );
-
-      return null;
-    }
-
-    //todo: remove this after testing is done
-    if (typeof mtpStoragesListSelected === 'undefined') {
-      log.error(
-        mtpStoragesListSelected,
-        'mtpStoragesListSelected is undefined'
-      );
-      return null;
-    }
-    let { queue } = fileTransferClipboard;
-
-    if (typeof queue === 'undefined' || queue === null || queue.length < 1) {
-      dispatch(
-        processMtpOutput({
-          deviceType,
-          error: `No files selected`,
-          stderr: null,
-          data: null,
-          callback: a => {
-            dispatch(
-              fetchDirList({ ...fetchDirListArgs }, deviceType, getState)
-            );
-          }
-        })
-      );
-    }
-
-    const storageSelectCmd = `"storage ${mtpStoragesListSelected}"`;
-
-    const _queue = queue.map(sourcePath => {
-      const destinationPath = path.resolve(destinationFolder);
-      const escapedDestinationPath = `${escapeShell(destinationPath)}`;
-      const escapedSourcePath = `${escapeShell(sourcePath)}`;
-
-      return `${storageSelectCmd} "put \\"${escapedSourcePath}\\" \\"${escapedDestinationPath}\\""`;
-    });
-
-    const cmd = spawn(mtpCli, [..._queue], {
-      shell: true
-    });
-
-    cmd.stdout.on('data', data => {
-      dispatch(
-        setFileTransferProgress({
-          toggle: true,
-          currentFile: null,
-          percentage: 0
-        })
-      );
-    });
-
-    cmd.stderr.on('data', e => {
       dispatch(
         processMtpOutput({
           deviceType,

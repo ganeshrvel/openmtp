@@ -60,8 +60,7 @@ import {
   checkFileExists,
   newLocalFolder,
   newMtpFolder,
-  pasteLocaltoMtpFiles,
-  pasteMtpToLocalFiles
+  pasteFiles
 } from '../../../api/sys';
 import { baseName, pathUp, sanitizePath } from '../../../utils/paths';
 import { isFloat, isInt, niceBytes } from '../../../utils/funcs';
@@ -1168,18 +1167,20 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         try {
           switch (deviceType) {
             case deviceTypeConst.local:
-              pasteMtpToLocalFiles(
+              pasteFiles(
                 { ...pasteArgs },
                 { ...fetchDirListArgs },
+                'mtpToLocal',
                 deviceType,
                 dispatch,
                 getState
               );
               break;
             case deviceTypeConst.mtp:
-              pasteLocaltoMtpFiles(
+              pasteFiles(
                 { ...pasteArgs },
                 { ...fetchDirListArgs },
+                'localtoMtp',
                 deviceType,
                 dispatch,
                 getState
