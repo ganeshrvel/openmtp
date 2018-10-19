@@ -26,7 +26,7 @@ class SidebarAreaPaneLists extends Component {
       classes: styles,
       sidebarFavouriteList,
       deviceType,
-      selectedPath
+      currentBrowsePath
     } = this.props;
     const { top: sidebarTop, bottom: sidebarBottom } = sidebarFavouriteList;
 
@@ -48,7 +48,7 @@ class SidebarAreaPaneLists extends Component {
   }
 
   ListsRender = listData => {
-    const { classes: styles, deviceType, selectedPath } = this.props;
+    const { classes: styles, deviceType, currentBrowsePath } = this.props;
     return (
       <List component="nav" dense={true} className={styles.listsBottom}>
         {listData.map((item, index) => {
@@ -56,7 +56,7 @@ class SidebarAreaPaneLists extends Component {
             <ListItem
               key={index}
               button
-              selected={selectedPath === item.path}
+              selected={currentBrowsePath === item.path}
               disabled={!item.enabled}
               onClick={e =>
                 this._fetchDirList({

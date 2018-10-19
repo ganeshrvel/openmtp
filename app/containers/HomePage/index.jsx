@@ -22,6 +22,9 @@ class Home extends Component {
 
   componentWillMount() {
     /*
+    
+    todo: breadcrumbs: compress each a item if more than 3 level, truncate the label of the keys, on mouse over expand with ease in animation, show tool tip for each folder; for very long level put /..../ in btwn. only show first and last item by default. background and color of items too
+    
     todo: scan for mountable devices
     todo: loader for mtp!
     todo: TableFooter

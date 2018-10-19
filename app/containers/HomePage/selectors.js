@@ -10,9 +10,9 @@ export const makeSidebarFavouriteList = createSelector(
   state => state.sidebarFavouriteList
 );
 
-export const makeSelectedPath = createSelector(
+export const makeCurrentBrowsePath = createSelector(
   make,
-  state => state.selectedPath
+  state => state.currentBrowsePath
 );
 
 export const makeDirectoryLists = createSelector(

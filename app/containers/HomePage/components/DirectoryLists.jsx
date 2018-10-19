@@ -45,7 +45,7 @@ import {
 import {
   makeDirectoryLists,
   makeIsLoading,
-  makeSelectedPath,
+  makeCurrentBrowsePath,
   makeMtpDevice,
   makeContextMenuPos,
   makeContextMenuList,
@@ -102,7 +102,7 @@ class DirectoryLists extends React.Component {
 
   componentWillMount() {
     const {
-      selectedPath,
+      currentBrowsePath,
       deviceType,
       handleFetchMtpStorageOptions,
       hideHiddenFiles
@@ -111,14 +111,14 @@ class DirectoryLists extends React.Component {
     if (deviceType === deviceTypeConst.mtp) {
       handleFetchMtpStorageOptions(
         {
-          filePath: selectedPath[deviceType],
+          filePath: currentBrowsePath[deviceType],
           ignoreHidden: hideHiddenFiles[deviceType]
         },
         deviceType
       );
     } else {
       this._fetchDirList({
-        path: selectedPath[deviceType],
+        path: currentBrowsePath[deviceType],
         deviceType: deviceType
       });
     }
@@ -356,7 +356,7 @@ class DirectoryLists extends React.Component {
       deviceType,
       handleRenameFile,
       hideHiddenFiles,
-      selectedPath,
+      currentBrowsePath,
       mtpStoragesListSelected
     } = this.props;
     const { data } = this.state.toggleDialog.rename;
@@ -408,7 +408,7 @@ class DirectoryLists extends React.Component {
         deviceType
       },
       {
-        filePath: selectedPath[deviceType],
+        filePath: currentBrowsePath[deviceType],
         ignoreHidden: hideHiddenFiles[deviceType]
       }
     );
@@ -452,7 +452,7 @@ class DirectoryLists extends React.Component {
       deviceType,
       handleNewFolder,
       hideHiddenFiles,
-      selectedPath,
+      currentBrowsePath,
       mtpStoragesListSelected
     } = this.props;
     const { data } = this.state.toggleDialog.newFolder;
@@ -496,7 +496,7 @@ class DirectoryLists extends React.Component {
         deviceType
       },
       {
-        filePath: selectedPath[deviceType],
+        filePath: currentBrowsePath[deviceType],
         ignoreHidden: hideHiddenFiles[deviceType]
       }
     );
@@ -507,12 +507,12 @@ class DirectoryLists extends React.Component {
   _handlePaste = async () => {
     const {
       deviceType,
-      selectedPath,
+      currentBrowsePath,
       mtpStoragesListSelected,
       fileTransferClipboard
     } = this.props;
     let { queue } = fileTransferClipboard;
-    const destinationFolder = selectedPath[deviceType];
+    const destinationFolder = currentBrowsePath[deviceType];
 
     queue = queue.map(a => {
       return `${destinationFolder}/${baseName(a)}`;
@@ -530,12 +530,12 @@ class DirectoryLists extends React.Component {
     const {
       deviceType,
       hideHiddenFiles,
-      selectedPath,
+      currentBrowsePath,
       mtpStoragesListSelected,
       handlePaste,
       fileTransferClipboard
     } = this.props;
-    const destinationFolder = selectedPath[deviceType];
+    const destinationFolder = currentBrowsePath[deviceType];
 
     this.handleTogglePasteConfirmDialog(false);
 
@@ -665,7 +665,7 @@ class DirectoryLists extends React.Component {
       deviceType,
       hideColList,
       contextMenuPos,
-      selectedPath,
+      currentBrowsePath,
       directoryLists,
       fileTransferProgess
     } = this.props;
@@ -679,7 +679,7 @@ class DirectoryLists extends React.Component {
     const { toggleDialog, togglePasteConfirmDialog } = this.state;
     const { rename, newFolder } = toggleDialog;
     const tableData = {
-      path: selectedPath[deviceType],
+      path: currentBrowsePath[deviceType],
       directoryLists: directoryLists[deviceType]
     };
 
@@ -851,13 +851,13 @@ class DirectoryLists extends React.Component {
       classes: styles,
       deviceType,
       hideColList,
-      selectedPath,
+      currentBrowsePath,
       directoryLists
     } = this.props;
     const _eventTarget = 'tableCellTarget';
 
     const tableData = {
-      path: selectedPath[deviceType],
+      path: currentBrowsePath[deviceType],
       directoryLists: directoryLists[deviceType]
     };
 
@@ -964,10 +964,13 @@ class DirectoryLists extends React.Component {
   };
 
   TableFooterRender = () => {
+    const { currentBrowsePath, deviceType } = this.props;
     return (
       <React.Fragment>
         <TableFooter component="div" className={styles.tableFooter}>
-          <DirectoryListsTableFooter />
+          <DirectoryListsTableFooter
+            currentBrowsePath={currentBrowsePath[deviceType]}
+          />
         </TableFooter>
       </React.Fragment>
     );
@@ -1200,7 +1203,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
 
 const mapStateToProps = (state, props) => {
   return {
-    selectedPath: makeSelectedPath(state),
+    currentBrowsePath: makeCurrentBrowsePath(state),
     mtpDevice: makeMtpDevice(state),
     directoryLists: makeDirectoryLists(state),
     isLoading: makeIsLoading(state),

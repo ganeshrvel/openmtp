@@ -109,7 +109,7 @@ export const initialState = {
     }
   },
 
-  selectedPath: {
+  currentBrowsePath: {
     [deviceTypeConst.local]: devicesDefaultPaths.local,
     [deviceTypeConst.mtp]: devicesDefaultPaths.mtp
   },
@@ -210,12 +210,12 @@ export default function Home(state = initialState, action) {
         }
       };
 
-    case actionTypes.SET_SELECTED_PATH:
+    case actionTypes.SET_CURRENT_BROWSE_PATH:
       return {
         ...state,
         ...setLoadedMetaData(state),
-        selectedPath: {
-          ...state.selectedPath,
+        currentBrowsePath: {
+          ...state.currentBrowsePath,
           [deviceType]: payload
         }
       };

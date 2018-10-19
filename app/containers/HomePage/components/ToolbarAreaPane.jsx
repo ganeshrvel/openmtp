@@ -32,7 +32,7 @@ import {
   makeSidebarFavouriteList,
   makeToolbarList
 } from '../selectors';
-import { makeSelectedPath } from '../selectors';
+import { makeCurrentBrowsePath } from '../selectors';
 import { makeHideHiddenFiles } from '../../Settings/selectors';
 import { delLocalFiles, delMtpFiles } from '../../../api/sys';
 import { devicesDefaultPaths, deviceTypeConst } from '../../../constants';
@@ -109,7 +109,7 @@ class ToolbarAreaPane extends React.Component {
 
   handleToolbarAction = itemType => {
     const {
-      selectedPath,
+      currentBrowsePath,
       deviceType,
       hideHiddenFiles,
       handleReloadDirList,
@@ -118,11 +118,11 @@ class ToolbarAreaPane extends React.Component {
     let filePath = '/';
     switch (itemType) {
       case 'up':
-        filePath = pathUp(selectedPath[deviceType]);
+        filePath = pathUp(currentBrowsePath[deviceType]);
         this._fetchDirList({ filePath, deviceType });
         break;
       case 'refresh':
-        filePath = selectedPath[deviceType];
+        filePath = currentBrowsePath[deviceType];
         handleReloadDirList(
           {
             filePath,
@@ -163,7 +163,7 @@ class ToolbarAreaPane extends React.Component {
       directoryLists,
       handleDelFiles,
       hideHiddenFiles,
-      selectedPath
+      currentBrowsePath
     } = this.props;
     handleDelFiles(
       {
@@ -171,7 +171,7 @@ class ToolbarAreaPane extends React.Component {
         deviceType
       },
       {
-        filePath: selectedPath[deviceType],
+        filePath: currentBrowsePath[deviceType],
         ignoreHidden: hideHiddenFiles[deviceType]
       }
     );
@@ -184,7 +184,7 @@ class ToolbarAreaPane extends React.Component {
       sidebarFavouriteList,
       deviceType,
       showMenu,
-      selectedPath,
+      currentBrowsePath,
       mtpStoragesList
     } = this.props;
 
@@ -225,7 +225,7 @@ class ToolbarAreaPane extends React.Component {
             onClickHandler={this._fetchDirList}
             sidebarFavouriteList={sidebarFavouriteList}
             deviceType={deviceType}
-            selectedPath={selectedPath[deviceType]}
+            currentBrowsePath={currentBrowsePath[deviceType]}
           />
         </Drawer>
         <AppBar position="static" elevation={0} className={styles.appBar}>
@@ -406,7 +406,7 @@ const mapStateToProps = (state, props) => {
     sidebarFavouriteList: makeSidebarFavouriteList(state),
     toolbarList: makeToolbarList(state),
     isLoading: makeIsLoading(state),
-    selectedPath: makeSelectedPath(state),
+    currentBrowsePath: makeCurrentBrowsePath(state),
     hideHiddenFiles: makeHideHiddenFiles(state),
     directoryLists: makeDirectoryLists(state),
     mtpStoragesList: makeMtpStoragesList(state)

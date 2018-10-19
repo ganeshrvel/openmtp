@@ -19,7 +19,7 @@ const actionTypesList = [
   'REQ_LOAD',
   'RES_LOAD',
   'FAIL_LOAD',
-  'SET_SELECTED_PATH',
+  'SET_CURRENT_BROWSE_PATH',
   'SET_SORTING_DIR_LISTS',
   'SET_SELECTED_DIR_LISTS',
   'FETCH_DIR_LIST',
@@ -55,9 +55,9 @@ export function setSelectedDirLists(data, deviceType) {
   };
 }
 
-export function setSelectedPath(path, deviceType) {
+export function setCurrentBrowsePath(path, deviceType) {
   return {
-    type: actionTypes.SET_SELECTED_PATH,
+    type: actionTypes.SET_CURRENT_BROWSE_PATH,
     deviceType,
     payload: path
   };
@@ -250,7 +250,7 @@ export function fetchDirList({ ...args }, deviceType, getState) {
           }
 
           dispatch(_fetchDirList(data, deviceType));
-          dispatch(setSelectedPath(args.filePath, deviceType));
+          dispatch(setCurrentBrowsePath(args.filePath, deviceType));
           dispatch(setSelectedDirLists({ selected: [] }, deviceType));
         };
 
@@ -281,7 +281,7 @@ export function fetchDirList({ ...args }, deviceType, getState) {
               callback: a => {
                 dispatch(_fetchDirList(data, deviceType));
                 dispatch(setSelectedDirLists({ selected: [] }, deviceType));
-                dispatch(setSelectedPath(args.filePath, deviceType));
+                dispatch(setCurrentBrowsePath(args.filePath, deviceType));
               }
             })
           );
