@@ -1,6 +1,6 @@
 'use strict';
 
-const IS_DEV = process.env.NODE_ENV !== 'production';
+import { IS_DEV } from '../constants/env';
 
 export const log = {
   info(e, title = `Log`, allowInProd = false) {

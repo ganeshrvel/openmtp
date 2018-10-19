@@ -3,11 +3,13 @@
 import path from 'path';
 import os from 'os';
 import { existsSync } from 'fs';
+import { IS_DEV } from '../constants/env';
 
 const root = process.cwd();
 const homeDir = os.homedir();
 const profileFolder = path.join(homeDir, `./.io.ganeshrvel`, `openmtp`);
-const logFile = path.join(profileFolder, `./error.log`);
+const logFileName = IS_DEV ? `debug.log` : `error.log`;
+const logFile = path.join(profileFolder, `./${logFileName}`);
 const settingFile = path.join(profileFolder, `./settings.json`);
 
 export const PATHS = {

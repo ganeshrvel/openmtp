@@ -21,6 +21,7 @@ class Home extends Component {
 
   async componentWillMount() {
     /*
+    todo: log error for production
     todo: binary for production
     todo: error boundary
     todo: copy paste cut redo undo in prod

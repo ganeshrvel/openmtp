@@ -12,15 +12,12 @@ export const initialState = {
 export default function Settings(state = initialState, action) {
   let { type, payload, deviceTypeConst = null } = action;
   switch (type) {
-    case actionTypes.TOGGLE_HIDDEN_FILES:
+    case actionTypes.HIDE_HIDDEN_FILES:
       return {
         ...state,
         hideHiddenFiles: {
           ...state.hideHiddenFiles,
-          [deviceTypeConst]: {
-            ...state.directoryLists[deviceTypeConst],
-            payload
-          }
+          [deviceTypeConst]: payload
         }
       };
     default:
