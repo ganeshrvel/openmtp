@@ -25,12 +25,11 @@ class Home extends Component {
     todo: binary for production
     todo: error boundary
     todo: copy paste cut redo undo in prod
-    todo: loader for mtp!
     todo: scan for mountable devices
     todo: optimization: add drive icons to list
-    todo: show hidden items
-    todo: make: both ' and " accessible in file path
+    todo: show hidden items/settings from .json file
     todo: title bar style change
+    todo: change menus in prod and about electron
    */
   }
 
