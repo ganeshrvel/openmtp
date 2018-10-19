@@ -171,7 +171,7 @@ class DirectoryLists extends Component {
     ) {
       this._setContextMenuFocussedRow({}, {});
       handleClearContextMenuClick(deviceType);
-
+      onHomePageRootClickHandler(deviceType, false);
       return null;
     }
 
@@ -185,13 +185,14 @@ class DirectoryLists extends Component {
 
       this._setContextMenuFocussedRow({ ...rowData }, { ...tableData });
       this.createContextMenu(event);
-      onHomePageRootClickHandler(deviceType, event);
+      onHomePageRootClickHandler(deviceType, true);
       return null;
     }
 
     if (this._checkOpenContextMenu(contextMenuPos)) {
       this._setContextMenuFocussedRow({}, {});
       handleClearContextMenuClick(deviceType);
+      onHomePageRootClickHandler(deviceType, false);
     }
   };
 

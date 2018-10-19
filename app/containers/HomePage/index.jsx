@@ -20,7 +20,7 @@ class Home extends Component {
     super(props);
     this.initialState = {
       contextMenu: {
-        toggle: true,
+        toggle: false,
         deviceType: null
       }
     };
@@ -50,18 +50,27 @@ class Home extends Component {
       handleClearContextMenuClick(contextMenu.deviceType);
     }
 
-    this.setState({
-      contextMenu: {
-        ...this.initialState.contextMenu
-      }
-    });
+    this.contextMenuClear();
   };
 
-  onDirectoryListsClickHandler = deviceType => {
+  onDirectoryListsClickHandler = (deviceType, toggle) => {
+    if (!toggle) {
+      this.contextMenuClear();
+      return null;
+    }
+
     this.setState({
       contextMenu: {
         toggle: true,
         deviceType: deviceType
+      }
+    });
+  };
+
+  contextMenuClear = () => {
+    this.setState({
+      contextMenu: {
+        ...this.initialState.contextMenu
       }
     });
   };
