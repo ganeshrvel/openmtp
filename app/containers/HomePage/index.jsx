@@ -21,13 +21,13 @@ class Home extends Component {
 
   async componentWillMount() {
     /*
-    todo: log error
+    todo: cancel copy
+    todo: copy settings to and from json file on mount and change
     todo: binary for production
     todo: error boundary
     todo: copy paste cut redo undo in prod
     todo: scan for mountable devices
     todo: optimization: add drive icons to list
-    todo: show hidden items/settings from .json file
     todo: title bar style change
     todo: change menus in prod and about electron
    */

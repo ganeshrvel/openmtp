@@ -8,7 +8,7 @@ export const writeFileAsync = ({ filePath, text, append = true }) => {
   if (!append) {
     flag = 'w';
   }
-  open(filePath, flag, 666, (e, id) => {
+  open(filePath, flag, 775, (e, id) => {
     write(id, text + EOL, null, 'utf8', () => {
       close(id, () => {});
     });
