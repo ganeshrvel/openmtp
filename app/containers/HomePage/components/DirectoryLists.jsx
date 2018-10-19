@@ -160,18 +160,14 @@ class DirectoryLists extends Component {
       handleClearContextMenuClick,
       deviceType,
       contextMenuPos,
-      mtpDevice,
-      onHomePageRootClickHandler
+      mtpDevice
     } = this.props;
 
-    if (
-      deviceType === deviceTypeConst.mtp &&
-      !mtpDevice.isAvailable &&
-      this._checkOpenContextMenu(contextMenuPos)
-    ) {
-      this._setContextMenuFocussedRow({}, {});
-      handleClearContextMenuClick(deviceType);
-      onHomePageRootClickHandler(deviceType, false);
+    if (deviceType === deviceTypeConst.mtp && !mtpDevice.isAvailable) {
+      if (this._checkOpenContextMenu(contextMenuPos)) {
+        this._setContextMenuFocussedRow({}, {});
+        handleClearContextMenuClick(deviceType);
+      }
       return null;
     }
 
@@ -185,14 +181,12 @@ class DirectoryLists extends Component {
 
       this._setContextMenuFocussedRow({ ...rowData }, { ...tableData });
       this.createContextMenu(event);
-      onHomePageRootClickHandler(deviceType, true);
       return null;
     }
 
     if (this._checkOpenContextMenu(contextMenuPos)) {
       this._setContextMenuFocussedRow({}, {});
       handleClearContextMenuClick(deviceType);
-      onHomePageRootClickHandler(deviceType, false);
     }
   };
 
