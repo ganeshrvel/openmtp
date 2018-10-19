@@ -107,6 +107,56 @@ class ToolbarAreaPane extends React.Component {
     this._delFiles({ deviceType });
   };
 
+  activeToolbarList = ({ ...args }) => {
+    const {
+      toolbarList,
+      directoryLists,
+      currentBrowsePath,
+      deviceType,
+      mtpStoragesList
+    } = args;
+
+    const _directoryLists = directoryLists[deviceType];
+    const _currentBrowsePath = currentBrowsePath[deviceType];
+    const _activeToolbarList = toolbarList[deviceType];
+
+    Object.keys(_activeToolbarList).map(a => {
+      const item = _activeToolbarList[a];
+      switch (a) {
+        case 'up':
+          _activeToolbarList[a] = {
+            ...item,
+            enabled: _currentBrowsePath !== '/'
+          };
+          break;
+
+        case 'refresh':
+          _activeToolbarList[a] = {
+            ...item
+          };
+          break;
+
+        case 'delete':
+          _activeToolbarList[a] = {
+            ...item,
+            enabled: _directoryLists.queue.selected.length > 0
+          };
+          break;
+
+        case 'storage':
+          _activeToolbarList[a] = {
+            ...item,
+            enabled: Object.keys(mtpStoragesList).length > 0
+          };
+          break;
+        default:
+          break;
+      }
+    });
+
+    return _activeToolbarList;
+  };
+
   handleToolbarAction = itemType => {
     const {
       currentBrowsePath,
@@ -185,13 +235,23 @@ class ToolbarAreaPane extends React.Component {
       deviceType,
       showMenu,
       currentBrowsePath,
-      mtpStoragesList
+      mtpStoragesList,
+      directoryLists
     } = this.props;
 
     const {
       toggleDeleteConfirmDialog,
       toggleMtpStorageSelectionDialog
     } = this.state;
+
+    const _toolbarList = this.activeToolbarList({
+      toolbarList,
+      directoryLists,
+      currentBrowsePath,
+      deviceType,
+      mtpStoragesList
+    });
+
     return (
       <div className={styles.root}>
         <ConfirmDialog
@@ -241,8 +301,8 @@ class ToolbarAreaPane extends React.Component {
             )}
 
             <div className={styles.toolbarInnerWrapper}>
-              {Object.keys(toolbarList[deviceType]).map(a => {
-                const item = toolbarList[deviceType][a];
+              {Object.keys(_toolbarList).map(a => {
+                const item = _toolbarList[a];
                 return (
                   <Tooltip key={a} title={item.label}>
                     <div>
@@ -281,17 +341,28 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         _,
         getState
       ) => {
-        dispatch(
-          setMtpStorageOptions(
-            { ...args },
-            deviceType,
-            {
-              changeMtpStorageIdsOnlyOnDeviceChange: true,
-              mtpStoragesList
-            },
-            getState
-          )
-        );
+        switch (deviceType) {
+          case deviceTypeConst.local:
+            dispatch(fetchDirList({ ...args }, deviceType, getState));
+            break;
+
+          case deviceTypeConst.mtp:
+            dispatch(
+              setMtpStorageOptions(
+                { ...args },
+                deviceType,
+                {
+                  changeMtpStorageIdsOnlyOnDeviceChange: true,
+                  mtpStoragesList
+                },
+                getState
+              )
+            );
+            break;
+
+          default:
+            break;
+        }
       },
 
       handleDelFiles: (

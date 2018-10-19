@@ -32,6 +32,8 @@ class Home extends Component {
     todo: scan for mountable devices
     todo: optimization: add drive icons to list
     todo: show hidden items
+    todo: make: both ' and " accessible in file path
+    todo: title bar style change
    */
   }
 
