@@ -43,9 +43,10 @@ export const makeMtpStoragesList = createSelector(
   state => (state ? state.mtpStoragesList : {})
 );
 
-export const makeMtpStoragesListSelected = createSelector(make, state => {
-  return getMtpStoragesListSelected(state);
-});
+export const makeMtpStoragesListSelected = createSelector(
+  make,
+  state => (state ? getMtpStoragesListSelected(state) : {})
+);
 
 export const makeFileTransferClipboard = createSelector(
   make,

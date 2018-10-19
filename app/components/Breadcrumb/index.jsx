@@ -23,10 +23,13 @@ class Breadcrumb extends React.Component {
     };
   }
 
-  handleClickPath = (value, event) => {
+  handleClickPath = (enabled, value, event) => {
     const { onBreadcrumbPathClickHandler } = this.props;
     event.preventDefault();
 
+    if (!enabled) {
+      return null;
+    }
     onBreadcrumbPathClickHandler({ path: value });
   };
 
@@ -34,6 +37,7 @@ class Breadcrumb extends React.Component {
     currentBrowsePath = sanitizePath(currentBrowsePath);
     let _currentBrowsePath = [];
     let _bold = false;
+    let _enabled = true;
     const currentBrowsePathBroken =
       currentBrowsePath === '/' ? [''] : currentBrowsePath.split('/');
     const WITHOUT_COMPRESSION_MAX_ITEMS = 3;
@@ -46,13 +50,14 @@ class Breadcrumb extends React.Component {
       let _isCompressed = false;
       if (index === currentBrowsePathBrokenLength - 1) {
         _bold = true;
+        _enabled = false;
       }
       if (a === '' && index === 0) {
         _currentBrowsePath.push({
           label: 'Root',
           path: '/',
           isCompressed: _isCompressed,
-          enabled: true,
+          enabled: _enabled,
           bold: _bold
         });
         return null;
@@ -70,7 +75,7 @@ class Breadcrumb extends React.Component {
         label: label,
         path: `${currentBrowsePathBroken.slice(0, index + 1).join('/')}`,
         isCompressed: _isCompressed,
-        enabled: true,
+        enabled: _enabled,
         bold: _bold
       });
     });
@@ -128,7 +133,7 @@ class Breadcrumb extends React.Component {
                       [`& bold`]: bold
                     })}
                     onClick={event => {
-                      this.handleClickPath(path, event);
+                      this.handleClickPath(enabled, path, event);
                     }}
                   >
                     {label}
