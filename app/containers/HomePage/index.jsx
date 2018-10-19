@@ -22,8 +22,6 @@ class Home extends Component {
 
   componentWillMount() {
     /*
-    todo: sometimes folders are mistaken as files eg: /Volume/Mac-SSD
-    todo: onscroll clear context menu
     todo: binary for production
     todo: error boundary
     todo: copy paste cut redo undo in prod

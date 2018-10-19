@@ -138,6 +138,18 @@ class DirectoryLists extends React.Component {
     );
   }
 
+  handleScroll = event => {
+    const {
+      handleClearContextMenuClick,
+      deviceType,
+      contextMenuPos
+    } = this.props;
+    if (this._checkOpenContextMenu(contextMenuPos)) {
+      this._setContextMenuFocussedRow({}, {});
+      handleClearContextMenuClick(deviceType);
+    }
+  };
+
   _handleContextMenuClick = (
     event,
     { ...rowData },
@@ -793,6 +805,7 @@ class DirectoryLists extends React.Component {
                 _eventTarget
               )
             }
+            onScroll={this.handleScroll}
           >
             <Table className={styles.table} aria-labelledby="tableTitle">
               <DirectoryListsTableHead
