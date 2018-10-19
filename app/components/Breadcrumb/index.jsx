@@ -1,7 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { styles } from './styles/index';
+import { styles } from './styles';
 import { withStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
 import Paper from '@material-ui/core/Paper';

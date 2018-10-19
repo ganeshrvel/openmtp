@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { styles } from '../styles/Confirm';
+import { styles } from './styles';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
