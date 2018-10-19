@@ -11,7 +11,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import nanoid from 'nanoid';
 import { sanitizePath } from '../../utils/paths';
 
-class Index extends React.Component {
+class Breadcrumb extends React.Component {
   constructor(props) {
     super(props);
 
@@ -155,4 +155,4 @@ class Index extends React.Component {
   }
 }
 
-export default withStyles(styles)(Index);
+export default withStyles(styles)(Breadcrumb);
