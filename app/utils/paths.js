@@ -2,7 +2,6 @@
 
 import path from 'path';
 import os from 'os';
-import { existsSync } from 'fs';
 import { IS_DEV } from '../constants/env';
 
 const root = process.cwd();
@@ -37,8 +36,4 @@ export const baseName = filePath => {
   }
   filePath = path.resolve(filePath);
   return filePath.split(/[\\/]/).pop();
-};
-
-export const fileExistsSync = filePath => {
-  return existsSync(filePath);
 };

@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { routes } from '../../routing';
 import styles from './styles/index.scss';
 import { Helmet } from 'react-helmet';
-import { title } from '../../utils/meta';
+import { title } from '../../constants/meta';
 
 export default class NotFound extends Component {
   render() {

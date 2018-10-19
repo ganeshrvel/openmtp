@@ -2,7 +2,8 @@
 
 import { createWriteStream } from 'fs';
 import { checkFileExists, newLocalFolder } from '../api/sys';
-import { fileExistsSync, PATHS } from './paths';
+import { PATHS } from './paths';
+import { fileExistsSync } from '../api/sys/fileOps';
 import { deviceTypeConst } from '../constants';
 
 const { profileFolder, settingFile, logFile } = PATHS;
