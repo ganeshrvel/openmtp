@@ -28,6 +28,7 @@ import {
 import {
   makeDirectoryLists,
   makeIsLoading,
+  makeMtpDevice,
   makeMtpStoragesList,
   makeSidebarFavouriteList,
   makeToolbarList
@@ -113,12 +114,14 @@ class ToolbarAreaPane extends React.Component {
       directoryLists,
       currentBrowsePath,
       deviceType,
-      mtpStoragesList
+      mtpStoragesList,
+      mtpDevice
     } = args;
 
     const _directoryLists = directoryLists[deviceType];
     const _currentBrowsePath = currentBrowsePath[deviceType];
     const _activeToolbarList = toolbarList[deviceType];
+    const isMtp = deviceType === deviceTypeConst.mtp;
 
     Object.keys(_activeToolbarList).map(a => {
       const item = _activeToolbarList[a];
@@ -146,7 +149,10 @@ class ToolbarAreaPane extends React.Component {
         case 'storage':
           _activeToolbarList[a] = {
             ...item,
-            enabled: Object.keys(mtpStoragesList).length > 0
+            enabled:
+              Object.keys(mtpStoragesList).length > 0 &&
+              isMtp &&
+              mtpDevice.isAvailable
           };
           break;
         default:
@@ -236,7 +242,8 @@ class ToolbarAreaPane extends React.Component {
       showMenu,
       currentBrowsePath,
       mtpStoragesList,
-      directoryLists
+      directoryLists,
+      mtpDevice
     } = this.props;
 
     const {
@@ -249,7 +256,8 @@ class ToolbarAreaPane extends React.Component {
       directoryLists,
       currentBrowsePath,
       deviceType,
-      mtpStoragesList
+      mtpStoragesList,
+      mtpDevice
     });
 
     return (
@@ -311,6 +319,7 @@ class ToolbarAreaPane extends React.Component {
                         disabled={!item.enabled}
                         onClick={events => this.handleToolbarAction(a)}
                         className={classNames({
+                          [styles.disabledNavBtns]: !item.enabled,
                           [styles.invertedNavBtns]: item.invert
                         })}
                       >
@@ -475,6 +484,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
 const mapStateToProps = (state, props) => {
   return {
     sidebarFavouriteList: makeSidebarFavouriteList(state),
+    mtpDevice: makeMtpDevice(state),
     toolbarList: makeToolbarList(state),
     isLoading: makeIsLoading(state),
     currentBrowsePath: makeCurrentBrowsePath(state),

@@ -22,7 +22,6 @@ class Home extends Component {
 
   componentWillMount() {
     /*
-    todo: selection blur or hide action for delete, up (/) and reload btns
     todo: sometimes folders are mistaken as files eg: /Volume/Mac-SSD
     todo: onscroll clear context menu
     todo: binary for production

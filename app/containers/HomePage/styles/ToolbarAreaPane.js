@@ -21,6 +21,9 @@ export const styles = theme => {
       height: 25,
       width: `auto`
     },
+    disabledNavBtns: {
+      backgroundColor: `#f9f9f9`
+    },
     invertedNavBtns: {
       [`&:hover`]: {
         filter: `none`
