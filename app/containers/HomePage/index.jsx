@@ -22,16 +22,14 @@ class Home extends Component {
 
   componentWillMount() {
     /*
-    todo: scan for mountable devices
-    todo: loader for mtp!
-    todo: onscroll clear context menu
-    todo: focus the datatable
-    todo: folder/files different color
-    todo: sometimes folders are mistaken as files eg: /Volume/Mac-SSD
     todo: selection blur or hide action for delete, up (/) and reload btns
+    todo: sometimes folders are mistaken as files eg: /Volume/Mac-SSD
+    todo: onscroll clear context menu
     todo: binary for production
     todo: error boundary
     todo: copy paste cut redo undo in prod
+    todo: loader for mtp!
+    todo: scan for mountable devices
     todo: optimization: add drive icons to list
     todo: show hidden items
    */
