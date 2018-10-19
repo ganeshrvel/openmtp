@@ -17,7 +17,6 @@ import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 import nanoid from 'nanoid';
 import lodashSortBy from 'lodash/sortBy';
-import lodashIndexOf from 'lodash/indexOf';
 import DirectoryListsTableHead from './DirectoryListsTableHead';
 import Breadcrumb from '../../../components/Breadcrumb';
 import ContextMenu from './ContextMenu';
