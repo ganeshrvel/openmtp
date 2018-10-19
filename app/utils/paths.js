@@ -2,14 +2,23 @@
 
 import path from 'path';
 import os from 'os';
+import { existsSync } from 'fs';
 
 const root = process.cwd();
+const homeDir = os.homedir();
+const profileFolder = path.join(homeDir, `./.io.ganeshrvel`, `openmtp`);
+const logFile = path.join(profileFolder, `./error.log`);
+const settingFile = path.join(profileFolder, `./settings.json`);
+
 export const PATHS = {
-  root: root,
-  app: path.resolve(root, './app'),
-  dist: path.resolve(root, './app/dist'),
-  nodeModules: path.resolve(root, './node_modules'),
-  homeDir: os.homedir()
+  root: path.resolve(root),
+  app: path.resolve(path.join(root, `./app`)),
+  dist: path.resolve(path.join(root, `./app/dist`)),
+  nodeModules: path.resolve(path.join(root, `./node_modules`)),
+  homeDir: path.resolve(homeDir),
+  profileFolder: path.resolve(profileFolder),
+  logFile: path.resolve(logFile),
+  settingFile: path.resolve(settingFile)
 };
 
 export const pathUp = filePath => {
@@ -26,4 +35,8 @@ export const baseName = filePath => {
   }
   filePath = path.resolve(filePath);
   return filePath.split(/[\\/]/).pop();
+};
+
+export const fileExistsSync = filePath => {
+  return existsSync(filePath);
 };

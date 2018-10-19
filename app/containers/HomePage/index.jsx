@@ -13,14 +13,13 @@ import { bindActionCreators } from 'redux';
 import reducers from './reducers';
 import Grid from '@material-ui/core/Grid';
 import { deviceTypeConst } from '../../constants';
-import { clearContextMenuPos } from './actions';
 
 class Home extends Component {
   constructor(props) {
     super(props);
   }
 
-  componentWillMount() {
+  async componentWillMount() {
     /*
     todo: binary for production
     todo: error boundary
@@ -35,6 +34,7 @@ class Home extends Component {
 
   render() {
     const { classes: styles } = this.props;
+
     return (
       <Grid container spacing={0}>
         <Grid item xs={6}>
