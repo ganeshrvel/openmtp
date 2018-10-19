@@ -941,12 +941,15 @@ class DirectoryLists extends React.Component {
           >
             {n.isFolder ? (
               <Tooltip title="Folder">
-                <FolderIcon className={styles.tableCellIcon} fontSize="small" />
+                <FolderIcon
+                  className={classNames(styles.tableCellIcon, `isFolder`)}
+                  fontSize="small"
+                />
               </Tooltip>
             ) : (
               <Tooltip title="File">
                 <InsertDriveFileIcon
-                  className={styles.tableCellIcon}
+                  className={classNames(styles.tableCellIcon, `isFile`)}
                   fontSize="small"
                 />
               </Tooltip>

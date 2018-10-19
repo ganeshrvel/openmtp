@@ -18,15 +18,18 @@ export const styles = theme => ({
     borderBottom: variables.styles.borderThinDividerColor,
     borderLeft: variables.styles.borderThinDividerColor
   },
-  emptyTableRowWrapper: {
-    /*height: `calc(100vh - 173px)`,
-    verticalAlign: `text-top`*/
-  },
+  emptyTableRowWrapper: {},
   tableRowSelected: {
     backgroundColor: 'rgba(41, 121, 255, 0.15) !important'
   },
   tableCellIcon: {
-    verticalAlign: `middle`
+    verticalAlign: `middle`,
+    [`&.isFolder`]: {
+      color: `#1564b3`
+    },
+    [`&.isFile`]: {
+      color: `#000000`
+    }
   },
   tableCell: {
     borderBottom: `unset`,
