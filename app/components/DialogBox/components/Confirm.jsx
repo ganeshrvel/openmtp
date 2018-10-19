@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { styles } from '../styles/Confirm';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -7,9 +7,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { Confirm as ConfirmDialog } from '../index';
 
-class Confirm extends React.Component {
+class Confirm extends Component {
   constructor(props) {
     super(props);
   }

@@ -8,7 +8,7 @@ import { withReducer } from '../../store/reducers/withReducer';
 import reducers from './reducers';
 import { clearAlert } from './actions';
 
-class Alerts extends React.Component {
+class Alerts extends Component {
   constructor(props) {
     super(props);
   }

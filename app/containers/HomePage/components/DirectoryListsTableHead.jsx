@@ -31,7 +31,7 @@ const rows = [
   }
 ];
 
-class DirectoryListsTableHead extends React.Component {
+class DirectoryListsTableHead extends Component {
   constructor(props) {
     super(props);
   }

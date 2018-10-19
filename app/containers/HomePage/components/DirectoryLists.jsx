@@ -68,7 +68,7 @@ import { isFloat, isInt, niceBytes } from '../../../utils/funcs';
 import { isNumber } from 'util';
 import { throwAlert } from '../../Alerts/actions';
 
-class DirectoryLists extends React.Component {
+class DirectoryLists extends Component {
   constructor(props) {
     super(props);
     this.initialState = {
@@ -160,7 +160,8 @@ class DirectoryLists extends React.Component {
       handleClearContextMenuClick,
       deviceType,
       contextMenuPos,
-      mtpDevice
+      mtpDevice,
+      onHomePageRootClickHandler
     } = this.props;
 
     if (
@@ -184,6 +185,7 @@ class DirectoryLists extends React.Component {
 
       this._setContextMenuFocussedRow({ ...rowData }, { ...tableData });
       this.createContextMenu(event);
+      onHomePageRootClickHandler(deviceType, event);
       return null;
     }
 

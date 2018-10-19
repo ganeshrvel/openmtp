@@ -11,13 +11,22 @@ import { withReducer } from '../../store/reducers/withReducer';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import reducers from './reducers';
-import { throwAlert } from '@Alerts';
 import Grid from '@material-ui/core/Grid';
 import { deviceTypeConst } from '../../constants';
+import { clearContextMenuPos } from './actions';
 
 class Home extends Component {
   constructor(props) {
     super(props);
+    this.initialState = {
+      contextMenu: {
+        toggle: true,
+        deviceType: null
+      }
+    };
+    this.state = {
+      ...this.initialState
+    };
   }
 
   componentWillMount() {
@@ -34,33 +43,50 @@ class Home extends Component {
    */
   }
 
+  onClickHandler = event => {
+    const { handleClearContextMenuClick } = this.props;
+    const { contextMenu } = this.state;
+    if (contextMenu.toggle) {
+      handleClearContextMenuClick(contextMenu.deviceType);
+    }
+
+    this.setState({
+      contextMenu: {
+        ...this.initialState.contextMenu
+      }
+    });
+  };
+
+  onDirectoryListsClickHandler = deviceType => {
+    this.setState({
+      contextMenu: {
+        toggle: true,
+        deviceType: deviceType
+      }
+    });
+  };
+
   render() {
     const { classes: styles } = this.props;
     return (
-      <React.Fragment>
-        <Grid container spacing={0}>
-          <Grid item xs={6}>
-            <ToolbarAreaPane
-              showMenu={true}
-              deviceType={deviceTypeConst.local}
-            />
-            <DirectoryLists
-              hideColList={[]}
-              deviceType={deviceTypeConst.local}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <ToolbarAreaPane
-              showMenu={false}
-              deviceType={deviceTypeConst.mtp}
-            />
-            <DirectoryLists
-              hideColList={['size']}
-              deviceType={deviceTypeConst.mtp}
-            />
-          </Grid>
+      <Grid container spacing={0} onClick={this.onClickHandler}>
+        <Grid item xs={6}>
+          <ToolbarAreaPane showMenu={true} deviceType={deviceTypeConst.local} />
+          <DirectoryLists
+            onHomePageRootClickHandler={this.onDirectoryListsClickHandler}
+            hideColList={[]}
+            deviceType={deviceTypeConst.local}
+          />
         </Grid>
-      </React.Fragment>
+        <Grid item xs={6}>
+          <ToolbarAreaPane showMenu={false} deviceType={deviceTypeConst.mtp} />
+          <DirectoryLists
+            onHomePageRootClickHandler={this.onDirectoryListsClickHandler}
+            hideColList={['size']}
+            deviceType={deviceTypeConst.mtp}
+          />
+        </Grid>
+      </Grid>
     );
   }
 }
@@ -68,8 +94,8 @@ class Home extends Component {
 const mapDispatchToProps = (dispatch, ownProps) =>
   bindActionCreators(
     {
-      throwAlert: (message, event) => (_, getState) => {
-        dispatch(throwAlert({ message: message }));
+      handleClearContextMenuClick: deviceType => (_, getState) => {
+        dispatch(clearContextMenuPos(deviceType));
       }
     },
     dispatch
