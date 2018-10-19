@@ -256,12 +256,6 @@ export function fetchDirList({ ...args }, deviceType, getState) {
 
         break;
       case deviceTypeConst.mtp:
-        //todo: remove this after testing is done
-        if (typeof getState === 'undefined') {
-          log.error(getState, 'mtpStoragesListSelected is undefined');
-          return null;
-        }
-
         return async dispatch => {
           const mtpStoragesListSelected = getMtpStoragesListSelected(
             getState().Home

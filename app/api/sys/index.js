@@ -26,8 +26,6 @@ const promisifiedExec = command => {
   try {
     return new Promise(function(resolve, reject) {
       execPromise(command, (error, stdout, stderr) => {
-        //todo: remove this after testing is done
-
         return resolve({
           data: stdout,
           stderr: stderr,
@@ -53,11 +51,6 @@ const promisifiedExecNoCatch = command => {
 };
 
 const checkMtpFileExists = async (filePath, mtpStoragesListSelected) => {
-  //todo: remove this after testing is done
-  if (typeof mtpStoragesListSelected === 'undefined') {
-    log.error(mtpStoragesListSelected, 'mtpStoragesListSelected is undefined');
-    return null;
-  }
   const storageSelectCmd = `"storage ${mtpStoragesListSelected}"`;
   const escapedFilePath = `${escapeShell(filePath)}`;
 
@@ -99,15 +92,6 @@ export const checkFileExists = async (
         return await fs.existsSync(fullPath);
         break;
       case deviceTypeConst.mtp:
-        //todo: remove this after testing is done
-        if (typeof mtpStoragesListSelected === 'undefined') {
-          log.error(
-            mtpStoragesListSelected,
-            'mtpStoragesListSelected is undefined'
-          );
-          return null;
-        }
-
         if (_isArray) {
           for (let i in filePath) {
             let item = filePath[i];
@@ -369,15 +353,6 @@ export const asyncReadMtpDir = async ({
     let response = [];
     const storageSelectCmd = `"storage ${mtpStoragesListSelected}"`;
 
-    //todo: remove this after testing is done
-    if (typeof mtpStoragesListSelected === 'undefined') {
-      log.error(
-        mtpStoragesListSelected,
-        'mtpStoragesListSelected is undefined'
-      );
-      return null;
-    }
-
     const {
       data: fileListData,
       error: fileListError,
@@ -479,15 +454,6 @@ export const delMtpFiles = async ({ fileList, mtpStoragesListSelected }) => {
       return { error: `No files selected.`, stderr: null, data: null };
     }
 
-    //todo: remove this after testing is done
-    if (typeof mtpStoragesListSelected === 'undefined') {
-      log.error(
-        mtpStoragesListSelected,
-        'mtpStoragesListSelected is undefined'
-      );
-      return null;
-    }
-
     const storageSelectCmd = `"storage ${mtpStoragesListSelected}"`;
     for (let i in fileList) {
       const { data, error, stderr } = await promisifiedExec(
@@ -513,15 +479,6 @@ export const newMtpFolder = async ({
   try {
     if (typeof newFolderPath === 'undefined' || newFolderPath === null) {
       return { error: `Invalid path.`, stderr: null, data: null };
-    }
-
-    //todo: remove this after testing is done
-    if (typeof mtpStoragesListSelected === 'undefined') {
-      log.error(
-        mtpStoragesListSelected,
-        'mtpStoragesListSelected is undefined'
-      );
-      return null;
     }
 
     const storageSelectCmd = `"storage ${mtpStoragesListSelected}"`;
@@ -575,14 +532,6 @@ export const pasteFiles = (
       );
     }
 
-    //todo: remove this after testing is done
-    if (typeof mtpStoragesListSelected === 'undefined') {
-      log.error(
-        mtpStoragesListSelected,
-        'mtpStoragesListSelected is undefined'
-      );
-      return null;
-    }
     let { queue } = fileTransferClipboard;
 
     if (typeof queue === 'undefined' || queue === null || queue.length < 1) {
