@@ -18,7 +18,7 @@ import { withStyles } from '@material-ui/core/styles';
 import nanoid from 'nanoid';
 import lodashSortBy from 'lodash/sortBy';
 import DirectoryListsTableHead from './DirectoryListsTableHead';
-import DirectoryListsTableFooter from './DirectoryListsTableFooter';
+import Breadcrumb from '../../../components/Breadcrumb';
 import ContextMenu from './ContextMenu';
 import {
   TextFieldEdit as TextFieldEditDialog,
@@ -557,6 +557,19 @@ class DirectoryLists extends React.Component {
     );
   };
 
+  _onBreadcrumbPathClickHandler = ({ ...args }) => {
+    const { handleFetchDirList, hideHiddenFiles, deviceType } = this.props;
+    const { path } = args;
+
+    handleFetchDirList(
+      {
+        filePath: path,
+        ignoreHidden: hideHiddenFiles[deviceType]
+      },
+      deviceType
+    );
+  };
+
   _handleRequestSort = (deviceType, property, event) => {
     const { directoryLists, handleRequestSort } = this.props;
     const orderBy = property;
@@ -968,7 +981,8 @@ class DirectoryLists extends React.Component {
     return (
       <React.Fragment>
         <TableFooter component="div" className={styles.tableFooter}>
-          <DirectoryListsTableFooter
+          <Breadcrumb
+            onBreadcrumbPathClickHandler={this._onBreadcrumbPathClickHandler}
             currentBrowsePath={currentBrowsePath[deviceType]}
           />
         </TableFooter>

@@ -1,16 +1,17 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { styles } from '../styles/DirectoryListsTableFooter';
+import { styles } from './styles/index';
 import { withStyles } from '@material-ui/core/styles';
+import classNames from 'classnames';
 import Paper from '@material-ui/core/Paper';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import Tooltip from '@material-ui/core/Tooltip';
 import nanoid from 'nanoid';
-import { sanitizePath } from '../../../utils/paths';
+import { sanitizePath } from '../../utils/paths';
 
-class DirectoryListsTableFooter extends React.Component {
+class Index extends React.Component {
   constructor(props) {
     super(props);
 
@@ -23,36 +24,19 @@ class DirectoryListsTableFooter extends React.Component {
   }
 
   handleClickPath = (value, event) => {
+    const { onBreadcrumbPathClickHandler } = this.props;
     event.preventDefault();
-    console.log(value);
+
+    onBreadcrumbPathClickHandler({ path: value });
   };
-
-  componentWillMount() {
-    const { currentBrowsePath } = this.props;
-
-    this.setState({
-      tokenizeCurrentBrowsePath: this.tokenizeCurrentBrowsePath(
-        currentBrowsePath
-      )
-    });
-  }
-
-  componentWillReceiveProps() {
-    const { currentBrowsePath } = this.props;
-
-    this.setState({
-      tokenizeCurrentBrowsePath: this.tokenizeCurrentBrowsePath(
-        currentBrowsePath
-      )
-    });
-  }
 
   tokenizeCurrentBrowsePath(currentBrowsePath) {
     currentBrowsePath = sanitizePath(currentBrowsePath);
     let _currentBrowsePath = [];
+    let _bold = false;
     const currentBrowsePathBroken =
       currentBrowsePath === '/' ? [''] : currentBrowsePath.split('/');
-    const WITHOUT_COMPRESSION_MAX_ITEMS = 4;
+    const WITHOUT_COMPRESSION_MAX_ITEMS = 3;
     const currentBrowsePathBrokenLength = currentBrowsePathBroken.length;
     const isCompressed =
       WITHOUT_COMPRESSION_MAX_ITEMS < currentBrowsePathBrokenLength;
@@ -60,12 +44,16 @@ class DirectoryListsTableFooter extends React.Component {
     currentBrowsePathBroken.map((a, index) => {
       const label = a;
       let _isCompressed = false;
+      if (index === currentBrowsePathBrokenLength - 1) {
+        _bold = true;
+      }
       if (a === '' && index === 0) {
         _currentBrowsePath.push({
           label: 'Root',
           path: '/',
           isCompressed: _isCompressed,
-          enabled: true
+          enabled: true,
+          bold: _bold
         });
         return null;
       }
@@ -82,7 +70,8 @@ class DirectoryListsTableFooter extends React.Component {
         label: label,
         path: `${currentBrowsePathBroken.slice(0, index + 1).join('/')}`,
         isCompressed: _isCompressed,
-        enabled: true
+        enabled: true,
+        bold: _bold
       });
     });
 
@@ -90,38 +79,29 @@ class DirectoryListsTableFooter extends React.Component {
   }
 
   render() {
-    const { classes: styles } = this.props;
+    const { classes: styles, currentBrowsePath } = this.props;
 
     return (
       <div className={styles.root}>
         <div className={styles.rootBreadcrumbs}>
           <Paper elevation={0}>
-            <ul className={styles.breadcrumb}>{this.BreadcrumbCellRender()}</ul>
+            <ul className={styles.breadcrumb}>
+              {this.BreadcrumbCellRender(
+                this.tokenizeCurrentBrowsePath(currentBrowsePath)
+              )}
+            </ul>
           </Paper>
         </div>
       </div>
     );
   }
 
-  CompressedBreadcrumbCellRender({ isCompressed, compressedCounter }) {
+  BreadcrumbCellRender(tokenizeCurrentBrowsePath) {
     const { classes: styles } = this.props;
-    return compressedCounter < 2 ? (
-      <span>
-        <KeyboardArrowRightIcon className={styles.breadcrumbSeperator} />
-        <MoreHorizIcon className={styles.breadcrumbSeperator} />
-      </span>
-    ) : (
-      <React.Fragment />
-    );
-  }
-
-  BreadcrumbCellRender() {
-    const { classes: styles } = this.props;
-    const { tokenizeCurrentBrowsePath } = this.state;
     let compressedCounter = 0;
 
     return tokenizeCurrentBrowsePath.map((item, index) => {
-      const { label, path, isCompressed, enabled } = item;
+      const { label, path, isCompressed, enabled, bold } = item;
       if (isCompressed) {
         compressedCounter++;
       }
@@ -144,7 +124,9 @@ class DirectoryListsTableFooter extends React.Component {
               <li className={`${styles.breadcrumbLi}`}>
                 <Tooltip title={label}>
                   <a
-                    className={`${styles.breadcrumbLiA}`}
+                    className={classNames(styles.breadcrumbLiA, {
+                      [`& bold`]: bold
+                    })}
                     onClick={event => {
                       this.handleClickPath(path, event);
                     }}
@@ -159,6 +141,18 @@ class DirectoryListsTableFooter extends React.Component {
       );
     });
   }
+
+  CompressedBreadcrumbCellRender({ isCompressed, compressedCounter }) {
+    const { classes: styles } = this.props;
+    return compressedCounter < 2 ? (
+      <span>
+        <KeyboardArrowRightIcon className={styles.breadcrumbSeperator} />
+        <MoreHorizIcon className={styles.breadcrumbSeperator} />
+      </span>
+    ) : (
+      <React.Fragment />
+    );
+  }
 }
 
-export default withStyles(styles)(DirectoryListsTableFooter);
+export default withStyles(styles)(Index);

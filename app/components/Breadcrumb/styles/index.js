@@ -1,6 +1,6 @@
 'use strict';
 
-import { base } from '../../../styles/js';
+import { base } from '../../../styles/js/index';
 const { variables } = base();
 
 export const styles = theme => ({
@@ -15,11 +15,13 @@ export const styles = theme => ({
 
   breadcrumb: {
     padding: '5px 15px',
-    backgroundColor: '#fff'
+    backgroundColor: variables.styles.primaryColor.main,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
 
   breadcrumbLi: {
-    // verticalAlign: 'middle',
     display: 'inline-block',
     padding: '0 2px 4px 2px',
     overflow: 'hidden',
@@ -32,9 +34,12 @@ export const styles = theme => ({
   breadcrumbLiA: {
     cursor: `pointer`,
     color: variables.styles.secondaryColor.main,
-    textDecoration: 'none'
+    textDecoration: 'none',
+    [`&.bold`]: {
+      fontWeight: `bold`
+    }
   },
   breadcrumbSeperator: {
-    width: 19
+    fontSize: 17
   }
 });
