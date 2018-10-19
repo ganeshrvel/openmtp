@@ -8,6 +8,7 @@ import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { withStyles } from '@material-ui/core/styles';
 import Routes from '../../routing';
 import bootApp from '../../utils/boot';
+import SettingsDialog from '../Settings';
 
 const appTheme = createMuiTheme(theme());
 
@@ -36,8 +37,6 @@ class App extends Component {
 
       return null;
     }
-    
-    
   }
 
   render() {
@@ -56,6 +55,7 @@ class App extends Component {
         <CssBaseline>
           <MuiThemeProvider theme={appTheme}>
             <Alerts />
+            <SettingsDialog />
             <Routes />
           </MuiThemeProvider>
         </CssBaseline>

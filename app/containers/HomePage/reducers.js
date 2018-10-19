@@ -62,6 +62,11 @@ export const initialState = {
         enabled: true,
         label: 'Delete',
         imgSrc: 'Toolbar/delete.svg'
+      },
+      settings: {
+        enabled: true,
+        label: 'Settings',
+        imgSrc: 'Toolbar/settings.svg'
       }
     },
     [deviceTypeConst.mtp]: {
@@ -86,6 +91,11 @@ export const initialState = {
         enabled: true,
         label: 'Storage',
         imgSrc: 'Toolbar/storage.svg'
+      },
+      settings: {
+        enabled: true,
+        label: 'Settings',
+        imgSrc: 'Toolbar/settings.svg'
       }
     }
   },

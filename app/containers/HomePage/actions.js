@@ -290,6 +290,38 @@ export function fetchDirList({ ...args }, deviceType, getState) {
   }
 }
 
+export function handleReloadDirList(
+  { ...args },
+  deviceType,
+  mtpStoragesList,
+  getState
+) {
+  return dispatch => {
+    switch (deviceType) {
+      case deviceTypeConst.local:
+        dispatch(fetchDirList({ ...args }, deviceType, getState));
+        break;
+
+      case deviceTypeConst.mtp:
+        dispatch(
+          setMtpStorageOptions(
+            { ...args },
+            deviceType,
+            {
+              changeMtpStorageIdsOnlyOnDeviceChange: true,
+              mtpStoragesList
+            },
+            getState
+          )
+        );
+        break;
+
+      default:
+        break;
+    }
+  };
+}
+
 export function setFileTransferClipboard({ ...data }) {
   return {
     type: actionTypes.SET_FILE_TRANSFER_CLIPBOARD,

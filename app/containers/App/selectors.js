@@ -1,6 +1,8 @@
 import { createSelector } from 'reselect';
 
-const make = (state, props) => state.App;
+const make = (state, props) => (state ? state.App : {});
 
-
-export const makeIsLoading = createSelector(make, state => state.___isLoading);
+export const makeIsLoading = createSelector(
+  make,
+  state => (state ? state.___isLoading : {})
+);

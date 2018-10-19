@@ -21,33 +21,31 @@ class Confirm extends Component {
   render() {
     const { bodyText, trigger, fullWidthDialog, maxWidthDialog } = this.props;
     return (
-      <div>
-        <Dialog
-          open={trigger}
-          fullWidth={fullWidthDialog}
-          maxWidth={maxWidthDialog}
-          aria-labelledby="confirm-dialogbox"
-        >
-          <DialogTitle>Confirm Action</DialogTitle>
-          <DialogContent>
-            <DialogContentText>{bodyText}</DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button
-              onClick={e => this.handleClick({ confirm: true })}
-              color="secondary"
-            >
-              Yes
-            </Button>
-            <Button
-              onClick={e => this.handleClick({ confirm: false })}
-              color="secondary"
-            >
-              No
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </div>
+      <Dialog
+        open={trigger}
+        fullWidth={fullWidthDialog}
+        maxWidth={maxWidthDialog}
+        aria-labelledby="confirm-dialogbox"
+      >
+        <DialogTitle>Confirm Action</DialogTitle>
+        <DialogContent>
+          <DialogContentText>{bodyText}</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={e => this.handleClick({ confirm: true })}
+            color="secondary"
+          >
+            Yes
+          </Button>
+          <Button
+            onClick={e => this.handleClick({ confirm: false })}
+            color="secondary"
+          >
+            No
+          </Button>
+        </DialogActions>
+      </Dialog>
     );
   }
 }

@@ -23,7 +23,8 @@ import {
   processLocalOutput,
   changeMtpStorage,
   setMtpStorageOptions,
-  getMtpStoragesListSelected
+  getMtpStoragesListSelected,
+  handleReloadDirList
 } from '../actions';
 import {
   makeDirectoryLists,
@@ -40,6 +41,7 @@ import { devicesDefaultPaths, deviceTypeConst } from '../../../constants';
 import { Confirm as ConfirmDialog } from '../../../components/DialogBox';
 import { Selection as SelectionDialog } from '../../../components/DialogBox';
 import { pathUp } from '../../../utils/paths';
+import { toggleSettings } from '../../Settings/actions';
 
 class ToolbarAreaPane extends React.Component {
   constructor(props) {
@@ -108,6 +110,11 @@ class ToolbarAreaPane extends React.Component {
     this._delFiles({ deviceType });
   };
 
+  _handleToggleSettings = toggle => {
+    const { handleToggleSettings } = this.props;
+    handleToggleSettings(true);
+  };
+
   activeToolbarList = ({ ...args }) => {
     const {
       toolbarList,
@@ -155,6 +162,12 @@ class ToolbarAreaPane extends React.Component {
               mtpDevice.isAvailable
           };
           break;
+
+        case 'settings':
+          _activeToolbarList[a] = {
+            ...item
+          };
+          break;
         default:
           break;
       }
@@ -177,6 +190,7 @@ class ToolbarAreaPane extends React.Component {
         filePath = pathUp(currentBrowsePath[deviceType]);
         this._fetchDirList({ filePath, deviceType });
         break;
+
       case 'refresh':
         filePath = currentBrowsePath[deviceType];
         handleReloadDirList(
@@ -188,12 +202,19 @@ class ToolbarAreaPane extends React.Component {
           mtpStoragesList
         );
         break;
+
       case 'delete':
         this.handleToggleDeleteConfirmDialog(true);
         break;
+
       case 'storage':
         this.handleToggleMtpStorageSelectionDialog(true);
         break;
+
+      case 'settings':
+        this._handleToggleSettings(true);
+        break;
+
       default:
         break;
     }
@@ -350,28 +371,14 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         _,
         getState
       ) => {
-        switch (deviceType) {
-          case deviceTypeConst.local:
-            dispatch(fetchDirList({ ...args }, deviceType, getState));
-            break;
-
-          case deviceTypeConst.mtp:
-            dispatch(
-              setMtpStorageOptions(
-                { ...args },
-                deviceType,
-                {
-                  changeMtpStorageIdsOnlyOnDeviceChange: true,
-                  mtpStoragesList
-                },
-                getState
-              )
-            );
-            break;
-
-          default:
-            break;
-        }
+        dispatch(
+          handleReloadDirList(
+            { ...args },
+            deviceType,
+            mtpStoragesList,
+            getState
+          )
+        );
       },
 
       handleDelFiles: (
@@ -476,6 +483,9 @@ const mapDispatchToProps = (dispatch, ownProps) =>
 
         dispatch(changeMtpStorage({ ..._mtpStoragesList }));
         dispatch(fetchDirList({ ...fetchDirArgs }, deviceType, getState));
+      },
+      handleToggleSettings: data => (_, getState) => {
+        dispatch(toggleSettings(data));
       }
     },
     dispatch
