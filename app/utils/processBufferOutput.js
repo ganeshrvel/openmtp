@@ -13,7 +13,8 @@ export const processMtpBuffer = ({ error, stderr }) => {
     noSuchFiles: `No such file or directory`,
     writePipe: `WritePipe`,
     mtpStorageNotAccessible1: `MTP storage not accessible`,
-    mtpStorageNotAccessible2: `error: storage`
+    mtpStorageNotAccessible2: `error: storage`,
+    partialDeletion: `PartialDeletion`
   };
 
   const errorDictionary = {
@@ -21,12 +22,13 @@ export const processMtpBuffer = ({ error, stderr }) => {
     common: `Oops.. Your MTP device has gone crazy! Try again.`,
     unResponsive: `MTP device is not responding. Reload or reconnect device.`,
     mtpStorageNotAccessible: `MTP storage not accessible.`,
-    fileNotFound: `File not found! Try again.`
+    fileNotFound: `File not found! Try again.`,
+    partialDeletion: `The path is inaccessible.`
   };
 
   const errorStringified = (error !== null && error.toString()) || '';
   const stderrStringified = (stderr !== null && stderr.toString()) || '';
- 
+
   if (!errorStringified && !stderrStringified) {
     return {
       error: null,
@@ -34,7 +36,7 @@ export const processMtpBuffer = ({ error, stderr }) => {
       status: true
     };
   }
- 
+
   const checkError = errorTplKey => {
     return (
       stderrStringified
@@ -117,6 +119,15 @@ export const processMtpBuffer = ({ error, stderr }) => {
   ) {
     return {
       error: sanitizeErrors(stderrStringified || errorStringified),
+      throwAlert: true,
+      status: true
+    };
+  } else if (
+    /*No files selected*/
+    checkError('partialDeletion')
+  ) {
+    return {
+      error: errorDictionary.partialDeletion,
       throwAlert: true,
       status: true
     };

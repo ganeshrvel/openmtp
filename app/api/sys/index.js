@@ -590,7 +590,7 @@ export const pasteFiles = (
         cmdArgs = {
           _queue
         };
-
+        
         return _pasteFiles(
           { ...pasteArgs },
           { ...fetchDirListArgs },
@@ -634,7 +634,6 @@ const _pasteFiles = (
     });
 
     cmd.stderr.on('data', e => {
-      console.log(e.toString());
       dispatch(
         processMtpOutput({
           deviceType,

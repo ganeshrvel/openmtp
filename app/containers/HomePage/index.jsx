@@ -24,7 +24,6 @@ class Home extends Component {
     /*
     todo: scan for mountable devices
     todo: loader for mtp!
-    todo: do a mtp " directory name test
     todo: onscroll clear context menu
     todo: focus the datatable
     todo: folder/files different color

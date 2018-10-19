@@ -17,6 +17,7 @@ import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 import nanoid from 'nanoid';
 import lodashSortBy from 'lodash/sortBy';
+import lodashIndexOf from 'lodash/indexOf';
 import DirectoryListsTableHead from './DirectoryListsTableHead';
 import Breadcrumb from '../../../components/Breadcrumb';
 import ContextMenu from './ContextMenu';
@@ -66,6 +67,7 @@ import {
 import { baseName, pathUp, sanitizePath } from '../../../utils/paths';
 import { isFloat, isInt, niceBytes } from '../../../utils/funcs';
 import { isNumber } from 'util';
+import { throwAlert } from '../../Alerts/actions';
 
 class DirectoryLists extends React.Component {
   constructor(props) {
@@ -509,14 +511,28 @@ class DirectoryLists extends React.Component {
       deviceType,
       currentBrowsePath,
       mtpStoragesListSelected,
-      fileTransferClipboard
+      fileTransferClipboard,
+      handleThrowError
     } = this.props;
     let { queue } = fileTransferClipboard;
     const destinationFolder = currentBrowsePath[deviceType];
+    let invalidFileNameFlag = false;
 
     queue = queue.map(a => {
-      return `${destinationFolder}/${baseName(a)}`;
+      const fullPath = `${destinationFolder}/${baseName(a)}`;
+      if (fullPath.trim() === '' || /[\\?%*:|"<>]/g.test(fullPath)) {
+        invalidFileNameFlag = true;
+      }
+
+      return fullPath;
     });
+
+    if (invalidFileNameFlag) {
+      handleThrowError({
+        message: `Invalid file name in the path. /\?%*:|"<> are not allowed.`
+      });
+      return null;
+    }
 
     if (await checkFileExists(queue, deviceType, mtpStoragesListSelected)) {
       this.handleTogglePasteConfirmDialog(true);
@@ -994,6 +1010,10 @@ class DirectoryLists extends React.Component {
 const mapDispatchToProps = (dispatch, ownProps) =>
   bindActionCreators(
     {
+      handleThrowError: ({ ...args }) => (_, getState) => {
+        dispatch(throwAlert({ ...args }));
+      },
+
       handleRequestSort: ({ ...args }, deviceType) => (_, getState) => {
         dispatch(setSortingDirLists({ ...args }, deviceType));
       },
