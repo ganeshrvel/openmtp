@@ -9,6 +9,13 @@ import { withStyles } from '@material-ui/core/styles';
 import Routes from '../../routing';
 import bootApp from '../../utils/boot';
 import SettingsDialog from '../Settings';
+import { writeFileAsync } from '../../api/sys/fileOps';
+import { PATHS } from '../../utils/paths';
+import { withReducer } from '../../store/reducers/withReducer';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import reducers from './reducers';
+import { copyJsonFileToSettings } from '../Settings/actions';
 
 const appTheme = createMuiTheme(theme());
 
@@ -37,6 +44,20 @@ class App extends Component {
 
       return null;
     }
+    this.writeJsonToSettings();
+  }
+
+  writeJsonToSettings() {
+    /* const settingFileJson = require(PATHS.settingFile);
+    const { _copyJsonFileToSettings } = this.props;
+    _copyJsonFileToSettings({ ...settingFileJson });
+   */ writeFileAsync(
+      {
+        filePath: PATHS.settingFile,
+        text: JSON.stringify({}),
+        append: false
+      }
+    );
   }
 
   render() {
@@ -63,5 +84,23 @@ class App extends Component {
     );
   }
 }
+const mapDispatchToProps = (dispatch, ownProps) =>
+  bindActionCreators(
+    {
+      _copyJsonFileToSettings: ({ ...data }) => (_, getState) => {
+        dispatch(copyJsonFileToSettings({ ...data }));
+      }
+    },
+    dispatch
+  );
 
-export default withStyles(styles)(App);
+const mapStateToProps = (state, props) => {
+  return {};
+};
+
+export default withReducer('App', reducers)(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(withStyles(styles)(App))
+);

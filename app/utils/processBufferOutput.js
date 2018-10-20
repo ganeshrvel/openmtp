@@ -1,6 +1,8 @@
 'use strict';
 
 import { replaceBulk } from './funcs';
+import { log } from '@Log';
+import { EOL } from 'os';
 
 export const processMtpBuffer = ({ error, stderr }) => {
   const errorTpl = {
@@ -33,6 +35,7 @@ export const processMtpBuffer = ({ error, stderr }) => {
     return {
       error: null,
       throwAlert: false,
+      logError: true,
       status: true
     };
   }
@@ -48,6 +51,11 @@ export const processMtpBuffer = ({ error, stderr }) => {
     );
   };
 
+  log.doLog(
+    `MTP buffer o/p logging;${EOL}error: ${errorStringified.trim()}${EOL}stderr: ${stderrStringified.trim()}${EOL}`,
+    checkError('noMtp')
+  );
+
   if (
     /*No MTP device found*/
     checkError('noMtp')
@@ -55,6 +63,7 @@ export const processMtpBuffer = ({ error, stderr }) => {
     return {
       error: errorDictionary.noMtp,
       throwAlert: false,
+      logError: false,
       status: false
     };
   } else if (
@@ -64,6 +73,7 @@ export const processMtpBuffer = ({ error, stderr }) => {
     return {
       error: errorDictionary.unResponsive,
       throwAlert: true,
+      logError: true,
       status: false
     };
   } else if (
@@ -73,6 +83,7 @@ export const processMtpBuffer = ({ error, stderr }) => {
     return {
       error: errorDictionary.unResponsive,
       throwAlert: true,
+      logError: true,
       status: false
     };
   } else if (
@@ -82,6 +93,7 @@ export const processMtpBuffer = ({ error, stderr }) => {
     return {
       error: errorDictionary.unResponsive,
       throwAlert: true,
+      logError: true,
       status: false
     };
   } else if (
@@ -92,6 +104,7 @@ export const processMtpBuffer = ({ error, stderr }) => {
     return {
       error: errorDictionary.mtpStorageNotAccessible,
       throwAlert: true,
+      logError: true,
       status: false
     };
   } else if (
@@ -101,6 +114,7 @@ export const processMtpBuffer = ({ error, stderr }) => {
     return {
       error: sanitizeErrors(stderrStringified || errorStringified),
       throwAlert: true,
+      logError: true,
       status: true
     };
   } else if (
@@ -110,6 +124,7 @@ export const processMtpBuffer = ({ error, stderr }) => {
     return {
       error: errorDictionary.fileNotFound,
       throwAlert: true,
+      logError: true,
       status: true
     };
   } else if (
@@ -120,6 +135,7 @@ export const processMtpBuffer = ({ error, stderr }) => {
     return {
       error: sanitizeErrors(stderrStringified || errorStringified),
       throwAlert: true,
+      logError: true,
       status: true
     };
   } else if (
@@ -129,6 +145,7 @@ export const processMtpBuffer = ({ error, stderr }) => {
     return {
       error: errorDictionary.partialDeletion,
       throwAlert: true,
+      logError: true,
       status: true
     };
   } else {
@@ -136,6 +153,7 @@ export const processMtpBuffer = ({ error, stderr }) => {
     return {
       error: errorDictionary.common,
       throwAlert: true,
+      logError: true,
       status: true
     };
   }
@@ -163,7 +181,8 @@ export const processLocalBuffer = ({ error, stderr }) => {
   if (!errorStringified || !stderrStringified) {
     return {
       error: null,
-      throwAlert: false
+      throwAlert: false,
+      logError: true
     };
   }
 
@@ -178,6 +197,10 @@ export const processLocalBuffer = ({ error, stderr }) => {
     );
   };
 
+  log.doLog(
+    `Local buffer o/p logging;${EOL}error: ${errorStringified.trim()}${EOL}stderr: ${stderrStringified.trim()}${EOL}`
+  );
+
   if (
     /*No Permission*/
     checkError('noPerm1') ||
@@ -185,7 +208,8 @@ export const processLocalBuffer = ({ error, stderr }) => {
   ) {
     return {
       error: errorDictionary.noPerm,
-      throwAlert: true
+      throwAlert: true,
+      logError: true
     };
   } else if (
     /*Command failed*/
@@ -193,7 +217,8 @@ export const processLocalBuffer = ({ error, stderr }) => {
   ) {
     return {
       error: errorDictionary.commandFailed,
-      throwAlert: true
+      throwAlert: true,
+      logError: true
     };
   } else if (
     /*No such file or directory*/
@@ -202,6 +227,7 @@ export const processLocalBuffer = ({ error, stderr }) => {
     return {
       error: errorDictionary.fileNotFound,
       throwAlert: true,
+      logError: true,
       status: true
     };
   } else if (
@@ -210,13 +236,15 @@ export const processLocalBuffer = ({ error, stderr }) => {
   ) {
     return {
       error: errorStringified,
-      throwAlert: true
+      throwAlert: true,
+      logError: true
     };
   } else {
     /*common errors*/
     return {
       error: errorDictionary.common,
-      throwAlert: true
+      throwAlert: true,
+      logError: true
     };
   }
 };

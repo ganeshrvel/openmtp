@@ -18,7 +18,7 @@ export default function Settings(state = initialState, action) {
         ...state,
         toggleSettings: payload
       };
-      
+
     case actionTypes.HIDE_HIDDEN_FILES:
       return {
         ...state,
@@ -26,6 +26,12 @@ export default function Settings(state = initialState, action) {
           ...state.hideHiddenFiles,
           [deviceType]: payload
         }
+      };
+
+    case actionTypes.COPY_JSON_FILE_TO_SETTINGS:
+      return {
+        ...state,
+        ...payload
       };
     default:
       return state;

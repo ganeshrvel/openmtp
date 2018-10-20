@@ -179,7 +179,8 @@ export function processMtpOutput({
       const {
         status: mtpStatus,
         error: mtpError,
-        throwAlert: mtpThrowAlert
+        throwAlert: mtpThrowAlert,
+        logError: mtpLogError
       } = processMtpBuffer({ error, stderr });
 
       dispatch(setMtpStatus(mtpStatus));
@@ -190,7 +191,7 @@ export function processMtpOutput({
       }
 
       if (mtpError) {
-        log.error(mtpError, 'processMtpOutput');
+        log.error(mtpError, 'processMtpOutput', mtpLogError);
         if (mtpThrowAlert) {
           dispatch(throwAlert({ message: mtpError.toString() }));
         }
@@ -215,11 +216,12 @@ export function processLocalOutput({
     try {
       const {
         error: localError,
-        throwAlert: localThrowAlert
+        throwAlert: localThrowAlert,
+        logError: localLogError
       } = processLocalBuffer({ error, stderr });
 
       if (localError) {
-        log.error(localError, 'processLocalOutput');
+        log.error(localError, 'processLocalOutput', localLogError);
 
         if (localThrowAlert) {
           dispatch(throwAlert({ message: localError.toString() }));
