@@ -52,7 +52,7 @@ export const processMtpBuffer = ({ error, stderr }) => {
   };
 
   log.doLog(
-    `MTP buffer o/p logging;${EOL}error: ${errorStringified.trim()}${EOL}stderr: ${stderrStringified.trim()}${EOL}`,
+    `MTP buffer o/p logging;${EOL}error: ${errorStringified.trim()}${EOL}stderr: ${stderrStringified.trim()}`,
     checkError('noMtp')
   );
 
@@ -198,7 +198,7 @@ export const processLocalBuffer = ({ error, stderr }) => {
   };
 
   log.doLog(
-    `Local buffer o/p logging;${EOL}error: ${errorStringified.trim()}${EOL}stderr: ${stderrStringified.trim()}${EOL}`
+    `Local buffer o/p logging;${EOL}error: ${errorStringified.trim()}${EOL}stderr: ${stderrStringified.trim()}`
   );
 
   if (

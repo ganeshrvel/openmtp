@@ -134,7 +134,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
       },
 
       handleHideHiddenFiles: ({ ...data }, deviceType) => (_, getState) => {
-        dispatch(hideHiddenFiles({ ...data }, deviceType));
+        dispatch(hideHiddenFiles({ ...data }, deviceType, getState));
       },
 
       handleReloadDirList: ({ ...args }, deviceType, mtpStoragesList) => (

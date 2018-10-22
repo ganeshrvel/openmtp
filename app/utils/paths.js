@@ -7,9 +7,9 @@ import { IS_DEV } from '../constants/env';
 const root = process.cwd();
 const homeDir = os.homedir();
 const profileFolder = path.join(homeDir, `./.io.ganeshrvel`, `openmtp`);
-const logFileName = IS_DEV ? `debug.log` : `error.log`;
+const settingsFolder = path.join(profileFolder, `./settings`);
+const logFileName = IS_DEV ? `error.dev.log` : `error.log`;
 const logFile = path.join(profileFolder, `./${logFileName}`);
-const settingFile = path.join(profileFolder, `./settings.json`);
 
 export const PATHS = {
   root: path.resolve(root),
@@ -18,8 +18,8 @@ export const PATHS = {
   nodeModules: path.resolve(path.join(root, `./node_modules`)),
   homeDir: path.resolve(homeDir),
   profileFolder: path.resolve(profileFolder),
-  logFile: path.resolve(logFile),
-  settingFile: path.resolve(settingFile)
+  settingsFolder: path.resolve(settingsFolder),
+  logFile: path.resolve(logFile)
 };
 
 export const pathUp = filePath => {

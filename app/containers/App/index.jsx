@@ -3,19 +3,19 @@
 import React, { Component } from 'react';
 import { theme, styles } from './styles';
 import Alerts from '../Alerts';
+import { log } from '@Log';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { withStyles } from '@material-ui/core/styles';
 import Routes from '../../routing';
 import bootApp from '../../utils/boot';
 import SettingsDialog from '../Settings';
-import { writeFileAsync } from '../../api/sys/fileOps';
-import { PATHS } from '../../utils/paths';
 import { withReducer } from '../../store/reducers/withReducer';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import reducers from './reducers';
 import { copyJsonFileToSettings } from '../Settings/actions';
+import { settingsStorage } from '../../utils/storage';
 
 const appTheme = createMuiTheme(theme());
 
@@ -33,31 +33,45 @@ class App extends Component {
   }
 
   async componentWillMount() {
-    const bootObj = new bootApp();
-    const bootInit = await bootObj.init();
-    if (!bootInit) {
-      this.setState({
-        boot: {
-          allow: false
-        }
-      });
+    try {
+      const bootObj = new bootApp();
+      const bootInit = await bootObj.init();
+      if (!bootInit) {
+        this._preventAppBoot();
+        return null;
+      }
 
-      return null;
+      await this.writeJsonToSettings();
+    } catch (e) {
+      this._preventAppBoot();
+      log.error(e, `App -> componentWillMount`);
     }
-    this.writeJsonToSettings();
   }
 
-  writeJsonToSettings() {
-    /* const settingFileJson = require(PATHS.settingFile);
-    const { _copyJsonFileToSettings } = this.props;
-    _copyJsonFileToSettings({ ...settingFileJson });
-   */ writeFileAsync(
-      {
-        filePath: PATHS.settingFile,
-        text: JSON.stringify({}),
-        append: false
+  async writeJsonToSettings() {
+    try {
+     /* await settingsStorage.set('get', { //hey: 99 });
+      await settingsStorage.getAll((error, response) => {
+        //console.log(response);
+      });*/
+
+      //settingsStorage().setItem('batman', { name: 'Bruce Wayne' });
+      // console.log(settingsStorage.getItem('batman'));
+      //_copyJsonFileToSettings({});
+    } catch (e) {
+      this._preventAppBoot();
+      log.error(e, `App -> writeJsonToSettings`);
+    }
+  }
+
+  _preventAppBoot() {
+    this.setState({
+      boot: {
+        allow: false
       }
-    );
+    });
+
+    return null;
   }
 
   render() {

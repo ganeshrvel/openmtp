@@ -1,53 +1,68 @@
 'use strict';
 
 import { createWriteStream } from 'fs';
+import { log } from '@Log';
 import { checkFileExists, newLocalFolder } from '../api/sys';
 import { PATHS } from './paths';
 import { fileExistsSync } from '../api/sys/fileOps';
 import { deviceTypeConst } from '../constants';
 
-const { profileFolder, settingFile, logFile } = PATHS;
+const { logFile, settingsFolder } = PATHS;
 const deviceType = deviceTypeConst.local;
 
 export default class boot {
   constructor() {}
 
   async init() {
-    if (!(await this.verifyProfileDir())) {
-      return await this.createProfileDir();
-    }
+    try {
+      if (!(await this.verifyDir(settingsFolder))) {
+        return await this.createDir(settingsFolder);
+      }
 
-    if (!this.verifyProfileFiles(settingFile)) {
-      this.createProfileFiles(settingFile);
-    }
+      if (!this.verifyProfileFiles(logFile)) {
+        this.createProfileFiles(logFile);
+      }
 
-    if (!this.verifyProfileFiles(logFile)) {
-      this.createProfileFiles(logFile);
+      return this.verifyProfileFiles(logFile);
+    } catch (e) {
+      log.error(e, `boot -> init`);
     }
-
-    return (
-      this.verifyProfileFiles(settingFile) && this.verifyProfileFiles(logFile)
-    );
   }
 
-  async verifyProfileDir() {
-    return await checkFileExists(profileFolder, deviceType, null);
+  async verifyDir(filePath) {
+    try {
+      return await checkFileExists(filePath, deviceType, null);
+    } catch (e) {
+      log.error(e, `boot -> verifyDir`);
+    }
   }
 
-  async createProfileDir() {
-    const { error, stderr, data } = await newLocalFolder({
-      newFolderPath: profileFolder
-    });
+  async createDir(filePath) {
+    try {
+      const { error, stderr, data } = await newLocalFolder({
+        newFolderPath: filePath
+      });
 
-    return !(error || stderr);
+      return !(error || stderr);
+    } catch (e) {
+      log.error(e, `boot -> createDir`);
+    }
   }
 
   verifyProfileFiles(filePath) {
-    return fileExistsSync(filePath);
+    try {
+      return fileExistsSync(filePath);
+    } catch (e) {
+      log.error(e, `boot -> verifyProfileFiles`);
+    }
   }
 
   createProfileFiles(filePath) {
-    const createStream = createWriteStream(filePath);
-    createStream.end();
+    try {
+      const createStream = createWriteStream(filePath);
+      createStream.end();
+    } catch (e) {
+      log.error(e, `boot -> createProfileFiles`);
+    }
   }
 }

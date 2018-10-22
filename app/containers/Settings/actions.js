@@ -1,5 +1,8 @@
 'use strict';
+import { log } from '@Log';
 import prefixer from '../../utils/reducerPrefixer.js';
+import { readFileSync, writeFileAsync } from '../../api/sys/fileOps';
+import { PATHS } from '../../utils/paths';
 
 const prefix = '@@Settings';
 const actionTypesList = [
@@ -17,13 +20,36 @@ export function toggleSettings(data) {
   };
 }
 
-export function hideHiddenFiles({ ...data }, deviceType) {
+export function hideHiddenFiles({ ...data }, deviceType, getState) {
   const { toggle } = data;
-  return {
-    type: actionTypes.HIDE_HIDDEN_FILES,
-    deviceType,
-    payload: toggle
+
+  return dispatch => {
+    dispatch(copySettingsToJsonFile(getState().Settings));
+    dispatch({
+      type: actionTypes.HIDE_HIDDEN_FILES,
+      deviceType,
+      payload: toggle
+    });
   };
+}
+
+export function copySettingsToJsonFile(getState) {
+  try {
+    //const settingFileJson = readFileSync({ filePath: PATHS.settingFile });
+    //const _settingsState = getState().Settings;
+    console.log(getState);
+    /* const appendData = {
+      ...settingFileJson,
+      ..._settingsState
+    };
+
+    writeFileAsync({
+      filePath: PATHS.settingFile,
+      text: JSON.stringify({ appendData })
+    });*/
+  } catch (e) {
+    log.error(e, `Settings -> Actions -> copySettingsToJsonFile`);
+  }
 }
 
 export function copyJsonFileToSettings({ ...data }) {

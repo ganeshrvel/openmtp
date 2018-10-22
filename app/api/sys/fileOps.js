@@ -1,6 +1,11 @@
 'use strict';
 
-import { existsSync, writeFile, appendFile } from 'fs';
+import {
+  existsSync,
+  writeFile,
+  appendFile,
+  readFileSync as _readFileSync
+} from 'fs';
 import { EOL } from 'os';
 
 export const writeFileAsync = ({ filePath, text }) => {
@@ -19,6 +24,11 @@ export const appendFileAsync = ({ filePath, text }) => {
       return console.error(err, `appendFileAsync`);
     }
   });
+};
+
+export const readFileSync = ({ filePath }) => {
+  const options = { encoding: 'utf8' };
+  return _readFileSync(filePath, options);
 };
 
 export const fileExistsSync = filePath => {
