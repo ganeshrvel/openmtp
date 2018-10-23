@@ -38,7 +38,7 @@ class ProgressBar extends React.Component {
         <DialogTitle>{titleText}</DialogTitle>
 
         <DialogContent>
-          <DialogContentText className={styles.dialogContentText}>
+          <DialogContentText className={styles.dialogContentTextTop}>
             {bodyText1}
           </DialogContentText>
 
@@ -48,7 +48,7 @@ class ProgressBar extends React.Component {
             value={progressValue}
           />
 
-          <DialogContentText className={styles.dialogContentText}>
+          <DialogContentText className={styles.dialogContentTextBottom}>
             {bodyText2}
           </DialogContentText>
         </DialogContent>

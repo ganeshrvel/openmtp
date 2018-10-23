@@ -21,6 +21,7 @@ class Home extends Component {
 
   async componentWillMount() {
     /*
+    todo: native context menu
     todo: rename for mtp
     todo: mtp fetch dir new logic
     todo: cancel copy
