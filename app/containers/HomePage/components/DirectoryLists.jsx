@@ -777,7 +777,7 @@ class DirectoryLists extends Component {
           fullWidthDialog={true}
           maxWidthDialog="sm"
           onClickHandler={this.handleNewFolderEditDialog}
-          variant="indeterminate"
+          variant="determinate"
           errors={``}
           progressValue={fileTransferProgess.percentage}
         />

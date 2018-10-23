@@ -19,6 +19,7 @@ export const isArraysEqual = (a, b) => {
 
   return true;
 };
+
 export const isInt = n => {
   if (typeof n !== 'number') {
     return false;
@@ -57,4 +58,34 @@ export const replaceBulk = (str, findArray, replaceArray) => {
     return map[matched];
   });
   return str;
+};
+
+export const splitIntoLines = str => {
+  return str.split(/(\r?\n)/g);
+};
+
+export const quickHash = str => {
+  let hash = 0;
+  let i;
+  let chr;
+
+  if (str.length === 0) {
+    return hash;
+  }
+  for (i = 0; i < str.length; i++) {
+    chr = str.charCodeAt(i);
+    hash = (hash << 5) - hash + chr;
+    hash |= 0;
+  }
+  return hash;
+};
+
+export const percentage = (current, total) => {
+  return parseInt((current / total) * 100);
+};
+
+export const msToMins = ms => {
+  const minutes = Math.floor(ms / 60000);
+  const seconds = ((ms % 60000) / 1000).toFixed(0);
+  return minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
 };

@@ -8,9 +8,10 @@ import moment from 'moment';
 import { log } from '@Log';
 import { mtp as mtpCli } from '@Binaries';
 import { spawn, exec } from 'child_process';
+import { spawn as ptySpawn } from 'node-pty';
 import findLodash from 'lodash/find';
 import { deviceTypeConst } from '../../constants';
-import { baseName } from '../../utils/paths';
+import { baseName, PATHS } from '../../utils/paths';
 import {
   clearFileTransfer,
   fetchDirList,
@@ -18,6 +19,12 @@ import {
   setFileTransferProgress
 } from '../../containers/HomePage/actions';
 import { isArray } from 'util';
+import {
+  msToMins,
+  percentage,
+  quickHash,
+  splitIntoLines
+} from '../../utils/funcs';
 
 const readdir = Promise.promisify(fs.readdir);
 const execPromise = Promise.promisify(exec);
@@ -259,13 +266,6 @@ export const newLocalFolder = async ({ newFolderPath }) => {
 /**
  MTP device ->
  */
-const filterOutMtpLines = string => {
-  return (
-    string.indexOf(`selected storage`) !== -1 ||
-    string.indexOf(`Device::Find failed`) !== -1
-  );
-};
-
 export const fetchMtpStorageOptions = async () => {
   try {
     const { data, error, stderr } = await promisifiedExec(
@@ -280,49 +280,40 @@ export const fetchMtpStorageOptions = async () => {
       return { error, stderr, data: null };
     }
 
-    const _storageList = data.split(/(\r?\n)/g);
+    const _storageList = splitIntoLines(data);
 
     let descMatchPattern = /description:(.*)/i;
     let storageIdMatchPattern = /([^\D]+)/;
 
     let storageList = {};
-    _storageList
-      .filter(a => {
-        return !(
-          a === '\n' ||
-          a === '\r\n' ||
-          a === '' ||
-          filterOutMtpLines(a)
-        );
-      })
-      .map((a, index) => {
-        if (!a) {
-          return null;
-        }
-        const _matchDesc = descMatchPattern.exec(a);
-        const _matchedStorageId = storageIdMatchPattern.exec(a);
+    _storageList.filter(a => !filterOutMtpLines(a)).map((a, index) => {
+      if (!a) {
+        return null;
+      }
+      const _matchDesc = descMatchPattern.exec(a);
+      const _matchedStorageId = storageIdMatchPattern.exec(a);
 
-        if (
-          typeof _matchDesc === 'undefined' ||
-          _matchDesc === null ||
-          typeof _matchDesc[1] === 'undefined' ||
-          typeof _matchedStorageId === 'undefined' ||
-          _matchedStorageId === null ||
-          typeof _matchedStorageId[1] === 'undefined'
-        ) {
-          return null;
-        }
+      if (
+        typeof _matchDesc === 'undefined' ||
+        _matchDesc === null ||
+        typeof _matchDesc[1] === 'undefined' ||
+        typeof _matchedStorageId === 'undefined' ||
+        _matchedStorageId === null ||
+        typeof _matchedStorageId[1] === 'undefined'
+      ) {
+        return null;
+      }
 
-        const matchDesc = _matchDesc[1].trim();
-        const matchedStorageId = _matchedStorageId[1].trim();
-        storageList = {
-          ...storageList,
-          [matchedStorageId]: {
-            name: matchDesc,
-            selected: index === 0
-          }
-        };
-      });
+      const matchDesc = _matchDesc[1].trim();
+      const matchedStorageId = _matchedStorageId[1].trim();
+      storageList = {
+        ...storageList,
+        [matchedStorageId]: {
+          name: matchDesc,
+          selected: index === 0
+        }
+      };
+    });
 
     if (
       typeof storageList === 'undefined' ||
@@ -387,25 +378,14 @@ export const asyncReadMtpDir = async ({
       return { error: filePropsError, stderr: filePropsStderr, data: null };
     }
 
-    let fileList = fileListData.split(/(\r?\n)/g);
-    let fileProps = filePropsData.split(/(\r?\n)/g);
+    let fileList = splitIntoLines(fileListData);
+    let fileProps = splitIntoLines(filePropsData);
 
-    fileList = fileList
-      .filter(a => {
-        return !(
-          a === '\n' ||
-          a === '\r\n' ||
-          a === '' ||
-          filterOutMtpLines(a)
-        );
-      })
-      .map(a => {
-        return a.replace(/(^|\.\s+)\d+\s+/, '');
-      });
-
-    fileProps = fileProps.filter(a => {
-      return !(a === '\n' || a === '\r\n' || a === '' || filterOutMtpLines(a));
+    fileList = fileList.filter(a => !filterOutMtpLines(a)).map(a => {
+      return a.replace(/(^|\.\s+)\d+\s+/, '');
     });
+
+    fileProps = fileProps.filter(a => !filterOutMtpLines(a));
 
     if (fileList.length > fileProps.length) {
       fileList.shift();
@@ -507,6 +487,25 @@ export const pasteFiles = (
   getState
 ) => {
   try {
+    /*
+    const ptyProcess = pty.spawn(`bash`, [], {
+      name: 'xterm-color',
+      cols: 80,
+      rows: 30,
+      cwd: process.env.HOME,
+      env: process.env
+    });
+
+    ptyProcess.on('data', function(data) {
+      console.log(data);
+    });
+
+    ptyProcess.write(`${mtpCli} -b -e\n`);
+    ptyProcess.write(
+      `get "/Download/ytb.apk" "/Users/ganeshr/Downloads/ytb.apk"\n`
+    );
+    ptyProcess.write(`quit\n`);
+*/
     const {
       destinationFolder,
       mtpStoragesListSelected,
@@ -532,6 +531,7 @@ export const pasteFiles = (
       );
     }
 
+    const storageSelectCmd = `"storage ${mtpStoragesListSelected}"`;
     let { queue } = fileTransferClipboard;
 
     if (typeof queue === 'undefined' || queue === null || queue.length < 1) {
@@ -550,7 +550,6 @@ export const pasteFiles = (
       );
     }
 
-    const storageSelectCmd = `"storage ${mtpStoragesListSelected}"`;
     let _queue = [],
       cmdArgs = {};
     switch (direction) {
@@ -562,7 +561,7 @@ export const pasteFiles = (
           );
           const escapedSourcePath = `${escapeShell(sourcePath)}`;
 
-          return `${storageSelectCmd} "get \\"${escapedSourcePath}\\" \\"${escapedDestinationPath}\\""`;
+          return `-e ${storageSelectCmd} "get \\"${escapedSourcePath}\\" \\"${escapedDestinationPath}\\""`;
         });
 
         cmdArgs = {
@@ -584,13 +583,13 @@ export const pasteFiles = (
           const escapedDestinationPath = `${escapeShell(destinationPath)}`;
           const escapedSourcePath = `${escapeShell(sourcePath)}`;
 
-          return `${storageSelectCmd} "put \\"${escapedSourcePath}\\" \\"${escapedDestinationPath}\\""`;
+          return `-e ${storageSelectCmd} "put \\"${escapedSourcePath}\\" \\"${escapedDestinationPath}\\""`;
         });
 
         cmdArgs = {
           _queue
         };
-        
+
         return _pasteFiles(
           { ...pasteArgs },
           { ...fetchDirListArgs },
@@ -618,19 +617,107 @@ const _pasteFiles = (
 ) => {
   try {
     const { _queue } = cmdArgs;
+    let tranferList = {};
+    let _calc = false;
+
+    let handleTranferListInterval = setInterval(() => {
+      _calc = true;
+      if (tranferList === null) {
+        clearInterval(handleTranferListInterval);
+        handleTranferListInterval = 0;
+        return null;
+      }
+
+      if (Object.keys(tranferList).length < 1) {
+        return null;
+      }
+
+      const { currentFile, percentage } = tranferList;
+
+      dispatch(
+        setFileTransferProgress({
+          toggle: true,
+          currentFile,
+          percentage
+        })
+      );
+    }, 5000);
+
+    //todo: clear it
+    let t0 = 0;
+    let t1 = 0;
 
     const cmd = spawn(mtpCli, [..._queue], {
       shell: true
     });
 
     cmd.stdout.on('data', data => {
-      dispatch(
-        setFileTransferProgress({
-          toggle: true,
-          currentFile: null,
-          percentage: 0
-        })
+      //todo: clear it
+      if (t0 === 0) {
+        t0 = performance.now();
+      }
+
+      const bufferedOutput = data.toString();
+      if (
+        typeof bufferedOutput === 'undefined' ||
+        bufferedOutput === null ||
+        bufferedOutput.length < 1
+      ) {
+        return null;
+      }
+
+      const _bufferedOutput = splitIntoLines(bufferedOutput).filter(
+        a => !filterOutMtpLines(a)
       );
+
+      if (_bufferedOutput.length < 1) {
+        return null;
+      }
+
+      for (let i in _bufferedOutput) {
+        const item = _bufferedOutput[i];
+        const bufferedOutputSplit = item.split(' ');
+
+        if (bufferedOutputSplit.length < 1) {
+          return null;
+        }
+
+        const totalLength = bufferedOutputSplit.length;
+        const eventIndex = 0;
+        const filePathStartIndex = 1;
+        const filePathEndIndex = totalLength - 3;
+        const currentProgressSizeIndex = totalLength - 2;
+        const totalFileSizeIndex = totalLength - 1;
+
+        const event = bufferedOutputSplit[eventIndex];
+        const matchedItem = item.match(/(\d+?\d*)\s(\d+?\d*)$/);
+        if (matchedItem === null) {
+          return null;
+        }
+
+        const matchedItemSplit = matchedItem[0].split(' ');
+
+        let currentProgressSize = parseInt(matchedItemSplit[0]);
+        let totalFileSize = parseInt(matchedItemSplit[1]);
+
+        if (
+          totalLength < 3 ||
+          event !== `:progress` ||
+          currentProgressSizeIndex < 2 ||
+          totalFileSizeIndex < 3
+        ) {
+          return null;
+        }
+
+        const filePath = bufferedOutputSplit
+          .slice(filePathStartIndex, filePathEndIndex + 1)
+          .join(' ');
+
+        tranferList = {
+          currentFile: filePath,
+          percentage: percentage(currentProgressSize, totalFileSize)
+        };
+      }
     });
 
     cmd.stderr.on('data', e => {
@@ -641,6 +728,7 @@ const _pasteFiles = (
           stderr: null,
           data: null,
           callback: a => {
+            tranferList = null;
             dispatch(clearFileTransfer());
             dispatch(
               fetchDirList({ ...fetchDirListArgs }, deviceType, getState)
@@ -651,6 +739,11 @@ const _pasteFiles = (
     });
 
     cmd.on('exit', code => {
+      //todo: clear it
+      t1 = performance.now();
+      console.log(`Took ${msToMins(t1 - t0)} mins.`);
+
+      tranferList = null;
       dispatch(clearFileTransfer());
       dispatch(fetchDirList({ ...fetchDirListArgs }, deviceType, getState));
     });
@@ -659,6 +752,16 @@ const _pasteFiles = (
   } catch (e) {
     log.error(e);
   }
+};
+
+const filterOutMtpLines = string => {
+  return (
+    string === '\n' ||
+    string === '\r\n' ||
+    string === '' ||
+    string.indexOf(`selected storage`) !== -1 ||
+    string.indexOf(`Device::Find failed`) !== -1
+  );
 };
 
 const fetchExtension = (fileName, isFolder) => {
