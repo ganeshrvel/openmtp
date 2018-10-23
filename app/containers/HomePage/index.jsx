@@ -22,13 +22,9 @@ class Home extends Component {
   async componentWillMount() {
     /*
     todo: 60s timout for mtp freeze/timeout
-    todo: makepath multiple spaces in a path not made
     todo: fix settings
     todo: native context menu
     todo: rename for mtp
-    todo: mtp fetch dir new logic
-    todo: cancel copy
-    todo: single/double quotes pass to cli
     todo: copy settings to and from json file on mount and change
     todo: binary for production
     todo: error boundary
@@ -37,6 +33,7 @@ class Home extends Component {
     todo: optimization: add drive icons to list
     todo: title bar style change
     todo: change menus in prod and about electron
+    todo: bump electron and mui
    */
   }
 

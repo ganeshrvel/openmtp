@@ -35,5 +35,5 @@ export const baseName = filePath => {
     return null;
   }
   filePath = path.resolve(filePath);
-  return filePath.split(/[\\/]/).pop();
+  return filePath.split(/[/]/).pop();
 };

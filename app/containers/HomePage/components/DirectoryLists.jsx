@@ -527,8 +527,9 @@ class DirectoryLists extends Component {
     let invalidFileNameFlag = false;
 
     queue = queue.map(a => {
-      const fullPath = `${destinationFolder}/${baseName(a)}`;
-      if (fullPath.trim() === '' || /[\\?%*:|"<>]/g.test(fullPath)) {
+      const _baseName = baseName(a);
+      const fullPath = `${destinationFolder}/${_baseName}`;
+      if (fullPath.trim() === '' || /[\\:]/g.test(fullPath)) {
         invalidFileNameFlag = true;
       }
 
@@ -537,7 +538,7 @@ class DirectoryLists extends Component {
 
     if (invalidFileNameFlag) {
       handleThrowError({
-        message: `Invalid file name in the path. /\?%*:|"<> are not allowed.`
+        message: `Invalid file name in the path. \\: are not allowed.`
       });
       return null;
     }

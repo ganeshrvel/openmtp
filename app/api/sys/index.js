@@ -1,8 +1,10 @@
 'use strict';
 
-import fs from 'fs';
+import fs, { rename as fsRename } from 'fs';
 import Promise from 'bluebird';
 import junk from 'junk';
+import rimraf from 'rimraf';
+import mkdirp from 'mkdirp';
 import path from 'path';
 import moment from 'moment';
 import { log } from '@Log';
@@ -21,7 +23,6 @@ import { isArray } from 'util';
 import {
   niceBytes,
   percentage,
-  quickHash,
   splitIntoLines,
   truncate
 } from '../../utils/funcs';
@@ -32,7 +33,7 @@ const execPromise = Promise.promisify(exec);
 
 const promisifiedExec = command => {
   try {
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject) => {
       execPromise(command, (error, stdout, stderr) => {
         return resolve({
           data: stdout,
@@ -47,7 +48,7 @@ const promisifiedExec = command => {
 };
 
 const promisifiedExecNoCatch = command => {
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     execPromise(command, (error, stdout, stderr) =>
       resolve({
         data: stdout,
@@ -60,7 +61,7 @@ const promisifiedExecNoCatch = command => {
 
 const checkMtpFileExists = async (filePath, mtpStoragesListSelected) => {
   const storageSelectCmd = `"storage ${mtpStoragesListSelected}"`;
-  const escapedFilePath = `${escapeShell(filePath)}`;
+  const escapedFilePath = `${escapeShellMtp(filePath)}`;
 
   const { data, error, stderr } = await promisifiedExecNoCatch(
     `${mtpCli} ${storageSelectCmd} "properties \\"${escapedFilePath}\\""`
@@ -185,28 +186,54 @@ export const asyncReadLocalDir = async ({ filePath, ignoreHidden }) => {
   }
 };
 
+const promisifiedRimraf = item => {
+  try {
+    return new Promise(function(resolve, reject) {
+      rimraf(item, {}, error => {
+        resolve({
+          data: null,
+          stderr: error,
+          error: error
+        });
+      });
+    });
+  } catch (e) {
+    log.error(e);
+  }
+};
+
 export const delLocalFiles = async ({ fileList }) => {
   try {
     if (!fileList || fileList.length < 1) {
       return { error: `No files selected.`, stderr: null, data: null };
     }
 
-    const escapedCmd = fileList
-      .map(a => {
-        return `"${escapeShell(a)}"`;
-      })
-      .join(' ');
-
-    const { data, error, stderr } = await promisifiedExec(
-      `rm -rf ${escapedCmd}`
-    );
-
-    if (error || stderr) {
-      log.error(`${error} : ${stderr}`, `delLocalFiles -> rm error`);
-      return { error, stderr, data: false };
+    for (let i in fileList) {
+      const item = fileList[i];
+      const { error } = await promisifiedRimraf(item);
+      if (error) {
+        log.error(`${error}`, `delLocalFiles -> rm error`);
+        return { error, stderr: null, data: false };
+      }
     }
 
     return { error: null, stderr: null, data: true };
+  } catch (e) {
+    log.error(e);
+  }
+};
+
+const promisifiedRename = ({ oldFilePath, newFilePath }) => {
+  try {
+    return new Promise(function(resolve, reject) {
+      fsRename(oldFilePath, newFilePath, error => {
+        resolve({
+          data: null,
+          stderr: error,
+          error: error
+        });
+      });
+    });
   } catch (e) {
     log.error(e);
   }
@@ -223,19 +250,25 @@ export const renameLocalFiles = async ({ oldFilePath, newFilePath }) => {
       return { error: `No files selected.`, stderr: null, data: null };
     }
 
-    const escapedOldFilePath = `"${escapeShell(oldFilePath)}"`;
-    const escapedNewFilePath = `"${escapeShell(newFilePath)}"`;
-
-    const { data, error, stderr } = await promisifiedExec(
-      `mv ${escapedOldFilePath} ${escapedNewFilePath}`
-    );
-
-    if (error || stderr) {
-      log.error(`${error} : ${stderr}`, `renameLocalFiles -> mv error`);
-      return { error, stderr, data: false };
+    const { error } = await promisifiedRename({ oldFilePath, newFilePath });
+    if (error) {
+      log.error(`${error}`, `renameLocalFiles -> mv error`);
+      return { error, stderr: null, data: false };
     }
 
     return { error: null, stderr: null, data: true };
+  } catch (e) {
+    log.error(e);
+  }
+};
+
+const promisifiedMkdirp = ({ newFolderPath }) => {
+  try {
+    return new Promise(function(resolve, reject) {
+      mkdirp(newFolderPath, error => {
+        resolve({ data: null, stderr: error, error: error });
+      });
+    });
   } catch (e) {
     log.error(e);
   }
@@ -247,15 +280,10 @@ export const newLocalFolder = async ({ newFolderPath }) => {
       return { error: `Invalid path.`, stderr: null, data: null };
     }
 
-    const escapedNewFolderPath = `"${escapeShell(newFolderPath)}"`;
-
-    const { data, error, stderr } = await promisifiedExec(
-      `mkdir -p ${escapedNewFolderPath}`
-    );
-
-    if (error || stderr) {
-      log.error(`${error} : ${stderr}`, `newLocalFolder -> mkdir error`);
-      return { error, stderr, data: false };
+    const { error } = await promisifiedMkdirp({ newFolderPath });
+    if (error) {
+      log.error(`${error}`, `newLocalFolder -> mkdir error`);
+      return { error, stderr: null, data: false };
     }
 
     return { error: null, stderr: null, data: true };
@@ -349,7 +377,7 @@ export const asyncReadMtpDir = async ({
       error: filePropsError,
       stderr: filePropsStderr
     } = await promisifiedExec(
-      `${mtpCli} ${storageSelectCmd} "lsext \\"${escapeShell(filePath)}\\""`
+      `${mtpCli} ${storageSelectCmd} "lsext \\"${escapeShellMtp(filePath)}\\""`
     );
 
     if (filePropsError || filePropsStderr) {
@@ -422,7 +450,7 @@ export const delMtpFiles = async ({ fileList, mtpStoragesListSelected }) => {
     const storageSelectCmd = `"storage ${mtpStoragesListSelected}"`;
     for (let i in fileList) {
       const { data, error, stderr } = await promisifiedExec(
-        `${mtpCli} ${storageSelectCmd} "rm \\"${escapeShell(fileList[i])}\\""`
+        `${mtpCli} ${storageSelectCmd} "rm \\"${escapeShellMtp(fileList[i])}\\""`
       );
 
       if (error || stderr) {
@@ -447,7 +475,7 @@ export const newMtpFolder = async ({
     }
 
     const storageSelectCmd = `"storage ${mtpStoragesListSelected}"`;
-    const escapedNewFolderPath = `${escapeShell(newFolderPath)}`;
+    const escapedNewFolderPath = `${escapeShellMtp(newFolderPath)}`;
     const { data, error, stderr } = await promisifiedExec(
       `${mtpCli} ${storageSelectCmd} "mkpath \\"${escapedNewFolderPath}\\""`
     );
@@ -522,10 +550,10 @@ export const pasteFiles = (
       case 'mtpToLocal':
         _queue = queue.map(sourcePath => {
           const destinationPath = path.resolve(destinationFolder);
-          const escapedDestinationPath = escapeShell(
+          const escapedDestinationPath = escapeShellMtp(
             `${destinationPath}/${baseName(sourcePath)}`
           );
-          const escapedSourcePath = `${escapeShell(sourcePath)}`;
+          const escapedSourcePath = `${escapeShellMtp(sourcePath)}`;
 
           return `-e ${storageSelectCmd} "get \\"${escapedSourcePath}\\" \\"${escapedDestinationPath}\\""`;
         });
@@ -546,8 +574,8 @@ export const pasteFiles = (
       case 'localtoMtp':
         _queue = queue.map(sourcePath => {
           const destinationPath = path.resolve(destinationFolder);
-          const escapedDestinationPath = `${escapeShell(destinationPath)}`;
-          const escapedSourcePath = `${escapeShell(sourcePath)}`;
+          const escapedDestinationPath = `${escapeShellMtp(destinationPath)}`;
+          const escapedSourcePath = `${escapeShellMtp(sourcePath)}`;
 
           return `-e ${storageSelectCmd} "put \\"${escapedSourcePath}\\" \\"${escapedDestinationPath}\\""`;
         });
@@ -763,6 +791,35 @@ const fetchExtension = (fileName, isFolder) => {
     : fileName.substring(fileName.lastIndexOf('.') + 1);
 };
 
-export const escapeShell = cmd => {
-  return cmd.replace(/"/g, '\\"');
+/**
+ * If you are reading this then let me tell you something "bunch of idiots are working at Apple inc."
+ * This is made to support flex quotes parser for mtp cli.
+ */
+export const escapeShellMtp = cmd => {
+  if (cmd.indexOf(`\\"`) !== -1 && cmd.indexOf(`"\\`) !== -1) {
+    return cmd
+      .replace(/`/g, '\\`')
+      .replace(/\\/g, `\\\\\\\\`)
+      .replace(/"/g, `\\\\\\"`);
+  }
+  if (cmd.indexOf(`"\\"`) !== -1) {
+    return cmd
+      .replace(/`/g, '\\`')
+      .replace(/\\/g, `\\\\\\\\`)
+      .replace(/"/g, `\\\\\\"`);
+  } else if (cmd.indexOf(`\\"`) !== -1) {
+    return cmd
+      .replace(/`/g, '\\`')
+      .replace(/\\/g, `\\\\\\`)
+      .replace(/"/g, `\\\\\\\\"`);
+  } else if (cmd.indexOf(`"\\`) !== -1) {
+    return cmd
+      .replace(/`/g, '\\`')
+      .replace(/\\/g, `\\\\\\\\`)
+      .replace(/"/g, `\\\\\\"`);
+  }
+  return cmd
+    .replace(/`/g, '\\`')
+    .replace(/\\/g, `\\\\\\`)
+    .replace(/"/g, `\\\\\\"`);
 };

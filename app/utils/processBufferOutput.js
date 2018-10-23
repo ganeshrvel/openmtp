@@ -178,7 +178,7 @@ export const processLocalBuffer = ({ error, stderr }) => {
   const errorStringified = (error !== null && error.toString()) || '';
   const stderrStringified = (stderr !== null && stderr.toString()) || '';
 
-  if (!errorStringified || !stderrStringified) {
+  if (!errorStringified && !stderrStringified) {
     return {
       error: null,
       throwAlert: false,
