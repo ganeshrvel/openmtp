@@ -21,6 +21,9 @@ class Home extends Component {
 
   async componentWillMount() {
     /*
+    todo: 60s timout for mtp freeze/timeout
+    todo: makepath multiple spaces in a path not made
+    todo: fix settings
     todo: native context menu
     todo: rename for mtp
     todo: mtp fetch dir new logic

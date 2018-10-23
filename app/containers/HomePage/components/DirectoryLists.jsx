@@ -903,7 +903,6 @@ class DirectoryLists extends Component {
       path: currentBrowsePath[deviceType],
       directoryLists: directoryLists[deviceType]
     };
-
     return (
       <TableRow
         hover={true}

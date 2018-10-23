@@ -336,40 +336,21 @@ export const asyncReadMtpDir = async ({
   mtpStoragesListSelected
 }) => {
   try {
-    const mtpCmdChop = {
+    const mtpCmdChopIndex = {
       type: 2,
       dateAdded: 4,
-      timeAdded: 5,
-      name: 6
+      timeAdded: 5
     };
     let response = [];
     const storageSelectCmd = `"storage ${mtpStoragesListSelected}"`;
-
-    const {
-      data: fileListData,
-      error: fileListError,
-      stderr: fileListStderr
-    } = await promisifiedExec(
-      `${mtpCli} ${storageSelectCmd} "ls \\"${escapeShell(filePath)}\\""`
-    );
 
     const {
       data: filePropsData,
       error: filePropsError,
       stderr: filePropsStderr
     } = await promisifiedExec(
-      `${mtpCli} ${storageSelectCmd} "lsext \\"${escapeShell(
-        filePath
-      )}\\"" | tr -s " "`
+      `${mtpCli} ${storageSelectCmd} "lsext \\"${escapeShell(filePath)}\\""`
     );
-
-    if (fileListError || fileListStderr) {
-      log.error(
-        `${fileListError} : ${fileListStderr}`,
-        `asyncReadMtpDir -> ls error`
-      );
-      return { error: fileListError, stderr: fileListStderr, data: null };
-    }
 
     if (filePropsError || filePropsStderr) {
       log.error(
@@ -379,34 +360,37 @@ export const asyncReadMtpDir = async ({
       return { error: filePropsError, stderr: filePropsStderr, data: null };
     }
 
-    let fileList = splitIntoLines(fileListData);
     let fileProps = splitIntoLines(filePropsData);
-
-    fileList = fileList.filter(a => !filterOutMtpLines(a)).map(a => {
-      return a.replace(/(^|\.\s+)\d+\s+/, '');
-    });
 
     fileProps = fileProps.filter(a => !filterOutMtpLines(a));
 
-    if (fileList.length > fileProps.length) {
-      fileList.shift();
-    }
-
     for (let i = 0; i < fileProps.length; i++) {
-      let filePropsList = fileProps[i].split(' ');
-      if (typeof filePropsList[mtpCmdChop.name] === 'undefined') {
+      const item = fileProps[i];
+      const matchedProps = item.match(
+        /^(.*?)\s+\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}/g
+      );
+
+      if (matchedProps === null || matchedProps.length < 1) {
         continue;
       }
-      const fileName = fileList[i];
 
-      if (ignoreHidden && /(^|\/)\.[^\/\.]/g.test(fileName)) {
+      const _matchedProps = matchedProps[0];
+      const itemSplit = item.split(_matchedProps);
+
+      if (itemSplit === null || itemSplit.length < 2 || itemSplit[1] === '') {
+        continue;
+      }
+      const matchedFileName = itemSplit[1].replace(/^\s{2}|\s$/g, '');
+      const filePropsList = _matchedProps.replace(/\s\s+/g, ' ').split(' ');
+
+      if (ignoreHidden && /(^|\/)\.[^\/\.]/g.test(matchedFileName)) {
         continue;
       }
 
-      let fullPath = path.resolve(filePath, fileName);
-      let isFolder = filePropsList[mtpCmdChop.type] === '3001';
-      let dateTime = `${filePropsList[mtpCmdChop.dateAdded]} ${
-        filePropsList[mtpCmdChop.timeAdded]
+      let fullPath = path.resolve(filePath, matchedFileName);
+      let isFolder = filePropsList[mtpCmdChopIndex.type] === '3001';
+      let dateTime = `${filePropsList[mtpCmdChopIndex.dateAdded]} ${
+        filePropsList[mtpCmdChopIndex.timeAdded]
       }`;
 
       //avoid duplicate values
@@ -414,7 +398,7 @@ export const asyncReadMtpDir = async ({
         continue;
       }
       response.push({
-        name: fileName,
+        name: matchedFileName,
         path: fullPath,
         extension: fetchExtension(filePath, isFolder),
         size: null,
