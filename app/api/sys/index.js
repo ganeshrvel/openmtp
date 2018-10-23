@@ -450,7 +450,9 @@ export const delMtpFiles = async ({ fileList, mtpStoragesListSelected }) => {
     const storageSelectCmd = `"storage ${mtpStoragesListSelected}"`;
     for (let i in fileList) {
       const { data, error, stderr } = await promisifiedExec(
-        `${mtpCli} ${storageSelectCmd} "rm \\"${escapeShellMtp(fileList[i])}\\""`
+        `${mtpCli} ${storageSelectCmd} "rm \\"${escapeShellMtp(
+          fileList[i]
+        )}\\""`
       );
 
       if (error || stderr) {
