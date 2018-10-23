@@ -19,13 +19,13 @@ import {
 } from '../../containers/HomePage/actions';
 import { isArray } from 'util';
 import {
-  msToMins,
   niceBytes,
   percentage,
   quickHash,
   splitIntoLines,
   truncate
 } from '../../utils/funcs';
+import { msToTime, unixTimestampNow } from '../../utils/date';
 
 const readdir = Promise.promisify(fs.readdir);
 const execPromise = Promise.promisify(exec);
@@ -599,10 +599,13 @@ const _pasteFiles = (
 ) => {
   try {
     const { _queue } = cmdArgs;
-    const handletransferListTimeInterval = 500;
+    const handletransferListTimeInterval = 1000;
     let transferList = {};
     let prevCopiedBlockSize = 0;
     let currentCopiedBlockSize = 0;
+    let startTime = 0;
+    let prevCopiedTime = 0;
+    let currentCopiedTime = 0;
     let bufferedOutput = null;
 
     let handletransferListInterval = setInterval(() => {
@@ -617,19 +620,21 @@ const _pasteFiles = (
       }
 
       const { percentage: _percentage, bodyText1, bodyText2 } = transferList;
+      const copiedTimeDiff = currentCopiedTime - prevCopiedTime;
       const speed =
         prevCopiedBlockSize && prevCopiedBlockSize - currentCopiedBlockSize > 0
           ? (prevCopiedBlockSize - currentCopiedBlockSize) *
-            (1000 / handletransferListTimeInterval)
+            (1000 / copiedTimeDiff)
           : 0;
       const _speed = speed ? `${niceBytes(speed)}` : `--`;
-
+      const elapsedTime = msToTime(currentCopiedTime - startTime);
+      prevCopiedTime = currentCopiedTime;
       prevCopiedBlockSize = currentCopiedBlockSize;
       dispatch(
         setFileTransferProgress({
           toggle: true,
           bodyText1,
-          bodyText2: `${bodyText2} @ ${_speed}/sec`,
+          bodyText2: `Elapsed: ${elapsedTime} | Progress: ${bodyText2} @ ${_speed}/sec`,
           percentage: _percentage
         })
       );
@@ -641,6 +646,10 @@ const _pasteFiles = (
 
     cmd.stdout.on('data', data => {
       bufferedOutput = data.toString();
+
+      if (startTime === 0) {
+        startTime = unixTimestampNow();
+      }
 
       if (
         typeof bufferedOutput === 'undefined' ||
@@ -687,6 +696,8 @@ const _pasteFiles = (
         if (event === `:done`) {
           prevCopiedBlockSize = 0;
           currentCopiedBlockSize = 0;
+          prevCopiedTime = 0;
+          currentCopiedTime = 0;
           return null;
         }
 
@@ -705,14 +716,16 @@ const _pasteFiles = (
 
         const perc = percentage(currentProgressSize, totalFileSize);
         currentCopiedBlockSize = totalFileSize - currentProgressSize;
+        currentCopiedTime = unixTimestampNow();
 
         transferList = {
-          bodyText1: `${perc}% complete of ${truncate(baseName(filePath), 50)}`,
+          bodyText1: `${perc}% complete of ${truncate(baseName(filePath), 45)}`,
           bodyText2: `${niceBytes(currentProgressSize)} / ${niceBytes(
             totalFileSize
           )}`,
           percentage: perc,
-          currentCopiedBlockSize
+          currentCopiedBlockSize,
+          currentCopiedTime
         };
       }
     });

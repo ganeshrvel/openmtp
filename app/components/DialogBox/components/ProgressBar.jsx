@@ -24,7 +24,7 @@ class ProgressBar extends React.Component {
       progressValue,
       variant
     } = this.props;
-    
+
     return (
       <Dialog
         disableBackdropClick
@@ -47,7 +47,7 @@ class ProgressBar extends React.Component {
             variant={variant}
             value={progressValue}
           />
-          
+
           <DialogContentText className={styles.dialogContentText}>
             {bodyText2}
           </DialogContentText>

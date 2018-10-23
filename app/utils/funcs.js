@@ -84,12 +84,6 @@ export const percentage = (current, total) => {
   return parseInt((current / total) * 100);
 };
 
-export const msToMins = ms => {
-  const minutes = Math.floor(ms / 60000);
-  const seconds = ((ms % 60000) / 1000).toFixed(0);
-  return minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
-};
-
 export const truncate = (str, length) => {
   const dots = str.length > length ? '...' : '';
   return str.substring(0, length) + dots;

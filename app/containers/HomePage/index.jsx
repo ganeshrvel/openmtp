@@ -21,10 +21,10 @@ class Home extends Component {
 
   async componentWillMount() {
     /*
-    todo: inconsistent progress bar
-    todo: lapsed time
+    todo: rename for mtp
     todo: mtp fetch dir new logic
     todo: cancel copy
+    todo: single/double quotes pass to cli
     todo: copy settings to and from json file on mount and change
     todo: binary for production
     todo: error boundary
