@@ -15,7 +15,8 @@ class ProgressBar extends React.Component {
   render() {
     const {
       classes: styles,
-      bodyText,
+      bodyText1,
+      bodyText2,
       trigger,
       titleText,
       fullWidthDialog,
@@ -38,7 +39,7 @@ class ProgressBar extends React.Component {
 
         <DialogContent>
           <DialogContentText className={styles.dialogContentText}>
-            {bodyText}
+            {bodyText1}
           </DialogContentText>
 
           <LinearProgress
@@ -46,6 +47,10 @@ class ProgressBar extends React.Component {
             variant={variant}
             value={progressValue}
           />
+          
+          <DialogContentText className={styles.dialogContentText}>
+            {bodyText2}
+          </DialogContentText>
         </DialogContent>
       </Dialog>
     );

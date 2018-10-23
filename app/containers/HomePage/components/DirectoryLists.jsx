@@ -772,7 +772,12 @@ class DirectoryLists extends Component {
 
         <ProgressBarDialog
           titleText="Transferring..."
-          bodyText={``}
+          bodyText1={`${
+            fileTransferProgess.bodyText1 ? fileTransferProgess.bodyText1 : ''
+          }`}
+          bodyText2={`${
+            fileTransferProgess.bodyText2 ? fileTransferProgess.bodyText2 : ''
+          }`}
           trigger={togglePasteDialog}
           fullWidthDialog={true}
           maxWidthDialog="sm"

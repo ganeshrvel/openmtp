@@ -89,3 +89,8 @@ export const msToMins = ms => {
   const seconds = ((ms % 60000) / 1000).toFixed(0);
   return minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
 };
+
+export const truncate = (str, length) => {
+  const dots = str.length > length ? '...' : '';
+  return str.substring(0, length) + dots;
+};

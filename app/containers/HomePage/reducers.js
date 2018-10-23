@@ -183,7 +183,8 @@ export const initialState = {
     },
     progress: {
       toggle: false,
-      currentFile: null,
+      bodyText1: null,
+      bodyText2: null,
       percentage: 0
     }
   }

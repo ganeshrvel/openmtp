@@ -151,7 +151,6 @@
     "lodash": "^4.17.11",
     "moment": "^2.22.2",
     "nanoid": "^1.2.4",
-    "node-pty": "^0.7.8",
     "prop-types": "^15.6.2",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
@@ -166,7 +165,8 @@
     "redux-thunk": "^2.3.0",
     "reselect": "^3.0.1",
     "roboto-fontface": "^0.10.0",
-    "source-map-support": "^0.5.6"
+    "source-map-support": "^0.5.6",
+    "webworker-threads": "^0.7.17"
   },
   "devEngines": {
     "node": ">=7.x",

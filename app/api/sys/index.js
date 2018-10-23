@@ -8,7 +8,6 @@ import moment from 'moment';
 import { log } from '@Log';
 import { mtp as mtpCli } from '@Binaries';
 import { spawn, exec } from 'child_process';
-import { spawn as ptySpawn } from 'node-pty';
 import findLodash from 'lodash/find';
 import { deviceTypeConst } from '../../constants';
 import { baseName, PATHS } from '../../utils/paths';
@@ -21,9 +20,11 @@ import {
 import { isArray } from 'util';
 import {
   msToMins,
+  niceBytes,
   percentage,
   quickHash,
-  splitIntoLines
+  splitIntoLines,
+  truncate
 } from '../../utils/funcs';
 
 const readdir = Promise.promisify(fs.readdir);
@@ -487,25 +488,6 @@ export const pasteFiles = (
   getState
 ) => {
   try {
-    /*
-    const ptyProcess = pty.spawn(`bash`, [], {
-      name: 'xterm-color',
-      cols: 80,
-      rows: 30,
-      cwd: process.env.HOME,
-      env: process.env
-    });
-
-    ptyProcess.on('data', function(data) {
-      console.log(data);
-    });
-
-    ptyProcess.write(`${mtpCli} -b -e\n`);
-    ptyProcess.write(
-      `get "/Download/ytb.apk" "/Users/ganeshr/Downloads/ytb.apk"\n`
-    );
-    ptyProcess.write(`quit\n`);
-*/
     const {
       destinationFolder,
       mtpStoragesListSelected,
@@ -617,47 +599,49 @@ const _pasteFiles = (
 ) => {
   try {
     const { _queue } = cmdArgs;
-    let tranferList = {};
-    let _calc = false;
+    const handletransferListTimeInterval = 500;
+    let transferList = {};
+    let prevCopiedBlockSize = 0;
+    let currentCopiedBlockSize = 0;
+    let bufferedOutput = null;
 
-    let handleTranferListInterval = setInterval(() => {
-      _calc = true;
-      if (tranferList === null) {
-        clearInterval(handleTranferListInterval);
-        handleTranferListInterval = 0;
+    let handletransferListInterval = setInterval(() => {
+      if (transferList === null) {
+        clearInterval(handletransferListInterval);
+        handletransferListInterval = 0;
         return null;
       }
 
-      if (Object.keys(tranferList).length < 1) {
+      if (Object.keys(transferList).length < 1) {
         return null;
       }
 
-      const { currentFile, percentage } = tranferList;
+      const { percentage: _percentage, bodyText1, bodyText2 } = transferList;
+      const speed =
+        prevCopiedBlockSize && prevCopiedBlockSize - currentCopiedBlockSize > 0
+          ? (prevCopiedBlockSize - currentCopiedBlockSize) *
+            (1000 / handletransferListTimeInterval)
+          : 0;
+      const _speed = speed ? `${niceBytes(speed)}` : `--`;
 
+      prevCopiedBlockSize = currentCopiedBlockSize;
       dispatch(
         setFileTransferProgress({
           toggle: true,
-          currentFile,
-          percentage
+          bodyText1,
+          bodyText2: `${bodyText2} @ ${_speed}/sec`,
+          percentage: _percentage
         })
       );
-    }, 5000);
-
-    //todo: clear it
-    let t0 = 0;
-    let t1 = 0;
+    }, handletransferListTimeInterval);
 
     const cmd = spawn(mtpCli, [..._queue], {
       shell: true
     });
 
     cmd.stdout.on('data', data => {
-      //todo: clear it
-      if (t0 === 0) {
-        t0 = performance.now();
-      }
+      bufferedOutput = data.toString();
 
-      const bufferedOutput = data.toString();
       if (
         typeof bufferedOutput === 'undefined' ||
         bufferedOutput === null ||
@@ -700,6 +684,12 @@ const _pasteFiles = (
         let currentProgressSize = parseInt(matchedItemSplit[0]);
         let totalFileSize = parseInt(matchedItemSplit[1]);
 
+        if (event === `:done`) {
+          prevCopiedBlockSize = 0;
+          currentCopiedBlockSize = 0;
+          return null;
+        }
+
         if (
           totalLength < 3 ||
           event !== `:progress` ||
@@ -713,9 +703,16 @@ const _pasteFiles = (
           .slice(filePathStartIndex, filePathEndIndex + 1)
           .join(' ');
 
-        tranferList = {
-          currentFile: filePath,
-          percentage: percentage(currentProgressSize, totalFileSize)
+        const perc = percentage(currentProgressSize, totalFileSize);
+        currentCopiedBlockSize = totalFileSize - currentProgressSize;
+
+        transferList = {
+          bodyText1: `${perc}% complete of ${truncate(baseName(filePath), 50)}`,
+          bodyText2: `${niceBytes(currentProgressSize)} / ${niceBytes(
+            totalFileSize
+          )}`,
+          percentage: perc,
+          currentCopiedBlockSize
         };
       }
     });
@@ -728,7 +725,7 @@ const _pasteFiles = (
           stderr: null,
           data: null,
           callback: a => {
-            tranferList = null;
+            transferList = null;
             dispatch(clearFileTransfer());
             dispatch(
               fetchDirList({ ...fetchDirListArgs }, deviceType, getState)
@@ -739,11 +736,7 @@ const _pasteFiles = (
     });
 
     cmd.on('exit', code => {
-      //todo: clear it
-      t1 = performance.now();
-      console.log(`Took ${msToMins(t1 - t0)} mins.`);
-
-      tranferList = null;
+      transferList = null;
       dispatch(clearFileTransfer());
       dispatch(fetchDirList({ ...fetchDirListArgs }, deviceType, getState));
     });
@@ -759,8 +752,8 @@ const filterOutMtpLines = string => {
     string === '\n' ||
     string === '\r\n' ||
     string === '' ||
-    string.indexOf(`selected storage`) !== -1 ||
-    string.indexOf(`Device::Find failed`) !== -1
+    string.toLowerCase().indexOf(`selected storage`) !== -1 ||
+    string.toLowerCase().indexOf(`device::find failed`) !== -1
   );
 };
 

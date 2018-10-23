@@ -21,6 +21,9 @@ class Home extends Component {
 
   async componentWillMount() {
     /*
+    todo: inconsistent progress bar
+    todo: lapsed time
+    todo: mtp fetch dir new logic
     todo: cancel copy
     todo: copy settings to and from json file on mount and change
     todo: binary for production
