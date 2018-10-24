@@ -7,13 +7,13 @@ import { PATHS } from './paths';
 import { fileExistsSync } from '../api/sys/fileOps';
 import { deviceTypeConst } from '../constants';
 
-const { logFile, profileFolder, settingsFile } = PATHS;
+const { logFile, settingsFile, logFolder } = PATHS;
 const deviceType = deviceTypeConst.local;
 
 export default class boot {
   constructor() {
-    this.verifyDirList = [profileFolder];
-    this.verifyFileList = [logFile, settingsFile];
+    this.verifyDirList = [logFolder];
+    this.verifyFileList = [settingsFile, logFile];
   }
 
   async init() {

@@ -50,15 +50,15 @@ export const processMtpBuffer = ({ error, stderr }) => {
         .indexOf(errorTpl[errorTplKey].toLowerCase()) !== -1
     );
   };
-
+  const noMtpError = checkError('noMtp');
   log.doLog(
     `MTP buffer o/p logging;${EOL}error: ${errorStringified.trim()}${EOL}stderr: ${stderrStringified.trim()}`,
-    !checkError('noMtp')
+    !noMtpError
   );
 
   if (
     /*No MTP device found*/
-    checkError('noMtp')
+    noMtpError
   ) {
     return {
       error: errorDictionary.noMtp,

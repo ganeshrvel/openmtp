@@ -33,6 +33,8 @@ class Home extends Component {
     todo: change menus in prod and about electron
     todo: bump electron and mui
     todo: rename for mtp, need the support from whoozle
+    todo: updates checking
+    todo: email/report debug error
    */
   }
 

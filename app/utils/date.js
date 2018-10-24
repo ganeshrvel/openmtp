@@ -10,6 +10,15 @@ export const dateNow = ({ monthInletters = false }) => {
   return moment().format(`YYYY-${monthFormat}-DD`);
 };
 
+export const yearMonthNow = ({ monthInletters = false }) => {
+  let monthFormat = `MM`;
+  if (monthInletters) {
+    monthFormat = `MMM`;
+  }
+
+  return moment().format(`YYYY-${monthFormat}`);
+};
+
 export const dateTimeNow = ({ monthInletters = false }) => {
   let monthFormat = `MM`;
   if (monthInletters) {
