@@ -22,7 +22,10 @@ class Home extends Component {
   async componentWillMount() {
     /*
     todo: native context menu
+    todo: rename for mtp
     todo: binary for production
+    todo: production if profile files not found it will throw error, need some sort of delay of asyn check
+    todo: production app not relaunching unless full quit
     todo: error boundary
     todo: copy paste cut redo undo in prod
     todo: scan for mountable devices
@@ -30,9 +33,10 @@ class Home extends Component {
     todo: title bar style change
     todo: change menus in prod and about electron
     todo: bump electron and mui
-    todo: rename for mtp, need the support from whoozle
     todo: updates checking
     todo: email/report debug error
+    todo: scrollbar styles
+    
    */
   }
 
