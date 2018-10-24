@@ -1,6 +1,6 @@
 'use strict';
 import { log } from '@Log';
-import { readFileSync, writeFileAsync } from '../api/sys/fileOps';
+import { readFileSync, writeFileSync } from '../api/sys/fileOps';
 
 export default class Storage {
   constructor(filePath) {
@@ -25,7 +25,7 @@ export default class Storage {
 
   setAll({ ...data }) {
     try {
-      writeFileAsync({
+      writeFileSync({
         filePath: this.filePath,
         text: JSON.stringify({ ...data })
       });

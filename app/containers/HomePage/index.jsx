@@ -21,7 +21,6 @@ class Home extends Component {
 
   async componentWillMount() {
     /*
-    todo: corrupted settings self healing.
     todo: time out help tool tip
     todo: rename for mtp
     todo: binary for production
