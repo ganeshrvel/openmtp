@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import { styles } from './styles';
 import { Helmet } from 'react-helmet';
 import { log } from '@Log';
-import DirectoryLists from './components/DirectoryLists';
+import FileExplorer from './components/FileExplorer';
 import ToolbarAreaPane from './components/ToolbarAreaPane';
 import { withStyles } from '@material-ui/core/styles';
 import { withReducer } from '../../store/reducers/withReducer';
@@ -36,7 +36,6 @@ class Home extends Component {
     todo: updates checking
     todo: email/report debug error
     todo: scrollbar styles
-    
    */
   }
 
@@ -47,11 +46,11 @@ class Home extends Component {
       <Grid container spacing={0}>
         <Grid item xs={6}>
           <ToolbarAreaPane showMenu={true} deviceType={deviceTypeConst.local} />
-          <DirectoryLists hideColList={[]} deviceType={deviceTypeConst.local} />
+          <FileExplorer hideColList={[]} deviceType={deviceTypeConst.local} />
         </Grid>
         <Grid item xs={6}>
           <ToolbarAreaPane showMenu={false} deviceType={deviceTypeConst.mtp} />
-          <DirectoryLists
+          <FileExplorer
             hideColList={['size']}
             deviceType={deviceTypeConst.mtp}
           />

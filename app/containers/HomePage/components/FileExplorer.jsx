@@ -1,7 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { styles } from '../styles/DirectoryLists';
+import { styles } from '../styles/FileExplorer';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -68,7 +68,7 @@ import { isFloat, isInt, niceBytes } from '../../../utils/funcs';
 import { isNumber } from 'util';
 import { throwAlert } from '../../Alerts/actions';
 
-class DirectoryLists extends Component {
+class FileExplorer extends Component {
   constructor(props) {
     super(props);
     this.initialState = {
@@ -1271,5 +1271,5 @@ export default withReducer('Home', reducers)(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(withStyles(styles)(DirectoryLists))
+  )(withStyles(styles)(FileExplorer))
 );
