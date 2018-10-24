@@ -30,11 +30,6 @@ export const makeMtpDevice = createSelector(
   state => (state ? state.mtpDevice : initialState.mtpDevice)
 );
 
-export const makeContextMenuPos = createSelector(
-  make,
-  state => (state ? state.contextMenuPos : initialState.contextMenuPos)
-);
-
 export const makeContextMenuList = createSelector(
   make,
   state => (state ? state.contextMenuList : initialState.contextMenuList)

@@ -25,8 +25,6 @@ const actionTypesList = [
   'FETCH_DIR_LIST',
   'SET_MTP_ERRORS',
   'SET_MTP_STATUS',
-  'SET_CONTEXT_MENU_POS',
-  'CLEAR_CONTEXT_MENU_POS',
   'CHANGE_MTP_STORAGE',
   'SET_FILE_TRANSFER_CLIPBOARD',
   'SET_FILE_TRANSFER_PROGRESS',
@@ -147,23 +145,6 @@ export function setMtpStatus(data) {
   return {
     type: actionTypes.SET_MTP_STATUS,
     payload: data
-  };
-}
-
-export function setContextMenuPos({ ...data }, deviceType) {
-  return {
-    type: actionTypes.SET_CONTEXT_MENU_POS,
-    deviceType,
-    payload: {
-      ...data
-    }
-  };
-}
-
-export function clearContextMenuPos(deviceType) {
-  return {
-    type: actionTypes.CLEAR_CONTEXT_MENU_POS,
-    deviceType
   };
 }
 

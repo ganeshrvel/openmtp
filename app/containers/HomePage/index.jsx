@@ -21,8 +21,8 @@ class Home extends Component {
 
   async componentWillMount() {
     /*
-    todo: time out help tool tip\
-    todo: native context menu
+    todo: corrupted settings self healing.
+    todo: time out help tool tip
     todo: rename for mtp
     todo: binary for production
     todo: production app not relaunching unless full quit
@@ -35,7 +35,6 @@ class Home extends Component {
     todo: bump electron and mui
     todo: updates checking
     todo: email/report debug error
-    todo: scrollbar styles
    */
   }
 

@@ -19,7 +19,6 @@ import nanoid from 'nanoid';
 import lodashSortBy from 'lodash/sortBy';
 import DirectoryListsTableHead from './DirectoryListsTableHead';
 import Breadcrumb from '../../../components/Breadcrumb';
-import ContextMenu from './ContextMenu';
 import {
   TextFieldEdit as TextFieldEditDialog,
   ProgressBar as ProgressBarDialog,
@@ -34,8 +33,6 @@ import {
   setSortingDirLists,
   setSelectedDirLists,
   fetchDirList,
-  setContextMenuPos,
-  clearContextMenuPos,
   processMtpOutput,
   processLocalOutput,
   setMtpStorageOptions,
@@ -47,7 +44,6 @@ import {
   makeIsLoading,
   makeCurrentBrowsePath,
   makeMtpDevice,
-  makeContextMenuPos,
   makeContextMenuList,
   makeMtpStoragesListSelected,
   makeFileTransferClipboard,
@@ -55,7 +51,6 @@ import {
 } from '../selectors';
 import { makeHideHiddenFiles } from '../../Settings/selectors';
 import { deviceTypeConst } from '../../../constants';
-import { styles as contextMenuStyles } from '../styles/ContextMenu';
 import {
   renameLocalFiles,
   checkFileExists,
@@ -67,16 +62,14 @@ import { baseName, pathUp, sanitizePath } from '../../../utils/paths';
 import { isFloat, isInt, niceBytes } from '../../../utils/funcs';
 import { isNumber } from 'util';
 import { throwAlert } from '../../Alerts/actions';
+import { remote } from 'electron';
+const { Menu } = remote;
 
 class FileExplorer extends Component {
   constructor(props) {
     super(props);
     this.initialState = {
       togglePasteConfirmDialog: false,
-      contextMenuFocussedRow: {
-        rowData: {},
-        tableData: {}
-      },
       toggleDialog: {
         rename: {
           errors: {
@@ -99,6 +92,8 @@ class FileExplorer extends Component {
     this.state = {
       ...this.initialState
     };
+
+    this.electronMenu = new Menu();
   }
 
   componentWillMount() {
@@ -138,17 +133,10 @@ class FileExplorer extends Component {
     );
   }
 
-  handleScroll = event => {
-    const {
-      handleClearContextMenuClick,
-      deviceType,
-      contextMenuPos
-    } = this.props;
-    if (this._checkOpenContextMenu(contextMenuPos)) {
-      this._setContextMenuFocussedRow({}, {});
-      handleClearContextMenuClick(deviceType);
-    }
-  };
+  fireElectronMenu(menuItems) {
+    this.electronMenu = Menu.buildFromTemplate(menuItems);
+    this.electronMenu.popup(remote.getCurrentWindow());
+  }
 
   _handleContextMenuClick = (
     event,
@@ -156,18 +144,9 @@ class FileExplorer extends Component {
     { ...tableData },
     _target
   ) => {
-    const {
-      handleClearContextMenuClick,
-      deviceType,
-      contextMenuPos,
-      mtpDevice
-    } = this.props;
+    const { deviceType, mtpDevice } = this.props;
 
     if (deviceType === deviceTypeConst.mtp && !mtpDevice.isAvailable) {
-      if (this._checkOpenContextMenu(contextMenuPos)) {
-        this._setContextMenuFocussedRow({}, {});
-        handleClearContextMenuClick(deviceType);
-      }
       return null;
     }
 
@@ -179,117 +158,93 @@ class FileExplorer extends Component {
         return null;
       }
 
-      this._setContextMenuFocussedRow({ ...rowData }, { ...tableData });
-      this.createContextMenu(event);
+      const contextMenuActiveList = this.activeContextMenuList(
+        deviceType,
+        { ...rowData },
+        { ...tableData }
+      );
+
+      this.fireElectronMenu(contextMenuActiveList);
       return null;
     }
-
-    if (this._checkOpenContextMenu(contextMenuPos)) {
-      this._setContextMenuFocussedRow({}, {});
-      handleClearContextMenuClick(deviceType);
-    }
   };
 
-  _setContextMenuFocussedRow = ({ ...rowData }, { ...tableData }) => {
-    this.setState({
-      contextMenuFocussedRow: {
-        rowData: { ...rowData },
-        tableData: { ...tableData }
-      }
-    });
-  };
-
-  _checkOpenContextMenu = contextMenuPos => {
-    return (
-      Object.keys(contextMenuPos).filter(a => {
-        const item = contextMenuPos[a];
-
-        return Object.keys(item).length > 0;
-      }).length > 0
-    );
-  };
-
-  createContextMenu = event => {
-    const { handleContextMenuClick, deviceType } = this.props;
+  activeContextMenuList(deviceType, { ...rowData }, { ...tableData }) {
     const {
-      root: rootStyles,
-      heightDeviceLocal: deviceLocalStyles,
-      heightDeviceMtp: deviceMtpStyles
-    } = contextMenuStyles(null);
-
-    const screenW = window.innerWidth;
-    const screenH = window.innerHeight;
-    const clickX = event.clientX;
-    const clickY = event.clientY;
-    const rootW = rootStyles.width;
-    const rootH =
-      deviceType === deviceTypeConst.local
-        ? deviceLocalStyles.height
-        : deviceMtpStyles.height;
-    const right = screenW - clickX > rootW;
-    const left = !right;
-    const top = screenH - clickY > rootH;
-    const bottom = !top;
-
-    let pos = {
-      left: 0,
-      top: 0
-    };
-
-    if (right) {
-      pos['left'] = clickX + 5;
-    } else if (left) {
-      pos['left'] = clickX - rootW - 5;
-    }
-
-    if (top) {
-      pos['top'] = clickY + 5;
-    } else if (bottom) {
-      pos['top'] = clickY - rootH - 5;
-    }
-
-    handleContextMenuClick({ ...pos }, deviceType);
-  };
-
-  contextMenuActiveList = deviceType => {
-    const { contextMenuList, fileTransferClipboard } = this.props;
-    const { contextMenuFocussedRow } = this.state;
+      contextMenuList,
+      fileTransferClipboard,
+      directoryLists
+    } = this.props;
+    const { queue } = directoryLists[deviceType];
     const _contextMenuList = contextMenuList[deviceType];
-    const contextMenuActiveList = {};
-    const { queue } = this.props.directoryLists[deviceType];
+    let contextMenuActiveList = [];
 
     Object.keys(_contextMenuList).map(a => {
       const item = _contextMenuList[a];
       switch (a) {
         case 'rename':
-          contextMenuActiveList[a] = {
-            ...item,
-            enabled: Object.keys(contextMenuFocussedRow.rowData).length > 0,
-            data: contextMenuFocussedRow.rowData
-          };
+          contextMenuActiveList.push({
+            label: item.label,
+            enabled: Object.keys(rowData).length > 0,
+            data: rowData,
+            click: e => {
+              this._handleContextMenuListActions({
+                [a]: {
+                  ...item,
+                  data: rowData
+                }
+              });
+            }
+          });
           break;
 
         case 'copy':
-          contextMenuActiveList[a] = {
-            ...item,
-            enabled: queue.selected.length > 0
-          };
+          contextMenuActiveList.push({
+            label: item.label,
+            enabled: queue.selected.length > 0,
+            click: e => {
+              this._handleContextMenuListActions({
+                [a]: {
+                  ...item,
+                  data: {}
+                }
+              });
+            }
+          });
           break;
 
         case 'paste':
-          contextMenuActiveList[a] = {
-            ...item,
+          contextMenuActiveList.push({
+            label: item.label,
             enabled:
               fileTransferClipboard.queue.length > 0 &&
-              fileTransferClipboard.source !== deviceType
-          };
+              fileTransferClipboard.source !== deviceType,
+            click: e => {
+              this._handleContextMenuListActions({
+                [a]: {
+                  ...item,
+                  data: {}
+                }
+              });
+            }
+          });
+
           break;
 
         case 'newFolder':
-          contextMenuActiveList[a] = {
-            ...item,
-            data: contextMenuFocussedRow.tableData
-          };
+          contextMenuActiveList.push({
+            label: item.label,
+            data: tableData,
+            click: e => {
+              this._handleContextMenuListActions({
+                [a]: {
+                  ...item,
+                  data: tableData
+                }
+              });
+            }
+          });
+
           break;
         default:
           break;
@@ -297,18 +252,10 @@ class FileExplorer extends Component {
     });
 
     return contextMenuActiveList;
-  };
+  }
 
   _handleContextMenuListActions = ({ ...args }) => {
-    const {
-      deviceType,
-      directoryLists,
-      handleClearContextMenuClick,
-      handleCopy
-    } = this.props;
-
-    this._setContextMenuFocussedRow({}, {});
-    handleClearContextMenuClick(deviceType);
+    const { deviceType, directoryLists, handleCopy } = this.props;
 
     Object.keys(args).map(a => {
       const item = args[a];
@@ -702,7 +649,6 @@ class FileExplorer extends Component {
       classes: styles,
       deviceType,
       hideColList,
-      contextMenuPos,
       currentBrowsePath,
       directoryLists,
       fileTransferProgess
@@ -711,9 +657,6 @@ class FileExplorer extends Component {
     const { selected } = queue;
     const emptyRows = nodes.length < 1;
     const isMtp = deviceType === deviceTypeConst.mtp;
-    const _contextMenuPos = contextMenuPos[deviceType];
-    const contextMenuTrigger = Object.keys(_contextMenuPos).length > 0;
-    const _eventTarget = 'tableWrapperTarget';
     const { toggleDialog, togglePasteConfirmDialog } = this.state;
     const { rename, newFolder } = toggleDialog;
     const tableData = {
@@ -721,18 +664,12 @@ class FileExplorer extends Component {
       directoryLists: directoryLists[deviceType]
     };
 
+    const _eventTarget = 'tableWrapperTarget';
     const togglePasteDialog =
       deviceType === deviceTypeConst.mtp && fileTransferProgess.toggle;
 
     return (
       <React.Fragment>
-        <ContextMenu
-          contextMenuList={this.contextMenuActiveList(deviceType) || {}}
-          contextMenuPos={_contextMenuPos}
-          trigger={contextMenuTrigger}
-          deviceType={deviceType}
-          onContextMenuListActions={this._handleContextMenuListActions}
-        />
         <TextFieldEditDialog
           titleText="Rename?"
           bodyText={`Path: ${rename.data.path || ''}`}
@@ -1079,14 +1016,6 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         dispatch(fetchDirList({ ...args }, deviceType, getState));
       },
 
-      handleContextMenuClick: ({ ...args }, deviceType) => (_, getState) => {
-        dispatch(setContextMenuPos({ ...args }, deviceType));
-      },
-
-      handleClearContextMenuClick: deviceType => (_, getState) => {
-        dispatch(clearContextMenuPos(deviceType));
-      },
-
       handleRenameFile: (
         { oldFilePath, newFilePath, deviceType },
         { ...fetchDirListArgs }
@@ -1259,7 +1188,6 @@ const mapStateToProps = (state, props) => {
     directoryLists: makeDirectoryLists(state),
     isLoading: makeIsLoading(state),
     hideHiddenFiles: makeHideHiddenFiles(state),
-    contextMenuPos: makeContextMenuPos(state),
     contextMenuList: makeContextMenuList(state),
     mtpStoragesListSelected: makeMtpStoragesListSelected(state),
     fileTransferClipboard: makeFileTransferClipboard(state),

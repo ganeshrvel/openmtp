@@ -169,11 +169,6 @@ export const initialState = {
     }
   },
 
-  contextMenuPos: {
-    [deviceTypeConst.local]: {},
-    [deviceTypeConst.mtp]: {}
-  },
-
   mtpStoragesList: {},
 
   fileTransfer: {
@@ -238,27 +233,6 @@ export default function Home(state = initialState, action) {
         mtpDevice: {
           ...state.mtpDevice,
           isAvailable: payload
-        }
-      };
-
-    case actionTypes.SET_CONTEXT_MENU_POS:
-      return {
-        ...state,
-        ...setLoadedMetaData(state),
-        contextMenuPos: {
-          ...initialState.contextMenuPos,
-          [deviceType]: {
-            ...payload
-          }
-        }
-      };
-
-    case actionTypes.CLEAR_CONTEXT_MENU_POS:
-      return {
-        ...state,
-        ...setLoadedMetaData(state),
-        contextMenuPos: {
-          ...initialState.contextMenuPos
         }
       };
 
