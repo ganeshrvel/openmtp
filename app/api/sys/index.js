@@ -304,7 +304,8 @@ export const fetchMtpStorageOptions = async () => {
     if (error || stderr) {
       log.error(
         `${error} : ${stderr}`,
-        `fetchMtpStorageOptions -> storage-list error`
+        `fetchMtpStorageOptions -> storage-list error`,
+        false
       );
       return { error, stderr, data: null };
     }

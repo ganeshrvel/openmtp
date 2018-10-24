@@ -9,8 +9,8 @@ import { EOL } from 'os';
 const { logFile } = PATHS;
 
 export const log = {
-  info(e, title = `Log`, dontLog = true, allowInProd = false) {
-    this.doLog(`Info title: ${title}${EOL}Info body: ${e}${EOL}`, dontLog);
+  info(e, title = `Log`, logError = false, allowInProd = false) {
+    this.doLog(`Info title: ${title}${EOL}Info body: ${e}${EOL}`, logError);
 
     if (allowInProd) {
       console.info(`${title} => `, e);
@@ -19,8 +19,8 @@ export const log = {
     IS_DEV && console.info(`${title} => `, e);
   },
 
-  error(e, title = `Log`, dontLog = false, allowInProd = false) {
-    this.doLog(`Error title: ${title}${EOL}Error body: ${e}${EOL}`, dontLog);
+  error(e, title = `Log`, logError = true, allowInProd = false) {
+    this.doLog(`Error title: ${title}${EOL}Error body: ${e}${EOL}`, logError);
 
     if (allowInProd) {
       console.error(`${title} => `, e);
@@ -29,9 +29,10 @@ export const log = {
     IS_DEV && console.error(`${title} => `, e);
   },
 
-  doLog(text, dontLog = false) {
-    if (dontLog) {
-      return;
+  doLog(text, logError = true) {
+    console.log(logError);
+    if (logError === false) {
+      return null;
     }
     appendFileAsync({
       filePath: logFile,

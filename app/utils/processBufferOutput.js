@@ -53,7 +53,7 @@ export const processMtpBuffer = ({ error, stderr }) => {
 
   log.doLog(
     `MTP buffer o/p logging;${EOL}error: ${errorStringified.trim()}${EOL}stderr: ${stderrStringified.trim()}`,
-    checkError('noMtp')
+    !checkError('noMtp')
   );
 
   if (

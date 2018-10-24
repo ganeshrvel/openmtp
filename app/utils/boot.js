@@ -7,23 +7,42 @@ import { PATHS } from './paths';
 import { fileExistsSync } from '../api/sys/fileOps';
 import { deviceTypeConst } from '../constants';
 
-const { logFile, settingsFolder } = PATHS;
+const { logFile, profileFolder, settingsFile } = PATHS;
 const deviceType = deviceTypeConst.local;
 
 export default class boot {
-  constructor() {}
+  constructor() {
+    this.verifyDirList = [profileFolder];
+    this.verifyFileList = [logFile, settingsFile];
+  }
 
   async init() {
     try {
-      if (!(await this.verifyDir(settingsFolder))) {
-        return await this.createDir(settingsFolder);
+      for (let i in this.verifyDirList) {
+        const item = this.verifyDirList[i];
+
+        if (!(await this.verifyDir(item))) {
+          await this.createDir(item);
+        }
+
+        if (!(await this.verifyDir(item))) {
+          return false;
+        }
       }
 
-      if (!this.verifyProfileFiles(logFile)) {
-        this.createProfileFiles(logFile);
+      for (let i in this.verifyFileList) {
+        const item = this.verifyFileList[i];
+
+        if (!this.verifyFile(item)) {
+          await this.createFile(item);
+        }
+
+        if (!this.verifyFile(item)) {
+          return false;
+        }
       }
 
-      return this.verifyProfileFiles(logFile);
+      return true;
     } catch (e) {
       log.error(e, `boot -> init`);
     }
@@ -49,20 +68,20 @@ export default class boot {
     }
   }
 
-  verifyProfileFiles(filePath) {
+  verifyFile(filePath) {
     try {
       return fileExistsSync(filePath);
     } catch (e) {
-      log.error(e, `boot -> verifyProfileFiles`);
+      log.error(e, `boot -> verifyFile`);
     }
   }
 
-  createProfileFiles(filePath) {
+  createFile(filePath) {
     try {
       const createStream = createWriteStream(filePath);
       createStream.end();
     } catch (e) {
-      log.error(e, `boot -> createProfileFiles`);
+      log.error(e, `boot -> createFile`);
     }
   }
 }
