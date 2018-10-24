@@ -9,7 +9,7 @@ import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { withStyles } from '@material-ui/core/styles';
 import Routes from '../../routing';
 import bootApp from '../../utils/boot';
-import { settingsStorage } from '../../utils/storage';
+import { settingsStorage } from '../../utils/settingsStorage';
 import SettingsDialog from '../Settings';
 import { withReducer } from '../../store/reducers/withReducer';
 import { connect } from 'react-redux';
@@ -41,23 +41,18 @@ class App extends Component {
         return null;
       }
 
-      await this.writeJsonToSettings();
+      this.writeJsonToSettings();
     } catch (e) {
       this._preventAppBoot();
       log.error(e, `App -> componentWillMount`);
     }
   }
 
-  async writeJsonToSettings() {
+  writeJsonToSettings() {
     try {
-     /* await settingsStorage.set('get', { //hey: 99 });
-      await settingsStorage.getAll((error, response) => {
-        //console.log(response);
-      });*/
-
-      //settingsStorage().setItem('batman', { name: 'Bruce Wayne' });
-      // console.log(settingsStorage.getItem('batman'));
-      //_copyJsonFileToSettings({});
+      const { _copyJsonFileToSettings } = this.props;
+      const settingsFromStorage = settingsStorage.getAll();
+      _copyJsonFileToSettings({ ...settingsFromStorage });
     } catch (e) {
       this._preventAppBoot();
       log.error(e, `App -> writeJsonToSettings`);

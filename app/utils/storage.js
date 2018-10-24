@@ -1,18 +1,30 @@
 'use strict';
 import Promise from 'bluebird';
 import { log } from '@Log';
-import { PATHS } from './paths';
-const { settingsFolder } = PATHS;
-//const settingFileJson = readFileSync({ filePath: PATHS.settingFile });
+import { readFileSync } from '../api/sys/fileOps';
 
-class Storage {
+export default class Storage {
   constructor(filePath) {
     this.filePath = filePath;
   }
 
-  init() {
-    //return promisifiedStorage;
+  getAll(raw = false) {
+    try {
+      const _stream = readFileSync({ filePath: this.filePath });
+      if (raw) {
+        return _stream;
+      }
+      return JSON.parse(_stream);
+    } catch (e) {
+      log.error(e, `Storage -> getAll`);
+    }
+  }
+
+  setAll() {
+    try {
+      //return readFileSync({ filePath: this.filePath });
+    } catch (e) {
+      log.error(e, `Storage -> setAll`);
+    }
   }
 }
-
-export const settingsStorage = new Storage(settingsFolder).init();
