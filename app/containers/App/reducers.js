@@ -1,5 +1,4 @@
 'use strict';
-import { PATHS } from '../../utils/paths';
 import { actionTypes } from './actions';
 
 export const initialState = {

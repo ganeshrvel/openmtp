@@ -30,7 +30,6 @@ export const log = {
   },
 
   doLog(text, logError = true) {
-    console.log(logError);
     if (logError === false) {
       return null;
     }

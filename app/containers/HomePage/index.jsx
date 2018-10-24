@@ -21,6 +21,7 @@ class Home extends Component {
 
   async componentWillMount() {
     /*
+    todo: time out help tool tip\
     todo: native context menu
     todo: rename for mtp
     todo: binary for production

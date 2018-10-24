@@ -7,11 +7,15 @@ export default class Storage {
     this.filePath = filePath;
   }
 
-  getAll(raw = false) {
+  getAll() {
     try {
       const _stream = readFileSync({ filePath: this.filePath });
-      if (raw) {
-        return _stream;
+      if (
+        typeof _stream === 'undefined' ||
+        _stream === null ||
+        Object.keys(_stream).length < 1
+      ) {
+        return {};
       }
       return JSON.parse(_stream);
     } catch (e) {

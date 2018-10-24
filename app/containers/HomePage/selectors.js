@@ -1,46 +1,48 @@
 import { createSelector } from 'reselect';
 import { getMtpStoragesListSelected } from './actions';
+import { initialState } from './reducers';
 
-const make = (state, props) => state.Home;
+const make = (state, props) => (state ? state.Home : {});
 
 export const makeToolbarList = createSelector(
   make,
-  state => (state ? state.toolbarList : {})
+  state => (state ? state.toolbarList : initialState.toolbarList)
 );
 
 export const makeSidebarFavouriteList = createSelector(
   make,
-  state => (state ? state.sidebarFavouriteList : {})
+  state =>
+    state ? state.sidebarFavouriteList : initialState.sidebarFavouriteList
 );
 
 export const makeCurrentBrowsePath = createSelector(
   make,
-  state => (state ? state.currentBrowsePath : {})
+  state => (state ? state.currentBrowsePath : initialState.currentBrowsePath)
 );
 
 export const makeDirectoryLists = createSelector(
   make,
-  state => (state ? state.directoryLists : {})
+  state => (state ? state.directoryLists : initialState.directoryLists)
 );
 
 export const makeMtpDevice = createSelector(
   make,
-  state => (state ? state.mtpDevice : {})
+  state => (state ? state.mtpDevice : initialState.mtpDevice)
 );
 
 export const makeContextMenuPos = createSelector(
   make,
-  state => (state ? state.contextMenuPos : {})
+  state => (state ? state.contextMenuPos : initialState.contextMenuPos)
 );
 
 export const makeContextMenuList = createSelector(
   make,
-  state => (state ? state.contextMenuList : {})
+  state => (state ? state.contextMenuList : initialState.contextMenuList)
 );
 
 export const makeMtpStoragesList = createSelector(
   make,
-  state => (state ? state.mtpStoragesList : {})
+  state => (state ? state.mtpStoragesList : initialState.mtpStoragesList)
 );
 
 export const makeMtpStoragesListSelected = createSelector(
@@ -50,15 +52,17 @@ export const makeMtpStoragesListSelected = createSelector(
 
 export const makeFileTransferClipboard = createSelector(
   make,
-  state => (state ? state.fileTransfer.clipboard : {})
+  state =>
+    state ? state.fileTransfer.clipboard : initialState.fileTransfer.clipboard
 );
 
 export const makeFileTransferProgess = createSelector(
   make,
-  state => (state ? state.fileTransfer.progress : {})
+  state =>
+    state ? state.fileTransfer.progress : initialState.fileTransfer.progress
 );
 
 export const makeIsLoading = createSelector(
   make,
-  state => (state ? state.___isLoading : {})
+  state => (state ? state.___isLoading : initialState.___isLoading)
 );
