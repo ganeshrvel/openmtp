@@ -25,7 +25,6 @@ class Home extends Component {
     todo: native context menu
     todo: rename for mtp
     todo: binary for production
-    todo: production if profile files not found it will throw error, need some sort of delay of asyn check
     todo: production app not relaunching unless full quit
     todo: error boundary
     todo: copy paste cut redo undo in prod

@@ -35,8 +35,9 @@ class App extends Component {
   async componentWillMount() {
     try {
       const bootObj = new bootApp();
-      const bootInit = await bootObj.init();
-      if (!bootInit) {
+      await bootObj.init();
+      const bootVerify = await bootObj.verify();
+      if (!bootVerify) {
         this._preventAppBoot();
         return null;
       }

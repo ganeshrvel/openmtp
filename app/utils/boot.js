@@ -4,7 +4,7 @@ import { createWriteStream } from 'fs';
 import { log } from '@Log';
 import { checkFileExists, newLocalFolder } from '../api/sys';
 import { PATHS } from './paths';
-import { fileExistsSync } from '../api/sys/fileOps';
+import { fileExistsSync, writeFileAsync } from '../api/sys/fileOps';
 import { deviceTypeConst } from '../constants';
 
 const { logFile, settingsFile, logFolder } = PATHS;
@@ -24,6 +24,26 @@ export default class boot {
         if (!(await this.verifyDir(item))) {
           await this.createDir(item);
         }
+      }
+
+      for (let i in this.verifyFileList) {
+        const item = this.verifyFileList[i];
+
+        if (!this.verifyFile(item)) {
+          await this.createFile(item);
+        }
+      }
+
+      return true;
+    } catch (e) {
+      log.error(e, `boot -> init`);
+    }
+  }
+
+  async verify() {
+    try {
+      for (let i in this.verifyDirList) {
+        const item = this.verifyDirList[i];
 
         if (!(await this.verifyDir(item))) {
           return false;
@@ -34,17 +54,13 @@ export default class boot {
         const item = this.verifyFileList[i];
 
         if (!this.verifyFile(item)) {
-          await this.createFile(item);
-        }
-
-        if (!this.verifyFile(item)) {
           return false;
         }
       }
 
       return true;
     } catch (e) {
-      log.error(e, `boot -> init`);
+      log.error(e, `boot -> verify`);
     }
   }
 
@@ -78,8 +94,10 @@ export default class boot {
 
   createFile(filePath) {
     try {
-      const createStream = createWriteStream(filePath);
-      createStream.end();
+      writeFileAsync({
+        filePath: filePath,
+        text: ``
+      });
     } catch (e) {
       log.error(e, `boot -> createFile`);
     }

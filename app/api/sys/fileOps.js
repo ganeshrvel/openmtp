@@ -1,27 +1,40 @@
 'use strict';
 
 import {
-  existsSync,
-  writeFile,
-  appendFile,
-  readFileSync as _readFileSync
+  existsSync as _existsSync,
+  writeFile as _writeFileAsync,
+  appendFile as _appendFileAsync,
+  readFileSync as _readFileSync,
+  writeFileSync as _writeFileSync
 } from 'fs';
 import { EOL } from 'os';
 
 export const writeFileAsync = ({ filePath, text }) => {
   const options = { mode: 0o755 };
-  writeFile(filePath, text + EOL, options, err => {
+  _writeFileAsync(filePath, text, options, err => {
     if (err) {
-      return console.error(err, `writeFileAsync`);
+      console.error(err, `writeFileAsync`);
+      return null;
+    }
+  });
+};
+
+export const writeFileSync = ({ filePath, text }) => {
+  const options = { mode: 0o755 };
+  _writeFileSync(filePath, text, options, err => {
+    if (err) {
+      console.error(err, `writeFileSync`);
+      return null;
     }
   });
 };
 
 export const appendFileAsync = ({ filePath, text }) => {
   const options = { mode: 0o755 };
-  appendFile(filePath, text + EOL, options, err => {
+  _appendFileAsync(filePath, text + EOL, options, err => {
     if (err) {
-      return console.error(err, `appendFileAsync`);
+      console.error(err, `appendFileAsync`);
+      return null;
     }
   });
 };
@@ -32,5 +45,5 @@ export const readFileSync = ({ filePath }) => {
 };
 
 export const fileExistsSync = filePath => {
-  return existsSync(filePath);
+  return _existsSync(filePath);
 };
