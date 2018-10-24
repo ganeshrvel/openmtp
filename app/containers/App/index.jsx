@@ -9,7 +9,7 @@ import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { withStyles } from '@material-ui/core/styles';
 import Routes from '../../routing';
 import bootApp from '../../utils/boot';
-import { settingsStorage } from '../../utils/settingsStorage';
+import { settingsStorage } from '../../utils/storageHelper';
 import SettingsDialog from '../Settings';
 import { withReducer } from '../../store/reducers/withReducer';
 import { connect } from 'react-redux';

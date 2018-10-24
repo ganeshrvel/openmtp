@@ -21,9 +21,7 @@ class Home extends Component {
 
   async componentWillMount() {
     /*
-    todo: fix settings
     todo: native context menu
-    todo: copy settings to and from json file on mount and change
     todo: binary for production
     todo: error boundary
     todo: copy paste cut redo undo in prod

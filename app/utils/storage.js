@@ -1,7 +1,6 @@
 'use strict';
-import Promise from 'bluebird';
 import { log } from '@Log';
-import { readFileSync } from '../api/sys/fileOps';
+import { readFileSync, writeFileAsync } from '../api/sys/fileOps';
 
 export default class Storage {
   constructor(filePath) {
@@ -20,9 +19,12 @@ export default class Storage {
     }
   }
 
-  setAll() {
+  setAll({ ...data }) {
     try {
-      //return readFileSync({ filePath: this.filePath });
+      writeFileAsync({
+        filePath: this.filePath,
+        text: JSON.stringify({ ...data })
+      });
     } catch (e) {
       log.error(e, `Storage -> setAll`);
     }

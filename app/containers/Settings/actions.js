@@ -1,8 +1,8 @@
 'use strict';
 import { log } from '@Log';
 import prefixer from '../../utils/reducerPrefixer.js';
-import { readFileSync, writeFileAsync } from '../../api/sys/fileOps';
-import { PATHS } from '../../utils/paths';
+import omitLodash from 'lodash/omit';
+import { settingsStorage } from '../../utils/storageHelper';
 
 const prefix = '@@Settings';
 const actionTypesList = [
@@ -10,6 +10,8 @@ const actionTypesList = [
   'HIDE_HIDDEN_FILES',
   'COPY_JSON_FILE_TO_SETTINGS'
 ];
+
+const excludeItemsFromSettingsFile = ['toggleSettings'];
 
 export const actionTypes = prefixer(prefix, actionTypesList);
 
@@ -24,32 +26,24 @@ export function hideHiddenFiles({ ...data }, deviceType, getState) {
   const { toggle } = data;
 
   return dispatch => {
-    dispatch(copySettingsToJsonFile(getState().Settings));
     dispatch({
       type: actionTypes.HIDE_HIDDEN_FILES,
       deviceType,
       payload: toggle
     });
+    dispatch(copySettingsToJsonFile(getState));
   };
 }
 
 export function copySettingsToJsonFile(getState) {
-  try {
-    //const settingFileJson = readFileSync({ filePath: PATHS.settingFile });
-    //const _settingsState = getState().Settings;
-    console.log(getState);
-    /* const appendData = {
-      ...settingFileJson,
-      ..._settingsState
-    };
-
-    writeFileAsync({
-      filePath: PATHS.settingFile,
-      text: JSON.stringify({ appendData })
-    });*/
-  } catch (e) {
-    log.error(e, `Settings -> Actions -> copySettingsToJsonFile`);
-  }
+  return dispatch => {
+    const settingsState = getState().Settings ? getState().Settings : {};
+    const filteredSettings = omitLodash(
+      settingsState,
+      excludeItemsFromSettingsFile
+    );
+    settingsStorage.setAll({ ...filteredSettings });
+  };
 }
 
 export function copyJsonFileToSettings({ ...data }) {
