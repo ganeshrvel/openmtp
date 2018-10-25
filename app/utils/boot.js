@@ -64,6 +64,14 @@ export default class boot {
     }
   }
 
+  quickVerify() {
+    try {
+      return this.verifyFile(settingsFile);
+    } catch (e) {
+      log.error(e, `boot -> verify`);
+    }
+  }
+
   async verifyDir(filePath) {
     try {
       return await checkFileExists(filePath, deviceType, null);

@@ -4,8 +4,10 @@ import React, { Component } from 'react';
 import { theme, styles } from './styles';
 import Alerts from '../Alerts';
 import Titlebar from './components/Titlebar';
+import ErrorBoundary from '../ErrorBoundary';
 import { log } from '@Log';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import Typography from '@material-ui/core/Typography';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { withStyles } from '@material-ui/core/styles';
 import Routes from '../../routing';
@@ -36,6 +38,13 @@ class App extends Component {
   async componentWillMount() {
     try {
       const bootObj = new bootApp();
+      //For an existing installation
+      if (bootObj.quickVerify()) {
+        this.writeJsonToSettings();
+        return null;
+      }
+
+      //For a fresh installation
       await bootObj.init();
       const bootVerify = await bootObj.verify();
       if (!bootVerify) {
@@ -77,7 +86,10 @@ class App extends Component {
     if (!boot.allow) {
       return (
         <React.Fragment>
-          <p>Unable to load profile files.</p>
+          <Titlebar />
+          <Typography variant="subheading" className={styles.noProfileError}>
+            Unable to load profile files. Please restart the app.
+          </Typography>
         </React.Fragment>
       );
     }
@@ -86,10 +98,12 @@ class App extends Component {
       <React.Fragment>
         <CssBaseline>
           <MuiThemeProvider theme={appTheme}>
-            <Titlebar />
-            <Alerts />
-            <SettingsDialog />
-            <Routes />
+            <ErrorBoundary>
+              <Titlebar />
+              <Alerts />
+              <SettingsDialog />
+              <Routes />
+            </ErrorBoundary>
           </MuiThemeProvider>
         </CssBaseline>
       </React.Fragment>
