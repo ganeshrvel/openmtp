@@ -21,9 +21,7 @@ class Home extends Component {
 
   async componentWillMount() {
     /*
-    todo: app.requestSingleInstanceLock()
     todo: time out help tool tip
-    todo: production app not relaunching unless full quit
     todo: error boundary
     todo: copy paste cut redo undo in prod
     todo: scan for mountable devices
