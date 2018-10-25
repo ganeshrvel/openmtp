@@ -459,8 +459,8 @@ export const renameMtpFiles = async ({
 
     const storageSelectCmd = `"storage ${mtpStoragesListSelected}"`;
     const escapedOldFilePath = `${escapeShellMtp(oldFilePath)}`;
-    const escapedNewFilePath = `${escapeShellMtp(newFilePath)}`;
-    
+    const escapedNewFilePath = `${escapeShellMtp(baseName(newFilePath))}`;
+
     const { data, error, stderr } = await promisifiedExec(
       `${mtpCli} ${storageSelectCmd} "rename \\"${escapedOldFilePath}\\" \\"${escapedNewFilePath}\\""`
     );

@@ -60,12 +60,7 @@ import {
   renameMtpFiles
 } from '../../../api/sys';
 import { baseName, pathUp, sanitizePath } from '../../../utils/paths';
-import {
-  isFloat,
-  isInt,
-  niceBytes,
-  stripRootSlash
-} from '../../../utils/funcs';
+import { isFloat, isInt, niceBytes } from '../../../utils/funcs';
 import { isNumber } from 'util';
 import { throwAlert } from '../../Alerts/actions';
 import { remote } from 'electron';
@@ -1068,8 +1063,8 @@ const mapDispatchToProps = (dispatch, ownProps) =>
                 stderr: mtpStderr,
                 data: mtpData
               } = await renameMtpFiles({
-                oldFilePath: stripRootSlash(oldFilePath),
-                newFilePath: stripRootSlash(newFilePath),
+                oldFilePath: oldFilePath,
+                newFilePath: newFilePath,
                 mtpStoragesListSelected
               });
 
