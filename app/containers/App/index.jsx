@@ -3,6 +3,7 @@
 import React, { Component } from 'react';
 import { theme, styles } from './styles';
 import Alerts from '../Alerts';
+import Titlebar from './components/Titlebar';
 import { log } from '@Log';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
@@ -85,6 +86,7 @@ class App extends Component {
       <React.Fragment>
         <CssBaseline>
           <MuiThemeProvider theme={appTheme}>
+            <Titlebar />
             <Alerts />
             <SettingsDialog />
             <Routes />

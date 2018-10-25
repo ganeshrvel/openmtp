@@ -77,7 +77,7 @@ const createWindow = async () => {
       show: false,
       minWidth: 854,
       minHeight: 640,
-      //frame: false
+      titleBarStyle: 'hidden'
     });
 
     mainWindow.loadURL(`file://${__dirname}/app.html`);

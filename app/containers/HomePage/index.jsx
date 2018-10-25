@@ -26,7 +26,6 @@ class Home extends Component {
     todo: copy paste cut redo undo in prod
     todo: scan for mountable devices
     todo: optimization: add drive icons to list
-    todo: title bar style change
     todo: change menus in prod and about electron
     todo: bump electron and mui versions
     todo: updates checking
