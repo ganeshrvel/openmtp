@@ -21,8 +21,7 @@ class Home extends Component {
 
   async componentWillMount() {
     /*
-    todo: time out help tool tip
-    todo: rename for mtp/download the latest repo
+    todo: time out help tool tip\
     todo: binary for production
     todo: production app not relaunching unless full quit
     todo: error boundary

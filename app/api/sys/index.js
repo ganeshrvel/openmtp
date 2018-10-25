@@ -442,6 +442,40 @@ export const asyncReadMtpDir = async ({
   }
 };
 
+export const renameMtpFiles = async ({
+  oldFilePath,
+  newFilePath,
+  mtpStoragesListSelected
+}) => {
+  try {
+    if (
+      typeof oldFilePath === 'undefined' ||
+      oldFilePath === null ||
+      typeof newFilePath === 'undefined' ||
+      newFilePath === null
+    ) {
+      return { error: `No files selected.`, stderr: null, data: null };
+    }
+
+    const storageSelectCmd = `"storage ${mtpStoragesListSelected}"`;
+    const escapedOldFilePath = `${escapeShellMtp(oldFilePath)}`;
+    const escapedNewFilePath = `${escapeShellMtp(newFilePath)}`;
+    
+    const { data, error, stderr } = await promisifiedExec(
+      `${mtpCli} ${storageSelectCmd} "rename \\"${escapedOldFilePath}\\" \\"${escapedNewFilePath}\\""`
+    );
+
+    if (error || stderr) {
+      log.error(`${error} : ${stderr}`, `renameMtpFiles -> rename error`);
+      return { error, stderr, data: false };
+    }
+
+    return { error: null, stderr: null, data: true };
+  } catch (e) {
+    log.error(e);
+  }
+};
+
 export const delMtpFiles = async ({ fileList, mtpStoragesListSelected }) => {
   try {
     if (!fileList || fileList.length < 1) {

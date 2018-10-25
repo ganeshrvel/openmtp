@@ -56,10 +56,16 @@ import {
   checkFileExists,
   newLocalFolder,
   newMtpFolder,
-  pasteFiles
+  pasteFiles,
+  renameMtpFiles
 } from '../../../api/sys';
 import { baseName, pathUp, sanitizePath } from '../../../utils/paths';
-import { isFloat, isInt, niceBytes } from '../../../utils/funcs';
+import {
+  isFloat,
+  isInt,
+  niceBytes,
+  stripRootSlash
+} from '../../../utils/funcs';
 import { isNumber } from 'util';
 import { throwAlert } from '../../Alerts/actions';
 import { remote } from 'electron';
@@ -667,12 +673,17 @@ class FileExplorer extends Component {
     const _eventTarget = 'tableWrapperTarget';
     const togglePasteDialog =
       deviceType === deviceTypeConst.mtp && fileTransferProgess.toggle;
+    const renameSecondaryText =
+      deviceType === deviceTypeConst.mtp
+        ? `Rename is not supported by all MTP devices`
+        : ``;
 
     return (
       <React.Fragment>
         <TextFieldEditDialog
           titleText="Rename?"
           bodyText={`Path: ${rename.data.path || ''}`}
+          secondaryText={`${renameSecondaryText}`}
           trigger={rename.toggle}
           defaultValue={rename.data.name || ''}
           label={rename.data.isFolder ? `New folder name` : `New file name`}
@@ -1036,6 +1047,38 @@ const mapDispatchToProps = (dispatch, ownProps) =>
                   error: localError,
                   stderr: localStderr,
                   data: localData,
+                  callback: a => {
+                    dispatch(
+                      fetchDirList(
+                        { ...fetchDirListArgs },
+                        deviceType,
+                        getState
+                      )
+                    );
+                  }
+                })
+              );
+              break;
+            case deviceTypeConst.mtp:
+              const mtpStoragesListSelected = getMtpStoragesListSelected(
+                getState().Home
+              );
+              const {
+                error: mtpError,
+                stderr: mtpStderr,
+                data: mtpData
+              } = await renameMtpFiles({
+                oldFilePath: stripRootSlash(oldFilePath),
+                newFilePath: stripRootSlash(newFilePath),
+                mtpStoragesListSelected
+              });
+
+              dispatch(
+                processMtpOutput({
+                  deviceType,
+                  error: mtpError,
+                  stderr: mtpStderr,
+                  data: mtpData,
                   callback: a => {
                     dispatch(
                       fetchDirList(

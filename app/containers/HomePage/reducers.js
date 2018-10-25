@@ -151,6 +151,11 @@ export const initialState = {
       }
     },
     [deviceTypeConst.mtp]: {
+      rename: {
+        enabled: true,
+        label: 'Rename',
+        data: {}
+      },
       copy: {
         enabled: true,
         label: 'Copy',

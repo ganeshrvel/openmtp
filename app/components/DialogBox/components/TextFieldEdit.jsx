@@ -1,6 +1,7 @@
 import React from 'react';
 import { styles } from '../styles/TextFieldEdit';
 import { withStyles } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -35,6 +36,7 @@ class TextFieldEdit extends React.Component {
     const {
       classes: styles,
       bodyText,
+      secondaryText,
       trigger,
       titleText,
       defaultValue,
@@ -67,6 +69,11 @@ class TextFieldEdit extends React.Component {
           <DialogContent>
             <DialogContentText className={styles.dialogContentText}>
               {bodyText}
+              <Typography variant="caption">
+                {typeof secondaryText !== 'undefined' && secondaryText !== null
+                  ? secondaryText
+                  : ''}
+              </Typography>
             </DialogContentText>
             <TextField
               id={id}
