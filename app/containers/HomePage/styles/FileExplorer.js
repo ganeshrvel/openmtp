@@ -8,11 +8,9 @@ export const styles = theme => ({
     width: '100%',
     ...variables.mixins.noselect
   },
-  table: {
-    //minWidth: 1020
-  },
+  table: {},
   tableWrapper: {
-    height: `calc(100vh - 116px)`,
+    height: `calc(100vh - 124px)`,
     overflowY: 'auto',
     overflowX: 'auto',
     borderBottom: variables.styles.borderThinDividerColor,

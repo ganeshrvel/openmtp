@@ -14,7 +14,7 @@ export const styles = theme => ({
   },
 
   breadcrumb: {
-    padding: '5px 15px',
+    padding: '1px 15px',
     backgroundColor: variables.styles.primaryColor.main,
     display: 'flex',
     justifyContent: 'center',
