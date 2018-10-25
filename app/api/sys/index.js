@@ -8,7 +8,7 @@ import mkdirp from 'mkdirp';
 import path from 'path';
 import moment from 'moment';
 import { log } from '@Log';
-import { mtp as mtpCli } from '@Binaries';
+import { mtp as _mtpCli } from '@Binaries';
 import { spawn, exec } from 'child_process';
 import findLodash from 'lodash/find';
 import { deviceTypeConst } from '../../constants';
@@ -30,6 +30,42 @@ import { msToTime, unixTimestampNow } from '../../utils/date';
 
 const readdir = Promise.promisify(fs.readdir);
 const execPromise = Promise.promisify(exec);
+
+/**
+ * If you are reading this then let me tell you something "bunch of idiots are working at Apple inc."
+ *
+ * This is made to support flex quotes parser for mtp cli.
+ */
+export const escapeShellMtp = cmd => {
+  if (cmd.indexOf(`\\"`) !== -1 && cmd.indexOf(`"\\`) !== -1) {
+    return cmd
+      .replace(/`/g, '\\`')
+      .replace(/\\/g, `\\\\\\\\`)
+      .replace(/"/g, `\\\\\\"`);
+  }
+  if (cmd.indexOf(`"\\"`) !== -1) {
+    return cmd
+      .replace(/`/g, '\\`')
+      .replace(/\\/g, `\\\\\\\\`)
+      .replace(/"/g, `\\\\\\"`);
+  } else if (cmd.indexOf(`\\"`) !== -1) {
+    return cmd
+      .replace(/`/g, '\\`')
+      .replace(/\\/g, `\\\\\\`)
+      .replace(/"/g, `\\\\\\\\"`);
+  } else if (cmd.indexOf(`"\\`) !== -1) {
+    return cmd
+      .replace(/`/g, '\\`')
+      .replace(/\\/g, `\\\\\\\\`)
+      .replace(/"/g, `\\\\\\"`);
+  }
+  return cmd
+    .replace(/`/g, '\\`')
+    .replace(/\\/g, `\\\\\\`)
+    .replace(/"/g, `\\\\\\"`);
+};
+
+const mtpCli = `"${escapeShellMtp(_mtpCli)}"`;
 
 const promisifiedExec = command => {
   try {
@@ -826,37 +862,4 @@ const fetchExtension = (fileName, isFolder) => {
   return fileName.indexOf('.') === -1
     ? null
     : fileName.substring(fileName.lastIndexOf('.') + 1);
-};
-
-/**
- * If you are reading this then let me tell you something "bunch of idiots are working at Apple inc."
- * This is made to support flex quotes parser for mtp cli.
- */
-export const escapeShellMtp = cmd => {
-  if (cmd.indexOf(`\\"`) !== -1 && cmd.indexOf(`"\\`) !== -1) {
-    return cmd
-      .replace(/`/g, '\\`')
-      .replace(/\\/g, `\\\\\\\\`)
-      .replace(/"/g, `\\\\\\"`);
-  }
-  if (cmd.indexOf(`"\\"`) !== -1) {
-    return cmd
-      .replace(/`/g, '\\`')
-      .replace(/\\/g, `\\\\\\\\`)
-      .replace(/"/g, `\\\\\\"`);
-  } else if (cmd.indexOf(`\\"`) !== -1) {
-    return cmd
-      .replace(/`/g, '\\`')
-      .replace(/\\/g, `\\\\\\`)
-      .replace(/"/g, `\\\\\\\\"`);
-  } else if (cmd.indexOf(`"\\`) !== -1) {
-    return cmd
-      .replace(/`/g, '\\`')
-      .replace(/\\/g, `\\\\\\\\`)
-      .replace(/"/g, `\\\\\\"`);
-  }
-  return cmd
-    .replace(/`/g, '\\`')
-    .replace(/\\/g, `\\\\\\`)
-    .replace(/"/g, `\\\\\\"`);
 };

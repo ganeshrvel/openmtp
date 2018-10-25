@@ -32,6 +32,15 @@
       "main.prod.js.map",
       "package.json"
     ],
+    "extraFiles": [
+      {
+        "from": "resources/mac/bin",
+        "to": "Resources/bin",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
     "dmg": {
       "contents": [
         {
