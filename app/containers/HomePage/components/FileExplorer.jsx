@@ -736,7 +736,6 @@ class FileExplorer extends Component {
         <Paper className={styles.root} elevation={0} square={true}>
           <div
             className={styles.tableWrapper}
-            onClick={this._handleContextMenuClick}
             onContextMenu={event =>
               this._handleContextMenuClick(
                 event,
@@ -745,7 +744,6 @@ class FileExplorer extends Component {
                 _eventTarget
               )
             }
-            onScroll={this.handleScroll}
           >
             <Table className={styles.table} aria-labelledby="tableTitle">
               <DirectoryListsTableHead

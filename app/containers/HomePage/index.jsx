@@ -22,7 +22,7 @@ class Home extends Component {
   async componentWillMount() {
     /*
     todo: time out help tool tip
-    todo: rename for mtp
+    todo: rename for mtp/download the latest repo
     todo: binary for production
     todo: production app not relaunching unless full quit
     todo: error boundary
@@ -31,7 +31,7 @@ class Home extends Component {
     todo: optimization: add drive icons to list
     todo: title bar style change
     todo: change menus in prod and about electron
-    todo: bump electron and mui
+    todo: bump electron and mui versions
     todo: updates checking
     todo: email/report debug error
    */
