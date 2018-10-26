@@ -3,6 +3,7 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
 import { styles } from './styles';
 import { imgsrc } from '../../utils/imgsrc';
 
@@ -19,6 +20,22 @@ class ErrorBoundary extends Component {
       error: error,
       errorInfo: errorInfo
     });
+    //todo: error log
+  }
+
+  handleSendErrorLogs() {
+    console.log(1);
+    sendmail(
+      {
+        from: `bug-report@openmtp`,
+        to: `ganeshrnet@live.com`,
+        subject: `An error was reported`
+      },
+      (err, reply) => {
+        console.log(err && err.stack);
+        console.dir(reply);
+      }
+    );
   }
 
   render() {
@@ -34,8 +51,16 @@ class ErrorBoundary extends Component {
             I promise it's not you, it's us.
           </Typography>
           <Typography variant="subheading" className={styles.subHeading}>
-            Please send us the error log so that we can fix this issue
+            Please send us the error logs so that we can fix this issue.
           </Typography>
+          <Button
+            variant="outlined"
+            color="secondary"
+            className={styles.sendErrorLogsBtn}
+            onClick={this.handleSendErrorLogs}
+          >
+            SEND ERROR LOGS
+          </Button>
         </div>
       );
     }

@@ -22,5 +22,8 @@ export const styles = theme => ({
   subHeading: {
     ...variables.mixins.noDrag,
     ...variables.mixins.noselect
+  },
+  sendErrorLogsBtn: {
+    marginTop: 20
   }
 });
