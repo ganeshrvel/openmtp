@@ -56,3 +56,10 @@ export const msToTime = milliseconds => {
 
   return h + ':' + m + ':' + s;
 };
+
+export const daysDiff = (startDate, endDate) => {
+  const start = moment(startDate, 'YYYY-MM');
+  const end = moment(endDate, 'YYYY-MM');
+
+  return moment.duration(start.diff(end)).asDays();
+};

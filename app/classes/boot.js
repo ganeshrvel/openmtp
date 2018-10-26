@@ -1,13 +1,20 @@
 'use strict';
 
 import { log } from '@Log';
-import { checkFileExists, newLocalFolder } from '../api/sys/index';
-import { PATHS } from '../utils/paths';
+import {
+  checkFileExists,
+  newLocalFolder,
+  promisifiedRimraf
+} from '../api/sys/index';
+import { baseName, PATHS } from '../utils/paths';
 import { fileExistsSync, writeFileAsync } from '../api/sys/fileOps';
 import { deviceTypeConst } from '../constants/index';
+import fs from 'fs';
+import { daysDiff, yearMonthNow } from '../utils/date';
 
 const { logFile, settingsFile, logFolder } = PATHS;
 const deviceType = deviceTypeConst.local;
+const logFileRotationCleanUpThreshold = 60; //days
 
 export default class boot {
   constructor() {
@@ -65,7 +72,13 @@ export default class boot {
 
   quickVerify() {
     try {
-      return this.verifyFile(settingsFile);
+      for (let i in this.verifyFileList) {
+        const item = this.verifyFileList[i];
+
+        if (!this.verifyFile(item)) {
+          return false;
+        }
+      }
     } catch (e) {
       log.error(e, `boot -> verify`);
     }
@@ -107,6 +120,40 @@ export default class boot {
       });
     } catch (e) {
       log.error(e, `boot -> createFile`);
+    }
+  }
+
+  cleanRotationFiles() {
+    try {
+      const dirFileList = fs.readdirSync(logFolder);
+      const pattern = `^\\${baseName(logFile)}`;
+      const _regex = new RegExp(pattern, 'gi');
+      const filesList = dirFileList.filter(elm => {
+        return !elm.match(_regex);
+      });
+
+      if (filesList === null || filesList.length < 1) {
+        return null;
+      }
+
+      filesList.map(async a => {
+        const dateMatch = a.match(/\d{4}-\d{2}/g);
+        if (
+          dateMatch === null ||
+          dateMatch.length < 1 ||
+          typeof dateMatch[0] === 'undefined' ||
+          dateMatch[0] === null
+        ) {
+          return null;
+        }
+
+        const _diff = daysDiff(yearMonthNow({}), dateMatch[0]);
+        if (_diff >= logFileRotationCleanUpThreshold) {
+          await promisifiedRimraf(`${logFolder}/${a}`);
+        }
+      });
+    } catch (e) {
+      log.error(e, `boot -> cleanRotationFiles`);
     }
   }
 }

@@ -21,6 +21,7 @@ import reducers from './reducers';
 import { copyJsonFileToSettings } from '../Settings/actions';
 
 const appTheme = createMuiTheme(theme());
+const bootObj = new bootApp();
 
 class App extends Component {
   constructor(props) {
@@ -37,7 +38,6 @@ class App extends Component {
 
   async componentWillMount() {
     try {
-      const bootObj = new bootApp();
       //For an existing installation
       if (bootObj.quickVerify()) {
         this.writeJsonToSettings();
@@ -56,6 +56,14 @@ class App extends Component {
     } catch (e) {
       this._preventAppBoot();
       log.error(e, `App -> componentWillMount`);
+    }
+  }
+
+  componentDidMount() {
+    try {
+      bootObj.cleanRotationFiles();
+    } catch (e) {
+      log.error(e, `App -> componentDidMount`);
     }
   }
 
