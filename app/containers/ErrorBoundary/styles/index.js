@@ -24,24 +24,7 @@ export const styles = theme => ({
     ...variables.mixins.noselect,
     marginTop: 15
   },
-  instructions: {
-    color: variables.styles.textLightColor,
-    textAlign: 'left',
-    lineHeight: '24px',
-    marginTop: 4,
-    marginBottom: 10
-  },
-  generateLogsBtn: {
-    marginTop: 0
-  },
   goBackBtn: {
     marginTop: 30
-  },
-  emailIdWrapper: {
-    color: variables.styles.textLightColor,
-    marginTop: 15
-  },
-  emailId: {
-    color: variables.styles.secondaryColor.main
   }
 });
