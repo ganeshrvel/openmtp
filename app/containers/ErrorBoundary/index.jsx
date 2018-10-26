@@ -10,11 +10,15 @@ import * as path from 'path';
 import { baseName, PATHS } from '../../utils/paths';
 import { log } from '@Log';
 import { shell, remote } from 'electron';
-import admZip from 'adm-zip';
+import { EOL } from 'os';
+import AdmZip from 'adm-zip';
 import { promisifiedRimraf } from '../../api/sys';
 import { fileExistsSync } from '../../api/sys/fileOps';
 import { AUTHOR_EMAIL } from '../../constants';
 import { body, mailTo, subject } from '../../templates/errorLog';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { throwAlert } from '../Alerts/actions';
 
 const { logFile } = PATHS;
 const { getPath } = remote.app;
@@ -22,7 +26,7 @@ const desktopPath = getPath('desktop');
 const logFileZippedPath = path.resolve(
   path.join(desktopPath, `./${baseName(logFile)}.zip`)
 );
-const zip = new admZip();
+const zip = new AdmZip();
 
 class ErrorBoundary extends Component {
   constructor(props) {
@@ -32,12 +36,13 @@ class ErrorBoundary extends Component {
       errorInfo: null
     };
   }
+
   componentDidCatch(error, errorInfo) {
     this.setState({
       error: error,
       errorInfo: errorInfo
     });
-    //todo: error log
+    log.doLog(`Error boundary log capture:${EOL}${error}${EOL}${errorInfo}`);
   }
 
   compressLog = () => {
@@ -49,21 +54,36 @@ class ErrorBoundary extends Component {
     }
   };
 
+  handleReload = () => {
+    try {
+      remote.getCurrentWindow().reload();
+    } catch (e) {
+      log.error(e, `ErrorBoundary -> handleReload`);
+    }
+  };
+
   generateErrorLogs = async () => {
+    const reportError = `Error report generation failed. Try again!`;
     try {
       const { error } = await promisifiedRimraf(logFileZippedPath);
+      const { handleThrowError } = this.props;
 
       if (error) {
-        //todo: throw error
-        return;
+        handleThrowError({
+          message: reportError
+        });
+        return null;
       }
 
       this.compressLog();
 
       if (!fileExistsSync(logFileZippedPath)) {
-        //todo: throw error
+        handleThrowError({
+          message: reportError
+        });
         return null;
       }
+
       if (window) {
         window.location.href = mailTo;
       }
@@ -115,6 +135,13 @@ class ErrorBoundary extends Component {
               {AUTHOR_EMAIL}
             </a>
           </Typography>
+          <Button
+            variant="outlined"
+            className={styles.goBackBtn}
+            onClick={this.handleReload}
+          >
+            Reload
+          </Button>
         </div>
       );
     }
@@ -123,4 +150,21 @@ class ErrorBoundary extends Component {
   }
 }
 
-export default withStyles(styles)(ErrorBoundary);
+const mapDispatchToProps = (dispatch, ownProps) =>
+  bindActionCreators(
+    {
+      handleThrowError: ({ ...args }) => (_, getState) => {
+        dispatch(throwAlert({ ...args }));
+      }
+    },
+    dispatch
+  );
+
+const mapStateToProps = (state, props) => {
+  return {};
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles)(ErrorBoundary));

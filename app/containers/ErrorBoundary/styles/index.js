@@ -34,6 +34,9 @@ export const styles = theme => ({
   generateLogsBtn: {
     marginTop: 0
   },
+  goBackBtn: {
+    marginTop: 30
+  },
   emailIdWrapper: {
     color: variables.styles.textLightColor,
     marginTop: 15

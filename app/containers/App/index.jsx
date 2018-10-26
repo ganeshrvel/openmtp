@@ -98,9 +98,9 @@ class App extends Component {
       <React.Fragment>
         <CssBaseline>
           <MuiThemeProvider theme={appTheme}>
+            <Titlebar />
+            <Alerts />
             <ErrorBoundary>
-              <Titlebar />
-              <Alerts />
               <SettingsDialog />
               <Routes />
             </ErrorBoundary>

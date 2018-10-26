@@ -24,7 +24,6 @@ class Home extends Component {
     todo: add version number to log stack and email debug
     todo: err.stack for logs
     todo: time out help tool tip
-    todo: error boundary
     todo: copy paste cut redo undo in prod
     todo: scan for mountable devices
     todo: optimization: add drive icons to list

@@ -16,7 +16,7 @@ export default class NotFound extends Component {
         </Helmet>
         <div className={styles.container} data-tid="container">
           <h1>Resource not found!</h1>
-          <Link to={routes.Home.path}>Go back Home</Link>
+          <Link to={routes.Home.path}>Go back</Link>
         </div>
       </React.Fragment>
     );
