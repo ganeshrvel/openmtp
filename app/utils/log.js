@@ -1,7 +1,7 @@
 'use strict';
 
 import { IS_DEV } from '../constants/env';
-import { APP_VERSION } from '../constants';
+import { APP_NAME, APP_VERSION } from '../constants';
 import { PATHS } from './paths';
 import { appendFileAsync } from '../api/sys/fileOps';
 import { dateTimeUnixTimestampNow } from './date';
@@ -30,17 +30,29 @@ export const log = {
     IS_DEV && console.error(`${title} => `, e);
   },
 
-  doLog(text, logError = true) {
+  doLog(text, logError = true, consoleError = null) {
     if (logError === false) {
       return null;
     }
+
+    let _consoleError = '';
+    if (isConsoleError(consoleError)) {
+      _consoleError = `Error Stack:${EOL}${JSON.stringify(
+        consoleError.stack
+      )}${EOL}`;
+    }
+
     appendFileAsync({
       filePath: logFile,
-      text: `App Version: ${APP_VERSION}${EOL}Date Time: ${dateTimeUnixTimestampNow(
+      text: `App Name: ${APP_NAME}${EOL}App Version: ${APP_VERSION}${EOL}Date Time: ${dateTimeUnixTimestampNow(
         {
           monthInletters: true
         }
-      )}${EOL}${text}${EOL}`
+      )}${EOL}${text.toString()}${EOL}${_consoleError}`
     });
   }
+};
+
+const isConsoleError = e => {
+  return e && e.stack;
 };

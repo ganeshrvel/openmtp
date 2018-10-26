@@ -42,7 +42,12 @@ class ErrorBoundary extends Component {
       error: error,
       errorInfo: errorInfo
     });
-    log.doLog(`Error boundary log capture:${EOL}${error}${EOL}${errorInfo}`);
+    const _errorInfo = JSON.stringify(errorInfo);
+    log.doLog(
+      `Error boundary log capture:${EOL}${error.toString()}${EOL}${_errorInfo}`,
+      true,
+      error
+    );
   }
 
   compressLog = () => {

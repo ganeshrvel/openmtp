@@ -21,8 +21,6 @@ class Home extends Component {
 
   async componentWillMount() {
     /*
-    todo: add version number to log stack and email debug
-    todo: err.stack for logs
     todo: time out help tool tip
     todo: copy paste cut redo undo in prod
     todo: scan for mountable devices
