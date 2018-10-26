@@ -794,7 +794,7 @@ class FileExplorer extends Component {
           <TableCell colSpan={6} className={styles.tableCell}>
             <Paper style={{ height: `100%` }} elevation={0}>
               <Typography variant="subheading" className={styles.noMtp}>
-                Android device is busy or not connected.
+                Android device is either busy or not connected.
               </Typography>
               <ul className={styles.instructions}>
                 <li>Close other MTP applications.</li>
@@ -809,9 +809,9 @@ class FileExplorer extends Component {
                   notification.
                 </li>
                 <li>Under "Use USB for" select File Transfer.</li>
-                <li>Click Reload.</li>
+                <li>Click Refresh Button above.</li>
                 <li>
-                  Reconnect the cable and redo all the steps if you keep seeing
+                  Reconnect the cable and repeat all the above steps if you keep seeing
                   this message.
                 </li>
               </ul>
