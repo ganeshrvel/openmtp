@@ -36,7 +36,7 @@ export const theme = args => {
 
 export const styles = args => {
   return {
-    appContainer: {},
+    root: {},
     noProfileError: {
       textAlign: `center`,
       ...variables.mixins.center,

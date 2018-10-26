@@ -654,7 +654,9 @@ class FileExplorer extends Component {
       directoryLists,
       fileTransferProgess
     } = this.props;
-    const { nodes, order, orderBy, queue } = directoryLists[deviceType];
+    const { nodes, order, orderBy, queue, isLoaded } = directoryLists[
+      deviceType
+    ];
     const { selected } = queue;
     const emptyRows = nodes.length < 1;
     const isMtp = deviceType === deviceTypeConst.mtp;

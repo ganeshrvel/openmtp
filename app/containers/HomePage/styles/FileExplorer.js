@@ -6,7 +6,7 @@ const { variables } = base();
 export const styles = theme => ({
   root: {
     width: '100%',
-    ...variables.mixins.noselect
+    ...variables.mixins.noselect,
   },
   table: {},
   tableWrapper: {

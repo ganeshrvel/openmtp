@@ -16,6 +16,15 @@ export const styles = theme => {
       width: `auto`,
       height: variables.sizes.toolbarHeight
     },
+    lazyLoaderOverLay: {
+      position: `absolute`,
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: `#ffffff`,
+      zIndex: 9999
+    },
     appBar: {},
     navBtns: {
       paddingLeft: 5

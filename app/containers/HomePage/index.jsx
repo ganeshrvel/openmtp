@@ -22,7 +22,6 @@ class Home extends Component {
   async componentWillMount() {
     /*
     todo: double click on title bar to restore
-    todo: avoide flashes in the app production
     todo: sometimes an "undefined" folder is created in the mtp path
     todo: time out help tool tip
     todo: scan for mountable devices

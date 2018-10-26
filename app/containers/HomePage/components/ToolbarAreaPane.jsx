@@ -281,6 +281,8 @@ class ToolbarAreaPane extends React.Component {
       mtpDevice
     });
 
+    const { isLoaded: isLoadedDirectoryLists } = directoryLists[deviceType];
+
     return (
       <div className={styles.root}>
         <ConfirmDialog
@@ -317,45 +319,50 @@ class ToolbarAreaPane extends React.Component {
             currentBrowsePath={currentBrowsePath[deviceType]}
           />
         </Drawer>
-        <AppBar position="static" elevation={0} className={styles.appBar}>
-          <Toolbar className={styles.toolbar} disableGutters={true}>
-            {showMenu && (
-              <IconButton
-                color="inherit"
-                aria-label="Open drawer"
-                onClick={this.handleToggleDrawer(true)}
-              >
-                <MenuIcon />
-              </IconButton>
-            )}
 
-            <div className={styles.toolbarInnerWrapper}>
-              {Object.keys(_toolbarList).map(a => {
-                const item = _toolbarList[a];
-                return (
-                  <Tooltip key={a} title={item.label}>
-                    <div className={styles.navBtns}>
-                      <IconButton
-                        aria-label={item.label}
-                        disabled={!item.enabled}
-                        onClick={events => this.handleToolbarAction(a)}
-                        className={classNames({
-                          [styles.disabledNavBtns]: !item.enabled,
-                          [styles.invertedNavBtns]: item.invert
-                        })}
-                      >
-                        <img
-                          src={imgsrc(item.imgSrc, false)}
-                          className={classNames(styles.navBtnImgs)}
-                        />
-                      </IconButton>
-                    </div>
-                  </Tooltip>
-                );
-              })}
-            </div>
-          </Toolbar>
-        </AppBar>
+        {!isLoadedDirectoryLists ? (
+          <div className={classNames(styles.lazyLoaderOverLay)} />
+        ) : (
+          <AppBar position="static" elevation={0} className={styles.appBar}>
+            <Toolbar className={styles.toolbar} disableGutters={true}>
+              {showMenu && (
+                <IconButton
+                  color="inherit"
+                  aria-label="Open drawer"
+                  onClick={this.handleToggleDrawer(true)}
+                >
+                  <MenuIcon />
+                </IconButton>
+              )}
+
+              <div className={styles.toolbarInnerWrapper}>
+                {Object.keys(_toolbarList).map(a => {
+                  const item = _toolbarList[a];
+                  return (
+                    <Tooltip key={a} title={item.label}>
+                      <div className={styles.navBtns}>
+                        <IconButton
+                          aria-label={item.label}
+                          disabled={!item.enabled}
+                          onClick={events => this.handleToolbarAction(a)}
+                          className={classNames({
+                            [styles.disabledNavBtns]: !item.enabled,
+                            [styles.invertedNavBtns]: item.invert
+                          })}
+                        >
+                          <img
+                            src={imgsrc(item.imgSrc, false)}
+                            className={classNames(styles.navBtnImgs)}
+                          />
+                        </IconButton>
+                      </div>
+                    </Tooltip>
+                  );
+                })}
+              </div>
+            </Toolbar>
+          </AppBar>
+        )}
       </div>
     );
   }

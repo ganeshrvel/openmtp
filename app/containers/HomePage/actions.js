@@ -66,7 +66,8 @@ function _fetchDirList(data, deviceType) {
     type: actionTypes.FETCH_DIR_LIST,
     deviceType,
     payload: {
-      nodes: data || []
+      nodes: data || [],
+      isLoaded: true
     }
   };
 }

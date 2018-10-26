@@ -103,7 +103,7 @@ class App extends Component {
     }
 
     return (
-      <React.Fragment>
+      <div className={styles.root}>
         <CssBaseline>
           <MuiThemeProvider theme={appTheme}>
             <Titlebar />
@@ -114,7 +114,7 @@ class App extends Component {
             </ErrorBoundary>
           </MuiThemeProvider>
         </CssBaseline>
-      </React.Fragment>
+      </div>
     );
   }
 }

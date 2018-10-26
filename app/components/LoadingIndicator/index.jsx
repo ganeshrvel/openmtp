@@ -7,7 +7,11 @@ function LoadingIndicator(props) {
   const { classes: styles } = props;
   return (
     <div>
-      <CircularProgress className={styles.progress} size={50} />
+      <CircularProgress
+        color="secondary"
+        className={styles.progress}
+        size={50}
+      />
     </div>
   );
 }

@@ -107,7 +107,8 @@ export const initialState = {
       queue: {
         selected: []
       },
-      nodes: []
+      nodes: [],
+      isLoaded: false
     },
     [deviceTypeConst.mtp]: {
       order: 'asc',
@@ -115,7 +116,8 @@ export const initialState = {
       queue: {
         selected: []
       },
-      nodes: []
+      nodes: [],
+      isLoaded: false
     }
   },
 
@@ -249,7 +251,8 @@ export default function Home(state = initialState, action) {
           ...state.directoryLists,
           [deviceType]: {
             ...state.directoryLists[deviceType],
-            nodes: [...payload.nodes]
+            nodes: [...payload.nodes],
+            isLoaded: payload.isLoaded
           }
         }
       };
