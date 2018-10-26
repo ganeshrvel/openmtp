@@ -4,6 +4,7 @@ import path from 'path';
 import os from 'os';
 import { IS_DEV } from '../constants/env';
 import { yearMonthNow } from './date';
+import { productName } from '../../package.json';
 
 const root = process.cwd();
 const homeDir = os.homedir();
@@ -13,7 +14,7 @@ const logFileName = IS_DEV
   ? `error-${rotateFile}.dev.log`
   : `error-${rotateFile}.log`;
 const logFolder = path.join(profileFolder, `./logs`);
-const logFile = path.join(logFolder, `./${logFileName}`);
+const logFile = path.join(logFolder, `./${productName}-${logFileName}`);
 const settingsFile = path.join(profileFolder, `./settings.json`);
 
 export const PATHS = {

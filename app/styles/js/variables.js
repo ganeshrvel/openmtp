@@ -16,7 +16,8 @@ export const variables = args => {
       },
       regularFontSize: 14,
       borderThinDividerColor:
-        'solid 1px var(--black-transparent-12,rgba(0,0,0,.12))'
+        'solid 1px var(--black-transparent-12,rgba(0,0,0,.12))',
+      textLightColor: `rgba(0, 0, 0, 0.64);`
     },
     mixins: {
       noselect: {

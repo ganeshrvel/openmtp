@@ -28,7 +28,7 @@ export default class MenuBuilder {
 
   setupDevelopmentEnvironment() {
     //uncomment to enable 'Inspect element'
-    /*this.mainWindow.webContents.on('context-menu', (e, props) => {
+    this.mainWindow.webContents.on('context-menu', (e, props) => {
       const { x, y } = props;
 
       Menu.buildFromTemplate([
@@ -39,7 +39,7 @@ export default class MenuBuilder {
           }
         }
       ]).popup(this.mainWindow);
-    });*/
+    });
 
     this.mainWindow.webContents.on('devtools-opened', () => {
       this.mainWindow.webContents.devToolsWebContents.executeJavaScript(`

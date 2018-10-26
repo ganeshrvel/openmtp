@@ -57,5 +57,8 @@ export const styles = theme => ({
       paddingRight: 10
     }
   },
-  tableFooter: {}
+  tableFooter: {},
+  instructions: {
+    color: variables.styles.textLightColor
+  }
 });

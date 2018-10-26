@@ -21,6 +21,7 @@ class Home extends Component {
 
   async componentWillMount() {
     /*
+    todo: add version number to log stack and email debug
     todo: err.stack for logs
     todo: time out help tool tip
     todo: error boundary
@@ -30,7 +31,7 @@ class Home extends Component {
     todo: change menus in prod and about electron
     todo: bump electron and mui versions
     todo: updates checking
-    todo: email/report debug error
+    todo: email/report debug error  add version number to stack and email debug
    */
   }
 

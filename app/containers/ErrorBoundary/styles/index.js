@@ -21,9 +21,24 @@ export const styles = theme => ({
   },
   subHeading: {
     ...variables.mixins.noDrag,
-    ...variables.mixins.noselect
+    ...variables.mixins.noselect,
+    marginTop: 15
   },
-  sendErrorLogsBtn: {
-    marginTop: 20
+  instructions: {
+    color: variables.styles.textLightColor,
+    textAlign: 'left',
+    lineHeight: '24px',
+    marginTop: 4,
+    marginBottom: 10
+  },
+  generateLogsBtn: {
+    marginTop: 0
+  },
+  emailIdWrapper: {
+    color: variables.styles.textLightColor,
+    marginTop: 15
+  },
+  emailId: {
+    color: variables.styles.secondaryColor.main
   }
 });

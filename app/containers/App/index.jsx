@@ -11,7 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { withStyles } from '@material-ui/core/styles';
 import Routes from '../../routing';
-import bootApp from '../../utils/boot';
+import bootApp from '../../classes/boot';
 import { settingsStorage } from '../../utils/storageHelper';
 import SettingsDialog from '../Settings';
 import { withReducer } from '../../store/reducers/withReducer';

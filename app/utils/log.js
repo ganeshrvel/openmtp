@@ -1,6 +1,7 @@
 'use strict';
 
 import { IS_DEV } from '../constants/env';
+import { APP_VERSION } from '../constants';
 import { PATHS } from './paths';
 import { appendFileAsync } from '../api/sys/fileOps';
 import { dateTimeUnixTimestampNow } from './date';
@@ -35,9 +36,11 @@ export const log = {
     }
     appendFileAsync({
       filePath: logFile,
-      text: `Date Time: ${dateTimeUnixTimestampNow({
-        monthInletters: true
-      })}${EOL}${text}${EOL}`
+      text: `App Version: ${APP_VERSION}${EOL}Date Time: ${dateTimeUnixTimestampNow(
+        {
+          monthInletters: true
+        }
+      )}${EOL}${text}${EOL}`
     });
   }
 };

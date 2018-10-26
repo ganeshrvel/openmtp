@@ -6,6 +6,23 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import { styles } from './styles';
 import { imgsrc } from '../../utils/imgsrc';
+import * as path from 'path';
+import { baseName, PATHS } from '../../utils/paths';
+import { log } from '@Log';
+import { shell, remote } from 'electron';
+import admZip from 'adm-zip';
+import { promisifiedRimraf } from '../../api/sys';
+import { fileExistsSync } from '../../api/sys/fileOps';
+import { AUTHOR_EMAIL } from '../../constants';
+import { body, mailTo, subject } from '../../templates/errorLog';
+
+const { logFile } = PATHS;
+const { getPath } = remote.app;
+const desktopPath = getPath('desktop');
+const logFileZippedPath = path.resolve(
+  path.join(desktopPath, `./${baseName(logFile)}.zip`)
+);
+const zip = new admZip();
 
 class ErrorBoundary extends Component {
   constructor(props) {
@@ -23,20 +40,39 @@ class ErrorBoundary extends Component {
     //todo: error log
   }
 
-  handleSendErrorLogs() {
-    console.log(1);
-    sendmail(
-      {
-        from: `bug-report@openmtp`,
-        to: `ganeshrnet@live.com`,
-        subject: `An error was reported`
-      },
-      (err, reply) => {
-        console.log(err && err.stack);
-        console.dir(reply);
+  compressLog = () => {
+    try {
+      zip.addLocalFile(logFile);
+      zip.writeZip(logFileZippedPath);
+    } catch (e) {
+      log.error(e, `ErrorBoundary -> compressLog`);
+    }
+  };
+
+  generateErrorLogs = async () => {
+    try {
+      const { error } = await promisifiedRimraf(logFileZippedPath);
+
+      if (error) {
+        //todo: throw error
+        return;
       }
-    );
-  }
+
+      this.compressLog();
+
+      if (!fileExistsSync(logFileZippedPath)) {
+        //todo: throw error
+        return null;
+      }
+      if (window) {
+        window.location.href = mailTo;
+      }
+
+      shell.showItemInFolder(logFileZippedPath);
+    } catch (e) {
+      log.error(e, `ErrorBoundary -> generateErrorLogs`);
+    }
+  };
 
   render() {
     const { classes: styles } = this.props;
@@ -48,19 +84,37 @@ class ErrorBoundary extends Component {
             Whoops!
           </Typography>
           <Typography variant="headline" className={styles.headings}>
-            I promise it's not you, it's us.
+            I promise it's not you, it's me.
           </Typography>
           <Typography variant="subheading" className={styles.subHeading}>
-            Please send us the error logs so that we can fix this issue.
+            Please send me the error logs so that I can fix this issue.
+            <ul className={styles.instructions}>
+              <li>Click on "GENERATE ERROR LOGS" button.</li>
+              <li>It will open your email client.</li>
+              <li>
+                Attach the generated report (found in your Desktop folder) along
+                with the email.
+              </li>
+              <li>Click send.</li>
+            </ul>
           </Typography>
           <Button
             variant="outlined"
             color="secondary"
-            className={styles.sendErrorLogsBtn}
-            onClick={this.handleSendErrorLogs}
+            className={styles.generateLogsBtn}
+            onClick={this.generateErrorLogs}
           >
-            SEND ERROR LOGS
+            EMAIL ERROR LOGS
           </Button>
+          <Typography variant="subheading" className={styles.emailIdWrapper}>
+            <span>Developer email address: </span>
+            <a
+              href={`mailto:${AUTHOR_EMAIL}?subject=${subject}&body=${body}`}
+              className={styles.emailId}
+            >
+              {AUTHOR_EMAIL}
+            </a>
+          </Typography>
         </div>
       );
     }

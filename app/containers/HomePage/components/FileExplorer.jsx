@@ -794,7 +794,7 @@ class FileExplorer extends Component {
               <Typography variant="subheading">
                 Android device is busy or not connected.
               </Typography>
-              <ul>
+              <ul className={styles.instructions}>
                 <li>Close other MTP applications.</li>
                 <li>
                   Use the USB cable that came with your Android device and

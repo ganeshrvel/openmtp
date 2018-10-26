@@ -1,11 +1,10 @@
 'use strict';
 
-import { createWriteStream } from 'fs';
 import { log } from '@Log';
-import { checkFileExists, newLocalFolder } from '../api/sys';
-import { PATHS } from './paths';
+import { checkFileExists, newLocalFolder } from '../api/sys/index';
+import { PATHS } from '../utils/paths';
 import { fileExistsSync, writeFileAsync } from '../api/sys/fileOps';
-import { deviceTypeConst } from '../constants';
+import { deviceTypeConst } from '../constants/index';
 
 const { logFile, settingsFile, logFolder } = PATHS;
 const deviceType = deviceTypeConst.local;

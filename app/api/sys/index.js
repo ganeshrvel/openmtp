@@ -222,7 +222,7 @@ export const asyncReadLocalDir = async ({ filePath, ignoreHidden }) => {
   }
 };
 
-const promisifiedRimraf = item => {
+export const promisifiedRimraf = item => {
   try {
     return new Promise(function(resolve, reject) {
       rimraf(item, {}, error => {
