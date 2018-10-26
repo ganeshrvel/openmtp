@@ -58,7 +58,13 @@ export const styles = theme => ({
     }
   },
   tableFooter: {},
+  noMtp: {
+    marginTop: 10
+  },
   instructions: {
-    color: variables.styles.textLightColor
+    marginTop: '5px',
+    lineHeight: '18px',
+    paddingLeft: '30px',
+    color: `rgba(0, 0, 0, 0.8)`
   }
 });

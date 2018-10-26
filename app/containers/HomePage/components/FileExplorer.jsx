@@ -791,7 +791,7 @@ class FileExplorer extends Component {
         <TableRow className={styles.emptyTableRowWrapper}>
           <TableCell colSpan={6} className={styles.tableCell}>
             <Paper style={{ height: `100%` }} elevation={0}>
-              <Typography variant="subheading">
+              <Typography variant="subheading" className={styles.noMtp}>
                 Android device is busy or not connected.
               </Typography>
               <ul className={styles.instructions}>

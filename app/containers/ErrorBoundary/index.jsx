@@ -76,7 +76,7 @@ class ErrorBoundary extends Component {
 
   render() {
     const { classes: styles } = this.props;
-    if (!this.state.errorInfo) {
+    if (this.state.errorInfo) {
       return (
         <div className={styles.root}>
           <img src={imgsrc('bug.svg', false)} className={styles.bugImg} />

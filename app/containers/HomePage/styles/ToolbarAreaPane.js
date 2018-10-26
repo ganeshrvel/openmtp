@@ -18,6 +18,9 @@ export const styles = theme => {
     },
     appBar: {},
     navBtns: {
+      paddingLeft: 5
+    },
+    navBtnImgs: {
       height: 25,
       width: `auto`
     },

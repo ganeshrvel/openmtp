@@ -334,7 +334,7 @@ class ToolbarAreaPane extends React.Component {
                 const item = _toolbarList[a];
                 return (
                   <Tooltip key={a} title={item.label}>
-                    <div>
+                    <div className={styles.navBtns}>
                       <IconButton
                         aria-label={item.label}
                         disabled={!item.enabled}
@@ -346,7 +346,7 @@ class ToolbarAreaPane extends React.Component {
                       >
                         <img
                           src={imgsrc(item.imgSrc, false)}
-                          className={classNames(styles.navBtns)}
+                          className={classNames(styles.navBtnImgs)}
                         />
                       </IconButton>
                     </div>
