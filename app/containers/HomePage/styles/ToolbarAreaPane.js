@@ -1,11 +1,12 @@
 'use strict';
 
-import { base } from '../../../styles/js';
-const { variables } = base();
+import { variables, mixins } from '../../../styles/js';
 
 export const styles = theme => {
   return {
-    root: {},
+    root: {
+      ...mixins().appDrag
+    },
     grow: {
       flexGrow: 1
     },
@@ -14,7 +15,7 @@ export const styles = theme => {
     },
     toolbar: {
       width: `auto`,
-      height: variables.sizes.toolbarHeight
+      height: variables().sizes.toolbarHeight
     },
     lazyLoaderOverLay: {
       position: `absolute`,
@@ -42,7 +43,7 @@ export const styles = theme => {
       },
       [`&:not(:hover)`]: {
         filter: `invert(100)`,
-        background: variables.styles.primaryColor.main
+        background: variables().styles.primaryColor.main
       }
     }
   };

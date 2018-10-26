@@ -1,13 +1,12 @@
 'use strict';
 
-import { base } from '../../../styles/js';
-const { variables } = base();
+import { variables, mixins } from '../../../styles/js';
 
 export const styles = theme => {
   return {
     listsWrapper: {
-      paddingTop: variables.sizes.sidebarAreaPaddingTop,
-      width: variables.sizes.sidebarAreaPaneWidth
+      paddingTop: variables().sizes.sidebarAreaPaddingTop,
+      width: variables().sizes.sidebarAreaPaneWidth
     },
     listsBottom: {
       paddingTop: 20

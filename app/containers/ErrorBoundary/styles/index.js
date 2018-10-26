@@ -1,30 +1,29 @@
 'use strict';
 
-import { base } from '../../../styles/js';
-const { variables } = base();
+import { variables, mixins } from '../../../styles/js';
 
 export const styles = theme => ({
   root: {
     textAlign: `center`,
-    ...variables.mixins.center,
-    ...variables.mixins.absoluteCenter
+    ...mixins().center,
+    ...mixins().absoluteCenter
   },
   bugImg: {
-    ...variables.mixins.noDrag,
+    ...mixins().noDrag,
     height: `auto`,
     width: 150
   },
   headings: {
-    ...variables.mixins.noDrag,
-    ...variables.mixins.noselect,
+    ...mixins().noDrag,
+    ...mixins().noselect,
     marginTop: 15
   },
   subHeading: {
-    ...variables.mixins.noDrag,
-    ...variables.mixins.noselect,
+    ...mixins().noDrag,
+    ...mixins().noselect,
     marginTop: 15
   },
   goBackBtn: {
-    marginTop: 30
+    marginTop: 20
   }
 });

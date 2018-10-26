@@ -1,7 +1,6 @@
 'use strict';
 
-import { base } from '../../../styles/js';
-const { variables } = base();
+import { variables, mixins } from '../../../styles/js';
 
 export const styles = theme => {
   return {

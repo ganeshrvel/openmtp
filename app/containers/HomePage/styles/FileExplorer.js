@@ -1,20 +1,19 @@
 'use strict';
 
-import { base } from '../../../styles/js';
-const { variables } = base();
+import { variables, mixins } from '../../../styles/js';
 
 export const styles = theme => ({
   root: {
     width: '100%',
-    ...variables.mixins.noselect,
+    ...mixins().noselect,
   },
   table: {},
   tableWrapper: {
     height: `calc(100vh - 124px)`,
     overflowY: 'auto',
     overflowX: 'auto',
-    borderBottom: variables.styles.borderThinDividerColor,
-    borderLeft: variables.styles.borderThinDividerColor
+    borderBottom: variables().styles.borderThinDividerColor,
+    borderLeft: variables().styles.borderThinDividerColor
   },
   emptyTableRowWrapper: {},
   tableRowSelected: {

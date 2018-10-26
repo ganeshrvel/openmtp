@@ -1,8 +1,7 @@
 'use strict';
 import green from '@material-ui/core/colors/green';
 import amber from '@material-ui/core/colors/amber';
-import { base } from '../../../styles/js';
-const { variables } = base();
+import { variables, mixins } from '../../../styles/js';
 
 export const styles = theme => ({
   success: {

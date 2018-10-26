@@ -1,17 +1,16 @@
 'use strict';
 
-import { base } from '../../../styles/js';
-const { variables } = base();
+import { variables, mixins } from '../../../styles/js';
 
 export const styles = theme => ({
   subHeading: {
-    ...variables.mixins.noDrag,
-    ...variables.mixins.noselect,
+    ...mixins().noDrag,
+    ...mixins().noselect,
     marginTop: 15
   },
   instructions: {
     listStyle: `none`,
-    color: variables.styles.textLightColor,
+    color: variables().styles.textLightColor,
     lineHeight: '24px',
     marginTop: 15,
     paddingLeft: 0,
@@ -20,15 +19,11 @@ export const styles = theme => ({
   generateLogsBtn: {
     marginTop: 0
   },
-
   emailIdWrapper: {
-    color: variables.styles.textLightColor,
+    color: variables().styles.textLightColor,
     marginTop: 15
   },
   emailId: {
-    color: variables.styles.secondaryColor.main
-  },
-  goBackBtn: {
-    marginTop: 30
+    color: variables().styles.secondaryColor.main
   }
 });

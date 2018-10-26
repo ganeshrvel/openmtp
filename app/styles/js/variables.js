@@ -1,6 +1,6 @@
 'use strict';
 
-export const variables = args => {
+export default args => {
   return {
     sizes: {
       toolbarHeight: 64,
@@ -18,34 +18,6 @@ export const variables = args => {
       borderThinDividerColor:
         'solid 1px var(--black-transparent-12,rgba(0,0,0,.12))',
       textLightColor: `rgba(0, 0, 0, 0.64)`
-    },
-    mixins: {
-      noselect: {
-        [`-webkitTouchCallout`]: `none`,
-        [`-webkitUserSelect`]: `none`,
-        [`-khtmlUserSelect`]: `none`,
-        [`-mozUserSelect`]: `none`,
-        [`-msUserSelect`]: `none`,
-        [`userSelect`]: `none`
-      },
-      noDrag: {
-        WebkitUserDrag: 'none',
-        KhtmlUserDrag: 'none',
-        MozUserDrag: 'none',
-        OUserDrag: 'none',
-        userDrag: 'none'
-      },
-      absoluteCenter: {
-        position: 'absolute',
-        left: '50%',
-        top: '50%',
-        WebkitTransform: 'translate(-50%, -50%)',
-        transform: 'translate(-50%, -50%)'
-      },
-      center: {
-        marginLeft: `auto`,
-        marginRight: `auto`
-      }
     }
   };
 };

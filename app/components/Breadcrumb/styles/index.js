@@ -1,7 +1,6 @@
 'use strict';
 
-import { base } from '../../../styles/js';
-const { variables } = base();
+import { variables, mixins } from '../../../styles/js';
 
 export const styles = theme => ({
   root: {
@@ -15,7 +14,7 @@ export const styles = theme => ({
 
   breadcrumb: {
     padding: '1px 15px',
-    backgroundColor: variables.styles.primaryColor.main,
+    backgroundColor: variables().styles.primaryColor.main,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center'
@@ -33,7 +32,7 @@ export const styles = theme => ({
 
   breadcrumbLiA: {
     cursor: `pointer`,
-    color: variables.styles.secondaryColor.main,
+    color: variables().styles.secondaryColor.main,
     textDecoration: 'none',
     [`&.bold`]: {
       fontWeight: `bold`

@@ -1,21 +1,20 @@
 'use strict';
 
-import { base } from '../../../styles/js';
-const { variables } = base();
+import { variables, mixins } from '../../../styles/js';
 
 export const theme = args => {
   return {
     palette: {
       primary: {
-        ...variables.styles.primaryColor
+        ...variables().styles.primaryColor
       },
       secondary: {
-        ...variables.styles.secondaryColor
+        ...variables().styles.secondaryColor
       }
     },
     typography: {
       useNextVariants: true,
-      fontSize: variables.regularFontSize,
+      fontSize: variables().regularFontSize,
       fontFamily: [
         'Roboto',
         '-apple-system',
@@ -39,8 +38,8 @@ export const styles = args => {
     root: {},
     noProfileError: {
       textAlign: `center`,
-      ...variables.mixins.center,
-      ...variables.mixins.absoluteCenter
+      ...mixins().center,
+      ...mixins().absoluteCenter
     }
   };
 };
