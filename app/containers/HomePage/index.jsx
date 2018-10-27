@@ -20,10 +20,8 @@ class Home extends Component {
 
   async componentWillMount() {
     /*
-    todo: the peformance of normal 50% glids instead of flex
     todo: sometimes an "undefined" folder is created in the mtp path
     todo: time out help tool tip
-    todo: scan for mountable devices
     todo: optimization: add drive icons to list
     todo: change menus in prod and about electron
     todo: bump electron and mui versions

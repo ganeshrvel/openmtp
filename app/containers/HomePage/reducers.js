@@ -35,6 +35,12 @@ export const initialState = {
         enabled: true
       },
       {
+        label: 'Mountable Devices',
+        path: '/Volumes',
+        icon: 'folder',
+        enabled: true
+      },
+      {
         label: 'Root',
         path: '/',
         icon: 'folder',
