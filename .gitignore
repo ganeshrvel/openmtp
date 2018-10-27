@@ -55,3 +55,4 @@ package-lock.json
 
 
 app/certs/*.pem
+*electron-builder.yml
