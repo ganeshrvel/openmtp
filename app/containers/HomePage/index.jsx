@@ -11,7 +11,6 @@ import { withReducer } from '../../store/reducers/withReducer';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import reducers from './reducers';
-import Grid from '@material-ui/core/Grid';
 import { deviceTypeConst } from '../../constants';
 
 class Home extends Component {
@@ -37,19 +36,27 @@ class Home extends Component {
     const { classes: styles } = this.props;
 
     return (
-      <Grid container spacing={0}>
-        <Grid item xs={6}>
-          <ToolbarAreaPane showMenu={true} deviceType={deviceTypeConst.local} />
-          <FileExplorer hideColList={[]} deviceType={deviceTypeConst.local} />
-        </Grid>
-        <Grid item xs={6}>
-          <ToolbarAreaPane showMenu={false} deviceType={deviceTypeConst.mtp} />
-          <FileExplorer
-            hideColList={['size']}
-            deviceType={deviceTypeConst.mtp}
-          />
-        </Grid>
-      </Grid>
+      <div className={styles.root}>
+        <div className={styles.grid}>
+          <div className={styles.splitPane}>
+            <ToolbarAreaPane
+              showMenu={true}
+              deviceType={deviceTypeConst.local}
+            />
+            <FileExplorer hideColList={[]} deviceType={deviceTypeConst.local} />
+          </div>
+          <div className={styles.splitPane}>
+            <ToolbarAreaPane
+              showMenu={false}
+              deviceType={deviceTypeConst.mtp}
+            />
+            <FileExplorer
+              hideColList={['size']}
+              deviceType={deviceTypeConst.mtp}
+            />
+          </div>
+        </div>
+      </div>
     );
   }
 }
