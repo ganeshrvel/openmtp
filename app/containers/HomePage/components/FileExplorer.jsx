@@ -37,7 +37,9 @@ import {
   processLocalOutput,
   setMtpStorageOptions,
   getMtpStoragesListSelected,
-  setFileTransferClipboard
+  setFileTransferClipboard,
+  setFilesDrag,
+  clearFilesDrag
 } from '../actions';
 import {
   makeDirectoryLists,
@@ -47,7 +49,8 @@ import {
   makeContextMenuList,
   makeMtpStoragesListSelected,
   makeFileTransferClipboard,
-  makeFileTransferProgess
+  makeFileTransferProgess,
+  makeFilesDrag
 } from '../selectors';
 import { makeHideHiddenFiles } from '../../Settings/selectors';
 import { deviceTypeConst } from '../../../constants';
@@ -64,7 +67,11 @@ import { isFloat, isInt, niceBytes } from '../../../utils/funcs';
 import { isNumber } from 'util';
 import { throwAlert } from '../../Alerts/actions';
 import { remote } from 'electron';
+import { imgsrc } from '../../../utils/imgsrc';
 const { Menu } = remote;
+
+let filesDragGhostImg = new Image(0, 0);
+filesDragGhostImg.src = imgsrc('copy.svg');
 
 class FileExplorer extends Component {
   constructor(props) {
@@ -120,6 +127,8 @@ class FileExplorer extends Component {
       });
     }
   }
+
+  componentDidMount() {}
 
   _fetchDirList({ ...args }) {
     const { handleFetchDirList, hideHiddenFiles } = this.props;
@@ -257,6 +266,7 @@ class FileExplorer extends Component {
 
   _handleContextMenuListActions = ({ ...args }) => {
     const { deviceType, directoryLists, handleCopy } = this.props;
+    let selected = null;
 
     Object.keys(args).map(a => {
       const item = args[a];
@@ -273,7 +283,7 @@ class FileExplorer extends Component {
           );
           break;
         case 'copy':
-          const selected = directoryLists[deviceType].queue.selected;
+          selected = directoryLists[deviceType].queue.selected;
           handleCopy({ selected, deviceType });
           break;
         case 'paste':
@@ -289,6 +299,13 @@ class FileExplorer extends Component {
             },
             'newFolder'
           );
+          break;
+        case 'pasteFromDrag':
+          selected = directoryLists[item.data.sourceDeviceType].queue.selected;
+          handleCopy({ selected, deviceType: item.data.sourceDeviceType });
+          this._handlePaste();
+          break;
+        case 'cancel':
           break;
         default:
           break;
@@ -404,6 +421,119 @@ class FileExplorer extends Component {
       togglePasteConfirmDialog: status
     });
   };
+
+  handleFilesDragStart = (e, { sourceDeviceType }) => {
+    this.setFilesDrag({
+      sourceDeviceType: sourceDeviceType,
+      destinationDeviceType: null,
+      enter: false,
+      lock: false
+    });
+
+    e.dataTransfer.setDragImage(filesDragGhostImg, 0, 0);
+  };
+
+  handleFilesDragOver = (e, { destinationDeviceType }) => {
+    const { filesDrag } = this.props;
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (destinationDeviceType === filesDrag.sourceDeviceType) {
+      return null;
+    }
+
+    if (filesDrag.lock) {
+      return null;
+    }
+    this.setFilesDrag({
+      sourceDeviceType: filesDrag.sourceDeviceType,
+      destinationDeviceType: destinationDeviceType,
+      enter: true,
+      lock: true
+    });
+  };
+
+  handleFilesDragEnd = e => {
+    this.clearFilesDrag();
+  };
+
+  handleTableDrop = e => {
+    const { filesDrag } = this.props;
+    const { sourceDeviceType, destinationDeviceType } = filesDrag;
+
+    if (
+      destinationDeviceType === null ||
+      destinationDeviceType === null ||
+      sourceDeviceType === destinationDeviceType
+    ) {
+      return null;
+    }
+
+    const contextMenu = [
+      {
+        label: `Paste`,
+        enabled: true,
+        data: {
+          ...filesDrag
+        },
+        click: e => {
+          this._handleContextMenuListActions({
+            [`pasteFromDrag`]: {
+              data: {
+                ...filesDrag
+              }
+            }
+          });
+        }
+      },
+      {
+        label: `Cancel`,
+        enabled: true,
+        data: {},
+        click: e => {
+          this._handleContextMenuListActions({
+            [`cancel`]: {
+              data: {}
+            }
+          });
+        }
+      }
+    ];
+
+    this.clearFilesDrag();
+    this.fireElectronMenu(contextMenu);
+  };
+
+  handleOnHoverDropZoneActivate = deviceType => {
+    const { filesDrag, mtpDevice } = this.props;
+    const { sourceDeviceType, destinationDeviceType } = filesDrag;
+
+    if (sourceDeviceType === destinationDeviceType || !mtpDevice.isAvailable) {
+      return false;
+    }
+
+    return destinationDeviceType === deviceType;
+  };
+
+  handleIsDraggable = deviceType => {
+    const { directoryLists, mtpDevice } = this.props;
+    const { queue } = directoryLists[deviceType];
+    const { selected } = queue;
+
+    return selected.length > 0 && mtpDevice.isAvailable;
+  };
+
+  setFilesDrag({ ...args }) {
+    const { handleSetFilesDrag } = this.props;
+
+    handleSetFilesDrag({ ...args });
+  }
+
+  clearFilesDrag() {
+    const { handleClearFilesDrag } = this.props;
+
+    handleClearFilesDrag();
+  }
 
   handleNewFolderEditDialog = async ({ ...args }) => {
     const {
@@ -743,7 +873,11 @@ class FileExplorer extends Component {
 
         <Paper className={styles.root} elevation={0} square={true}>
           <div
-            className={styles.tableWrapper}
+            className={classNames(styles.tableWrapper, {
+              [`onHoverDropZone`]: this.handleOnHoverDropZoneActivate(
+                deviceType
+              )
+            })}
             onContextMenu={event =>
               this._handleContextMenuClick(
                 event,
@@ -752,8 +886,19 @@ class FileExplorer extends Component {
                 _eventTarget
               )
             }
+            onDragOver={e => {
+              this.handleFilesDragOver(e, {
+                destinationDeviceType: deviceType
+              });
+            }}
+            onDragEnd={e => {
+              this.handleFilesDragEnd(e);
+            }}
+            onDrop={e => {
+              this.handleTableDrop(e);
+            }}
           >
-            <Table className={styles.table} aria-labelledby="tableTitle">
+            <Table className={styles.table}>
               <DirectoryListsTableHead
                 numSelected={selected.length}
                 order={order}
@@ -766,7 +911,14 @@ class FileExplorer extends Component {
                 rowCount={nodes ? nodes.length : 0}
                 hideColList={hideColList}
               />
-              <TableBody>
+              <TableBody
+                draggable={this.handleIsDraggable(deviceType)}
+                onDragStart={e => {
+                  this.handleFilesDragStart(e, {
+                    sourceDeviceType: deviceType
+                  });
+                }}
+              >
                 {emptyRows
                   ? this.EmptyRowRender(isMtp)
                   : this.tableSort({
@@ -811,8 +963,8 @@ class FileExplorer extends Component {
                 <li>Under "Use USB for" select File Transfer.</li>
                 <li>Click Refresh Button above.</li>
                 <li>
-                  Reconnect the cable and repeat all the above steps if you keep seeing
-                  this message.
+                  Reconnect the cable and repeat all the above steps if you keep
+                  seeing this message.
                 </li>
               </ul>
             </Paper>
@@ -1214,6 +1366,22 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         } catch (e) {
           log.error(e);
         }
+      },
+
+      handleSetFilesDrag: ({ ...args }) => (_, getState) => {
+        try {
+          dispatch(setFilesDrag({ ...args }));
+        } catch (e) {
+          log.error(e);
+        }
+      },
+
+      handleClearFilesDrag: ({ ...args }) => (_, getState) => {
+        try {
+          dispatch(clearFilesDrag());
+        } catch (e) {
+          log.error(e);
+        }
       }
     },
     dispatch
@@ -1229,7 +1397,8 @@ const mapStateToProps = (state, props) => {
     contextMenuList: makeContextMenuList(state),
     mtpStoragesListSelected: makeMtpStoragesListSelected(state),
     fileTransferClipboard: makeFileTransferClipboard(state),
-    fileTransferProgess: makeFileTransferProgess(state)
+    fileTransferProgess: makeFileTransferProgess(state),
+    filesDrag: makeFilesDrag(state)
   };
 };
 

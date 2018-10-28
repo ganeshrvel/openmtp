@@ -57,6 +57,11 @@ export const makeFileTransferProgess = createSelector(
     state ? state.fileTransfer.progress : initialState.fileTransfer.progress
 );
 
+export const makeFilesDrag = createSelector(
+  make,
+  state => (state ? state.filesDrag : initialState.filesDrag)
+);
+
 export const makeIsLoading = createSelector(
   make,
   state => (state ? state.___isLoading : initialState.___isLoading)

@@ -28,7 +28,9 @@ const actionTypesList = [
   'CHANGE_MTP_STORAGE',
   'SET_FILE_TRANSFER_CLIPBOARD',
   'SET_FILE_TRANSFER_PROGRESS',
-  'CLEAR_FILE_TRANSFER'
+  'CLEAR_FILE_TRANSFER',
+  'SET_FILES_DRAG',
+  'CLEAR_FILES_DRAG',
 ];
 
 export const actionTypes = prefixer(prefix, actionTypesList);
@@ -327,6 +329,21 @@ export function setFileTransferProgress({ ...data }) {
 export function clearFileTransfer() {
   return {
     type: actionTypes.CLEAR_FILE_TRANSFER
+  };
+}
+
+export function setFilesDrag({ ...data }) {
+  return {
+    type: actionTypes.SET_FILES_DRAG,
+    payload: {
+      ...data
+    }
+  };
+}
+
+export function clearFilesDrag() {
+  return {
+    type: actionTypes.CLEAR_FILES_DRAG
   };
 }
 

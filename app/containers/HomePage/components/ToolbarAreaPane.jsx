@@ -329,7 +329,6 @@ class ToolbarAreaPane extends React.Component {
             {showMenu && (
               <IconButton
                 color="inherit"
-                aria-label="Open drawer"
                 onClick={this.handleToggleDrawer(true)}
               >
                 <MenuIcon />

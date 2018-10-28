@@ -5,15 +5,19 @@ import { variables, mixins } from '../../../styles/js';
 export const styles = theme => ({
   root: {
     width: '100%',
-    ...mixins().noselect,
+    ...mixins().noselect
   },
   table: {},
+  tableBody: {},
   tableWrapper: {
     height: `calc(100vh - 124px)`,
     overflowY: 'auto',
     overflowX: 'auto',
     borderBottom: variables().styles.borderThinDividerColor,
-    borderLeft: variables().styles.borderThinDividerColor
+    borderLeft: variables().styles.borderThinDividerColor,
+    [`&.onHoverDropZone`]: {
+      backgroundColor: `#e0e0e0`
+    }
   },
   emptyTableRowWrapper: {},
   tableRowSelected: {

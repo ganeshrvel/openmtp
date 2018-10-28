@@ -195,6 +195,13 @@ export const initialState = {
       bodyText2: null,
       percentage: 0
     }
+  },
+
+  filesDrag: {
+    sourceDeviceType: null,
+    destinationDeviceType: null,
+    enter: false,
+    lock: false
   }
 };
 
@@ -303,6 +310,25 @@ export default function Home(state = initialState, action) {
         ...setLoadedMetaData(state),
         fileTransfer: {
           ...initialState.fileTransfer
+        }
+      };
+
+    case actionTypes.SET_FILES_DRAG:
+      return {
+        ...state,
+        ...setLoadedMetaData(state),
+        filesDrag: {
+          ...state.filesDrag,
+          ...payload
+        }
+      };
+
+    case actionTypes.CLEAR_FILES_DRAG:
+      return {
+        ...state,
+        ...setLoadedMetaData(state),
+        filesDrag: {
+          ...initialState.filesDrag
         }
       };
 
