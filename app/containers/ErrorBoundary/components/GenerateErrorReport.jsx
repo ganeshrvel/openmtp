@@ -78,7 +78,7 @@ class GenerateErrorReport extends Component {
       <React.Fragment>
         <Typography variant="subheading" className={styles.subHeading}>
           <ul className={styles.instructions}>
-            <li>Click on "GENERATE ERROR LOGS" button.</li>
+            <li>Click on "EMAIL ERROR LOGS" button.</li>
             <li>It will open your email client.</li>
             <li>
               Attach the generated report (found in your Desktop folder) along

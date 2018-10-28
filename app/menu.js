@@ -226,7 +226,7 @@ export default class MenuBuilder {
       label: 'Help',
       submenu: [
         {
-          label: 'Submit Error Logs',
+          label: 'Send Error Logs',
           click: () => {
             fireReportBugs();
           }
@@ -303,7 +303,7 @@ export default class MenuBuilder {
         label: 'Help',
         submenu: [
           {
-            label: 'Submit Error Logs',
+            label: 'Send Error Logs',
             click: () => {
               fireReportBugs();
             }
