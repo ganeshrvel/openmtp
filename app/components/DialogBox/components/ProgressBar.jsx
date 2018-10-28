@@ -3,9 +3,11 @@ import { styles } from '../styles/ProgressBar';
 import { withStyles } from '@material-ui/core/styles';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Dialog from '@material-ui/core/Dialog';
+import Tooltip from '@material-ui/core/Tooltip';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import LiveHelp from '@material-ui/icons/LiveHelp';
 
 class ProgressBar extends React.Component {
   constructor(props) {
@@ -22,7 +24,8 @@ class ProgressBar extends React.Component {
       fullWidthDialog,
       maxWidthDialog,
       progressValue,
-      variant
+      variant,
+      helpText
     } = this.props;
 
     return (
@@ -35,7 +38,18 @@ class ProgressBar extends React.Component {
         maxWidth={maxWidthDialog}
         aria-labelledby="progressbar-dialogbox"
       >
-        <DialogTitle>{titleText}</DialogTitle>
+        <DialogTitle>
+          <span className={styles.dialogTitleInnerWrapper}>
+            <span className={styles.titleText}>{titleText}</span>
+            {helpText && (
+              <span>
+                <Tooltip title={helpText}>
+                  <LiveHelp className={styles.helpText} />
+                </Tooltip>
+              </span>
+            )}
+          </span>
+        </DialogTitle>
 
         <DialogContent>
           <DialogContentText className={styles.dialogContentTextTop}>

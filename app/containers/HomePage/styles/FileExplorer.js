@@ -65,9 +65,9 @@ export const styles = theme => ({
     marginTop: 10
   },
   instructions: {
-    marginTop: '5px',
-    lineHeight: '18px',
-    paddingLeft: '30px',
+    marginTop: 5,
+    lineHeight: 18,
+    paddingLeft: 30,
     color: `rgba(0, 0, 0, 0.8)`
   }
 });

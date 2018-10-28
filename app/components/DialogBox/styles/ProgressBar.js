@@ -3,11 +3,22 @@
 import { variables, mixins } from '../../../styles/js';
 
 export const styles = theme => ({
-  root: { flexGrow: 1 },
+  root: {
+    flexGrow: 1
+  },
   dialogContentTextTop: {
     marginBottom: 10
   },
   dialogContentTextBottom: {
     marginTop: 10
+  },
+  dialogTitleInnerWrapper: {
+    alignItems: `center`
+  },
+  helpText: {
+    float: `right`
+  },
+  titleText: {
+    float: `left`
   }
 });
