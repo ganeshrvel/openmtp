@@ -3,6 +3,7 @@
 import React from 'react';
 import { Switch, Route } from 'react-router';
 import HomePage from '../containers/HomePage/Loadable';
+import ReportBugs from '../containers/ReportBugs/Loadable';
 import NotFoundPage from '../containers/NotFoundPage/Loadable';
 
 const _routes = {
@@ -10,6 +11,11 @@ const _routes = {
     path: '/',
     exact: true,
     component: HomePage
+  },
+  ReportBugs: {
+    path: '/reportBugs',
+    exact: true,
+    component: ReportBugs
   },
   NotFound: {
     component: NotFoundPage

@@ -77,7 +77,6 @@ class GenerateErrorReport extends Component {
     return (
       <React.Fragment>
         <Typography variant="subheading" className={styles.subHeading}>
-          Please send me the error logs so that I can fix this issue.
           <ul className={styles.instructions}>
             <li>Click on "GENERATE ERROR LOGS" button.</li>
             <li>It will open your email client.</li>

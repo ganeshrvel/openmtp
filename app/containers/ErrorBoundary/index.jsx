@@ -55,6 +55,9 @@ class ErrorBoundary extends Component {
           <Typography variant="headline" className={styles.headings}>
             I promise it's not you, it's me.
           </Typography>
+          <Typography variant="subheading" className={styles.subHeading}>
+            Please send me the error logs so that I can fix this issue.
+          </Typography>
           <GenerateErrorReport />
           <Button
             variant="outlined"

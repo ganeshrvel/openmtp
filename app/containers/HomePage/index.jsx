@@ -20,13 +20,12 @@ class Home extends Component {
 
   async componentWillMount() {
     /*
-    todo: sometimes an "undefined" folder is created in the mtp path
+    todo: moment js optimize
     todo: time out help tool tip
     todo: optimization: add drive icons to list
     todo: change menus in prod and about electron
     todo: bump electron and mui versions
     todo: updates checking
-    todo: email/report debug error  add version number to stack and email debug
    */
   }
 

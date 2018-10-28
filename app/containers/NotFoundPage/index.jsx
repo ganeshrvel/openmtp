@@ -11,7 +11,7 @@ export default class NotFound extends Component {
   render() {
     return (
       <React.Fragment>
-        <Helmet titleTemplate={`%s | ${title}`}>
+        <Helmet titleTemplate={`%s - ${title}`}>
           <title>Resource not found!</title>
         </Helmet>
         <div className={styles.container} data-tid="container">

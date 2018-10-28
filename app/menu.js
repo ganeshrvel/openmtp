@@ -2,6 +2,37 @@
 
 import { app, Menu, shell, BrowserWindow } from 'electron';
 
+/**
+ * Child Window
+ */
+let reportBugsWindow = null;
+
+const createChildWindow = () => {
+  return new BrowserWindow({
+    height: 480,
+    resizable: false,
+    width: 600,
+    title: '',
+    minimizable: false,
+    fullscreenable: false
+  });
+};
+
+const fireReportBugs = () => {
+  if (reportBugsWindow) {
+    reportBugsWindow.focus();
+    return null;
+  }
+
+  reportBugsWindow = createChildWindow();
+
+  reportBugsWindow.loadURL(`file://${__dirname}/app.html#reportBugs`);
+
+  reportBugsWindow.on('closed', function() {
+    reportBugsWindow = null;
+  });
+};
+
 export default class MenuBuilder {
   constructor(mainWindow) {
     this.mainWindow = mainWindow;
@@ -76,8 +107,6 @@ export default class MenuBuilder {
           label: 'About OpenMTP',
           selector: 'orderFrontStandardAboutPanel:'
         },
-        { type: 'separator' },
-        { label: 'Services', submenu: [] },
         { type: 'separator' },
         {
           label: 'Hide the OpenMTP',
@@ -190,7 +219,7 @@ export default class MenuBuilder {
         },
         { label: 'Close', accelerator: 'Command+W', selector: 'performClose:' },
         { type: 'separator' },
-        { label: 'Bring All to Front', selector: 'arrangeInFront:' }
+        { label: 'Bring All To Front', selector: 'arrangeInFront:' }
       ]
     };
     const subMenuHelp = {
@@ -198,8 +227,8 @@ export default class MenuBuilder {
       submenu: [
         {
           label: 'Submit Error Logs',
-          click() {
-            shell.openExternal('https://github.com/atom/electron/issues');
+          click: () => {
+            fireReportBugs();
           }
         }
       ]
@@ -275,8 +304,8 @@ export default class MenuBuilder {
         submenu: [
           {
             label: 'Submit Error Logs',
-            click() {
-              shell.openExternal('https://github.com/atom/electron/issues');
+            click: () => {
+              fireReportBugs();
             }
           }
         ]
