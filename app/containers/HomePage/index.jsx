@@ -20,10 +20,8 @@ class Home extends Component {
 
   async componentWillMount() {
     /*
-    todo: moment js optimize
     todo: time out help tool tip
     todo: optimization: add drive icons to list
-    todo: change menus in prod and about electron
     todo: bump electron and mui versions
     todo: updates checking
    */

@@ -77,6 +77,8 @@ export default {
       NODE_ENV: 'production'
     }),
 
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+
     new webpack.NamedModulesPlugin()
   ]
 };
