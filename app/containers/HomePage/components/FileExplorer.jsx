@@ -802,7 +802,7 @@ class FileExplorer extends Component {
       deviceType === deviceTypeConst.mtp && fileTransferProgess.toggle;
     const renameSecondaryText =
       deviceType === deviceTypeConst.mtp
-        ? `Not every MTP device supports Rename function.`
+        ? `Every MTP device does not support the Rename feature.`
         : ``;
 
     return (
@@ -859,7 +859,7 @@ class FileExplorer extends Component {
           maxWidthDialog="sm"
           onClickHandler={this.handleNewFolderEditDialog}
           variant="determinate"
-          helpText={`In case the progress bar freezes while transferring the files, restart the app and reconnect the device. This issue a known Android MTP bug.`}
+          helpText={`In case the progress bar freezes while transferring the files, restart the app and reconnect the device. This is a well known Android MTP bug.`}
           progressValue={fileTransferProgess.percentage}
         />
 
