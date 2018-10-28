@@ -38,6 +38,9 @@ export const styles = theme => ({
       width: 50
     },
     [`&.nameCell`]: {
+      display: 'flex',
+      alignItems: 'center',
+      marginTop: 10,
       whiteSpace: `nowrap`,
       overflow: `hidden`,
       textOverflow: `ellipsis`,

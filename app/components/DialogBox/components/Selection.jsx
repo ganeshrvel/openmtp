@@ -4,10 +4,13 @@ import React from 'react';
 import { styles } from '../styles/Selection';
 import { withStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
+import Avatar from '@material-ui/core/Avatar';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
+import SdStorageIcon from '@material-ui/icons/SdStorage';
 
 class Selection extends React.Component {
   handleListItemClick = ({ ...args }) => {
@@ -16,7 +19,7 @@ class Selection extends React.Component {
   };
 
   render() {
-    const { id, list, titleText, open } = this.props;
+    const { id, list, titleText, open, showDiskAvatars } = this.props;
     if (Object.keys(list).length < 1) {
       return <React.Fragment />;
     }
@@ -30,24 +33,33 @@ class Selection extends React.Component {
         }
         open={open}
       >
-        <DialogTitle id={id}>{titleText}</DialogTitle>
+        <DialogTitle>{titleText}</DialogTitle>
         <div>
           <List>
             {Object.keys(list).map(a => {
               const item = list[a];
               return (
-                <ListItem
-                  button
-                  onClick={() =>
-                    this.handleListItemClick({
-                      selectedValue: a,
-                      triggerChange: true
-                    })
-                  }
-                  key={a}
-                >
-                  <ListItemText primary={item.name} />
-                </ListItem>
+                <React.Fragment key={a}>
+                  <ListItem
+                    button
+                    onClick={() =>
+                      this.handleListItemClick({
+                        selectedValue: a,
+                        triggerChange: true
+                      })
+                    }
+                  >
+                    {showDiskAvatars && (
+                      <ListItemAvatar>
+                        <Avatar>
+                          <SdStorageIcon />
+                        </Avatar>
+                      </ListItemAvatar>
+                    )}
+
+                    <ListItemText primary={item.name} />
+                  </ListItem>
+                </React.Fragment>
               );
             })}
           </List>

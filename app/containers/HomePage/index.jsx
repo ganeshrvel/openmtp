@@ -20,7 +20,6 @@ class Home extends Component {
 
   async componentWillMount() {
     /*
-    todo: optimization: add drive icons to list
     todo: bump electron and mui versions
     todo: updates checking
    */

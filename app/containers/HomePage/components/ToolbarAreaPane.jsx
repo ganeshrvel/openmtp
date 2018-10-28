@@ -296,6 +296,7 @@ class ToolbarAreaPane extends React.Component {
           titleText="Select Storage Option"
           list={mtpStoragesList}
           id="selectionDialog"
+          showDiskAvatars={true}
           open={
             deviceType === deviceTypeConst.mtp &&
             toggleMtpStorageSelectionDialog

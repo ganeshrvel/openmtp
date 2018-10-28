@@ -7,7 +7,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import LiveHelp from '@material-ui/icons/LiveHelp';
+import LiveHelpIcon from '@material-ui/icons/LiveHelp';
 
 class ProgressBar extends React.Component {
   constructor(props) {
@@ -44,7 +44,7 @@ class ProgressBar extends React.Component {
             {helpText && (
               <span>
                 <Tooltip title={helpText}>
-                  <LiveHelp className={styles.helpText} />
+                  <LiveHelpIcon className={styles.helpText} />
                 </Tooltip>
               </span>
             )}
