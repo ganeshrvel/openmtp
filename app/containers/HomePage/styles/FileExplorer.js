@@ -69,7 +69,7 @@ export const styles = theme => ({
   },
   instructions: {
     marginTop: 5,
-    lineHeight: 18,
+    lineHeight: `18px`,
     paddingLeft: 30,
     color: `rgba(0, 0, 0, 0.8)`
   }

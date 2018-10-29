@@ -20,6 +20,7 @@ class Home extends Component {
 
   async componentWillMount() {
     /*
+    todo: share with a friend
     todo: bump electron and mui versions
     todo: updates checking
    */
