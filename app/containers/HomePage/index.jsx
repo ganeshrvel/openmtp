@@ -20,7 +20,13 @@ class Home extends Component {
 
   async componentWillMount() {
     /*
-    todo: share with a friend
+    todo: look into pure components
+    todo: share the app link
+    todo: donate via paypal
+    todo: app store
+    todo: update to the binary
+    todo: generate report should append ./mtp ls -v to the log before emailing
+    todo: Set target Babel
     todo: bump electron and mui versions
     todo: updates checking
    */

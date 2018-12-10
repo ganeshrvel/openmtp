@@ -8,8 +8,8 @@ import Paper from '@material-ui/core/Paper';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import Tooltip from '@material-ui/core/Tooltip';
-import nanoid from 'nanoid';
 import { sanitizePath } from '../../utils/paths';
+import { quickHash } from '../../utils/funcs';
 
 class Breadcrumb extends React.Component {
   constructor(props) {
@@ -111,7 +111,7 @@ class Breadcrumb extends React.Component {
         compressedCounter++;
       }
       return (
-        <React.Fragment key={nanoid(8)}>
+        <React.Fragment key={quickHash(path)}>
           {isCompressed ? (
             this.CompressedBreadcrumbCellRender({
               isCompressed,

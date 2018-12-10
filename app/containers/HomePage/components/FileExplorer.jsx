@@ -15,7 +15,6 @@ import FolderIcon from '@material-ui/icons/Folder';
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
-import nanoid from 'nanoid';
 import lodashSortBy from 'lodash/sortBy';
 import DirectoryListsTableHead from './DirectoryListsTableHead';
 import Breadcrumb from '../../../components/Breadcrumb';
@@ -63,7 +62,7 @@ import {
   renameMtpFiles
 } from '../../../api/sys';
 import { baseName, pathUp, sanitizePath } from '../../../utils/paths';
-import { isFloat, isInt, niceBytes } from '../../../utils/funcs';
+import { isFloat, isInt, niceBytes, quickHash } from '../../../utils/funcs';
 import { isNumber } from 'util';
 import { throwAlert } from '../../Alerts/actions';
 import { remote } from 'electron';
@@ -1005,7 +1004,7 @@ class FileExplorer extends Component {
         role="checkbox"
         aria-checked={isSelected}
         tabIndex={-1}
-        key={nanoid(8)}
+        key={quickHash(n.path)}
         selected={isSelected}
         className={classNames({
           [styles.tableRowSelected]: isSelected
