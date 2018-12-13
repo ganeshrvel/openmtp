@@ -11,15 +11,16 @@
     "dev": "cross-env START_HOT=1 node -r babel-register ./internals/scripts/CheckPortInUse.js && cross-env START_HOT=1 yarn start-renderer-dev",
     "electron-rebuild": "electron-rebuild --parallel --force --types prod,dev,optional --module-dir app",
     "package": "yarn build && electron-builder build --publish never",
-    "package-all": "yarn build && electron-builder build -mwl",
-    "package-mac": "yarn build && electron-builder build --mac",
-    "package-linux": "yarn build && electron-builder build --linux",
-    "package-win": "yarn build && electron-builder build --win --x64",
+    "package-all": "yarn build && electron-builder build -mwl --publish never",
+    "package-mac": "yarn build && electron-builder build --mac --publish never",
+    "package-linux": "yarn build && electron-builder build --linux --publish never",
+    "package-win": "yarn build && electron-builder build --win --x64 --publish never",
     "postinstall": "node -r babel-register internals/scripts/CheckNativeDep.js && yarn build-dll && electron-builder install-app-deps package.json",
     "prestart": "yarn build",
     "start": "cross-env NODE_ENV=production electron ./app/",
     "start-main-dev": "cross-env HOT=1 NODE_ENV=development electron -r babel-register ./app/main.dev.js",
-    "start-renderer-dev": "cross-env NODE_ENV=development node --trace-warnings -r babel-register ./node_modules/webpack-dev-server/bin/webpack-dev-server --config webpack/config.renderer.dev.js"
+    "start-renderer-dev": "cross-env NODE_ENV=development node --trace-warnings -r babel-register ./node_modules/webpack-dev-server/bin/webpack-dev-server --config webpack/config.renderer.dev.js",
+    "publish:mac": "yarn build && electron-builder build --mac --config=config/deploy/electron-builder.yml --publish always"
   },
   "browserslist": "electron 3.0",
   "build": {
@@ -42,6 +43,12 @@
         ]
       }
     ],
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ]
+    },
     "dmg": {
       "contents": [
         {

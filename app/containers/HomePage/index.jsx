@@ -20,6 +20,10 @@ class Home extends Component {
 
   async componentWillMount() {
     /*
+    todo: .env
+    todo: tags for github
+    todo: in copy/paste, new folder, replace/merge, confirm, rename dialogues add the device name or sd card/int memory name
+    todo: fix: drag files from local to mtp and then drop it back in the local. the merge dialog will appear
     todo: look into pure components
     todo: share the app link
     todo: donate via paypal
