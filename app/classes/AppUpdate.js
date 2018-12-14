@@ -64,7 +64,7 @@ export default class AppUpdate {
         progressbarWindow.close();
       }
 
-      dialog.showErrorBox(`Error: ${errorMsg}`);
+      dialog.showErrorBox(`Update Error`, `${errorMsg}`);
       log.doLog(error);
     });
 

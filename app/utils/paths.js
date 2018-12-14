@@ -18,7 +18,7 @@ const logFileName = IS_DEV
 const logFolder = path.join(profileFolder, `./logs`);
 const logFile = path.join(logFolder, `./${productName}-${logFileName}`);
 const settingsFile = path.join(profileFolder, `./settings.json`);
-const appUpdateFile = path.join(root, `./app-update.yml`);
+const appUpdateFile = path.join(root, `./dev-app-update.yml`);
 
 export const PATHS = {
   root: path.resolve(root),
