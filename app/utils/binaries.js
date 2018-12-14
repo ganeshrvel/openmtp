@@ -4,9 +4,10 @@ import { remote } from 'electron';
 import getPlatform from './get-platform';
 import { IS_PROD } from '../constants/env';
 import { PATHS } from './paths';
+import { isPackaged } from '../utils/isPackaged';
 
 const { root } = PATHS;
-const { isPackaged, getAppPath } = remote.app;
+const { getAppPath } = remote.app;
 
 const binariesPath =
   IS_PROD && isPackaged

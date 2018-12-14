@@ -1,12 +1,14 @@
 'use strict';
 
 import path from 'path';
+import { isPackaged } from '../utils/isPackaged';
 import os from 'os';
-import { IS_DEV } from '../constants/env';
+import { IS_DEV, IS_PROD } from '../constants/env';
 import { yearMonthNow } from './date';
 import { productName } from '../../package.json';
 
 const root = process.cwd();
+const appPath = path.join(root, `./app`);
 const homeDir = os.homedir();
 const profileFolder = path.join(homeDir, `./.io.ganeshrvel`, `openmtp`);
 const rotateFile = yearMonthNow({});
@@ -20,7 +22,7 @@ const appUpdateFile = path.join(root, `./app-update.yml`);
 
 export const PATHS = {
   root: path.resolve(root),
-  app: path.resolve(path.join(root, `./app`)),
+  app: path.resolve(appPath),
   dist: path.resolve(path.join(root, `./app/dist`)),
   nodeModules: path.resolve(path.join(root, `./node_modules`)),
   homeDir: path.resolve(homeDir),
@@ -28,7 +30,10 @@ export const PATHS = {
   logFolder: path.resolve(logFolder),
   logFile: path.resolve(logFile),
   settingsFile: path.resolve(settingsFile),
-  appUpdateFile: path.resolve(appUpdateFile)
+  appUpdateFile: path.resolve(appUpdateFile),
+  loadUrlPath: !isPackaged
+    ? `file://${appPath}/app.html`
+    : `file://${__dirname}/app.html`
 };
 
 export const pathUp = filePath => {

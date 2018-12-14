@@ -1,21 +1,52 @@
 'use strict';
 
-import { dialog, BrowserWindow, remote } from 'electron';
+import { dialog, BrowserWindow, remote, ipcRenderer } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import { isConnected } from '../utils/isOnline';
-import ElectronProgressbar from 'electron-progressbar';
 import { log } from '../utils/log';
-import { IS_DEV } from '../constants/env';
+import { isPackaged } from '../utils/isPackaged';
 import { PATHS } from '../utils/paths';
 
+let progressbarWindow = null;
+let domReadyFlag = false;
+
+const createChildWindow = () => {
+  return new BrowserWindow({
+    parent: `top`,
+    modal: true,
+    height: 150,
+    width: 600,
+    title: 'Progress...',
+    resizable: false,
+    minimizable: false,
+    maximizable: false,
+    fullscreenable: false,
+    closable: false,
+    movable: false
+  });
+};
+
+const fireProgressbar = () => {
+  if (progressbarWindow) {
+    progressbarWindow.focus();
+    return null;
+  }
+
+  progressbarWindow = createChildWindow();
+  progressbarWindow.loadURL(`${PATHS.loadUrlPath}#progressbar`);
+  progressbarWindow.on('closed', function() {
+    progressbarWindow = null;
+  });
+};
+
 export default class AppUpdate {
-  constructor() {
+  constructor({ parentWindow }) {
     this.autoUpdater = autoUpdater;
-    this.autoUpdater.updateConfigPath = PATHS.appUpdateFile;
+    if (!isPackaged) {
+      this.autoUpdater.updateConfigPath = PATHS.appUpdateFile;
+    }
     this.autoUpdater.autoDownload = false;
 
-    this.forceCheckProgress = null;
-    this.downloadProgress = null;
     this.updateInitFlag = false;
     this.updateForceCheckFlag = false;
   }
@@ -28,14 +59,20 @@ export default class AppUpdate {
     this.autoUpdater.on('error', error => {
       const errorMsg =
         error == null ? 'unknown' : (error.stack || error).toString();
-      this.forceCheckProgress.setCompleted();
+      if (progressbarWindow !== null) {
+        progressbarWindow.close();
+        progressbarWindow.destroy();
+      }
 
       dialog.showErrorBox(`Error: ${errorMsg}`);
       log.doLog(error);
     });
 
     this.autoUpdater.on('update-available', () => {
-      this.forceCheckProgress.setCompleted();
+      if (progressbarWindow !== null) {
+        progressbarWindow.close();
+        progressbarWindow.destroy();
+      }
 
       dialog.showMessageBox(
         {
@@ -47,11 +84,11 @@ export default class AppUpdate {
         buttonIndex => {
           switch (buttonIndex) {
             case 0:
+              this.initDownloadUpdatesProgress();
               this.autoUpdater.downloadUpdate();
               break;
             default:
             case 1:
-              this.setDownloadUpdatesProgress();
               return;
               break;
           }
@@ -59,16 +96,19 @@ export default class AppUpdate {
       );
     });
 
-    this.autoUpdater.on('download-progress', (ev, progress) => {
-      if (this.downloadProgress.isCompleted()) {
+    this.autoUpdater.on('download-progress', progress => {
+      if (progressbarWindow === null) {
         return null;
       }
 
-      this.downloadProgress.value = progress.percent;
+      this.setUpdateProgressWindow({ value: progress.percent || 0 });
     });
 
     this.autoUpdater.on('update-downloaded', () => {
-      this.downloadProgress.setCompleted();
+      if (progressbarWindow !== null) {
+        progressbarWindow.close();
+        progressbarWindow.destroy();
+      }
 
       dialog.showMessageBox(
         {
@@ -106,7 +146,10 @@ export default class AppUpdate {
       });
 
       this.autoUpdater.on('update-not-available', () => {
-        this.forceCheckProgress.setCompleted();
+        if (progressbarWindow !== null) {
+          progressbarWindow.close();
+          progressbarWindow.destroy();
+        }
         dialog.showMessageBox(
           {
             title: 'No Updates Found',
@@ -153,15 +196,19 @@ export default class AppUpdate {
         return null;
       }
 
-      this.forceCheckProgress = new ElectronProgressbar({
-        title: 'Checking For Updates',
-        text: 'Please wait...',
-        detail: ''
+      fireProgressbar();
+      progressbarWindow.webContents.once('dom-ready', () => {
+        progressbarWindow.webContents.send('progressbarCommunicate', {
+          progressTitlebar: `Checking For Updates`,
+          progressTitle: `Please wait...`,
+          value: 0,
+          variant: `indeterminate`
+        });
       });
     });
   }
 
-  setDownloadUpdatesProgress() {
+  initDownloadUpdatesProgress() {
     isConnected().then(connected => {
       if (!connected) {
         dialog.showMessageBox(
@@ -182,12 +229,29 @@ export default class AppUpdate {
         return null;
       }
 
-      this.downloadProgress = new ElectronProgressbar({
-        indeterminate: false,
-        title: 'Downloading Updates',
-        text: 'Please wait...',
-        detail: ''
-      });
+      fireProgressbar();
+      domReadyFlag = false;
+      this.setUpdateProgressWindow({ value: 0 });
+    });
+  }
+
+  setUpdateProgressWindow({ value = 0 }) {
+    let data = {
+      progressTitlebar: `Downloading Updates`,
+      progressTitle: `Please wait...`,
+      value: value,
+      variant: `determinate`
+    };
+
+    if (domReadyFlag) {
+      progressbarWindow.webContents.send('progressbarCommunicate', data);
+      return null;
+    }
+
+    progressbarWindow.webContents.once('dom-ready', () => {
+      progressbarWindow.webContents.send('progressbarCommunicate', data);
+
+      domReadyFlag = true;
     });
   }
 }

@@ -4,9 +4,10 @@ import React from 'react';
 import { Switch, Route } from 'react-router';
 import HomePage from '../containers/HomePage/Loadable';
 import ReportBugs from '../containers/ReportBugs/Loadable';
+import Progressbar from '../containers/Progressbar';
 import NotFoundPage from '../containers/NotFoundPage/Loadable';
 
-const _routes = {
+const routes = {
   Home: {
     path: '/',
     exact: true,
@@ -17,14 +18,15 @@ const _routes = {
     exact: true,
     component: ReportBugs
   },
+  Progressbar: {
+    path: '/progressbar',
+    exact: true,
+    component: Progressbar
+  },
   NotFound: {
     component: NotFoundPage
   }
 };
-
-export const routes = JSON.parse(
-  JSON.stringify(_routes, (k, v) => (k === 'component' ? undefined : v))
-);
 
 export default () => {
   return (
@@ -33,7 +35,7 @@ export default () => {
         <Route
           key={routes[a].path || 'notfound'}
           {...routes[a]}
-          component={_routes[a].component}
+          component={routes[a].component}
         />
       ))}
     </Switch>

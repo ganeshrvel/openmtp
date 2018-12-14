@@ -5,12 +5,10 @@ import MenuBuilder from './menu';
 import { log } from './utils/log';
 import { DEBUG_PROD, IS_DEV } from './constants/env';
 import AppUpdate from './classes/AppUpdate';
+import { PATHS } from './utils/paths';
 
 let mainWindow = null;
 const isSingleInstance = app.requestSingleInstanceLock();
-const autoAppUpdate = new AppUpdate();
-
-/*autoAppUpdate.init();*/
 
 if (IS_DEV || DEBUG_PROD) {
   require('electron-debug')();
@@ -70,7 +68,7 @@ const createWindow = async () => {
       titleBarStyle: 'hidden'
     });
 
-    mainWindow.loadURL(`file://${__dirname}/app.html`);
+    mainWindow.loadURL(`${PATHS.loadUrlPath}`);
 
     mainWindow.webContents.on('did-finish-load', () => {
       if (!mainWindow) {
@@ -88,9 +86,6 @@ const createWindow = async () => {
     mainWindow.on('closed', () => {
       mainWindow = null;
     });
-
-    const menuBuilder = new MenuBuilder({ mainWindow, autoAppUpdate });
-    menuBuilder.buildMenu();
   } catch (e) {
     log.error(e, `main.dev -> createWindow`);
   }
@@ -109,6 +104,12 @@ app.on('window-all-closed', () => {
 app.on('ready', async () => {
   try {
     await createWindow();
+    const autoAppUpdate = new AppUpdate({ parentWindow: mainWindow });
+    const menuBuilder = new MenuBuilder({ mainWindow, autoAppUpdate });
+    menuBuilder.buildMenu();
+
+    autoAppUpdate.init();
+    //todo: apply logic for autoupdate
   } catch (e) {
     log.error(e, `main.dev -> ready`);
   }

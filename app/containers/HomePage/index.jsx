@@ -20,6 +20,12 @@ class Home extends Component {
 
   async componentWillMount() {
     /*
+    todo: update and progress bar not working in production env
+    todo: this.autoUpdater.updateConfigPath only for prepacked app
+    //todo: percenage of undefined in update progress dialog
+    todo: autoupdate settings and logic
+   todo: use react for loader
+    
     todo: .env
     todo: tags for github
     todo: in copy/paste, new folder, replace/merge, confirm, rename dialogues add the device name or sd card/int memory name

@@ -1,6 +1,7 @@
 'use strict';
 
 import { app, Menu, shell, BrowserWindow } from 'electron';
+import { PATHS } from './utils/paths';
 
 /**
  * Child Window
@@ -25,9 +26,7 @@ const fireReportBugs = () => {
   }
 
   reportBugsWindow = createChildWindow();
-
-  reportBugsWindow.loadURL(`file://${__dirname}/app.html#reportBugs`);
-
+  reportBugsWindow.loadURL(`${PATHS.loadUrlPath}#reportBugs`);
   reportBugsWindow.on('closed', function() {
     reportBugsWindow = null;
   });
@@ -40,7 +39,6 @@ export default class MenuBuilder {
   }
 
   buildMenu() {
-    this.setupDevelopmentEnvironment();
     if (
       process.env.NODE_ENV === 'development' ||
       process.env.DEBUG_PROD === 'true'
