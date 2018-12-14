@@ -1,26 +1,16 @@
 'use strict';
 
-/**
- * This module executes inside of electron's main process. You can start
- * electron renderer process from here and communicate with the other processes
- * through IPC.
- *
- * When running `yarn build` or `yarn build-main`, this file is compiled to
- * `./app/main.prod.js` using webpack. This gives us some performance wins.
- *
- */
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
 import MenuBuilder from './menu';
 import { log } from './utils/log';
-import { IS_PROD, DEBUG_PROD, IS_DEV } from './constants/env';
+import { DEBUG_PROD, IS_DEV } from './constants/env';
+import AppUpdate from './classes/AppUpdate';
 
 let mainWindow = null;
 const isSingleInstance = app.requestSingleInstanceLock();
+const autoAppUpdate = new AppUpdate();
 
-if (IS_PROD) {
-  const sourceMapSupport = require('source-map-support');
-  sourceMapSupport.install();
-}
+/*autoAppUpdate.init();*/
 
 if (IS_DEV || DEBUG_PROD) {
   require('electron-debug')();
@@ -99,7 +89,7 @@ const createWindow = async () => {
       mainWindow = null;
     });
 
-    const menuBuilder = new MenuBuilder(mainWindow);
+    const menuBuilder = new MenuBuilder({ mainWindow, autoAppUpdate });
     menuBuilder.buildMenu();
   } catch (e) {
     log.error(e, `main.dev -> createWindow`);

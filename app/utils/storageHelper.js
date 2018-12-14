@@ -1,7 +1,7 @@
 'use strict';
 
 import { PATHS } from './paths';
-import Storage from '../classes/storage';
+import Storage from '../classes/Storage';
 
 const { settingsFile } = PATHS;
 

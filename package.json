@@ -20,7 +20,7 @@
     "start": "cross-env NODE_ENV=production electron ./app/",
     "start-main-dev": "cross-env HOT=1 NODE_ENV=development electron -r babel-register ./app/main.dev.js",
     "start-renderer-dev": "cross-env NODE_ENV=development node --trace-warnings -r babel-register ./node_modules/webpack-dev-server/bin/webpack-dev-server --config webpack/config.renderer.dev.js",
-    "publish:mac": "yarn build && electron-builder build --mac --config=config/deploy/electron-builder.yml --publish always"
+    "publish-mac": "yarn build && electron-builder build --mac --config=config/deploy/electron-builder.yml --publish always"
   },
   "browserslist": "electron 3.0",
   "build": {
@@ -163,6 +163,8 @@
     "classnames": "^2.2.6",
     "devtron": "^1.4.0",
     "electron-debug": "^2.0.0",
+    "electron-progressbar": "^1.1.0",
+    "electron-updater": "^4.0.6",
     "history": "^4.7.2",
     "immutable": "^3.8.2",
     "junk": "^2.1.0",

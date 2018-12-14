@@ -34,11 +34,13 @@ const fireReportBugs = () => {
 };
 
 export default class MenuBuilder {
-  constructor(mainWindow) {
+  constructor({ mainWindow, autoAppUpdate }) {
     this.mainWindow = mainWindow;
+    this.autoAppUpdate = autoAppUpdate;
   }
 
   buildMenu() {
+    this.setupDevelopmentEnvironment();
     if (
       process.env.NODE_ENV === 'development' ||
       process.env.DEBUG_PROD === 'true'
@@ -106,6 +108,13 @@ export default class MenuBuilder {
         {
           label: 'About OpenMTP',
           selector: 'orderFrontStandardAboutPanel:'
+        },
+        { type: 'separator' },
+        {
+          label: 'Check For Updates',
+          click: () => {
+            this.autoAppUpdate.forceCheck();
+          }
         },
         { type: 'separator' },
         {
@@ -302,6 +311,12 @@ export default class MenuBuilder {
       {
         label: 'Help',
         submenu: [
+          {
+            label: 'Check For Updates',
+            click: () => {
+              this.autoAppUpdate.forceCheck();
+            }
+          },
           {
             label: 'Send Error Logs',
             click: () => {

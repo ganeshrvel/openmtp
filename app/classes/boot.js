@@ -16,7 +16,7 @@ const { logFile, settingsFile, logFolder } = PATHS;
 const deviceType = deviceTypeConst.local;
 const logFileRotationCleanUpThreshold = 60; //days
 
-export default class boot {
+export default class Boot {
   constructor() {
     this.verifyDirList = [logFolder];
     this.verifyFileList = [settingsFile, logFile];

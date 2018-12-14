@@ -6,7 +6,7 @@ Author: [Ganesh Rathinavel](https://www.linkedin.com/in/ganeshrvel 'Ganesh Rathi
 
 Requirements: node.js v8 or higher, yarn
 
-Version: 0.8.3
+Version: 0.08.05
 
 yarn
 cd ./app && yarn
