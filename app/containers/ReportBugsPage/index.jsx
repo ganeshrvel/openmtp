@@ -11,7 +11,7 @@ import GenerateErrorReport from '../ErrorBoundary/components/GenerateErrorReport
 import { Helmet } from 'react-helmet';
 import { title } from '../../constants/meta';
 
-class ReportBugs extends Component {
+class ReportBugsPage extends Component {
   constructor(props) {
     super(props);
   }
@@ -39,4 +39,4 @@ const mapStateToProps = (state, props) => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withStyles(styles)(ReportBugs));
+)(withStyles(styles)(ReportBugsPage));

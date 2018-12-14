@@ -7,7 +7,7 @@ export const styles = theme => ({
     textAlign: `left`,
     ...mixins().center,
     width: 500,
-    marginTop: 30
+    marginTop: 10
   },
   subheading: {
     marginBottom: 10

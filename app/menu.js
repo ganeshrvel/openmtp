@@ -26,7 +26,7 @@ const fireReportBugs = () => {
   }
 
   reportBugsWindow = createChildWindow();
-  reportBugsWindow.loadURL(`${PATHS.loadUrlPath}#reportBugs`);
+  reportBugsWindow.loadURL(`${PATHS.loadUrlPath}#reportBugsPage`);
   reportBugsWindow.on('closed', function() {
     reportBugsWindow = null;
   });

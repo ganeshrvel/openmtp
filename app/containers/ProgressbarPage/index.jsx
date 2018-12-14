@@ -4,18 +4,17 @@ import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import { styles } from './styles';
 import { log } from '@Log';
-import { remote, ipcRenderer } from 'electron';
-import { Helmet } from 'react-helmet';
+import { ipcRenderer } from 'electron';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Typography from '@material-ui/core/Typography';
 
-class Progressbar extends Component {
+class ProgressbarPage extends Component {
   constructor(props) {
     super(props);
 
     this.initialState = {
-      progressTitlebar: `Progress...`,
       progressTitle: `Progress...`,
+      progressBodyText: `Progress...`,
       value: 0,
       variant: `indeterminate`
     };
@@ -33,14 +32,14 @@ class Progressbar extends Component {
 
   render() {
     const { classes: styles } = this.props;
-    const { progressTitlebar, progressTitle, value, variant } = this.state;
+    const { progressTitle, progressBodyText, value, variant } = this.state;
     return (
       <div className={styles.root}>
-        <Helmet titleTemplate={progressTitlebar}>
-          <title>{progressTitlebar}</title>
-        </Helmet>
         <Typography variant="subheading" className={styles.subheading}>
           {progressTitle}
+        </Typography>
+        <Typography variant="body1" className={styles.subheading}>
+          {progressBodyText}
         </Typography>
         <LinearProgress color="secondary" variant={variant} value={value} />
       </div>
@@ -48,4 +47,4 @@ class Progressbar extends Component {
   }
 }
 
-export default withStyles(styles)(Progressbar);
+export default withStyles(styles)(ProgressbarPage);

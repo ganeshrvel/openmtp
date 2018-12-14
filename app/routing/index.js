@@ -3,8 +3,8 @@
 import React from 'react';
 import { Switch, Route } from 'react-router';
 import HomePage from '../containers/HomePage/Loadable';
-import ReportBugs from '../containers/ReportBugs/Loadable';
-import Progressbar from '../containers/Progressbar';
+import ReportBugsPage from '../containers/ReportBugsPage/Loadable';
+import ProgressbarPage from '../containers/ProgressbarPage';
 import NotFoundPage from '../containers/NotFoundPage/Loadable';
 
 const routes = {
@@ -13,15 +13,15 @@ const routes = {
     exact: true,
     component: HomePage
   },
-  ReportBugs: {
-    path: '/reportBugs',
+  ReportBugsPage: {
+    path: '/reportBugsPage',
     exact: true,
-    component: ReportBugs
+    component: ReportBugsPage
   },
-  Progressbar: {
-    path: '/progressbar',
+  ProgressbarPage: {
+    path: '/progressbarPage',
     exact: true,
-    component: Progressbar
+    component: ProgressbarPage
   },
   NotFound: {
     component: NotFoundPage

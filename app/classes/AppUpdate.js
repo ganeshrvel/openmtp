@@ -8,12 +8,12 @@ import { isPackaged } from '../utils/isPackaged';
 import { PATHS } from '../utils/paths';
 
 let progressbarWindow = null;
-let domReadyFlag = false;
 
-const createChildWindow = () => {
+const createChildWindow = ({ mainWindow }) => {
   return new BrowserWindow({
-    parent: `top`,
+    parent: mainWindow,
     modal: true,
+    show: true,
     height: 150,
     width: 600,
     title: 'Progress...',
@@ -21,32 +21,33 @@ const createChildWindow = () => {
     minimizable: false,
     maximizable: false,
     fullscreenable: false,
-    closable: false,
     movable: false
   });
 };
 
-const fireProgressbar = () => {
+const fireProgressbar = ({ mainWindow }) => {
   if (progressbarWindow) {
     progressbarWindow.focus();
     return null;
   }
 
-  progressbarWindow = createChildWindow();
-  progressbarWindow.loadURL(`${PATHS.loadUrlPath}#progressbar`);
+  progressbarWindow = createChildWindow({ mainWindow });
+  progressbarWindow.loadURL(`${PATHS.loadUrlPath}#progressbarPage`);
   progressbarWindow.on('closed', function() {
     progressbarWindow = null;
   });
 };
 
 export default class AppUpdate {
-  constructor({ parentWindow }) {
+  constructor({ mainWindow }) {
     this.autoUpdater = autoUpdater;
     if (!isPackaged) {
       this.autoUpdater.updateConfigPath = PATHS.appUpdateFile;
     }
     this.autoUpdater.autoDownload = false;
 
+    this.mainWindow = mainWindow;
+    this.domReadyFlag = null;
     this.updateInitFlag = false;
     this.updateForceCheckFlag = false;
   }
@@ -61,7 +62,6 @@ export default class AppUpdate {
         error == null ? 'unknown' : (error.stack || error).toString();
       if (progressbarWindow !== null) {
         progressbarWindow.close();
-        progressbarWindow.destroy();
       }
 
       dialog.showErrorBox(`Error: ${errorMsg}`);
@@ -71,7 +71,6 @@ export default class AppUpdate {
     this.autoUpdater.on('update-available', () => {
       if (progressbarWindow !== null) {
         progressbarWindow.close();
-        progressbarWindow.destroy();
       }
 
       dialog.showMessageBox(
@@ -107,7 +106,6 @@ export default class AppUpdate {
     this.autoUpdater.on('update-downloaded', () => {
       if (progressbarWindow !== null) {
         progressbarWindow.close();
-        progressbarWindow.destroy();
       }
 
       dialog.showMessageBox(
@@ -120,7 +118,7 @@ export default class AppUpdate {
           switch (buttonIndex) {
             case 0:
             default:
-              autoUpdater.quitAndInstall();
+              this.autoUpdater.quitAndInstall();
               break;
           }
         }
@@ -148,7 +146,6 @@ export default class AppUpdate {
       this.autoUpdater.on('update-not-available', () => {
         if (progressbarWindow !== null) {
           progressbarWindow.close();
-          progressbarWindow.destroy();
         }
         dialog.showMessageBox(
           {
@@ -196,11 +193,11 @@ export default class AppUpdate {
         return null;
       }
 
-      fireProgressbar();
+      fireProgressbar({ mainWindow: this.mainWindow });
       progressbarWindow.webContents.once('dom-ready', () => {
         progressbarWindow.webContents.send('progressbarCommunicate', {
-          progressTitlebar: `Checking For Updates`,
-          progressTitle: `Please wait...`,
+          progressTitle: `Checking For Updates`,
+          progressBodyText: `Please wait...`,
           value: 0,
           variant: `indeterminate`
         });
@@ -229,21 +226,21 @@ export default class AppUpdate {
         return null;
       }
 
-      fireProgressbar();
-      domReadyFlag = false;
+      fireProgressbar({ mainWindow: this.mainWindow });
+      this.domReadyFlag = false;
       this.setUpdateProgressWindow({ value: 0 });
     });
   }
 
   setUpdateProgressWindow({ value = 0 }) {
     let data = {
-      progressTitlebar: `Downloading Updates`,
-      progressTitle: `Please wait...`,
+      progressTitle: `Downloading Updates`,
+      progressBodyText: `Please wait...`,
       value: value,
       variant: `determinate`
     };
 
-    if (domReadyFlag) {
+    if (this.domReadyFlag) {
       progressbarWindow.webContents.send('progressbarCommunicate', data);
       return null;
     }
@@ -251,7 +248,7 @@ export default class AppUpdate {
     progressbarWindow.webContents.once('dom-ready', () => {
       progressbarWindow.webContents.send('progressbarCommunicate', data);
 
-      domReadyFlag = true;
+      this.domReadyFlag = true;
     });
   }
 }

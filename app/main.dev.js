@@ -104,7 +104,7 @@ app.on('window-all-closed', () => {
 app.on('ready', async () => {
   try {
     await createWindow();
-    const autoAppUpdate = new AppUpdate({ parentWindow: mainWindow });
+    const autoAppUpdate = new AppUpdate({ mainWindow });
     const menuBuilder = new MenuBuilder({ mainWindow, autoAppUpdate });
     menuBuilder.buildMenu();
 
