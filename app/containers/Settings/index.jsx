@@ -16,8 +16,16 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withReducer } from '../../store/reducers/withReducer';
 import reducers from './reducers';
-import { makeToggleSettings, makeHideHiddenFiles } from './selectors';
-import { hideHiddenFiles, toggleSettings } from './actions';
+import {
+  makeToggleSettings,
+  makeHideHiddenFiles,
+  makeEnableAutoUpdateCheck
+} from './selectors';
+import {
+  enableAutoUpdateCheck,
+  hideHiddenFiles,
+  toggleSettings
+} from './actions';
 import { DEVICES_TYPE_CONST } from '../../constants';
 import { handleReloadDirList } from '../HomePage/actions';
 import {
@@ -39,12 +47,6 @@ class Settings extends Component {
     handleToggleSettings(confirm);
   };
 
-  handleAutoUpdateCheckChange = ({ ...args }) => {
-    const { toggle } = args;
-
-    console.log(toggle);
-  };
-
   handleHiddenFilesChange = ({ ...args }, deviceType) => {
     const {
       handleHideHiddenFiles,
@@ -63,6 +65,12 @@ class Settings extends Component {
       deviceType,
       mtpStoragesList
     );
+  };
+
+  handleAutoUpdateCheckChange = ({ ...args }) => {
+    const { handleEnableAutoUpdateCheck } = this.props;
+
+    handleEnableAutoUpdateCheck({ ...args });
   };
 
   render() {
@@ -99,7 +107,7 @@ class Settings extends Component {
                     className={styles.switch}
                     control={
                       <Switch
-                        checked={!enableAutoUpdateCheck}
+                        checked={enableAutoUpdateCheck}
                         onChange={event =>
                           this.handleAutoUpdateCheckChange({
                             toggle: !enableAutoUpdateCheck
@@ -185,6 +193,10 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         dispatch(hideHiddenFiles({ ...data }, deviceType, getState));
       },
 
+      handleEnableAutoUpdateCheck: ({ ...data }) => (_, getState) => {
+        dispatch(enableAutoUpdateCheck({ ...data }, getState));
+      },
+
       handleReloadDirList: ({ ...args }, deviceType, mtpStoragesList) => (
         _,
         getState
@@ -206,6 +218,7 @@ const mapStateToProps = (state, props) => {
   return {
     toggleSettings: makeToggleSettings(state),
     hideHiddenFiles: makeHideHiddenFiles(state),
+    enableAutoUpdateCheck: makeEnableAutoUpdateCheck(state),
     currentBrowsePath: makeCurrentBrowsePath(state),
     mtpStoragesList: makeMtpStoragesList(state)
   };

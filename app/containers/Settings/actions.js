@@ -8,6 +8,7 @@ const prefix = '@@Settings';
 const actionTypesList = [
   'TOGGLE_SETTINGS',
   'HIDE_HIDDEN_FILES',
+  'ENABLE_AUTO_UPDATE_CHECK',
   'COPY_JSON_FILE_TO_SETTINGS'
 ];
 
@@ -29,6 +30,18 @@ export function hideHiddenFiles({ ...data }, deviceType, getState) {
     dispatch({
       type: actionTypes.HIDE_HIDDEN_FILES,
       deviceType,
+      payload: toggle
+    });
+    dispatch(copySettingsToJsonFile(getState));
+  };
+}
+
+export function enableAutoUpdateCheck({ ...data }, getState) {
+  const { toggle } = data;
+
+  return dispatch => {
+    dispatch({
+      type: actionTypes.ENABLE_AUTO_UPDATE_CHECK,
       payload: toggle
     });
     dispatch(copySettingsToJsonFile(getState));

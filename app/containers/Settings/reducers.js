@@ -4,6 +4,7 @@ import { DEVICES_TYPE_CONST } from '../../constants';
 
 export const initialState = {
   toggleSettings: false,
+  enableAutoUpdateCheck: false,
   hideHiddenFiles: {
     [DEVICES_TYPE_CONST.local]: true,
     [DEVICES_TYPE_CONST.mtp]: true
@@ -26,6 +27,12 @@ export default function Settings(state = initialState, action) {
           ...state.hideHiddenFiles,
           [deviceType]: payload
         }
+      };
+
+    case actionTypes.ENABLE_AUTO_UPDATE_CHECK:
+      return {
+        ...state,
+        enableAutoUpdateCheck: payload
       };
 
     case actionTypes.COPY_JSON_FILE_TO_SETTINGS:
