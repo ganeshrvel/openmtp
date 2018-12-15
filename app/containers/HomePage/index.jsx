@@ -22,7 +22,6 @@ class Home extends Component {
     /*
     todo: data and download progressbar in the taskbar
     todo: privacy policy
-    todo: autoupdate settings and logic
     todo: crash report and analytics -> onboarding the first time users
     todo: display version number and release notes in updates
     todo: opt out of auto updates check and analytics in settings

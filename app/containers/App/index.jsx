@@ -11,7 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { withStyles } from '@material-ui/core/styles';
 import Routes from '../../routing';
-import bootApp from '../../classes/Boot';
+import Boot from '../../classes/Boot';
 import { settingsStorage } from '../../utils/storageHelper';
 import SettingsDialog from '../Settings';
 import { withReducer } from '../../store/reducers/withReducer';
@@ -21,7 +21,7 @@ import reducers from './reducers';
 import { copyJsonFileToSettings } from '../Settings/actions';
 
 const appTheme = createMuiTheme(theme());
-const bootObj = new bootApp();
+const bootObj = new Boot();
 
 class App extends Component {
   constructor(props) {

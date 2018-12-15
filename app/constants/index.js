@@ -16,4 +16,8 @@ export const DEVICES_DEFAULT_PATH = {
   [DEVICES_TYPE_CONST.local]: PATHS.homeDir
 };
 
+export const LOG_FILE_ROTATION_CLEANUP_THRESHOLD = 60; //in days
+
 export const ENABLE_BACKGROUND_AUTO_UPDATE = false;
+
+export const AUTO_UPDATE_CHECK_FIREUP_DELAY = 10000; //in ms

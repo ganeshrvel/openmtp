@@ -6,6 +6,8 @@ import { log } from './utils/log';
 import { DEBUG_PROD, IS_DEV } from './constants/env';
 import AppUpdate from './classes/AppUpdate';
 import { PATHS } from './utils/paths';
+import { settingsStorage } from './utils/storageHelper';
+import { AUTO_UPDATE_CHECK_FIREUP_DELAY } from './constants';
 
 let mainWindow = null;
 const isSingleInstance = app.requestSingleInstanceLock();
@@ -106,10 +108,16 @@ app.on('ready', async () => {
     await createWindow();
     const autoAppUpdate = new AppUpdate({ mainWindow });
     const menuBuilder = new MenuBuilder({ mainWindow, autoAppUpdate });
-    menuBuilder.buildMenu();
 
+    menuBuilder.buildMenu();
     autoAppUpdate.init();
-    //todo: apply logic for autoupdate
+
+    const autoUpdateCheck = settingsStorage.getItems(['enableAutoUpdateCheck']);
+    if (autoUpdateCheck.enableAutoUpdateCheck !== false) {
+      setTimeout(() => {
+        autoAppUpdate.checkForUpdates();
+      }, AUTO_UPDATE_CHECK_FIREUP_DELAY);
+    }
   } catch (e) {
     log.error(e, `main.dev -> ready`);
   }

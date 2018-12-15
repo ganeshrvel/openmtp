@@ -8,13 +8,13 @@ import {
 } from '../api/sys/index';
 import { baseName, PATHS } from '../utils/paths';
 import { fileExistsSync, writeFileAsync } from '../api/sys/fileOps';
-import { DEVICES_TYPE_CONST } from '../constants/index';
 import fs from 'fs';
 import { daysDiff, yearMonthNow } from '../utils/date';
+import { LOG_FILE_ROTATION_CLEANUP_THRESHOLD, DEVICES_TYPE_CONST } from '../constants';
 
 const { logFile, settingsFile, logFolder } = PATHS;
 const deviceType = DEVICES_TYPE_CONST.local;
-const logFileRotationCleanUpThreshold = 60; //days
+const logFileRotationCleanUpThreshold = LOG_FILE_ROTATION_CLEANUP_THRESHOLD;
 
 export default class Boot {
   constructor() {
@@ -42,7 +42,7 @@ export default class Boot {
 
       return true;
     } catch (e) {
-      log.error(e, `boot -> init`);
+      log.error(e, `Boot -> init`);
     }
   }
 
@@ -66,7 +66,7 @@ export default class Boot {
 
       return true;
     } catch (e) {
-      log.error(e, `boot -> verify`);
+      log.error(e, `Boot -> verify`);
     }
   }
 
@@ -80,7 +80,7 @@ export default class Boot {
         }
       }
     } catch (e) {
-      log.error(e, `boot -> verify`);
+      log.error(e, `Boot -> verify`);
     }
   }
 
@@ -88,7 +88,7 @@ export default class Boot {
     try {
       return await checkFileExists(filePath, deviceType, null);
     } catch (e) {
-      log.error(e, `boot -> verifyDir`);
+      log.error(e, `Boot -> verifyDir`);
     }
   }
 
@@ -100,7 +100,7 @@ export default class Boot {
 
       return !(error || stderr);
     } catch (e) {
-      log.error(e, `boot -> createDir`);
+      log.error(e, `Boot -> createDir`);
     }
   }
 
@@ -108,7 +108,7 @@ export default class Boot {
     try {
       return fileExistsSync(filePath);
     } catch (e) {
-      log.error(e, `boot -> verifyFile`);
+      log.error(e, `Boot -> verifyFile`);
     }
   }
 
@@ -119,7 +119,7 @@ export default class Boot {
         text: ``
       });
     } catch (e) {
-      log.error(e, `boot -> createFile`);
+      log.error(e, `Boot -> createFile`);
     }
   }
 
@@ -153,7 +153,7 @@ export default class Boot {
         }
       });
     } catch (e) {
-      log.error(e, `boot -> cleanRotationFiles`);
+      log.error(e, `Boot -> cleanRotationFiles`);
     }
   }
 }
