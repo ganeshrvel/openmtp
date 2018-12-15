@@ -20,7 +20,13 @@ class Home extends Component {
 
   async componentWillMount() {
     /*
+    todo: data and download progressbar in the taskbar
+    todo: privacy policy
     todo: autoupdate settings and logic
+    todo: crash report and analytics -> onboarding the first time users
+    todo: display version number and release notes in updates
+    todo: opt out of auto updates check and analytics in settings
+    todo: opt out of auto updates check in the popup
     todo: .env
     todo: tags for github
     todo: in copy/paste, new folder, replace/merge, confirm, rename dialogues add the device name or sd card/int memory name
@@ -33,7 +39,11 @@ class Home extends Component {
     todo: generate report should append ./mtp ls -v to the log before emailing
     todo: Set target Babel
     todo: bump electron and mui versions
-    todo: updates checking
+    todo: when you close the lid while update download is in process,
+      "A javaScript error occured in the main process: Uncaught Exception: " error is thrown
+      add process.on('uncaughtException', function (error) {
+              // Handle the error
+          }
    */
   }
 

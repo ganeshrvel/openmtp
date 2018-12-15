@@ -77,7 +77,7 @@ export default class AppUpdate {
         {
           type: 'info',
           title: 'Updates Found',
-          message: 'New update found. Update now?',
+          message: 'New version available. Update the app now?',
           buttons: ['Yes', 'No']
         },
         buttonIndex => {
@@ -111,8 +111,8 @@ export default class AppUpdate {
       dialog.showMessageBox(
         {
           title: 'Install Updates',
-          message: 'Updates downloaded. Application will be quit for update...',
-          buttons: ['Install']
+          message: 'Updates downloaded. Application will quit now...',
+          buttons: ['Install and Relaunch']
         },
         buttonIndex => {
           switch (buttonIndex) {
