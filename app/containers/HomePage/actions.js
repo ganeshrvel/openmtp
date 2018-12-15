@@ -7,7 +7,7 @@ import {
 } from '../../api/sys';
 import { log } from '@Log';
 import { throwAlert } from '../Alerts/actions';
-import { deviceTypeConst } from '../../constants';
+import { DEVICES_TYPE_CONST } from '../../constants';
 import {
   processMtpBuffer,
   processLocalBuffer
@@ -223,7 +223,7 @@ export function processLocalOutput({
 export function fetchDirList({ ...args }, deviceType, getState) {
   try {
     switch (deviceType) {
-      case deviceTypeConst.local:
+      case DEVICES_TYPE_CONST.local:
         return async dispatch => {
           const { error, data } = await asyncReadLocalDir({ ...args });
 
@@ -241,7 +241,7 @@ export function fetchDirList({ ...args }, deviceType, getState) {
         };
 
         break;
-      case deviceTypeConst.mtp:
+      case DEVICES_TYPE_CONST.mtp:
         return async dispatch => {
           const mtpStoragesListSelected = getMtpStoragesListSelected(
             getState().Home
@@ -284,11 +284,11 @@ export function handleReloadDirList(
 ) {
   return dispatch => {
     switch (deviceType) {
-      case deviceTypeConst.local:
+      case DEVICES_TYPE_CONST.local:
         dispatch(fetchDirList({ ...args }, deviceType, getState));
         break;
 
-      case deviceTypeConst.mtp:
+      case DEVICES_TYPE_CONST.mtp:
         dispatch(
           setMtpStorageOptions(
             { ...args },

@@ -9,9 +9,11 @@ export const APP_VERSION = version;
 
 export const AUTHOR_EMAIL = author.email;
 
-export const deviceTypeConst = { mtp: 'mtp', local: 'local' };
+export const DEVICES_TYPE_CONST = { mtp: 'mtp', local: 'local' };
 
-export const devicesDefaultPaths = {
-  [deviceTypeConst.mtp]: '/',
-  [deviceTypeConst.local]: PATHS.homeDir
+export const DEVICES_DEFAULT_PATH = {
+  [DEVICES_TYPE_CONST.mtp]: '/',
+  [DEVICES_TYPE_CONST.local]: PATHS.homeDir
 };
+
+export const ENABLE_BACKGROUND_AUTO_UPDATE = false;

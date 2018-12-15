@@ -6,6 +6,7 @@ import { isConnected } from '../utils/isOnline';
 import { log } from '../utils/log';
 import { isPackaged } from '../utils/isPackaged';
 import { PATHS } from '../utils/paths';
+import { ENABLE_BACKGROUND_AUTO_UPDATE } from '../constants';
 
 let progressbarWindow = null;
 
@@ -44,7 +45,7 @@ export default class AppUpdate {
     if (!isPackaged) {
       this.autoUpdater.updateConfigPath = PATHS.appUpdateFile;
     }
-    this.autoUpdater.autoDownload = false;
+    this.autoUpdater.autoDownload = ENABLE_BACKGROUND_AUTO_UPDATE;
 
     this.mainWindow = mainWindow;
     this.domReadyFlag = null;

@@ -1,12 +1,12 @@
 'use strict';
 import { actionTypes } from './actions';
-import { deviceTypeConst } from '../../constants';
+import { DEVICES_TYPE_CONST } from '../../constants';
 
 export const initialState = {
   toggleSettings: false,
   hideHiddenFiles: {
-    [deviceTypeConst.local]: true,
-    [deviceTypeConst.mtp]: true
+    [DEVICES_TYPE_CONST.local]: true,
+    [DEVICES_TYPE_CONST.mtp]: true
   }
 };
 

@@ -11,7 +11,7 @@ import { withReducer } from '../../store/reducers/withReducer';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import reducers from './reducers';
-import { deviceTypeConst } from '../../constants';
+import { DEVICES_TYPE_CONST } from '../../constants';
 
 class Home extends Component {
   constructor(props) {
@@ -56,18 +56,18 @@ class Home extends Component {
           <div className={styles.splitPane}>
             <ToolbarAreaPane
               showMenu={true}
-              deviceType={deviceTypeConst.local}
+              deviceType={DEVICES_TYPE_CONST.local}
             />
-            <FileExplorer hideColList={[]} deviceType={deviceTypeConst.local} />
+            <FileExplorer hideColList={[]} deviceType={DEVICES_TYPE_CONST.local} />
           </div>
           <div className={styles.splitPane}>
             <ToolbarAreaPane
               showMenu={false}
-              deviceType={deviceTypeConst.mtp}
+              deviceType={DEVICES_TYPE_CONST.mtp}
             />
             <FileExplorer
               hideColList={['size']}
-              deviceType={deviceTypeConst.mtp}
+              deviceType={DEVICES_TYPE_CONST.mtp}
             />
           </div>
         </div>

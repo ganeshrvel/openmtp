@@ -37,7 +37,7 @@ import {
 import { makeCurrentBrowsePath } from '../selectors';
 import { makeHideHiddenFiles } from '../../Settings/selectors';
 import { delLocalFiles, delMtpFiles } from '../../../api/sys';
-import { devicesDefaultPaths, deviceTypeConst } from '../../../constants';
+import { DEVICES_DEFAULT_PATH, DEVICES_TYPE_CONST } from '../../../constants';
 import { Confirm as ConfirmDialog } from '../../../components/DialogBox';
 import { Selection as SelectionDialog } from '../../../components/DialogBox';
 import { pathUp } from '../../../utils/paths';
@@ -92,7 +92,7 @@ class ToolbarAreaPane extends React.Component {
     handleSetMtpStorage(
       { selectedValue, mtpStoragesList },
       {
-        filePath: devicesDefaultPaths.mtp,
+        filePath: DEVICES_DEFAULT_PATH.mtp,
         ignoreHidden: hideHiddenFiles[deviceType]
       },
       deviceType
@@ -128,7 +128,7 @@ class ToolbarAreaPane extends React.Component {
     const _directoryLists = directoryLists[deviceType];
     const _currentBrowsePath = currentBrowsePath[deviceType];
     const _activeToolbarList = toolbarList[deviceType];
-    const isMtp = deviceType === deviceTypeConst.mtp;
+    const isMtp = deviceType === DEVICES_TYPE_CONST.mtp;
 
     Object.keys(_activeToolbarList).map(a => {
       const item = _activeToolbarList[a];
@@ -298,7 +298,7 @@ class ToolbarAreaPane extends React.Component {
           id="selectionDialog"
           showDiskAvatars={true}
           open={
-            deviceType === deviceTypeConst.mtp &&
+            deviceType === DEVICES_TYPE_CONST.mtp &&
             toggleMtpStorageSelectionDialog
           }
           onClose={this.handleMtpStoragesListClick}
@@ -394,7 +394,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
       ) => async (_, getState) => {
         try {
           switch (deviceType) {
-            case deviceTypeConst.local:
+            case DEVICES_TYPE_CONST.local:
               const {
                 error: localError,
                 stderr: localStderr,
@@ -421,7 +421,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
                 })
               );
               break;
-            case deviceTypeConst.mtp:
+            case DEVICES_TYPE_CONST.mtp:
               const mtpStoragesListSelected = getMtpStoragesListSelected(
                 getState().Home
               );

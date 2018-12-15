@@ -8,12 +8,12 @@ import {
 } from '../api/sys/index';
 import { baseName, PATHS } from '../utils/paths';
 import { fileExistsSync, writeFileAsync } from '../api/sys/fileOps';
-import { deviceTypeConst } from '../constants/index';
+import { DEVICES_TYPE_CONST } from '../constants/index';
 import fs from 'fs';
 import { daysDiff, yearMonthNow } from '../utils/date';
 
 const { logFile, settingsFile, logFolder } = PATHS;
-const deviceType = deviceTypeConst.local;
+const deviceType = DEVICES_TYPE_CONST.local;
 const logFileRotationCleanUpThreshold = 60; //days
 
 export default class Boot {

@@ -52,7 +52,7 @@ import {
   makeFilesDrag
 } from '../selectors';
 import { makeHideHiddenFiles } from '../../Settings/selectors';
-import { deviceTypeConst } from '../../../constants';
+import { DEVICES_TYPE_CONST } from '../../../constants';
 import {
   renameLocalFiles,
   checkFileExists,
@@ -111,7 +111,7 @@ class FileExplorer extends Component {
       hideHiddenFiles
     } = this.props;
 
-    if (deviceType === deviceTypeConst.mtp) {
+    if (deviceType === DEVICES_TYPE_CONST.mtp) {
       handleFetchMtpStorageOptions(
         {
           filePath: currentBrowsePath[deviceType],
@@ -155,7 +155,7 @@ class FileExplorer extends Component {
   ) => {
     const { deviceType, mtpDevice } = this.props;
 
-    if (deviceType === deviceTypeConst.mtp && !mtpDevice.isAvailable) {
+    if (deviceType === DEVICES_TYPE_CONST.mtp && !mtpDevice.isAvailable) {
       return null;
     }
 
@@ -788,7 +788,7 @@ class FileExplorer extends Component {
     ];
     const { selected } = queue;
     const emptyRows = nodes.length < 1;
-    const isMtp = deviceType === deviceTypeConst.mtp;
+    const isMtp = deviceType === DEVICES_TYPE_CONST.mtp;
     const { toggleDialog, togglePasteConfirmDialog } = this.state;
     const { rename, newFolder } = toggleDialog;
     const tableData = {
@@ -798,9 +798,9 @@ class FileExplorer extends Component {
 
     const _eventTarget = 'tableWrapperTarget';
     const togglePasteDialog =
-      deviceType === deviceTypeConst.mtp && fileTransferProgess.toggle;
+      deviceType === DEVICES_TYPE_CONST.mtp && fileTransferProgess.toggle;
     const renameSecondaryText =
-      deviceType === deviceTypeConst.mtp
+      deviceType === DEVICES_TYPE_CONST.mtp
         ? `Every MTP device does not support the Rename feature.`
         : ``;
 
@@ -1179,7 +1179,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
       ) => async (_, getState) => {
         try {
           switch (deviceType) {
-            case deviceTypeConst.local:
+            case DEVICES_TYPE_CONST.local:
               const {
                 error: localError,
                 stderr: localStderr,
@@ -1207,7 +1207,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
                 })
               );
               break;
-            case deviceTypeConst.mtp:
+            case DEVICES_TYPE_CONST.mtp:
               const mtpStoragesListSelected = getMtpStoragesListSelected(
                 getState().Home
               );
@@ -1252,7 +1252,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
       ) => async (_, getState) => {
         try {
           switch (deviceType) {
-            case deviceTypeConst.local:
+            case DEVICES_TYPE_CONST.local:
               const {
                 error: localError,
                 stderr: localStderr,
@@ -1279,7 +1279,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
                 })
               );
               break;
-            case deviceTypeConst.mtp:
+            case DEVICES_TYPE_CONST.mtp:
               const mtpStoragesListSelected = getMtpStoragesListSelected(
                 getState().Home
               );
@@ -1339,7 +1339,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
       ) => {
         try {
           switch (deviceType) {
-            case deviceTypeConst.local:
+            case DEVICES_TYPE_CONST.local:
               pasteFiles(
                 { ...pasteArgs },
                 { ...fetchDirListArgs },
@@ -1349,7 +1349,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
                 getState
               );
               break;
-            case deviceTypeConst.mtp:
+            case DEVICES_TYPE_CONST.mtp:
               pasteFiles(
                 { ...pasteArgs },
                 { ...fetchDirListArgs },

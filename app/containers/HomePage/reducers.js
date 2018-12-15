@@ -2,7 +2,7 @@
 
 import { actionTypes } from './actions';
 import { PATHS } from '../../utils/paths';
-import { devicesDefaultPaths, deviceTypeConst } from '../../constants';
+import { DEVICES_DEFAULT_PATH, DEVICES_TYPE_CONST } from '../../constants';
 import path from 'path';
 
 export const initialState = {
@@ -51,7 +51,7 @@ export const initialState = {
   },
 
   toolbarList: {
-    [deviceTypeConst.local]: {
+    [DEVICES_TYPE_CONST.local]: {
       up: {
         enabled: true,
         label: 'Folder Up',
@@ -75,7 +75,7 @@ export const initialState = {
         imgSrc: 'Toolbar/settings.svg'
       }
     },
-    [deviceTypeConst.mtp]: {
+    [DEVICES_TYPE_CONST.mtp]: {
       up: {
         enabled: true,
         label: 'Folder Up',
@@ -107,7 +107,7 @@ export const initialState = {
   },
 
   directoryLists: {
-    [deviceTypeConst.local]: {
+    [DEVICES_TYPE_CONST.local]: {
       order: 'asc',
       orderBy: 'name',
       queue: {
@@ -116,7 +116,7 @@ export const initialState = {
       nodes: [],
       isLoaded: false
     },
-    [deviceTypeConst.mtp]: {
+    [DEVICES_TYPE_CONST.mtp]: {
       order: 'asc',
       orderBy: 'name',
       queue: {
@@ -128,15 +128,15 @@ export const initialState = {
   },
 
   currentBrowsePath: {
-    [deviceTypeConst.local]: devicesDefaultPaths.local,
-    [deviceTypeConst.mtp]: devicesDefaultPaths.mtp
+    [DEVICES_TYPE_CONST.local]: DEVICES_DEFAULT_PATH.local,
+    [DEVICES_TYPE_CONST.mtp]: DEVICES_DEFAULT_PATH.mtp
   },
 
   mtpDevice: {
     isAvailable: false
   },
   contextMenuList: {
-    [deviceTypeConst.local]: {
+    [DEVICES_TYPE_CONST.local]: {
       rename: {
         enabled: true,
         label: 'Rename',
@@ -158,7 +158,7 @@ export const initialState = {
         data: {}
       }
     },
-    [deviceTypeConst.mtp]: {
+    [DEVICES_TYPE_CONST.mtp]: {
       rename: {
         enabled: true,
         label: 'Rename',

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { styles } from './styles';
 import { withStyles } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -17,7 +18,7 @@ import { withReducer } from '../../store/reducers/withReducer';
 import reducers from './reducers';
 import { makeToggleSettings, makeHideHiddenFiles } from './selectors';
 import { hideHiddenFiles, toggleSettings } from './actions';
-import { deviceTypeConst } from '../../constants';
+import { DEVICES_TYPE_CONST } from '../../constants';
 import { handleReloadDirList } from '../HomePage/actions';
 import {
   makeCurrentBrowsePath,
@@ -36,6 +37,12 @@ class Settings extends Component {
   _handleToggleSettings = confirm => {
     const { handleToggleSettings } = this.props;
     handleToggleSettings(confirm);
+  };
+
+  handleAutoUpdateCheckChange = ({ ...args }) => {
+    const { toggle } = args;
+
+    console.log(toggle);
   };
 
   handleHiddenFilesChange = ({ ...args }, deviceType) => {
@@ -59,9 +66,14 @@ class Settings extends Component {
   };
 
   render() {
-    const { toggleSettings, hideHiddenFiles } = this.props;
-    const hideHiddenFilesLocal = hideHiddenFiles[deviceTypeConst.local];
-    const hideHiddenFilesMtp = hideHiddenFiles[deviceTypeConst.mtp];
+    const {
+      toggleSettings,
+      hideHiddenFiles,
+      classes: styles,
+      enableAutoUpdateCheck
+    } = this.props;
+    const hideHiddenFilesLocal = hideHiddenFiles[DEVICES_TYPE_CONST.local];
+    const hideHiddenFilesMtp = hideHiddenFiles[DEVICES_TYPE_CONST.mtp];
 
     if (toggleSettings) {
       return (
@@ -74,41 +86,77 @@ class Settings extends Component {
           <DialogTitle>Settings</DialogTitle>
           <DialogContent>
             <FormControl component="fieldset">
-              <FormLabel component="legend">Show Hidden Files</FormLabel>
-              <FormGroup>
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={!hideHiddenFilesLocal}
-                      onChange={event =>
-                        this.handleHiddenFilesChange(
-                          {
-                            toggle: !hideHiddenFilesLocal
-                          },
-                          deviceTypeConst.local
-                        )
-                      }
-                    />
-                  }
-                  label="Desktop"
-                />
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={!hideHiddenFilesMtp}
-                      onChange={event =>
-                        this.handleHiddenFilesChange(
-                          {
-                            toggle: !hideHiddenFilesMtp
-                          },
-                          deviceTypeConst.mtp
-                        )
-                      }
-                    />
-                  }
-                  label="MTP Device"
-                />
-              </FormGroup>
+              <div className={styles.block}>
+                <Typography variant="subheading" className={styles.subheading}>
+                  General Settings
+                </Typography>
+                <FormGroup>
+                  <Typography variant="body2" className={styles.title}>
+                    Enable auto-update check
+                  </Typography>
+
+                  <FormControlLabel
+                    className={styles.switch}
+                    control={
+                      <Switch
+                        checked={!enableAutoUpdateCheck}
+                        onChange={event =>
+                          this.handleAutoUpdateCheckChange({
+                            toggle: !enableAutoUpdateCheck
+                          })
+                        }
+                      />
+                    }
+                    label={enableAutoUpdateCheck ? `Enabled` : `Disabled`}
+                  />
+                </FormGroup>
+              </div>
+
+              <div>
+                <Typography variant="subheading" className={styles.subheading}>
+                  File Manager Settings
+                </Typography>
+
+                <FormGroup>
+                  <Typography variant="body2" className={styles.title}>
+                    Show hidden files
+                  </Typography>
+                  <FormControlLabel
+                    className={styles.switch}
+                    control={
+                      <Switch
+                        checked={!hideHiddenFilesLocal}
+                        onChange={event =>
+                          this.handleHiddenFilesChange(
+                            {
+                              toggle: !hideHiddenFilesLocal
+                            },
+                            DEVICES_TYPE_CONST.local
+                          )
+                        }
+                      />
+                    }
+                    label="Desktop"
+                  />
+                  <FormControlLabel
+                    className={styles.switch}
+                    control={
+                      <Switch
+                        checked={!hideHiddenFilesMtp}
+                        onChange={event =>
+                          this.handleHiddenFilesChange(
+                            {
+                              toggle: !hideHiddenFilesMtp
+                            },
+                            DEVICES_TYPE_CONST.mtp
+                          )
+                        }
+                      />
+                    }
+                    label="MTP Device"
+                  />
+                </FormGroup>
+              </div>
             </FormControl>
           </DialogContent>
           <DialogActions>

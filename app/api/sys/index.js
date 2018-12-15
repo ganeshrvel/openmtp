@@ -11,7 +11,7 @@ import { log } from '@Log';
 import { mtp as _mtpCli } from '@Binaries';
 import { spawn, exec } from 'child_process';
 import findLodash from 'lodash/find';
-import { deviceTypeConst } from '../../constants';
+import { DEVICES_TYPE_CONST } from '../../constants';
 import { baseName, PATHS } from '../../utils/paths';
 import {
   clearFileTransfer,
@@ -123,7 +123,7 @@ export const checkFileExists = async (
 
     let fullPath = null;
     switch (deviceType) {
-      case deviceTypeConst.local:
+      case DEVICES_TYPE_CONST.local:
         if (_isArray) {
           for (let i in filePath) {
             let item = filePath[i];
@@ -136,7 +136,7 @@ export const checkFileExists = async (
         fullPath = path.resolve(filePath);
         return await fs.existsSync(fullPath);
         break;
-      case deviceTypeConst.mtp:
+      case DEVICES_TYPE_CONST.mtp:
         if (_isArray) {
           for (let i in filePath) {
             let item = filePath[i];
