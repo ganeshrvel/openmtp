@@ -1,7 +1,7 @@
 {
   "name": "openmtp",
   "productName": "OpenMTP",
-  "version": "0.8.3",
+  "version": "0.9.2",
   "description": "OpenMTP | Android File Transfer for macOS",
   "scripts": {
     "build": "concurrently \"yarn build-main\" \"yarn build-renderer\"",
@@ -20,12 +20,19 @@
     "start": "cross-env NODE_ENV=production electron ./app/",
     "start-main-dev": "cross-env HOT=1 NODE_ENV=development electron -r babel-register ./app/main.dev.js",
     "start-renderer-dev": "cross-env NODE_ENV=development node --trace-warnings -r babel-register ./node_modules/webpack-dev-server/bin/webpack-dev-server --config webpack/config.renderer.dev.js",
-    "publish-mac": "yarn build && electron-builder build --mac --config=config/deploy/electron-builder.yml --publish always"
+    "publish-mac": "build --mac --publish always"
   },
   "browserslist": "electron 3.0",
   "build": {
     "productName": "OpenMTP",
     "appId": "io.ganeshrvel.openmtp",
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "ganeshrvel",
+        "repo": "openmtp"
+      }
+    ],
     "files": [
       "dist/",
       "node_modules/",
@@ -36,7 +43,7 @@
     ],
     "extraFiles": [
       {
-        "from": "resources/mac/bin",
+        "from": "build/mac/bin",
         "to": "Resources/bin",
         "filter": [
           "**/*"
@@ -73,11 +80,7 @@
         "deb",
         "AppImage"
       ],
-      "category": "Development"
-    },
-    "directories": {
-      "buildResources": "resources",
-      "output": "release"
+      "category": "Data Transfer"
     }
   },
   "repository": {

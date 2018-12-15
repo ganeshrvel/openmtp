@@ -35,10 +35,10 @@ class ProgressbarPage extends Component {
     const { progressTitle, progressBodyText, value, variant } = this.state;
     return (
       <div className={styles.root}>
-        <Typography variant="subheading" className={styles.subheading}>
+        <Typography variant="body1" className={styles.progressTitle}>
           {progressTitle}
         </Typography>
-        <Typography variant="body1" className={styles.subheading}>
+        <Typography variant="body1" className={styles.progressBodyText}>
           {progressBodyText}
         </Typography>
         <LinearProgress color="secondary" variant={variant} value={value} />

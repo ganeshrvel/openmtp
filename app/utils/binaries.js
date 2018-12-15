@@ -12,6 +12,6 @@ const { getAppPath } = remote.app;
 const binariesPath =
   IS_PROD && isPackaged
     ? path.join(path.dirname(getAppPath()), '..', './Resources', './bin')
-    : path.join(root, './resources', getPlatform(), './bin');
+    : path.join(root, './build', getPlatform(), './bin');
 
 export const mtp = path.resolve(path.join(binariesPath, './mtp-cli'));

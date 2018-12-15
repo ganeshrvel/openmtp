@@ -9,7 +9,11 @@ export const styles = theme => ({
     width: 500,
     marginTop: 10
   },
-  subheading: {
+  progressBodyText: {
+    marginBottom: 10
+  },
+  progressTitle: {
+    fontWeight: 'bold',
     marginBottom: 10
   }
 });
