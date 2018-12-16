@@ -1,6 +1,6 @@
 'use strict';
 
-import { dialog, BrowserWindow, remote, ipcRenderer } from 'electron';
+import { dialog, BrowserWindow, remote, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import { isConnected } from '../utils/isOnline';
 import { log } from '../utils/log';
@@ -9,6 +9,8 @@ import { PATHS } from '../utils/paths';
 import { ENABLE_BACKGROUND_AUTO_UPDATE } from '../constants';
 
 let progressbarWindow = null;
+let isFileTransferActiveFlag = false;
+let isFileTransferActiveSeekFlag = false;
 
 const createChildWindow = ({ mainWindow }) => {
   return new BrowserWindow({
@@ -30,6 +32,19 @@ const fireProgressbar = ({ mainWindow }) => {
   if (progressbarWindow) {
     progressbarWindow.focus();
     return null;
+  }
+
+  mainWindow.webContents.send('isFileTransferActiveSeek', {
+    check: true
+  });
+
+  if (!isFileTransferActiveSeekFlag) {
+    ipcMain.on('isFileTransferActiveReply', (event, { ...args }) => {
+      const { isActive } = args;
+
+      isFileTransferActiveFlag = isActive;
+    });
+    isFileTransferActiveSeekFlag = true;
   }
 
   progressbarWindow = createChildWindow({ mainWindow });
@@ -61,7 +76,8 @@ export default class AppUpdate {
     this.autoUpdater.on('error', error => {
       const errorMsg =
         error == null ? 'unknown' : (error.stack || error).toString();
-      this.mainWindow.setProgressBar(-1);
+
+      this.setTaskBarProgressBar(-1);
       if (progressbarWindow !== null) {
         progressbarWindow.close();
       }
@@ -71,7 +87,7 @@ export default class AppUpdate {
     });
 
     this.autoUpdater.on('update-available', () => {
-      this.mainWindow.setProgressBar(-1);
+      this.setTaskBarProgressBar(-1);
       if (progressbarWindow !== null) {
         progressbarWindow.close();
       }
@@ -107,7 +123,7 @@ export default class AppUpdate {
     });
 
     this.autoUpdater.on('update-downloaded', () => {
-      this.mainWindow.setProgressBar(-1);
+      this.setTaskBarProgressBar(-1);
       if (progressbarWindow !== null) {
         progressbarWindow.close();
       }
@@ -148,7 +164,7 @@ export default class AppUpdate {
       });
 
       this.autoUpdater.on('update-not-available', () => {
-        this.mainWindow.setProgressBar(-1);
+        this.setTaskBarProgressBar(-1);
         if (progressbarWindow !== null) {
           progressbarWindow.close();
         }
@@ -197,11 +213,12 @@ export default class AppUpdate {
         );
         return null;
       }
-      
-      this.mainWindow.setProgressBar(2);
+
       fireProgressbar({ mainWindow: this.mainWindow });
+      this.setTaskBarProgressBar(2);
+      
       progressbarWindow.webContents.once('dom-ready', () => {
-        progressbarWindow.webContents.send('progressbarCommunicate', {
+        progressbarWindow.webContents.send('progressBarDataCommunication', {
           progressTitle: `Checking For Updates`,
           progressBodyText: `Please wait...`,
           value: 0,
@@ -246,16 +263,24 @@ export default class AppUpdate {
       variant: `determinate`
     };
 
-    this.mainWindow.setProgressBar(value / 100);
+    this.setTaskBarProgressBar(value / 100);
     if (this.domReadyFlag) {
-      progressbarWindow.webContents.send('progressbarCommunicate', data);
+      progressbarWindow.webContents.send('progressBarDataCommunication', data);
       return null;
     }
 
     progressbarWindow.webContents.once('dom-ready', () => {
-      progressbarWindow.webContents.send('progressbarCommunicate', data);
+      progressbarWindow.webContents.send('progressBarDataCommunication', data);
 
       this.domReadyFlag = true;
     });
+  }
+
+  setTaskBarProgressBar(value) {
+    if (isFileTransferActiveFlag) {
+      return null;
+    }
+
+    this.mainWindow.setProgressBar(value);
   }
 }

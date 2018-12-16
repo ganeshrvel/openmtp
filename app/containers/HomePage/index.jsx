@@ -20,8 +20,9 @@ class Home extends Component {
 
   async componentWillMount() {
     /*
+    todo: in the indefinite white screen which appears at the startup, as users to disconnect the phone
+    todo: while copying multiple files the folder merge check fails
     todo: Add os name and version to the error log
-    todo: data copy in the taskbar
     todo: privacy policy
     todo: crash report and analytics -> onboarding the first time users
     todo: display version number and release notes in updates

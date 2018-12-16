@@ -34,6 +34,11 @@ export const isFloat = n => {
   return Number(n) === n && n % 1 !== 0;
 };
 
+export const isNumber = n => {
+  
+  return typeof n === 'number'
+};
+
 export const niceBytes = (a, b) => {
   if (0 === a) {
     return '0 Bytes';

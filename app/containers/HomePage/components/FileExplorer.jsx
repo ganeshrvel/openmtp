@@ -1,7 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { remote } from 'electron';
+import { remote, ipcRenderer } from 'electron';
 import { styles } from '../styles/FileExplorer';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -63,8 +63,14 @@ import {
   renameMtpFiles
 } from '../../../api/sys';
 import { baseName, pathUp, sanitizePath } from '../../../utils/paths';
-import { isFloat, isInt, niceBytes, quickHash } from '../../../utils/funcs';
-import { isNumber } from 'util';
+import {
+  isFloat,
+  isInt,
+  isNumber,
+  niceBytes,
+  quickHash
+} from '../../../utils/funcs';
+
 import { throwAlert } from '../../Alerts/actions';
 import { imgsrc } from '../../../utils/imgsrc';
 const { Menu, getCurrentWindow } = remote;
@@ -127,7 +133,29 @@ class FileExplorer extends Component {
     }
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    const { deviceType } = this.props;
+    /**
+     * check whether an active file trasfer window is available.
+     * This is to prevent race between file transfer and app update taskbar progressbar access
+     */
+
+    if (deviceType === DEVICES_TYPE_CONST.local) {
+      ipcRenderer.on('isFileTransferActiveSeek', (event, { ...args }) => {
+        const { check: checkIsFileTransferActiveSeek } = args;
+        if (!checkIsFileTransferActiveSeek) {
+          return null;
+        }
+
+        const { fileTransferProgess } = this.props;
+        const { toggle: isActiveFileTransferProgess } = fileTransferProgess;
+
+        ipcRenderer.send('isFileTransferActiveReply', {
+          isActive: isActiveFileTransferProgess
+        });
+      });
+    }
+  }
 
   _fetchDirList({ ...args }) {
     const { handleFetchDirList, hideHiddenFiles } = this.props;
