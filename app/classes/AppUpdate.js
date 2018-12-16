@@ -241,6 +241,7 @@ export default class AppUpdate {
       variant: `determinate`
     };
 
+    progressbarWindow.setProgressBar(value / 100);
     if (this.domReadyFlag) {
       progressbarWindow.webContents.send('progressbarCommunicate', data);
       return null;
