@@ -1,6 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react';
+import { remote } from 'electron';
 import { styles } from '../styles/FileExplorer';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -65,9 +66,8 @@ import { baseName, pathUp, sanitizePath } from '../../../utils/paths';
 import { isFloat, isInt, niceBytes, quickHash } from '../../../utils/funcs';
 import { isNumber } from 'util';
 import { throwAlert } from '../../Alerts/actions';
-import { remote } from 'electron';
 import { imgsrc } from '../../../utils/imgsrc';
-const { Menu } = remote;
+const { Menu, getCurrentWindow } = remote;
 
 let filesDragGhostImg = new Image(0, 0);
 filesDragGhostImg.src = imgsrc('copy.svg');
@@ -1346,7 +1346,8 @@ const mapDispatchToProps = (dispatch, ownProps) =>
                 'mtpToLocal',
                 deviceType,
                 dispatch,
-                getState
+                getState,
+                getCurrentWindow
               );
               break;
             case DEVICES_TYPE_CONST.mtp:
@@ -1356,7 +1357,8 @@ const mapDispatchToProps = (dispatch, ownProps) =>
                 'localtoMtp',
                 deviceType,
                 dispatch,
-                getState
+                getState,
+                getCurrentWindow
               );
               break;
             default:

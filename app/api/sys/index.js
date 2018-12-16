@@ -32,9 +32,7 @@ const readdir = Promise.promisify(fs.readdir);
 const execPromise = Promise.promisify(exec);
 
 /**
- * If you are reading this then let me tell you something "bunch of idiots are working at Apple inc."
- *
- * This is made to support flex quotes parser for mtp cli.
+ * This hack is to support flex quotes parser for mtp cli.
  */
 export const escapeShellMtp = cmd => {
   if (cmd.indexOf(`\\"`) !== -1 && cmd.indexOf(`"\\`) !== -1) {
@@ -570,7 +568,8 @@ export const pasteFiles = (
   direction,
   deviceType,
   dispatch,
-  getState
+  getState,
+  getCurrentWindow
 ) => {
   try {
     const {
@@ -640,7 +639,8 @@ export const pasteFiles = (
           { ...cmdArgs },
           deviceType,
           dispatch,
-          getState
+          getState,
+          getCurrentWindow
         );
         break;
 
@@ -663,7 +663,8 @@ export const pasteFiles = (
           { ...cmdArgs },
           deviceType,
           dispatch,
-          getState
+          getState,
+          getCurrentWindow
         );
         break;
       default:
@@ -680,7 +681,8 @@ const _pasteFiles = (
   { ...cmdArgs },
   deviceType,
   dispatch,
-  getState
+  getState,
+  getCurrentWindow
 ) => {
   try {
     const { _queue } = cmdArgs;
@@ -715,6 +717,8 @@ const _pasteFiles = (
       const elapsedTime = msToTime(currentCopiedTime - startTime);
       prevCopiedTime = currentCopiedTime;
       prevCopiedBlockSize = currentCopiedBlockSize;
+
+      getCurrentWindow().setProgressBar(_percentage / 100);
       dispatch(
         setFileTransferProgress({
           toggle: true,
@@ -824,6 +828,7 @@ const _pasteFiles = (
           data: null,
           callback: a => {
             transferList = null;
+            getCurrentWindow().setProgressBar(-1);
             dispatch(clearFileTransfer());
             dispatch(
               fetchDirList({ ...fetchDirListArgs }, deviceType, getState)
@@ -835,6 +840,7 @@ const _pasteFiles = (
 
     cmd.on('exit', code => {
       transferList = null;
+      getCurrentWindow().setProgressBar(-1);
       dispatch(clearFileTransfer());
       dispatch(fetchDirList({ ...fetchDirListArgs }, deviceType, getState));
     });

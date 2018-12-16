@@ -1,5 +1,5 @@
 'use strict';
-import { log } from '../utils/Log';
+import { log } from '../utils/log';
 import { readFileSync, writeFileSync } from '../api/sys/fileOps';
 
 export default class Storage {

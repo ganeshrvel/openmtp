@@ -61,6 +61,7 @@ export default class AppUpdate {
     this.autoUpdater.on('error', error => {
       const errorMsg =
         error == null ? 'unknown' : (error.stack || error).toString();
+      this.mainWindow.setProgressBar(-1);
       if (progressbarWindow !== null) {
         progressbarWindow.close();
       }
@@ -70,6 +71,7 @@ export default class AppUpdate {
     });
 
     this.autoUpdater.on('update-available', () => {
+      this.mainWindow.setProgressBar(-1);
       if (progressbarWindow !== null) {
         progressbarWindow.close();
       }
@@ -105,6 +107,7 @@ export default class AppUpdate {
     });
 
     this.autoUpdater.on('update-downloaded', () => {
+      this.mainWindow.setProgressBar(-1);
       if (progressbarWindow !== null) {
         progressbarWindow.close();
       }
@@ -145,6 +148,7 @@ export default class AppUpdate {
       });
 
       this.autoUpdater.on('update-not-available', () => {
+        this.mainWindow.setProgressBar(-1);
         if (progressbarWindow !== null) {
           progressbarWindow.close();
         }
@@ -193,7 +197,8 @@ export default class AppUpdate {
         );
         return null;
       }
-
+      
+      this.mainWindow.setProgressBar(2);
       fireProgressbar({ mainWindow: this.mainWindow });
       progressbarWindow.webContents.once('dom-ready', () => {
         progressbarWindow.webContents.send('progressbarCommunicate', {
@@ -241,7 +246,7 @@ export default class AppUpdate {
       variant: `determinate`
     };
 
-    progressbarWindow.setProgressBar(value / 100);
+    this.mainWindow.setProgressBar(value / 100);
     if (this.domReadyFlag) {
       progressbarWindow.webContents.send('progressbarCommunicate', data);
       return null;

@@ -21,7 +21,7 @@ class Home extends Component {
   async componentWillMount() {
     /*
     todo: Add os name and version to the error log
-    todo: data and download progressbar in the taskbar
+    todo: data copy in the taskbar
     todo: privacy policy
     todo: crash report and analytics -> onboarding the first time users
     todo: display version number and release notes in updates
