@@ -18,30 +18,7 @@ class Home extends Component {
     super(props);
   }
 
-  async componentWillMount() {
-    /*
-    todo: in the indefinite white screen which appears at the startup, ask users to disconnect the phone
-    todo: exclude extensions in the sorting
-    todo: truncate and dont hide the extension in the fileexplorer
-    todo: privacy policy
-    todo: crash report and analytics -> onboarding the first time users
-    todo: display version number and release notes in updates
-    todo: opt out of and analytics in settings
-    todo: opt out of auto updates check in the popup confirm box
-    todo: bump electron and mui versions
-    todo: when you close the lid while update download is in process,
-      "A javaScript error occured in the main process: Uncaught Exception: " error is thrown
-      add process.on('uncaughtException', function (error) {
-              // Handle the error
-          }
-    todo: .env
-    todo: tags for github
-    todo: look into pure components
-    todo: share the app link
-    todo: donate via paypal
-    todo: app store
-   */
-  }
+  async componentWillMount() {}
 
   render() {
     const { classes: styles } = this.props;

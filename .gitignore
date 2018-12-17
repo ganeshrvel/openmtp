@@ -57,3 +57,5 @@ package-lock.json
 app/certs/*.pem
 certs/*
 *electron-builder.yml
+
+todo.txt
