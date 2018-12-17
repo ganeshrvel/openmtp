@@ -19,12 +19,12 @@ import {
   processMtpOutput,
   setFileTransferProgress
 } from '../../containers/HomePage/actions';
-import { isArray } from 'util';
 import {
   niceBytes,
   percentage,
   splitIntoLines,
-  truncate
+  truncate,
+  isArray
 } from '../../utils/funcs';
 import { msToTime, unixTimestampNow } from '../../utils/date';
 
@@ -126,7 +126,9 @@ export const checkFileExists = async (
           for (let i in filePath) {
             let item = filePath[i];
             fullPath = path.resolve(item);
-            return await fs.existsSync(fullPath);
+            if (await fs.existsSync(fullPath)) {
+              return true;
+            }
           }
           return null;
         }
@@ -139,7 +141,9 @@ export const checkFileExists = async (
           for (let i in filePath) {
             let item = filePath[i];
             fullPath = path.resolve(item);
-            return await checkMtpFileExists(fullPath, mtpStoragesListSelected);
+            if (await checkMtpFileExists(fullPath, mtpStoragesListSelected)) {
+              return true;
+            }
           }
           return null;
         }

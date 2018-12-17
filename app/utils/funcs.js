@@ -35,8 +35,11 @@ export const isFloat = n => {
 };
 
 export const isNumber = n => {
-  
-  return typeof n === 'number'
+  return typeof n === 'number';
+};
+
+export const isArray = n => {
+  return Array.isArray(n);
 };
 
 export const niceBytes = (a, b) => {

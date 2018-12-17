@@ -21,7 +21,8 @@ class Home extends Component {
   async componentWillMount() {
     /*
     todo: in the indefinite white screen which appears at the startup, ask users to disconnect the phone
-    todo: while copying multiple files the folder merge check fails
+    todo: exclude extensions in the sorting
+    todo: truncate and dont hide the extension in the fileexplorer
     todo: Add os name and version to the error log
     todo: privacy policy
     todo: crash report and analytics -> onboarding the first time users
