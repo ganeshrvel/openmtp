@@ -23,14 +23,11 @@ class Home extends Component {
     todo: in the indefinite white screen which appears at the startup, ask users to disconnect the phone
     todo: exclude extensions in the sorting
     todo: truncate and dont hide the extension in the fileexplorer
-    todo: Add os name and version to the error log
     todo: privacy policy
     todo: crash report and analytics -> onboarding the first time users
     todo: display version number and release notes in updates
     todo: opt out of and analytics in settings
     todo: opt out of auto updates check in the popup confirm box
-    todo: update the binary
-    todo: generate report should append ./mtp ls -v to the log before emailing
     todo: bump electron and mui versions
     todo: when you close the lid while update download is in process,
       "A javaScript error occured in the main process: Uncaught Exception: " error is thrown

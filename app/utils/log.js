@@ -5,7 +5,7 @@ import { APP_NAME, APP_VERSION } from '../constants';
 import { PATHS } from './paths';
 import { appendFileAsync } from '../api/sys/fileOps';
 import { dateTimeUnixTimestampNow } from './date';
-import { EOL } from 'os';
+import os, { EOL } from 'os';
 
 const { logFile } = PATHS;
 
@@ -48,7 +48,7 @@ export const log = {
         {
           monthInletters: true
         }
-      )}${EOL}${text.toString()}${EOL}${_consoleError}`
+      )}${EOL}OS type: ${os.type()} / OS Platform: ${os.platform()} / OS Release: ${os.release()}${EOL}${text.toString()}${EOL}${_consoleError}`
     });
   }
 };

@@ -10,7 +10,7 @@ import { baseName, PATHS } from '../../../utils/paths';
 import { log } from '@Log';
 import { shell, remote } from 'electron';
 import AdmZip from 'adm-zip';
-import { promisifiedRimraf } from '../../../api/sys';
+import { promisifiedRimraf, mtpVerboseReport } from '../../../api/sys';
 import { fileExistsSync } from '../../../api/sys/fileOps';
 import { AUTHOR_EMAIL } from '../../../constants';
 import { body, mailTo, subject } from '../../../templates/errorLog';
@@ -36,15 +36,19 @@ class GenerateErrorReport extends Component {
       zip.addLocalFile(logFile);
       zip.writeZip(logFileZippedPath);
     } catch (e) {
-      log.error(e, `ErrorBoundary -> compressLog`);
+      log.error(e, `GenerateErrorReport -> compressLog`);
     }
   };
 
   generateErrorLogs = async () => {
     const reportError = `Error report generation failed. Try again!`;
+
     try {
-      const { error } = await promisifiedRimraf(logFileZippedPath);
       const { handleThrowError } = this.props;
+
+      await mtpVerboseReport();
+
+      const { error } = await promisifiedRimraf(logFileZippedPath);
 
       if (error) {
         handleThrowError({
@@ -68,7 +72,7 @@ class GenerateErrorReport extends Component {
 
       shell.showItemInFolder(logFileZippedPath);
     } catch (e) {
-      log.error(e, `ErrorBoundary -> generateErrorLogs`);
+      log.error(e, `GenerateErrorReport -> generateErrorLogs`);
     }
   };
 

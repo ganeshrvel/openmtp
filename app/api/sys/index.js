@@ -300,7 +300,7 @@ export const renameLocalFiles = async ({ oldFilePath, newFilePath }) => {
   }
 };
 
-const promisifiedMkdirp = ({ newFolderPath }) => {
+const promisifiedMkdir = ({ newFolderPath }) => {
   try {
     return new Promise(function(resolve, reject) {
       mkdirp(newFolderPath, error => {
@@ -318,7 +318,7 @@ export const newLocalFolder = async ({ newFolderPath }) => {
       return { error: `Invalid path.`, stderr: null, data: null };
     }
 
-    const { error } = await promisifiedMkdirp({ newFolderPath });
+    const { error } = await promisifiedMkdir({ newFolderPath });
     if (error) {
       log.error(`${error}`, `newLocalFolder -> mkdir error`);
       return { error, stderr: null, data: false };
@@ -850,6 +850,23 @@ const _pasteFiles = (
     });
 
     return { error: null, stderr: null, data: true };
+  } catch (e) {
+    log.error(e);
+  }
+};
+
+export const mtpVerboseReport = async () => {
+  try {
+    const { data, error, stderr } = await promisifiedExec(`${mtpCli} "pwd" -v`);
+    if (error) {
+      log.doLog(`${error}`);
+      return { error, stderr, data: null };
+    } else if (stderr) {
+      log.doLog(`${stderr}`);
+      return { error, stderr, data: null };
+    }
+
+    return { error: null, stderr: null, data: data };
   } catch (e) {
     log.error(e);
   }
