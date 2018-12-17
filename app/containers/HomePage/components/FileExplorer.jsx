@@ -1075,6 +1075,7 @@ class FileExplorer extends Component {
         {hideColList.indexOf('name') < 0 && (
           <TableCell
             padding="default"
+            onClick={event => this._handleTableClick(n.path, deviceType, event)}
             className={`${styles.tableCell} nameCell`}
             onContextMenu={event =>
               this._handleContextMenuClick(
@@ -1107,6 +1108,7 @@ class FileExplorer extends Component {
         {hideColList.indexOf('size') < 0 && (
           <TableCell
             padding="none"
+            onClick={event => this._handleTableClick(n.path, deviceType, event)}
             className={`${styles.tableCell} sizeCell`}
             onContextMenu={event =>
               this._handleContextMenuClick(
@@ -1123,6 +1125,7 @@ class FileExplorer extends Component {
         {hideColList.indexOf('dateAdded') < 0 && (
           <TableCell
             padding="none"
+            onClick={event => this._handleTableClick(n.path, deviceType, event)}
             className={`${styles.tableCell} dateAddedCell`}
             onContextMenu={event =>
               this._handleContextMenuClick(

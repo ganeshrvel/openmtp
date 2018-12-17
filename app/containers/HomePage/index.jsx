@@ -20,7 +20,6 @@ class Home extends Component {
 
   async componentWillMount() {
     /*
-    todo: onclick filemanager row checkbox
     todo: in the indefinite white screen which appears at the startup, ask users to disconnect the phone
     todo: exclude extensions in the sorting
     todo: truncate and dont hide the extension in the fileexplorer
