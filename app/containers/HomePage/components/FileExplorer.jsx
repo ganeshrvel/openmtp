@@ -78,6 +78,8 @@ const { Menu, getCurrentWindow } = remote;
 let filesDragGhostImg = new Image(0, 0);
 filesDragGhostImg.src = imgsrc('copy.svg');
 
+let allowFileDropFlag = false;
+
 class FileExplorer extends Component {
   constructor(props) {
     super(props);
@@ -466,12 +468,15 @@ class FileExplorer extends Component {
     e.stopPropagation();
 
     if (destinationDeviceType === filesDrag.sourceDeviceType) {
+      allowFileDropFlag = false;
       return null;
     }
 
     if (filesDrag.lock) {
       return null;
     }
+
+    allowFileDropFlag = true;
     this.setFilesDrag({
       sourceDeviceType: filesDrag.sourceDeviceType,
       destinationDeviceType: destinationDeviceType,
@@ -487,8 +492,8 @@ class FileExplorer extends Component {
   handleTableDrop = e => {
     const { filesDrag } = this.props;
     const { sourceDeviceType, destinationDeviceType } = filesDrag;
-
     if (
+      !allowFileDropFlag ||
       destinationDeviceType === null ||
       destinationDeviceType === null ||
       sourceDeviceType === destinationDeviceType
