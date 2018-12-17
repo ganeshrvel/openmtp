@@ -20,7 +20,7 @@ class Home extends Component {
 
   async componentWillMount() {
     /*
-    todo: onclick filemanager row checkbo
+    todo: onclick filemanager row checkbox
     todo: in the indefinite white screen which appears at the startup, ask users to disconnect the phone
     todo: exclude extensions in the sorting
     todo: truncate and dont hide the extension in the fileexplorer
@@ -30,8 +30,6 @@ class Home extends Component {
     todo: display version number and release notes in updates
     todo: opt out of and analytics in settings
     todo: opt out of auto updates check in the popup confirm box
-    todo: in copy/paste, new folder, replace/merge, confirm, rename dialogues add the device name or sd card/int memory name
-
     todo: update the binary
     todo: generate report should append ./mtp ls -v to the log before emailing
     todo: bump electron and mui versions

@@ -53,7 +53,7 @@ import {
   makeFilesDrag
 } from '../selectors';
 import { makeHideHiddenFiles } from '../../Settings/selectors';
-import { DEVICES_TYPE_CONST } from '../../../constants';
+import { DEVICES_LABEL, DEVICES_TYPE_CONST } from '../../../constants';
 import {
   renameLocalFiles,
   checkFileExists,
@@ -814,7 +814,8 @@ class FileExplorer extends Component {
       hideColList,
       currentBrowsePath,
       directoryLists,
-      fileTransferProgess
+      fileTransferProgess,
+      filesDrag
     } = this.props;
     const { nodes, order, orderBy, queue, isLoaded } = directoryLists[
       deviceType
@@ -828,6 +829,7 @@ class FileExplorer extends Component {
       path: currentBrowsePath[deviceType],
       directoryLists: directoryLists[deviceType]
     };
+    const { sourceDeviceType, destinationDeviceType } = filesDrag;
 
     const _eventTarget = 'tableWrapperTarget';
     const togglePasteDialog =
@@ -840,7 +842,9 @@ class FileExplorer extends Component {
     return (
       <React.Fragment>
         <TextFieldEditDialog
-          titleText="Rename?"
+          titleText={`Rename a ${
+            rename.data.isFolder ? `folder` : `file`
+          } on your ${DEVICES_LABEL[deviceType]}?`}
           bodyText={`Path: ${rename.data.path || ''}`}
           secondaryText={`${renameSecondaryText}`}
           trigger={rename.toggle}
@@ -860,7 +864,7 @@ class FileExplorer extends Component {
         />
 
         <TextFieldEditDialog
-          titleText="New folder"
+          titleText={`Create a new folder on your ${DEVICES_LABEL[deviceType]}`}
           bodyText={`Path: ${newFolder.data.path || ''}`}
           trigger={newFolder.toggle}
           defaultValue={''}
@@ -879,7 +883,7 @@ class FileExplorer extends Component {
         />
 
         <ProgressBarDialog
-          titleText="Transferring..."
+          titleText={`Transferring files...`}
           bodyText1={`${
             fileTransferProgess.bodyText1 ? fileTransferProgess.bodyText1 : ''
           }`}
