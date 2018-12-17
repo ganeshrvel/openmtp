@@ -21,10 +21,12 @@ import { throwAlert } from '../../Alerts/actions';
 const { logFile } = PATHS;
 const { getPath } = remote.app;
 const desktopPath = getPath('desktop');
+const zippedLogFileBaseName = `${baseName(logFile)}.zip`;
 const logFileZippedPath = path.resolve(
-  path.join(desktopPath, `./${baseName(logFile)}.zip`)
+  path.join(desktopPath, `./${zippedLogFileBaseName}`)
 );
 const zip = new AdmZip();
+const mailToInstructions = `%0D%0A %0D%0A Attach the generated error report file "${zippedLogFileBaseName}" (which is found in your Desktop folder) along with the email`;
 
 class GenerateErrorReport extends Component {
   constructor(props) {
@@ -67,7 +69,7 @@ class GenerateErrorReport extends Component {
       }
 
       if (window) {
-        window.location.href = mailTo;
+        window.location.href = `${mailTo} ${mailToInstructions}`;
       }
 
       shell.showItemInFolder(logFileZippedPath);
@@ -85,8 +87,9 @@ class GenerateErrorReport extends Component {
             <li>Click on "EMAIL ERROR LOGS" button.</li>
             <li>It will open your email client.</li>
             <li>
-              Attach the generated report (found in your Desktop folder) along
-              with the email.
+              Attach the generated error report
+              <strong>{` ${zippedLogFileBaseName}`}</strong> (which is found in
+              your Desktop folder) along with the email.
             </li>
             <li>Click send.</li>
           </ul>
@@ -102,7 +105,7 @@ class GenerateErrorReport extends Component {
         <Typography variant="subheading" className={styles.emailIdWrapper}>
           <span>Developer email address: </span>
           <a
-            href={`mailto:${AUTHOR_EMAIL}?subject=${subject}&body=${body}`}
+            href={`${mailTo} ${mailToInstructions}`}
             className={styles.emailId}
           >
             {AUTHOR_EMAIL}
