@@ -2,6 +2,7 @@
 
 import { app, Menu, shell, BrowserWindow } from 'electron';
 import { PATHS } from './utils/paths';
+import { log } from './utils/log';
 
 /**
  * Child Window
@@ -27,6 +28,11 @@ const fireReportBugs = () => {
 
   reportBugsWindow = createChildWindow();
   reportBugsWindow.loadURL(`${PATHS.loadUrlPath}#reportBugsPage`);
+
+  reportBugsWindow.onerror = (error, url, line) => {
+    log.error(error, `menu -> reportBugsWindow -> onerror`);
+  };
+
   reportBugsWindow.on('closed', function() {
     reportBugsWindow = null;
   });

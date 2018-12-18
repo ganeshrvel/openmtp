@@ -3,11 +3,12 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import MenuBuilder from './menu';
 import { log } from './utils/log';
-import { DEBUG_PROD, IS_DEV } from './constants/env';
+import { DEBUG_PROD, IS_DEV, IS_PROD } from './constants/env';
 import AppUpdate from './classes/AppUpdate';
 import { PATHS } from './utils/paths';
 import { settingsStorage } from './utils/storageHelper';
 import { AUTO_UPDATE_CHECK_FIREUP_DELAY } from './constants';
+import { appEvents } from './utils/eventHandling';
 
 let mainWindow = null;
 const isSingleInstance = app.requestSingleInstanceLock();
@@ -17,6 +18,16 @@ if (IS_DEV || DEBUG_PROD) {
   const path = require('path');
   const p = path.join(__dirname, '..', 'app', 'node_modules');
   require('module').globalPaths.push(p);
+}
+
+if (IS_PROD) {
+  process.on('uncaughtException', error => {
+    log.error(error, `main.dev -> process -> uncaughtException`);
+  });
+
+  appEvents.on('error', error => {
+    log.error(error, `main.dev -> appEvents -> error`);
+  });
 }
 
 const installExtensions = async () => {
@@ -84,6 +95,10 @@ const createWindow = async () => {
         mainWindow.focus();
       }
     });
+
+    mainWindow.onerror = (error, url, line) => {
+      log.error(error, `main.dev -> mainWindow -> onerror`);
+    };
 
     mainWindow.on('closed', () => {
       mainWindow = null;
