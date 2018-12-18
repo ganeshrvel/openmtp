@@ -1,7 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { styles } from '../styles/ToolbarAreaPane';
+import { LazyLoaderOverLay, styles } from '../styles/ToolbarAreaPane';
 import { imgsrc } from '../../../utils/imgsrc.js';
 import MenuIcon from '@material-ui/icons/Menu';
 import AppBar from '@material-ui/core/AppBar';
@@ -320,10 +320,7 @@ class ToolbarAreaPane extends React.Component {
             currentBrowsePath={currentBrowsePath[deviceType]}
           />
         </Drawer>
-
-        {!isLoadedDirectoryLists && (
-          <div className={classNames(styles.lazyLoaderOverLay)} />
-        )}
+        {!isLoadedDirectoryLists && <LazyLoaderOverLay />}
 
         <AppBar position="static" elevation={0} className={styles.appBar}>
           <Toolbar className={styles.toolbar} disableGutters={true}>

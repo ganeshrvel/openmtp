@@ -14,7 +14,7 @@ export default class NotFound extends Component {
         <Helmet titleTemplate={`%s - ${title}`}>
           <title>Resource not found!</title>
         </Helmet>
-        <div className={styles.container} data-tid="container">
+        <div className={styles.container}>
           <h1>Resource not found!</h1>
           <Link to={routes.Home.path}>Go back</Link>
         </div>

@@ -7,7 +7,7 @@ import ReportBugsPage from '../containers/ReportBugsPage/Loadable';
 import ProgressbarPage from '../containers/ProgressbarPage';
 import NotFoundPage from '../containers/NotFoundPage/Loadable';
 
-const routes = {
+export const routes = {
   Home: {
     path: '/',
     exact: true,
