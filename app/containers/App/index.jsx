@@ -1,6 +1,9 @@
 'use strict';
 
 import React, { Component } from 'react';
+import os from 'os';
+import Analytics from 'electron-ga';
+import uuid from 'uuid/v4';
 import { theme, styles } from './styles';
 import Alerts from '../Alerts';
 import Titlebar from './components/Titlebar';
@@ -19,6 +22,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import reducers from './reducers';
 import { copyJsonFileToSettings } from '../Settings/actions';
+import { IS_PROD } from '../../constants/env';
 
 const appTheme = createMuiTheme(theme());
 const bootObj = new Boot();
@@ -38,6 +42,13 @@ class App extends Component {
 
   async componentWillMount() {
     try {
+      //todo: fixme
+      if (true /*IS_PROD*/) {
+        const analytics = new Analytics(`UA-131227413-1`);//todo: move to config file
+        analytics.send('screenview', { cd: '/Home' });
+        analytics.send(`pageview`, { dp: '/Home' });
+      }
+
       //For an existing installation
       if (bootObj.quickVerify()) {
         this.writeJsonToSettings();

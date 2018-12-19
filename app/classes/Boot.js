@@ -12,13 +12,13 @@ import fs from 'fs';
 import { daysDiff, yearMonthNow } from '../utils/date';
 import { LOG_FILE_ROTATION_CLEANUP_THRESHOLD, DEVICES_TYPE_CONST } from '../constants';
 
-const { logFile, settingsFile, logFolder } = PATHS;
+const { logFile, settingsFile, logDir } = PATHS;
 const deviceType = DEVICES_TYPE_CONST.local;
 const logFileRotationCleanUpThreshold = LOG_FILE_ROTATION_CLEANUP_THRESHOLD;
 
 export default class Boot {
   constructor() {
-    this.verifyDirList = [logFolder];
+    this.verifyDirList = [logDir];
     this.verifyFileList = [settingsFile, logFile];
   }
 
@@ -125,7 +125,7 @@ export default class Boot {
 
   cleanRotationFiles() {
     try {
-      const dirFileList = fs.readdirSync(logFolder);
+      const dirFileList = fs.readdirSync(logDir);
       const pattern = `^\\${baseName(logFile)}`;
       const _regex = new RegExp(pattern, 'gi');
       const filesList = dirFileList.filter(elm => {
@@ -149,7 +149,7 @@ export default class Boot {
 
         const _diff = daysDiff(yearMonthNow({}), dateMatch[0]);
         if (_diff >= logFileRotationCleanUpThreshold) {
-          await promisifiedRimraf(`${logFolder}/${a}`);
+          await promisifiedRimraf(`${logDir}/${a}`);
         }
       });
     } catch (e) {

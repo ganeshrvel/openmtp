@@ -9,16 +9,17 @@ import { productName } from '../../package.json';
 
 const root = process.cwd();
 const appPath = path.join(root, `./app`);
+const configDir = path.join(root, `./config`);
 const homeDir = os.homedir();
-const profileFolder = path.join(homeDir, `./.io.ganeshrvel`, `openmtp`);
+const profileDir = path.join(homeDir, `./.io.ganeshrvel`, `openmtp`);
 const rotateFile = yearMonthNow({});
 const logFileName = IS_DEV
   ? `error-${rotateFile}.dev.log`
   : `error-${rotateFile}.log`;
-const logFolder = path.join(profileFolder, `./logs`);
-const logFile = path.join(logFolder, `./${productName}-${logFileName}`);
-const settingsFile = path.join(profileFolder, `./settings.json`);
-const appUpdateFile = path.join(root, `./dev-app-update.yml`);
+const logDir = path.join(profileDir, `./logs`);
+const logFile = path.join(logDir, `./${productName}-${logFileName}`);
+const settingsFile = path.join(profileDir, `./settings.json`);
+const appUpdateFile = path.join(configDir, `./dev-app-update.yml`);
 
 export const PATHS = {
   root: path.resolve(root),
@@ -26,8 +27,9 @@ export const PATHS = {
   dist: path.resolve(path.join(root, `./app/dist`)),
   nodeModules: path.resolve(path.join(root, `./node_modules`)),
   homeDir: path.resolve(homeDir),
-  profileFolder: path.resolve(profileFolder),
-  logFolder: path.resolve(logFolder),
+  profileDir: path.resolve(profileDir),
+  configDir: path.resolve(configDir),
+  logDir: path.resolve(logDir),
   logFile: path.resolve(logFile),
   settingsFile: path.resolve(settingsFile),
   appUpdateFile: path.resolve(appUpdateFile),
