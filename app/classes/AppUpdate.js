@@ -127,7 +127,7 @@ export default class AppUpdate {
         if (progressbarWindow !== null && this.updateIsActive !== -1) {
           progressbarWindow.close();
         }
-        
+
         dialog.showMessageBox(
           {
             type: 'info',
@@ -201,6 +201,10 @@ export default class AppUpdate {
           return null;
         }
 
+        this.autoUpdater.on('update-not-available', () => {
+          this.updateIsActive = 0;
+        });
+
         this.autoUpdater.checkForUpdates();
         this.updateIsActive = 1;
       });
@@ -217,7 +221,9 @@ export default class AppUpdate {
         });
 
         this.autoUpdater.on('update-not-available', () => {
+          // another event of 'update-not-available' is registered in checkForUpdates() as well
           this.closeActiveUpdates();
+          
           if (progressbarWindow !== null) {
             progressbarWindow.close();
           }
@@ -262,7 +268,7 @@ export default class AppUpdate {
         );
         return null;
       }
-
+      
       this.autoUpdater.checkForUpdates();
       this.updateForceCheckFlag = true;
       this.disableAutoUpdateCheck = true;
