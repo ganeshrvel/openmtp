@@ -1,6 +1,7 @@
 'use strict';
 
-import { dialog, BrowserWindow, remote, ipcMain, autoUpdater } from 'electron';
+import { dialog, BrowserWindow, remote, ipcMain } from 'electron';
+import { autoUpdater } from 'electron-updater';
 import { isConnected } from '../utils/isOnline';
 import { log } from '../utils/log';
 import { isPackaged } from '../utils/isPackaged';
@@ -72,7 +73,7 @@ export default class AppUpdate {
     if (!isPackaged) {
       this.autoUpdater.updateConfigPath = PATHS.appUpdateFile;
     }
-    
+
     this.autoUpdater.autoDownload = ENABLE_BACKGROUND_AUTO_UPDATE;
 
     this.mainWindow = mainWindow;
@@ -223,7 +224,7 @@ export default class AppUpdate {
         this.autoUpdater.on('update-not-available', () => {
           // an another 'update-not-available' event is registered in checkForUpdates() as well
           this.closeActiveUpdates();
-          
+
           if (progressbarWindow !== null) {
             progressbarWindow.close();
           }
@@ -268,7 +269,7 @@ export default class AppUpdate {
         );
         return null;
       }
-      
+
       this.autoUpdater.checkForUpdates();
       this.updateForceCheckFlag = true;
       this.disableAutoUpdateCheck = true;

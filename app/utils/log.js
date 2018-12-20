@@ -21,7 +21,15 @@ export const log = {
   },
 
   error(e, title = `Log`, logError = true, allowInProd = false) {
-    this.doLog(`Error title: ${title}${EOL}Error body: ${e}${EOL}`, logError);
+    let _consoleError = e;
+    if (isConsoleError(e)) {
+      _consoleError = `Error Stack:${EOL}${JSON.stringify(e.stack)}${EOL}`;
+    }
+
+    this.doLog(
+      `Error title: ${title}${EOL}Error body: ${EOL}${_consoleError.toString()}${EOL}`,
+      logError
+    );
 
     if (allowInProd) {
       console.error(`${title} => `, e);
@@ -30,25 +38,30 @@ export const log = {
     IS_DEV && console.error(`${title} => `, e);
   },
 
-  doLog(text, logError = true, consoleError = null) {
+  doLog(e, logError = true, consoleError = null) {
     if (logError === false) {
       return null;
     }
 
-    let _consoleError = '';
+    const sectionSeperator = `=============================================================`;
+    let _consoleError = e;
+    if (isConsoleError(e)) {
+      _consoleError = `Error Stack:${EOL}${JSON.stringify(e.stack)}${EOL}`;
+    }
+
     if (isConsoleError(consoleError)) {
-      _consoleError = `Error Stack:${EOL}${JSON.stringify(
+      _consoleError += `Error Stack:${EOL}${JSON.stringify(
         consoleError.stack
       )}${EOL}`;
     }
 
     appendFileAsync({
       filePath: logFile,
-      text: `App Name: ${APP_NAME}${EOL}App Version: ${APP_VERSION}${EOL}Date Time: ${dateTimeUnixTimestampNow(
+      text: `${sectionSeperator}${EOL}${EOL}App Name: ${APP_NAME}${EOL}App Version: ${APP_VERSION}${EOL}Date Time: ${dateTimeUnixTimestampNow(
         {
           monthInletters: true
         }
-      )}${EOL}OS type: ${os.type()} / OS Platform: ${os.platform()} / OS Release: ${os.release()}${EOL}${text.toString()}${EOL}${_consoleError}`
+      )}${EOL}OS type: ${os.type()} / OS Platform: ${os.platform()} / OS Release: ${os.release()}${EOL}${_consoleError.toString()}${EOL}${_consoleError}${EOL}${sectionSeperator}${EOL}`
     });
   }
 };
