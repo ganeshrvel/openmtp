@@ -214,6 +214,7 @@ if (!isDeviceBootable) {
       const autoUpdateCheckSettings = settingsStorage.getItems([
         'enableAutoUpdateCheck'
       ]);
+      
       if (autoUpdateCheckSettings.enableAutoUpdateCheck !== false) {
         setTimeout(() => {
           autoAppUpdate.checkForUpdates();

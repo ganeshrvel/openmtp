@@ -19,11 +19,13 @@ import {
   makeToggleSettings,
   makeHideHiddenFiles,
   makeEnableAutoUpdateCheck,
-  makeEnableAnalytics
+  makeEnableAnalytics,
+  makeFreshInstall
 } from './selectors';
 import {
   enableAnalytics,
   enableAutoUpdateCheck,
+  freshInstall,
   hideHiddenFiles,
   toggleSettings
 } from './actions';
@@ -40,12 +42,23 @@ class Settings extends Component {
   }
 
   handleClick = ({ confirm = false }) => {
-    this._handleToggleSettings(false);
+    const { freshInstall } = this.props;
+    this._handleToggleSettings(confirm);
+
+    if (freshInstall !== 0) {
+      this._handleFreshInstall();
+    }
   };
 
   _handleToggleSettings = confirm => {
     const { handleToggleSettings } = this.props;
     handleToggleSettings(confirm);
+  };
+
+  _handleFreshInstall = () => {
+    const { handleFreshInstall } = this.props;
+
+    handleFreshInstall({ isFreshInstall: 0 });
   };
 
   handleHiddenFilesChange = ({ ...args }, deviceType) => {
@@ -82,6 +95,7 @@ class Settings extends Component {
 
   render() {
     const {
+      freshInstall,
       toggleSettings,
       hideHiddenFiles,
       classes: styles,
@@ -90,8 +104,8 @@ class Settings extends Component {
     } = this.props;
     const hideHiddenFilesLocal = hideHiddenFiles[DEVICES_TYPE_CONST.local];
     const hideHiddenFilesMtp = hideHiddenFiles[DEVICES_TYPE_CONST.mtp];
-
-    if (toggleSettings) {
+    
+    if (toggleSettings || freshInstall !== 0) {
       return (
         <Dialog
           open={true}
@@ -197,7 +211,7 @@ class Settings extends Component {
           </DialogContent>
           <DialogActions>
             <Button
-              onClick={e => this.handleClick({ confirm: true })}
+              onClick={e => this.handleClick({ confirm: false })}
               color="secondary"
             >
               OK
@@ -215,6 +229,10 @@ const mapDispatchToProps = (dispatch, ownProps) =>
     {
       handleToggleSettings: data => (_, getState) => {
         dispatch(toggleSettings(data));
+      },
+
+      handleFreshInstall: data => (_, getState) => {
+        dispatch(freshInstall({ ...data }, getState));
       },
 
       handleHideHiddenFiles: ({ ...data }, deviceType) => (_, getState) => {
@@ -248,6 +266,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
 
 const mapStateToProps = (state, props) => {
   return {
+    freshInstall: makeFreshInstall(state),
     toggleSettings: makeToggleSettings(state),
     hideHiddenFiles: makeHideHiddenFiles(state),
     enableAutoUpdateCheck: makeEnableAutoUpdateCheck(state),

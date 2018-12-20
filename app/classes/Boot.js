@@ -24,7 +24,6 @@ export default class Boot {
     this.verifyDirList = [logDir];
     this.verifyFileList = [logFile];
     this.settingsFile = settingsFile;
-    this.freshInstall = false;
   }
 
   async init() {
@@ -39,7 +38,6 @@ export default class Boot {
 
       if (!this.verifyFile(this.settingsFile)) {
         await this.createFile(this.settingsFile);
-        this.freshInstall = true;
       }
 
       for (let i in this.verifyFileList) {
@@ -54,10 +52,6 @@ export default class Boot {
     } catch (e) {
       console.error(e);
     }
-  }
-
-  isFreshInstall() {
-    return this.freshInstall;
   }
 
   async verify() {

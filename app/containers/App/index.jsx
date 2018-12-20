@@ -20,7 +20,7 @@ import { bindActionCreators } from 'redux';
 import reducers from './reducers';
 import { copyJsonFileToSettings, freshInstall } from '../Settings/actions';
 import { analytics } from '../../utils/analyticsHelper';
-import { makeEnableAnalytics } from '../Settings/selectors';
+import { isConnected } from '../../utils/isOnline';
 
 const appTheme = createMuiTheme(theme());
 
@@ -29,13 +29,16 @@ class App extends Component {
     super(props);
 
     this.state = {};
-    this.isFreshInstall = false;
+    this.allowWritingJsonToSettings = false;
   }
 
   async componentWillMount() {
     try {
       this.setFreshInstall();
-      this.writeJsonToSettings();
+      if (this.allowWritingJsonToSettings) {
+        this.writeJsonToSettings();
+      }
+
       this.runAnalytics();
     } catch (e) {
       log.error(e, `App -> componentWillMount`);
@@ -52,17 +55,34 @@ class App extends Component {
 
   setFreshInstall() {
     try {
+      const { _freshInstall } = this.props;
       const isFreshInstallSettings = settingsStorage.getItems(['freshInstall']);
-      this.isFreshInstall =
-        bootLoader.isFreshInstall() &&
-        isFreshInstallSettings.freshInstall !== false;
+      let isFreshInstall = 0;
 
-      if (!this.isFreshInstall) {
-        return null;
+      switch (isFreshInstallSettings.freshInstall) {
+        case undefined:
+        case null:
+          //app was just installed
+          isFreshInstall = 1;
+          break;
+        case 1:
+          //second boot after installation
+          isFreshInstall = 0;
+          break;
+        case -1:
+          //isFreshInstall was reset
+          isFreshInstall = 1;
+          break;
+        case 0:
+        default:
+          //more than 2 boot ups have occured
+          isFreshInstall = 0;
+          this.allowWritingJsonToSettings = true;
+          return null;
+          break;
       }
 
-      const { _freshInstall } = this.props;
-      _freshInstall({ isFreshInstall: this.isFreshInstall });
+      _freshInstall({ isFreshInstall });
     } catch (e) {
       log.error(e, `App -> setFreshInstall`);
     }
@@ -79,15 +99,16 @@ class App extends Component {
   }
 
   runAnalytics() {
-    //todo: check for fresh install in the Boot || Storage -> (add this to boot)
-    //todo: only if internet available proceed
-    const { enableAnalytics } = this.props;
+    const isAnalyticsEnabledSettings = settingsStorage.getItems([
+      'enableAnalytics'
+    ]);
     try {
-      //todo: fixme uncomment is_prod
-      if (enableAnalytics /* && IS_PROD*/) {
-        analytics.send('screenview', { cd: '/Home' });
-        analytics.send(`pageview`, { dp: '/Home' });
-      }
+      isConnected().then(connected => {
+        if (isAnalyticsEnabledSettings.enableAnalytics && IS_PROD) {
+          analytics.send('screenview', { cd: '/Home' });
+          analytics.send(`pageview`, { dp: '/Home' });
+        }
+      });
     } catch (e) {
       log.error(e, `App -> runAnalytics`);
     }
@@ -126,9 +147,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
   );
 
 const mapStateToProps = (state, props) => {
-  return {
-    enableAnalytics: makeEnableAnalytics(state)
-  };
+  return {};
 };
 
 export default withReducer('App', reducers)(

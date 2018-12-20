@@ -3,7 +3,7 @@ import { actionTypes } from './actions';
 import { DEVICES_TYPE_CONST } from '../../constants';
 
 export const initialState = {
-  freshInstall: false,
+  freshInstall: 0,
   toggleSettings: false,
   enableAutoUpdateCheck: true,
   enableAnalytics: true,
