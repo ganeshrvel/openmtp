@@ -1,7 +1,7 @@
 'use strict';
 
 import { replaceBulk } from './funcs';
-import { log } from '@Log';
+import { log } from './log';
 import { EOL } from 'os';
 
 export const processMtpBuffer = ({ error, stderr }) => {

@@ -1,5 +1,10 @@
 'use strict';
 
+/**
+ * Paths
+ * Note: Don't import log helper file from utils here
+ */
+
 import path from 'path';
 import { isPackaged } from '../utils/isPackaged';
 import os from 'os';

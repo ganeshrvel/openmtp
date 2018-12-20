@@ -20,6 +20,11 @@ if (IS_DEV || DEBUG_PROD) {
   require('module').globalPaths.push(p);
 }
 
+/**
+ * Checks whether device is ready to boot or not.
+ * Here profile files are created if not found.
+ */
+
 if (IS_PROD) {
   process.on('uncaughtException', error => {
     log.error(error, `main.dev -> process -> uncaughtException`);
@@ -85,7 +90,7 @@ const createWindow = async () => {
 
     mainWindow.webContents.on('did-finish-load', () => {
       if (!mainWindow) {
-        throw new Error('"mainWindow" is not defined');
+        throw new Error(`"mainWindow" is not defined`);
       }
       if (process.env.START_MINIMIZED) {
         mainWindow.minimize();
@@ -122,23 +127,24 @@ app.on('ready', async () => {
   try {
     await createWindow();
     const autoAppUpdate = new AppUpdate({ mainWindow });
+
+    autoAppUpdate.init();
     const menuBuilder = new MenuBuilder({ mainWindow, autoAppUpdate });
 
     menuBuilder.buildMenu();
-    autoAppUpdate.init();
 
-    //todo: case delete settings.json and run the app. it will throw settings.json not found error. fix it
-    //  by using ipc
-    //  or move boot to main and send an even to ipc ( not recommended).
-    // this is for logs
-    const autoUpdateCheck = settingsStorage.getItems(['enableAutoUpdateCheck']);
-    if (autoUpdateCheck.enableAutoUpdateCheck !== false) {
+    const autoUpdateCheckSettings = settingsStorage.getItems([
+      'enableAutoUpdateCheck'
+    ]);
+    if (autoUpdateCheckSettings.enableAutoUpdateCheck !== false) {
       setTimeout(() => {
         autoAppUpdate.checkForUpdates();
       }, AUTO_UPDATE_CHECK_FIREUP_DELAY);
     }
   } catch (e) {
+    console.error(e);
     log.error(e, `main.dev -> ready`);
+    log.doLog(e);
   }
 });
 

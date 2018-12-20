@@ -1,21 +1,22 @@
 'use strict';
 
-import {
-  checkFileExists,
-  newLocalFolder,
-  promisifiedRimraf
-} from '../api/sys/index';
+/**
+ * Boot
+ * Note: Don't import log helper file from utils here
+ */
+
+import { readdirSync } from 'fs';
 import { baseName, PATHS } from '../utils/paths';
-import { fileExistsSync, writeFileAsync } from '../api/sys/fileOps';
-import fs from 'fs';
-import { daysDiff, yearMonthNow } from '../utils/date';
 import {
-  LOG_FILE_ROTATION_CLEANUP_THRESHOLD,
-  DEVICES_TYPE_CONST
-} from '../constants';
+  fileExistsSync,
+  writeFileAsync,
+  createDirSync,
+  deleteFilesSync
+} from '../api/sys/fileOps';
+import { daysDiff, yearMonthNow } from '../utils/date';
+import { LOG_FILE_ROTATION_CLEANUP_THRESHOLD } from '../constants';
 
 const { logFile, settingsFile, logDir } = PATHS;
-const deviceType = DEVICES_TYPE_CONST.local;
 const logFileRotationCleanUpThreshold = LOG_FILE_ROTATION_CLEANUP_THRESHOLD;
 
 export default class Boot {
@@ -99,19 +100,15 @@ export default class Boot {
 
   async verifyDir(filePath) {
     try {
-      return await checkFileExists(filePath, deviceType, null);
+      return fileExistsSync(filePath);
     } catch (e) {
       console.error(e);
     }
   }
 
-  async createDir(filePath) {
+  async createDir(newFolderPath) {
     try {
-      const { error, stderr, data } = await newLocalFolder({
-        newFolderPath: filePath
-      });
-
-      return !(error || stderr);
+      createDirSync(newFolderPath);
     } catch (e) {
       console.error(e);
     }
@@ -138,7 +135,7 @@ export default class Boot {
 
   cleanRotationFiles() {
     try {
-      const dirFileList = fs.readdirSync(logDir);
+      const dirFileList = readdirSync(logDir);
       const pattern = `^\\${baseName(logFile)}`;
       const _regex = new RegExp(pattern, 'gi');
       const filesList = dirFileList.filter(elm => {
@@ -162,7 +159,7 @@ export default class Boot {
 
         const _diff = daysDiff(yearMonthNow({}), dateMatch[0]);
         if (_diff >= logFileRotationCleanUpThreshold) {
-          await promisifiedRimraf(`${logDir}/${a}`);
+          deleteFilesSync(`${logDir}/${a}`);
         }
       });
     } catch (e) {

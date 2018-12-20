@@ -8,6 +8,8 @@ import {
   writeFileSync as _writeFileSync
 } from 'fs';
 import { EOL } from 'os';
+import mkdirp from 'mkdirp';
+import rimraf from 'rimraf';
 
 export const writeFileAsync = ({ filePath, text }) => {
   const options = { mode: 0o755 };
@@ -46,4 +48,12 @@ export const readFileSync = ({ filePath }) => {
 
 export const fileExistsSync = filePath => {
   return _existsSync(filePath);
+};
+
+export const createDirSync = newFolderPath => {
+  mkdirp.sync(newFolderPath);
+};
+
+export const deleteFilesSync = filePath => {
+  rimraf.sync(filePath);
 };

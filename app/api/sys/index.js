@@ -1,14 +1,20 @@
 'use strict';
 
-import fs, { rename as fsRename } from 'fs';
+import {
+  readdir as fsReaddir,
+  rename as fsRename,
+  existsSync,
+  statSync,
+  lstatSync
+} from 'fs';
 import Promise from 'bluebird';
 import junk from 'junk';
 import rimraf from 'rimraf';
 import mkdirp from 'mkdirp';
 import path from 'path';
 import moment from 'moment';
-import { log } from '@Log';
-import { mtp as _mtpCli } from '@Binaries';
+import { log } from '../../utils/log';
+import { mtp as _mtpCli } from '../../utils/binaries';
 import { spawn, exec } from 'child_process';
 import findLodash from 'lodash/find';
 import { DEVICES_TYPE_CONST } from '../../constants';
@@ -28,7 +34,7 @@ import {
 } from '../../utils/funcs';
 import { msToTime, unixTimestampNow } from '../../utils/date';
 
-const readdir = Promise.promisify(fs.readdir);
+const readdir = Promise.promisify(fsReaddir);
 const execPromise = Promise.promisify(exec);
 
 /**
@@ -126,7 +132,7 @@ export const checkFileExists = async (
           for (let i in filePath) {
             let item = filePath[i];
             fullPath = path.resolve(item);
-            if (await fs.existsSync(fullPath)) {
+            if (await existsSync(fullPath)) {
               return true;
             }
           }
@@ -134,7 +140,7 @@ export const checkFileExists = async (
         }
 
         fullPath = path.resolve(filePath);
-        return await fs.existsSync(fullPath);
+        return await existsSync(fullPath);
         break;
       case DEVICES_TYPE_CONST.mtp:
         if (_isArray) {
@@ -196,11 +202,11 @@ export const asyncReadLocalDir = async ({ filePath, ignoreHidden }) => {
     for (let file of files) {
       let fullPath = path.resolve(filePath, file);
 
-      if (!fs.existsSync(fullPath)) {
+      if (!existsSync(fullPath)) {
         continue;
       }
-      const stat = fs.statSync(fullPath);
-      const isFolder = fs.lstatSync(fullPath).isDirectory();
+      const stat = statSync(fullPath);
+      const isFolder = lstatSync(fullPath).isDirectory();
       const extension = path.extname(fullPath);
       const size = stat.size;
       const dateTime = stat.atime;

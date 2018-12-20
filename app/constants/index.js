@@ -1,5 +1,10 @@
 'use strict';
 
+/**
+ * Constants
+ * Note: Don't import log helper file from utils here
+ */
+
 import { PATHS } from '../utils/paths';
 import { version, author, productName } from '../../package.json';
 

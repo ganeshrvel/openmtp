@@ -65,7 +65,6 @@ export default {
   resolve: {
     extensions: ['.js', '.jsx', '.json'],
     alias: {
-      '@Binaries': path.resolve(__dirname, '../app/utils/binaries.js'),
       '@Log': path.resolve(__dirname, '../app/utils/log.js'),
       '@Alerts': path.resolve(__dirname, '../app/containers/Alerts/actions.js')
     },
