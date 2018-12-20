@@ -1,9 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react';
-import os from 'os';
-import Analytics from 'electron-ga';
-import uuid from 'uuid/v4';
+import { IS_PROD } from '../../constants/env';
 import { theme, styles } from './styles';
 import Alerts from '../Alerts';
 import Titlebar from './components/Titlebar';
@@ -21,8 +19,9 @@ import { withReducer } from '../../store/reducers/withReducer';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import reducers from './reducers';
-import { copyJsonFileToSettings } from '../Settings/actions';
-import { IS_PROD } from '../../constants/env';
+import { copyJsonFileToSettings, freshInstall } from '../Settings/actions';
+import { analytics } from '../../utils/analyticsHelper';
+import { makeEnableAnalytics } from '../Settings/selectors';
 
 const appTheme = createMuiTheme(theme());
 const bootObj = new Boot();
@@ -38,17 +37,12 @@ class App extends Component {
     this.state = {
       ...this.initialState
     };
+
+    this.isFreshInstall = false;
   }
 
   async componentWillMount() {
     try {
-      //todo: fixme
-      if (true /*IS_PROD*/) {
-        const analytics = new Analytics(`UA-131227413-1`);//todo: move to config file
-        analytics.send('screenview', { cd: '/Home' });
-        analytics.send(`pageview`, { dp: '/Home' });
-      }
-
       //For an existing installation
       if (bootObj.quickVerify()) {
         this.writeJsonToSettings();
@@ -63,7 +57,9 @@ class App extends Component {
         return null;
       }
 
+      this.setFreshInstall();
       this.writeJsonToSettings();
+      this.runAnalytics();
     } catch (e) {
       this._preventAppBoot();
       log.error(e, `App -> componentWillMount`);
@@ -78,6 +74,25 @@ class App extends Component {
     }
   }
 
+  setFreshInstall() {
+    try {
+      const isFreshInstallSettings = settingsStorage.getItems(['freshInstall']);
+      this.isFreshInstall =
+        bootObj.isFreshInstall() &&
+        isFreshInstallSettings.freshInstall !== false;
+
+      if (!this.isFreshInstall) {
+        return null;
+      }
+
+      const { _freshInstall } = this.props;
+
+      _freshInstall({ isFreshInstall: this.isFreshInstall });
+    } catch (e) {
+      log.error(e, `App -> setFreshInstall`);
+    }
+  }
+
   writeJsonToSettings() {
     try {
       const { _copyJsonFileToSettings } = this.props;
@@ -86,6 +101,21 @@ class App extends Component {
     } catch (e) {
       this._preventAppBoot();
       log.error(e, `App -> writeJsonToSettings`);
+    }
+  }
+
+  runAnalytics() {
+    //todo: check for fresh install in the Boot || Storage -> (add this to boot)
+    //todo: only if internet available proceed
+    const { enableAnalytics } = this.props;
+    try {
+      //todo: fixme uncomment is_prod
+      if (enableAnalytics /* && IS_PROD*/) {
+        analytics.send('screenview', { cd: '/Home' });
+        analytics.send(`pageview`, { dp: '/Home' });
+      }
+    } catch (e) {
+      log.error(e, `App -> runAnalytics`);
     }
   }
 
@@ -134,13 +164,19 @@ const mapDispatchToProps = (dispatch, ownProps) =>
     {
       _copyJsonFileToSettings: ({ ...data }) => (_, getState) => {
         dispatch(copyJsonFileToSettings({ ...data }));
+      },
+
+      _freshInstall: ({ ...data }) => (_, getState) => {
+        dispatch(freshInstall({ ...data }, getState));
       }
     },
     dispatch
   );
 
 const mapStateToProps = (state, props) => {
-  return {};
+  return {
+    enableAnalytics: makeEnableAnalytics(state)
+  };
 };
 
 export default withReducer('App', reducers)(

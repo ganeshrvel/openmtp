@@ -6,6 +6,9 @@ export const styles = theme => ({
   margin: {},
   root: {},
   title: {},
+  formGroup: {
+    paddingTop: 10
+  },
   subheading: {
     marginBottom: 5
   },

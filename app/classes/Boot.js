@@ -1,6 +1,5 @@
 'use strict';
 
-import { log } from '@Log';
 import {
   checkFileExists,
   newLocalFolder,
@@ -10,7 +9,10 @@ import { baseName, PATHS } from '../utils/paths';
 import { fileExistsSync, writeFileAsync } from '../api/sys/fileOps';
 import fs from 'fs';
 import { daysDiff, yearMonthNow } from '../utils/date';
-import { LOG_FILE_ROTATION_CLEANUP_THRESHOLD, DEVICES_TYPE_CONST } from '../constants';
+import {
+  LOG_FILE_ROTATION_CLEANUP_THRESHOLD,
+  DEVICES_TYPE_CONST
+} from '../constants';
 
 const { logFile, settingsFile, logDir } = PATHS;
 const deviceType = DEVICES_TYPE_CONST.local;
@@ -19,7 +21,9 @@ const logFileRotationCleanUpThreshold = LOG_FILE_ROTATION_CLEANUP_THRESHOLD;
 export default class Boot {
   constructor() {
     this.verifyDirList = [logDir];
-    this.verifyFileList = [settingsFile, logFile];
+    this.verifyFileList = [logFile];
+    this.settingsFile = settingsFile;
+    this.freshInstall = false;
   }
 
   async init() {
@@ -32,6 +36,11 @@ export default class Boot {
         }
       }
 
+      if (!this.verifyFile(this.settingsFile)) {
+        await this.createFile(this.settingsFile);
+        this.freshInstall = true;
+      }
+
       for (let i in this.verifyFileList) {
         const item = this.verifyFileList[i];
 
@@ -42,8 +51,12 @@ export default class Boot {
 
       return true;
     } catch (e) {
-      log.error(e, `Boot -> init`);
+      console.error(e);
     }
+  }
+
+  isFreshInstall() {
+    return this.freshInstall;
   }
 
   async verify() {
@@ -66,7 +79,7 @@ export default class Boot {
 
       return true;
     } catch (e) {
-      log.error(e, `Boot -> verify`);
+      console.error(e);
     }
   }
 
@@ -80,7 +93,7 @@ export default class Boot {
         }
       }
     } catch (e) {
-      log.error(e, `Boot -> verify`);
+      console.error(e);
     }
   }
 
@@ -88,7 +101,7 @@ export default class Boot {
     try {
       return await checkFileExists(filePath, deviceType, null);
     } catch (e) {
-      log.error(e, `Boot -> verifyDir`);
+      console.error(e);
     }
   }
 
@@ -100,7 +113,7 @@ export default class Boot {
 
       return !(error || stderr);
     } catch (e) {
-      log.error(e, `Boot -> createDir`);
+      console.error(e);
     }
   }
 
@@ -108,7 +121,7 @@ export default class Boot {
     try {
       return fileExistsSync(filePath);
     } catch (e) {
-      log.error(e, `Boot -> verifyFile`);
+      console.error(e);
     }
   }
 
@@ -119,7 +132,7 @@ export default class Boot {
         text: ``
       });
     } catch (e) {
-      log.error(e, `Boot -> createFile`);
+      console.error(e);
     }
   }
 
@@ -153,7 +166,7 @@ export default class Boot {
         }
       });
     } catch (e) {
-      log.error(e, `Boot -> cleanRotationFiles`);
+      console.error(e);
     }
   }
 }

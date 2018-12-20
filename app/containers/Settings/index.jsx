@@ -18,9 +18,11 @@ import reducers from './reducers';
 import {
   makeToggleSettings,
   makeHideHiddenFiles,
-  makeEnableAutoUpdateCheck
+  makeEnableAutoUpdateCheck,
+  makeEnableAnalytics
 } from './selectors';
 import {
+  enableAnalytics,
   enableAutoUpdateCheck,
   hideHiddenFiles,
   toggleSettings
@@ -72,12 +74,19 @@ class Settings extends Component {
     handleEnableAutoUpdateCheck({ ...args });
   };
 
+  handleAnalytics = ({ ...args }) => {
+    const { handleEnableAnalytics } = this.props;
+
+    handleEnableAnalytics({ ...args });
+  };
+
   render() {
     const {
       toggleSettings,
       hideHiddenFiles,
       classes: styles,
-      enableAutoUpdateCheck
+      enableAutoUpdateCheck,
+      enableAnalytics
     } = this.props;
     const hideHiddenFilesLocal = hideHiddenFiles[DEVICES_TYPE_CONST.local];
     const hideHiddenFilesMtp = hideHiddenFiles[DEVICES_TYPE_CONST.mtp];
@@ -115,6 +124,26 @@ class Settings extends Component {
                       />
                     }
                     label={enableAutoUpdateCheck ? `Enabled` : `Disabled`}
+                  />
+                </FormGroup>
+                <FormGroup className={styles.formGroup}>
+                  <Typography variant="body2" className={styles.title}>
+                    Enable anonymous usage statistics gathering
+                  </Typography>
+
+                  <FormControlLabel
+                    className={styles.switch}
+                    control={
+                      <Switch
+                        checked={enableAnalytics}
+                        onChange={event =>
+                          this.handleAnalytics({
+                            toggle: !enableAnalytics
+                          })
+                        }
+                      />
+                    }
+                    label={enableAnalytics ? `Enabled` : `Disabled`}
                   />
                 </FormGroup>
               </div>
@@ -196,6 +225,10 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         dispatch(enableAutoUpdateCheck({ ...data }, getState));
       },
 
+      handleEnableAnalytics: ({ ...data }) => (_, getState) => {
+        dispatch(enableAnalytics({ ...data }, getState));
+      },
+
       handleReloadDirList: ({ ...args }, deviceType, mtpStoragesList) => (
         _,
         getState
@@ -218,6 +251,7 @@ const mapStateToProps = (state, props) => {
     toggleSettings: makeToggleSettings(state),
     hideHiddenFiles: makeHideHiddenFiles(state),
     enableAutoUpdateCheck: makeEnableAutoUpdateCheck(state),
+    enableAnalytics: makeEnableAnalytics(state),
     currentBrowsePath: makeCurrentBrowsePath(state),
     mtpStoragesList: makeMtpStoragesList(state)
   };

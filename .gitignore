@@ -58,3 +58,4 @@ app/certs/*.pem
 certs/*
 *electron-builder.yml
 todo.txt
+*yarn-error.log

@@ -7,8 +7,10 @@ import { settingsStorage } from '../../utils/storageHelper';
 const prefix = '@@Settings';
 const actionTypesList = [
   'TOGGLE_SETTINGS',
+  'FRESH_INSTALL',
   'HIDE_HIDDEN_FILES',
   'ENABLE_AUTO_UPDATE_CHECK',
+  'ENABLE_ANALYTICS',
   'COPY_JSON_FILE_TO_SETTINGS'
 ];
 
@@ -20,6 +22,18 @@ export function toggleSettings(data) {
   return {
     type: actionTypes.TOGGLE_SETTINGS,
     payload: data
+  };
+}
+
+export function freshInstall({ ...data }, getState) {
+  const { isFreshInstall } = data;
+
+  return dispatch => {
+    dispatch({
+      type: actionTypes.FRESH_INSTALL,
+      payload: isFreshInstall
+    });
+    dispatch(copySettingsToJsonFile(getState));
   };
 }
 
@@ -42,6 +56,18 @@ export function enableAutoUpdateCheck({ ...data }, getState) {
   return dispatch => {
     dispatch({
       type: actionTypes.ENABLE_AUTO_UPDATE_CHECK,
+      payload: toggle
+    });
+    dispatch(copySettingsToJsonFile(getState));
+  };
+}
+
+export function enableAnalytics({ ...data }, getState) {
+  const { toggle } = data;
+
+  return dispatch => {
+    dispatch({
+      type: actionTypes.ENABLE_ANALYTICS,
       payload: toggle
     });
     dispatch(copySettingsToJsonFile(getState));

@@ -127,6 +127,10 @@ app.on('ready', async () => {
     menuBuilder.buildMenu();
     autoAppUpdate.init();
 
+    //todo: case delete settings.json and run the app. it will throw settings.json not found error. fix it
+    //  by using ipc
+    //  or move boot to main and send an even to ipc ( not recommended).
+    // this is for logs
     const autoUpdateCheck = settingsStorage.getItems(['enableAutoUpdateCheck']);
     if (autoUpdateCheck.enableAutoUpdateCheck !== false) {
       setTimeout(() => {

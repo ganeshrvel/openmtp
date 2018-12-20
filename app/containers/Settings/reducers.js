@@ -3,8 +3,10 @@ import { actionTypes } from './actions';
 import { DEVICES_TYPE_CONST } from '../../constants';
 
 export const initialState = {
+  freshInstall: false,
   toggleSettings: false,
-  enableAutoUpdateCheck: false,
+  enableAutoUpdateCheck: true,
+  enableAnalytics: true,
   hideHiddenFiles: {
     [DEVICES_TYPE_CONST.local]: true,
     [DEVICES_TYPE_CONST.mtp]: true
@@ -14,6 +16,12 @@ export const initialState = {
 export default function Settings(state = initialState, action) {
   let { type, payload, deviceType = null } = action;
   switch (type) {
+    case actionTypes.FRESH_INSTALL:
+      return {
+        ...state,
+        freshInstall: payload
+      };
+
     case actionTypes.TOGGLE_SETTINGS:
       return {
         ...state,
@@ -35,11 +43,18 @@ export default function Settings(state = initialState, action) {
         enableAutoUpdateCheck: payload
       };
 
+    case actionTypes.ENABLE_ANALYTICS:
+      return {
+        ...state,
+        enableAnalytics: payload
+      };
+
     case actionTypes.COPY_JSON_FILE_TO_SETTINGS:
       return {
         ...state,
         ...payload
       };
+      
     default:
       return state;
   }
