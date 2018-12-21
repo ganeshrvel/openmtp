@@ -55,14 +55,14 @@ export const log = {
       )}${EOL}`;
     }
 
-    appendFileAsync({
-      filePath: logFile,
-      text: `${sectionSeperator}${EOL}${EOL}App Name: ${APP_NAME}${EOL}App Version: ${APP_VERSION}${EOL}Date Time: ${dateTimeUnixTimestampNow(
+    appendFileAsync(
+      logFile,
+      `${sectionSeperator}${EOL}${EOL}App Name: ${APP_NAME}${EOL}App Version: ${APP_VERSION}${EOL}Date Time: ${dateTimeUnixTimestampNow(
         {
           monthInletters: true
         }
       )}${EOL}OS type: ${os.type()} / OS Platform: ${os.platform()} / OS Release: ${os.release()}${EOL}${_consoleError.toString()}${EOL}${_consoleError}${EOL}${sectionSeperator}${EOL}`
-    });
+    );
   }
 };
 

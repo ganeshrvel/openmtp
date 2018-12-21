@@ -9,7 +9,7 @@ export default class Storage {
 
   getAll() {
     try {
-      const _stream = readFileSync({ filePath: this.filePath });
+      const _stream = readFileSync(this.filePath);
       if (
         typeof _stream === 'undefined' ||
         _stream === null ||
@@ -36,7 +36,7 @@ export default class Storage {
         if (typeof allItem[a] === 'undefined' || allItem[a] === null) {
           return null;
         }
-        
+
         _return[a] = allItem[a];
       });
 
@@ -48,10 +48,7 @@ export default class Storage {
 
   setAll({ ...data }) {
     try {
-      writeFileSync({
-        filePath: this.filePath,
-        text: JSON.stringify({ ...data })
-      });
+      writeFileSync(this.filePath, JSON.stringify({ ...data }));
     } catch (e) {
       log.error(e, `Storage -> setAll`);
     }

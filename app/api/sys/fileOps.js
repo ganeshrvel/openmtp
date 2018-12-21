@@ -11,7 +11,7 @@ import { EOL } from 'os';
 import mkdirp from 'mkdirp';
 import rimraf from 'rimraf';
 
-export const writeFileAsync = ({ filePath, text }) => {
+export const writeFileAsync = (filePath, text) => {
   const options = { mode: 0o755 };
   _writeFileAsync(filePath, text, options, err => {
     if (err) {
@@ -21,17 +21,16 @@ export const writeFileAsync = ({ filePath, text }) => {
   });
 };
 
-export const writeFileSync = ({ filePath, text }) => {
+export const writeFileSync = (filePath, text) => {
   const options = { mode: 0o755 };
-  _writeFileSync(filePath, text, options, err => {
-    if (err) {
-      console.error(err, `writeFileSync`);
-      return null;
-    }
-  });
+  try {
+    _writeFileSync(filePath, text, options);
+  } catch (err) {
+    console.error(err, `writeFileSync`);
+  }
 };
 
-export const appendFileAsync = ({ filePath, text }) => {
+export const appendFileAsync = (filePath, text) => {
   const options = { mode: 0o755 };
   _appendFileAsync(filePath, text + EOL, options, err => {
     if (err) {
@@ -41,7 +40,7 @@ export const appendFileAsync = ({ filePath, text }) => {
   });
 };
 
-export const readFileSync = ({ filePath }) => {
+export const readFileSync = filePath => {
   const options = { encoding: 'utf8' };
   return _readFileSync(filePath, options);
 };

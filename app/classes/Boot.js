@@ -118,10 +118,7 @@ export default class Boot {
 
   createFile(filePath) {
     try {
-      writeFileAsync({
-        filePath: filePath,
-        text: ``
-      });
+      writeFileAsync(filePath, ``);
     } catch (e) {
       console.error(e);
     }
