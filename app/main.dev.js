@@ -14,6 +14,7 @@ import { loadProfileErrorHtml } from './templates/loadProfileError';
 
 const isSingleInstance = app.requestSingleInstanceLock();
 const isDeviceBootable = bootTheDevice();
+let _nonBootableDeviceWindow = null;
 let mainWindow = null;
 
 if (IS_DEV || DEBUG_PROD) {
@@ -45,36 +46,38 @@ async function bootTheDevice() {
 if (!isDeviceBootable) {
   app.on('ready', async () => {
     try {
-      let nonBootableWindow;
-      nonBootableWindow = new BrowserWindow({
-        title: 'OpenMTP',
-        center: true,
-        show: false,
-        maximizable: false,
-        minimizable: false,
-        width: 480,
-        height: 320,
-        resizable: false
-      });
+      const nonBootableDeviceCreateWindow = () => {
+        return new BrowserWindow({
+          title: 'OpenMTP',
+          center: true,
+          show: false,
+          maximizable: false,
+          minimizable: false,
+          width: 480,
+          height: 320,
+          resizable: false
+        });
+      };
 
-      nonBootableWindow.loadURL(
+      _nonBootableDeviceWindow = nonBootableDeviceCreateWindow();
+      _nonBootableDeviceWindow.loadURL(
         `data:text/html;charset=utf-8, ${encodeURI(loadProfileErrorHtml)}`
       );
 
-      nonBootableWindow.webContents.on('did-finish-load', () => {
-        if (!nonBootableWindow) {
-          throw new Error(`"nonBootableWindow" is not defined`);
+      _nonBootableDeviceWindow.webContents.on('did-finish-load', () => {
+        if (!_nonBootableDeviceWindow) {
+          throw new Error(`"nonBootableDeviceWindow" is not defined`);
         }
         if (process.env.START_MINIMIZED) {
-          nonBootableWindow.minimize();
+          _nonBootableDeviceWindow.minimize();
         } else {
-          nonBootableWindow.show();
-          nonBootableWindow.focus();
+          _nonBootableDeviceWindow.show();
+          _nonBootableDeviceWindow.focus();
         }
       });
 
-      nonBootableWindow.on('closed', () => {
-        nonBootableWindow = null;
+      _nonBootableDeviceWindow.on('closed', () => {
+        _nonBootableDeviceWindow = null;
       });
     } catch (e) {
       throw new Error(e);
@@ -136,10 +139,7 @@ if (!isDeviceBootable) {
 
   const createWindow = async () => {
     try {
-      if (
-        process.env.NODE_ENV === 'development' ||
-        process.env.DEBUG_PROD === 'true'
-      ) {
+      if (IS_DEV || DEBUG_PROD) {
         await installExtensions();
       }
 

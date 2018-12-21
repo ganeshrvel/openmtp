@@ -1,7 +1,8 @@
 'use strict';
 
 import { app, Menu, shell, BrowserWindow } from 'electron';
-import { reportBugs } from './utils/childrenWindows';
+import { reportBugsWindow } from './utils/createWindows';
+import { DEBUG_PROD, IS_DEV } from './constants/env';
 
 export default class MenuBuilder {
   constructor({ mainWindow, autoAppUpdate }) {
@@ -10,10 +11,7 @@ export default class MenuBuilder {
   }
 
   buildMenu() {
-    if (
-      process.env.NODE_ENV === 'development' ||
-      process.env.DEBUG_PROD === 'true'
-    ) {
+    if (IS_DEV || DEBUG_PROD) {
       this.setupDevelopmentEnvironment();
     }
 
@@ -206,7 +204,7 @@ export default class MenuBuilder {
         {
           label: 'Report Bugs',
           click: () => {
-            reportBugs();
+            reportBugsWindow();
           }
         }
       ]
@@ -289,7 +287,7 @@ export default class MenuBuilder {
           {
             label: 'Report Bugs',
             click: () => {
-              reportBugs();
+              reportBugsWindow();
             }
           }
         ]
