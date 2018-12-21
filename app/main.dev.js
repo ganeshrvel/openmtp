@@ -171,10 +171,6 @@ if (!isDeviceBootable) {
         log.error(error, `main.dev -> mainWindow -> onerror`);
       };
 
-      mainWindow.on('close', () => {
-        mainWindow = null;
-      });
-
       mainWindow.on('closed', () => {
         mainWindow = null;
       });
@@ -199,7 +195,7 @@ if (!isDeviceBootable) {
     try {
       await createWindow();
 
-      const autoAppUpdate = new AppUpdate({ mainWindow });
+      const autoAppUpdate = new AppUpdate();
       autoAppUpdate.init();
 
       const menuBuilder = new MenuBuilder({ mainWindow, autoAppUpdate });

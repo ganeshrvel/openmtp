@@ -12,8 +12,9 @@ import { unixTimestampNow } from '../utils/date';
 let progressbarWindow = null;
 let isFileTransferActiveFlag = false;
 let isFileTransferActiveSeekFlag = false;
+let mainWindow = null;
 
-const createChildWindow = ({ mainWindow }) => {
+const createChildWindow = () => {
   try {
     return new BrowserWindow({
       parent: mainWindow,
@@ -33,7 +34,7 @@ const createChildWindow = ({ mainWindow }) => {
   }
 };
 
-const fireProgressbar = ({ mainWindow }) => {
+const fireProgressbar = () => {
   try {
     if (progressbarWindow) {
       progressbarWindow.show();
@@ -48,13 +49,13 @@ const fireProgressbar = ({ mainWindow }) => {
     if (!isFileTransferActiveSeekFlag) {
       ipcMain.on('isFileTransferActiveReply', (event, { ...args }) => {
         const { isActive } = args;
-
+        
         isFileTransferActiveFlag = isActive;
       });
       isFileTransferActiveSeekFlag = true;
     }
 
-    progressbarWindow = createChildWindow({ mainWindow });
+    progressbarWindow = createChildWindow();
     progressbarWindow.loadURL(`${PATHS.loadUrlPath}#progressbarPage`);
 
     progressbarWindow.webContents.on('did-finish-load', () => {
@@ -66,11 +67,6 @@ const fireProgressbar = ({ mainWindow }) => {
       progressbarWindow = null;
     });
 
-    progressbarWindow.on('close', event => {
-      progressbarWindow.hide();
-      event.preventDefault();
-    });
-
     progressbarWindow.onerror = (error, url, line) => {
       log.error(error, `AppUpdate -> progressbarWindow -> onerror`);
     };
@@ -80,14 +76,13 @@ const fireProgressbar = ({ mainWindow }) => {
 };
 
 export default class AppUpdate {
-  constructor({ mainWindow }) {
+  constructor() {
     this.autoUpdater = autoUpdater;
     if (!isPackaged) {
       this.autoUpdater.updateConfigPath = PATHS.appUpdateFile;
     }
 
     this.autoUpdater.autoDownload = ENABLE_BACKGROUND_AUTO_UPDATE;
-    this.mainWindow = mainWindow;
     this.domReadyFlag = null;
     this.updateInitFlag = false;
     this.updateForceCheckFlag = false;
@@ -204,6 +199,12 @@ export default class AppUpdate {
 
   checkForUpdates() {
     try {
+      this.setMainWindow();
+
+      if (!mainWindow) {
+        return;
+      }
+
       isConnected().then(connected => {
         if (!connected) {
           return null;
@@ -227,6 +228,12 @@ export default class AppUpdate {
 
   forceCheck() {
     try {
+      this.setMainWindow();
+
+      if (!mainWindow) {
+        return;
+      }
+
       if (!this.updateForceCheckFlag) {
         this.autoUpdater.on('checking-for-update', () => {
           this.setCheckUpdatesProgress();
@@ -301,7 +308,7 @@ export default class AppUpdate {
           return null;
         }
 
-        fireProgressbar({ mainWindow: this.mainWindow });
+        fireProgressbar();
         this.setTaskBarProgressBar(2);
 
         progressbarWindow.webContents.once('dom-ready', () => {
@@ -329,7 +336,7 @@ export default class AppUpdate {
           return null;
         }
 
-        fireProgressbar({ mainWindow: this.mainWindow });
+        fireProgressbar();
         this.domReadyFlag = false;
         this.setUpdateProgressWindow({ value: 0 });
       });
@@ -369,13 +376,22 @@ export default class AppUpdate {
     }
   }
 
+  setMainWindow() {
+    const _mainWindow = BrowserWindow.getAllWindows();
+    if (typeof _mainWindow === 'undefined' || _mainWindow === null) {
+      return null;
+    }
+
+    mainWindow = BrowserWindow.getAllWindows()[_mainWindow.length - 1];
+  }
+
   setTaskBarProgressBar(value) {
     try {
       if (isFileTransferActiveFlag) {
         return null;
       }
 
-      this.mainWindow.setProgressBar(value);
+      mainWindow.setProgressBar(value);
     } catch (e) {
       log.error(e, `AppUpdate -> setTaskBarProgressBar`);
     }
