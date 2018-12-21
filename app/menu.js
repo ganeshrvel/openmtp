@@ -12,8 +12,9 @@ let reportBugsWindow = null;
 const createChildWindow = () => {
   return new BrowserWindow({
     height: 480,
-    resizable: false,
     width: 600,
+    show: false,
+    resizable: false,
     title: '',
     minimizable: false,
     fullscreenable: false
@@ -23,11 +24,17 @@ const createChildWindow = () => {
 const fireReportBugs = () => {
   if (reportBugsWindow) {
     reportBugsWindow.focus();
+    reportBugsWindow.show();
     return null;
   }
 
   reportBugsWindow = createChildWindow();
   reportBugsWindow.loadURL(`${PATHS.loadUrlPath}#reportBugsPage`);
+
+  reportBugsWindow.webContents.on('did-finish-load', () => {
+    reportBugsWindow.show();
+    reportBugsWindow.focus();
+  });
 
   reportBugsWindow.onerror = (error, url, line) => {
     log.error(error, `menu -> reportBugsWindow -> onerror`);

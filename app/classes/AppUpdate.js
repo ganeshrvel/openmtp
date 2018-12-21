@@ -18,7 +18,7 @@ const createChildWindow = ({ mainWindow }) => {
     return new BrowserWindow({
       parent: mainWindow,
       modal: true,
-      show: true,
+      show: false,
       height: 150,
       width: 600,
       title: 'Progress...',
@@ -36,6 +36,7 @@ const createChildWindow = ({ mainWindow }) => {
 const fireProgressbar = ({ mainWindow }) => {
   try {
     if (progressbarWindow) {
+      progressbarWindow.show();
       progressbarWindow.focus();
       return null;
     }
@@ -55,8 +56,19 @@ const fireProgressbar = ({ mainWindow }) => {
 
     progressbarWindow = createChildWindow({ mainWindow });
     progressbarWindow.loadURL(`${PATHS.loadUrlPath}#progressbarPage`);
+
+    progressbarWindow.webContents.on('did-finish-load', () => {
+      progressbarWindow.show();
+      progressbarWindow.focus();
+    });
+
     progressbarWindow.on('closed', function() {
       progressbarWindow = null;
+    });
+
+    progressbarWindow.on('close', event => {
+      progressbarWindow.hide();
+      event.preventDefault();
     });
 
     progressbarWindow.onerror = (error, url, line) => {
@@ -75,7 +87,6 @@ export default class AppUpdate {
     }
 
     this.autoUpdater.autoDownload = ENABLE_BACKGROUND_AUTO_UPDATE;
-
     this.mainWindow = mainWindow;
     this.domReadyFlag = null;
     this.updateInitFlag = false;

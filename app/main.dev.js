@@ -7,12 +7,7 @@ import { DEBUG_PROD, IS_DEV, IS_PROD } from './constants/env';
 import AppUpdate from './classes/AppUpdate';
 import { PATHS } from './utils/paths';
 import { settingsStorage } from './utils/storageHelper';
-import {
-  APP_NAME,
-  APP_VERSION,
-  AUTHOR_EMAIL,
-  AUTO_UPDATE_CHECK_FIREUP_DELAY
-} from './constants';
+import { AUTO_UPDATE_CHECK_FIREUP_DELAY } from './constants';
 import { appEvents } from './utils/eventHandling';
 import { bootLoader } from './utils/bootHelper';
 import { loadProfileErrorHtml } from './templates/loadProfileError';
@@ -54,7 +49,7 @@ if (!isDeviceBootable) {
       nonBootableWindow = new BrowserWindow({
         title: 'OpenMTP',
         center: true,
-        show: true,
+        show: false,
         maximizable: false,
         minimizable: false,
         width: 480,
@@ -176,6 +171,10 @@ if (!isDeviceBootable) {
         log.error(error, `main.dev -> mainWindow -> onerror`);
       };
 
+      mainWindow.on('close', () => {
+        mainWindow = null;
+      });
+
       mainWindow.on('closed', () => {
         mainWindow = null;
       });
@@ -186,9 +185,11 @@ if (!isDeviceBootable) {
 
   app.on('window-all-closed', () => {
     try {
-      if (process.platform !== 'darwin') {
-        app.quit();
+      if (process.platform === 'darwin') {
+        return;
       }
+
+      app.quit();
     } catch (e) {
       log.error(e, `main.dev -> window-all-closed`);
     }
@@ -197,6 +198,7 @@ if (!isDeviceBootable) {
   app.on('ready', async () => {
     try {
       await createWindow();
+
       const autoAppUpdate = new AppUpdate({ mainWindow });
       autoAppUpdate.init();
 
@@ -226,4 +228,6 @@ if (!isDeviceBootable) {
       log.error(e, `main.dev -> activate`);
     }
   });
+
+  app.on('before-quit', () => (app.quitting = true));
 }
