@@ -1,49 +1,7 @@
 'use strict';
 
 import { app, Menu, shell, BrowserWindow } from 'electron';
-import { PATHS } from './utils/paths';
-import { log } from './utils/log';
-
-/**
- * Child Window
- */
-let reportBugsWindow = null;
-
-const createChildWindow = () => {
-  return new BrowserWindow({
-    height: 480,
-    width: 600,
-    show: false,
-    resizable: false,
-    title: '',
-    minimizable: false,
-    fullscreenable: false
-  });
-};
-
-const fireReportBugs = () => {
-  if (reportBugsWindow) {
-    reportBugsWindow.focus();
-    reportBugsWindow.show();
-    return null;
-  }
-
-  reportBugsWindow = createChildWindow();
-  reportBugsWindow.loadURL(`${PATHS.loadUrlPath}#reportBugsPage`);
-
-  reportBugsWindow.webContents.on('did-finish-load', () => {
-    reportBugsWindow.show();
-    reportBugsWindow.focus();
-  });
-
-  reportBugsWindow.onerror = (error, url, line) => {
-    log.error(error, `menu -> reportBugsWindow -> onerror`);
-  };
-
-  reportBugsWindow.on('closed', function() {
-    reportBugsWindow = null;
-  });
-};
+import { reportBugs } from './utils/childrenWindows';
 
 export default class MenuBuilder {
   constructor({ mainWindow, autoAppUpdate }) {
@@ -248,7 +206,7 @@ export default class MenuBuilder {
         {
           label: 'Report Bugs',
           click: () => {
-            fireReportBugs();
+            reportBugs();
           }
         }
       ]
@@ -331,7 +289,7 @@ export default class MenuBuilder {
           {
             label: 'Report Bugs',
             click: () => {
-              fireReportBugs();
+              reportBugs();
             }
           }
         ]
