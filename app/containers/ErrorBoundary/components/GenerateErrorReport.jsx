@@ -1,6 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react';
+import { writeFile } from 'fs';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
@@ -9,7 +10,6 @@ import path from 'path';
 import { baseName, PATHS } from '../../../utils/paths';
 import { log } from '@Log';
 import { shell, remote } from 'electron';
-import AdmZip from 'adm-zip';
 import { promisifiedRimraf, mtpVerboseReport } from '../../../api/sys';
 import { fileExistsSync } from '../../../api/sys/fileOps';
 import { AUTHOR_EMAIL } from '../../../constants';
@@ -17,16 +17,20 @@ import { body, mailTo, subject } from '../../../templates/errorLog';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { throwAlert } from '../../Alerts/actions';
+import {
+  mailToInstructions as _mailToInstructions,
+  reportGenerateError
+} from '../../../templates/generateErrorReport';
+import { compressFile } from '../../../utils/gzip';
 
 const { logFile } = PATHS;
 const { getPath } = remote.app;
 const desktopPath = getPath('desktop');
-const zippedLogFileBaseName = `${baseName(logFile)}.zip`;
+const zippedLogFileBaseName = `${baseName(logFile)}.gz`;
 const logFileZippedPath = path.resolve(
   path.join(desktopPath, `./${zippedLogFileBaseName}`)
 );
-const zip = new AdmZip();
-const mailToInstructions = `%0D%0A %0D%0A Attach the generated error report file "${zippedLogFileBaseName}" (which is found in your Desktop folder) along with the email`;
+const mailToInstructions = _mailToInstructions(zippedLogFileBaseName);
 
 class GenerateErrorReport extends Component {
   constructor(props) {
@@ -35,16 +39,13 @@ class GenerateErrorReport extends Component {
 
   compressLog = () => {
     try {
-      zip.addLocalFile(logFile);
-      zip.writeZip(logFileZippedPath);
+      compressFile(logFile, logFileZippedPath);
     } catch (e) {
       log.error(e, `GenerateErrorReport -> compressLog`);
     }
   };
 
   generateErrorLogs = async () => {
-    const reportError = `Error report generation failed. Try again!`;
-
     try {
       const { handleThrowError } = this.props;
 
@@ -54,7 +55,7 @@ class GenerateErrorReport extends Component {
 
       if (error) {
         handleThrowError({
-          message: reportError
+          message: reportGenerateError
         });
         return null;
       }
@@ -63,7 +64,7 @@ class GenerateErrorReport extends Component {
 
       if (!fileExistsSync(logFileZippedPath)) {
         handleThrowError({
-          message: reportError
+          message: reportGenerateError
         });
         return null;
       }
