@@ -103,12 +103,12 @@ class App extends Component {
       'enableAnalytics'
     ]);
     try {
-      isConnected().then(connected => {
-        if (isAnalyticsEnabledSettings.enableAnalytics && IS_PROD) {
+      if (isAnalyticsEnabledSettings.enableAnalytics && IS_PROD) {
+        isConnected().then(connected => {
           analytics.send('screenview', { cd: '/Home' });
           analytics.send(`pageview`, { dp: '/Home' });
-        }
-      });
+        });
+      }
     } catch (e) {
       log.error(e, `App -> runAnalytics`);
     }

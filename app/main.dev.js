@@ -15,6 +15,7 @@ import {
 } from './constants';
 import { appEvents } from './utils/eventHandling';
 import { bootLoader } from './utils/bootHelper';
+import { loadProfileErrorHtml } from './templates/loadProfileError';
 
 const isSingleInstance = app.requestSingleInstanceLock();
 const isDeviceBootable = bootTheDevice();
@@ -61,17 +62,8 @@ if (!isDeviceBootable) {
         resizable: false
       });
 
-      const html = `
-        <html lang="en-gb">
-          <body>
-              <h3>Unable to load profile files. Please restart the app. </h3>
-              <p>Write to the developer if the problem persists.</p>
-              <a href="mailto:${AUTHOR_EMAIL}?Subject=Unable to load profile files&Body=${APP_NAME} - ${APP_VERSION}">${AUTHOR_EMAIL}</a>
-          </body>
-        </html>
-      `;
       nonBootableWindow.loadURL(
-        `data:text/html;charset=utf-8, ${encodeURI(html)}`
+        `data:text/html;charset=utf-8, ${encodeURI(loadProfileErrorHtml)}`
       );
 
       nonBootableWindow.webContents.on('did-finish-load', () => {
@@ -214,7 +206,7 @@ if (!isDeviceBootable) {
       const autoUpdateCheckSettings = settingsStorage.getItems([
         'enableAutoUpdateCheck'
       ]);
-      
+
       if (autoUpdateCheckSettings.enableAutoUpdateCheck !== false) {
         setTimeout(() => {
           autoAppUpdate.checkForUpdates();
