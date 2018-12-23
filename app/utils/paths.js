@@ -29,7 +29,7 @@ const appUpdateFile = path.join(configDir, `./dev-app-update.yml`);
 export const PATHS = {
   root: path.resolve(root),
   app: path.resolve(appPath),
-  dist: path.resolve(path.join(root, `./app/dist`)),
+  dist: path.resolve(path.join(appPath, `./dist`)),
   nodeModules: path.resolve(path.join(root, `./node_modules`)),
   homeDir: path.resolve(homeDir),
   profileDir: path.resolve(profileDir),
