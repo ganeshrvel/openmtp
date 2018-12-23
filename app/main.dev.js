@@ -100,6 +100,15 @@ if (!isDeviceBootable) {
     appEvents.on('error', error => {
       log.error(error, `main.dev -> appEvents -> error`);
     });
+
+    ipcMain.removeAllListeners('ELECTRON_BROWSER_WINDOW_ALERT');
+    ipcMain.on('ELECTRON_BROWSER_WINDOW_ALERT', (event, message, title) => {
+      ipcMain.error(
+        message,
+        `main.dev -> ipcMain -> on ELECTRON_BROWSER_WINDOW_ALERT -> ${title}`
+      );
+      event.returnValue = 0;
+    });
   }
 
   const installExtensions = async () => {
