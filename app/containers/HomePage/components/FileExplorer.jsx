@@ -985,11 +985,7 @@ class FileExplorer extends Component {
                 Android device is either busy or not connected.
               </Typography>
               <ul className={styles.instructions}>
-                <li>Close other MTP applications.</li>
-                <li>
-                  Use the USB cable that came with your Android device and
-                  connect it to your Mac.
-                </li>
+                <li>Quit other Android File transfer applications.</li>
                 <li>Unlock your Android device.</li>
                 <li>With a USB cable, connect your device to your computer.</li>
                 <li>
