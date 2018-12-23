@@ -10,19 +10,19 @@ import { isPackaged } from '../utils/isPackaged';
 import os from 'os';
 import { IS_DEV, IS_PROD } from '../constants/env';
 import { yearMonthNow } from './date';
-import { productName } from '../../package.json';
+import { APP_IDENTIFIER, APP_NAME } from '../constants/meta';
 
 const root = process.cwd();
 const appPath = path.join(root, `./app`);
 const configDir = path.join(root, `./config`);
 const homeDir = os.homedir();
-const profileDir = path.join(homeDir, `./.io.ganeshrvel`, `openmtp`);
+const profileDir = path.join(homeDir, `./.io.ganeshrvel`, `${APP_IDENTIFIER}`);
 const rotateFile = yearMonthNow({});
 const logFileName = IS_DEV
   ? `error-${rotateFile}.dev.log`
   : `error-${rotateFile}.log`;
 const logDir = path.join(profileDir, `./logs`);
-const logFile = path.join(logDir, `./${productName}-${logFileName}`);
+const logFile = path.join(logDir, `./${APP_NAME}-${logFileName}`);
 const settingsFile = path.join(profileDir, `./settings.json`);
 const appUpdateFile = path.join(configDir, `./dev-app-update.yml`);
 

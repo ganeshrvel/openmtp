@@ -4,6 +4,7 @@ import { BrowserWindow } from 'electron';
 import { PATHS } from './paths';
 import { log } from './log';
 import { loadProfileErrorHtml } from '../templates/loadProfileError';
+import { APP_TITLE } from '../constants/meta';
 
 let _nonBootableDeviceWindow = null;
 let _reportBugsWindow = null;
@@ -15,7 +16,7 @@ let _privacyPolicyWindow = null;
 
 const nonBootableDeviceCreateWindow = () => {
   return new BrowserWindow({
-    title: 'OpenMTP',
+    title: `${APP_TITLE}`,
     center: true,
     show: false,
     maximizable: false,
@@ -61,7 +62,7 @@ const reportBugsCreateWindow = () => {
     width: 600,
     show: false,
     resizable: false,
-    title: 'OpenMTP',
+    title: `${APP_TITLE}`,
     minimizable: false,
     fullscreenable: false
   });
@@ -107,7 +108,7 @@ const privacyPolicyCreateWindow = () => {
     width: 640,
     show: false,
     resizable: false,
-    title: 'OpenMTP',
+    title: `${APP_TITLE}`,
     minimizable: true,
     fullscreenable: true
   });

@@ -12,7 +12,7 @@ import { log } from '@Log';
 import { shell, remote } from 'electron';
 import { promisifiedRimraf, mtpVerboseReport } from '../../../api/sys';
 import { fileExistsSync } from '../../../api/sys/fileOps';
-import { AUTHOR_EMAIL } from '../../../constants';
+import { AUTHOR_EMAIL } from '../../../constants/meta';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { throwAlert } from '../../Alerts/actions';

@@ -1,7 +1,7 @@
 'use strict';
 
 import { IS_DEV } from '../constants/env';
-import { APP_NAME, APP_VERSION } from '../constants';
+import { APP_NAME, APP_VERSION } from '../constants/meta';
 import { PATHS } from './paths';
 import { appendFileAsync } from '../api/sys/fileOps';
 import { dateTimeUnixTimestampNow } from './date';

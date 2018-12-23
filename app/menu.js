@@ -3,6 +3,7 @@
 import { app, Menu, shell, BrowserWindow } from 'electron';
 import { privacyPolicyWindow, reportBugsWindow } from './utils/createWindows';
 import { DEBUG_PROD, IS_DEV } from './constants/env';
+import { APP_NAME } from './constants/meta';
 
 export default class MenuBuilder {
   constructor({ mainWindow, autoAppUpdate }) {
@@ -70,10 +71,10 @@ export default class MenuBuilder {
 
   buildDarwinTemplate() {
     const subMenuAbout = {
-      label: 'OpenMTP',
+      label: `${APP_NAME}`,
       submenu: [
         {
-          label: 'About OpenMTP',
+          label: `About ${APP_NAME}`,
           selector: 'orderFrontStandardAboutPanel:'
         },
         { type: 'separator' },
@@ -85,7 +86,7 @@ export default class MenuBuilder {
         },
         { type: 'separator' },
         {
-          label: 'Hide the OpenMTP',
+          label: `Hide ${APP_NAME}`,
           accelerator: 'Command+H',
           selector: 'hide:'
         },
@@ -220,7 +221,7 @@ export default class MenuBuilder {
           }
         },
         {
-          label: 'Share OpenMTP with your friends',
+          label: `Share ${APP_NAME} with your friends`,
           click: () => {
             reportBugsWindow();
           }

@@ -11,6 +11,7 @@ import { AUTO_UPDATE_CHECK_FIREUP_DELAY } from './constants';
 import { appEvents } from './utils/eventHandling';
 import { bootLoader } from './utils/bootHelper';
 import { nonBootableDeviceWindow } from './utils/createWindows';
+import { APP_TITLE } from './constants/meta';
 
 const isSingleInstance = app.requestSingleInstanceLock();
 const isDeviceBootable = bootTheDevice();
@@ -120,7 +121,7 @@ if (!isDeviceBootable) {
       }
 
       mainWindow = new BrowserWindow({
-        title: 'OpenMTP',
+        title: `${APP_TITLE}`,
         center: true,
         show: false,
         minWidth: 854,

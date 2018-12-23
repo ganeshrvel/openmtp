@@ -5,6 +5,20 @@
  * Note: Don't import log helper file from utils here
  */
 
-export const APP_TITLE = `OpenMTP | Android File Transfer for macOS`;
+import {
+  productName,
+  description,
+  name,
+  author,
+  version
+} from '../../package.json';
 
-export const APP_SHORT_TITLE = `OpenMTP`;
+export const APP_NAME = `${productName}`;
+
+export const APP_VERSION = `${version}`;
+
+export const AUTHOR_EMAIL = `${author.email}`;
+
+export const APP_TITLE = `${description}`;
+
+export const APP_IDENTIFIER = `${name}`;
