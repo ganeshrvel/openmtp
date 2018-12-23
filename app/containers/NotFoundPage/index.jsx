@@ -5,13 +5,13 @@ import { Link } from 'react-router-dom';
 import { routes } from '../../routing';
 import styles from './styles/index.scss';
 import { Helmet } from 'react-helmet';
-import { title } from '../../constants/meta';
+import { APP_TITLE } from '../../constants/meta';
 
 export default class NotFound extends Component {
   render() {
     return (
       <React.Fragment>
-        <Helmet titleTemplate={`%s - ${title}`}>
+        <Helmet titleTemplate={`%s - ${APP_TITLE}`}>
           <title>Resource not found!</title>
         </Helmet>
         <div className={styles.container}>

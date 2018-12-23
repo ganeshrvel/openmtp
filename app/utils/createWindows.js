@@ -7,6 +7,7 @@ import { loadProfileErrorHtml } from '../templates/loadProfileError';
 
 let _nonBootableDeviceWindow = null;
 let _reportBugsWindow = null;
+let _privacyPolicyWindow = null;
 
 /**
  * Non Bootable Device Window
@@ -93,5 +94,51 @@ export const reportBugsWindow = () => {
     return _reportBugsWindow;
   } catch (e) {
     log.error(e, `createWindows -> reportBugsWindow`);
+  }
+};
+
+/**
+ * Privacy POlicy Window
+ */
+
+const privacyPolicyCreateWindow = () => {
+  return new BrowserWindow({
+    height: 600,
+    width: 640,
+    show: false,
+    resizable: false,
+    title: 'OpenMTP',
+    minimizable: true,
+    fullscreenable: true
+  });
+};
+
+export const privacyPolicyWindow = () => {
+  try {
+    if (_privacyPolicyWindow) {
+      _privacyPolicyWindow.focus();
+      _privacyPolicyWindow.show();
+      return _privacyPolicyWindow;
+    }
+
+    _privacyPolicyWindow = privacyPolicyCreateWindow();
+
+    _privacyPolicyWindow.loadURL(`${PATHS.loadUrlPath}#privacyPolicyPage`);
+    _privacyPolicyWindow.webContents.on('did-finish-load', () => {
+      _privacyPolicyWindow.show();
+      _privacyPolicyWindow.focus();
+    });
+
+    _privacyPolicyWindow.onerror = (error, url, line) => {
+      log.error(error, `createWindows -> privacyPolicyWindow -> onerror`);
+    };
+
+    _privacyPolicyWindow.on('closed', () => {
+      _privacyPolicyWindow = null;
+    });
+
+    return _privacyPolicyWindow;
+  } catch (e) {
+    log.error(e, `createWindows -> privacyPolicyWindow`);
   }
 };

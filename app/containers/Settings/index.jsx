@@ -173,15 +173,15 @@ class Settings extends Component {
                         component="p"
                         className={`${styles.onBoardingPaperBody}`}
                       >
-                        Choose your privacy settings. Use the toggles above to enable or
-                        disable them.
+                        Choose your privacy settings. Use the toggles above to
+                        enable or disable them.
                       </Typography>
                     </Paper>
                   ) : null}
                   <Typography variant="caption">
-                    We do not gather any sort of personally identifiable
-                    information. We use this information to improve the User
-                    Experience and squash the bugs.&nbsp;
+                    We do not gather any of your personal information and
+                    neither do we sell your data. We use this information only to
+                    improve the User Experience and squash some bugs.&nbsp;
                     <a onClick={event => {}}>Learn more...</a>
                   </Typography>
                 </FormGroup>

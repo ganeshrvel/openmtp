@@ -1,7 +1,7 @@
 'use strict';
 
 import { app, Menu, shell, BrowserWindow } from 'electron';
-import { reportBugsWindow } from './utils/createWindows';
+import { privacyPolicyWindow, reportBugsWindow } from './utils/createWindows';
 import { DEBUG_PROD, IS_DEV } from './constants/env';
 
 export default class MenuBuilder {
@@ -203,6 +203,30 @@ export default class MenuBuilder {
       submenu: [
         {
           label: 'Report Bugs',
+          click: () => {
+            reportBugsWindow();
+          }
+        },
+        {
+          label: 'Privacy Policy',
+          click: () => {
+            privacyPolicyWindow();
+          }
+        },
+        {
+          label: 'Donate',
+          click: () => {
+            reportBugsWindow();
+          }
+        },
+        {
+          label: 'Share OpenMTP with your friends',
+          click: () => {
+            reportBugsWindow();
+          }
+        },
+        {
+          label: 'Find us on GitHub',
           click: () => {
             reportBugsWindow();
           }

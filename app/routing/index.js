@@ -5,6 +5,7 @@ import { Switch, Route } from 'react-router';
 import HomePage from '../containers/HomePage/Loadable';
 import ReportBugsPage from '../containers/ReportBugsPage/Loadable';
 import ProgressbarPage from '../containers/ProgressbarPage';
+import PrivacyPolicyPage from '../containers/PrivacyPolicyPage';
 import NotFoundPage from '../containers/NotFoundPage/Loadable';
 
 export const routes = {
@@ -22,6 +23,11 @@ export const routes = {
     path: '/progressbarPage',
     exact: true,
     component: ProgressbarPage
+  },
+  PrivacyPolicyPage: {
+    path: '/privacyPolicyPage',
+    exact: true,
+    component: PrivacyPolicyPage
   },
   NotFound: {
     component: NotFoundPage

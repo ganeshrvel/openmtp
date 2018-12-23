@@ -7,11 +7,10 @@ import { log } from '@Log';
 import { remote } from 'electron';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import GenerateErrorReport from '../ErrorBoundary/components/GenerateErrorReport';
 import { Helmet } from 'react-helmet';
 import { APP_TITLE } from '../../constants/meta';
 
-class ReportBugsPage extends Component {
+class PrivacyPolicyPage extends Component {
   constructor(props) {
     super(props);
   }
@@ -21,9 +20,9 @@ class ReportBugsPage extends Component {
     return (
       <div className={styles.root}>
         <Helmet titleTemplate={`%s - ${APP_TITLE}`}>
-          <title>Report Bugs</title>
+          <title>Privacy Policy</title>
         </Helmet>
-        <GenerateErrorReport />
+        
       </div>
     );
   }
@@ -39,4 +38,4 @@ const mapStateToProps = (state, props) => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withStyles(styles)(ReportBugsPage));
+)(withStyles(styles)(PrivacyPolicyPage));
