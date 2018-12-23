@@ -10,11 +10,10 @@ import { settingsStorage } from './utils/storageHelper';
 import { AUTO_UPDATE_CHECK_FIREUP_DELAY } from './constants';
 import { appEvents } from './utils/eventHandling';
 import { bootLoader } from './utils/bootHelper';
-import { loadProfileErrorHtml } from './templates/loadProfileError';
+import { nonBootableDeviceWindow } from './utils/createWindows';
 
 const isSingleInstance = app.requestSingleInstanceLock();
 const isDeviceBootable = bootTheDevice();
-let _nonBootableDeviceWindow = null;
 let mainWindow = null;
 
 if (IS_DEV || DEBUG_PROD) {
@@ -46,39 +45,7 @@ async function bootTheDevice() {
 if (!isDeviceBootable) {
   app.on('ready', async () => {
     try {
-      const nonBootableDeviceCreateWindow = () => {
-        return new BrowserWindow({
-          title: 'OpenMTP',
-          center: true,
-          show: false,
-          maximizable: false,
-          minimizable: false,
-          width: 480,
-          height: 320,
-          resizable: false
-        });
-      };
-
-      _nonBootableDeviceWindow = nonBootableDeviceCreateWindow();
-      _nonBootableDeviceWindow.loadURL(
-        `data:text/html;charset=utf-8, ${encodeURI(loadProfileErrorHtml)}`
-      );
-
-      _nonBootableDeviceWindow.webContents.on('did-finish-load', () => {
-        if (!_nonBootableDeviceWindow) {
-          throw new Error(`"nonBootableDeviceWindow" is not defined`);
-        }
-        if (process.env.START_MINIMIZED) {
-          _nonBootableDeviceWindow.minimize();
-        } else {
-          _nonBootableDeviceWindow.show();
-          _nonBootableDeviceWindow.focus();
-        }
-      });
-
-      _nonBootableDeviceWindow.on('closed', () => {
-        _nonBootableDeviceWindow = null;
-      });
+      nonBootableDeviceWindow();
     } catch (e) {
       throw new Error(e);
     }
