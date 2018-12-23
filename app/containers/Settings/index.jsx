@@ -6,7 +6,7 @@ import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import Paper from '@material-ui/core/Paper';
 import Switch from '@material-ui/core/Switch';
 import FormControl from '@material-ui/core/FormControl';
 import FormGroup from '@material-ui/core/FormGroup';
@@ -35,6 +35,7 @@ import {
   makeCurrentBrowsePath,
   makeMtpStoragesList
 } from '../HomePage/selectors';
+import TableCell from '../HomePage/components/FileExplorer';
 
 class Settings extends Component {
   constructor(props) {
@@ -104,8 +105,9 @@ class Settings extends Component {
     } = this.props;
     const hideHiddenFilesLocal = hideHiddenFiles[DEVICES_TYPE_CONST.local];
     const hideHiddenFilesMtp = hideHiddenFiles[DEVICES_TYPE_CONST.mtp];
+    const showSettings = toggleSettings || freshInstall !== 0;
 
-    if (toggleSettings || freshInstall !== 0) {
+    if (showSettings) {
       return (
         <Dialog
           open={true}
@@ -117,7 +119,7 @@ class Settings extends Component {
             Settings
           </Typography>
           <DialogContent>
-            <FormControl component="fieldset">
+            <FormControl component="fieldset" className={styles.fieldset}>
               <div className={styles.block}>
                 <Typography variant="body1" className={styles.subheading}>
                   General Settings
@@ -161,6 +163,27 @@ class Settings extends Component {
                     }
                     label={enableAnalytics ? `Enabled` : `Disabled`}
                   />
+                  <Typography variant="caption">
+                    We do not gather any sort of personally identifiable
+                    information. We use this information to improve the User
+                    Experience and squash the bugs.&nbsp;
+                    <a onClick={event => {}}>Learn more...</a>
+                  </Typography>
+                  {freshInstall ? (
+                    <Paper
+                      className={`${styles.onBoardingPaper}`}
+                      elevation={0}
+                    >
+                      <div className={styles.onBoardingPaperArrow} />
+                      <Typography
+                        component="p"
+                        className={`${styles.onBoardingPaperBody}`}
+                      >
+                        Set your privacy. Use the toggles above to enable or
+                        disable items.
+                      </Typography>
+                    </Paper>
+                  ) : null}
                 </FormGroup>
               </div>
 
