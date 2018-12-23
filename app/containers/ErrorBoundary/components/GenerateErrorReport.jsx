@@ -83,7 +83,7 @@ class GenerateErrorReport extends Component {
     const { classes: styles } = this.props;
     return (
       <React.Fragment>
-        <Typography variant="subheading" className={styles.subHeading}>
+        <Typography variant="subtitle1" className={styles.subHeading}>
           <ul className={styles.instructions}>
             <li>Connect your phone to the computer via USB.</li>
             <li>Turn on the "File Transfer" mode.</li>
@@ -105,7 +105,7 @@ class GenerateErrorReport extends Component {
         >
           EMAIL ERROR LOGS
         </Button>
-        <Typography variant="subheading" className={styles.emailIdWrapper}>
+        <Typography variant="subtitle1" className={styles.emailIdWrapper}>
           <span>Developer email address: </span>
           <a
             href={`${mailTo} ${mailToInstructions}`}

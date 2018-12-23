@@ -104,7 +104,7 @@ class Settings extends Component {
     } = this.props;
     const hideHiddenFilesLocal = hideHiddenFiles[DEVICES_TYPE_CONST.local];
     const hideHiddenFilesMtp = hideHiddenFiles[DEVICES_TYPE_CONST.mtp];
-    
+
     if (toggleSettings || freshInstall !== 0) {
       return (
         <Dialog
@@ -113,15 +113,17 @@ class Settings extends Component {
           maxWidth={'sm'}
           aria-labelledby="settings-dialogbox"
         >
-          <DialogTitle>Settings</DialogTitle>
+          <Typography variant="h5" className={styles.title}>
+            Settings
+          </Typography>
           <DialogContent>
             <FormControl component="fieldset">
               <div className={styles.block}>
-                <Typography variant="subheading" className={styles.subheading}>
+                <Typography variant="body1" className={styles.subheading}>
                   General Settings
                 </Typography>
                 <FormGroup>
-                  <Typography variant="body2" className={styles.title}>
+                  <Typography variant="subtitle2" className={styles.subtitle}>
                     Enable auto-update check
                   </Typography>
 
@@ -141,7 +143,7 @@ class Settings extends Component {
                   />
                 </FormGroup>
                 <FormGroup className={styles.formGroup}>
-                  <Typography variant="body2" className={styles.title}>
+                  <Typography variant="subtitle2" className={styles.subtitle}>
                     Enable anonymous usage statistics gathering
                   </Typography>
 
@@ -163,12 +165,12 @@ class Settings extends Component {
               </div>
 
               <div>
-                <Typography variant="subheading" className={styles.subheading}>
+                <Typography variant="body1" className={styles.subheading}>
                   File Manager Settings
                 </Typography>
 
                 <FormGroup>
-                  <Typography variant="body2" className={styles.title}>
+                  <Typography variant="subtitle2" className={styles.subtitle}>
                     Show hidden files
                   </Typography>
                   <FormControlLabel
@@ -178,9 +180,7 @@ class Settings extends Component {
                         checked={!hideHiddenFilesLocal}
                         onChange={event =>
                           this.handleHiddenFilesChange(
-                            {
-                              toggle: !hideHiddenFilesLocal
-                            },
+                            { toggle: !hideHiddenFilesLocal },
                             DEVICES_TYPE_CONST.local
                           )
                         }
@@ -195,9 +195,7 @@ class Settings extends Component {
                         checked={!hideHiddenFilesMtp}
                         onChange={event =>
                           this.handleHiddenFilesChange(
-                            {
-                              toggle: !hideHiddenFilesMtp
-                            },
+                            { toggle: !hideHiddenFilesMtp },
                             DEVICES_TYPE_CONST.mtp
                           )
                         }
@@ -211,7 +209,11 @@ class Settings extends Component {
           </DialogContent>
           <DialogActions>
             <Button
-              onClick={e => this.handleClick({ confirm: false })}
+              onClick={e =>
+                this.handleClick({
+                  confirm: false
+                })
+              }
               color="secondary"
             >
               OK

@@ -65,7 +65,7 @@ class DirectoryListsTableHead extends Component {
             return hideColList.indexOf(row.id) < 0 ? (
               <TableCell
                 key={row.id}
-                numeric={row.numeric}
+                align={row.numeric ? 'right' : 'inherit'}
                 padding={row.disablePadding ? 'none' : 'default'}
                 sortDirection={orderBy === row.id ? order : false}
                 className={styles.tableHeadCell}

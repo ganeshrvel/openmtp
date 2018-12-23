@@ -49,14 +49,14 @@ class ErrorBoundary extends Component {
       return (
         <div className={styles.root}>
           <img src={imgsrc('bug.svg', false)} className={styles.bugImg} />
-          <Typography variant="display1" className={styles.headings}>
+          <Typography variant="h4" className={styles.headings}>
             Whoops!
           </Typography>
-          <Typography variant="headline" className={styles.headings}>
+          <Typography variant="h5" className={styles.headings}>
             I promise it's not you, it's me.
           </Typography>
-          <Typography variant="subheading" className={styles.subHeading}>
-            Please send me the error logs so that I can fix this issue.
+          <Typography variant="subtitle1" className={styles.subHeading}>
+            Please send us the error log so that I can fix this issue.
           </Typography>
           <GenerateErrorReport />
           <Button
