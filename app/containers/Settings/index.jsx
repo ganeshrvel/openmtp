@@ -163,12 +163,6 @@ class Settings extends Component {
                     }
                     label={enableAnalytics ? `Enabled` : `Disabled`}
                   />
-                  <Typography variant="caption">
-                    We do not gather any sort of personally identifiable
-                    information. We use this information to improve the User
-                    Experience and squash the bugs.&nbsp;
-                    <a onClick={event => {}}>Learn more...</a>
-                  </Typography>
                   {freshInstall ? (
                     <Paper
                       className={`${styles.onBoardingPaper}`}
@@ -179,11 +173,17 @@ class Settings extends Component {
                         component="p"
                         className={`${styles.onBoardingPaperBody}`}
                       >
-                        Set your privacy. Use the toggles above to enable or
-                        disable items.
+                        Choose your privacy settings. Use the toggles above to enable or
+                        disable them.
                       </Typography>
                     </Paper>
                   ) : null}
+                  <Typography variant="caption">
+                    We do not gather any sort of personally identifiable
+                    information. We use this information to improve the User
+                    Experience and squash the bugs.&nbsp;
+                    <a onClick={event => {}}>Learn more...</a>
+                  </Typography>
                 </FormGroup>
               </div>
 

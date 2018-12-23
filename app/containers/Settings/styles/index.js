@@ -33,6 +33,7 @@ export const styles = theme => ({
     backgroundColor: variables().styles.secondaryColor.main
   },
   onBoardingPaperArrow: {
+    fontWeight: `bold`,
     content: ' ',
     borderBottom: `11px solid ${variables().styles.secondaryColor.main}`,
     borderLeft: '8px solid transparent',
