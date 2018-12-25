@@ -5,11 +5,7 @@ import { privacyPolicyWindow, reportBugsWindow } from './utils/createWindows';
 import { DEBUG_PROD, IS_DEV } from './constants/env';
 import { APP_NAME } from './constants/meta';
 import { openExternalUrl } from './utils/url';
-import {
-  APP_GITHUB_RELEASES_SHORTENED_URL,
-  APP_GITHUB_SHORTENED_URL,
-  DONATE_PAYPAL_URL
-} from './constants';
+import { APP_GITHUB_URL, DONATE_PAYPAL_URL } from './constants';
 import { mailTo } from './templates/menu';
 
 export default class MenuBuilder {
@@ -236,7 +232,7 @@ export default class MenuBuilder {
         {
           label: 'Find us on GitHub',
           click: () => {
-            openExternalUrl(APP_GITHUB_SHORTENED_URL);
+            openExternalUrl(APP_GITHUB_URL);
           }
         }
       ]
@@ -343,7 +339,7 @@ export default class MenuBuilder {
           {
             label: 'Find us on GitHub',
             click: () => {
-              openExternalUrl(APP_GITHUB_SHORTENED_URL);
+              openExternalUrl(APP_GITHUB_URL);
             }
           }
         ]

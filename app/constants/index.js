@@ -30,8 +30,4 @@ export const APP_GITHUB_URL = repository.url.replace(/.git$/, '');
 
 export const APP_GITHUB_RELEASES_URL = `${APP_GITHUB_URL}/releases`;
 
-export const APP_GITHUB_SHORTENED_URL = `https://openmtp.page.link/openmtp-github`;
-
-export const APP_GITHUB_RELEASES_SHORTENED_URL = `https://openmtp.page.link/openmtp-github-releases`;
-
-export const DONATE_PAYPAL_URL = `https://openmtp.page.link/donate-paypal`;
+export const DONATE_PAYPAL_URL = `https://paypal.me/ganeshrvel`;
