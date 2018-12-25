@@ -55,11 +55,13 @@ export const styles = theme => {
 const animateLazyLoaderOverLay = keyframes`
   0% {
     opacity: 1;
+    position: absolute;
   }
   100% {
     opacity: 0;
     left: -9999px;
     display: none;
+    position: unset;
   }
 `;
 
@@ -72,5 +74,5 @@ export const LazyLoaderOverLay = styled.div`
   background-color: #ffffff;
   z-index: 9999;
 
-  animation: ${animateLazyLoaderOverLay} 0s 5s forwards;
+  animation: ${animateLazyLoaderOverLay} 0s 3s forwards;
 `;

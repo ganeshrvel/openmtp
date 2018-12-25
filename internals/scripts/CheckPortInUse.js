@@ -2,15 +2,16 @@
 
 import chalk from 'chalk';
 import detectPort from 'detect-port';
+import { PORT } from '../../config/env';
 
 (function CheckPortInUse() {
-  const port = process.env.PORT || '4642';
+  const _port = PORT.toString();
 
-  detectPort(port, (err, availablePort) => {
-    if (port !== String(availablePort)) {
+  detectPort(_port, (err, availablePort) => {
+    if (_port !== String(availablePort)) {
       throw new Error(
         chalk.whiteBright.bgRed.bold(
-          `Port "${port}" on "localhost" is already in use. Please use another port. ex: PORT=4343 yarn dev`
+          `Port "${_port}" on "localhost" is already in use. Please use another port. ex: PORT=4343 yarn dev`
         )
       );
     } else {

@@ -30,7 +30,7 @@ const actionTypesList = [
   'SET_FILE_TRANSFER_PROGRESS',
   'CLEAR_FILE_TRANSFER',
   'SET_FILES_DRAG',
-  'CLEAR_FILES_DRAG',
+  'CLEAR_FILES_DRAG'
 ];
 
 export const actionTypes = prefixer(prefix, actionTypesList);
@@ -166,9 +166,7 @@ export function processMtpOutput({
         throwAlert: mtpThrowAlert,
         logError: mtpLogError
       } = processMtpBuffer({ error, stderr });
-
-      dispatch(setMtpStatus(mtpStatus));
-
+      
       if (!mtpStatus) {
         dispatch(_fetchDirList([], deviceType));
         dispatch(setSelectedDirLists({ selected: [] }, deviceType));

@@ -22,14 +22,16 @@ export const processMtpBuffer = ({ error, stderr }) => {
   const errorDictionary = {
     noMtp: `No MTP device found.`,
     common: `Oops.. Your MTP device has gone crazy! Try again.`,
-    unResponsive: `MTP device is not responding. Reload or reconnect device.`,
+    unResponsive: `MTP device is not responding. Reload or reconnect the device.`,
     mtpStorageNotAccessible: `MTP storage not accessible.`,
     fileNotFound: `File not found! Try again.`,
     partialDeletion: `The path is inaccessible.`
   };
 
-  const errorStringified = (error !== null && error.toString()) || '';
-  const stderrStringified = (stderr !== null && stderr.toString()) || '';
+  const errorStringified =
+    typeof error !== 'undefined' && error !== null ? error.toString() : '';
+  const stderrStringified =
+    typeof stderr !== 'undefined' && stderr !== null ? stderr.toString() : '';
 
   if (!errorStringified && !stderrStringified) {
     return {
@@ -164,7 +166,8 @@ export const processLocalBuffer = ({ error, stderr }) => {
     noPerm1: `Operation not permitted`,
     noPerm2: `Permission denied`,
     commandFailed: `Command failed`,
-    noSuchFiles: `No such file or directory`
+    noSuchFiles: `No such file or directory`,
+    resourceBusy: `resource busy or locked`
   };
   const errorDictionary = {
     noPerm: `Operation not permitted.`,
@@ -175,8 +178,10 @@ export const processLocalBuffer = ({ error, stderr }) => {
     fileNotFound: `File not found! Try again.`
   };
 
-  const errorStringified = (error !== null && error.toString()) || '';
-  const stderrStringified = (stderr !== null && stderr.toString()) || '';
+  const errorStringified =
+    typeof error !== 'undefined' && error !== null ? error.toString() : '';
+  const stderrStringified =
+    typeof stderr !== 'undefined' && stderr !== null ? stderr.toString() : '';
 
   if (!errorStringified && !stderrStringified) {
     return {
@@ -231,11 +236,11 @@ export const processLocalBuffer = ({ error, stderr }) => {
       status: true
     };
   } else if (
-    /*No files selected*/
-    checkError('invalidPath')
+    /*Resource busy or locked*/
+    checkError('resourceBusy')
   ) {
     return {
-      error: errorStringified,
+      error: errorDictionary.commandFailed,
       throwAlert: true,
       logError: true
     };

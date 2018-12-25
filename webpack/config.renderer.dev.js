@@ -16,11 +16,11 @@ import { spawn, execSync } from 'child_process';
 import baseConfig from './config.base';
 import CheckNodeEnv from '../internals/scripts/CheckNodeEnv';
 import { PATHS } from '../app/utils/paths';
+import { PORT } from '../config/env';
 
 CheckNodeEnv('development');
 
-const port = process.env.PORT || 4642;
-const publicPath = `http://localhost:${port}/dist`;
+const publicPath = `http://localhost:${PORT}/dist`;
 const dll = path.resolve(PATHS.root, 'dll');
 const manifest = path.resolve(dll, 'renderer.json');
 const requiredByDLLConfig = module.parent.filename.includes(
@@ -45,14 +45,14 @@ export default merge.smart(baseConfig, {
   target: 'electron-renderer',
   entry: [
     'react-hot-loader/patch',
-    `webpack-dev-server/client?http://localhost:${port}/`,
+    `webpack-dev-server/client?http://localhost:${PORT}/`,
     'webpack/hot/only-dev-server',
     '@babel/polyfill',
     path.join(PATHS.app, 'index.js')
   ],
 
   output: {
-    publicPath: `http://localhost:${port}/dist/`,
+    publicPath: `http://localhost:${PORT}/dist/`,
     filename: 'renderer.dev.js'
   },
 
@@ -256,7 +256,7 @@ export default merge.smart(baseConfig, {
   },
 
   devServer: {
-    port,
+    port: PORT,
     publicPath,
     compress: true,
     noInfo: true,

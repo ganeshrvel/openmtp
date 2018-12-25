@@ -1,7 +1,7 @@
 {
   "name": "openmtp",
   "productName": "OpenMTP",
-  "version": "0.9.70",
+  "version": "0.9.73",
   "description": "OpenMTP | Android File Transfer for macOS",
   "main": "./main.prod.js",
   "author": {
