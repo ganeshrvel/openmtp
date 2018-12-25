@@ -100,3 +100,22 @@ export const truncate = (str, length) => {
 export const stripRootSlash = str => {
   return str.replace(/^\//g, '');
 };
+
+export const springTruncate = (str, minChars = 10, ellipsis = '...') => {
+  const strLength = str.length;
+  if (strLength > minChars) {
+    const ellipsisLength = ellipsis.length;
+
+    if (ellipsisLength > minChars) {
+      return str.substr(strLength - minChars);
+    }
+
+    const count = -0.5 * (minChars - strLength - ellipsisLength);
+    const center = strLength / 2;
+
+    return `${str.substr(0, center - count)}${ellipsis}${str.substr(
+      strLength - center + count
+    )}`;
+  }
+  return str;
+};

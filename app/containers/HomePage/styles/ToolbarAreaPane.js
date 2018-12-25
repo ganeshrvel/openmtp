@@ -59,9 +59,11 @@ const animateLazyLoaderOverLay = keyframes`
   }
   100% {
     opacity: 0;
+    top: -9999px;
     left: -9999px;
     display: none;
     position: unset;
+    z-index: -9999;
   }
 `;
 

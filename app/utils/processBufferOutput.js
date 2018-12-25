@@ -7,6 +7,7 @@ import { EOL } from 'os';
 export const processMtpBuffer = ({ error, stderr }) => {
   const errorTpl = {
     noMtp: `No MTP device found`,
+    deviceLocked: `your device may be locked`,
     invalidObjectHandle: `invalid response code InvalidObjectHandle`,
     invalidStorageID: `invalid response code InvalidStorageID`,
     fileNotFound: `could not find`,
@@ -21,11 +22,12 @@ export const processMtpBuffer = ({ error, stderr }) => {
 
   const errorDictionary = {
     noMtp: `No MTP device found.`,
-    common: `Oops.. Your MTP device has gone crazy! Try again.`,
+    deviceLocked: `Your MTP device may be locked. Unlock it and reload.`,
     unResponsive: `MTP device is not responding. Reload or reconnect the device.`,
     mtpStorageNotAccessible: `MTP storage not accessible.`,
     fileNotFound: `File not found! Try again.`,
-    partialDeletion: `The path is inaccessible.`
+    partialDeletion: `The path is inaccessible.`,
+    common: `Oops.. Your MTP device has gone crazy! Try again.`
   };
 
   const errorStringified =
@@ -66,6 +68,16 @@ export const processMtpBuffer = ({ error, stderr }) => {
       error: errorDictionary.noMtp,
       throwAlert: false,
       logError: false,
+      status: false
+    };
+  } else if (
+    /*MTP device may be locked*/
+    checkError('deviceLocked')
+  ) {
+    return {
+      error: errorDictionary.deviceLocked,
+      throwAlert: true,
+      logError: true,
       status: false
     };
   } else if (

@@ -68,7 +68,8 @@ import {
   isInt,
   isNumber,
   niceBytes,
-  quickHash
+  quickHash,
+  springTruncate
 } from '../../../utils/funcs';
 
 import { throwAlert } from '../../Alerts/actions';
@@ -1031,6 +1032,11 @@ class FileExplorer extends Component {
       path: currentBrowsePath[deviceType],
       directoryLists: directoryLists[deviceType]
     };
+
+    const truncateMinimumChars = 37;
+
+    const fileName = springTruncate(n.name, truncateMinimumChars);
+
     return (
       <TableRow
         hover={true}
@@ -1098,7 +1104,7 @@ class FileExplorer extends Component {
               </Tooltip>
             )}
             &nbsp;&nbsp;
-            {n.name}
+            <div className={styles.truncate}>{fileName}</div>
           </TableCell>
         )}
         {hideColList.indexOf('size') < 0 && (

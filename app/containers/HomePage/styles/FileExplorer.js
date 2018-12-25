@@ -43,9 +43,7 @@ export const styles = theme => ({
       marginTop: 10,
       whiteSpace: `nowrap`,
       overflow: `hidden`,
-      textOverflow: `ellipsis`,
-      width: `75%`,
-      maxWidth: 410
+      textOverflow: `ellipsis`
     },
     [`&.sizeCell`]: {
       whiteSpace: `nowrap`,
@@ -72,5 +70,11 @@ export const styles = theme => ({
     lineHeight: `18px`,
     paddingLeft: 30,
     color: `rgba(0, 0, 0, 0.8)`
+  },
+  truncate: {
+    textOverflow: 'ellipsis',
+    overflow: 'hidden',
+    maxWidth: 310,
+    whiteSpace: 'nowrap'
   }
 });

@@ -18,7 +18,11 @@ class Home extends Component {
     super(props);
   }
 
-  async componentWillMount() {}
+  componentWillMount() {
+    if (document) {
+      document.body.style.overflowY = 'hidden';
+    }
+  }
 
   render() {
     const { classes: styles } = this.props;

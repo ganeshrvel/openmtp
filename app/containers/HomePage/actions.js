@@ -166,7 +166,9 @@ export function processMtpOutput({
         throwAlert: mtpThrowAlert,
         logError: mtpLogError
       } = processMtpBuffer({ error, stderr });
-      
+
+      dispatch(setMtpStatus(mtpStatus));
+
       if (!mtpStatus) {
         dispatch(_fetchDirList([], deviceType));
         dispatch(setSelectedDirLists({ selected: [] }, deviceType));
