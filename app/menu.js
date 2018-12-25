@@ -222,7 +222,7 @@ export default class MenuBuilder {
           }
         },
         {
-          label: 'Donate - Buy me a coffee!',
+          label: 'Buy me a coffee!',
           click: () => {
             openExternalUrl(DONATE_PAYPAL_URL);
           }
@@ -329,7 +329,7 @@ export default class MenuBuilder {
             }
           },
           {
-            label: 'Donate - Buy me a coffee!',
+            label: 'Buy me a coffee!',
             click: () => {
               openExternalUrl(DONATE_PAYPAL_URL);
             }
