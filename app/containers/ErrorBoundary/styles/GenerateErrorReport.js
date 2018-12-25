@@ -24,6 +24,6 @@ export const styles = theme => ({
     marginTop: 15
   },
   emailId: {
-    color: variables().styles.secondaryColor.main
+    fontWeight: `bold`
   }
 });

@@ -4,6 +4,13 @@ import { app, Menu, shell, BrowserWindow } from 'electron';
 import { privacyPolicyWindow, reportBugsWindow } from './utils/createWindows';
 import { DEBUG_PROD, IS_DEV } from './constants/env';
 import { APP_NAME } from './constants/meta';
+import { openExternalUrl } from './utils/url';
+import {
+  APP_GITHUB_RELEASES_SHORTENED_URL,
+  APP_GITHUB_SHORTENED_URL,
+  DONATE_PAYPAL_URL
+} from './constants';
+import { mailTo } from './templates/menu';
 
 export default class MenuBuilder {
   constructor({ mainWindow, autoAppUpdate }) {
@@ -215,21 +222,21 @@ export default class MenuBuilder {
           }
         },
         {
-          label: 'Donate',
+          label: 'Donate - Buy me a coffee!',
           click: () => {
-            reportBugsWindow();
+            openExternalUrl(DONATE_PAYPAL_URL);
           }
         },
         {
-          label: `Share ${APP_NAME} with your friends`,
+          label: `Invite a friend`,
           click: () => {
-            reportBugsWindow();
+            openExternalUrl(`${mailTo}`);
           }
         },
         {
           label: 'Find us on GitHub',
           click: () => {
-            reportBugsWindow();
+            openExternalUrl(APP_GITHUB_SHORTENED_URL);
           }
         }
       ]

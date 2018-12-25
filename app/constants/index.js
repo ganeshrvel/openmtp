@@ -6,6 +6,7 @@
  */
 
 import { PATHS } from '../utils/paths';
+import { repository } from '../../package.json';
 
 export const DEVICES_TYPE_CONST = { mtp: 'mtp', local: 'local' };
 
@@ -24,3 +25,13 @@ export const LOG_FILE_ROTATION_CLEANUP_THRESHOLD = 60; //in days
 export const ENABLE_BACKGROUND_AUTO_UPDATE = false;
 
 export const AUTO_UPDATE_CHECK_FIREUP_DELAY = 10000; //in ms
+
+export const APP_GITHUB_URL = repository.url.replace(/.git$/, '');
+
+export const APP_GITHUB_RELEASES_URL = `${APP_GITHUB_URL}/releases`;
+
+export const APP_GITHUB_SHORTENED_URL = `https://openmtp.page.link/openmtp-github`;
+
+export const APP_GITHUB_RELEASES_SHORTENED_URL = `https://openmtp.page.link/openmtp-github-releases`;
+
+export const DONATE_PAYPAL_URL = `https://openmtp.page.link/donate-paypal`;

@@ -44,5 +44,8 @@ export const styles = theme => ({
   },
   onBoardingPaperBody: {
     color: variables().styles.primaryColor.main
+  },
+  a: {
+    fontWeight: `bold`
   }
 });

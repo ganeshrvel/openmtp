@@ -36,6 +36,7 @@ import {
   makeMtpStoragesList
 } from '../HomePage/selectors';
 import TableCell from '../HomePage/components/FileExplorer';
+import { privacyPolicyWindow } from '../../utils/createWindows';
 
 class Settings extends Component {
   constructor(props) {
@@ -180,9 +181,16 @@ class Settings extends Component {
                   ) : null}
                   <Typography variant="caption">
                     We do not gather any of your personal information and
-                    neither do we sell your data. We use this information only to
-                    improve the User Experience and squash some bugs.&nbsp;
-                    <a onClick={event => {}}>Learn more...</a>
+                    neither do we sell your data. We use this information only
+                    to improve the User Experience and squash some bugs.&nbsp;
+                    <a
+                      className={styles.a}
+                      onClick={event => {
+                        privacyPolicyWindow(true);
+                      }}
+                    >
+                      Learn more...
+                    </a>
                   </Typography>
                 </FormGroup>
               </div>

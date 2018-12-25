@@ -1,7 +1,7 @@
 {
   "name": "openmtp",
   "productName": "OpenMTP",
-  "version": "0.9.63",
+  "version": "0.9.67",
   "description": "OpenMTP | Android File Transfer for macOS",
   "scripts": {
     "build": "concurrently \"yarn build-main\" \"yarn build-renderer\"",
@@ -85,7 +85,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ganeshrvel/openmtp.git"
+    "url": "https://github.com/ganeshrvel/openmtp.git"
   },
   "author": {
     "name": "Ganesh Rathinavel",

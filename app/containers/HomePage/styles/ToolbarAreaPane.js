@@ -33,7 +33,9 @@ export const styles = theme => {
     },
     navBtnImgs: {
       height: 25,
-      width: `auto`
+      width: `auto`,
+      ...mixins().noDrag,
+      ...mixins().noselect
     },
     disabledNavBtns: {
       backgroundColor: `#f9f9f9`

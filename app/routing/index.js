@@ -5,7 +5,7 @@ import { Switch, Route } from 'react-router';
 import HomePage from '../containers/HomePage/Loadable';
 import ReportBugsPage from '../containers/ReportBugsPage/Loadable';
 import ProgressbarPage from '../containers/ProgressbarPage';
-import PrivacyPolicyPage from '../containers/PrivacyPolicyPage';
+import PrivacyPolicyPage from '../containers/PrivacyPolicyPage/Loadable';
 import NotFoundPage from '../containers/NotFoundPage/Loadable';
 
 export const routes = {

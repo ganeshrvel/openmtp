@@ -3,7 +3,12 @@ body {
   background: $appBgColor !important;
   @include rem('font-size', $regularSize);
   font-family: $roboto;
-  overflow-y: hidden;
+  overflow-x: hidden;
+}
+
+a {
+  cursor: pointer;
+  color: $appSecondaryColor;
 }
 
 *::-webkit-scrollbar-track {

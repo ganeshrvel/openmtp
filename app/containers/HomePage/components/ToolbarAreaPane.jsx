@@ -42,6 +42,7 @@ import { Confirm as ConfirmDialog } from '../../../components/DialogBox';
 import { Selection as SelectionDialog } from '../../../components/DialogBox';
 import { pathUp } from '../../../utils/paths';
 import { toggleSettings } from '../../Settings/actions';
+import { toggleWindowSizeOnDoubleClick } from '../../../utils/titlebarDoubleClick';
 
 class ToolbarAreaPane extends React.Component {
   constructor(props) {
@@ -55,6 +56,14 @@ class ToolbarAreaPane extends React.Component {
       ...this.initialState
     };
   }
+
+  handleDoubleClickToolBar = event => {
+    if (event.target !== event.currentTarget) {
+      return null;
+    }
+
+    toggleWindowSizeOnDoubleClick();
+  };
 
   handleToggleDrawer = status => () => {
     this.setState({
@@ -323,7 +332,13 @@ class ToolbarAreaPane extends React.Component {
         {!isLoadedDirectoryLists && <LazyLoaderOverLay />}
 
         <AppBar position="static" elevation={0} className={styles.appBar}>
-          <Toolbar className={styles.toolbar} disableGutters={true}>
+          <Toolbar
+            className={styles.toolbar}
+            disableGutters={true}
+            onDoubleClick={event => {
+              this.handleDoubleClickToolBar(event);
+            }}
+          >
             {showMenu && (
               <IconButton
                 color="inherit"

@@ -1,6 +1,6 @@
 'use strict';
 
-import { BrowserWindow } from 'electron';
+import { BrowserWindow, remote } from 'electron';
 import { PATHS } from './paths';
 import { log } from './log';
 import { loadProfileErrorHtml } from '../templates/loadProfileError';
@@ -102,19 +102,26 @@ export const reportBugsWindow = () => {
  * Privacy POlicy Window
  */
 
-const privacyPolicyCreateWindow = () => {
-  return new BrowserWindow({
+const privacyPolicyCreateWindow = isRenderedPage => {
+  const config = {
+    width: 800,
     height: 600,
-    width: 640,
+    minWidth: 600,
+    minHeight: 400,
     show: false,
-    resizable: false,
+    resizable: true,
     title: `${APP_TITLE}`,
     minimizable: true,
     fullscreenable: true
-  });
+  };
+  if (isRenderedPage) {
+    return new remote.BrowserWindow(config);
+  }
+
+  return new BrowserWindow(config);
 };
 
-export const privacyPolicyWindow = () => {
+export const privacyPolicyWindow = (isRenderedPage = false) => {
   try {
     if (_privacyPolicyWindow) {
       _privacyPolicyWindow.focus();
@@ -122,7 +129,7 @@ export const privacyPolicyWindow = () => {
       return _privacyPolicyWindow;
     }
 
-    _privacyPolicyWindow = privacyPolicyCreateWindow();
+    _privacyPolicyWindow = privacyPolicyCreateWindow(isRenderedPage);
 
     _privacyPolicyWindow.loadURL(`${PATHS.loadUrlPath}#privacyPolicyPage`);
     _privacyPolicyWindow.webContents.on('did-finish-load', () => {

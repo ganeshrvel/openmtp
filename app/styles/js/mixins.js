@@ -1,5 +1,7 @@
 'use strict';
 
+import { variables } from './index';
+
 export default args => {
   return {
     noselect: {
@@ -31,6 +33,10 @@ export default args => {
     appDrag: {
       [`-webkitUserSelect`]: `none`,
       [`-webkitAppRegion`]: `drag`
+    },
+    a: {
+      cursor: `pointer`,
+      color: variables().styles.secondaryColor.main
     }
   };
 };
