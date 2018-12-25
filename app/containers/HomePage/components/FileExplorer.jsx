@@ -62,7 +62,7 @@ import {
   pasteFiles,
   renameMtpFiles
 } from '../../../api/sys';
-import { baseName, pathUp, sanitizePath } from '../../../utils/paths';
+import { baseName, pathInfo, pathUp, sanitizePath } from '../../../utils/paths';
 import {
   isFloat,
   isInt,
@@ -768,6 +768,23 @@ class FileExplorer extends Component {
     return _directoryLists.indexOf(path) !== -1;
   };
 
+  tableSort = ({ ...args }) => {
+    const { nodes, order, orderBy } = args;
+
+    if (typeof nodes === 'undefined' || !nodes.length < 0) {
+      return [];
+    }
+
+    if (order === 'asc') {
+      return lodashSortBy(nodes, [
+        value => this._lodashSortConstraints({ value, orderBy })
+      ]);
+    }
+    return lodashSortBy(nodes, [
+      value => this._lodashSortConstraints({ value, orderBy })
+    ]).reverse();
+  };
+
   _lodashSortConstraints = ({ value, orderBy }) => {
     if (orderBy === 'size' && value['isFolder']) {
       return 0;
@@ -785,27 +802,16 @@ class FileExplorer extends Component {
     }
 
     if (_primer === null) {
-      _primer = item.toLowerCase();
-    }
+      if (!value['isFolder']) {
+        const _pathInfo = pathInfo(item, value['isFolder']);
 
+        _primer = _pathInfo.name.toLowerCase();
+      } else {
+        _primer = item.toLowerCase();
+      }
+    }
+    
     return _primer;
-  };
-
-  tableSort = ({ ...args }) => {
-    const { nodes, order, orderBy } = args;
-
-    if (typeof nodes === 'undefined' || !nodes.length < 0) {
-      return [];
-    }
-
-    if (order === 'asc') {
-      return lodashSortBy(nodes, [
-        value => this._lodashSortConstraints({ value, orderBy })
-      ]);
-    }
-    return lodashSortBy(nodes, [
-      value => this._lodashSortConstraints({ value, orderBy })
-    ]).reverse();
   };
 
   render() {

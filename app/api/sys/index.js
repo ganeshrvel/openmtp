@@ -18,7 +18,7 @@ import { mtp as _mtpCli } from '../../utils/binaries';
 import { spawn, exec } from 'child_process';
 import findLodash from 'lodash/find';
 import { DEVICES_TYPE_CONST } from '../../constants';
-import { baseName, PATHS } from '../../utils/paths';
+import { baseName, getExtension, PATHS } from '../../utils/paths';
 import {
   clearFileTransfer,
   fetchDirList,
@@ -360,34 +360,36 @@ export const fetchMtpStorageOptions = async () => {
     let storageIdMatchPattern = /([^\D]+)/;
 
     let storageList = {};
-    _storageList.filter(a => !filterOutMtpLines(a)).map((a, index) => {
-      if (!a) {
-        return null;
-      }
-      const _matchDesc = descMatchPattern.exec(a);
-      const _matchedStorageId = storageIdMatchPattern.exec(a);
-
-      if (
-        typeof _matchDesc === 'undefined' ||
-        _matchDesc === null ||
-        typeof _matchDesc[1] === 'undefined' ||
-        typeof _matchedStorageId === 'undefined' ||
-        _matchedStorageId === null ||
-        typeof _matchedStorageId[1] === 'undefined'
-      ) {
-        return null;
-      }
-
-      const matchDesc = _matchDesc[1].trim();
-      const matchedStorageId = _matchedStorageId[1].trim();
-      storageList = {
-        ...storageList,
-        [matchedStorageId]: {
-          name: matchDesc,
-          selected: index === 0
+    _storageList
+      .filter(a => !filterOutMtpLines(a))
+      .map((a, index) => {
+        if (!a) {
+          return null;
         }
-      };
-    });
+        const _matchDesc = descMatchPattern.exec(a);
+        const _matchedStorageId = storageIdMatchPattern.exec(a);
+
+        if (
+          typeof _matchDesc === 'undefined' ||
+          _matchDesc === null ||
+          typeof _matchDesc[1] === 'undefined' ||
+          typeof _matchedStorageId === 'undefined' ||
+          _matchedStorageId === null ||
+          typeof _matchedStorageId[1] === 'undefined'
+        ) {
+          return null;
+        }
+
+        const matchDesc = _matchDesc[1].trim();
+        const matchedStorageId = _matchedStorageId[1].trim();
+        storageList = {
+          ...storageList,
+          [matchedStorageId]: {
+            name: matchDesc,
+            selected: index === 0
+          }
+        };
+      });
 
     if (
       typeof storageList === 'undefined' ||
@@ -460,11 +462,12 @@ export const asyncReadMtpDir = async ({
         continue;
       }
 
-      let fullPath = path.resolve(filePath, matchedFileName);
-      let isFolder = filePropsList[mtpCmdChopIndex.type] === '3001';
-      let dateTime = `${filePropsList[mtpCmdChopIndex.dateAdded]} ${
+      const fullPath = path.resolve(filePath, matchedFileName);
+      const isFolder = filePropsList[mtpCmdChopIndex.type] === '3001';
+      const dateTime = `${filePropsList[mtpCmdChopIndex.dateAdded]} ${
         filePropsList[mtpCmdChopIndex.timeAdded]
       }`;
+      const extension = getExtension(fullPath, isFolder);
 
       //avoid duplicate values
       if (findLodash(response, { path: fullPath })) {
@@ -473,7 +476,7 @@ export const asyncReadMtpDir = async ({
       response.push({
         name: matchedFileName,
         path: fullPath,
-        extension: fetchExtension(filePath, isFolder),
+        extension: extension,
         size: null,
         isFolder: isFolder,
         dateAdded: moment(dateTime).format('YYYY-MM-DD HH:mm:ss')
@@ -886,13 +889,4 @@ const filterOutMtpLines = string => {
     string.toLowerCase().indexOf(`selected storage`) !== -1 ||
     string.toLowerCase().indexOf(`device::find failed`) !== -1
   );
-};
-
-const fetchExtension = (fileName, isFolder) => {
-  if (isFolder) {
-    return null;
-  }
-  return fileName.indexOf('.') === -1
-    ? null
-    : fileName.substring(fileName.lastIndexOf('.') + 1);
 };
