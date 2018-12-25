@@ -321,6 +321,30 @@ export default class MenuBuilder {
             click: () => {
               reportBugsWindow();
             }
+          },
+          {
+            label: 'Privacy Policy',
+            click: () => {
+              privacyPolicyWindow();
+            }
+          },
+          {
+            label: 'Donate - Buy me a coffee!',
+            click: () => {
+              openExternalUrl(DONATE_PAYPAL_URL);
+            }
+          },
+          {
+            label: `Invite a friend`,
+            click: () => {
+              openExternalUrl(`${mailTo}`);
+            }
+          },
+          {
+            label: 'Find us on GitHub',
+            click: () => {
+              openExternalUrl(APP_GITHUB_SHORTENED_URL);
+            }
           }
         ]
       }
