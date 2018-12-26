@@ -3,7 +3,7 @@
 import React, { PureComponent } from 'react';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
-import DirectoryListsTableHead from './DirectoryListsTableHead';
+import FileExplorerTableHeadRender from './FileExplorerTableHeadRender';
 import { FileExplorerEmptyRowRender } from './FileExplorerEmptyRowRender';
 import { FileExplorerTableRowsRender } from './FileExplorerTableRowsRender';
 
@@ -46,7 +46,7 @@ export class FileExplorerTableRender extends PureComponent {
 
     return (
       <Table className={styles.table}>
-        <DirectoryListsTableHead
+        <FileExplorerTableHeadRender
           numSelected={selected.length}
           order={order}
           orderBy={orderBy}

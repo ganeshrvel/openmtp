@@ -1,7 +1,7 @@
 'use strict';
 
 import React, { PureComponent } from 'react';
-import { styles } from '../styles/DirectoryListsTableHead';
+import { styles } from '../styles/FileExplorerTableHeadRender';
 import { withStyles } from '@material-ui/core/styles';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
@@ -31,7 +31,7 @@ const rows = [
   }
 ];
 
-class DirectoryListsTableHead extends PureComponent {
+class FileExplorerTableHeadRender extends PureComponent {
   constructor(props) {
     super(props);
   }
@@ -96,4 +96,4 @@ class DirectoryListsTableHead extends PureComponent {
   }
 }
 
-export default withStyles(styles)(DirectoryListsTableHead);
+export default withStyles(styles)(FileExplorerTableHeadRender);
