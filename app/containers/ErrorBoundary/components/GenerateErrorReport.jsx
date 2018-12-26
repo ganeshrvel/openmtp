@@ -1,12 +1,9 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { writeFile } from 'fs';
-import { withStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import { styles } from '../styles/GenerateErrorReport';
 import path from 'path';
+import { withStyles } from '@material-ui/core/styles';
+import { styles } from '../styles/GenerateErrorReport';
 import { baseName, PATHS } from '../../../utils/paths';
 import { log } from '@Log';
 import { shell, remote } from 'electron';
@@ -22,6 +19,7 @@ import {
   mailTo
 } from '../../../templates/generateErrorReport';
 import { compressFile } from '../../../utils/gzip';
+import GenerateErrorReportBody from './GenerateErrorReportBody';
 
 const { logFile } = PATHS;
 const { getPath } = remote.app;
@@ -45,7 +43,7 @@ class GenerateErrorReport extends Component {
     }
   };
 
-  generateErrorLogs = async () => {
+  handleGenerateErrorLogs = async () => {
     try {
       const { handleThrowError } = this.props;
 
@@ -82,39 +80,14 @@ class GenerateErrorReport extends Component {
   render() {
     const { classes: styles } = this.props;
     return (
-      <React.Fragment>
-        <Typography variant="subtitle1" className={styles.subHeading}>
-          <ul className={styles.instructions}>
-            <li>Connect your phone to the computer via USB.</li>
-            <li>Turn on the "File Transfer" mode.</li>
-            <li>Click on the "EMAIL ERROR LOGS" button.</li>
-            <li>It will open your email client.</li>
-            <li>
-              Attach the generated error report
-              <strong>{` ${zippedLogFileBaseName}`}</strong> (which is found in
-              your Desktop folder) along with this email.
-            </li>
-            <li>Click send.</li>
-          </ul>
-        </Typography>
-        <Button
-          variant="outlined"
-          color="secondary"
-          className={styles.generateLogsBtn}
-          onClick={this.generateErrorLogs}
-        >
-          EMAIL ERROR LOGS
-        </Button>
-        <Typography variant="subtitle1" className={styles.emailIdWrapper}>
-          <span>Developer email address: </span>
-          <a
-            href={`${mailTo} ${mailToInstructions}`}
-            className={styles.emailId}
-          >
-            {AUTHOR_EMAIL}
-          </a>
-        </Typography>
-      </React.Fragment>
+      <GenerateErrorReportBody
+        styles={styles}
+        zippedLogFileBaseName={zippedLogFileBaseName}
+        mailTo={mailTo}
+        mailToInstructions={mailToInstructions}
+        AUTHOR_EMAIL={AUTHOR_EMAIL}
+        onGenerateErrorLogs={this.handleGenerateErrorLogs}
+      />
     );
   }
 }

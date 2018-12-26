@@ -4,10 +4,9 @@ import zlib from 'zlib';
 import { createReadStream, createWriteStream, writeFile } from 'fs';
 import { log } from './log';
 
-const gzip = zlib.createGzip();
-
 export const compressFile = (_input, _output) => {
   try {
+    const gzip = zlib.createGzip();
     const input = createReadStream(_input);
     const output = createWriteStream(_output);
 
