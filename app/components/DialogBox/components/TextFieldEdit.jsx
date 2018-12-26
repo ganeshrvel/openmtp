@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import { styles } from '../styles/TextFieldEdit';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -10,26 +10,22 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 
-class TextFieldEdit extends React.Component {
+class TextFieldEdit extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = {
-      textFieldValue: null
-    };
+
+    this.textFieldValue = null;
   }
 
   handleClick = ({ confirm = false }, e) => {
-    const { textFieldValue } = this.state;
     const { onClickHandler } = this.props;
 
     e.preventDefault();
-    onClickHandler({ confirm, textFieldValue });
+    onClickHandler({ confirm, textFieldValue: this.textFieldValue });
   };
 
   handleChange = event => {
-    this.setState({
-      textFieldValue: event.target.value
-    });
+    this.textFieldValue = event.target.value;
   };
 
   render() {

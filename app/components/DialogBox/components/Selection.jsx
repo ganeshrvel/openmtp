@@ -1,6 +1,6 @@
 'use strict';
 
-import React from 'react';
+import React, { PureComponent } from 'react';
 import { styles } from '../styles/Selection';
 import { withStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
@@ -12,7 +12,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
 import SdStorageIcon from '@material-ui/icons/SdStorage';
 
-class Selection extends React.Component {
+class Selection extends PureComponent {
   handleListItemClick = ({ ...args }) => {
     const { onClose } = this.props;
     onClose({ ...args });

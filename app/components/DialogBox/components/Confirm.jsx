@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { styles } from '../styles/Confirm';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -8,7 +8,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-class Confirm extends Component {
+class Confirm extends PureComponent {
   constructor(props) {
     super(props);
   }
@@ -19,7 +19,13 @@ class Confirm extends Component {
   };
 
   render() {
-    const { bodyText, trigger, fullWidthDialog, maxWidthDialog } = this.props;
+    const {
+      titleText = `Confirm Action`,
+      bodyText,
+      trigger,
+      fullWidthDialog,
+      maxWidthDialog
+    } = this.props;
     return (
       <Dialog
         open={trigger}
@@ -27,19 +33,19 @@ class Confirm extends Component {
         maxWidth={maxWidthDialog}
         aria-labelledby="confirm-dialogbox"
       >
-        <DialogTitle>Confirm Action</DialogTitle>
+        <DialogTitle>{titleText}</DialogTitle>
         <DialogContent>
           <DialogContentText>{bodyText}</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button
-            onClick={e => this.handleClick({ confirm: true })}
+            onClick={event => this.handleClick({ confirm: true })}
             color="secondary"
           >
             Yes
           </Button>
           <Button
-            onClick={e => this.handleClick({ confirm: false })}
+            onClick={event => this.handleClick({ confirm: false })}
             color="secondary"
           >
             No

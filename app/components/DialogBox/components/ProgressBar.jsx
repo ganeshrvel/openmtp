@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import { styles } from '../styles/ProgressBar';
 import { withStyles } from '@material-ui/core/styles';
 import LinearProgress from '@material-ui/core/LinearProgress';
@@ -9,7 +9,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import LiveHelpIcon from '@material-ui/icons/LiveHelp';
 
-class ProgressBar extends React.Component {
+class ProgressBar extends PureComponent {
   constructor(props) {
     super(props);
   }
