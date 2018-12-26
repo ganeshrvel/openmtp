@@ -24,13 +24,13 @@ class Breadcrumb extends React.Component {
   }
 
   handleClickPath = (enabled, value, event) => {
-    const { onBreadcrumbPathClickHandler } = this.props;
+    const { onBreadcrumbPathClick } = this.props;
     event.preventDefault();
 
     if (!enabled) {
       return null;
     }
-    onBreadcrumbPathClickHandler({ path: value });
+    onBreadcrumbPathClick({ path: value });
   };
 
   tokenizeCurrentBrowsePath(currentBrowsePath) {

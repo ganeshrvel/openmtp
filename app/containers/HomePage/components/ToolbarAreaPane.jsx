@@ -364,6 +364,7 @@ class ToolbarAreaPane extends React.Component {
                         })}
                       >
                         <img
+                          alt={item.label}
                           src={imgsrc(item.imgSrc, false)}
                           className={classNames(styles.navBtnImgs)}
                         />

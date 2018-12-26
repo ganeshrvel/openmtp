@@ -5,20 +5,11 @@ import { remote, ipcRenderer } from 'electron';
 import { styles } from '../styles/FileExplorer';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableFooter from '@material-ui/core/TableFooter';
-import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
-import Checkbox from '@material-ui/core/Checkbox';
-import Tooltip from '@material-ui/core/Tooltip';
-import FolderIcon from '@material-ui/icons/Folder';
-import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 import lodashSortBy from 'lodash/sortBy';
 import DirectoryListsTableHead from './DirectoryListsTableHead';
-import Breadcrumb from '../../../components/Breadcrumb';
 import {
   TextFieldEdit as TextFieldEditDialog,
   ProgressBar as ProgressBarDialog,
@@ -74,6 +65,9 @@ import {
 
 import { throwAlert } from '../../Alerts/actions';
 import { imgsrc } from '../../../utils/imgsrc';
+import { FileExplorerEmptyRowRender } from './FileExplorerEmptyRowRender';
+import { FileExplorerTableRowsRender } from './FileExplorerTableRowsRender';
+import { FileExplorerTableFooterRender } from './FileExplorerTableFooterRender';
 const { Menu, getCurrentWindow } = remote;
 
 let filesDragGhostImg = new Image(0, 0);
@@ -693,7 +687,7 @@ class FileExplorer extends Component {
     );
   };
 
-  _onBreadcrumbPathClickHandler = ({ ...args }) => {
+  _handleBreadcrumbPathClick = ({ ...args }) => {
     const { handleFetchDirList, hideHiddenFiles, deviceType } = this.props;
     const { path } = args;
 
@@ -721,7 +715,8 @@ class FileExplorer extends Component {
 
   _handleSelectAllClick = (deviceType, event) => {
     const { directoryLists, handleSelectAllClick } = this.props;
-    const selected = directoryLists[deviceType].nodes.map(n => n.path) || [];
+    const selected =
+      directoryLists[deviceType].nodes.map(item => item.path) || [];
     const isChecked = event.target.checked;
 
     handleSelectAllClick({ selected }, isChecked, deviceType);
@@ -750,7 +745,7 @@ class FileExplorer extends Component {
     handleTableClick({ selected: newSelected }, deviceType);
   };
 
-  handleTableDoubleClick({ path, deviceType, isFolder }) {
+  handleTableDoubleClick = ({ path, deviceType, isFolder }) => {
     if (!isFolder) {
       return null;
     }
@@ -759,7 +754,7 @@ class FileExplorer extends Component {
       path: path,
       deviceType: deviceType
     });
-  }
+  };
 
   isSelected = path => {
     const { directoryLists, deviceType } = this.props;
@@ -810,7 +805,7 @@ class FileExplorer extends Component {
         _primer = item.toLowerCase();
       }
     }
-    
+
     return _primer;
   };
 
@@ -822,11 +817,9 @@ class FileExplorer extends Component {
       currentBrowsePath,
       directoryLists,
       fileTransferProgess,
-      filesDrag
+      mtpDevice
     } = this.props;
-    const { nodes, order, orderBy, queue, isLoaded } = directoryLists[
-      deviceType
-    ];
+    const { nodes, order, orderBy, queue } = directoryLists[deviceType];
     const { selected } = queue;
     const emptyRows = nodes.length < 1;
     const isMtp = deviceType === DEVICES_TYPE_CONST.mtp;
@@ -836,7 +829,6 @@ class FileExplorer extends Component {
       path: currentBrowsePath[deviceType],
       directoryLists: directoryLists[deviceType]
     };
-    const { sourceDeviceType, destinationDeviceType } = filesDrag;
 
     const _eventTarget = 'tableWrapperTarget';
     const togglePasteDialog =
@@ -962,208 +954,49 @@ class FileExplorer extends Component {
                   });
                 }}
               >
-                {emptyRows
-                  ? this.EmptyRowRender(isMtp)
-                  : this.tableSort({
-                      nodes,
-                      order,
-                      orderBy
-                    }).map(n => {
-                      return this.TableRowsRender(n, this.isSelected(n.path));
-                    })}
+                {emptyRows ? (
+                  <FileExplorerEmptyRowRender
+                    styles={styles}
+                    mtpDevice={mtpDevice}
+                    isMtp={isMtp}
+                    onContextMenuClick={this._handleContextMenuClick}
+                  />
+                ) : (
+                  this.tableSort({
+                    nodes,
+                    order,
+                    orderBy
+                  }).map(item => {
+                    return (
+                      <FileExplorerTableRowsRender
+                        key={quickHash(item.path)}
+                        item={item}
+                        isSelected={this.isSelected(item.path)}
+                        styles={styles}
+                        deviceType={deviceType}
+                        hideColList={hideColList}
+                        currentBrowsePath={currentBrowsePath}
+                        directoryLists={directoryLists}
+                        onContextMenuClick={this._handleContextMenuClick}
+                        onTableClick={this._handleTableClick}
+                        onTableDoubleClick={this.handleTableDoubleClick}
+                      />
+                    );
+                  })
+                )}
               </TableBody>
             </Table>
           </div>
-          {this.TableFooterRender()}
+          <FileExplorerTableFooterRender
+            styles={styles}
+            currentBrowsePath={currentBrowsePath}
+            deviceType={deviceType}
+            onBreadcrumbPathClick={this._handleBreadcrumbPathClick}
+          />
         </Paper>
       </React.Fragment>
     );
   }
-
-  EmptyRowRender = isMtp => {
-    const { classes: styles, mtpDevice } = this.props;
-    const _eventTarget = 'emptyRowTarget';
-    if (isMtp && !mtpDevice.isAvailable) {
-      return (
-        <TableRow className={styles.emptyTableRowWrapper}>
-          <TableCell colSpan={6} className={styles.tableCell}>
-            <Paper style={{ height: `100%` }} elevation={0}>
-              <Typography variant="subtitle1" className={styles.noMtp}>
-                Android device is either busy or not connected.
-              </Typography>
-              <ul className={styles.instructions}>
-                <li>Quit other Android File transfer applications.</li>
-                <li>Unlock your Android device.</li>
-                <li>With a USB cable, connect your device to your computer.</li>
-                <li>
-                  On your device, tap the "Charging this device via USB"
-                  notification.
-                </li>
-                <li>Under "Use USB for" select File Transfer.</li>
-                <li>Click Refresh Button above.</li>
-                <li>
-                  Reconnect the cable and repeat all the above steps if you keep
-                  seeing this message.
-                </li>
-              </ul>
-            </Paper>
-          </TableCell>
-        </TableRow>
-      );
-    }
-    return (
-      <TableRow className={styles.emptyTableRowWrapper}>
-        <TableCell
-          colSpan={6}
-          className={styles.tableCell}
-          onContextMenu={event =>
-            this._handleContextMenuClick(event, {}, {}, _eventTarget)
-          }
-        />
-      </TableRow>
-    );
-  };
-
-  TableRowsRender = (n, isSelected) => {
-    const {
-      classes: styles,
-      deviceType,
-      hideColList,
-      currentBrowsePath,
-      directoryLists
-    } = this.props;
-    const _eventTarget = 'tableCellTarget';
-
-    const tableData = {
-      path: currentBrowsePath[deviceType],
-      directoryLists: directoryLists[deviceType]
-    };
-
-    const truncateMinimumChars = 37;
-
-    const fileName = springTruncate(n.name, truncateMinimumChars);
-
-    return (
-      <TableRow
-        hover={true}
-        role="checkbox"
-        aria-checked={isSelected}
-        tabIndex={-1}
-        key={quickHash(n.path)}
-        selected={isSelected}
-        className={classNames({
-          [styles.tableRowSelected]: isSelected
-        })}
-        onDoubleClick={event =>
-          this.handleTableDoubleClick({
-            path: n.path,
-            deviceType: deviceType,
-            isFolder: n.isFolder,
-            event
-          })
-        }
-      >
-        <TableCell
-          padding="none"
-          className={`${styles.tableCell} checkboxCell`}
-          onContextMenu={event =>
-            this._handleContextMenuClick(
-              event,
-              { ...n },
-              { ...tableData },
-              _eventTarget
-            )
-          }
-        >
-          <Checkbox
-            checked={isSelected}
-            onClick={event => this._handleTableClick(n.path, deviceType, event)}
-          />
-        </TableCell>
-        {hideColList.indexOf('name') < 0 && (
-          <TableCell
-            padding="default"
-            onClick={event => this._handleTableClick(n.path, deviceType, event)}
-            className={`${styles.tableCell} nameCell`}
-            onContextMenu={event =>
-              this._handleContextMenuClick(
-                event,
-                { ...n },
-                { ...tableData },
-                _eventTarget
-              )
-            }
-          >
-            {n.isFolder ? (
-              <Tooltip title="Folder">
-                <FolderIcon
-                  className={classNames(styles.tableCellIcon, `isFolder`)}
-                  fontSize="small"
-                />
-              </Tooltip>
-            ) : (
-              <Tooltip title="File">
-                <InsertDriveFileIcon
-                  className={classNames(styles.tableCellIcon, `isFile`)}
-                  fontSize="small"
-                />
-              </Tooltip>
-            )}
-            &nbsp;&nbsp;
-            <div className={styles.truncate}>{fileName}</div>
-          </TableCell>
-        )}
-        {hideColList.indexOf('size') < 0 && (
-          <TableCell
-            padding="none"
-            onClick={event => this._handleTableClick(n.path, deviceType, event)}
-            className={`${styles.tableCell} sizeCell`}
-            onContextMenu={event =>
-              this._handleContextMenuClick(
-                event,
-                { ...n },
-                { ...tableData },
-                _eventTarget
-              )
-            }
-          >
-            {n.isFolder ? `--` : `${niceBytes(n.size)}`}
-          </TableCell>
-        )}
-        {hideColList.indexOf('dateAdded') < 0 && (
-          <TableCell
-            padding="none"
-            onClick={event => this._handleTableClick(n.path, deviceType, event)}
-            className={`${styles.tableCell} dateAddedCell`}
-            onContextMenu={event =>
-              this._handleContextMenuClick(
-                event,
-                { ...n },
-                { ...tableData },
-                _eventTarget
-              )
-            }
-          >
-            {n.dateAdded}
-          </TableCell>
-        )}
-      </TableRow>
-    );
-  };
-
-  TableFooterRender = () => {
-    const { currentBrowsePath, deviceType } = this.props;
-    return (
-      <React.Fragment>
-        <TableFooter component="div" className={styles.tableFooter}>
-          <Breadcrumb
-            onBreadcrumbPathClickHandler={this._onBreadcrumbPathClickHandler}
-            currentBrowsePath={currentBrowsePath[deviceType]}
-          />
-        </TableFooter>
-      </React.Fragment>
-    );
-  };
 }
 
 const mapDispatchToProps = (dispatch, ownProps) =>
