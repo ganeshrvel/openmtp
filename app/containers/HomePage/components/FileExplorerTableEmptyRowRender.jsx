@@ -6,20 +6,29 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 
- export default class FileExplorerEmptyRowRender extends PureComponent {
+export default class FileExplorerTableEmptyRowRender extends PureComponent {
   constructor(props) {
     super(props);
   }
 
-  _handleContextMenuClick(event, { ...item }, { ...tableData }, _eventTarget) {
-    const { onContextMenuClick } = this.props;
-  
-    onContextMenuClick(event, { ...item }, { ...tableData }, _eventTarget);
-  }
-
   render() {
-    const { styles, mtpDevice, isMtp } = this.props;
+    const {
+      styles,
+      mtpDevice,
+      isMtp,
+      currentBrowsePath,
+      deviceType,
+      directoryLists,
+      onContextMenuClick
+    } = this.props;
+
     const _eventTarget = 'emptyRowTarget';
+
+    const tableData = {
+      path: currentBrowsePath[deviceType],
+      directoryLists: directoryLists[deviceType]
+    };
+
     if (isMtp && !mtpDevice.isAvailable) {
       return (
         <TableRow className={styles.emptyTableRowWrapper}>
@@ -54,7 +63,7 @@ import Typography from '@material-ui/core/Typography';
           colSpan={6}
           className={styles.tableCell}
           onContextMenu={event =>
-            this._handleContextMenuClick(event, {}, {}, _eventTarget)
+            onContextMenuClick(event, {}, { ...tableData }, _eventTarget)
           }
         />
       </TableRow>

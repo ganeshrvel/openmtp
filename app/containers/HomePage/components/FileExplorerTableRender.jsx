@@ -4,7 +4,7 @@ import React, { PureComponent } from 'react';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import FileExplorerTableHeadRender from './FileExplorerTableHeadRender';
-import FileExplorerEmptyRowRender from './FileExplorerEmptyRowRender';
+import FileExplorerTableEmptyRowRender from './FileExplorerTableEmptyRowRender';
 import FileExplorerTableRowsRender from './FileExplorerTableRowsRender';
 
 import { quickHash } from '../../../utils/funcs';
@@ -64,10 +64,13 @@ export default class FileExplorerTableRender extends PureComponent {
           }}
         >
           {emptyRows ? (
-            <FileExplorerEmptyRowRender
+            <FileExplorerTableEmptyRowRender
               styles={styles}
               mtpDevice={mtpDevice}
               isMtp={isMtp}
+              currentBrowsePath={currentBrowsePath}
+              deviceType={deviceType}
+              directoryLists={directoryLists}
               onContextMenuClick={onContextMenuClick}
             />
           ) : (
