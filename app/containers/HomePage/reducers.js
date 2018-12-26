@@ -67,12 +67,14 @@ export const initialState = {
       delete: {
         enabled: true,
         label: 'Delete',
-        imgSrc: 'Toolbar/delete.svg'
+        imgSrc: 'Toolbar/delete.svg',
+        invert: false
       },
       settings: {
         enabled: true,
         label: 'Settings',
-        imgSrc: 'Toolbar/settings.svg'
+        imgSrc: 'Toolbar/settings.svg',
+        invert: false
       }
     },
     [DEVICES_TYPE_CONST.mtp]: {
@@ -91,17 +93,20 @@ export const initialState = {
       delete: {
         enabled: true,
         label: 'Delete',
-        imgSrc: 'Toolbar/delete.svg'
+        imgSrc: 'Toolbar/delete.svg',
+        invert: false
       },
       storage: {
         enabled: true,
         label: 'Storage',
-        imgSrc: 'Toolbar/storage.svg'
+        imgSrc: 'Toolbar/storage.svg',
+        invert: false
       },
       settings: {
         enabled: true,
         label: 'Settings',
-        imgSrc: 'Toolbar/settings.svg'
+        imgSrc: 'Toolbar/settings.svg',
+        invert: false
       }
     }
   },

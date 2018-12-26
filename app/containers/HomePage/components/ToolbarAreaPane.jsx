@@ -1,28 +1,18 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { LazyLoaderOverLay, styles } from '../styles/ToolbarAreaPane';
-import { imgsrc } from '../../../utils/imgsrc.js';
-import MenuIcon from '@material-ui/icons/Menu';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
+import { styles } from '../styles/ToolbarAreaPane';
 import { withStyles } from '@material-ui/core/styles';
-import Drawer from '@material-ui/core/Drawer';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
-import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { log } from '@Log';
 import { withReducer } from '../../../store/reducers/withReducer';
-import SidebarAreaPaneLists from './SidebarAreaPaneLists';
 import reducers from '../reducers';
 import {
   fetchDirList,
   processMtpOutput,
   processLocalOutput,
   changeMtpStorage,
-  setMtpStorageOptions,
   getMtpStoragesListSelected,
   handleReloadDirList
 } from '../actions';
@@ -38,11 +28,10 @@ import { makeCurrentBrowsePath } from '../selectors';
 import { makeHideHiddenFiles } from '../../Settings/selectors';
 import { delLocalFiles, delMtpFiles } from '../../../api/sys';
 import { DEVICES_DEFAULT_PATH, DEVICES_TYPE_CONST } from '../../../constants';
-import { Confirm as ConfirmDialog } from '../../../components/DialogBox';
-import { Selection as SelectionDialog } from '../../../components/DialogBox';
 import { pathUp } from '../../../utils/paths';
 import { toggleSettings } from '../../Settings/actions';
 import { toggleWindowSizeOnDoubleClick } from '../../../utils/titlebarDoubleClick';
+import ToolbarBody from './ToolbarBody';
 
 class ToolbarAreaPane extends Component {
   constructor(props) {
@@ -122,67 +111,6 @@ class ToolbarAreaPane extends Component {
   _handleToggleSettings = toggle => {
     const { handleToggleSettings } = this.props;
     handleToggleSettings(true);
-  };
-
-  activeToolbarList = ({ ...args }) => {
-    const {
-      toolbarList,
-      directoryLists,
-      currentBrowsePath,
-      deviceType,
-      mtpStoragesList,
-      mtpDevice
-    } = args;
-
-    const _directoryLists = directoryLists[deviceType];
-    const _currentBrowsePath = currentBrowsePath[deviceType];
-    const _activeToolbarList = toolbarList[deviceType];
-    const isMtp = deviceType === DEVICES_TYPE_CONST.mtp;
-
-    Object.keys(_activeToolbarList).map(a => {
-      const item = _activeToolbarList[a];
-      switch (a) {
-        case 'up':
-          _activeToolbarList[a] = {
-            ...item,
-            enabled: _currentBrowsePath !== '/'
-          };
-          break;
-
-        case 'refresh':
-          _activeToolbarList[a] = {
-            ...item
-          };
-          break;
-
-        case 'delete':
-          _activeToolbarList[a] = {
-            ...item,
-            enabled: _directoryLists.queue.selected.length > 0
-          };
-          break;
-
-        case 'storage':
-          _activeToolbarList[a] = {
-            ...item,
-            enabled:
-              Object.keys(mtpStoragesList).length > 0 &&
-              isMtp &&
-              mtpDevice.isAvailable
-          };
-          break;
-
-        case 'settings':
-          _activeToolbarList[a] = {
-            ...item
-          };
-          break;
-        default:
-          break;
-      }
-    });
-
-    return _activeToolbarList;
   };
 
   handleToolbarAction = itemType => {
@@ -277,106 +205,35 @@ class ToolbarAreaPane extends Component {
     } = this.props;
 
     const {
+      toggleDrawer,
       toggleDeleteConfirmDialog,
       toggleMtpStorageSelectionDialog
     } = this.state;
 
-    const _toolbarList = this.activeToolbarList({
-      toolbarList,
-      directoryLists,
-      currentBrowsePath,
-      deviceType,
-      mtpStoragesList,
-      mtpDevice
-    });
-
     const { isLoaded: isLoadedDirectoryLists } = directoryLists[deviceType];
 
     return (
-      <div className={styles.root}>
-        <ConfirmDialog
-          fullWidthDialog={true}
-          maxWidthDialog="xs"
-          bodyText="Are you sure you want to delete the items?"
-          trigger={toggleDeleteConfirmDialog}
-          onClickHandler={this.handleDeleteConfirmDialog}
-        />
-        <SelectionDialog
-          titleText="Select Storage Option"
-          list={mtpStoragesList}
-          id="selectionDialog"
-          showDiskAvatars={true}
-          open={
-            deviceType === DEVICES_TYPE_CONST.mtp &&
-            toggleMtpStorageSelectionDialog
-          }
-          onClose={this.handleMtpStoragesListClick}
-        />
-        <Drawer
-          open={this.state.toggleDrawer}
-          onClose={this.handleToggleDrawer(false)}
-        >
-          <div
-            tabIndex={0}
-            role="button"
-            onClick={this.handleToggleDrawer(false)}
-            onKeyDown={this.handleToggleDrawer(false)}
-          />
-          <SidebarAreaPaneLists
-            onClickHandler={this._fetchDirList}
-            sidebarFavouriteList={sidebarFavouriteList}
-            deviceType={deviceType}
-            currentBrowsePath={currentBrowsePath[deviceType]}
-          />
-        </Drawer>
-        {!isLoadedDirectoryLists && <LazyLoaderOverLay />}
-
-        <AppBar position="static" elevation={0} className={styles.appBar}>
-          <Toolbar
-            className={styles.toolbar}
-            disableGutters={true}
-            onDoubleClick={event => {
-              this.handleDoubleClickToolBar(event);
-            }}
-          >
-            {showMenu && (
-              <IconButton
-                color="inherit"
-                onClick={this.handleToggleDrawer(true)}
-              >
-                <MenuIcon />
-              </IconButton>
-            )}
-
-            <div className={styles.toolbarInnerWrapper}>
-              {Object.keys(_toolbarList).map(a => {
-                const item = _toolbarList[a];
-                return (
-                  <Tooltip key={a} title={item.label}>
-                    <div className={styles.navBtns}>
-                      <IconButton
-                        aria-label={item.label}
-                        disabled={!item.enabled}
-                        onClick={events => this.handleToolbarAction(a)}
-                        className={classNames({
-                          [styles.disabledNavBtns]: !item.enabled,
-                          [styles.invertedNavBtns]: item.invert
-                        })}
-                      >
-                        <img
-                          alt={item.label}
-                          src={imgsrc(item.imgSrc, false)}
-                          className={classNames(styles.navBtnImgs)}
-                        />
-                      </IconButton>
-                    </div>
-                  </Tooltip>
-                );
-              })}
-            </div>
-          </Toolbar>
-        </AppBar>
-      </div>
+      <ToolbarBody
+        directoryLists={directoryLists}
+        mtpDevice={mtpDevice}
+        styles={styles}
+        sidebarFavouriteList={sidebarFavouriteList}
+        deviceType={deviceType}
+        showMenu={showMenu}
+        currentBrowsePath={currentBrowsePath}
+        mtpStoragesList={mtpStoragesList}
+        toggleDeleteConfirmDialog={toggleDeleteConfirmDialog}
+        toggleMtpStorageSelectionDialog={toggleMtpStorageSelectionDialog}
+        toolbarList={toolbarList}
+        isLoadedDirectoryLists={isLoadedDirectoryLists}
+        toggleDrawer={toggleDrawer}
+        handleDeleteConfirmDialog={this.handleDeleteConfirmDialog}
+        handleMtpStoragesListClick={this.handleMtpStoragesListClick}
+        handleToggleDrawer={this.handleToggleDrawer}
+        fetchDirList={this._fetchDirList}
+        handleDoubleClickToolBar={this.handleDoubleClickToolBar}
+        handleToolbarAction={this.handleToolbarAction}
+      />
     );
   }
 }
