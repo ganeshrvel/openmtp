@@ -4,7 +4,7 @@ import React, { PureComponent } from 'react';
 import TableFooter from '@material-ui/core/TableFooter';
 import Breadcrumb from '../../../components/Breadcrumb';
 
-export class FileExplorerTableFooterRender extends PureComponent {
+ export default class FileExplorerTableFooterRender extends PureComponent {
   constructor(props) {
     super(props);
   }

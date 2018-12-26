@@ -24,7 +24,7 @@ import {
   makeCurrentBrowsePath,
   makeMtpStoragesList
 } from '../HomePage/selectors';
-import { SettingsDialog } from './components/SettingsDialog';
+import SettingsDialog from './components/SettingsDialog';
 
 class Settings extends Component {
   constructor(props) {

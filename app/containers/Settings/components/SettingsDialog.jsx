@@ -14,7 +14,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { privacyPolicyWindow } from '../../../utils/createWindows';
 import { DEVICES_TYPE_CONST } from '../../../constants';
 
-export class SettingsDialog extends PureComponent {
+ export default class SettingsDialog extends PureComponent {
   constructor(props) {
     super(props);
   }

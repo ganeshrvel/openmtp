@@ -4,13 +4,13 @@ import React, { PureComponent } from 'react';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import FileExplorerTableHeadRender from './FileExplorerTableHeadRender';
-import { FileExplorerEmptyRowRender } from './FileExplorerEmptyRowRender';
-import { FileExplorerTableRowsRender } from './FileExplorerTableRowsRender';
+import FileExplorerEmptyRowRender from './FileExplorerEmptyRowRender';
+import FileExplorerTableRowsRender from './FileExplorerTableRowsRender';
 
 import { quickHash } from '../../../utils/funcs';
 import { DEVICES_TYPE_CONST } from '../../../constants';
 
-export class FileExplorerTableRender extends PureComponent {
+export default class FileExplorerTableRender extends PureComponent {
   constructor(props) {
     super(props);
   }

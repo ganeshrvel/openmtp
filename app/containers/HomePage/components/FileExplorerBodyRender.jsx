@@ -3,10 +3,10 @@
 import React, { PureComponent } from 'react';
 import Paper from '@material-ui/core/Paper';
 import classNames from 'classnames';
-import { FileExplorerTableRender } from './FileExplorerTableRender';
-import { FileExplorerTableFooterRender } from './FileExplorerTableFooterRender';
+import FileExplorerTableRender from './FileExplorerTableRender';
+import FileExplorerTableFooterRender from './FileExplorerTableFooterRender';
 
-export class FileExplorerBodyRender extends PureComponent {
+export default class FileExplorerBodyRender extends PureComponent {
   constructor(props) {
     super(props);
   }

@@ -10,7 +10,7 @@ import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 import classNames from 'classnames';
 import { niceBytes, springTruncate } from '../../../utils/funcs';
 
-export class FileExplorerTableRowsRender extends PureComponent {
+ export default class FileExplorerTableRowsRender extends PureComponent {
   constructor(props) {
     super(props);
   }

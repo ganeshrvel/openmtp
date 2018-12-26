@@ -6,7 +6,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 
-export class FileExplorerEmptyRowRender extends PureComponent {
+ export default class FileExplorerEmptyRowRender extends PureComponent {
   constructor(props) {
     super(props);
   }

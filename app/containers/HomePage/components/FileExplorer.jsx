@@ -52,7 +52,7 @@ import { baseName, pathInfo, pathUp, sanitizePath } from '../../../utils/paths';
 import { isFloat, isInt, isNumber } from '../../../utils/funcs';
 import { throwAlert } from '../../Alerts/actions';
 import { imgsrc } from '../../../utils/imgsrc';
-import { FileExplorerBodyRender } from './FileExplorerBodyRender';
+import FileExplorerBodyRender from './FileExplorerBodyRender';
 const { Menu, getCurrentWindow } = remote;
 
 let filesDragGhostImg = new Image(0, 0);
