@@ -48,7 +48,11 @@ class ErrorBoundary extends Component {
     if (this.state.errorInfo) {
       return (
         <div className={styles.root}>
-          <img src={imgsrc('bug.svg', false)} className={styles.bugImg} />
+          <img
+            alt="Some Error Occured!"
+            src={imgsrc('bug.svg', false)}
+            className={styles.bugImg}
+          />
           <Typography variant="h4" className={styles.headings}>
             Whoops!
           </Typography>

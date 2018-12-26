@@ -1,6 +1,6 @@
 'use strict';
 
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { styles } from '../styles/SidebarAreaPaneLists';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -11,7 +11,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
 import FolderIcon from '@material-ui/icons/Folder';
 
-class SidebarAreaPaneLists extends Component {
+class SidebarAreaPaneLists extends PureComponent {
   constructor(props) {
     super(props);
   }
@@ -22,12 +22,7 @@ class SidebarAreaPaneLists extends Component {
   }
 
   render() {
-    const {
-      classes: styles,
-      sidebarFavouriteList,
-      deviceType,
-      currentBrowsePath
-    } = this.props;
+    const { classes: styles, sidebarFavouriteList } = this.props;
     const { top: sidebarTop, bottom: sidebarBottom } = sidebarFavouriteList;
 
     return (
