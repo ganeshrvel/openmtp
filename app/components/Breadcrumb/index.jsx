@@ -1,6 +1,6 @@
 'use strict';
 
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { styles } from './styles';
 import { withStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
@@ -11,16 +11,9 @@ import Tooltip from '@material-ui/core/Tooltip';
 import { sanitizePath } from '../../utils/paths';
 import { quickHash } from '../../utils/funcs';
 
-class Breadcrumb extends React.Component {
+class Breadcrumb extends PureComponent {
   constructor(props) {
     super(props);
-
-    this.initialState = {
-      tokenizeCurrentBrowsePath: {}
-    };
-    this.state = {
-      ...this.initialState
-    };
   }
 
   handleClickPath = (enabled, value, event) => {

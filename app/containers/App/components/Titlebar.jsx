@@ -1,11 +1,11 @@
 'use strict';
 
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import { styles } from '../styles/Titlebar';
 import { toggleWindowSizeOnDoubleClick } from '../../../utils/titlebarDoubleClick';
 
-class Titlebar extends React.Component {
+class Titlebar extends PureComponent {
   constructor(props) {
     super(props);
   }

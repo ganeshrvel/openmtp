@@ -44,7 +44,7 @@ import { pathUp } from '../../../utils/paths';
 import { toggleSettings } from '../../Settings/actions';
 import { toggleWindowSizeOnDoubleClick } from '../../../utils/titlebarDoubleClick';
 
-class ToolbarAreaPane extends React.Component {
+class ToolbarAreaPane extends Component {
   constructor(props) {
     super(props);
     this.initialState = {
