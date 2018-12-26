@@ -9,19 +9,18 @@ export class FileExplorerTableFooterRender extends PureComponent {
     super(props);
   }
 
-  _handleBreadcrumbPathClick = ({ ...args }) => {
-    const { onBreadcrumbPathClick } = this.props;
-  
-    onBreadcrumbPathClick({ ...args });
-  };
-
   render() {
-    const { styles, currentBrowsePath, deviceType } = this.props;
+    const {
+      styles,
+      currentBrowsePath,
+      deviceType,
+      onBreadcrumbPathClick
+    } = this.props;
 
     return (
       <TableFooter component="div" className={styles.tableFooter}>
         <Breadcrumb
-          onBreadcrumbPathClick={this._handleBreadcrumbPathClick}
+          onBreadcrumbPathClick={onBreadcrumbPathClick}
           currentBrowsePath={currentBrowsePath[deviceType]}
         />
       </TableFooter>

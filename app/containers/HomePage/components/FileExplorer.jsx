@@ -3,13 +3,10 @@
 import React, { Component } from 'react';
 import { remote, ipcRenderer } from 'electron';
 import { styles } from '../styles/FileExplorer';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
 import Paper from '@material-ui/core/Paper';
 import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 import lodashSortBy from 'lodash/sortBy';
-import DirectoryListsTableHead from './DirectoryListsTableHead';
 import {
   TextFieldEdit as TextFieldEditDialog,
   ProgressBar as ProgressBarDialog,
@@ -54,20 +51,11 @@ import {
   renameMtpFiles
 } from '../../../api/sys';
 import { baseName, pathInfo, pathUp, sanitizePath } from '../../../utils/paths';
-import {
-  isFloat,
-  isInt,
-  isNumber,
-  niceBytes,
-  quickHash,
-  springTruncate
-} from '../../../utils/funcs';
-
+import { isFloat, isInt, isNumber } from '../../../utils/funcs';
 import { throwAlert } from '../../Alerts/actions';
 import { imgsrc } from '../../../utils/imgsrc';
-import { FileExplorerEmptyRowRender } from './FileExplorerEmptyRowRender';
-import { FileExplorerTableRowsRender } from './FileExplorerTableRowsRender';
 import { FileExplorerTableFooterRender } from './FileExplorerTableFooterRender';
+import { FileExplorerTableRender } from './FileExplorerTableRender';
 const { Menu, getCurrentWindow } = remote;
 
 let filesDragGhostImg = new Image(0, 0);
@@ -756,13 +744,6 @@ class FileExplorer extends Component {
     });
   };
 
-  isSelected = path => {
-    const { directoryLists, deviceType } = this.props;
-    const _directoryLists = directoryLists[deviceType].queue.selected;
-
-    return _directoryLists.indexOf(path) !== -1;
-  };
-
   tableSort = ({ ...args }) => {
     const { nodes, order, orderBy } = args;
 
@@ -819,10 +800,6 @@ class FileExplorer extends Component {
       fileTransferProgess,
       mtpDevice
     } = this.props;
-    const { nodes, order, orderBy, queue } = directoryLists[deviceType];
-    const { selected } = queue;
-    const emptyRows = nodes.length < 1;
-    const isMtp = deviceType === DEVICES_TYPE_CONST.mtp;
     const { toggleDialog, togglePasteConfirmDialog } = this.state;
     const { rename, newFolder } = toggleDialog;
     const tableData = {
@@ -933,59 +910,22 @@ class FileExplorer extends Component {
               this.handleTableDrop(e);
             }}
           >
-            <Table className={styles.table}>
-              <DirectoryListsTableHead
-                numSelected={selected.length}
-                order={order}
-                orderBy={orderBy}
-                onSelectAllClick={this._handleSelectAllClick.bind(
-                  this,
-                  deviceType
-                )}
-                onRequestSort={this._handleRequestSort.bind(this, deviceType)}
-                rowCount={nodes ? nodes.length : 0}
-                hideColList={hideColList}
-              />
-              <TableBody
-                draggable={this.handleIsDraggable(deviceType)}
-                onDragStart={e => {
-                  this.handleFilesDragStart(e, {
-                    sourceDeviceType: deviceType
-                  });
-                }}
-              >
-                {emptyRows ? (
-                  <FileExplorerEmptyRowRender
-                    styles={styles}
-                    mtpDevice={mtpDevice}
-                    isMtp={isMtp}
-                    onContextMenuClick={this._handleContextMenuClick}
-                  />
-                ) : (
-                  this.tableSort({
-                    nodes,
-                    order,
-                    orderBy
-                  }).map(item => {
-                    return (
-                      <FileExplorerTableRowsRender
-                        key={quickHash(item.path)}
-                        item={item}
-                        isSelected={this.isSelected(item.path)}
-                        styles={styles}
-                        deviceType={deviceType}
-                        hideColList={hideColList}
-                        currentBrowsePath={currentBrowsePath}
-                        directoryLists={directoryLists}
-                        onContextMenuClick={this._handleContextMenuClick}
-                        onTableClick={this._handleTableClick}
-                        onTableDoubleClick={this.handleTableDoubleClick}
-                      />
-                    );
-                  })
-                )}
-              </TableBody>
-            </Table>
+            <FileExplorerTableRender
+              styles={styles}
+              deviceType={deviceType}
+              hideColList={hideColList}
+              currentBrowsePath={currentBrowsePath}
+              directoryLists={directoryLists}
+              mtpDevice={mtpDevice}
+              tableSort={this.tableSort}
+              onSelectAllClick={this._handleSelectAllClick}
+              onRequestSort={this._handleRequestSort}
+              onContextMenuClick={this._handleContextMenuClick}
+              onTableDoubleClick={this.handleTableDoubleClick}
+              onTableClick={this._handleTableClick}
+              onIsDraggable={this.handleIsDraggable}
+              onDragStart={this.handleFilesDragStart}
+            />
           </div>
           <FileExplorerTableFooterRender
             styles={styles}

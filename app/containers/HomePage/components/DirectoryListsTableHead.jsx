@@ -1,6 +1,6 @@
 'use strict';
 
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { styles } from '../styles/DirectoryListsTableHead';
 import { withStyles } from '@material-ui/core/styles';
 import TableCell from '@material-ui/core/TableCell';
@@ -31,13 +31,15 @@ const rows = [
   }
 ];
 
-class DirectoryListsTableHead extends Component {
+class DirectoryListsTableHead extends PureComponent {
   constructor(props) {
     super(props);
   }
 
   createSortHandler = property => event => {
-    this.props.onRequestSort(property, event);
+    const { onRequestSort } = this.props;
+
+    onRequestSort(property, event);
   };
 
   render() {

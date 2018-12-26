@@ -8,7 +8,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import FolderIcon from '@material-ui/icons/Folder';
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 import classNames from 'classnames';
-import { niceBytes, quickHash, springTruncate } from '../../../utils/funcs';
+import { niceBytes, springTruncate } from '../../../utils/funcs';
 
 export class FileExplorerTableRowsRender extends PureComponent {
   constructor(props) {
