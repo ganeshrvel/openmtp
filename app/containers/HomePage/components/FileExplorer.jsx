@@ -3,8 +3,6 @@
 import React, { Component } from 'react';
 import { remote, ipcRenderer } from 'electron';
 import { styles } from '../styles/FileExplorer';
-import Paper from '@material-ui/core/Paper';
-import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 import lodashSortBy from 'lodash/sortBy';
 import {
@@ -54,8 +52,7 @@ import { baseName, pathInfo, pathUp, sanitizePath } from '../../../utils/paths';
 import { isFloat, isInt, isNumber } from '../../../utils/funcs';
 import { throwAlert } from '../../Alerts/actions';
 import { imgsrc } from '../../../utils/imgsrc';
-import { FileExplorerTableFooterRender } from './FileExplorerTableFooterRender';
-import { FileExplorerTableRender } from './FileExplorerTableRender';
+import { FileExplorerBodyRender } from './FileExplorerBodyRender';
 const { Menu, getCurrentWindow } = remote;
 
 let filesDragGhostImg = new Image(0, 0);
@@ -798,16 +795,11 @@ class FileExplorer extends Component {
       currentBrowsePath,
       directoryLists,
       fileTransferProgess,
-      mtpDevice
+      mtpDevice,
+      filesDrag
     } = this.props;
     const { toggleDialog, togglePasteConfirmDialog } = this.state;
     const { rename, newFolder } = toggleDialog;
-    const tableData = {
-      path: currentBrowsePath[deviceType],
-      directoryLists: directoryLists[deviceType]
-    };
-
-    const _eventTarget = 'tableWrapperTarget';
     const togglePasteDialog =
       deviceType === DEVICES_TYPE_CONST.mtp && fileTransferProgess.toggle;
     const renameSecondaryText =
@@ -883,57 +875,28 @@ class FileExplorer extends Component {
           onClickHandler={this.handlePasteConfirmDialog}
         />
 
-        <Paper className={styles.root} elevation={0} square={true}>
-          <div
-            className={classNames(styles.tableWrapper, {
-              [`onHoverDropZone`]: this.handleOnHoverDropZoneActivate(
-                deviceType
-              )
-            })}
-            onContextMenu={event =>
-              this._handleContextMenuClick(
-                event,
-                {},
-                { ...tableData },
-                _eventTarget
-              )
-            }
-            onDragOver={e => {
-              this.handleFilesDragOver(e, {
-                destinationDeviceType: deviceType
-              });
-            }}
-            onDragEnd={e => {
-              this.handleFilesDragEnd(e);
-            }}
-            onDrop={e => {
-              this.handleTableDrop(e);
-            }}
-          >
-            <FileExplorerTableRender
-              styles={styles}
-              deviceType={deviceType}
-              hideColList={hideColList}
-              currentBrowsePath={currentBrowsePath}
-              directoryLists={directoryLists}
-              mtpDevice={mtpDevice}
-              tableSort={this.tableSort}
-              onSelectAllClick={this._handleSelectAllClick}
-              onRequestSort={this._handleRequestSort}
-              onContextMenuClick={this._handleContextMenuClick}
-              onTableDoubleClick={this.handleTableDoubleClick}
-              onTableClick={this._handleTableClick}
-              onIsDraggable={this.handleIsDraggable}
-              onDragStart={this.handleFilesDragStart}
-            />
-          </div>
-          <FileExplorerTableFooterRender
-            styles={styles}
-            currentBrowsePath={currentBrowsePath}
-            deviceType={deviceType}
-            onBreadcrumbPathClick={this._handleBreadcrumbPathClick}
-          />
-        </Paper>
+        <FileExplorerBodyRender
+          styles={styles}
+          deviceType={deviceType}
+          hideColList={hideColList}
+          currentBrowsePath={currentBrowsePath}
+          directoryLists={directoryLists}
+          mtpDevice={mtpDevice}
+          filesDrag={filesDrag}
+          tableSort={this.tableSort}
+          OnHoverDropZoneActivate={this.handleOnHoverDropZoneActivate}
+          onFilesDragOver={this.handleFilesDragOver}
+          onFilesDragEnd={this.handleFilesDragEnd}
+          onTableDrop={this.handleTableDrop}
+          onBreadcrumbPathClick={this._handleBreadcrumbPathClick}
+          onSelectAllClick={this._handleSelectAllClick}
+          onRequestSort={this._handleRequestSort}
+          onContextMenuClick={this._handleContextMenuClick}
+          onTableDoubleClick={this.handleTableDoubleClick}
+          onTableClick={this._handleTableClick}
+          onIsDraggable={this.handleIsDraggable}
+          onDragStart={this.handleFilesDragStart}
+        />
       </React.Fragment>
     );
   }
@@ -1198,7 +1161,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         }
       },
 
-      handleClearFilesDrag: ({ ...args }) => (_, getState) => {
+      handleClearFilesDrag: () => (_, getState) => {
         try {
           dispatch(clearFilesDrag());
         } catch (e) {

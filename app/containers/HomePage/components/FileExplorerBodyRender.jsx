@@ -18,9 +18,23 @@ export class FileExplorerBodyRender extends PureComponent {
       hideColList,
       currentBrowsePath,
       directoryLists,
-      mtpDevice
+      mtpDevice,
+      OnHoverDropZoneActivate,
+      filesDrag,
+      tableSort,
+      onContextMenuClick,
+      onFilesDragOver,
+      onFilesDragEnd,
+      onTableDrop,
+      onSelectAllClick,
+      onRequestSort,
+      onTableDoubleClick,
+      onTableClick,
+      onIsDraggable,
+      onDragStart,
+      onBreadcrumbPathClick
     } = this.props;
-    
+
     const tableData = {
       path: currentBrowsePath[deviceType],
       directoryLists: directoryLists[deviceType]
@@ -32,26 +46,21 @@ export class FileExplorerBodyRender extends PureComponent {
       <Paper className={styles.root} elevation={0} square={true}>
         <div
           className={classNames(styles.tableWrapper, {
-            [`onHoverDropZone`]: this.handleOnHoverDropZoneActivate(deviceType)
+            [`onHoverDropZone`]: OnHoverDropZoneActivate(deviceType)
           })}
           onContextMenu={event =>
-            this._handleContextMenuClick(
-              event,
-              {},
-              { ...tableData },
-              _eventTarget
-            )
+            onContextMenuClick(event, {}, { ...tableData }, _eventTarget)
           }
-          onDragOver={e => {
-            this.handleFilesDragOver(e, {
+          onDragOver={event => {
+            onFilesDragOver(event, {
               destinationDeviceType: deviceType
             });
           }}
-          onDragEnd={e => {
-            this.handleFilesDragEnd(e);
+          onDragEnd={event => {
+            onFilesDragEnd(event);
           }}
-          onDrop={e => {
-            this.handleTableDrop(e);
+          onDrop={event => {
+            onTableDrop(event);
           }}
         >
           <FileExplorerTableRender
@@ -61,21 +70,21 @@ export class FileExplorerBodyRender extends PureComponent {
             currentBrowsePath={currentBrowsePath}
             directoryLists={directoryLists}
             mtpDevice={mtpDevice}
-            tableSort={this.tableSort}
-            onSelectAllClick={this._handleSelectAllClick}
-            onRequestSort={this._handleRequestSort}
-            onContextMenuClick={this._handleContextMenuClick}
-            onTableDoubleClick={this.handleTableDoubleClick}
-            onTableClick={this._handleTableClick}
-            onIsDraggable={this.handleIsDraggable}
-            onDragStart={this.handleFilesDragStart}
+            tableSort={tableSort}
+            onSelectAllClick={onSelectAllClick}
+            onRequestSort={onRequestSort}
+            onContextMenuClick={onContextMenuClick}
+            onTableDoubleClick={onTableDoubleClick}
+            onTableClick={onTableClick}
+            onIsDraggable={onIsDraggable}
+            onDragStart={onDragStart}
           />
         </div>
         <FileExplorerTableFooterRender
           styles={styles}
           currentBrowsePath={currentBrowsePath}
           deviceType={deviceType}
-          onBreadcrumbPathClick={this._handleBreadcrumbPathClick}
+          onBreadcrumbPathClick={onBreadcrumbPathClick}
         />
       </Paper>
     );

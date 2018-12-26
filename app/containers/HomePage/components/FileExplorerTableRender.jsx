@@ -57,8 +57,8 @@ export class FileExplorerTableRender extends PureComponent {
         />
         <TableBody
           draggable={onIsDraggable(deviceType)}
-          onDragStart={e => {
-            onDragStart(e, {
+          onDragStart={event => {
+            onDragStart(event, {
               sourceDeviceType: deviceType
             });
           }}
