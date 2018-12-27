@@ -7,6 +7,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import { resetOverFlowY } from '../../../utils/styleResets';
 
 class Confirm extends PureComponent {
   constructor(props) {
@@ -32,6 +33,9 @@ class Confirm extends PureComponent {
         fullWidth={fullWidthDialog}
         maxWidth={maxWidthDialog}
         aria-labelledby="confirm-dialogbox"
+        onExited={() => {
+          resetOverFlowY();
+        }}
       >
         <DialogTitle>{titleText}</DialogTitle>
         <DialogContent>

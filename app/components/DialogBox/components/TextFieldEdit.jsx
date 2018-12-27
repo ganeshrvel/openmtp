@@ -9,6 +9,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
+import { resetOverFlowY } from '../../../utils/styleResets';
 
 class TextFieldEdit extends PureComponent {
   constructor(props) {
@@ -55,6 +56,9 @@ class TextFieldEdit extends PureComponent {
         open={trigger}
         fullWidth={fullWidthDialog}
         maxWidth={maxWidthDialog}
+        onExited={() => {
+          resetOverFlowY();
+        }}
       >
         <DialogTitle>{titleText}</DialogTitle>
         <form

@@ -8,6 +8,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import LiveHelpIcon from '@material-ui/icons/LiveHelp';
+import { resetOverFlowY } from '../../../utils/styleResets';
 
 class ProgressBar extends PureComponent {
   constructor(props) {
@@ -37,6 +38,9 @@ class ProgressBar extends PureComponent {
         fullWidth={fullWidthDialog}
         maxWidth={maxWidthDialog}
         aria-labelledby="progressbar-dialogbox"
+        onExited={() => {
+          resetOverFlowY();
+        }}
       >
         <DialogTitle>
           <span className={styles.dialogTitleInnerWrapper}>

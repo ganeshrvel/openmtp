@@ -94,23 +94,21 @@ class Settings extends Component {
     } = this.props;
     const showSettings = toggleSettings || freshInstall !== 0;
 
-    if (showSettings) {
-      return (
-        <SettingsDialog
-          freshInstall={freshInstall}
-          toggleSettings={toggleSettings}
-          hideHiddenFiles={hideHiddenFiles}
-          styles={styles}
-          enableAutoUpdateCheck={enableAutoUpdateCheck}
-          enableAnalytics={enableAnalytics}
-          handleAnalytics={this.handleAnalytics}
-          handleHiddenFilesChange={this.handleHiddenFilesChange}
-          handleClick={this.handleClick}
-          handleAutoUpdateCheckChange={this.handleAutoUpdateCheckChange}
-        />
-      );
-    }
-    return <React.Fragment />;
+    return (
+      <SettingsDialog
+        open={showSettings}
+        freshInstall={freshInstall}
+        toggleSettings={toggleSettings}
+        hideHiddenFiles={hideHiddenFiles}
+        styles={styles}
+        enableAutoUpdateCheck={enableAutoUpdateCheck}
+        enableAnalytics={enableAnalytics}
+        handleAnalytics={this.handleAnalytics}
+        handleHiddenFilesChange={this.handleHiddenFilesChange}
+        handleClick={this.handleClick}
+        handleAutoUpdateCheckChange={this.handleAutoUpdateCheckChange}
+      />
+    );
   }
 }
 

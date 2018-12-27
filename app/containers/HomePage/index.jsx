@@ -12,6 +12,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import reducers from './reducers';
 import { DEVICES_TYPE_CONST } from '../../constants';
+import { resetOverFlowY } from '../../utils/styleResets';
 
 class Home extends Component {
   constructor(props) {
@@ -19,9 +20,7 @@ class Home extends Component {
   }
 
   componentWillMount() {
-    if (document) {
-      document.body.style.overflowY = 'hidden';
-    }
+    resetOverFlowY();
   }
 
   render() {

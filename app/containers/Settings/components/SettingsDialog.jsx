@@ -13,14 +13,16 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { privacyPolicyWindow } from '../../../utils/createWindows';
 import { DEVICES_TYPE_CONST } from '../../../constants';
+import { resetOverFlowY } from '../../../utils/styleResets';
 
- export default class SettingsDialog extends PureComponent {
+export default class SettingsDialog extends PureComponent {
   constructor(props) {
     super(props);
   }
 
   render() {
     const {
+      open,
       freshInstall,
       hideHiddenFiles,
       styles,
@@ -36,10 +38,13 @@ import { DEVICES_TYPE_CONST } from '../../../constants';
 
     return (
       <Dialog
-        open={true}
+        open={open}
         fullWidth={true}
         maxWidth={'sm'}
         aria-labelledby="settings-dialogbox"
+        onExited={() => {
+          resetOverFlowY();
+        }}
       >
         <Typography variant="h5" className={styles.title}>
           Settings
