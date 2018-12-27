@@ -32,6 +32,7 @@ import { pathUp } from '../../../utils/paths';
 import { toggleSettings } from '../../Settings/actions';
 import { toggleWindowSizeOnDoubleClick } from '../../../utils/titlebarDoubleClick';
 import ToolbarBody from './ToolbarBody';
+import { resetOverFlowY } from '../../../utils/styleResets';
 
 class ToolbarAreaPane extends Component {
   constructor(props) {
@@ -55,6 +56,9 @@ class ToolbarAreaPane extends Component {
   };
 
   handleToggleDrawer = status => () => {
+    setTimeout(() => {
+      resetOverFlowY();
+    }, 1000);
     this.setState({
       toggleDrawer: status
     });
