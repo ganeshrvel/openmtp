@@ -47,5 +47,8 @@ export const styles = theme => ({
   },
   a: {
     fontWeight: `bold`
+  },
+  btnPositive: {
+    ...mixins().btnPositive
   }
 });

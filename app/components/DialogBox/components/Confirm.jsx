@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { styles } from '../styles/Confirm';
+import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -21,6 +22,7 @@ class Confirm extends PureComponent {
 
   render() {
     const {
+      classes: styles,
       titleText = `Confirm Action`,
       bodyText,
       trigger,
@@ -36,6 +38,8 @@ class Confirm extends PureComponent {
         onExited={() => {
           resetOverFlowY();
         }}
+        disableEscapeKeyDown={false}
+        onEscapeKeyDown={event => this.handleClick({ confirm: false })}
       >
         <DialogTitle>{titleText}</DialogTitle>
         <DialogContent>
@@ -44,13 +48,15 @@ class Confirm extends PureComponent {
         <DialogActions>
           <Button
             onClick={event => this.handleClick({ confirm: true })}
-            color="secondary"
+            color="primary"
+            className={classNames(styles.btnPositive)}
           >
             Yes
           </Button>
           <Button
             onClick={event => this.handleClick({ confirm: false })}
             color="secondary"
+            className={classNames(styles.btnNegative)}
           >
             No
           </Button>

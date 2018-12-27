@@ -1,6 +1,7 @@
 'use strict';
 
 import React, { PureComponent } from 'react';
+import classNames from 'classnames';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -45,6 +46,12 @@ export default class SettingsDialog extends PureComponent {
         onExited={() => {
           resetOverFlowY();
         }}
+        disableEscapeKeyDown={false}
+        onEscapeKeyDown={() =>
+          handleClick({
+            confirm: false
+          })
+        }
       >
         <Typography variant="h5" className={styles.title}>
           Settings
@@ -172,9 +179,10 @@ export default class SettingsDialog extends PureComponent {
                 confirm: false
               })
             }
-            color="secondary"
+            color="primary"
+            className={classNames(styles.btnPositive)}
           >
-            OK
+            Close
           </Button>
         </DialogActions>
       </Dialog>

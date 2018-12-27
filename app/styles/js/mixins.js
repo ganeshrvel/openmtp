@@ -37,6 +37,38 @@ export default args => {
     a: {
       cursor: `pointer`,
       color: variables().styles.secondaryColor.main
+    },
+    btnPositive: {
+      backgroundColor: variables().styles.secondaryColor.main,
+      borderColor: variables().styles.secondaryColor.main,
+      '&:hover': {
+        backgroundColor: '#0069d9',
+        borderColor: '#0062cc'
+      },
+      '&:active': {
+        boxShadow: 'none',
+        backgroundColor: '#0062cc',
+        borderColor: '#005cbf'
+      },
+      '&:focus': {
+        boxShadow: '0 0 0 0.2rem rgba(0,123,255,0.5)'
+      }
+    },
+    btnNegative: {
+      backgroundColor: `rgba(0, 122, 245, 0.08)`,
+      borderColor: `rgba(0, 122, 245, 0.08)`,
+      '&:hover': {
+        backgroundColor: `rgba(0, 122, 245, 0.15)`,
+        borderColor: '#0062cc'
+      },
+      '&:active': {
+        boxShadow: 'none',
+        backgroundColor: `rgba(0, 122, 245, 0.23)`,
+        borderColor: '#005cbf'
+      },
+      '&:focus': {
+        boxShadow: '0 0 0 0.2rem rgba(0,123,255,0.5)'
+      }
     }
   };
 };

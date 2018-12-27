@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { styles } from '../styles/TextFieldEdit';
+import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
@@ -18,10 +19,10 @@ class TextFieldEdit extends PureComponent {
     this.textFieldValue = null;
   }
 
-  handleClick = ({ confirm = false }, e) => {
+  handleClick = ({ confirm = false }, event) => {
     const { onClickHandler } = this.props;
 
-    e.preventDefault();
+    event.preventDefault();
     onClickHandler({ confirm, textFieldValue: this.textFieldValue });
   };
 
@@ -59,10 +60,12 @@ class TextFieldEdit extends PureComponent {
         onExited={() => {
           resetOverFlowY();
         }}
+        disableEscapeKeyDown={false}
+        onEscapeKeyDown={event => this.handleClick({ confirm: false }, event)}
       >
         <DialogTitle>{titleText}</DialogTitle>
         <form
-          onSubmit={e => this.handleClick({ confirm: true }, e)}
+          onSubmit={event => this.handleClick({ confirm: true }, event)}
           noValidate
           autoComplete="off"
         >
@@ -84,22 +87,24 @@ class TextFieldEdit extends PureComponent {
               autoComplete="off"
               defaultValue={defaultValue}
               multiline={multiline}
-              onChange={e => this.handleChange(e)}
+              onChange={event => this.handleChange(event)}
               error={errors.toggle}
             />
           </DialogContent>
           <DialogActions>
             <Button
-              onClick={e => this.handleClick({ confirm: true }, e)}
+              onClick={event => this.handleClick({ confirm: false }, event)}
               color="secondary"
-            >
-              {btnPositiveText}
-            </Button>
-            <Button
-              onClick={e => this.handleClick({ confirm: false }, e)}
-              color="secondary"
+              className={classNames(styles.btnNegative)}
             >
               {btnNegativeText}
+            </Button>
+            <Button
+              onClick={event => this.handleClick({ confirm: true }, event)}
+              color="primary"
+              className={classNames(styles.btnPositive)}
+            >
+              {btnPositiveText}
             </Button>
           </DialogActions>
         </form>

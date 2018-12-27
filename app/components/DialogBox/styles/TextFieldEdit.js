@@ -7,5 +7,11 @@ export const styles = theme => ({
   dialogContentText: {
     marginBottom: 10,
     wordBreak: `break-all`
+  },
+  btnPositive: {
+    ...mixins().btnPositive
+  },
+  btnNegative: {
+    ...mixins().btnNegative
   }
 });
