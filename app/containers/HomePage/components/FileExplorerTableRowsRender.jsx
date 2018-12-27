@@ -10,7 +10,7 @@ import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 import classNames from 'classnames';
 import { niceBytes, springTruncate } from '../../../utils/funcs';
 
- export default class FileExplorerTableRowsRender extends PureComponent {
+export default class FileExplorerTableRowsRender extends PureComponent {
   constructor(props) {
     super(props);
   }
@@ -55,11 +55,13 @@ import { niceBytes, springTruncate } from '../../../utils/funcs';
 
     const fileName = springTruncate(item.name, truncateMinimumChars);
 
-    const doubleClickMenuObj = {
-      path: item.path,
-      deviceType: deviceType,
-      isFolder: item.isFolder,
-      event
+    const doubleClickMenuObj = event => {
+      return {
+        path: item.path,
+        deviceType: deviceType,
+        isFolder: item.isFolder,
+        event: event
+      };
     };
 
     return (
@@ -108,7 +110,7 @@ import { niceBytes, springTruncate } from '../../../utils/funcs';
               )
             }
             onDoubleClick={event =>
-              this._handleTableDoubleClick(doubleClickMenuObj)
+              this._handleTableDoubleClick(doubleClickMenuObj(event))
             }
           >
             {item.isFolder ? (
@@ -127,7 +129,13 @@ import { niceBytes, springTruncate } from '../../../utils/funcs';
               </Tooltip>
             )}
             &nbsp;&nbsp;
-            <div className={styles.truncate}>{fileName}</div>
+            {fileName.isTruncated ? (
+              <Tooltip title={fileName.text}>
+                <div className={styles.truncate}>{fileName.truncatedText}</div>
+              </Tooltip>
+            ) : (
+              fileName.text
+            )}
           </TableCell>
         )}
         {hideColList.indexOf('size') < 0 && (
@@ -146,7 +154,7 @@ import { niceBytes, springTruncate } from '../../../utils/funcs';
               )
             }
             onDoubleClick={event =>
-              this._handleTableDoubleClick(doubleClickMenuObj)
+              this._handleTableDoubleClick(doubleClickMenuObj(event))
             }
           >
             {item.isFolder ? `--` : `${niceBytes(item.size)}`}
@@ -168,7 +176,7 @@ import { niceBytes, springTruncate } from '../../../utils/funcs';
               )
             }
             onDoubleClick={event =>
-              this._handleTableDoubleClick(doubleClickMenuObj)
+              this._handleTableDoubleClick(doubleClickMenuObj(event))
             }
           >
             {item.dateAdded}

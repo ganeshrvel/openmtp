@@ -102,20 +102,34 @@ export const stripRootSlash = str => {
 };
 
 export const springTruncate = (str, minChars = 10, ellipsis = '...') => {
+  const _str = str;
   const strLength = str.length;
   if (strLength > minChars) {
     const ellipsisLength = ellipsis.length;
 
     if (ellipsisLength > minChars) {
-      return str.substr(strLength - minChars);
+      return {
+        text: _str,
+        truncatedText: str.substr(strLength - minChars),
+        isTruncated: true
+      };
     }
 
     const count = -0.5 * (minChars - strLength - ellipsisLength);
     const center = strLength / 2;
 
-    return `${str.substr(0, center - count)}${ellipsis}${str.substr(
-      strLength - center + count
-    )}`;
+    return {
+      text: _str,
+      truncatedText: `${str.substr(0, center - count)}${ellipsis}${str.substr(
+        strLength - center + count
+      )}`,
+      isTruncated: true
+    };
   }
-  return str;
+
+  return {
+    text: _str,
+    truncatedText: str,
+    isTruncated: false
+  };
 };
