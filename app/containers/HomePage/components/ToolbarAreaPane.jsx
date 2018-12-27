@@ -59,6 +59,7 @@ class ToolbarAreaPane extends Component {
     setTimeout(() => {
       resetOverFlowY();
     }, 1000);
+
     this.setState({
       toggleDrawer: status
     });
