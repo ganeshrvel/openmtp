@@ -9,10 +9,10 @@ export const styles = theme => {
       width: variables().sizes.sidebarAreaPaneWidth
     },
     listsBottom: {
-      paddingTop: 20
+      paddingTop: 5
     },
     listsCaption: {
-      padding: `0 0 5px 20px`
+      padding: `14px 0 0px 20px`
     },
     primary: {},
     icon: {}
