@@ -11,12 +11,17 @@ import { bindActionCreators } from 'redux';
 import { Helmet } from 'react-helmet';
 import { APP_NAME, APP_TITLE, AUTHOR_EMAIL } from '../../constants/meta';
 import { openExternalUrl } from '../../utils/url';
+import { resetOverFlowY } from '../../utils/styleResets';
 
 class PrivacyPolicyPage extends Component {
   constructor(props) {
     super(props);
   }
-
+  
+  componentWillMount () {
+    resetOverFlowY()
+  }
+  
   render() {
     const { classes: styles } = this.props;
     return (

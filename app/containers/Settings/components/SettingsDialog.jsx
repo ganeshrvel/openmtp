@@ -14,7 +14,6 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { privacyPolicyWindow } from '../../../utils/createWindows';
 import { DEVICES_TYPE_CONST } from '../../../constants';
-import { resetOverFlowY } from '../../../utils/styleResets';
 
 export default class SettingsDialog extends PureComponent {
   constructor(props) {
@@ -43,9 +42,6 @@ export default class SettingsDialog extends PureComponent {
         fullWidth={true}
         maxWidth={'sm'}
         aria-labelledby="settings-dialogbox"
-        onExited={() => {
-          resetOverFlowY();
-        }}
         disableEscapeKeyDown={false}
         onEscapeKeyDown={() =>
           handleClick({

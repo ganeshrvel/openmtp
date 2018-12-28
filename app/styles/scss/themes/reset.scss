@@ -4,6 +4,7 @@ body {
   @include rem('font-size', $regularSize);
   font-family: $roboto;
   overflow-x: hidden;
+  overflow-y: hidden;
 }
 
 a {

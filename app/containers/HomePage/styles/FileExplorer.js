@@ -10,7 +10,7 @@ export const styles = theme => ({
   table: {},
   tableBody: {},
   tableWrapper: {
-    height: `calc(100vh - 124px)`,
+    height: `calc(100vh - 128px)`,
     overflowY: 'auto',
     overflowX: 'auto',
     borderBottom: variables().styles.borderThinDividerColor,

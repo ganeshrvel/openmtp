@@ -11,7 +11,6 @@ import ListItemText from '@material-ui/core/ListItemText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
 import SdStorageIcon from '@material-ui/icons/SdStorage';
-import { resetOverFlowY } from '../../../utils/styleResets';
 
 class Selection extends PureComponent {
   handleListItemClick = ({ ...args }) => {
@@ -33,9 +32,6 @@ class Selection extends PureComponent {
           })
         }
         open={open}
-        onExited={() => {
-          resetOverFlowY();
-        }}
       >
         <DialogTitle>{titleText}</DialogTitle>
         <div>

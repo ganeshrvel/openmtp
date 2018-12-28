@@ -12,16 +12,13 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import reducers from './reducers';
 import { DEVICES_TYPE_CONST } from '../../constants';
-import { resetOverFlowY } from '../../utils/styleResets';
 
 class Home extends Component {
   constructor(props) {
     super(props);
   }
 
-  componentWillMount() {
-    resetOverFlowY();
-  }
+  componentWillMount() {}
 
   render() {
     const { classes: styles } = this.props;

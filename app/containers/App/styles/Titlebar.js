@@ -6,7 +6,7 @@ export const styles = args => {
   return {
     root: {
       width: `100%`,
-      height: 10,
+      height: 14,
       ...mixins().appDrag
     }
   };

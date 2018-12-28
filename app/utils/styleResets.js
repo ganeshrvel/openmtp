@@ -1,7 +1,7 @@
 'use strict';
 
 export const resetOverFlowY = () => {
-  if (document) {
-    document.body.style.overflowY = 'hidden';
+  if (typeof document !== 'undefined' && document) {
+    document.body.style.overflowY = 'auto';
   }
 };
