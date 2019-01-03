@@ -1,7 +1,7 @@
 'use strict';
 
 import React, { PureComponent } from 'react';
-import { styles } from '../styles/FileExplorerTableRowsRender';
+import { styles } from '../styles/FileExplorerTableBodyListRender';
 import { withStyles } from '@material-ui/core/styles';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
@@ -13,7 +13,7 @@ import classNames from 'classnames';
 import { niceBytes, springTruncate } from '../../../utils/funcs';
 import { FILE_EXPLORER_TABLE_TRUNCATE_MAX_CHARS } from '../../../constants';
 
-class FileExplorerTableRowsRender extends PureComponent {
+class FileExplorerTableBodyListRender extends PureComponent {
   constructor(props) {
     super(props);
   }
@@ -146,4 +146,4 @@ class FileExplorerTableRowsRender extends PureComponent {
   }
 }
 
-export default withStyles(styles)(FileExplorerTableRowsRender);
+export default withStyles(styles)(FileExplorerTableBodyListRender);

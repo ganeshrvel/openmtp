@@ -1,7 +1,7 @@
 'use strict';
 
 import { variables, mixins } from '../../../styles/js';
-import { tableCellFileExplorerTableRowsRender } from './FileExplorerTableRowsRender';
+import { tableCellFileExplorerTableRowsRender } from './FileExplorerTableBodyListRender';
 
 export const styles = theme => ({
   emptyTableRowWrapper: {},

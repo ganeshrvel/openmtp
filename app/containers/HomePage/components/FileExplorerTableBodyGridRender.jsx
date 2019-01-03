@@ -2,7 +2,7 @@
 
 import React, { PureComponent } from 'react';
 import classNames from 'classnames';
-import { styles } from '../styles/FileExplorerTableGridRender';
+import { styles } from '../styles/FileExplorerTableBodyGridRender';
 import { withStyles } from '@material-ui/core/styles';
 import Checkbox from '@material-ui/core/Checkbox';
 import Typography from '@material-ui/core/Typography';
@@ -12,7 +12,7 @@ import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 import { springTruncate } from '../../../utils/funcs';
 import { FILE_EXPLORER_GRID_TRUNCATE_MAX_CHARS } from '../../../constants';
 
-class FileExplorerTableGridRender extends PureComponent {
+class FileExplorerTableBodyGridRender extends PureComponent {
   constructor(props) {
     super(props);
   }
@@ -109,4 +109,4 @@ class FileExplorerTableGridRender extends PureComponent {
   }
 }
 
-export default withStyles(styles)(FileExplorerTableGridRender);
+export default withStyles(styles)(FileExplorerTableBodyGridRender);
