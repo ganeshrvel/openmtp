@@ -35,7 +35,7 @@ export const initialState = {
         enabled: true
       },
       {
-        label: 'Mountable Devices',
+        label: 'Removable Disks',
         path: '/Volumes',
         icon: 'folder',
         enabled: true
