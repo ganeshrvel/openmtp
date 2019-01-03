@@ -62,7 +62,7 @@ export const replaceBulk = (str, findArray, replaceArray) => {
     map[findArray[i]] = replaceArray[i];
   }
   regex = regex.join('|');
-  str = str.replace(new RegExp(regex, 'g'), function(matched) {
+  str = str.replace(new RegExp(regex, 'g'), matched => {
     return map[matched];
   });
   return str;
@@ -136,4 +136,25 @@ export const springTruncate = (str, minChars = 10, ellipsis = '...') => {
 
 export const undefinedOrNull = _var => {
   return typeof _var === 'undefined' || _var === null;
+};
+
+export const diffObj = (obj1, obj2) => {
+  let isSame = true;
+  for (let p in obj1) {
+    if (typeof obj1[p] === 'object') {
+      const objectValue1 = obj1[p];
+      const objectValue2 = obj2[p];
+      for (let value in objectValue1) {
+        isSame = diffObj(objectValue1[value], objectValue2[value]);
+        if (isSame === false) {
+          return false;
+        }
+      }
+    } else {
+      if (obj1 !== obj2) {
+        isSame = false;
+      }
+    }
+  }
+  return isSame;
 };

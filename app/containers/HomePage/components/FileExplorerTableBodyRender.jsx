@@ -24,14 +24,22 @@ class FileExplorerTableBodyRender extends PureComponent {
   };
 
   ListingSwitcher = (type = 'grid') => {
+    const { deviceType, directoryLists, tableSort } = this.props;
+    const { nodes, order, orderBy } = directoryLists[deviceType];
     const _eventTarget = 'tableCellTarget';
+    const { classes, ...parentProps } = this.props;
+
     switch (type) {
       case 'grid':
       default:
         return (
           <FileExplorerTableBodyGridWrapperRender
-            {...this.props}
-            classes={null}
+            {...parentProps}
+            tableSort={tableSort({
+              nodes,
+              order,
+              orderBy
+            })}
             _eventTarget={_eventTarget}
             isSelected={this.isSelected}
           />
@@ -41,8 +49,12 @@ class FileExplorerTableBodyRender extends PureComponent {
       case 'list':
         return (
           <FileExplorerTableBodyListWrapperRender
-            {...this.props}
-            classes={null}
+            {...parentProps}
+            tableSort={tableSort({
+              nodes,
+              order,
+              orderBy
+            })}
             _eventTarget={_eventTarget}
             isSelected={this.isSelected}
           />

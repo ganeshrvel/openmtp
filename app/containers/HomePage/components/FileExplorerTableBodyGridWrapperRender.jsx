@@ -11,60 +11,71 @@ import { quickHash } from '../../../utils/funcs';
 class FileExplorerTableBodyGridWrapperRender extends PureComponent {
   constructor(props) {
     super(props);
+
+    this.recursiveFilesFetchTimeOut = null;
+    this.filesPreFetchCount = 50;
+    this.state = {
+      items: this.props.tableSort.slice(0, this.filesPreFetchCount)
+    };
+  }
+
+  componentDidMount() {
+    this.recursiveFilesFetch();
+  }
+
+  componentWillUnmount() {
+    this.clearRecursiveFilesFetchTimeOut();
+  }
+
+  componentWillUpdate(prevProps, prevState, snapshot) {
+    if (prevProps.tableSort === this.props.tableSort) {
+      return null;
+    }
+
+    this.recursiveFilesFetch();
+  }
+
+  recursiveFilesFetch = () => {
+    this.recursiveFilesFetchTimeOut = setTimeout(() => {
+      const hasMore = this.state.items.length + 1 < this.props.tableSort.length;
+
+      this.setState((prev, props) => ({
+        items: props.tableSort.slice(
+          0,
+          prev.items.length + this.filesPreFetchCount
+        )
+      }));
+
+      if (hasMore) {
+        this.recursiveFilesFetch();
+      } else {
+        this.clearRecursiveFilesFetchTimeOut();
+        return null;
+      }
+    }, 0);
+  };
+
+  clearRecursiveFilesFetchTimeOut() {
+    if (this.recursiveFilesFetchTimeOut) {
+      clearTimeout(this.recursiveFilesFetchTimeOut);
+      this.recursiveFilesFetchTimeOut = null;
+    }
   }
 
   render() {
-    const {
-      classes: styles,
-      deviceType,
-      hideColList,
-      _eventTarget,
-      tableData,
-      currentBrowsePath,
-      directoryLists,
-      mtpDevice,
-      tableSort,
-      onSelectAllClick,
-      onRequestSort,
-      onContextMenuClick,
-      onTableDoubleClick,
-      onTableClick,
-      onIsDraggable,
-      onDragStart,
-      isSelected
-    } = this.props;
-
-    const { nodes, order, orderBy } = directoryLists[deviceType];
+    const { classes: styles, isSelected, ...sendProps } = this.props;
 
     return (
       <TableRow>
         <TableCell colSpan={6} className={styles.gridTableCell}>
           <div className={styles.wrapper}>
-            {tableSort({
-              nodes,
-              order,
-              orderBy
-            }).map(item => {
+            {this.state.items.map(item => {
               return (
                 <FileExplorerTableGridRender
                   key={quickHash(item.path)}
                   item={item}
-                  deviceType={deviceType}
-                  hideColList={hideColList}
-                  currentBrowsePath={currentBrowsePath}
-                  directoryLists={directoryLists}
-                  mtpDevice={mtpDevice}
-                  tableSort={tableSort}
-                  tableData={tableData}
                   isSelected={isSelected(item.path)}
-                  _eventTarget={_eventTarget}
-                  onSelectAllClick={onSelectAllClick}
-                  onRequestSort={onRequestSort}
-                  onContextMenuClick={onContextMenuClick}
-                  onTableDoubleClick={onTableDoubleClick}
-                  onTableClick={onTableClick}
-                  onIsDraggable={onIsDraggable}
-                  onDragStart={onDragStart}
+                  {...sendProps}
                 />
               );
             })}
