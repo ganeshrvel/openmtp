@@ -17,6 +17,7 @@ class FileExplorerBodyRender extends PureComponent {
     const {
       classes: styles,
       deviceType,
+      fileExplorerListingType,
       hideColList,
       currentBrowsePath,
       directoryLists,
@@ -67,6 +68,7 @@ class FileExplorerBodyRender extends PureComponent {
         >
           <FileExplorerTableBodyRender
             deviceType={deviceType}
+            fileExplorerListingType={fileExplorerListingType}
             hideColList={hideColList}
             currentBrowsePath={currentBrowsePath}
             directoryLists={directoryLists}

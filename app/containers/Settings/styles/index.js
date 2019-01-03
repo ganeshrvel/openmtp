@@ -9,6 +9,9 @@ export const styles = theme => ({
     width: `100%`
   },
   subtitle: {},
+  fmSettingsStylesFix: {
+    marginTop: 10
+  },
   formGroup: {
     paddingTop: 10
   },

@@ -10,11 +10,13 @@ import {
   makeHideHiddenFiles,
   makeEnableAutoUpdateCheck,
   makeEnableAnalytics,
-  makeFreshInstall
+  makeFreshInstall,
+  makeFileExplorerListingType
 } from './selectors';
 import {
   enableAnalytics,
   enableAutoUpdateCheck,
+  fileExplorerListingType,
   freshInstall,
   hideHiddenFiles,
   toggleSettings
@@ -31,7 +33,7 @@ class Settings extends Component {
     super(props);
   }
 
-  handleClick = ({ confirm = false }) => {
+  _handleDialogBoxCloseBtnClick = ({ confirm = false }) => {
     const { freshInstall } = this.props;
     this._handleToggleSettings(confirm);
 
@@ -51,7 +53,7 @@ class Settings extends Component {
     handleFreshInstall({ isFreshInstall: 0 });
   };
 
-  handleHiddenFilesChange = ({ ...args }, deviceType) => {
+  _handleHiddenFilesChange = ({ ...args }, deviceType) => {
     const {
       handleHideHiddenFiles,
       handleReloadDirList,
@@ -71,13 +73,25 @@ class Settings extends Component {
     );
   };
 
-  handleAutoUpdateCheckChange = ({ ...args }) => {
+  _handleFileExplorerListingType = ({ ...args }, deviceType) => {
+    const {
+      hideHiddenFiles,
+      handleFileExplorerListingType,
+      handleReloadDirList,
+      mtpStoragesList,
+      currentBrowsePath
+    } = this.props;
+
+    handleFileExplorerListingType({ ...args }, deviceType);
+  };
+
+  _handleAutoUpdateCheckChange = ({ ...args }) => {
     const { handleEnableAutoUpdateCheck } = this.props;
 
     handleEnableAutoUpdateCheck({ ...args });
   };
 
-  handleAnalytics = ({ ...args }) => {
+  _handleAnalyticsChange = ({ ...args }) => {
     const { handleEnableAnalytics } = this.props;
 
     handleEnableAnalytics({ ...args });
@@ -88,6 +102,7 @@ class Settings extends Component {
       freshInstall,
       toggleSettings,
       hideHiddenFiles,
+      fileExplorerListingType,
       classes: styles,
       enableAutoUpdateCheck,
       enableAnalytics
@@ -100,13 +115,15 @@ class Settings extends Component {
         freshInstall={freshInstall}
         toggleSettings={toggleSettings}
         hideHiddenFiles={hideHiddenFiles}
+        fileExplorerListingType={fileExplorerListingType}
         styles={styles}
         enableAutoUpdateCheck={enableAutoUpdateCheck}
         enableAnalytics={enableAnalytics}
-        handleAnalytics={this.handleAnalytics}
-        handleHiddenFilesChange={this.handleHiddenFilesChange}
-        handleClick={this.handleClick}
-        handleAutoUpdateCheckChange={this.handleAutoUpdateCheckChange}
+        onAnalyticsChange={this._handleAnalyticsChange}
+        onHiddenFilesChange={this._handleHiddenFilesChange}
+        onFileExplorerListingType={this._handleFileExplorerListingType}
+        onDialogBoxCloseBtnClick={this._handleDialogBoxCloseBtnClick}
+        onAutoUpdateCheckChange={this._handleAutoUpdateCheckChange}
       />
     );
   }
@@ -125,6 +142,13 @@ const mapDispatchToProps = (dispatch, ownProps) =>
 
       handleHideHiddenFiles: ({ ...data }, deviceType) => (_, getState) => {
         dispatch(hideHiddenFiles({ ...data }, deviceType, getState));
+      },
+
+      handleFileExplorerListingType: ({ ...data }, deviceType) => (
+        _,
+        getState
+      ) => {
+        dispatch(fileExplorerListingType({ ...data }, deviceType, getState));
       },
 
       handleEnableAutoUpdateCheck: ({ ...data }) => (_, getState) => {
@@ -157,6 +181,7 @@ const mapStateToProps = (state, props) => {
     freshInstall: makeFreshInstall(state),
     toggleSettings: makeToggleSettings(state),
     hideHiddenFiles: makeHideHiddenFiles(state),
+    fileExplorerListingType: makeFileExplorerListingType(state),
     enableAutoUpdateCheck: makeEnableAutoUpdateCheck(state),
     enableAnalytics: makeEnableAnalytics(state),
     currentBrowsePath: makeCurrentBrowsePath(state),

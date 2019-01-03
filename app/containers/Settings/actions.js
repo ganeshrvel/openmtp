@@ -9,6 +9,7 @@ const actionTypesList = [
   'TOGGLE_SETTINGS',
   'FRESH_INSTALL',
   'HIDE_HIDDEN_FILES',
+  'FILE_EXPLORER_LISTING_TYPE',
   'ENABLE_AUTO_UPDATE_CHECK',
   'ENABLE_ANALYTICS',
   'COPY_JSON_FILE_TO_SETTINGS'
@@ -45,6 +46,19 @@ export function hideHiddenFiles({ ...data }, deviceType, getState) {
       type: actionTypes.HIDE_HIDDEN_FILES,
       deviceType,
       payload: toggle
+    });
+    dispatch(copySettingsToJsonFile(getState));
+  };
+}
+
+export function fileExplorerListingType({ ...data }, deviceType, getState) {
+  const { type } = data;
+
+  return dispatch => {
+    dispatch({
+      type: actionTypes.FILE_EXPLORER_LISTING_TYPE,
+      deviceType,
+      payload: type
     });
     dispatch(copySettingsToJsonFile(getState));
   };

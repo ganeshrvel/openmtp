@@ -18,6 +18,12 @@ export const makeHideHiddenFiles = createSelector(
   state => (state ? state.hideHiddenFiles : initialState.hideHiddenFiles)
 );
 
+export const makeFileExplorerListingType = createSelector(
+  make,
+  state =>
+    state ? state.fileExplorerListingType : initialState.fileExplorerListingType
+);
+
 export const makeEnableAutoUpdateCheck = createSelector(
   make,
   state =>

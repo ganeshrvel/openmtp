@@ -36,12 +36,11 @@ import {
   makeFileTransferProgess,
   makeFilesDrag
 } from '../selectors';
-import { makeHideHiddenFiles } from '../../Settings/selectors';
 import {
-  DEVICES_LABEL,
-  DEVICES_TYPE_CONST,
-  FILE_EXPLORER_LISTING_TYPE
-} from '../../../constants';
+  makeFileExplorerListingType,
+  makeHideHiddenFiles
+} from '../../Settings/selectors';
+import { DEVICES_LABEL, DEVICES_TYPE_CONST } from '../../../constants';
 import {
   renameLocalFiles,
   checkFileExists,
@@ -170,12 +169,12 @@ class FileExplorer extends Component {
     { ...tableData },
     _target
   ) => {
-    const { deviceType, mtpDevice } = this.props;
+    const { deviceType, mtpDevice, fileExplorerListingType } = this.props;
     const allowContextMenuClickThrough =
-      FILE_EXPLORER_LISTING_TYPE === 'grid' &&
+      fileExplorerListingType[deviceType] === 'grid' &&
       !undefinedOrNull(rowData) &&
       Object.keys(rowData).length < 1;
-    
+
     if (deviceType === DEVICES_TYPE_CONST.mtp && !mtpDevice.isAvailable) {
       return null;
     }
@@ -822,7 +821,8 @@ class FileExplorer extends Component {
       directoryLists,
       fileTransferProgess,
       mtpDevice,
-      filesDrag
+      filesDrag,
+      fileExplorerListingType
     } = this.props;
     const { toggleDialog, togglePasteConfirmDialog } = this.state;
     const { rename, newFolder } = toggleDialog;
@@ -903,6 +903,7 @@ class FileExplorer extends Component {
 
         <FileExplorerBodyRender
           deviceType={deviceType}
+          fileExplorerListingType={fileExplorerListingType}
           hideColList={hideColList}
           currentBrowsePath={currentBrowsePath}
           directoryLists={directoryLists}
@@ -1208,7 +1209,8 @@ const mapStateToProps = (state, props) => {
     mtpStoragesListSelected: makeMtpStoragesListSelected(state),
     fileTransferClipboard: makeFileTransferClipboard(state),
     fileTransferProgess: makeFileTransferProgess(state),
-    filesDrag: makeFilesDrag(state)
+    filesDrag: makeFilesDrag(state),
+    fileExplorerListingType: makeFileExplorerListingType(state)
   };
 };
 

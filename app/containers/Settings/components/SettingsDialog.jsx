@@ -25,16 +25,23 @@ export default class SettingsDialog extends PureComponent {
       open,
       freshInstall,
       hideHiddenFiles,
+      fileExplorerListingType,
       styles,
       enableAutoUpdateCheck,
       enableAnalytics,
-      handleAnalytics,
-      handleHiddenFilesChange,
-      handleClick,
-      handleAutoUpdateCheckChange
+      onAnalyticsChange,
+      onHiddenFilesChange,
+      onFileExplorerListingType,
+      onDialogBoxCloseBtnClick,
+      onAutoUpdateCheckChange
     } = this.props;
     const hideHiddenFilesLocal = hideHiddenFiles[DEVICES_TYPE_CONST.local];
     const hideHiddenFilesMtp = hideHiddenFiles[DEVICES_TYPE_CONST.mtp];
+
+    const fileExplorerListingTypeLocalGrid =
+      fileExplorerListingType[DEVICES_TYPE_CONST.local] === 'grid';
+    const fileExplorerListingTypeMtpGrid =
+      fileExplorerListingType[DEVICES_TYPE_CONST.mtp] === 'grid';
 
     return (
       <Dialog
@@ -44,7 +51,7 @@ export default class SettingsDialog extends PureComponent {
         aria-labelledby="settings-dialogbox"
         disableEscapeKeyDown={false}
         onEscapeKeyDown={() =>
-          handleClick({
+          onDialogBoxCloseBtnClick({
             confirm: false
           })
         }
@@ -69,7 +76,7 @@ export default class SettingsDialog extends PureComponent {
                     <Switch
                       checked={enableAutoUpdateCheck}
                       onChange={event =>
-                        handleAutoUpdateCheckChange({
+                        onAutoUpdateCheckChange({
                           toggle: !enableAutoUpdateCheck
                         })
                       }
@@ -78,6 +85,7 @@ export default class SettingsDialog extends PureComponent {
                   label={enableAutoUpdateCheck ? `Enabled` : `Disabled`}
                 />
               </FormGroup>
+              
               <FormGroup className={styles.formGroup}>
                 <Typography variant="subtitle2" className={styles.subtitle}>
                   Enable anonymous usage statistics gathering
@@ -89,7 +97,7 @@ export default class SettingsDialog extends PureComponent {
                     <Switch
                       checked={enableAnalytics}
                       onChange={event =>
-                        handleAnalytics({
+                        onAnalyticsChange({
                           toggle: !enableAnalytics
                         })
                       }
@@ -140,7 +148,7 @@ export default class SettingsDialog extends PureComponent {
                     <Switch
                       checked={!hideHiddenFilesLocal}
                       onChange={event =>
-                        handleHiddenFilesChange(
+                        onHiddenFilesChange(
                           { toggle: !hideHiddenFilesLocal },
                           DEVICES_TYPE_CONST.local
                         )
@@ -155,8 +163,50 @@ export default class SettingsDialog extends PureComponent {
                     <Switch
                       checked={!hideHiddenFilesMtp}
                       onChange={event =>
-                        handleHiddenFilesChange(
+                        onHiddenFilesChange(
                           { toggle: !hideHiddenFilesMtp },
+                          DEVICES_TYPE_CONST.mtp
+                        )
+                      }
+                    />
+                  }
+                  label="MTP Device"
+                />
+
+                <Typography variant="subtitle2" className={`${styles.subtitle} ${styles.fmSettingsStylesFix} `}>
+                  View As Grid
+                </Typography>
+                <FormControlLabel
+                  className={styles.switch}
+                  control={
+                    <Switch
+                      checked={fileExplorerListingTypeLocalGrid}
+                      onChange={event =>
+                        onFileExplorerListingType(
+                          {
+                            type: fileExplorerListingTypeLocalGrid
+                              ? 'list'
+                              : 'grid'
+                          },
+                          DEVICES_TYPE_CONST.local
+                        )
+                      }
+                    />
+                  }
+                  label="Desktop"
+                />
+                <FormControlLabel
+                  className={styles.switch}
+                  control={
+                    <Switch
+                      checked={fileExplorerListingTypeMtpGrid}
+                      onChange={event =>
+                        onFileExplorerListingType(
+                          {
+                            type: fileExplorerListingTypeMtpGrid
+                              ? 'list'
+                              : 'grid'
+                          },
                           DEVICES_TYPE_CONST.mtp
                         )
                       }
@@ -171,7 +221,7 @@ export default class SettingsDialog extends PureComponent {
         <DialogActions>
           <Button
             onClick={e =>
-              handleClick({
+              onDialogBoxCloseBtnClick({
                 confirm: false
               })
             }

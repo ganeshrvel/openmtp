@@ -13,10 +13,7 @@ import FileExplorerTableRowsRender from './FileExplorerTableRowsRender';
 import FileExplorerTableGridRender from './FileExplorerTableGridRender';
 
 import { quickHash } from '../../../utils/funcs';
-import {
-  DEVICES_TYPE_CONST,
-  FILE_EXPLORER_LISTING_TYPE
-} from '../../../constants';
+import { DEVICES_TYPE_CONST } from '../../../constants';
 
 class FileExplorerTableBodyRender extends PureComponent {
   constructor(props) {
@@ -125,6 +122,7 @@ class FileExplorerTableBodyRender extends PureComponent {
     const {
       classes: styles,
       deviceType,
+      fileExplorerListingType,
       hideColList,
       currentBrowsePath,
       directoryLists,
@@ -170,7 +168,7 @@ class FileExplorerTableBodyRender extends PureComponent {
                 onContextMenuClick={onContextMenuClick}
               />
             ) : (
-              this.RenderItems(FILE_EXPLORER_LISTING_TYPE)
+              this.RenderItems(fileExplorerListingType[deviceType])
             )}
           </TableBody>
         </Table>
