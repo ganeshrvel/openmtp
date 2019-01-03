@@ -133,3 +133,7 @@ export const springTruncate = (str, minChars = 10, ellipsis = '...') => {
     isTruncated: false
   };
 };
+
+export const undefinedOrNull = _var => {
+  return typeof _var === 'undefined' || _var === null;
+};

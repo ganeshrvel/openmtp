@@ -2,8 +2,6 @@
 
 import React, { Component } from 'react';
 import { remote, ipcRenderer } from 'electron';
-import { styles } from '../styles/FileExplorer';
-import { withStyles } from '@material-ui/core/styles';
 import lodashSortBy from 'lodash/sortBy';
 import {
   TextFieldEdit as TextFieldEditDialog,
@@ -39,7 +37,11 @@ import {
   makeFilesDrag
 } from '../selectors';
 import { makeHideHiddenFiles } from '../../Settings/selectors';
-import { DEVICES_LABEL, DEVICES_TYPE_CONST } from '../../../constants';
+import {
+  DEVICES_LABEL,
+  DEVICES_TYPE_CONST,
+  FILE_EXPLORER_LISTING_TYPE
+} from '../../../constants';
 import {
   renameLocalFiles,
   checkFileExists,
@@ -49,14 +51,19 @@ import {
   renameMtpFiles
 } from '../../../api/sys';
 import { baseName, pathInfo, pathUp, sanitizePath } from '../../../utils/paths';
-import { isFloat, isInt, isNumber } from '../../../utils/funcs';
+import {
+  isFloat,
+  isInt,
+  isNumber,
+  undefinedOrNull
+} from '../../../utils/funcs';
 import { throwAlert } from '../../Alerts/actions';
 import { imgsrc } from '../../../utils/imgsrc';
 import FileExplorerBodyRender from './FileExplorerBodyRender';
 const { Menu, getCurrentWindow } = remote;
 
 let filesDragGhostImg = new Image(0, 0);
-filesDragGhostImg.src = imgsrc('copy.svg');
+filesDragGhostImg.src = imgsrc('FileExplorer/copy.svg');
 
 let allowFileDropFlag = false;
 
@@ -164,6 +171,10 @@ class FileExplorer extends Component {
     _target
   ) => {
     const { deviceType, mtpDevice } = this.props;
+    const allowContextMenuClickThrough =
+      FILE_EXPLORER_LISTING_TYPE === 'grid' &&
+      !undefinedOrNull(rowData) &&
+      Object.keys(rowData).length < 1;
 
     if (deviceType === DEVICES_TYPE_CONST.mtp && !mtpDevice.isAvailable) {
       return null;
@@ -172,7 +183,8 @@ class FileExplorer extends Component {
     if (event.type === 'contextmenu') {
       if (
         _target === 'tableWrapperTarget' &&
-        event.target !== event.currentTarget
+        event.target !== event.currentTarget &&
+        !allowContextMenuClickThrough
       ) {
         return null;
       }
@@ -730,7 +742,9 @@ class FileExplorer extends Component {
     handleTableClick({ selected: newSelected }, deviceType);
   };
 
-  handleTableDoubleClick = ({ path, deviceType, isFolder }) => {
+  handleTableDoubleClick = (item, deviceType, event) => {
+    const { isFolder, path } = item;
+
     if (!isFolder) {
       return null;
     }
@@ -789,7 +803,6 @@ class FileExplorer extends Component {
 
   render() {
     const {
-      classes: styles,
       deviceType,
       hideColList,
       currentBrowsePath,
@@ -876,7 +889,6 @@ class FileExplorer extends Component {
         />
 
         <FileExplorerBodyRender
-          styles={styles}
           deviceType={deviceType}
           hideColList={hideColList}
           currentBrowsePath={currentBrowsePath}
@@ -1191,5 +1203,5 @@ export default withReducer('Home', reducers)(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(withStyles(styles)(FileExplorer))
+  )(FileExplorer)
 );

@@ -1,6 +1,8 @@
 'use strict';
 
 import React, { PureComponent } from 'react';
+import { styles } from '../styles/FileExplorerTableRowsRender';
+import { withStyles } from '@material-ui/core/styles';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -9,60 +11,31 @@ import FolderIcon from '@material-ui/icons/Folder';
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 import classNames from 'classnames';
 import { niceBytes, springTruncate } from '../../../utils/funcs';
+import { FILE_EXPLORER_TABLE_TRUNCATE_MAX_CHARS } from '../../../constants';
 
-export default class FileExplorerTableRowsRender extends PureComponent {
+class FileExplorerTableRowsRender extends PureComponent {
   constructor(props) {
     super(props);
   }
 
-  _handleContextMenuClick(event, { ...item }, { ...tableData }, _eventTarget) {
-    const { onContextMenuClick } = this.props;
-
-    onContextMenuClick(event, { ...item }, { ...tableData }, _eventTarget);
-  }
-
-  _handleTableClick(item, deviceType, event) {
-    const { onTableClick } = this.props;
-
-    onTableClick(item, deviceType, event);
-  }
-
-  _handleTableDoubleClick({ ...args }) {
-    const { onTableDoubleClick } = this.props;
-
-    onTableDoubleClick({ ...args });
-  }
-
   render() {
     const {
+      classes: styles,
       isSelected,
       item,
-      styles,
       deviceType,
+      _eventTarget,
+      tableData,
       hideColList,
-      currentBrowsePath,
-      directoryLists
+      onContextMenuClick,
+      onTableClick,
+      onTableDoubleClick
     } = this.props;
 
-    const _eventTarget = 'tableCellTarget';
-
-    const tableData = {
-      path: currentBrowsePath[deviceType],
-      directoryLists: directoryLists[deviceType]
-    };
-
-    const truncateMinimumChars = 37;
-
-    const fileName = springTruncate(item.name, truncateMinimumChars);
-
-    const doubleClickMenuObj = event => {
-      return {
-        path: item.path,
-        deviceType: deviceType,
-        isFolder: item.isFolder,
-        event: event
-      };
-    };
+    const fileName = springTruncate(
+      item.name,
+      FILE_EXPLORER_TABLE_TRUNCATE_MAX_CHARS
+    );
 
     return (
       <TableRow
@@ -79,7 +52,7 @@ export default class FileExplorerTableRowsRender extends PureComponent {
           padding="none"
           className={`${styles.tableCell} checkboxCell`}
           onContextMenu={event =>
-            this._handleContextMenuClick(
+            onContextMenuClick(
               event,
               { ...item },
               { ...tableData },
@@ -89,29 +62,23 @@ export default class FileExplorerTableRowsRender extends PureComponent {
         >
           <Checkbox
             checked={isSelected}
-            onClick={event =>
-              this._handleTableClick(item.path, deviceType, event)
-            }
+            onClick={event => onTableClick(item.path, deviceType, event)}
           />
         </TableCell>
         {hideColList.indexOf('name') < 0 && (
           <TableCell
             padding="default"
-            onClick={event =>
-              this._handleTableClick(item.path, deviceType, event)
-            }
+            onClick={event => onTableClick(item.path, deviceType, event)}
             className={`${styles.tableCell} nameCell`}
             onContextMenu={event =>
-              this._handleContextMenuClick(
+              onContextMenuClick(
                 event,
                 { ...item },
                 { ...tableData },
                 _eventTarget
               )
             }
-            onDoubleClick={event =>
-              this._handleTableDoubleClick(doubleClickMenuObj(event))
-            }
+            onDoubleClick={event => onTableDoubleClick(item, deviceType, event)}
           >
             {item.isFolder ? (
               <Tooltip title="Folder">
@@ -141,21 +108,17 @@ export default class FileExplorerTableRowsRender extends PureComponent {
         {hideColList.indexOf('size') < 0 && (
           <TableCell
             padding="none"
-            onClick={event =>
-              this._handleTableClick(item.path, deviceType, event)
-            }
+            onClick={event => onTableClick(item.path, deviceType, event)}
             className={`${styles.tableCell} sizeCell`}
             onContextMenu={event =>
-              this._handleContextMenuClick(
+              onContextMenuClick(
                 event,
                 { ...item },
                 { ...tableData },
                 _eventTarget
               )
             }
-            onDoubleClick={event =>
-              this._handleTableDoubleClick(doubleClickMenuObj(event))
-            }
+            onDoubleClick={event => onTableDoubleClick(item, deviceType, event)}
           >
             {item.isFolder ? `--` : `${niceBytes(item.size)}`}
           </TableCell>
@@ -163,21 +126,17 @@ export default class FileExplorerTableRowsRender extends PureComponent {
         {hideColList.indexOf('dateAdded') < 0 && (
           <TableCell
             padding="none"
-            onClick={event =>
-              this._handleTableClick(item.path, deviceType, event)
-            }
+            onClick={event => onTableClick(item.path, deviceType, event)}
             className={`${styles.tableCell} dateAddedCell`}
             onContextMenu={event =>
-              this._handleContextMenuClick(
+              onContextMenuClick(
                 event,
                 { ...item },
                 { ...tableData },
                 _eventTarget
               )
             }
-            onDoubleClick={event =>
-              this._handleTableDoubleClick(doubleClickMenuObj(event))
-            }
+            onDoubleClick={event => onTableDoubleClick(item, deviceType, event)}
           >
             {item.dateAdded}
           </TableCell>
@@ -186,3 +145,5 @@ export default class FileExplorerTableRowsRender extends PureComponent {
     );
   }
 }
+
+export default withStyles(styles)(FileExplorerTableRowsRender);

@@ -1,17 +1,19 @@
 'use strict';
 
 import React, { PureComponent } from 'react';
+import { styles } from '../styles/FileExplorerTableFooterRender';
+import { withStyles } from '@material-ui/core/styles';
 import TableFooter from '@material-ui/core/TableFooter';
 import Breadcrumb from '../../../components/Breadcrumb';
 
- export default class FileExplorerTableFooterRender extends PureComponent {
+class FileExplorerTableFooterRender extends PureComponent {
   constructor(props) {
     super(props);
   }
 
   render() {
     const {
-      styles,
+      classes: styles,
       currentBrowsePath,
       deviceType,
       onBreadcrumbPathClick
@@ -27,3 +29,5 @@ import Breadcrumb from '../../../components/Breadcrumb';
     );
   }
 }
+
+export default withStyles(styles)(FileExplorerTableFooterRender);

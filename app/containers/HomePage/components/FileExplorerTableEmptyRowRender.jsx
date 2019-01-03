@@ -1,19 +1,21 @@
 'use strict';
 
 import React, { PureComponent } from 'react';
+import { styles } from '../styles/FileExplorerTableEmptyRowRender';
+import { withStyles } from '@material-ui/core/styles';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 
-export default class FileExplorerTableEmptyRowRender extends PureComponent {
+class FileExplorerTableEmptyRowRender extends PureComponent {
   constructor(props) {
     super(props);
   }
 
   render() {
     const {
-      styles,
+      classes: styles,
       mtpDevice,
       isMtp,
       currentBrowsePath,
@@ -70,3 +72,5 @@ export default class FileExplorerTableEmptyRowRender extends PureComponent {
     );
   }
 }
+
+export default withStyles(styles)(FileExplorerTableEmptyRowRender);

@@ -1,19 +1,21 @@
 'use strict';
 
 import React, { PureComponent } from 'react';
+import { styles } from '../styles/FileExplorerBodyRender';
+import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import classNames from 'classnames';
-import FileExplorerTableRender from './FileExplorerTableRender';
+import FileExplorerTableBodyRender from './FileExplorerTableBodyRender';
 import FileExplorerTableFooterRender from './FileExplorerTableFooterRender';
 
-export default class FileExplorerBodyRender extends PureComponent {
+class FileExplorerBodyRender extends PureComponent {
   constructor(props) {
     super(props);
   }
 
   render() {
     const {
-      styles,
+      classes: styles,
       deviceType,
       hideColList,
       currentBrowsePath,
@@ -63,13 +65,13 @@ export default class FileExplorerBodyRender extends PureComponent {
             onTableDrop(event);
           }}
         >
-          <FileExplorerTableRender
-            styles={styles}
+          <FileExplorerTableBodyRender
             deviceType={deviceType}
             hideColList={hideColList}
             currentBrowsePath={currentBrowsePath}
             directoryLists={directoryLists}
             mtpDevice={mtpDevice}
+            tableData={tableData}
             tableSort={tableSort}
             onSelectAllClick={onSelectAllClick}
             onRequestSort={onRequestSort}
@@ -81,7 +83,6 @@ export default class FileExplorerBodyRender extends PureComponent {
           />
         </div>
         <FileExplorerTableFooterRender
-          styles={styles}
           currentBrowsePath={currentBrowsePath}
           deviceType={deviceType}
           onBreadcrumbPathClick={onBreadcrumbPathClick}
@@ -90,3 +91,5 @@ export default class FileExplorerBodyRender extends PureComponent {
     );
   }
 }
+
+export default withStyles(styles)(FileExplorerBodyRender);
