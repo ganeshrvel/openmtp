@@ -206,7 +206,8 @@ export const initialState = {
     sourceDeviceType: null,
     destinationDeviceType: null,
     enter: false,
-    lock: false
+    lock: false,
+    sameSourceDestinationLock: false
   }
 };
 

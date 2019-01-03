@@ -175,7 +175,7 @@ class FileExplorer extends Component {
       FILE_EXPLORER_LISTING_TYPE === 'grid' &&
       !undefinedOrNull(rowData) &&
       Object.keys(rowData).length < 1;
-
+    
     if (deviceType === DEVICES_TYPE_CONST.mtp && !mtpDevice.isAvailable) {
       return null;
     }
@@ -460,7 +460,18 @@ class FileExplorer extends Component {
     e.stopPropagation();
 
     if (destinationDeviceType === filesDrag.sourceDeviceType) {
+      if (filesDrag.sameSourceDestinationLock) {
+        return null;
+      }
+
       allowFileDropFlag = false;
+      this.setFilesDrag({
+        sourceDeviceType: filesDrag.sourceDeviceType,
+        destinationDeviceType: destinationDeviceType,
+        enter: false,
+        lock: false,
+        sameSourceDestinationLock: true
+      });
       return null;
     }
 
@@ -473,7 +484,8 @@ class FileExplorer extends Component {
       sourceDeviceType: filesDrag.sourceDeviceType,
       destinationDeviceType: destinationDeviceType,
       enter: true,
-      lock: true
+      lock: true,
+      sameSourceDestinationLock: false
     });
   };
 
@@ -484,6 +496,7 @@ class FileExplorer extends Component {
   handleTableDrop = e => {
     const { filesDrag } = this.props;
     const { sourceDeviceType, destinationDeviceType } = filesDrag;
+
     if (
       !allowFileDropFlag ||
       destinationDeviceType === null ||

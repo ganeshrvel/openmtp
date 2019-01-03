@@ -30,7 +30,7 @@ export const FILE_EXPLORER_TABLE_TRUNCATE_MAX_CHARS = 37;
 
 export const FILE_EXPLORER_GRID_TRUNCATE_MAX_CHARS = 20;
 
-export const FILE_EXPLORER_LISTING_TYPE = `grid`;
+export const FILE_EXPLORER_LISTING_TYPE = `list`;
 
 export const APP_GITHUB_URL = repository.url.replace(/.git$/, '');
 
