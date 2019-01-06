@@ -24,19 +24,12 @@ export default merge.smart(baseConfig, {
   externals: ['fsevents', 'crypto-browserify'],
 
   /**
-   * Use `module` from `config.renderer.dev.js`
+   * Use `module` from `config.renderer.dev.babel.js`
    */
-  module: require('./config.renderer.dev').module,
+  module: require('./config.renderer.dev.babel').default.module,
 
   entry: {
-    renderer: Object.keys(dependencies || {}).filter(dependency => {
-      let fontArray = [
-        '@fortawesome/fontawesome-free',
-        'roboto-fontface',
-        '@material-ui/icons'
-      ];
-      return fontArray.includes(dependency) !== true;
-    })
+    renderer: Object.keys(dependencies || {})
   },
 
   output: {

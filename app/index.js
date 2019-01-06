@@ -19,7 +19,7 @@ render(
 
 if (module.hot) {
   module.hot.accept('./containers/App/Root', () => {
-    const NextRoot = require('./containers/App/Root');
+    const NextRoot = require('./containers/App/Root').default;
     render(
       <AppContainer>
         <NextRoot store={store} history={history} />

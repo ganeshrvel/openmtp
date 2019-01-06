@@ -1,7 +1,11 @@
 'use strict';
 
-if (process.env.NODE_ENV === 'production') {
-  module.exports = require('./prod');
-} else {
-  module.exports = require('./dev');
-}
+import configureStoreDev from './dev';
+import configureStoreProd from './prod';
+import { IS_PROD } from '../../constants/env';
+
+const selectedConfigureStore = IS_PROD ? configureStoreProd : configureStoreDev;
+
+export const { configureStore } = selectedConfigureStore;
+
+export const { history } = selectedConfigureStore;

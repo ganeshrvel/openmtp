@@ -10,7 +10,7 @@ import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import OptimizeCSSAssetsPlugin from 'optimize-css-assets-webpack-plugin';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import merge from 'webpack-merge';
-import UglifyJSPlugin from 'uglifyjs-webpack-plugin';
+import TerserPlugin from 'terser-webpack-plugin';
 import baseConfig from './config.base';
 import CheckNodeEnv from '../internals/scripts/CheckNodeEnv';
 import { PATHS } from '../app/utils/paths';
@@ -210,7 +210,7 @@ export default merge.smart(baseConfig, {
 
   optimization: {
     minimizer: [
-      new UglifyJSPlugin({
+      new TerserPlugin({
         parallel: true,
         sourceMap: true,
         cache: true
