@@ -1,7 +1,7 @@
 {
   "name": "openmtp",
   "productName": "OpenMTP",
-  "version": "1.0.1",
+  "version": "1.0.5",
   "description": "OpenMTP | Android File Transfer for macOS",
   "scripts": {
     "build": "concurrently \"yarn build-main\" \"yarn build-renderer\"",
@@ -21,7 +21,7 @@
     "start-renderer-dev": "cross-env NODE_ENV=development webpack-dev-server --config webpack/config.renderer.dev.babel.js",
     "publish-mac": "yarn build && build --mac --publish always"
   },
-  "browserslist": "electron 3.0",
+  "browserslist": "electron 4.0",
   "main": "./app/main.prod.js",
   "build": {
     "productName": "OpenMTP",
@@ -137,7 +137,7 @@
     "cross-spawn": "^6.0.5",
     "css-loader": "^1.0.0",
     "detect-port": "^1.2.3",
-    "electron": "3.0.13",
+    "electron": "4.0.1",
     "electron-builder": "^20.28.4",
     "electron-devtools-installer": "^2.2.4",
     "express": "^4.16.3",
@@ -147,9 +147,7 @@
     "identity-obj-proxy": "^3.0.0",
     "jsx-to-string": "^1.4.0",
     "mini-css-extract-plugin": "^0.4.1",
-    "minimist": "^1.2.0",
     "node-sass": "^4.9.2",
-    "npm-logical-tree": "^1.2.1",
     "optimize-css-assets-webpack-plugin": "^5.0.0",
     "prettier": "1.15",
     "react-test-renderer": "^16.4.1",
@@ -160,7 +158,6 @@
     "spectron": "^3.8.0",
     "style-loader": "^0.21.0",
     "terser-webpack-plugin": "^1.2.1",
-    "uglifyjs-webpack-plugin": "1.2.7",
     "url-loader": "^1.0.1",
     "webpack": "^4.16.3",
     "webpack-bundle-analyzer": "^2.13.1",
@@ -170,7 +167,6 @@
     "yarn": "^1.9.2"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.2.0",
     "@material-ui/core": "3.7.0",
     "@material-ui/icons": "^3.0.1",
     "bluebird": "^3.5.2",
@@ -180,7 +176,6 @@
     "electron-ga": "^1.0.6",
     "electron-updater": "^4.0.6",
     "history": "^4.7.2",
-    "immutable": "^3.8.2",
     "junk": "^2.1.0",
     "lodash": "^4.17.11",
     "mkdirp": "^0.5.1",
@@ -194,7 +189,7 @@
     "react-redux": "^5.0.7",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
-    "react-router-redux": "^5.0.0-alpha.6",
+    "react-router-redux": "^5.0.0-alpha.9",
     "redux": "^4.0.0",
     "redux-thunk": "^2.3.0",
     "reselect": "^3.0.1",

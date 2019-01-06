@@ -1,65 +1,16 @@
 'use strict';
-
-/*
-module.exports = function(api) {
-  api.cache(true);
-
-  return {
-    presets: [
-      [
-        '@babel/env',
-        {
-          targets: { node: 10 },
-          useBuiltIns: 'usage'
-        }
-      ],
-
-      //'@babel/preset-stage-3',
-      '@babel/react'
-    ],
-    plugins: [
-      require('@babel/plugin-syntax-dynamic-import'),
-      [require('@babel/plugin-proposal-class-properties'), { loose: false }]
-    ],
-    env: {
-      production: {
-        presets: ['react-optimize'],
-        plugins: [
-          'dev-expression'
-          //'@babel/plugin-proposal-class-properties',
-          //'@babel/plugin-transform-classes',
-          //require('@babel/plugin-transform-classes'),
-          // require('@babel/plugin-syntax-dynamic-import'),
-        ]
-      },
-      development: {
-        plugins: [
-          //require('@babel/plugin-transform-classes'),
-          //require('@babel/plugin-syntax-dynamic-import'),
-        ]
-      }
-    }
-  };
-};
-*/
-
-
 const developmentEnvironments = ['development', 'test'];
 
 const developmentPlugins = [require('react-hot-loader/babel')];
 
 const productionPlugins = [
   require('babel-plugin-dev-expression'),
-  
-  // babel-preset-react-optimize
   require('@babel/plugin-transform-react-constant-elements'),
   require('@babel/plugin-transform-react-inline-elements'),
   require('babel-plugin-transform-react-remove-prop-types')
 ];
 
 module.exports = api => {
-  // see docs about api at https://babeljs.io/docs/en/config-files#apicache
-  
   const development = api.env(developmentEnvironments);
   
   return {

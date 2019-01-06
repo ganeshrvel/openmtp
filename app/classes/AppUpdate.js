@@ -49,7 +49,7 @@ const fireProgressbar = () => {
     if (!isFileTransferActiveSeekFlag) {
       ipcMain.on('isFileTransferActiveReply', (event, { ...args }) => {
         const { isActive } = args;
-        
+
         isFileTransferActiveFlag = isActive;
       });
       isFileTransferActiveSeekFlag = true;
@@ -145,6 +145,9 @@ export default class AppUpdate {
           buttonIndex => {
             switch (buttonIndex) {
               case 0:
+                if (progressbarWindow !== null) {
+                  progressbarWindow.close();
+                }
                 this.closeActiveUpdates(-1);
                 this.initDownloadUpdatesProgress();
                 this.autoUpdater.downloadUpdate();
@@ -234,13 +237,13 @@ export default class AppUpdate {
         return;
       }
 
-      if (!this.updateForceCheckFlag) {
+      if (!this.updateForceCheckFlag && this.updateIsActive !== 1) {
         this.autoUpdater.on('checking-for-update', () => {
           this.setCheckUpdatesProgress();
         });
 
         this.autoUpdater.on('update-not-available', () => {
-          // an another 'update-not-available' event is registered in checkForUpdates() as well
+          // an another 'update-not-available' event is registered at checkForUpdates() as well
           this.closeActiveUpdates();
 
           if (progressbarWindow !== null) {
