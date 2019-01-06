@@ -21,7 +21,7 @@ export default merge.smart(baseConfig, {
   mode: 'production',
   target: 'electron-main',
   entry: {
-    client: ['@babel/polyfill', './app/main.dev']
+    client: ['./app/main.dev']
   },
 
   output: {

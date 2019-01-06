@@ -47,7 +47,6 @@ export default merge.smart(baseConfig, {
     'react-hot-loader/patch',
     `webpack-dev-server/client?http://localhost:${PORT}/`,
     'webpack/hot/only-dev-server',
-    '@babel/polyfill',
     path.join(PATHS.app, 'index.js')
   ],
 

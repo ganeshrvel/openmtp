@@ -17,11 +17,13 @@ const isSingleInstance = app.requestSingleInstanceLock();
 const isDeviceBootable = bootTheDevice();
 let mainWindow = null;
 
+if (IS_PROD) {
+  const sourceMapSupport = require('source-map-support');
+  sourceMapSupport.install();
+}
+
 if (IS_DEV || DEBUG_PROD) {
   require('electron-debug')();
-  const path = require('path');
-  const p = path.join(__dirname, '..', 'app', 'node_modules');
-  require('module').globalPaths.push(p);
 }
 
 async function bootTheDevice() {

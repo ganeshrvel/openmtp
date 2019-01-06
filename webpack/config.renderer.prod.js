@@ -22,7 +22,7 @@ export default merge.smart(baseConfig, {
   mode: 'production',
   target: 'electron-renderer',
   entry: {
-    client: ['@babel/polyfill', './app/index.js']
+    client: ['./app/index.js']
   },
 
   output: {
