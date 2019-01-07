@@ -1,7 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { remote, ipcRenderer } from 'electron';
+import { remote, ipcRenderer, shell } from 'electron';
 import lodashSortBy from 'lodash/sortBy';
 import {
   TextFieldEdit as TextFieldEditDialog,
@@ -758,6 +758,9 @@ class FileExplorer extends Component {
     const { isFolder, path } = item;
 
     if (!isFolder) {
+      if (deviceType === DEVICES_TYPE_CONST.local) {
+        shell.openItem(path);
+      }
       return null;
     }
 
