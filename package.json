@@ -141,7 +141,6 @@
     "electron-builder": "^20.28.4",
     "electron-devtools-installer": "^2.2.4",
     "express": "^4.16.3",
-    "fbjs-scripts": "^0.8.3",
     "file-loader": "^3.0.1",
     "husky": "^0.14.3",
     "identity-obj-proxy": "^3.0.0",
