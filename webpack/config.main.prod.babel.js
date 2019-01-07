@@ -43,6 +43,7 @@ export default merge.smart(baseConfig, {
     new CleanWebpackPlugin([`${PATHS.dist}/*`], {
       root: PATHS.root
     }),
+    
     new BundleAnalyzerPlugin({
       analyzerMode:
         process.env.OPEN_ANALYZER === 'true' ? 'server' : 'disabled',

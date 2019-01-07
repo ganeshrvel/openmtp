@@ -23,7 +23,10 @@ const nonBootableDeviceCreateWindow = () => {
     minimizable: false,
     width: 480,
     height: 320,
-    resizable: false
+    resizable: false,
+    webPreferences: {
+      nodeIntegration: true
+    }
   });
 };
 
@@ -64,7 +67,10 @@ const reportBugsCreateWindow = () => {
     resizable: false,
     title: `${APP_TITLE}`,
     minimizable: false,
-    fullscreenable: false
+    fullscreenable: false,
+    webPreferences: {
+      nodeIntegration: true
+    }
   });
 };
 
@@ -99,7 +105,7 @@ export const reportBugsWindow = () => {
 };
 
 /**
- * Privacy POlicy Window
+ * Privacy Policy Window
  */
 
 const privacyPolicyCreateWindow = isRenderedPage => {
@@ -112,7 +118,10 @@ const privacyPolicyCreateWindow = isRenderedPage => {
     resizable: true,
     title: `${APP_TITLE}`,
     minimizable: true,
-    fullscreenable: true
+    fullscreenable: true,
+    webPreferences: {
+      nodeIntegration: true
+    }
   };
   if (isRenderedPage) {
     return new remote.BrowserWindow(config);

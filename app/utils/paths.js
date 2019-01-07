@@ -11,6 +11,7 @@ import { homedir as homedirOs } from 'os';
 import { IS_DEV, IS_PROD } from '../constants/env';
 import { yearMonthNow } from './date';
 import { APP_IDENTIFIER, APP_NAME } from '../constants/meta';
+import url from 'url';
 
 const root = process.cwd();
 const appPath = join(root, `./app`);
@@ -38,9 +39,13 @@ export const PATHS = {
   logFile: resolve(logFile),
   settingsFile: resolve(settingsFile),
   appUpdateFile: resolve(appUpdateFile),
-  loadUrlPath: !isPackaged
-    ? `file://${appPath}/app.html`
-    : `file://${__dirname}/app.html`
+  loadUrlPath: url.format({
+    protocol: 'file',
+    slashes: true,
+    pathname: !isPackaged
+      ? join(appPath, './app.html')
+      : join(__dirname, './app.html')
+  })
 };
 
 export const pathUp = filePath => {

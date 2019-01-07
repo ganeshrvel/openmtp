@@ -128,7 +128,10 @@ if (!isDeviceBootable) {
         show: false,
         minWidth: 854,
         minHeight: 640,
-        titleBarStyle: 'hidden'
+        titleBarStyle: 'hidden',
+        webPreferences: {
+          nodeIntegration: true
+        }
       });
 
       mainWindow.loadURL(`${PATHS.loadUrlPath}`);

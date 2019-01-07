@@ -27,7 +27,10 @@ const createChildWindow = () => {
       minimizable: false,
       maximizable: false,
       fullscreenable: false,
-      movable: false
+      movable: false,
+      webPreferences: {
+        nodeIntegration: true
+      }
     });
   } catch (e) {
     log.error(e, `AppUpdate -> createChildWindow`);
