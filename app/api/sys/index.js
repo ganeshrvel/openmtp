@@ -708,10 +708,10 @@ const _pasteFiles = (
     let currentCopiedTime = 0;
     let bufferedOutput = null;
 
-    let handletransferListInterval = setInterval(() => {
+    let handleTransferListInterval = setInterval(() => {
       if (transferList === null) {
-        clearInterval(handletransferListInterval);
-        handletransferListInterval = 0;
+        clearInterval(handleTransferListInterval);
+        handleTransferListInterval = 0;
         return null;
       }
 
