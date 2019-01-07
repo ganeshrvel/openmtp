@@ -11,7 +11,6 @@ import { unixTimestampNow } from '../utils/date';
 
 let progressbarWindow = null;
 let isFileTransferActiveFlag = false;
-let isFileTransferActiveSeekFlag = false;
 let mainWindow = null;
 
 const createChildWindow = () => {
@@ -49,14 +48,11 @@ const fireProgressbar = () => {
       check: true
     });
 
-    if (!isFileTransferActiveSeekFlag) {
-      ipcMain.on('isFileTransferActiveReply', (event, { ...args }) => {
-        const { isActive } = args;
+    ipcMain.once('isFileTransferActiveReply', (event, { ...args }) => {
+      const { isActive } = args;
 
-        isFileTransferActiveFlag = isActive;
-      });
-      isFileTransferActiveSeekFlag = true;
-    }
+      isFileTransferActiveFlag = isActive;
+    });
 
     progressbarWindow = createChildWindow();
     progressbarWindow.loadURL(`${PATHS.loadUrlPath}#progressbarPage`);
