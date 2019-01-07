@@ -24,7 +24,7 @@ const publicPath = `http://localhost:${PORT}/dist`;
 const dll = path.resolve(PATHS.root, 'dll');
 const manifest = path.resolve(dll, 'renderer.json');
 const requiredByDLLConfig = module.parent.filename.includes(
-  'config.renderer.dev.dll'
+  'config.renderer.dev.dll.babel'
 );
 
 /**

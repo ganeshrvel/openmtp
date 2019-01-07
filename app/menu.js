@@ -44,31 +44,6 @@ export default class MenuBuilder {
       ]).popup(this.mainWindow);
     });
 
-    this.mainWindow.webContents.on('devtools-opened', () => {
-      this.mainWindow.webContents.devToolsWebContents.executeJavaScript(`
-        window.addEventListener('keydown', function (e) {
-          if (e.keyCode === 88 && e.metaKey) {
-            document.execCommand('cut');
-          }
-          else if (e.keyCode === 67 && e.metaKey) {
-            document.execCommand('copy');
-          }
-          else if (e.keyCode === 86 && e.metaKey) {
-            document.execCommand('paste');
-          }
-          else if (e.keyCode === 65 && e.metaKey) {
-            document.execCommand('selectAll');
-          }
-          else if (e.keyCode === 90 && e.metaKey) {
-            document.execCommand('undo');
-          }
-          else if (e.keyCode === 89 && e.metaKey) {
-            document.execCommand('redo');
-          }
-        });
-    `);
-    });
-
     this.mainWindow.openDevTools();
   }
 

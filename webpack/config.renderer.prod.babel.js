@@ -46,8 +46,8 @@ export default merge.smart(baseConfig, {
           {
             loader: 'css-loader',
             options: {
-              publicPath: './',
-              sourceMap: true
+              publicPath: './'
+              //sourceMap: true
             }
           }
         ]
@@ -67,8 +67,8 @@ export default merge.smart(baseConfig, {
             options: {
               publicPath: './',
               modules: true,
-              localIdentName: '[name]__[local]__[hash:base64:5]',
-              sourceMap: true
+              localIdentName: '[name]__[local]__[hash:base64:5]'
+              //sourceMap: true
             }
           }
         ]
@@ -87,15 +87,15 @@ export default merge.smart(baseConfig, {
             loader: 'css-loader',
             options: {
               publicPath: './',
-              sourceMap: true,
+              //sourceMap: true,
               importLoaders: 1
             }
           },
           {
             loader: 'sass-loader',
             options: {
-              publicPath: './',
-              sourceMap: true
+              publicPath: './'
+              //sourceMap: true
             }
           }
         ]
@@ -116,15 +116,15 @@ export default merge.smart(baseConfig, {
               publicPath: './',
               modules: true,
               importLoaders: 1,
-              localIdentName: '[name]__[local]__[hash:base64:5]',
-              sourceMap: true
+              localIdentName: '[name]__[local]__[hash:base64:5]'
+              //sourceMap: true
             }
           },
           {
             loader: 'sass-loader',
             options: {
-              publicPath: './',
-              sourceMap: true
+              publicPath: './'
+              //sourceMap: true
             }
           }
         ]
