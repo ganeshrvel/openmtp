@@ -14,7 +14,7 @@ URL: [https://github.com/ganeshrvel/openmtp](https://github.com/ganeshrvel/openm
 ------------
 
 
-### Download the latest dmg file from the [GitHub Releases](https://github.com/ganeshrvel/openmtp/releases "GitHub Releases")
+### Download the latest dmg file from [GitHub Releases](https://github.com/ganeshrvel/openmtp/releases "GitHub Releases")
 
 ------------
 
@@ -37,7 +37,7 @@ URL: [https://github.com/ganeshrvel/openmtp](https://github.com/ganeshrvel/openm
 - It's FREE and shall ALWAYS remain FREE!!
 
 
-## Building From Source
+## Building from the Source
 
 ### Clone
 ```shell
