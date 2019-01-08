@@ -4,7 +4,7 @@ Version: 1.0.0
 
 Author: [Ganesh Rathinavel](https://www.linkedin.com/in/ganeshrvel "Ganesh Rathinavel")
 
-License: MIT
+License: [MIT](https://github.com/ganeshrvel/openmtp/blob/master/LICENSE "MIT")
 
 Requirements: macOS v10.10
 
@@ -154,6 +154,6 @@ $ set UPGRADE_EXTENSIONS=1 && npm run dev
 Please feel free to contact me at ganeshrvel@outlook.com
 
 ### License
-OpenMTP | Android File Transfer for macOS is released under MIT License.
+OpenMTP | Android File Transfer for macOS is released under [MIT License](https://github.com/ganeshrvel/openmtp/blob/master/LICENSE "MIT License").
 
 Copyright © 2018-2019 Ganesh Rathinavel
