@@ -16,6 +16,7 @@ URL: [https://github.com/ganeshrvel/openmtp](https://github.com/ganeshrvel/openm
  The latest dmg file is available on [GitHub Releases](https://github.com/ganeshrvel/openmtp/releases "GitHub Releases")
 
 
+### Introduction
 
 ##### Advanced MTP File transfer application for macOS.
 
