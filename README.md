@@ -142,6 +142,11 @@ $ UPGRADE_EXTENSIONS=1 npm run dev
 $ set UPGRADE_EXTENSIONS=1 && npm run dev
 ```
 
+### Contribute
+- Make the necessary changes to the code. Make sure that the code is formatted using prettier.
+- Create a new pull request.
+- We shall attend to it.
+
 ### Contacts
 Please feel free to contact me at ganeshrvel@outlook.com
 
