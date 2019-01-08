@@ -11,19 +11,17 @@ Requirements: node.js v10, yarn
 URL: [https://github.com/ganeshrvel/openmtp](https://github.com/ganeshrvel/openmtp "https://github.com/ganeshrvel/openmtp")
 
 
-------------
 
+### Download
+ The latest dmg file is available on [GitHub Releases](https://github.com/ganeshrvel/openmtp/releases "GitHub Releases")
 
-### Download the latest dmg file from [GitHub Releases](https://github.com/ganeshrvel/openmtp/releases "GitHub Releases")
-
-------------
 
 
 ##### Advanced MTP File transfer application for macOS.
 
-###### Transferring files between macOS and Android Devices or any other MTP devices has always been a nightmare. There are a few MTP apps which are available online but most of them are either too expensive or too uncomfortable to use. The official "Android File Transfer" app for macOS from Google has a lot of bugs and limitations, some of which includes not being able to transfer files larger than 4GB, frequent disconnections, unable to rename the folders or files on the android devices. Most of the other apps available online are too expensive and all of them uses either WiFi or ADB protocol to transfer the files, which by the way is really painful to watch.
+ Transferring files between macOS and Android Devices or any other MTP devices has always been a nightmare. There are a few MTP apps which are available online but most of them are either too expensive or too uncomfortable to use. The official "Android File Transfer" app for macOS from Google has a lot of bugs and limitations, some of which includes not being able to transfer files larger than 4GB, frequent disconnections, unable to rename the folders or files on the android devices. Most of the other apps available online are too expensive and all of them uses either WiFi or ADB protocol to transfer the files, which by the way is really painful to watch.
 
-###### All the above-mentioned reasons have prompted me to create an application on my own which will be available FREE to all and FOREVER.
+ All the above-mentioned reasons have prompted me to create an application on my own which will be available FREE to all and FOREVER.
 
 ### Features
 - Plug and Play. No hassles, easy and instant connection.
@@ -75,6 +73,7 @@ $ yarn start
 ### Package
 
 Setup the *code signing* to build, package and publish the app.
+
 Instructions: [https://www.electron.build/code-signing](https://www.electron.build/code-signing "https://www.electron.build/code-signing")
 
 ```shell
@@ -121,6 +120,7 @@ $ yarn package-all
 ### Debugging
  
 \# **Debugging Guide**
+
 [https://github.com/electron-react-boilerplate/electron-react-boilerplate/issues/400](https://github.com/electron-react-boilerplate/electron-react-boilerplate/issues/400 "Debugging Guide")
 
 \# **Dispatching redux actions from main process**
