@@ -17,11 +17,11 @@ class PrivacyPolicyPage extends Component {
   constructor(props) {
     super(props);
   }
-  
-  componentWillMount () {
-    resetOverFlowY()
+
+  componentWillMount() {
+    resetOverFlowY();
   }
-  
+
   render() {
     const { classes: styles } = this.props;
     return (
@@ -34,162 +34,475 @@ class PrivacyPolicyPage extends Component {
         </Typography>
         <div className={styles.body}>
           <p>
-            Ganesh Rathinavel built the OpenMTP app as an Open Source app. This
-            SERVICE is provided by Ganesh Rathinavel at no cost and is intended
-            for use as is.
+            <span>Effective date: December 28, 2018</span>
           </p>
           <p>
-            This page is used to inform visitors regarding my policies with the
-            collection, use, and disclosure of Personal Information if anyone
-            decided to use my Service.
+            <span>
+              OpenMTP (&quot;us&quot;, &quot;we&quot;, or &quot;our&quot;)
+              operates the https://github.com/ganeshrvel/openmtp app
+              (hereinafter referred to as the &quot;Service&quot;).
+            </span>
           </p>
           <p>
-            If you choose to use my Service, then you agree to the collection
-            and use of information in relation to this policy. The Personal
-            Information that I collect is used for providing and improving the
-            Service. I will not use or share your information with anyone except
-            as described in this Privacy Policy.
+            <span>
+              Ganesh Rathinavel built the &quot;OpenMTP&quot; app as an Open
+              Source app. This SERVICE is provided by Ganesh Rathinavel at no
+              cost and is intended for use as is.
+            </span>
           </p>
           <p>
-            The terms used in this Privacy Policy have the same meanings as in
-            our Terms and Conditions, which is accessible at OpenMTP unless
-            otherwise defined in this Privacy Policy.
+            <span>
+              This page informs you of our policies regarding the collection,
+              use, and disclosure of personal data when you use our Service and
+              the choices you have associated with that data.
+            </span>
           </p>
           <p>
-            <strong>Information Collection and Use</strong>
+            <span>
+              We use your data to provide, study and improve the Service. By
+              using the Service, you agree to the collection and use of
+              information in accordance with this policy.
+            </span>
           </p>
           <p>
-            For a better experience, while using our Service, I may require you
-            to provide us with certain personally identifiable information. The
-            information that I request will be retained on your device and is
-            not collected by me in any way.
+            <span>
+              <strong>Information Collection And Use</strong>
+            </span>
           </p>
           <p>
-            The app does use third-party services that may collect information
-            used to identify you.
+            <span>
+              We take your privacy very seriously and we DO NOT gather or
+              transfer any sort of personal data out of your device in any form.
+              We gather a very limited amount of ANONYMOUS information from you
+              which will be used for various purposes such as providing and
+              improving our Service to you. You may always choose not to share
+              such ANONYMOUS information with us.
+            </span>
           </p>
           <p>
-            Link to the privacy policy of third party service providers used by
-            the app
+            <span>
+              <strong>Types of Data Collected</strong>
+            </span>
+          </p>
+          <p>
+            <span>Personal Data</span>
+            <span>
+              While using our Service, we DO NOT ask you to provide us with any
+              kind of personally identifiable information that can be used to
+              contact or identify you (&quot;Personal Data&quot;).
+            </span>
+          </p>
+          <p>
+            <span>
+              <u>Cookies</u>: Cookies are files with a small amount of data that
+              are commonly used as anonymous unique identifiers. These are sent
+              to your browser from the websites that you visit and are stored on
+              your device&#39;s internal memory.
+            </span>
+          </p>
+          <p>
+            <span>
+              This Service does not use these &quot;cookies&quot; explicitly.
+              However, the app may use third party code and libraries that use
+              &ldquo;cookies&rdquo; to collect information and improve their
+              services. You have the option to either accept or refuse these
+              cookies and know when a cookie is being sent to your device. If
+              you choose to refuse our cookies, you may not be able to use some
+              portions of this Service.
+            </span>
+          </p>
+          <p>
+            <span>
+              <u>Usage Data</u>: We may also collect anonymous information on
+              how the Service is accessed and used (&quot;Usage Data&quot;).
+              This Usage Data may include information such as your
+              computer&#39;s Internet Protocol address (e.g. IP address),
+              browser type, browser version, the pages of our Service that you
+              visit, the time and date of your visit, the time spent on those
+              pages, &quot;encrypted&quot; unique device identifiers and other
+              diagnostic data.
+            </span>
+          </p>
+          <p>
+            <span>
+              <u>LocalStorage Data</u>: We use &quot;LocalStorage&quot; and
+              similar technologies to gather information about the activity on
+              our Service and hold very limited information. LocalStorages are
+              files with small amount of data which may include an anonymous
+              unique identifier.
+            </span>
+          </p>
+          <p>
+            <span>
+              You may always &quot;Opt-Out&quot; of sharing anonymous usage data
+              with us by navigating to &quot;Settings&quot; option and disabling
+              the &quot;Enable anonymous usage statistics gathering&quot;
+              button.
+            </span>
+          </p>
+          <p>
+            <span>Examples of LocalStorage files we use:</span>
           </p>
           <ul>
             <li>
+              <span>
+                Analytics File. We use Analytics Storage to operate our
+                analytics Service.
+              </span>
+            </li>
+            <li>
+              <span>
+                Settings File. We use Settings Files to remember your
+                preferences and various settings.
+              </span>
+            </li>
+            <li>
+              <span>
+                Log Files. We use Log Files to collect the crash reports for
+                other diagnostic reasons.
+              </span>
+            </li>
+          </ul>
+          <p>
+            <span>
+              <strong>Use of Data</strong>
+            </span>
+          </p>
+          <p>
+            <span>OpenMTP uses the collected data for various purposes:</span>
+          </p>
+          <ul>
+            <li>
+              <span>To provide and maintain the Service</span>
+            </li>
+            <li>
+              <span>To notify you about changes to our Service</span>
+            </li>
+            <li>
+              <span>
+                To allow you to participate in interactive features of our
+                Service when you choose to do so
+              </span>
+            </li>
+            <li>
+              <span>To provide customer care and support</span>
+            </li>
+            <li>
+              <span>
+                To provide analysis or valuable information so that we can
+                improve the Service
+              </span>
+            </li>
+            <li>
+              <span>To monitor the usage of the Service</span>
+            </li>
+            <li>
+              <span>To detect, prevent and address technical issues</span>
+            </li>
+          </ul>
+          <p>
+            <span>
+              <strong>Transfer Of Data</strong>
+            </span>
+          </p>
+          <p>
+            <span>
+              Your information may be transferred to &mdash; and maintained on
+              &mdash; computers located outside of your state, province, country
+              or other governmental jurisdiction where the data protection laws
+              may differ than those from your jurisdiction.
+            </span>
+          </p>
+          <p>
+            <span>
+              Your consent to this Privacy Policy followed by your submission of
+              such information represents your agreement to that transfer.
+            </span>
+          </p>
+          <p>
+            <span>
+              OpenMTP will take all steps reasonably necessary to ensure that
+              your data is treated securely and in accordance with this Privacy
+              Policy and no transfer of your Personal Data will take place to an
+              organization or a country unless there are adequate controls in
+              place including the security of your data and other personal
+              information.
+            </span>
+          </p>
+          <p>
+            <span>
+              <strong>Disclosure Of Data</strong>
+            </span>
+          </p>
+          <p>
+            <span>
+              <u>Legal Requirements</u>
+            </span>
+          </p>
+          <p>
+            <span>
+              OpenMTP may disclose your data in the good faith belief that such
+              action is necessary to:
+            </span>
+          </p>
+          <ul>
+            <li>
+              <span>To comply with a legal obligation</span>
+            </li>
+            <li>
+              <span>
+                To protect and defend the rights or property of OpenMTP
+              </span>
+            </li>
+            <li>
+              <span>
+                To prevent or investigate possible wrongdoing in connection with
+                the Service
+              </span>
+            </li>
+            <li>
+              <span>
+                To protect the personal safety of users of the Service or the
+                public
+              </span>
+            </li>
+            <li>
+              <span>To protect against legal liability</span>
+            </li>
+          </ul>
+          <p>
+            <span>
+              <strong>Security Of Data</strong>
+            </span>
+          </p>
+          <p>
+            <span>
+              The security of your data is important to us, but remember that no
+              method of transmission over the Internet, or method of electronic
+              storage is 100% secure. While we strive to use commercially
+              acceptable means to protect your Personal Data, we cannot
+              guarantee its absolute security.
+            </span>
+          </p>
+          <p>
+            <span>
+              <strong>Service Providers</strong>
+            </span>
+          </p>
+          <p>
+            <span>
+              We may employ third party companies and individuals to facilitate
+              our Service (&quot;Service Providers&quot;), to provide the
+              Service on our behalf, to perform Service-related services or to
+              assist us in analyzing how our Service is used.
+            </span>
+          </p>
+          <p>
+            <span>
+              These third parties have access to your Personal Data only to
+              perform these tasks on our behalf and are obligated not to
+              disclose or use it for any other purpose.
+            </span>
+          </p>
+          <p>
+            <span>
+              <strong>Analytics</strong>
+            </span>
+          </p>
+          <p>
+            <span>
+              We may use third-party Service Providers to monitor and analyze
+              the use of our Service.
+            </span>
+          </p>
+          <p>
+            <span>Google Analytics</span>
+          </p>
+          <p>
+            <span>
+              Google Analytics is a web analytics service offered by Google that
+              tracks and reports website/app traffic. Google uses the data
+              collected to track and monitor the use of our Service. We respect
+              the privacy of our users and we have chosen to &quot;Opt-Out&quot;
+              of sharing the data with other Google products &amp; services. We
+              will never allow Google to remarket or use your data for its
+              advertising, benchmarking and other internal services.
+            </span>
+          </p>
+          <p>
+            <span>
+              For more information on the privacy practices of Google, please
+              visit the Google Privacy &amp; Terms web page:&nbsp;
               <a
-                className={styles.a}
                 onClick={events => {
                   openExternalUrl(
-                    'https://www.google.com/analytics/terms/us.html',
+                    'https://policies.google.com/privacy?hl=en',
                     events
                   );
                 }}
               >
-                Google Analytics
+                https://policies.google.com/privacy?hl=en
               </a>
-            </li>
-          </ul>
-          <p>
-            <strong>Log Data</strong>
+            </span>
           </p>
           <p>
-            I want to inform you that whenever you use my Service, in the case
-            of an error in the app I collect data and information (through
-            third-party products) on your phone called Log Data. This Log Data
-            may include information such as your device Internet Protocol
-            (&ldquo;IP&rdquo;) address, device name, operating system version,
-            the configuration of the app when utilizing my Service, the time and
-            date of your use of the Service, and other statistics.
+            <span>
+              <strong>Links To Other Sites</strong>
+            </span>
           </p>
           <p>
-            <strong>Cookies</strong>
+            <span>
+              Our Service may contain links to other sites that are not operated
+              by us. If you click on a third party link, you will be directed to
+              that third party&#39;s site. We strongly advise you to review the
+              Privacy Policy of every site you visit.
+            </span>
           </p>
           <p>
-            Cookies are files with a small amount of data that are commonly used
-            as anonymous unique identifiers. These are sent to your browser from
-            the websites that you visit and are stored on your device&#39;s
-            internal memory.
+            <span>
+              We have no control over and assume no responsibility for the
+              content, privacy policies or practices of any third party sites or
+              services.
+            </span>
           </p>
           <p>
-            This Service does not use these &ldquo;cookies&rdquo; explicitly.
-            However, the app may use third party code and libraries that use
-            &ldquo;cookies&rdquo; to collect information and improve their
-            services. You have the option to either accept or refuse these
-            cookies and know when a cookie is being sent to your device. If you
-            choose to refuse our cookies, you may not be able to use some
-            portions of this Service.
+            <strong>
+              <span>Internet Activity</span>
+            </strong>
           </p>
           <p>
-            <strong>Service Providers</strong>
+            <span>
+              We periodically send out requests to GitHub.com servers to check
+              for the latest app updates and to determine whether an internet
+              connection is available.
+            </span>
           </p>
           <p>
-            I may employ third-party companies and individuals due to the
-            following reasons:
-          </p>
-          <ul>
-            <li>To facilitate our Service;</li>
-            <li>To provide the Service on our behalf;</li>
-            <li>To perform Service-related services; or</li>
-            <li>To assist us in analyzing how our Service is used.</li>
-          </ul>
-          <p>
-            I want to inform users of this Service that these third parties have
-            access to your Personal Information. The reason is to perform the
-            tasks assigned to them on our behalf. However, they are obligated
-            not to disclose or use the information for any other purpose.
+            <span>
+              You may &quot;Opt-Out&quot; of the &quot;Auto App-update
+              checks&quot; by navigating to &quot;Settings&quot; option and
+              disabling the &quot;Enable auto-update check&quot; button.
+            </span>
           </p>
           <p>
-            <strong>Security</strong>
+            <span>
+              Please refer to&nbsp;
+              <a
+                onClick={events => {
+                  openExternalUrl(
+                    'https://help.github.com/articles/github-privacy-statement/',
+                    events
+                  );
+                }}
+              >
+                https://help.github.com/articles/github-privacy-statement/
+              </a>
+              &nbsp;for more information.
+            </span>
           </p>
           <p>
-            I value your trust in providing us with your Personal Information,
-            thus we are striving to use commercially acceptable means of
-            protecting it. But remember that no method of transmission over the
-            internet, or method of electronic storage is 100% secure and
-            reliable, and I cannot guarantee its absolute security.
+            <span>
+              <strong>Plugins or Add-ons</strong>
+            </span>
           </p>
           <p>
-            <strong>Links to Other Sites</strong>
+            <span>
+              We have used google-ga npm package to facilitate the Google
+              analytics feature inside the app.
+            </span>
           </p>
           <p>
-            This Service may contain links to other sites. If you click on a
-            third-party link, you will be directed to that site. Note that these
-            external sites are not operated by me. Therefore, I strongly advise
-            you to review the Privacy Policy of these websites. I have no
-            control over and assume no responsibility for the content, privacy
-            policies, or practices of any third-party sites or services.
+            <span>
+              <strong>Crash Reports</strong>
+            </span>
           </p>
           <p>
-            <strong>Children&rsquo;s Privacy</strong>
+            <span>
+              We have implemented a very powerful diagnostic tool to capture and
+              report the Crash Reports and bug encountered by the application.
+              The Crash Reports are stored inside your device as log files.
+              These log files can be accessed by navigating to
+              &quot;~/.io.ganeshrvel/openmtp/logs/&quot; folder. You may choose
+              to send us these log files by selecting the &quot;Help&quot; menu
+              &gt; &quot;Report Bugs&quot; and clicking on the &quot;EMAIL ERROR
+              LOGS&quot; buttons.
+            </span>
           </p>
           <p>
-            These Services do not address anyone under the age of 13. I do not
-            knowingly collect personally identifiable information from children
-            under 13. In the case I discover that a child under 13 has provided
-            me with personal information, I immediately delete this from our
-            servers. If you are a parent or guardian and you are aware that your
-            child has provided us with personal information, please contact me
-            so that I will be able to do necessary actions.
+            <span>
+              <strong>Children&#39;s Privacy</strong>
+            </span>
           </p>
           <p>
-            <strong>Changes to This Privacy Policy</strong>
+            <span>
+              Our Service does not address anyone under the age of 18
+              (&quot;Children&quot;).
+            </span>
           </p>
           <p>
-            I may update our Privacy Policy from time to time. Thus, you are
-            advised to review this page periodically for any changes. I will
-            notify you of any changes by posting the new Privacy Policy on this
-            page. These changes are effective immediately after they are posted
-            on this page.
+            <span>
+              We do not knowingly collect personally identifiable information
+              from anyone under the age of 18. If you are a parent or guardian
+              and you are aware that your Children has provided us with Personal
+              Data, please contact us. If we become aware that we have collected
+              Personal Data from children without verification of parental
+              consent, we take steps to remove that information from our
+              servers.
+            </span>
           </p>
           <p>
-            <strong>Contact Us</strong>
+            <span>
+              <strong>Changes To This Privacy Policy</strong>
+            </span>
           </p>
           <p>
-            If you have any questions or suggestions about my Privacy Policy, do
-            not hesitate to contact me.
+            <span>
+              We may update our Privacy Policy from time to time. We will notify
+              you of any changes by posting the new Privacy Policy on this page.
+            </span>
           </p>
-          <span>Developer email address: </span>
-          <a href={`mailto:${AUTHOR_EMAIL}`} className={styles.a}>
-            {AUTHOR_EMAIL}
-          </a>
+          <p>
+            <span>
+              You are advised to review this Privacy Policy periodically for any
+              changes. Changes to this Privacy Policy are effective when they
+              are posted on this page.
+            </span>
+          </p>
+          <p>
+            <span>
+              <strong>Contact Us</strong>
+            </span>
+          </p>
+          <p>
+            <span>
+              If you have any questions about this Privacy Policy, please
+              contact us:
+            </span>
+          </p>
+          <p>
+            <span>
+              By email:&nbsp;
+              <a
+                onClick={events => {
+                  openExternalUrl('mailto:ganeshrvel@outlook.com', events);
+                }}
+              >
+                ganeshrvel@outlook.com
+              </a>
+            </span>
+          </p>
+          <p>
+            <span>
+              By visiting this page on the website:&nbsp;
+              <a
+                onClick={events => {
+                  openExternalUrl('https://github.com/ganeshrvel', events);
+                }}
+              >
+                https://github.com/ganeshrvel
+              </a>
+            </span>
+          </p>
         </div>
       </div>
     );
