@@ -6,7 +6,7 @@ Author: [Ganesh Rathinavel](https://www.linkedin.com/in/ganeshrvel "Ganesh Rathi
 
 License: MIT
 
-Requirements: node.js v10, yarn
+Requirements: macOS v10.10
 
 URL: [https://github.com/ganeshrvel/openmtp](https://github.com/ganeshrvel/openmtp "https://github.com/ganeshrvel/openmtp")
 
@@ -40,6 +40,10 @@ Contacts: ganeshrvel@outlook.com
 
 ## Building from the Source
 
+
+Requirements: node.js v10 and [Yarn package manager](https://yarnpkg.com/lang/en/docs/install/ "Install Yarn package manager")
+
+
 ### Clone
 ```shell
 $ git clone --depth=1 https://github.com/ganeshrvel/openmtp.git
@@ -47,7 +51,6 @@ $ git clone --depth=1 https://github.com/ganeshrvel/openmtp.git
 $ cd openmtp
 ```
 
-[Install Yarn package manager](https://yarnpkg.com/lang/en/docs/install/ "Install Yarn package manager")
 
 ```shell
 $ yarn
