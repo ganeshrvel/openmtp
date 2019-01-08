@@ -10,6 +10,8 @@ Requirements: node.js v10, yarn
 
 URL: [https://github.com/ganeshrvel/openmtp](https://github.com/ganeshrvel/openmtp "https://github.com/ganeshrvel/openmtp")
 
+Contacts: ganeshrvel@outlook.com
+
 
 
 ### Download
@@ -139,3 +141,11 @@ $ UPGRADE_EXTENSIONS=1 npm run dev
 # For Windows
 $ set UPGRADE_EXTENSIONS=1 && npm run dev
 ```
+
+### Contacts
+Please feel free to contact me at ganeshrvel@outlook.com
+
+### License
+OpenMTP | Android File Transfer for macOS is released under MIT License.
+
+Copyright © 2018-2019 Ganesh Rathinavel
