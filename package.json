@@ -1,7 +1,7 @@
 {
   "name": "openmtp",
   "productName": "OpenMTP",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "OpenMTP | Android File Transfer for macOS",
   "scripts": {
     "build": "concurrently \"yarn build-main\" \"yarn build-renderer\"",

@@ -40,7 +40,10 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
                 Android device is either busy or not connected.
               </Typography>
               <ul className={styles.instructions}>
-                <li>Quit other Android File transfer applications.</li>
+                <li>
+                  Quit other Android File transfer applications (eg: Google
+                  Android File Transfer)
+                </li>
                 <li>Unlock your Android device.</li>
                 <li>With a USB cable, connect your device to your computer.</li>
                 <li>
@@ -52,6 +55,10 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
                 <li>
                   Reconnect the cable and repeat all the above steps if you keep
                   seeing this message.
+                </li>
+                <li>
+                  Uninstall or disable "Google Android File Transfer" app if it
+                  keeps popping up everytime you connect the MTP device.
                 </li>
               </ul>
             </Paper>

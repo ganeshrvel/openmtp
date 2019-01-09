@@ -146,6 +146,10 @@ $ set UPGRADE_EXTENSIONS=1 && npm run dev
 - Create a new pull request.
 - We shall attend to it.
 
+### Buy me a coffee
+Help me keep the app FREE and open for all.
+Paypal me: [paypal.me/ganeshrvel](https://paypal.me/ganeshrvel "paypal.me/ganeshrvel")
+
 ### Contacts
 Please feel free to contact me at ganeshrvel@outlook.com
 
