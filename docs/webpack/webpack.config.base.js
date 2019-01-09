@@ -52,7 +52,7 @@ const baseConfig = {
             loader: 'url-loader',
             options: {
               limit: 10000,
-              name: 'bundle/images/[name].[hash].[ext]'
+              name: 'bundle/[name].[hash:20].[ext]'
             }
           }
         ]
