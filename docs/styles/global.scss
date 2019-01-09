@@ -1,5 +1,7 @@
 @import 'base/base';
 
+$mobileMaxWidth: 640;
+
 body {
   background: $appBgColor;
   overflow-x: hidden;
@@ -37,24 +39,57 @@ section.top {
       padding: 0 10px 10px 10px;
       line-height: 20px;
       max-width: 500px;
+
+      @media (max-width:#{$mobileMaxWidth}px) {
+        text-align: center;
+      }
+
       h1 {
+        margin-bottom: 5px;
         font-weight: 400;
         color: $appSecondaryColor;
+      }
+
+      .line-1 {
+        margin-bottom: 6px;
+      }
+      .line-2 {
+        margin-bottom: 16px;
       }
     }
 
     .btn-wrapper {
-      .button.download-btn {
-        background-color: transparent;
-        color: $appSecondaryColor;
-        border-color: $appSecondaryColor;
-      }
+      margin-bottom: 16px;
+      .button {
+        @media (max-width:#{$mobileMaxWidth}px) {
+          display: block;
+          width: 250px;
+        }
+        &.download-btn {
+          background-color: transparent;
+          color: $appSecondaryColor;
+          border-color: $appSecondaryColor;
+        }
 
-      .button.download-btn:focus,
-      .button.download-btn:hover {
-        background-color: transparent;
-        border-color: #606c76;
-        color: #606c76;
+        &.download-btn:focus,
+        &.download-btn:hover {
+          background-color: transparent;
+          border-color: #606c76;
+          color: #606c76;
+        }
+
+        &.navigate-to-github {
+          background-color: transparent;
+          color: black;
+          border-color: black;
+        }
+
+        &.navigate-to-github:focus,
+        &.navigate-to-github:hover {
+          background-color: transparent;
+          border-color: #606c76;
+          color: #606c76;
+        }
       }
     }
   }

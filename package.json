@@ -92,11 +92,11 @@
   "author": {
     "name": "Ganesh Rathinavel",
     "email": "ganeshrvel@outlook.com",
-    "url": "https://github.com/ganeshrvel"
+    "url": "https://www.linkedin.com/in/ganeshrvel/"
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ganeshrvel/openmtp/issues"
+    "url": "https://github.com/ganeshrvel/openmtp/issues/"
   },
   "keywords": [
     "openmtp",
@@ -104,7 +104,7 @@
     "file-transfer",
     "macOS"
   ],
-  "homepage": "https://github.com/ganeshrvel/openmtp#readme",
+  "homepage": "https://ganeshrvel.github.io/openmtp/",
   "devDependencies": {
     "@babel/core": "^7.2.2",
     "@babel/plugin-proposal-class-properties": "^7.2.3",

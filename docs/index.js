@@ -1,36 +1,46 @@
 'use strict';
+
 import './styles/global.scss';
 import { imageLoaded } from '../app/vendors/useful-js-snippets/tools';
-import { imgsrc } from './utils/functs';
-import { fetchUrl } from '../app/api/www';
-import { undefinedOrNull } from '../app/utils/funcs';
+import { imgsrc, undefinedOrNull, fetchUrl } from './utils/funcs';
+
+const APP_GITHUB_URL = `https://github.com/ganeshrvel/openmtp`;
+const APP_NAME = `OpenMTP`;
 
 class Docs {
   constructor() {
     this.selectors = {
       appScreenshotFileExplorerImageWrapper: `#app-screenshot-file-explorer-wrapper`,
       appScreenshotFileExplorer: `app-screenshot-file-explorer`,
-      downloadBtnGithub: `#download-btn-github`
+      downloadBtnGitHub: `#download-btn-github`,
+      navigateToGitHub: `#navigate-to-github`,
+      gitHubLatestVersionWrapper: `#github-latest-version-wrapper`
     };
 
     this.elements = {
       appScreenshotFileExplorerImageWrapper: document.querySelector(
         this.selectors.appScreenshotFileExplorerImageWrapper
       ),
-      downloadBtnGithub: document.querySelector(
-        this.selectors.downloadBtnGithub
+      downloadBtnGitHub: document.querySelector(
+        this.selectors.downloadBtnGitHub
+      ),
+      navigateToGitHub: document.querySelector(this.selectors.navigateToGitHub),
+      gitHubLatestVersionWrapper: document.querySelector(
+        this.selectors.gitHubLatestVersionWrapper
       )
     };
 
-    this.openmtpApi = `https://api.github.com/repos/ganeshrvel/openmtp/tags`;
-
+    this.openMtpGitHubApiUrl = `https://api.github.com/repos/ganeshrvel/openmtp/tags`;
+    this.gitHubLatestReleaseData = null;
     this.lazyLoadImages = {
       fileExplorer: 'file-explorer.jpg'
     };
   }
   init() {
+    this._checkLatestGitHubRelease();
     this._appScreenshotFileExplorerLazyLoad();
     this._downloadBtnEvents();
+    this._navigateToGithuBtnEvents();
   }
 
   _appScreenshotFileExplorerLazyLoad = () => {
@@ -54,32 +64,47 @@ class Docs {
   };
 
   _downloadBtnEvents = () => {
-    this.elements.downloadBtnGithub.addEventListener('click', e => {
+    this.elements.downloadBtnGitHub.addEventListener('click', e => {
       e.preventDefault();
 
-      this._downloadRelease('github');
+      if (undefinedOrNull(this.gitHubLatestReleaseData)) {
+        this._checkLatestGitHubRelease();
+        return null;
+      }
+      window.location.href = this.gitHubLatestReleaseData.zipball_url;
     });
   };
 
-  _downloadRelease = (source = 'github') => {
-    switch (source) {
-      case 'github':
-      default:
-        fetchUrl({
-          url: this.openmtpApi
-        }).then(res => {
-          if (
-            undefinedOrNull(res) ||
-            undefinedOrNull(res[0]) ||
-            undefinedOrNull(res[0].zipball_url)
-          ) {
-            return null;
-          }
+  _navigateToGithuBtnEvents = () => {
+    this.elements.navigateToGitHub.addEventListener('click', e => {
+      e.preventDefault();
 
-          window.location.href = res[0].zipball_url;
-        });
-        break;
-    }
+      window.location.href = APP_GITHUB_URL;
+    });
+  };
+
+  _checkLatestGitHubRelease = () => {
+    fetchUrl({
+      url: this.openMtpGitHubApiUrl
+    }).then(res => {
+      if (
+        undefinedOrNull(res) ||
+        undefinedOrNull(res[0]) ||
+        undefinedOrNull(res[0].zipball_url)
+      ) {
+        return null;
+      }
+      this.gitHubLatestReleaseData = res[0];
+
+      this._releaseInformationSet({
+        latest: this.gitHubLatestReleaseData.name,
+        url: this.gitHubLatestReleaseData.zipball_url
+      });
+    });
+  };
+
+  _releaseInformationSet = ({ latest, url }) => {
+    this.elements.gitHubLatestVersionWrapper.innerHTML = `<a href="${url}">${APP_NAME} ${latest}</a>`;
   };
 }
 
