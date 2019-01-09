@@ -3,7 +3,8 @@
 - Author: [Ganesh Rathinavel](https://www.linkedin.com/in/ganeshrvel "Ganesh Rathinavel")
 - License: [MIT](https://github.com/ganeshrvel/openmtp/blob/master/LICENSE "MIT")
 - System Requirements: macOS v10.10 or higher
-- URL: [https://github.com/ganeshrvel/openmtp](https://github.com/ganeshrvel/openmtp "https://github.com/ganeshrvel/openmtp")
+- Website URL: [https://ganeshrvel.github.io/openmtp/](https://ganeshrvel.github.io/openmtp/ "https://ganeshrvel.github.io/openmtp/")
+- Repo URL: [https://github.com/ganeshrvel/openmtp](https://github.com/ganeshrvel/openmtp "https://github.com/ganeshrvel/openmtp")
 - Contacts: ganeshrvel@outlook.com
 
 
