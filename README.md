@@ -1,21 +1,10 @@
 # OpenMTP | Android File Transfer for macOS
 
-Version: 1.0.0
-
-Author: [Ganesh Rathinavel](https://www.linkedin.com/in/ganeshrvel "Ganesh Rathinavel")
-
-License: [MIT](https://github.com/ganeshrvel/openmtp/blob/master/LICENSE "MIT")
-
-Requirements: macOS v10.10
-
-URL: [https://github.com/ganeshrvel/openmtp](https://github.com/ganeshrvel/openmtp "https://github.com/ganeshrvel/openmtp")
-
-Contacts: ganeshrvel@outlook.com
-
-
-
-### Download
- The latest dmg file is available on [GitHub Releases](https://github.com/ganeshrvel/openmtp/releases "GitHub Releases")
+- Author: [Ganesh Rathinavel](https://www.linkedin.com/in/ganeshrvel "Ganesh Rathinavel")
+- License: [MIT](https://github.com/ganeshrvel/openmtp/blob/master/LICENSE "MIT")
+- System Requirements: macOS v10.10 or higher
+- URL: [https://github.com/ganeshrvel/openmtp](https://github.com/ganeshrvel/openmtp "https://github.com/ganeshrvel/openmtp")
+- Contacts: ganeshrvel@outlook.com
 
 
 ### Introduction
@@ -38,19 +27,21 @@ Contacts: ganeshrvel@outlook.com
 - It's FREE and shall ALWAYS remain FREE!!
 
 
+### Download App
+ Find the latest *dmg* file from [GitHub Releases](https://github.com/ganeshrvel/openmtp/releases "GitHub Releases")
+
+
 ## Building from the Source
 
-
-Requirements: node.js v10 and [Yarn package manager](https://yarnpkg.com/lang/en/docs/install/ "Install Yarn package manager")
+Requirements: Node.js v10, [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git "Install Git") and [Yarn package manager](https://yarnpkg.com/lang/en/docs/install/ "Install Yarn package manager")
 
 
 ### Clone
 ```shell
-$ git clone --depth=1 https://github.com/ganeshrvel/openmtp.git
+$ git clone --depth 1 --single-branch --branch master https://github.com/ganeshrvel/openmtp.git
 
 $ cd openmtp
 ```
-
 
 ```shell
 $ yarn
@@ -120,11 +111,11 @@ $ yarn package-all
 
 
  - The app icons were made by [Prosymbols](https://www.flaticon.com/authors/prosymbols "Prosymbols"), [Nikita Golubev](https://www.flaticon.com/authors/nikita-golubev "Nikita Golubev"), [Those Icons](https://www.flaticon.com/authors/those-icons "Those Icons"), [Kiranshastry](https://www.flaticon.com/authors/kiranshastry "Kiranshastry"), [Elias Bikbulatov](https://www.flaticon.com/authors/elias-bikbulatov "Elias Bikbulatov") & [Pixel perfect](https://www.flaticon.com/authors/pixel-perfect "Pixel perfect") and were distributed by [www.flaticon.com](https://www.flaticon.com/ "Flaticon") which is licensed under [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/ "Creative Commons BY 3.0")
- 
+
 - The "no image found" icon was made by Phonlaphat Thongsriphong from [https://www.iconfinder.com/phatpc](https://www.iconfinder.com/phatpc "https://www.iconfinder.com/phatpc")
- 
+
 ### Debugging
- 
+
 \# **Debugging Guide**
 
 [https://github.com/electron-react-boilerplate/electron-react-boilerplate/issues/400](https://github.com/electron-react-boilerplate/electron-react-boilerplate/issues/400 "Debugging Guide")
