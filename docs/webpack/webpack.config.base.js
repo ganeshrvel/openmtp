@@ -12,7 +12,7 @@ const buildPath = path.join(__dirname, '..');
 const baseConfig = {
   mode: process.env.NODE_ENV,
   entry: {
-    index: './docs/docs.dev.js'
+    index: './docs/index.js'
   },
   output: {
     filename: 'bundle/[name].[hash:20].js',
@@ -21,7 +21,7 @@ const baseConfig = {
 
   plugins: [
     new HtmlWebpackPlugin({
-      template: './docs/app.html',
+      template: './docs/templates/index.html',
       inject: true,
       chunks: ['index'],
       filename: 'index.html'
@@ -32,7 +32,30 @@ const baseConfig = {
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        loader: 'babel-loader'
+        loader: 'babel-loader',
+        options: {
+          presets: [
+            [
+              '@babel/preset-env',
+              {
+                targets: '> 0.25%, not dead'
+              }
+            ]
+          ],
+          cacheDirectory: true
+        }
+      },
+      {
+        test: /\.(?:ico|jpe?g|png|gif|webp)$/i,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 10000,
+              name: 'bundle/images/[name].[hash].[ext]'
+            }
+          }
+        ]
       }
     ]
   }

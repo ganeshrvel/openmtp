@@ -1,12 +1,14 @@
 'use strict';
 
 const path = require('path');
+const webpack = require('webpack');
 const PORT = 4644;
 const IS_DEV = process.env.NODE_ENV !== 'production';
 const IS_PROD = process.env.NODE_ENV === 'production';
 const buildPath = path.join(__dirname, '..', 'bundle');
 
 module.exports = {
+  devtool: 'inline-source-map',
   devServer: {
     contentBase: buildPath,
     port: PORT,
@@ -18,23 +20,21 @@ module.exports = {
       poll: 100
     }
   },
-  plugins: [],
+  plugins: [
+    new webpack.HotModuleReplacementPlugin({
+      multiStep: false
+    })
+  ],
   module: {
     rules: [
       {
-        test: /\.(scss|sass)$/,
+        test: /\.(scss|css|sass)$/,
         use: [
           {
             loader: 'style-loader'
           },
           {
-            loader: 'css-loader',
-            options: {
-              modules: true,
-              sourceMap: true,
-              importLoaders: 1,
-              localIdentName: '[name]__[local]__[hash:base64:5]'
-            }
+            loader: 'css-loader'
           },
           {
             loader: 'sass-loader'

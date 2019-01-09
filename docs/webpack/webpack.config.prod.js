@@ -12,12 +12,9 @@ const buildPath = path.join(__dirname, '..');
 
 module.exports = {
   plugins: [
-    new CleanWebpackPlugin(
-      [`${buildPath}/bundle/*`, `${buildPath}/index.html`],
-      {
-        root: rootPath
-      }
-    ),
+    new CleanWebpackPlugin([`${buildPath}/bundle/*`], {
+      root: rootPath
+    }),
     new MiniCssExtractPlugin({
       filename: 'bundle/[name].[contenthash].css'
     })
@@ -35,7 +32,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(scss|css)$/,
+        test: /\.(scss|sass|css)$/,
         resolve: { extensions: ['.scss', '.css'] },
         use: [
           'style-loader',
@@ -44,36 +41,6 @@ module.exports = {
           'sass-loader?sourceMap'
         ]
       }
-      // loaders: ['style-loader', 'css-loader', MiniCssExtractPlugin.loader]
-
-      /*{
-        test: /\.(scss|sass)$/,
-        use: [
-          {
-            loader: MiniCssExtractPlugin.loader,
-            options: {
-              publicPath: './'
-            }
-          },
-          {
-            loader: 'css-loader',
-            options: {
-              publicPath: './',
-              modules: true,
-              importLoaders: 1,
-              localIdentName: '[name]__[local]__[hash:base64:5]'
-              //sourceMap: true
-            }
-          },
-          {
-            loader: 'sass-loader',
-            options: {
-              publicPath: './'
-              //sourceMap: true
-            }
-          }
-        ]
-      }*/
     ]
   }
 };

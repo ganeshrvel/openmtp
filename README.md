@@ -9,7 +9,7 @@
 
 ### Introduction
 
-##### Advanced MTP File transfer application for macOS.
+##### Advanced Android File Transfer Application for macOS.
 
  Transferring files between macOS and Android Devices or any other MTP devices has always been a nightmare. There are a few MTP apps which are available online but most of them are either too expensive or too uncomfortable to use. The official "Android File Transfer" app for macOS from Google has a lot of bugs and limitations, some of which includes not being able to transfer files larger than 4GB, frequent disconnections, unable to rename the folders or files on the android devices. Most of the other apps available online are too expensive and all of them uses either WiFi or ADB protocol to transfer the files, which by the way is really painful to watch.
 
@@ -34,7 +34,7 @@
 
 ![OpenMTP File Explorer](https://github.com/ganeshrvel/openmtp/raw/master/blobs/images/file-explorer.jpg "OpenMTP File Explorer")
 
-![OpenMTP File Transfer](https://github.com/ganeshrvel/openmtp/raw/master/blobs/images/copying.jpg "OpenMTP File Transfer")
+![OpenMTP File Transfer](https://github.com/ganeshrvel/openmtp/raw/master/blobs/images/file-transfer.jpg "OpenMTP File Transfer")
 
 ## Building from Source
 

@@ -5,6 +5,6 @@ export function fetchUrl({ url }) {
     if (res.status === 200) {
       return res.json();
     }
-    throw `page status: ${res.status}`;
+    return null;
   });
 }
