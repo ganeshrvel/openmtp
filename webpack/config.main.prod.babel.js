@@ -11,7 +11,7 @@ import TerserPlugin from 'terser-webpack-plugin';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import baseConfig from './config.base';
 import CheckNodeEnv from '../internals/scripts/CheckNodeEnv';
-const CleanWebpackPlugin = require('clean-webpack-plugin');
+import CleanWebpackPlugin from 'clean-webpack-plugin';
 import { PATHS } from '../app/utils/paths';
 
 CheckNodeEnv('production');
@@ -43,7 +43,7 @@ export default merge.smart(baseConfig, {
     new CleanWebpackPlugin([`${PATHS.dist}/*`], {
       root: PATHS.root
     }),
-    
+
     new BundleAnalyzerPlugin({
       analyzerMode:
         process.env.OPEN_ANALYZER === 'true' ? 'server' : 'disabled',
