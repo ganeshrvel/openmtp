@@ -15,10 +15,6 @@
 
  All the above-mentioned reasons have prompted me to create an application on my own which will be available FREE to all and FOREVER.
 
-![OpenMTP File Explorer](https://github.com/ganeshrvel/openmtp/raw/master/blobs/images/file-explorer.jpg "OpenMTP File Explorer")
-
-![OpenMTP File Transfer](https://github.com/ganeshrvel/openmtp/raw/master/blobs/images/copying.jpg "OpenMTP File Transfer")
-
 ### Features
 - Plug and Play. No hassles, easy and instant connection.
 - Connected via USB cable, hence providing the highest data transfer rates possible.
@@ -34,6 +30,11 @@
 ### Download App
  Find the latest *dmg* file from [GitHub Releases](https://github.com/ganeshrvel/openmtp/releases "GitHub Releases")
 
+### Screengrabs
+
+![OpenMTP File Explorer](https://github.com/ganeshrvel/openmtp/raw/master/blobs/images/file-explorer.jpg "OpenMTP File Explorer")
+
+![OpenMTP File Transfer](https://github.com/ganeshrvel/openmtp/raw/master/blobs/images/copying.jpg "OpenMTP File Transfer")
 
 ## Building from the Source
 
