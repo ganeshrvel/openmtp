@@ -5,14 +5,26 @@ import { PATHS } from './paths';
 import { log } from './log';
 import { loadProfileErrorHtml } from '../templates/loadProfileError';
 import { APP_TITLE } from '../constants/meta';
+import { undefinedOrNull } from './funcs';
+import { PRIVACY_POLICY_PAGE_TITLE } from '../templates/privacyPolicyPage';
 
 let _nonBootableDeviceWindow = null;
 let _reportBugsWindow = null;
 let _privacyPolicyWindow = null;
+let _privacyPolicyWindowId = null;
 
 /**
  * Non Bootable Device Window
  */
+
+export const getMainWindow = () => {
+  const _mainWindow = BrowserWindow.getAllWindows();
+  if (typeof _mainWindow === 'undefined' || _mainWindow === null) {
+    return null;
+  }
+
+  return BrowserWindow.getAllWindows()[_mainWindow.length - 1];
+};
 
 const nonBootableDeviceCreateWindow = () => {
   return new BrowserWindow({
@@ -123,11 +135,22 @@ const privacyPolicyCreateWindow = isRenderedPage => {
       nodeIntegration: true
     }
   };
+
+  //incoming call from a rendered page
   if (isRenderedPage) {
-    return new remote.BrowserWindow(config);
+    const allWindows = remote.BrowserWindow.getAllWindows();
+
+    return loadExistingWindow(allWindows, PRIVACY_POLICY_PAGE_TITLE)
+      ? null
+      : new remote.BrowserWindow(config);
   }
 
-  return new BrowserWindow(config);
+  //incoming call from the main process
+  const allWindows = BrowserWindow.getAllWindows();
+
+  return loadExistingWindow(allWindows, PRIVACY_POLICY_PAGE_TITLE)
+    ? null
+    : new BrowserWindow(config);
 };
 
 export const privacyPolicyWindow = (isRenderedPage = false) => {
@@ -138,8 +161,13 @@ export const privacyPolicyWindow = (isRenderedPage = false) => {
       return _privacyPolicyWindow;
     }
 
-    _privacyPolicyWindow = privacyPolicyCreateWindow(isRenderedPage);
+    //show the existing _privacyPolicyWindow
+    const _privacyPolicyWindowTemp = privacyPolicyCreateWindow(isRenderedPage);
+    if (!_privacyPolicyWindowTemp) {
+      return _privacyPolicyWindow;
+    }
 
+    _privacyPolicyWindow = _privacyPolicyWindowTemp;
     _privacyPolicyWindow.loadURL(`${PATHS.loadUrlPath}#privacyPolicyPage`);
     _privacyPolicyWindow.webContents.on('did-finish-load', () => {
       _privacyPolicyWindow.show();
@@ -158,4 +186,20 @@ export const privacyPolicyWindow = (isRenderedPage = false) => {
   } catch (e) {
     log.error(e, `createWindows -> privacyPolicyWindow`);
   }
+};
+
+const loadExistingWindow = (allWindows, title) => {
+  if (!undefinedOrNull(allWindows)) {
+    for (let i in allWindows) {
+      const item = allWindows[i];
+      if (item.getTitle().indexOf(title) !== -1) {
+        item.focus();
+        item.show();
+
+        return item;
+      }
+    }
+  }
+
+  return null;
 };

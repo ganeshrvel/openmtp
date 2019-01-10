@@ -68,7 +68,13 @@ class Docs {
       e.preventDefault();
 
       if (undefinedOrNull(this.gitHubLatestReleaseData)) {
-        this._checkLatestGitHubRelease();
+        this._checkLatestGitHubRelease().then(() => {
+          if (undefinedOrNull(this.gitHubLatestReleaseData)) {
+            return null;
+          }
+
+          window.location.href = this.gitHubLatestReleaseData.zipball_url;
+        });
         return null;
       }
       window.location.href = this.gitHubLatestReleaseData.zipball_url;
@@ -84,7 +90,7 @@ class Docs {
   };
 
   _checkLatestGitHubRelease = () => {
-    fetchUrl({
+    return fetchUrl({
       url: this.openMtpGitHubApiUrl
     }).then(res => {
       if (
@@ -96,7 +102,7 @@ class Docs {
       }
       this.gitHubLatestReleaseData = res[0];
 
-      this._releaseInformationSet({
+      return this._releaseInformationSet({
         latest: this.gitHubLatestReleaseData.name,
         url: this.gitHubLatestReleaseData.zipball_url
       });

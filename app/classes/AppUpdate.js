@@ -8,6 +8,8 @@ import { isPackaged } from '../utils/isPackaged';
 import { PATHS } from '../utils/paths';
 import { ENABLE_BACKGROUND_AUTO_UPDATE } from '../constants';
 import { unixTimestampNow } from '../utils/date';
+import { getMainWindow } from '../utils/createWindows';
+import { undefinedOrNull } from '../utils/funcs';
 
 let progressbarWindow = null;
 let isFileTransferActiveFlag = false;
@@ -379,12 +381,12 @@ export default class AppUpdate {
   }
 
   setMainWindow() {
-    const _mainWindow = BrowserWindow.getAllWindows();
-    if (typeof _mainWindow === 'undefined' || _mainWindow === null) {
+    const _mainWindow = getMainWindow();
+    if (undefinedOrNull(_mainWindow)) {
       return null;
     }
 
-    mainWindow = BrowserWindow.getAllWindows()[_mainWindow.length - 1];
+    mainWindow = _mainWindow;
   }
 
   setTaskBarProgressBar(value) {

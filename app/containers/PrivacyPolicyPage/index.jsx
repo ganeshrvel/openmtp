@@ -12,6 +12,7 @@ import { Helmet } from 'react-helmet';
 import { APP_NAME, APP_TITLE, AUTHOR_EMAIL } from '../../constants/meta';
 import { openExternalUrl } from '../../utils/url';
 import { resetOverFlowY } from '../../utils/styleResets';
+import { PRIVACY_POLICY_PAGE_TITLE } from '../../templates/privacyPolicyPage';
 
 class PrivacyPolicyPage extends Component {
   constructor(props) {
@@ -27,7 +28,7 @@ class PrivacyPolicyPage extends Component {
     return (
       <div className={styles.root}>
         <Helmet titleTemplate={`%s - ${APP_TITLE}`}>
-          <title>Privacy Policy</title>
+          <title>{PRIVACY_POLICY_PAGE_TITLE}</title>
         </Helmet>
         <Typography variant="h5" className={styles.heading}>
           Privacy policy for {APP_NAME}
