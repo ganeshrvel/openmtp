@@ -1,8 +1,7 @@
 'use strict';
 
 import './styles/global.scss';
-import { imageLoaded } from '../app/vendors/useful-js-snippets/tools';
-import { imgsrc, undefinedOrNull, fetchUrl } from './utils/funcs';
+import { imgsrc, undefinedOrNull, fetchUrl, imageLoaded } from './utils/funcs';
 
 const APP_GITHUB_URL = `https://github.com/ganeshrvel/openmtp`;
 const APP_NAME = `OpenMTP`;
