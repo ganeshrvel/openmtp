@@ -29,9 +29,9 @@
 
 
 ### Download App
- [Download Latest Version](https://ganeshrvel.github.io/openmtp/?downloadApp=github&release=stable 'Download Latest Version')
+Download [Latest Version](https://ganeshrvel.github.io/openmtp/?downloadApp=github&release=stable ' Latest Version')
 
- Find the latest *dmg* file from [GitHub Releases](https://github.com/ganeshrvel/openmtp/releases "GitHub Releases")
+Find the latest *dmg* file from [GitHub Releases](https://github.com/ganeshrvel/openmtp/releases "GitHub Releases")
 
 ### Screengrabs
 
