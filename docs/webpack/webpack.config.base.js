@@ -38,7 +38,9 @@ const baseConfig = {
             [
               '@babel/preset-env',
               {
-                targets: '> 0.25%, not dead'
+                targets: {
+                  edge: '12'
+                }
               }
             ]
           ],

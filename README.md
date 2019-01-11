@@ -29,7 +29,7 @@
 
 
 ### Download App
-Download [Latest Version](https://ganeshrvel.github.io/openmtp/?downloadApp=github&release=stable ' Latest Version')
+Download [Latest Version](https://ganeshrvel.github.io/openmtp/?downloadApp=github&release=stable&platform=mac 'Latest Version')
 
 Find the latest *dmg* file from [GitHub Releases](https://github.com/ganeshrvel/openmtp/releases "GitHub Releases")
 

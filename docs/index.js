@@ -10,8 +10,7 @@ import {
 } from './utils/funcs';
 
 const APP_GITHUB_URL = `https://github.com/ganeshrvel/openmtp`;
-const APP_GITHUB_API_URL = `https://api.github.com/repos/ganeshrvel/openmtp/tags`;
-const APP_NAME = `OpenMTP`;
+const APP_GITHUB_API_URL = `https://api.github.com/repos/ganeshrvel/openmtp/releases/latest`;
 
 class Docs {
   constructor() {
@@ -53,23 +52,29 @@ class Docs {
     return fetchUrl({
       url: APP_GITHUB_API_URL
     }).then(res => {
-      if (
-        undefinedOrNull(res) ||
-        undefinedOrNull(res[0]) ||
-        undefinedOrNull(res[0].zipball_url)
-      ) {
+      if (undefinedOrNull(res) || undefinedOrNull(res.name)) {
         return null;
       }
-      this.gitHubLatestReleaseData = res[0];
 
-      return this._releaseInformationSet({
-        latest: this.gitHubLatestReleaseData.name,
-        url: this.gitHubLatestReleaseData.zipball_url
-      });
+      this.gitHubLatestReleaseData = this._generateDownloadLatestGitHubReleaseUrl(
+        res
+      );
+      return this._releaseInformationSet({ ...this.gitHubLatestReleaseData });
     });
   };
 
-  _forceDownloadLatestGitHubRelease = () => {
+  _generateDownloadLatestGitHubReleaseUrl = data => {
+    return {
+      latest: data.name,
+      url: {
+        mac: `https://github.com/ganeshrvel/openmtp/releases/download/${
+          data.tag_name
+        }/${data.name}-mac.zip`
+      }
+    };
+  };
+
+  _forceDownloadLatestGitHubRelease = platform => {
     if (!undefinedOrNull(this.gitHubLatestReleaseData)) {
       return this.gitHubLatestReleaseData;
     }
@@ -79,27 +84,31 @@ class Docs {
         return null;
       }
 
-      window.location.href = this.gitHubLatestReleaseData.zipball_url;
+      window.location.href = this.gitHubLatestReleaseData.url[platform];
     });
 
     return null;
   };
 
   _checkDownloadRequestUrl = () => {
-    const { downloadApp, release } = urls.get({});
+    const { downloadApp, release, platform } = urls.get({});
 
-    if (undefinedOrNull(downloadApp) || undefinedOrNull(release)) {
+    if (
+      undefinedOrNull(downloadApp) ||
+      undefinedOrNull(release) ||
+      undefinedOrNull(platform)
+    ) {
       return null;
     }
 
     switch (downloadApp) {
       case 'github':
       default:
-        if (!this._forceDownloadLatestGitHubRelease()) {
+        if (!this._forceDownloadLatestGitHubRelease(platform)) {
           return null;
         }
 
-        window.location.href = this.gitHubLatestReleaseData.zipball_url;
+        window.location.href = this.gitHubLatestReleaseData.url[platform];
         break;
     }
   };
@@ -127,12 +136,13 @@ class Docs {
   _downloadBtnEvents = () => {
     this.elements.downloadBtnGitHub.addEventListener('click', e => {
       e.preventDefault();
+      const platform = 'mac';
 
-      if (!this._forceDownloadLatestGitHubRelease()) {
+      if (!this._forceDownloadLatestGitHubRelease(platform)) {
         return null;
       }
 
-      window.location.href = this.gitHubLatestReleaseData.zipball_url;
+      window.location.href = this.gitHubLatestReleaseData.url[platform];
     });
   };
 
@@ -145,7 +155,9 @@ class Docs {
   };
 
   _releaseInformationSet = ({ latest, url }) => {
-    this.elements.gitHubLatestVersionWrapper.innerHTML = `<a href="${url}">${APP_NAME} ${latest}</a>`;
+    this.elements.gitHubLatestVersionWrapper.innerHTML = `<a href="${
+      url.mac
+    }">${latest}</a>`;
   };
 }
 
