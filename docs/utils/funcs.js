@@ -33,3 +33,84 @@ export const imageLoaded = src => {
     img.src = src;
   });
 };
+
+export const urls = {
+  get({ param = '', url = '' }) {
+    let data = {};
+    if (url === '') {
+      url = window.location.href;
+    }
+    url.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m, key, value) {
+      data[key] = decodeURI(value);
+    });
+
+    if (param === '') {
+      return data;
+    }
+    if (typeof data[param] === 'undefined') {
+      return null;
+    }
+    return data[param];
+  },
+
+  getUrlWithoutHash({ url = '' }) {
+    if (url !== '') {
+      let hash = url.split('#')[0];
+      if (hash) {
+        return hash;
+      } else {
+        return null;
+      }
+    }
+    return window.location.href.split('#')[0];
+  },
+
+  getHash({ url = '' }) {
+    if (url !== '') {
+      let hash = url.split('#')[1];
+      if (hash) {
+        return hash;
+      } else {
+        return null;
+      }
+    }
+    return location.hash.replace('#', '').trim();
+  },
+
+  parseHash({ param = '', url = '' }) {
+    let urlDATA = '';
+    if (url !== '') {
+      urlDATA = url;
+    }
+    let hash = urls.getHash({ url: urlDATA });
+    if (hash === '') {
+      return null;
+    }
+    let pieces = hash.split('&'),
+      data = {},
+      i,
+      parts;
+    for (i = 0; i < pieces.length; i++) {
+      parts = pieces[i].split('=');
+      if (parts.length < 2) {
+        parts.push('');
+      }
+      data[decodeURIComponent(parts[0])] = decodeURIComponent(parts[1]);
+    }
+    if (param === '') {
+      return data;
+    }
+    if (typeof data[param] === 'undefined') {
+      return null;
+    }
+    return data[param];
+  },
+
+  removeHash() {
+    window.location.replace('#');
+  },
+
+  getUrlPath() {
+    return window.location.pathname;
+  }
+};

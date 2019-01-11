@@ -1,7 +1,13 @@
 'use strict';
 
 import './styles/global.scss';
-import { imgsrc, undefinedOrNull, fetchUrl, imageLoaded } from './utils/funcs';
+import {
+  imgsrc,
+  undefinedOrNull,
+  fetchUrl,
+  imageLoaded,
+  urls
+} from './utils/funcs';
 
 const APP_GITHUB_URL = `https://github.com/ganeshrvel/openmtp`;
 const APP_GITHUB_API_URL = `https://api.github.com/repos/ganeshrvel/openmtp/tags`;
@@ -37,10 +43,62 @@ class Docs {
   }
   init() {
     this._checkLatestGitHubRelease();
+    this._checkDownloadRequestUrl();
     this._appScreenshotFileExplorerLazyLoad();
     this._downloadBtnEvents();
     this._navigateToGithuBtnEvents();
   }
+
+  _checkLatestGitHubRelease = () => {
+    return fetchUrl({
+      url: APP_GITHUB_API_URL
+    }).then(res => {
+      if (
+        undefinedOrNull(res) ||
+        undefinedOrNull(res[0]) ||
+        undefinedOrNull(res[0].zipball_url)
+      ) {
+        return null;
+      }
+      this.gitHubLatestReleaseData = res[0];
+
+      return this._releaseInformationSet({
+        latest: this.gitHubLatestReleaseData.name,
+        url: this.gitHubLatestReleaseData.zipball_url
+      });
+    });
+  };
+
+  _forceDownloadLatestGitHubRelease = () => {
+    if (!undefinedOrNull(this.gitHubLatestReleaseData)) {
+      return this.gitHubLatestReleaseData;
+    }
+
+    this._checkLatestGitHubRelease().then(() => {
+      if (undefinedOrNull(this.gitHubLatestReleaseData)) {
+        return null;
+      }
+
+      window.location.href = this.gitHubLatestReleaseData.zipball_url;
+    });
+
+    return null;
+  };
+
+  _checkDownloadRequestUrl = () => {
+    const { downloadApp, release } = urls.get({});
+
+    if (undefinedOrNull(downloadApp) || undefinedOrNull(release)) {
+      return null;
+    }
+
+    switch (downloadApp) {
+      case 'github':
+      default:
+        this._forceDownloadLatestGitHubRelease();
+        break;
+    }
+  };
 
   _appScreenshotFileExplorerLazyLoad = () => {
     const appScreenshotFileExplorerImgLoad = imgsrc(
@@ -66,16 +124,10 @@ class Docs {
     this.elements.downloadBtnGitHub.addEventListener('click', e => {
       e.preventDefault();
 
-      if (undefinedOrNull(this.gitHubLatestReleaseData)) {
-        this._checkLatestGitHubRelease().then(() => {
-          if (undefinedOrNull(this.gitHubLatestReleaseData)) {
-            return null;
-          }
-
-          window.location.href = this.gitHubLatestReleaseData.zipball_url;
-        });
+      if (!this._forceDownloadLatestGitHubRelease()) {
         return null;
       }
+
       window.location.href = this.gitHubLatestReleaseData.zipball_url;
     });
   };
@@ -85,26 +137,6 @@ class Docs {
       e.preventDefault();
 
       window.location.href = APP_GITHUB_URL;
-    });
-  };
-
-  _checkLatestGitHubRelease = () => {
-    return fetchUrl({
-      url: APP_GITHUB_API_URL
-    }).then(res => {
-      if (
-        undefinedOrNull(res) ||
-        undefinedOrNull(res[0]) ||
-        undefinedOrNull(res[0].zipball_url)
-      ) {
-        return null;
-      }
-      this.gitHubLatestReleaseData = res[0];
-
-      return this._releaseInformationSet({
-        latest: this.gitHubLatestReleaseData.name,
-        url: this.gitHubLatestReleaseData.zipball_url
-      });
     });
   };
 
