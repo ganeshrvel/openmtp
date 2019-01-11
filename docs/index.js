@@ -72,23 +72,22 @@ class Docs {
   };
 
   _generateDownloadLatestGitHubReleaseUrl = (data, status) => {
-    //if api request limit gets exhausted forward the url to releases page
-
-    if (ALLOWED_GITHUB_FETCH_STATUSES.indexOf(status) !== -1) {
+    if (status === 200) {
       return {
-        latest: `OpenMTP`,
+        latest: data.name,
         url: {
-          mac: `https://github.com/ganeshrvel/openmtp/releases/`
+          mac: `https://github.com/ganeshrvel/openmtp/releases/download/${
+            data.tag_name
+          }/${data.name}-mac.zip`
         }
       };
     }
 
+    //if api request limit gets exhausted or api is not found forward the url to github releases page
     return {
-      latest: data.name,
+      latest: `OpenMTP`,
       url: {
-        mac: `https://github.com/ganeshrvel/openmtp/releases/download/${
-          data.tag_name
-        }/${data.name}-mac.zip`
+        mac: `https://github.com/ganeshrvel/openmtp/releases/`
       }
     };
   };
