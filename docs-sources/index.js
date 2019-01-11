@@ -8,11 +8,7 @@ import {
   imageLoaded,
   urls
 } from './utils/funcs';
-import {
-  ALLOWED_GITHUB_FETCH_STATUSES,
-  APP_GITHUB_API_URL,
-  APP_GITHUB_URL
-} from './utils/consts';
+import { APP_GITHUB_API_URL, APP_GITHUB_URL } from './utils/consts';
 
 class Docs {
   constructor() {

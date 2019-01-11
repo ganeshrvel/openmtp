@@ -7,12 +7,12 @@ const devConfig = require('./webpack.config.dev');
 const prodConfig = require('./webpack.config.prod');
 const IS_DEV = process.env.NODE_ENV !== 'production';
 const IS_PROD = process.env.NODE_ENV === 'production';
-const buildPath = path.join(__dirname, '..');
+const buildPath = path.join(__dirname, '..', '..', 'docs');
 
 const baseConfig = {
   mode: process.env.NODE_ENV,
   entry: {
-    index: './docs/index.js'
+    index: './docs-sources/index.js'
   },
   output: {
     filename: 'bundle/[name].[hash:20].js',
@@ -21,7 +21,7 @@ const baseConfig = {
 
   plugins: [
     new HtmlWebpackPlugin({
-      template: './docs/templates/index.html',
+      template: './docs-sources/templates/index.html',
       inject: true,
       chunks: ['index'],
       filename: 'index.html'

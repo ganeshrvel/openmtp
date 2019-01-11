@@ -5,7 +5,7 @@ const webpack = require('webpack');
 const PORT = 4644;
 const IS_DEV = process.env.NODE_ENV !== 'production';
 const IS_PROD = process.env.NODE_ENV === 'production';
-const buildPath = path.join(__dirname, '..', 'bundle');
+const buildPath = path.join(__dirname, '..', '..', 'docs', 'bundle');
 
 module.exports = {
   devtool: 'inline-source-map',
