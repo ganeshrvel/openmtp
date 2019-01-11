@@ -95,7 +95,11 @@ class Docs {
     switch (downloadApp) {
       case 'github':
       default:
-        this._forceDownloadLatestGitHubRelease();
+        if (!this._forceDownloadLatestGitHubRelease()) {
+          return null;
+        }
+
+        window.location.href = this.gitHubLatestReleaseData.zipball_url;
         break;
     }
   };
