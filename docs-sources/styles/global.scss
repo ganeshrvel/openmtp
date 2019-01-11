@@ -77,6 +77,15 @@ section.first {
         color: $appSecondaryColor;
       }
 
+      p.latest-version-link {
+        margin-bottom: 20px;
+        .github-latest-version-wrapper {
+          a {
+            text-decoration: underline;
+          }
+        }
+      }
+
       @media (max-width:#{$mobileMaxWidth}px) {
         text-align: center;
 
@@ -88,10 +97,10 @@ section.first {
       }
 
       .line-1 {
-        margin-bottom: 6px;
+        margin-bottom: 10px;
       }
       .line-2 {
-        margin-bottom: 16px;
+        margin-bottom: 10px;
       }
     }
 
@@ -103,6 +112,7 @@ section.first {
           width: 250px;
         }
         &.download-btn {
+          width: 130px;
           background-color: transparent;
           color: $appSecondaryColor;
           border-color: $appSecondaryColor;
@@ -116,6 +126,7 @@ section.first {
         }
 
         &.navigate-to-github {
+          width: 130px;
           background-color: transparent;
           color: black;
           border-color: black;
