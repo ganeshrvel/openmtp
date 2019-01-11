@@ -107,7 +107,8 @@
     "openmtp",
     "android",
     "file-transfer",
-    "macOS"
+    "macOS",
+    "mtp"
   ],
   "homepage": "https://ganeshrvel.github.io/openmtp/",
   "devDependencies": {

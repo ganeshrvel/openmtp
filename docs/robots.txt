@@ -1,0 +1,5 @@
+User-agent: *
+Disallow:
+Disallow: /styles/
+Disallow: /images/
+Disallow: /bundle/

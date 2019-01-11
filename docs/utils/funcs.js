@@ -1,4 +1,6 @@
 'use strict';
+import { ALLOWED_GITHUB_FETCH_STATUSES } from './consts';
+
 /**
  * handle image import into the program.
  * default path: ../public/images/
@@ -16,7 +18,7 @@ export const undefinedOrNull = _var => {
 export const fetchUrl = ({ url }) => {
   return fetch(`${url}`)
     .then(res => {
-      if (res.status === 200 || res.status === 403) {
+      if (ALLOWED_GITHUB_FETCH_STATUSES.indexOf(res.status) !== -1) {
         return {
           json: res.json(),
           status: res.status

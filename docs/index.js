@@ -8,9 +8,11 @@ import {
   imageLoaded,
   urls
 } from './utils/funcs';
-
-const APP_GITHUB_URL = `https://github.com/ganeshrvel/openmtp`;
-const APP_GITHUB_API_URL = `https://api.github.com/repos/ganeshrvel/openmtp/releases/latest`;
+import {
+  ALLOWED_GITHUB_FETCH_STATUSES,
+  APP_GITHUB_API_URL,
+  APP_GITHUB_URL
+} from './utils/consts';
 
 class Docs {
   constructor() {
@@ -71,7 +73,8 @@ class Docs {
 
   _generateDownloadLatestGitHubReleaseUrl = (data, status) => {
     //if api request limit gets exhausted forward the url to releases page
-    if (status === 403) {
+
+    if (ALLOWED_GITHUB_FETCH_STATUSES.indexOf(status) !== -1) {
       return {
         latest: `OpenMTP`,
         url: {
