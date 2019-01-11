@@ -29,7 +29,7 @@ All the above-mentioned reasons have prompted me to create an application on my 
 
 ### Download App
 
-[Download Latest Version](https://ganeshrvel.github.io/openmtp/?downloadApp=github&release=stable 'GitHub Releases'){:target="_blank" rel="noopener"}
+[Download Latest Version](https://ganeshrvel.github.io/openmtp/?downloadApp=github&release=stable 'GitHub Releases' target="_blank" rel="noopener")
 
 ### Screengrabs
 
