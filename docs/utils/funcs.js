@@ -16,9 +16,13 @@ export const undefinedOrNull = _var => {
 export const fetchUrl = ({ url }) => {
   return fetch(`${url}`)
     .then(res => {
-      if (res.status === 200) {
-        return res.json();
+      if (res.status === 200 || res.status === 403) {
+        return {
+          json: res.json(),
+          status: res.status
+        };
       }
+
       return null;
     })
     .catch(e => {});

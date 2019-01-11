@@ -19,7 +19,7 @@ class Docs {
       appScreenshotFileExplorer: `app-screenshot-file-explorer`,
       downloadBtnGitHub: `#download-btn-github`,
       navigateToGitHub: `#navigate-to-github`,
-      gitHubLatestVersionWrapper: `#github-latest-version-wrapper`
+      gitHubLatestVersionWrapper: `.github-latest-version-wrapper`
     };
 
     this.elements = {
@@ -30,7 +30,7 @@ class Docs {
         this.selectors.downloadBtnGitHub
       ),
       navigateToGitHub: document.querySelector(this.selectors.navigateToGitHub),
-      gitHubLatestVersionWrapper: document.querySelector(
+      gitHubLatestVersionWrapper: document.querySelectorAll(
         this.selectors.gitHubLatestVersionWrapper
       )
     };
@@ -52,18 +52,34 @@ class Docs {
     return fetchUrl({
       url: APP_GITHUB_API_URL
     }).then(res => {
-      if (undefinedOrNull(res) || undefinedOrNull(res.name)) {
+      if (undefinedOrNull(res)) {
         return null;
       }
 
-      this.gitHubLatestReleaseData = this._generateDownloadLatestGitHubReleaseUrl(
-        res
-      );
-      return this._releaseInformationSet({ ...this.gitHubLatestReleaseData });
+      const { json, status } = res;
+
+      return json.then(data => {
+        this.gitHubLatestReleaseData = this._generateDownloadLatestGitHubReleaseUrl(
+          data,
+          status
+        );
+
+        return this._releaseInformationSet({ ...this.gitHubLatestReleaseData });
+      });
     });
   };
 
-  _generateDownloadLatestGitHubReleaseUrl = data => {
+  _generateDownloadLatestGitHubReleaseUrl = (data, status) => {
+    //if api request limit gets exhausted forward the url to releases page
+    if (status === 403) {
+      return {
+        latest: `OpenMTP`,
+        url: {
+          mac: `https://github.com/ganeshrvel/openmtp/releases/`
+        }
+      };
+    }
+
     return {
       latest: data.name,
       url: {
@@ -155,9 +171,11 @@ class Docs {
   };
 
   _releaseInformationSet = ({ latest, url }) => {
-    this.elements.gitHubLatestVersionWrapper.innerHTML = `<a href="${
-      url.mac
-    }">${latest}</a>`;
+    for (let i = 0; i < this.elements.gitHubLatestVersionWrapper.length; i++) {
+      this.elements.gitHubLatestVersionWrapper[i].innerHTML = `<a href="${
+        url.mac
+      }">${latest}</a>`;
+    }
   };
 }
 
