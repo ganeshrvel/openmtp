@@ -1,6 +1,7 @@
 'use strict';
 
 import { app, BrowserWindow, ipcMain } from 'electron';
+import electronIs from 'electron-is';
 import MenuBuilder from './menu';
 import { log } from './utils/log';
 import { DEBUG_PROD, IS_DEV, IS_PROD } from './constants/env';
@@ -12,6 +13,7 @@ import { appEvents } from './utils/eventHandling';
 import { bootLoader } from './utils/bootHelper';
 import { nonBootableDeviceWindow } from './utils/createWindows';
 import { APP_TITLE } from './constants/meta';
+import { isPackaged } from './utils/isPackaged';
 
 const isSingleInstance = app.requestSingleInstanceLock();
 const isDeviceBootable = bootTheDevice();
@@ -177,17 +179,29 @@ if (!isDeviceBootable) {
     try {
       await createWindow();
 
+      let appUpdaterEnable = true;
+      if (isPackaged && process.platform === 'darwin') {
+        appUpdaterEnable = !electronIs.mas() && app.isInApplicationsFolder();
+      }
+
       const autoAppUpdate = new AppUpdate();
       autoAppUpdate.init();
 
-      const menuBuilder = new MenuBuilder({ mainWindow, autoAppUpdate });
+      const menuBuilder = new MenuBuilder({
+        mainWindow,
+        autoAppUpdate,
+        appUpdaterEnable
+      });
       menuBuilder.buildMenu();
 
       const autoUpdateCheckSettings = settingsStorage.getItems([
         'enableAutoUpdateCheck'
       ]);
 
-      if (autoUpdateCheckSettings.enableAutoUpdateCheck !== false) {
+      if (
+        autoUpdateCheckSettings.enableAutoUpdateCheck !== false &&
+        appUpdaterEnable
+      ) {
         setTimeout(() => {
           autoAppUpdate.checkForUpdates();
         }, AUTO_UPDATE_CHECK_FIREUP_DELAY);

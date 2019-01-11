@@ -9,9 +9,10 @@ import { APP_GITHUB_URL, DONATE_PAYPAL_URL } from './constants';
 import { mailTo } from './templates/menu';
 
 export default class MenuBuilder {
-  constructor({ mainWindow, autoAppUpdate }) {
+  constructor({ mainWindow, autoAppUpdate, appUpdaterEnable }) {
     this.mainWindow = mainWindow;
     this.autoAppUpdate = autoAppUpdate;
+    this.appUpdaterEnable = appUpdaterEnable;
   }
 
   buildMenu() {
@@ -57,6 +58,7 @@ export default class MenuBuilder {
         },
         { type: 'separator' },
         {
+          visible: this.appUpdaterEnable,
           label: 'Check For Updates',
           click: () => {
             this.autoAppUpdate.forceCheck();
@@ -282,6 +284,7 @@ export default class MenuBuilder {
         label: 'Help',
         submenu: [
           {
+            visible: this.appUpdaterEnable,
             label: 'Check For Updates',
             click: () => {
               this.autoAppUpdate.forceCheck();

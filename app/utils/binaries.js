@@ -1,7 +1,7 @@
 'use strict';
 import path from 'path';
 import { remote } from 'electron';
-import getPlatform from './get-platform';
+import { getPlatform } from './getPlatform';
 import { IS_PROD } from '../constants/env';
 import { PATHS } from './paths';
 import { isPackaged } from '../utils/isPackaged';

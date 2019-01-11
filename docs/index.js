@@ -4,6 +4,7 @@ import './styles/global.scss';
 import { imgsrc, undefinedOrNull, fetchUrl, imageLoaded } from './utils/funcs';
 
 const APP_GITHUB_URL = `https://github.com/ganeshrvel/openmtp`;
+const APP_GITHUB_API_URL = `https://api.github.com/repos/ganeshrvel/openmtp/tags`;
 const APP_NAME = `OpenMTP`;
 
 class Docs {
@@ -29,7 +30,6 @@ class Docs {
       )
     };
 
-    this.openMtpGitHubApiUrl = `https://api.github.com/repos/ganeshrvel/openmtp/tags`;
     this.gitHubLatestReleaseData = null;
     this.lazyLoadImages = {
       fileExplorer: 'file-explorer.jpg'
@@ -90,7 +90,7 @@ class Docs {
 
   _checkLatestGitHubRelease = () => {
     return fetchUrl({
-      url: this.openMtpGitHubApiUrl
+      url: APP_GITHUB_API_URL
     }).then(res => {
       if (
         undefinedOrNull(res) ||

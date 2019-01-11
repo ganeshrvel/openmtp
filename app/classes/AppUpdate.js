@@ -106,10 +106,10 @@ export default class AppUpdate {
         const errorMsg =
           error == null ? 'unknown' : (error.stack || error).toString();
 
-        this.closeActiveUpdates();
         if (progressbarWindow !== null) {
           progressbarWindow.close();
         }
+        this.closeActiveUpdates();
 
         if (this.isNetworkError(error)) {
           this.spitMessageDialog(

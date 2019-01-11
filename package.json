@@ -1,7 +1,7 @@
 {
   "name": "openmtp",
   "productName": "OpenMTP",
-  "version": "1.10.11",
+  "version": "1.10.20",
   "description": "OpenMTP | Android File Transfer for macOS",
   "scripts": {
     "build": "concurrently \"yarn build-main\" \"yarn build-renderer\"",
@@ -28,6 +28,10 @@
   "build": {
     "productName": "OpenMTP",
     "appId": "io.ganeshrvel.openmtp",
+    "forceCodeSigning": true,
+    "copyright": "© Ganesh Rathinavel",
+    "readonly": true,
+    "afterPack": "./internals/scripts/AfterPack.js",
     "publish": [
       {
         "provider": "github",
@@ -53,6 +57,7 @@
       }
     ],
     "mac": {
+      "category": "public.app-category.productivity",
       "target": [
         "dmg",
         "zip"
@@ -167,7 +172,10 @@
     "devtron": "^1.4.0",
     "electron-debug": "^2.0.0",
     "electron-ga": "^1.0.6",
+    "electron-is": "^3.0.0",
     "electron-updater": "^4.0.6",
+    "fs-extra": "^7.0.1",
+    "glob": "^7.1.3",
     "history": "^4.7.2",
     "html-webpack-plugin": "^3.2.0",
     "junk": "^2.1.0",
