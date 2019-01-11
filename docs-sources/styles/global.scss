@@ -6,6 +6,7 @@ $tabletMinWidth: 640;
 body {
   font-family: 'Roboto', sans-serif;
   overflow-x: hidden;
+  text-rendering: optimizeLegibility;
 }
 
 a {
@@ -17,11 +18,11 @@ a {
   height: 100vh;
 }
 
-section.top {
+section.first {
   .item-left {
     @include horz-vert-center();
     @include item-align();
-    background: $appSecondaryColor;
+    background: linear-gradient(45deg, $appSecondaryColor 0%, #0080ff 100%);
     position: relative;
 
     @media (max-width:#{$mobileMaxWidth}px) {
@@ -66,12 +67,12 @@ section.top {
     background: $appBgColor;
 
     .desc-wrapper {
-      padding: 0 10px 10px 10px;
+      padding: 0 10px 0 10px;
       line-height: 20px;
       max-width: 500px;
 
       h1.heading {
-        margin-bottom: 5px;
+        margin-bottom: 10px;
         font-weight: 500;
         color: $appSecondaryColor;
       }
@@ -125,6 +126,93 @@ section.top {
           background-color: transparent;
           border-color: #606c76;
           color: #606c76;
+        }
+      }
+    }
+  }
+}
+
+section.second {
+  .item-right {
+    @include horz-vert-center();
+    @include item-align(); //
+    background: linear-gradient(45deg, #263238 0%, #435b71 100%);
+    position: relative;
+
+    .image-wrapper {
+      text-align: center;
+      #app-screenshot-file-transfer {
+        max-width: 400px;
+        width: 80%;
+        height: auto;
+        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.3),
+          0 23px 38px 0 rgba(0, 0, 0, 0.43), 0 25px 65px 0 rgba(0, 0, 0, 0.1);
+        border-radius: 5px;
+      }
+    }
+  }
+  .item-left {
+    @include horz-vert-center();
+    @include item-align();
+    background: #eeeeee;
+
+    .desc-wrapper {
+      padding: 0 20px 0 20px;
+      line-height: 20px;
+      max-width: 500px;
+
+      .feature-lists {
+        cursor: default;
+        li {
+          display: inline-block;
+        }
+        li,
+        span {
+          float: left;
+          line-height: 24px;
+          position: relative;
+          font-size: 15px;
+          transition: background-color 1.5s ease;
+        }
+
+        span {
+          padding: 5px 60px 5px 12px;
+          background: $appSecondaryColor;
+          color: #fff;
+          text-decoration: none;
+          -moz-border-radius: 0 8px 8px 0;
+          -webkit-border-radius: 0 8px 8px 0;
+          border-radius: 0 8px 8px 0;
+          -moz-box-shadow: 0 0 2px #004977;
+          -webkit-box-shadow: 0 0 2px #004977;
+          box-shadow: 0 0 2px #004977;
+
+          &:after {
+            top: 50%;
+            right: 0;
+            transform: translateY(-50%);
+            content: '';
+            position: absolute;
+            left: -5px;
+            float: left;
+            width: 10px;
+            height: 10px;
+            -moz-border-radius: 2px;
+            -webkit-border-radius: 2px;
+            border-radius: 20px;
+            background: #fff;
+            -moz-box-shadow: -1px -1px 2px #004977;
+            -webkit-box-shadow: -1px -1px 2px #004977;
+            box-shadow: -1px -1px 2px #004977;
+          }
+
+          &:hover {
+            background: #555;
+          }
+
+          &:hover:before {
+            border-color: transparent $appSecondaryColor transparent transparent;
+          }
         }
       }
     }

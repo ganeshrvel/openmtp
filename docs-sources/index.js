@@ -14,15 +14,20 @@ class Docs {
   constructor() {
     this.selectors = {
       appScreenshotFileExplorerImageWrapper: `#app-screenshot-file-explorer-wrapper`,
-      appScreenshotFileExplorer: `app-screenshot-file-explorer`,
+      appScreenshotFileTransferImageWrapper: `#app-screenshot-file-transfer-wrapper`,
+      appScreenshotFileExplorerId: `app-screenshot-file-explorer`,
+      appScreenshotFileTransferId: `app-screenshot-file-transfer`,
       downloadBtnGitHub: `#download-btn-github`,
       navigateToGitHub: `#navigate-to-github`,
       gitHubLatestVersionWrapper: `.github-latest-version-wrapper`
     };
 
-    this.elements = {
+    this.$el = {
       appScreenshotFileExplorerImageWrapper: document.querySelector(
         this.selectors.appScreenshotFileExplorerImageWrapper
+      ),
+      appScreenshotFileTransferImageWrapper: document.querySelector(
+        this.selectors.appScreenshotFileTransferImageWrapper
       ),
       downloadBtnGitHub: document.querySelector(
         this.selectors.downloadBtnGitHub
@@ -35,13 +40,22 @@ class Docs {
 
     this.gitHubLatestReleaseData = null;
     this.lazyLoadImages = {
-      fileExplorer: 'file-explorer.jpg'
+      fileExplorer: {
+        imgSrc: 'file-explorer.jpg',
+        selector: this.$el.appScreenshotFileExplorerImageWrapper,
+        id: this.selectors.appScreenshotFileExplorerId
+      },
+      fileTransfer: {
+        imgSrc: 'file-transfer.jpg',
+        selector: this.$el.appScreenshotFileTransferImageWrapper,
+        id: this.selectors.appScreenshotFileTransferId
+      }
     };
   }
   init() {
     this._checkLatestGitHubRelease();
     this._checkDownloadRequestUrl();
-    this._appScreenshotFileExplorerLazyLoad();
+    this._appScreenshotsLazyLoad();
     this._downloadBtnEvents();
     this._navigateToGithuBtnEvents();
   }
@@ -127,28 +141,30 @@ class Docs {
     }
   };
 
-  _appScreenshotFileExplorerLazyLoad = () => {
-    const appScreenshotFileExplorerImgLoad = imgsrc(
-      this.lazyLoadImages['fileExplorer']
-    );
+  _appScreenshotsLazyLoad = () => {
+    Object.keys(this.lazyLoadImages).map(a => {
+      const item = this.lazyLoadImages[a];
+      const imgLoad = imgsrc(item.imgSrc);
 
-    imageLoaded(appScreenshotFileExplorerImgLoad).then(res => {
-      if (!res.status) {
-        return null;
-      }
-      this._createImg(res.src);
+      imageLoaded(imgLoad).then(res => {
+        if (!res.status) {
+          return null;
+        }
+
+        this._createImg(res.src, item.selector, item.id);
+      });
     });
   };
 
-  _createImg = src => {
+  _createImg = (src, selector, id) => {
     const img = document.createElement('img');
     img.src = src;
-    img.id = this.selectors.appScreenshotFileExplorer;
-    this.elements.appScreenshotFileExplorerImageWrapper.appendChild(img);
+    img.id = id;
+    selector.appendChild(img);
   };
 
   _downloadBtnEvents = () => {
-    this.elements.downloadBtnGitHub.addEventListener('click', e => {
+    this.$el.downloadBtnGitHub.addEventListener('click', e => {
       e.preventDefault();
       const platform = 'mac';
 
@@ -161,16 +177,16 @@ class Docs {
   };
 
   _navigateToGithuBtnEvents = () => {
-    this.elements.navigateToGitHub.addEventListener('click', e => {
-      e.preventDefault();
+    this.$el.navigateToGitHub.addEventListener('click', events => {
+      events.preventDefault();
 
       window.location.href = APP_GITHUB_URL;
     });
   };
 
   _releaseInformationSet = ({ latest, url }) => {
-    for (let i = 0; i < this.elements.gitHubLatestVersionWrapper.length; i++) {
-      this.elements.gitHubLatestVersionWrapper[i].innerHTML = `<a href="${
+    for (let i = 0; i < this.$el.gitHubLatestVersionWrapper.length; i++) {
+      this.$el.gitHubLatestVersionWrapper[i].innerHTML = `<a href="${
         url.mac
       }">${latest}</a>`;
     }
