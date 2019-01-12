@@ -195,3 +195,10 @@ class Docs {
 
 const docsObj = new Docs();
 docsObj.init();
+
+const AUTHOR = 'Ganesh Rathinavel';
+const LICENSE = 'MIT';
+const PRICE = 'FREE';
+const SYSTEM_REQUIREMENTS = 'macOS v10.10 or higher';
+const GITHUB_URL = 'https://github.com/ganeshrvel/openmtp';
+const CONTACT_US = 'ganeshrvel@outlook.com';

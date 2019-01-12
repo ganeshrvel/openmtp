@@ -2,6 +2,9 @@
 
 $mobileMaxWidth: 639;
 $nonMobileMinWidth: 640;
+$macWindowBgColor: #292a2b;
+$syntaxHighlighterColor: rgb(221, 221, 221);
+$syntaxHighlighterStringColor: #ffeb3b;
 $boxShadowColor1: #004977;
 $boxShadow2: 0 0 0 0 rgba(0, 0, 0, 0.3), 0 23px 38px 0 rgba(0, 0, 0, 0.43),
   0 25px 65px 0 rgba(0, 0, 0, 0.1);
@@ -37,6 +40,11 @@ body {
 
 a {
   color: $appSecondaryColor;
+}
+
+pre {
+  background: unset;
+  border-left: unset;
 }
 
 @mixin item-align() {
@@ -100,7 +108,7 @@ a {
   min-height: 300px;
 
   &.dark {
-    background: #333 !important;
+    background: $macWindowBgColor !important;
 
     h1,
     h2,
@@ -126,6 +134,22 @@ a {
     width: 100%;
     height: 100%;
     padding: 8px 10px 10px 18px;
+  }
+}
+.syntax-highlighter {
+  pre.syntax-highlighter-wrapper {
+    display: block;
+    overflow-x: auto;
+    padding: 0.5em;
+    color: $syntaxHighlighterColor;
+    .syntax-highlighter-keyword {
+      color: rgb(249, 38, 114);
+      font-weight: 700;
+    }
+    a,
+    .syntax-highlighter-string {
+      color: $syntaxHighlighterStringColor;
+    }
   }
 }
 
@@ -373,7 +397,7 @@ section.second {
             float: left;
             width: 10px;
             height: 10px;
-            @include border-radius(2px);
+            @include border-radius(5px);
             background: #fff;
             @include box-shadow-1(-1px -1px 2px $boxShadowColor1);
           }
@@ -392,14 +416,37 @@ section.second {
 }
 
 footer {
-  background: linear-gradient(45deg, #003aff 0%, #00b9ff 100%);
+  background: linear-gradient(45deg, #ff5d50 0%, #ff5d50 100%);
   height: 100vh;
-  padding: 80px;
-  .links-wrapper {
-    background-color: #fff;
-    width: 100%;
+  .footer-wrapper {
     height: 100%;
-    @include box-shadow-1($boxShadow2);
-    @include border-radius(5px);
+    padding: 80px 0;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    .mac-window {
+      height: 100%;
+    }
   }
+}
+
+pre::-webkit-scrollbar-track {
+  border-radius: 0;
+  background-color: $macWindowBgColor;
+}
+
+pre::-webkit-scrollbar {
+  width: 8px;
+  height: 3px;
+  opacity: 1;
+  transition: background-color 0.3s;
+}
+
+pre::-webkit-scrollbar-thumb:hover {
+  background-color: #757575;
+}
+
+pre::-webkit-scrollbar-thumb {
+  border-radius: 0;
+  background-color: #888686;
 }
