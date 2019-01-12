@@ -242,7 +242,7 @@ section.first {
         }
 
         @media (max-width:#{$mobileMaxWidth}px) {
-          text-align: center;
+          text-align: left;
 
           h1.heading {
             margin-bottom: 10px;
