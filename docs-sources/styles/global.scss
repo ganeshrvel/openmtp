@@ -4,6 +4,7 @@ $mobileMaxWidth: 639;
 $nonMobileMinWidth: 640;
 $macWindowBgColor: #292a2b;
 $syntaxHighlighterColor: rgb(221, 221, 221);
+$syntaxHighlighterStringColor: #ffeb3b;
 $boxShadowColor1: #004977;
 $boxShadow2: 0 0 0 0 rgba(0, 0, 0, 0.3), 0 23px 38px 0 rgba(0, 0, 0, 0.43),
   0 25px 65px 0 rgba(0, 0, 0, 0.1);
@@ -147,7 +148,7 @@ pre {
     }
     a,
     .syntax-highlighter-string {
-      color: #14cb34;
+      color: $syntaxHighlighterStringColor;
     }
     a {
       text-decoration: underline;
