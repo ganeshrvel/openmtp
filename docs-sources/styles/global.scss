@@ -135,6 +135,7 @@ section.first {
     @include item-align();
     position: relative;
 
+    //for mobile devices
     @media (max-width:#{$mobileMaxWidth}px) {
       @include horz-vert-center();
       h1.heading {
@@ -153,8 +154,11 @@ section.first {
         }
       }
     }
+
+    //for non-mobile devices
     @media (min-width:#{$nonMobileMinWidth}px) {
       @include horz-vert-center(false);
+
       h1.heading,
       p.latest-version-link {
         display: none;
@@ -174,7 +178,16 @@ section.first {
   }
   .item-right {
     @include horz-vert-center();
-    @include item-align();
+
+    //for mobile devices
+    @media (max-width:#{$mobileMaxWidth}px) {
+      padding: 50px 0;
+    }
+
+    //for non-mobile devices
+    @media (min-width:#{$nonMobileMinWidth}px) {
+      @include item-align();
+    }
 
     .mac-window {
       @include box-shadow-1($boxShadow2);
@@ -267,7 +280,7 @@ section.first {
     }
   }
 }
-
+//padding: 50px 0 50px 0;
 section.second {
   background: linear-gradient(45deg, #263238 0%, #435b71 100%);
 
@@ -282,9 +295,18 @@ section.second {
     @media (max-width:#{$mobileMaxWidth}px) {
       order: 3;
     }
-    @include horz-vert-center();
-    @include item-align();
     position: relative;
+    @include horz-vert-center();
+
+    //for mobile devices
+    @media (max-width:#{$mobileMaxWidth}px) {
+      padding: 50px 0;
+    }
+
+    //for non-mobile devices
+    @media (min-width:#{$nonMobileMinWidth}px) {
+      @include item-align();
+    }
 
     .image-wrapper {
       text-align: center;
@@ -303,7 +325,16 @@ section.second {
       order: 1;
     }
     @include horz-vert-center();
-    @include item-align();
+
+    //for mobile devices
+    @media (max-width:#{$mobileMaxWidth}px) {
+      padding: 50px 0;
+    }
+
+    //for non-mobile devices
+    @media (min-width:#{$nonMobileMinWidth}px) {
+      @include item-align();
+    }
 
     .desc-wrapper {
       padding: 0 20px 0 20px;
