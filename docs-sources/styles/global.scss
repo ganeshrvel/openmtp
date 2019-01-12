@@ -5,6 +5,29 @@ $tabletMinWidth: 640;
 $boxShadowColor1: #004977;
 $boxShadow2: 0 0 0 0 rgba(0, 0, 0, 0.3), 0 23px 38px 0 rgba(0, 0, 0, 0.43),
   0 25px 65px 0 rgba(0, 0, 0, 0.1);
+$boxShadowMacWindow: rgba(0, 0, 0, 0.55) 0 20px 68px;
+
+/* Btns */
+$btn-names-list: download-btn navigate-to-github;
+
+//btns for light mode
+$background-color-list: transparent transparent;
+$color-list: $appSecondaryColor #000000;
+$border-color-list: $appSecondaryColor #000000;
+
+$background-color-active-hover-list: transparent transparent;
+$border-color-active-hover-list: #606c76 #606c76;
+$color-active-hover-list: #606c76 #606c76;
+
+//btns for dark mode
+$background-color-list-dark: $appSecondaryColor #ffffff;
+$color-list-dark: #ffffff $appSecondaryColor;
+$border-color-list-dark: $appSecondaryColor #ffffff;
+
+$background-color-active-hover-list-dark: rgba(255, 255, 255, 0.32)
+  rgba(255, 255, 255, 0.32);
+$border-color-active-hover-list-dark: #ffffff #ffffff;
+$color-active-hover-list-dark: #ffffff #ffffff;
 
 body {
   font-family: 'Roboto', sans-serif;
@@ -19,6 +42,31 @@ a {
 @mixin item-align() {
   min-height: 400px;
   height: 100vh;
+}
+
+@mixin create-download-buttons(
+  $btn-names-list,
+  $background-color-list,
+  $color-list,
+  $border-color-list,
+  $background-color-active-hover-list,
+  $border-color-active-hover-list,
+  $color-active-hover-list
+) {
+  @for $i from 1 through length($btn-names-list) {
+    &.#{nth($btn-names-list, $i)} {
+      background-color: nth($background-color-list, $i);
+      color: nth($color-list, $i);
+      border-color: nth($border-color-list, $i);
+    }
+
+    &.#{nth($btn-names-list, $i)}:focus,
+    &.#{nth($btn-names-list, $i)}:hover {
+      background-color: nth($background-color-active-hover-list, $i);
+      border-color: nth($border-color-active-hover-list, $i);
+      color: nth($color-active-hover-list, $i);
+    }
+  }
 }
 
 @media (max-width:#{$mobileMaxWidth}px) {
@@ -39,31 +87,74 @@ a {
   border-top: 0.1rem solid rgba(0, 0, 0, 0.25);
 }
 
+.mac-window {
+  @include box-shadow-1($boxShadow2);
+  position: relative;
+  height: auto;
+  min-width: inherit;
+  font-size: 14px;
+  padding: 0;
+  border-radius: 5px;
+  overflow: hidden;
+  background: #ffffff;
+  min-height: 300px;
+
+  &.dark {
+    background: #333 !important;
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    p,
+    a {
+      color: #fff;
+    }
+    a:hover,
+    a:active {
+      color: $appSecondaryColor;
+    }
+  }
+
+  .titlebar-wrapper {
+    user-select: none;
+    padding: 12px 6px 8px 15px;
+  }
+  .body-wrapper {
+    width: 100%;
+    height: 100%;
+    padding: 8px 10px 10px 18px;
+  }
+}
+
 section.first {
   background: linear-gradient(45deg, $appSecondaryColor 0%, #0080ff 100%);
   .item-left {
-    @include horz-vert-center();
     @include item-align();
     position: relative;
 
     @media (max-width:#{$mobileMaxWidth}px) {
+      @include horz-vert-center();
       h1.heading {
         margin-bottom: 45px;
         font-weight: 400;
-        color: $appBgColor;
+        color: #ffffff;
       }
       p.latest-version-link {
         margin-top: 45px;
-        color: $appBgColor;
+        color: #ffffff;
       }
       .github-latest-version-wrapper {
         a {
-          color: $appBgColor;
+          color: #ffffff;
           text-decoration: underline;
         }
       }
     }
     @media (min-width:#{$tabletMinWidth}px) {
+      @include horz-vert-center(false);
       h1.heading,
       p.latest-version-link {
         display: none;
@@ -84,12 +175,11 @@ section.first {
   .item-right {
     @include horz-vert-center();
     @include item-align();
-    .outer-wrapper {
+
+    .mac-window {
       @include box-shadow-1($boxShadow2);
+
       width: 90%;
-      @include border-radius(5px);
-      background: #ffffff;
-      padding: 10px;
       max-width: 500px;
 
       .desc-wrapper {
@@ -140,31 +230,37 @@ section.first {
           @media (min-width:#{$tabletMinWidth}px) {
             width: 130px;
           }
+        }
+      }
 
-          &.download-btn {
-            background-color: transparent;
-            color: $appSecondaryColor;
-            border-color: $appSecondaryColor;
+      &.light {
+        .btn-wrapper {
+          .button {
+            @include create-download-buttons(
+              $btn-names-list,
+              $background-color-list,
+              $color-list,
+              $border-color-list,
+              $background-color-active-hover-list,
+              $border-color-active-hover-list,
+              $color-active-hover-list
+            );
           }
+        }
+      }
 
-          &.download-btn:focus,
-          &.download-btn:hover {
-            background-color: transparent;
-            border-color: #606c76;
-            color: #606c76;
-          }
-
-          &.navigate-to-github {
-            background-color: transparent;
-            color: black;
-            border-color: black;
-          }
-
-          &.navigate-to-github:focus,
-          &.navigate-to-github:hover {
-            background-color: transparent;
-            border-color: #606c76;
-            color: #606c76;
+      &.dark {
+        .btn-wrapper {
+          .button {
+            @include create-download-buttons(
+              $btn-names-list,
+              $background-color-list-dark,
+              $color-list-dark,
+              $border-color-list-dark,
+              $background-color-active-hover-list-dark,
+              $border-color-active-hover-list-dark,
+              $color-active-hover-list-dark
+            );
           }
         }
       }
