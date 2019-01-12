@@ -150,6 +150,9 @@ pre {
     .syntax-highlighter-string {
       color: $syntaxHighlighterStringColor;
     }
+    a {
+      text-decoration: underline;
+    }
   }
 }
 
@@ -418,12 +421,12 @@ section.second {
 footer {
   background: linear-gradient(45deg, #ff5d50 0%, #ff5d50 100%);
   height: 100vh;
+  @include horz-vert-center();
   .footer-wrapper {
-    height: 100%;
-    padding: 80px 0;
+    height: 70%;
     width: 90%;
-    margin-left: auto;
-    margin-right: auto;
+    max-width: 900px;
+    max-height: 500px;
     .mac-window {
       height: 100%;
     }
