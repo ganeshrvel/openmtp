@@ -6,13 +6,13 @@
 
 // ----------------------------------------------------------------------
 
-  // Margin auto
+// Margin auto
 
 // ----------------------------------------------------------------------
 
 // example: @include margin-auto();
 
 @mixin margin-auto() {
-  margin-left:auto;
-  margin-right:auto;
+  margin-left: auto;
+  margin-right: auto;
 }

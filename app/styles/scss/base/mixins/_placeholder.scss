@@ -6,7 +6,7 @@
 
 // ----------------------------------------------------------------------
 
-  // Change placeholder text color
+// Change placeholder text color
 
 // ----------------------------------------------------------------------
 
@@ -14,18 +14,18 @@
 
 @mixin placeholder-color($color) {
   &.placeholder {
-    color: $color
+    color: $color;
   }
 
   &:-moz-placeholder {
-    color: $color
+    color: $color;
   }
 
   &::-webkit-input-placeholder {
-    color: $color
+    color: $color;
   }
 
   &:-ms-input-placeholder {
-    color: $color
+    color: $color;
   }
 }

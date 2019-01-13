@@ -2,6 +2,7 @@ body {
   width: 100%;
   background: $appBgColor !important;
   @include rem('font-size', $regularSize);
+
   font-family: $roboto;
   overflow-x: hidden;
   overflow-y: hidden;

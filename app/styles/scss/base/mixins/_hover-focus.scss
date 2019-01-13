@@ -6,14 +6,15 @@
 
 // -----------------------------------------------------------------------
 
-  // Hover and Focus
+// Hover and Focus
 
 // ----------------------------------------------------------------------
 
- // example @include hoverFocus('text-decoration', 'none');
+// example @include hoverFocus('text-decoration', 'none');
 
 @mixin hoverFocus($property, $value) {
-  &:hover, &:focus {
+  &:hover,
+  &:focus {
     #{$property}: $value;
   }
 }

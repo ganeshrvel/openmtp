@@ -6,11 +6,13 @@
 
 // ----------------------------------------------------------------------
 
-  // Arrows / Triangles
+// Arrows / Triangles
 
 // ----------------------------------------------------------------------
 
- // example: @include arrow("left", #cccccc, 10);
+// example: @include arrow("left", #cccccc, 10);
+
+/* stylelint-disable declaration-block-no-duplicate-properties */
 
 @mixin arrow($direction, $color, $size) {
   $pxSize: $size + px;
@@ -19,38 +21,35 @@
   width: 0;
   height: 0;
 
-  @if $direction == "left"{
+  @if $direction == 'left' {
     border-top: $pxSize solid transparent;
     border-right: $pxSize solid $color;
     border-bottom: $pxSize solid transparent;
-
     border-top: $remSize solid transparent;
     border-right: $remSize solid $color;
     border-bottom: $remSize solid transparent;
-  }@else if $direction == "right"{
+  } @else if $direction == 'right' {
     border-top: $pxSize solid transparent;
     border-bottom: $pxSize solid transparent;
     border-left: $pxSize solid $color;
-
     border-top: $remSize solid transparent;
     border-bottom: $remSize solid transparent;
     border-left: $remSize solid $color;
-  }@else if $direction == "up"{
+  } @else if $direction == 'up' {
     border-left: $pxSize solid transparent;
     border-right: $pxSize solid transparent;
     border-bottom: $pxSize solid $color;
-
     border-left: $remSize solid transparent;
     border-right: $remSize solid transparent;
     border-bottom: $remSize solid $color;
-  }@else if $direction == "down"{
+  } @else if $direction == 'down' {
     border-left: $pxSize solid transparent;
     border-right: $pxSize solid transparent;
     border-top: $pxSize solid $color;
-
     border-left: $remSize solid transparent;
     border-right: $remSize solid transparent;
     border-top: $remSize solid $color;
   }
-
 }
+
+/* stylelint-enable declaration-block-no-duplicate-properties */

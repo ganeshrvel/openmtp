@@ -6,16 +6,16 @@
 
 // ----------------------------------------------------------------------
 
-  // Translate
+// Translate
 
 // ----------------------------------------------------------------------
 
 // example: @include translate(0);
 
 @mixin translate($value) {
-  -webkit-transform: translatez($value);
-     -moz-transform: translatez($value);
-      -ms-transform: translatez($value);
-       -o-transform: translatez($value);
-          transform: translatez($value);
+  -webkit-transform: translateZ($value);
+  -moz-transform: translateZ($value);
+  -ms-transform: translateZ($value);
+  -o-transform: translateZ($value);
+  transform: translateZ($value);
 }

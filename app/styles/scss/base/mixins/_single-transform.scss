@@ -6,14 +6,14 @@
 
 // ----------------------------------------------------------------------
 
-  // Single Transform
+// Single Transform
 
 // ----------------------------------------------------------------------
 
 // example: @include flat-button($greyBlue, white, 5px 15px);
 
 @mixin single-transform($deg) {
-      -ms-transform:rotate($deg);
-  -webkit-transform:rotate($deg);
-          transform:rotate($deg);
+  -ms-transform: rotate($deg);
+  -webkit-transform: rotate($deg);
+  transform: rotate($deg);
 }

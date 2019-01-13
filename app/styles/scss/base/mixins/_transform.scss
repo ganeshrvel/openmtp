@@ -28,6 +28,7 @@
 
     $i: $i + 1;
   }
+
   -webkit-transform: #{$type }($originVal);
   -moz-transform: #{$type }($originVal);
   transform: #{$type }($originVal);

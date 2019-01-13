@@ -6,5 +6,6 @@
   @if $important {
     $important: !important;
   }
+
   display: none $important;
 }

@@ -1,14 +1,14 @@
 @import 'base/base';
 
-/*Paddings*/
+/* Paddings */
 $paddingNonFlex: 50px 0;
 $mobileMaxWidth: 639;
 $nonMobileMinWidth: 640;
 $minHeightFor100vh: 480;
 
-/*Colors*/
-$whiteColor: #ffffff;
-$blackColor: #000000;
+/* Colors */
+$whiteColor: #fff;
+$blackColor: #000;
 $macWindowDarkBgColor: #292a2b;
 $syntaxHighlighterColor: rgb(221, 221, 221);
 $syntaxHighlighterStringColor: #ffeb3b;
@@ -84,20 +84,20 @@ pre {
   }
 }
 
-@media (max-width:#{$mobileMaxWidth}px) {
+@media (max-width: #{$mobileMaxWidth}px) {
   .hidden-mobile {
     display: none;
   }
 }
 
-@media (min-width:#{$nonMobileMinWidth}px) {
+@media (min-width: #{$nonMobileMinWidth}px) {
   .hidden-nonmobile {
     display: none;
   }
 }
 
 .spinner,
-.spinner:after {
+.spinner::after {
   border-radius: 50%;
   width: 10em;
   height: 10em;
@@ -105,6 +105,7 @@ pre {
 
 .spinner {
   $spinnerBorderColor: 1.1em solid rgba(255, 255, 255, 0.2);
+
   margin-left: auto;
   margin-right: auto;
   font-size: 5px;
@@ -141,8 +142,31 @@ pre {
   border-top: 0.1rem solid rgba(0, 0, 0, 0.25);
 }
 
+.syntax-highlighter {
+  pre.syntax-highlighter-wrapper {
+    display: block;
+    overflow-x: auto;
+    padding: 0.5em;
+    color: $syntaxHighlighterColor;
+
+    .syntax-highlighter-keyword {
+      color: rgb(249, 38, 114);
+      font-weight: 700;
+    }
+    a,
+    .syntax-highlighter-string {
+      color: $syntaxHighlighterStringColor;
+    }
+
+    a {
+      text-decoration: underline;
+    }
+  }
+}
+
 .mac-window {
   @include box-shadow-1($boxShadow2);
+
   position: relative;
   height: auto;
   min-width: inherit;
@@ -182,25 +206,6 @@ pre {
     padding: 8px 10px 10px 18px;
   }
 }
-.syntax-highlighter {
-  pre.syntax-highlighter-wrapper {
-    display: block;
-    overflow-x: auto;
-    padding: 0.5em;
-    color: $syntaxHighlighterColor;
-    .syntax-highlighter-keyword {
-      color: rgb(249, 38, 114);
-      font-weight: 700;
-    }
-    a,
-    .syntax-highlighter-string {
-      color: $syntaxHighlighterStringColor;
-    }
-    a {
-      text-decoration: underline;
-    }
-  }
-}
 
 section.first {
   background: linear-gradient(45deg, $appSecondaryColor 0%, #0080ff 100%);
@@ -208,7 +213,7 @@ section.first {
     position: relative;
 
     //for mobile devices
-    @media (max-width:#{$mobileMaxWidth}px) {
+    @media (max-width: #{$mobileMaxWidth}px) {
       @include item-align();
       @include horz-vert-center();
       h1.heading {
@@ -229,7 +234,7 @@ section.first {
     }
 
     //for non-mobile devices
-    @media (min-width:#{$nonMobileMinWidth}px) {
+    @media (min-width: #{$nonMobileMinWidth}px) {
       //only use 100vh when min-height of vp is greater than a certain value
       @media (min-height: #{$minHeightFor100vh}px) {
         @include item-align();
@@ -257,12 +262,12 @@ section.first {
     @include horz-vert-center();
 
     //for mobile devices
-    @media (max-width:#{$mobileMaxWidth}px) {
+    @media (max-width: #{$mobileMaxWidth}px) {
       padding: $paddingNonFlex;
     }
 
     //for non-mobile devices
-    @media (min-width:#{$nonMobileMinWidth}px) {
+    @media (min-width: #{$nonMobileMinWidth}px) {
       //only use 100vh when min-height of vp is greater than a certain value
       @media (min-height: #{$minHeightFor100vh}px) {
         @include item-align();
@@ -298,7 +303,7 @@ section.first {
           }
         }
 
-        @media (max-width:#{$mobileMaxWidth}px) {
+        @media (max-width: #{$mobileMaxWidth}px) {
           text-align: left;
 
           h1.heading {
@@ -320,11 +325,11 @@ section.first {
         margin-bottom: 16px;
         text-align: center;
         .button {
-          @media (max-width:#{$mobileMaxWidth}px) {
+          @media (max-width: #{$mobileMaxWidth}px) {
             display: block;
             width: 100%;
           }
-          @media (min-width:#{$nonMobileMinWidth}px) {
+          @media (min-width: #{$nonMobileMinWidth}px) {
             width: 130px;
           }
         }
@@ -369,26 +374,28 @@ section.second {
   background: linear-gradient(45deg, #263238 0%, #435b71 100%);
 
   .divider {
-    @media (max-width:#{$mobileMaxWidth}px) {
+    @media (max-width: #{$mobileMaxWidth}px) {
       order: 2;
     }
+
     border-top: 0.1rem solid rgba(255, 255, 255, 0.25);
   }
 
   .item-left {
-    @media (max-width:#{$mobileMaxWidth}px) {
+    @media (max-width: #{$mobileMaxWidth}px) {
       order: 3;
     }
+
     position: relative;
     @include horz-vert-center();
 
     //for mobile devices
-    @media (max-width:#{$mobileMaxWidth}px) {
+    @media (max-width: #{$mobileMaxWidth}px) {
       padding: $paddingNonFlex;
     }
 
     //for non-mobile devices
-    @media (min-width:#{$nonMobileMinWidth}px) {
+    @media (min-width: #{$nonMobileMinWidth}px) {
       @include item-align();
     }
 
@@ -398,6 +405,7 @@ section.second {
       #app-screenshot-file-transfer {
         @include box-shadow-1($boxShadow2);
         @include border-radius(5px);
+
         max-width: 400px;
         width: 80%;
         height: auto;
@@ -405,18 +413,18 @@ section.second {
     }
   }
   .item-right {
-    @media (max-width:#{$mobileMaxWidth}px) {
+    @media (max-width: #{$mobileMaxWidth}px) {
       order: 1;
     }
     @include horz-vert-center();
 
     //for mobile devices
-    @media (max-width:#{$mobileMaxWidth}px) {
+    @media (max-width: #{$mobileMaxWidth}px) {
       padding: $paddingNonFlex;
     }
 
     //for non-mobile devices
-    @media (min-width:#{$nonMobileMinWidth}px) {
+    @media (min-width: #{$nonMobileMinWidth}px) {
       @include item-align();
     }
 
@@ -448,7 +456,10 @@ section.second {
           @include border-radius(0 8px 8px 0);
           @include box-shadow-1(0 0 2px $boxShadowColor1);
 
-          &:after {
+          &::after {
+            @include border-radius(5px);
+            @include box-shadow-1(-1px -1px 2px $boxShadowColor1);
+
             top: 50%;
             right: 0;
             transform: translateY(-50%);
@@ -458,16 +469,14 @@ section.second {
             float: left;
             width: 10px;
             height: 10px;
-            @include border-radius(5px);
             background: $whiteColor;
-            @include box-shadow-1(-1px -1px 2px $boxShadowColor1);
           }
 
           &:hover {
             background: #555;
           }
 
-          &:hover:before {
+          &:hover::before {
             border-color: transparent $appSecondaryColor transparent transparent;
           }
         }
@@ -480,12 +489,12 @@ footer {
   background: linear-gradient(45deg, #ff5d50 0%, #ff5d50 100%);
 
   //for mobile devices
-  @media (max-width:#{$mobileMaxWidth}px) {
+  @media (max-width: #{$mobileMaxWidth}px) {
     @include item-align();
   }
 
   //for non-mobile devices
-  @media (min-width:#{$nonMobileMinWidth}px) {
+  @media (min-width: #{$nonMobileMinWidth}px) {
     //only use 100vh when min-height of vp is greater than a certain value
     @media (min-height: #{$minHeightFor100vh}px) {
       @include item-align();

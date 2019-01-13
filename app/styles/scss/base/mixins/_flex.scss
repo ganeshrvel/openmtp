@@ -67,7 +67,9 @@
   display: flex;
 }
 
-%flexbox { @include flexbox; }
+%flexbox {
+  @include flexbox;
+}
 
 //----------------------------------
 
@@ -79,7 +81,9 @@
   display: inline-flex;
 }
 
-%inline-flex { @include inline-flex; }
+%inline-flex {
+  @include inline-flex;
+}
 
 //----------------------------------------------------------------------
 
@@ -108,13 +112,16 @@
     -webkit-box-direction: normal;
     -webkit-box-orient: horizontal;
   }
+
   -webkit-flex-direction: $value;
   -moz-flex-direction: $value;
   -ms-flex-direction: $value;
   flex-direction: $value;
 }
 // Shorter version:
-@mixin flex-dir($args...) { @include flex-direction($args...); }
+@mixin flex-dir($args...) {
+  @include flex-direction($args...);
+}
 
 //----------------------------------------------------------------------
 
@@ -138,6 +145,7 @@
   } @else {
     -ms-flex-wrap: $value;
   }
+
   flex-wrap: $value;
 }
 
@@ -154,7 +162,11 @@
 //
 // http://w3.org/tr/css3-flexbox/#flex-flow-property
 
-@mixin flex-flow($values: (row nowrap)) {
+@mixin flex-flow(
+  $values: (
+    row nowrap
+  )
+) {
   // No Webkit Box fallback.
   -webkit-flex-flow: $values;
   -moz-flex-flow: $values;
@@ -252,7 +264,6 @@
 // http://w3.org/tr/css3-flexbox/#flex-property
 
 @mixin flex($fg: 1, $fs: null, $fb: null) {
-
   // Set a variable to be used by box-flex properties
   $fg-boxflex: $fg;
 
@@ -304,12 +315,15 @@
     -webkit-box-pack: $value;
     -ms-flex-pack: $value;
   }
+
   -webkit-justify-content: $value;
   -moz-justify-content: $value;
   justify-content: $value;
 }
 // Shorter version:
-@mixin flex-just($args...) { @include justify-content($args...); }
+@mixin flex-just($args...) {
+  @include justify-content($args...);
+}
 
 //----------------------------------------------------------------------
 
@@ -339,6 +353,7 @@
     -webkit-box-align: $value;
     -ms-flex-align: $value;
   }
+
   -webkit-align-items: $value;
   -moz-align-items: $value;
   align-items: $value;
@@ -362,6 +377,7 @@
   } @else {
     -ms-flex-item-align: $value;
   }
+
   align-self: $value;
 }
 
@@ -390,5 +406,6 @@
   } @else {
     -ms-flex-line-pack: $value;
   }
+
   align-content: $value;
 }
