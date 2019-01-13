@@ -1,5 +1,7 @@
 'use strict';
 
+/* eslint no-await-in-loop: off */
+
 import {
   readdir as fsReaddir,
   rename as fsRename,

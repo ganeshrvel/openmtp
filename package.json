@@ -1,10 +1,10 @@
 {
   "name": "openmtp",
   "productName": "OpenMTP",
-  "version": "1.10.25",
+  "version": "1.20.0",
   "description": "OpenMTP | Android File Transfer for macOS",
   "scripts": {
-    "build": "concurrently \"yarn build-main\" \"yarn build-renderer\"",
+    "build": "yarn lint && concurrently \"yarn build-main\" \"yarn build-renderer\"",
     "build-dll": "cross-env NODE_ENV=development node --trace-warnings -r @babel/register ./node_modules/webpack/bin/webpack --config ./webpack/config.renderer.dev.dll.babel.js --colors",
     "build-main": "cross-env NODE_ENV=production node --trace-warnings -r @babel/register ./node_modules/webpack/bin/webpack --config ./webpack/config.main.prod.babel.js --colors",
     "build-renderer": "cross-env NODE_ENV=production node --trace-warnings -r @babel/register ./node_modules/webpack/bin/webpack --config ./webpack/config.renderer.prod.babel.js --colors",
@@ -22,8 +22,8 @@
     "dev-docs": "cross-env NODE_ENV=development webpack-dev-server --config docs-sources/webpack/webpack.config.base.js",
     "build-docs": "cross-env NODE_ENV=production webpack --config docs-sources/webpack/webpack.config.base.js",
     "lint": "cross-env NODE_ENV=development eslint --cache --format=pretty --ext .js --ext .jsx .",
-    "lint-fix": "yarn --silent lint --fix; exit 0",
     "lint-styles": "stylelint --ignore-path .eslintignore '**/*.*(css|scss)' --syntax scss",
+    "lint-fix": "yarn --silent lint --fix; exit 0",
     "lint-styles-fix": "yarn --silent lint-styles --fix; exit 0",
     "postlint-fix": "prettier --ignore-path .eslintignore --single-quote --write '**/*.*{js,jsx,json}'",
     "postlint-styles-fix": "prettier --ignore-path .eslintignore --single-quote --write '**/*.{css,scss}'",

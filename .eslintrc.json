@@ -56,8 +56,13 @@
       { "extensions": [".js", ".jsx"] }
     ],
     "react/prefer-stateless-function": "off",
-    "strict": 0,
+    "strict": "off",
     "import/prefer-default-export": "off",
+    "arrow-body-style": "off",
+    "no-underscore-dangle": "off",
+    "class-methods-use-this": "off",
+    "no-shadow": "off",
+    "react/prop-types": "off",
     "no-unused-vars": [
       "error",
       {
@@ -65,12 +70,6 @@
         "argsIgnorePattern": "^(theme|props|state|ownProps|dispatch|getState)|_",
         "varsIgnorePattern": "^(variables|mixins|args|log)"
       }
-    ],
-    "arrow-body-style": 0,
-    "no-underscore-dangle": 0,
-    "class-methods-use-this": 0,
-    "no-await-in-loop": 0,
-    "no-shadow": 0,
-    "react/prop-types": 0
+    ]
   }
 }

@@ -1,5 +1,7 @@
 'use strict';
 
+/* eslint no-await-in-loop: off */
+
 /**
  * Boot
  * Note: Don't import log helper file from utils here
