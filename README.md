@@ -12,19 +12,19 @@
 
 ##### Advanced Android File Transfer Application for macOS.
 
- Transferring files between macOS and Android Devices or any other MTP devices has always been a nightmare. There are a few MTP apps which are available online but most of them are either too expensive or too uncomfortable to use. The official "Android File Transfer" app for macOS from Google has a lot of bugs and limitations, some of which includes not being able to transfer files larger than 4GB, frequent disconnections, unable to rename the folders or files on the android devices. Most of the other apps available online are too expensive and all of them uses either WiFi or ADB protocol to transfer the files, which by the way is really painful to watch.
+Transferring files between macOS and Android or any other MTP devices has always been a nightmare. There are a few File Transfer MTP apps which are available online but most of them are either too expensive or come with bad UI/UX. The official "Android File Transfer" app for macOS from Google comes with bugs, innumerable limitations, some of which include - not being able to transfer files larger than 4GB, frequent disconnections, unable to rename the folders or files on the android/MTP devices. Most of the other apps available online uses either WiFi or ADB protocol to transfer the files, which is an extremely time-consuming process.
 
- All the above-mentioned reasons have prompted me to create an application on my own which will be available FREE to all and FOREVER.
+Countless searches to find an app to solve these problems and failing to find one made me restless. So, I took the leap and decided to create an app for us that could help us have a smooth and hassle-free file transfer process from macOS to Android/MTP devices. Created with the objective of giving back to the community, we can all use this app for free in this lifetime.
 
 ### Features
 - Plug and Play. No hassles, easy and instant connection.
-- Connected via USB cable, hence providing the highest data transfer rates possible.
-- Transfer files which are larger than 4GB.
-- Can select between Internal Memory and SD Card.
+- Connect via USB cable - Highest data transfer rates.
+- Transfer multiple files which are larger than 4GB in one go.
+- Select between Internal Memory or SD Card.
 - Split pane views for both Local Computer and MTP device.
-- Grid and List views are available (check Settings).
-- Drag n Drop and the other advanced File Manager features are available.
-- Transparent, OpenSource and we care for your privacy.
+- Drag 'n Drop, Grid/List views and the other advanced File Manager features are available.
+- Safe, Transparent and Open-Source.
+- We don't collect any personally identifiable information.
 - It's FREE and shall ALWAYS remain FREE!!
 
 
@@ -56,7 +56,7 @@ $ yarn
 ```
 
 ### Run
-A fresh clone might throw *undefined state* error. Run the commands below, just once, to fix the issue.
+A fresh clone might throw *undefined state* error. Run the following commands once to fix the issue.
 
 ```shell
 # For Mac and Linux
@@ -105,7 +105,7 @@ $ yarn package-all
 - *Prettier* is used for maintaining code standards.
 
 ### Configurations
-- *config/env/env.dev.js* and *config/env/env.prod.js* contains the PORT number of the app.
+- *config/env/env.dev.js* and *config/env/env.prod.js* contain the PORT number of the app.
 - *config/dev-app-update.yml* file holds the GitHub repo variables required by *electron-updater*.
 - *config/google-analytics-key.js* file contains the Google Analytics Tracking ID.
 - *package.json* **build.publish** object holds the values for publishing the packaged application.
@@ -115,10 +115,10 @@ $ yarn package-all
 
 - My sincere thanks to [Vladimir Menshakov](https://github.com/whoozle "Vladimir Menshakov") for the fantastic C++ library and for all the help and support that were extended towards this project.
 
-- This boilerplate is built upon [https://github.com/ganeshrvel/electron-react-redux-advanced-boilerplate](https://github.com/ganeshrvel/electron-react-redux-advanced-boilerplate "https://github.com/ganeshrvel/electron-react-redux-advanced-boilerplate") which is a heavily modified fork of [https://github.com/electron-react-boilerplate/electron-react-boilerplate](https://github.com/electron-react-boilerplate/electron-react-boilerplate "https://github.com/electron-react-boilerplate/electron-react-boilerplate")
+- This app is built upon [https://github.com/ganeshrvel/electron-react-redux-advanced-boilerplate](https://github.com/ganeshrvel/electron-react-redux-advanced-boilerplate "https://github.com/ganeshrvel/electron-react-redux-advanced-boilerplate") which is a heavily modified fork of [https://github.com/electron-react-boilerplate/electron-react-boilerplate](https://github.com/electron-react-boilerplate/electron-react-boilerplate "https://github.com/electron-react-boilerplate/electron-react-boilerplate")
 
 
- - The app icons were made by [Prosymbols](https://www.flaticon.com/authors/prosymbols "Prosymbols"), [Nikita Golubev](https://www.flaticon.com/authors/nikita-golubev "Nikita Golubev"), [Those Icons](https://www.flaticon.com/authors/those-icons "Those Icons"), [Kiranshastry](https://www.flaticon.com/authors/kiranshastry "Kiranshastry"), [Elias Bikbulatov](https://www.flaticon.com/authors/elias-bikbulatov "Elias Bikbulatov") & [Pixel perfect](https://www.flaticon.com/authors/pixel-perfect "Pixel perfect") and were distributed by [www.flaticon.com](https://www.flaticon.com/ "Flaticon") which is licensed under [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/ "Creative Commons BY 3.0")
+ - The icons using in the app were made by [Prosymbols](https://www.flaticon.com/authors/prosymbols "Prosymbols"), [Nikita Golubev](https://www.flaticon.com/authors/nikita-golubev "Nikita Golubev"), [Those Icons](https://www.flaticon.com/authors/those-icons "Those Icons"), [Kiranshastry](https://www.flaticon.com/authors/kiranshastry "Kiranshastry"), [Elias Bikbulatov](https://www.flaticon.com/authors/elias-bikbulatov "Elias Bikbulatov") & [Pixel perfect](https://www.flaticon.com/authors/pixel-perfect "Pixel perfect") and were distributed by [www.flaticon.com](https://www.flaticon.com/ "Flaticon") which is licensed under [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/ "Creative Commons BY 3.0")
 
 - The "no image found" icon was made by Phonlaphat Thongsriphong from [https://www.iconfinder.com/phatpc](https://www.iconfinder.com/phatpc "https://www.iconfinder.com/phatpc")
 
@@ -128,7 +128,7 @@ $ yarn package-all
 
 [https://github.com/electron-react-boilerplate/electron-react-boilerplate/issues/400](https://github.com/electron-react-boilerplate/electron-react-boilerplate/issues/400 "Debugging Guide")
 
-\# **Dispatching redux actions from main process**
+\# **Dispatching redux actions from the main process**
 
 [https://github.com/electron-react-boilerplate/electron-react-boilerplate/issues/118](https://github.com/electron-react-boilerplate/electron-react-boilerplate/issues/118 "https://github.com/electron-react-boilerplate/electron-react-boilerplate/issues/118")
 
@@ -145,9 +145,14 @@ $ set UPGRADE_EXTENSIONS=1 && npm run dev
 ```
 
 ### Contribute
-- Make the necessary changes to the code. Make sure that the code is formatted using prettier.
-- Create a new pull request.
-- We shall attend to it.
+- Fork the repo and create your branch from master.
+- Make the necessary changes to the code. 
+- If you've changed APIs, update the documentation.
+- Ensure that the code is formatted using prettier.
+- Issue a pull request!
+
+When you submit code changes, your submissions are understood to be under the same [MIT License](https://github.com/ganeshrvel/openmtp/blob/master/LICENSE "MIT License") that covers the project. Feel free to contact the maintainers if that's a concern.
+
 
 ### Buy me a coffee
 Help me keep the app FREE and open for all.
@@ -159,4 +164,4 @@ Please feel free to contact me at ganeshrvel@outlook.com
 ### License
 OpenMTP | Android File Transfer for macOS is released under [MIT License](https://github.com/ganeshrvel/openmtp/blob/master/LICENSE "MIT License").
 
-Copyright © 2018-2019 Ganesh Rathinavel
+Copyright © 2018 - 2019 Ganesh Rathinavel
