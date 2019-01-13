@@ -33,7 +33,7 @@
   },
   "lint-staged": {
     "*.{js,jsx}": [
-      "cross-env NODE_ENV=development eslint --cache --format=pretty",
+      "cross-env NODE_ENV=development eslint --cache --format=pretty --ext .js --ext .jsx .",
       "git add"
     ],
     "{*.json,.{babelrc,eslintrc,prettierrc,stylelintrc}}": [
@@ -41,11 +41,10 @@
       "git add"
     ],
     "*.{css,scss}": [
-      "stylelint --ignore-path .eslintignore --syntax scss --fix",
-      "prettier --ignore-path .eslintignore --single-quote --write",
+      "stylelint --ignore-path .eslintignore '**/*.*(css|scss)' --syntax scss",
       "git add"
     ],
-    "*.{yml,md}": [
+    "*.{yml}": [
       "prettier --ignore-path .eslintignore --single-quote --write",
       "git add"
     ]
