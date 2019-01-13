@@ -6,7 +6,7 @@
  */
 
 import { PATHS } from '../utils/paths';
-import { repository } from '../../package.json';
+import { repository, homepage } from '../../package.json';
 
 export const DEVICES_TYPE_CONST = { mtp: 'mtp', local: 'local' };
 
@@ -33,5 +33,7 @@ export const FILE_EXPLORER_GRID_TRUNCATE_MAX_CHARS = 20;
 export const APP_GITHUB_URL = repository.url.replace(/.git$/, '');
 
 export const APP_GITHUB_RELEASES_URL = `${APP_GITHUB_URL}/releases`;
+
+export const APP_WEBSITE = `${homepage}`;
 
 export const DONATE_PAYPAL_URL = `https://paypal.me/ganeshrvel`;

@@ -6,7 +6,7 @@ import { DEBUG_PROD, IS_DEV } from './constants/env';
 import { APP_NAME } from './constants/meta';
 import { openExternalUrl } from './utils/url';
 import { APP_GITHUB_URL, DONATE_PAYPAL_URL } from './constants';
-import { mailTo } from './templates/menu';
+import { inviteViaEmail } from './templates/menu';
 
 export default class MenuBuilder {
   constructor({ mainWindow, autoAppUpdate, appUpdaterEnable }) {
@@ -203,7 +203,7 @@ export default class MenuBuilder {
         {
           label: `Invite a friend`,
           click: () => {
-            openExternalUrl(`${mailTo}`);
+            openExternalUrl(`${inviteViaEmail}`);
           }
         },
         {
@@ -311,7 +311,7 @@ export default class MenuBuilder {
           {
             label: `Invite a friend`,
             click: () => {
-              openExternalUrl(`${mailTo}`);
+              openExternalUrl(`${inviteViaEmail}`);
             }
           },
           {

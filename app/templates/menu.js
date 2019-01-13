@@ -1,10 +1,10 @@
 'use strict';
 
 import { APP_NAME } from '../constants/meta';
-import { APP_GITHUB_RELEASES_URL } from '../constants';
+import { APP_WEBSITE } from '../constants';
 
-const subject = `Android File Transfer for macOS - OpenMTP`;
+const inviteViaEmailSubject = `Android File Transfer for macOS - OpenMTP`;
 
-const body = `Looking for a good "Android File Transfer" app for macOS? Download "${APP_NAME}" - The most advanced Android MTP File Transfer app for macOS from ${APP_GITHUB_RELEASES_URL} for free. It's Safe, Open-Source and shall always stay Free!`;
+const inviteViaEmailBody = `Tired of using expensive, outdated, bug heavy, Android File Transfer apps for macOS? %0D%0A Download "${APP_NAME}" - The Most Advanced Android File Transfer App for macOS from ${APP_WEBSITE} for free. %0D%0A It's Safe, Transparent, Open-Source and FREE for a lifetime!`;
 
-export const mailTo = `mailto:?Subject=${subject}&Body=${body}.`;
+export const inviteViaEmail = `mailto:?Subject=${inviteViaEmailSubject}&Body=${inviteViaEmailBody}`;
