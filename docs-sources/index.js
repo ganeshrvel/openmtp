@@ -13,6 +13,7 @@ import { APP_GITHUB_API_URL, APP_GITHUB_URL } from './utils/consts';
 class Docs {
   constructor() {
     this.selectors = {
+      spinner: `.spinner`,
       appScreenshotFileExplorerImageWrapper: `#app-screenshot-file-explorer-wrapper`,
       appScreenshotFileTransferImageWrapper: `#app-screenshot-file-transfer-wrapper`,
       appScreenshotFileExplorerId: `app-screenshot-file-explorer`,
@@ -42,13 +43,15 @@ class Docs {
     this.lazyLoadImages = {
       fileExplorer: {
         imgSrc: 'file-explorer.jpg',
-        selector: this.$el.appScreenshotFileExplorerImageWrapper,
-        id: this.selectors.appScreenshotFileExplorerId
+        parentSelector: this.$el.appScreenshotFileExplorerImageWrapper,
+        id: this.selectors.appScreenshotFileExplorerId,
+        loader: this.selectors.spinner
       },
       fileTransfer: {
         imgSrc: 'file-transfer.jpg',
-        selector: this.$el.appScreenshotFileTransferImageWrapper,
-        id: this.selectors.appScreenshotFileTransferId
+        parentSelector: this.$el.appScreenshotFileTransferImageWrapper,
+        id: this.selectors.appScreenshotFileTransferId,
+        loader: this.selectors.spinner
       }
     };
   }
@@ -151,16 +154,21 @@ class Docs {
           return null;
         }
 
-        this._createImg(res.src, item.selector, item.id);
+        if (!undefinedOrNull(item.loader)) {
+          const loader = item.parentSelector.querySelector(item.loader);
+          item.parentSelector.removeChild(loader);
+        }
+
+        this._createImg(res.src, item.parentSelector, item.id);
       });
     });
   };
 
-  _createImg = (src, selector, id) => {
+  _createImg = (src, parentSelector, id) => {
     const img = document.createElement('img');
     img.src = src;
     img.id = id;
-    selector.appendChild(img);
+    parentSelector.appendChild(img);
   };
 
   _downloadBtnEvents = () => {
