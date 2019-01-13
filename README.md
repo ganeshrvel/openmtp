@@ -29,7 +29,7 @@ Countless searches to find an app to solve these problems and failing to find on
 
 
 ### Download App
-Download [Latest Version](https://ganeshrvel.github.io/openmtp/?downloadApp=github&release=stable&platform=mac 'Latest Version')
+Download the [Latest Version](https://ganeshrvel.github.io/openmtp/?downloadApp=github&release=stable&platform=mac 'Latest Version')
 
 Find the latest *dmg* file from [GitHub Releases](https://github.com/ganeshrvel/openmtp/releases "GitHub Releases")
 
@@ -89,7 +89,7 @@ $ export GH_TOKEN="<github token>"
 # For local platform
 $ yarn package
 
-# For Multi platform
+# For multiple platforms
 $ yarn package-all
 ```
 

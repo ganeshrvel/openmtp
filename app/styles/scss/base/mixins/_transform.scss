@@ -6,7 +6,7 @@
 
 // ----------------------------------------------------------------------
 
-  // Transform
+// Transform
 
 // ----------------------------------------------------------------------
 
@@ -20,7 +20,7 @@
 
   @while $i <= $n {
     $itemVal: (nth($values, $i));
-    @if $type == "rotate" or $type == "rotateY" or $type == "rotateX" {
+    @if $type == 'rotate' or $type == 'rotateY' or $type == 'rotateX' {
       $originVal: append($originVal, $itemVal + deg);
     } @else {
       $originVal: append($originVal, $itemVal + px);
@@ -28,7 +28,13 @@
 
     $i: $i + 1;
   }
-  -webkit-transform: #{$type}($originVal);
-     -moz-transform: #{$type}($originVal);
-          transform: #{$type}($originVal);
+  -webkit-transform: #{$type }($originVal);
+  -moz-transform: #{$type }($originVal);
+  transform: #{$type }($originVal);
+}
+
+@mixin transform-1($values) {
+  -webkit-transform: $values;
+  -ms-transform: $values;
+  transform: $values;
 }

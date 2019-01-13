@@ -89,7 +89,6 @@ pre {
   }
 }
 
-
 .spinner,
 .spinner:after {
   border-radius: 50%;
@@ -107,31 +106,24 @@ pre {
   border-right: 1.1em solid rgba(255, 255, 255, 0.2);
   border-bottom: 1.1em solid rgba(255, 255, 255, 0.2);
   border-left: 1.1em solid #ffffff;
-  -webkit-transform: translateZ(0);
-  -ms-transform: translateZ(0);
-  transform: translateZ(0);
-  -webkit-animation: spinner-animation 1.1s infinite linear;
-  animation: spinner-animation 1.1s infinite linear;
-}
+  @include transform-1(translateZ(0));
+  @include animation(spinner-animation 1.1s infinite linear);
 
-@-webkit-keyframes spinner-animation {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
+  @-webkit-keyframes spinner-animation {
+    0% {
+      @include transform-1(rotate(0deg));
+    }
+    100% {
+      @include transform-1(rotate(360deg));
+    }
   }
-  100% {
-    -webkit-transform: rotate(360deg);
-    transform: rotate(360deg);
-  }
-}
-@keyframes spinner-animation {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(360deg);
-    transform: rotate(360deg);
+  @keyframes spinner-animation {
+    0% {
+      @include transform-1(rotate(0deg));
+    }
+    100% {
+      @include transform-1(rotate(360deg));
+    }
   }
 }
 
@@ -430,6 +422,7 @@ section.second {
 
         span {
           padding: 5px 60px 5px 18px;
+          line-height: 20px;
           background: $appSecondaryColor;
           color: #fff;
           text-decoration: none;
