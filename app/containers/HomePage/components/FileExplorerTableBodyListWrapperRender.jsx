@@ -4,6 +4,8 @@ import React, { PureComponent } from 'react';
 import FileExplorerTableRowsRender from './FileExplorerTableBodyListRender';
 import { quickHash } from '../../../utils/funcs';
 
+/*  eslint-disable react/destructuring-assignment */
+
 export default class FileExplorerTableBodyListWrapperRender extends PureComponent {
   constructor(props) {
     super(props);
@@ -19,16 +21,16 @@ export default class FileExplorerTableBodyListWrapperRender extends PureComponen
     this.recursiveFilesFetch();
   }
 
-  componentWillUnmount() {
-    this.clearRecursiveFilesFetchTimeOut();
-  }
-
-  componentWillUpdate(prevProps, prevState, snapshot) {
+  componentWillUpdate(prevProps) {
     if (prevProps.tableSort === this.props.tableSort) {
       return null;
     }
 
     this.recursiveFilesFetch();
+  }
+
+  componentWillUnmount() {
+    this.clearRecursiveFilesFetchTimeOut();
   }
 
   recursiveFilesFetch = () => {

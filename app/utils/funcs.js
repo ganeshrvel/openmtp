@@ -11,7 +11,7 @@ export const isArraysEqual = (a, b) => {
     return false;
   }
 
-  for (let i = 0; i < a.length; ++i) {
+  for (let i = 0; i < a.length; i += 1) {
     if (a[i] !== b[i]) {
       return false;
     }
@@ -43,29 +43,28 @@ export const isArray = n => {
 };
 
 export const niceBytes = (a, b) => {
-  if (0 === a) {
+  if (a === 0) {
     return '0 Bytes';
   }
-  const c = 1024,
-    d = b || 2,
-    e = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
-    f = Math.floor(Math.log(a) / Math.log(c));
-  return parseFloat((a / Math.pow(c, f)).toFixed(d)) + ' ' + e[f];
+  const c = 1024;
+  const d = b || 2;
+  const e = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+  const f = Math.floor(Math.log(a) / Math.log(c));
+  return `${parseFloat((a / Math.pow(c, f)).toFixed(d))} ${e[f]}`; // eslint-disable-line no-restricted-properties
 };
 
 export const replaceBulk = (str, findArray, replaceArray) => {
-  let i,
-    regex = [],
-    map = {};
-  for (i = 0; i < findArray.length; i++) {
+  let i;
+  let regex = [];
+  const map = {};
+  for (i = 0; i < findArray.length; i += 1) {
     regex.push(findArray[i].replace(/([-[\]{}()*+?.\\^$|#,])/g, '\\$1'));
     map[findArray[i]] = replaceArray[i];
   }
   regex = regex.join('|');
-  str = str.replace(new RegExp(regex, 'g'), matched => {
+  return str.replace(new RegExp(regex, 'g'), matched => {
     return map[matched];
   });
-  return str;
 };
 
 export const splitIntoLines = str => {
@@ -80,16 +79,16 @@ export const quickHash = str => {
   if (str.length === 0) {
     return hash;
   }
-  for (i = 0; i < str.length; i++) {
+  for (i = 0; i < str.length; i += 1) {
     chr = str.charCodeAt(i);
-    hash = (hash << 5) - hash + chr;
-    hash |= 0;
+    hash = (hash << 5) - hash + chr; // eslint-disable-line no-bitwise
+    hash |= 0; // eslint-disable-line no-bitwise
   }
   return hash;
 };
 
 export const percentage = (current, total) => {
-  return parseInt((current / total) * 100);
+  return parseInt((current / total) * 100, 10);
 };
 
 export const truncate = (str, length) => {
@@ -140,20 +139,20 @@ export const undefinedOrNull = _var => {
 
 export const diffObj = (obj1, obj2) => {
   let isSame = true;
-  for (let p in obj1) {
+  // eslint-disable-next-line no-restricted-syntax
+  for (const p in obj1) {
     if (typeof obj1[p] === 'object') {
       const objectValue1 = obj1[p];
       const objectValue2 = obj2[p];
-      for (let value in objectValue1) {
+      // eslint-disable-next-line no-restricted-syntax, guard-for-in
+      for (const value in objectValue1) {
         isSame = diffObj(objectValue1[value], objectValue2[value]);
         if (isSame === false) {
           return false;
         }
       }
-    } else {
-      if (obj1 !== obj2) {
-        isSame = false;
-      }
+    } else if (obj1 !== obj2) {
+      isSame = false;
     }
   }
   return isSame;

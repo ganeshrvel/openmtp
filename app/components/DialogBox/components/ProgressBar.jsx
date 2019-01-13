@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react';
-import { styles } from '../styles/ProgressBar';
 import { withStyles } from '@material-ui/core/styles';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Dialog from '@material-ui/core/Dialog';
@@ -8,12 +7,9 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import LiveHelpIcon from '@material-ui/icons/LiveHelp';
+import { styles } from '../styles/ProgressBar';
 
 class ProgressBar extends PureComponent {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const {
       classes: styles,

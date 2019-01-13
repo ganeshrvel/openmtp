@@ -1,11 +1,13 @@
 'use strict';
+
 import Promise from 'bluebird';
-import { log } from '../utils/log';
+import dns from 'dns';
+import { log } from './log';
 
 export const isConnected = () => {
   try {
-    return new Promise((resolve, reject) => {
-      require('dns').lookup('github.com', function(err) {
+    return new Promise(resolve => {
+      dns.lookup('github.com', err => {
         if (err && err.code === 'ENOTFOUND') {
           resolve(false);
           return null;

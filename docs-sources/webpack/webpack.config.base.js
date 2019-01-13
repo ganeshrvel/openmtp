@@ -5,7 +5,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const merge = require('webpack-merge');
 const devConfig = require('./webpack.config.dev');
 const prodConfig = require('./webpack.config.prod');
-const IS_DEV = process.env.NODE_ENV !== 'production';
+
 const IS_PROD = process.env.NODE_ENV === 'production';
 const buildPath = path.join(__dirname, '..', '..', 'docs');
 

@@ -1,6 +1,6 @@
 'use strict';
 
-import { app, Menu, shell, BrowserWindow } from 'electron';
+import { app, Menu } from 'electron';
 import { privacyPolicyWindow, reportBugsWindow } from './utils/createWindows';
 import { DEBUG_PROD, IS_DEV } from './constants/env';
 import { APP_NAME } from './constants/meta';

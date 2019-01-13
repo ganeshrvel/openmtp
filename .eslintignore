@@ -25,8 +25,7 @@ build/Release
 
 # Dependency directory
 # https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git
-node_modules/
-app/node_modules
+node_modules
 
 # OSX
 .DS_Store
@@ -48,15 +47,22 @@ dll
 main.js
 main.js.map
 
+
 .idea
 npm-debug.log.*
-yarn.lock
-package-lock.json
+__snapshots__
 
+# Package.json
+package.json
+.travis.yml
 
-app/certs/*.pem
-certs/*
-*electron-builder.yml
-todo.txt
-*yarn-error.log
-eslint-common-rules.txt
+.idea
+vendors
+build
+docs
+.vscode
+.github
+app/dll
+.prettierrc
+.stylelintrc
+.eslintrc.json

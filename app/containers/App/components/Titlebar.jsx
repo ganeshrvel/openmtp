@@ -6,15 +6,11 @@ import { styles } from '../styles/Titlebar';
 import { toggleWindowSizeOnDoubleClick } from '../../../utils/titlebarDoubleClick';
 
 class Titlebar extends PureComponent {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const { classes: styles } = this.props;
     return (
       <div
-        onDoubleClick={events => {
+        onDoubleClick={() => {
           toggleWindowSizeOnDoubleClick();
         }}
         className={styles.root}

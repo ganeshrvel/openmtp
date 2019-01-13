@@ -20,14 +20,7 @@ const variantIcon = {
 };
 
 const SnackbarThemeWrapper = props => {
-  const {
-    classes: styles,
-    className,
-    message,
-    onClose,
-    variant,
-    ...other
-  } = props;
+  const { classes: styles, message, onClose, variant, ...other } = props;
   const Icon = variantIcon[variant];
 
   return (

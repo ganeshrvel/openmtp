@@ -4,28 +4,26 @@ import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import { styles } from './styles';
-import { imgsrc } from '../../utils/imgsrc';
 import { log } from '@Log';
 import { remote } from 'electron';
 import { EOL } from 'os';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { styles } from './styles';
+import { imgsrc } from '../../utils/imgsrc';
 import GenerateErrorReport from './components/GenerateErrorReport';
 
 class ErrorBoundary extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      error: null,
       errorInfo: null
     };
   }
 
   componentDidCatch(error, errorInfo) {
     this.setState({
-      error: error,
-      errorInfo: errorInfo
+      errorInfo
     });
     const _errorInfo = JSON.stringify(errorInfo);
     log.doLog(
@@ -44,8 +42,9 @@ class ErrorBoundary extends Component {
   };
 
   render() {
-    const { classes: styles } = this.props;
-    if (this.state.errorInfo) {
+    const { classes: styles, children } = this.props;
+    const { errorInfo } = this.state;
+    if (errorInfo) {
       return (
         <div className={styles.root}>
           <img
@@ -57,7 +56,7 @@ class ErrorBoundary extends Component {
             Whoops!
           </Typography>
           <Typography variant="h5" className={styles.headings}>
-            I promise it's not you, it's me.
+            I promise it&apos;s not you, it&apos;s me.
           </Typography>
           <Typography variant="subtitle1" className={styles.subHeading}>
             Please send us the error log so that I can fix this issue.
@@ -74,7 +73,7 @@ class ErrorBoundary extends Component {
       );
     }
 
-    return this.props.children;
+    return children;
   }
 }
 

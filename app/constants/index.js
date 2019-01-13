@@ -20,11 +20,11 @@ export const DEVICES_LABEL = {
   [DEVICES_TYPE_CONST.local]: `Computer`
 };
 
-export const LOG_FILE_ROTATION_CLEANUP_THRESHOLD = 60; //in days
+export const LOG_FILE_ROTATION_CLEANUP_THRESHOLD = 60; // in days
 
 export const ENABLE_BACKGROUND_AUTO_UPDATE = false;
 
-export const AUTO_UPDATE_CHECK_FIREUP_DELAY = 10000; //in ms
+export const AUTO_UPDATE_CHECK_FIREUP_DELAY = 10000; // in ms
 
 export const FILE_EXPLORER_TABLE_TRUNCATE_MAX_CHARS = 37;
 

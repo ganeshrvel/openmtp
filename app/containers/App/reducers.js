@@ -1,4 +1,5 @@
 'use strict';
+
 import { actionTypes } from './actions';
 
 export const initialState = {
@@ -7,12 +8,12 @@ export const initialState = {
   ___isLoading: false,
   ___timeGenerated: null,
   ___timeLastModified: null,
-  ___error: null,
+  ___error: null
   /* </Meta Data> */
-  
 };
 
 export default function App(state = initialState, action) {
+  // eslint-disable-next-line prefer-const
   let { type, payload } = action;
   switch (type) {
     /* <Meta Data> */

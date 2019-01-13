@@ -1,17 +1,17 @@
 'use strict';
 
 import React, { Component } from 'react';
+import { shell, remote } from 'electron';
 import path from 'path';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { withStyles } from '@material-ui/core/styles';
 import { styles } from '../styles/GenerateErrorReport';
 import { baseName, PATHS } from '../../../utils/paths';
 import { log } from '@Log';
-import { shell, remote } from 'electron';
 import { promisifiedRimraf, mtpVerboseReport } from '../../../api/sys';
 import { fileExistsSync } from '../../../api/sys/fileOps';
 import { AUTHOR_EMAIL } from '../../../constants/meta';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { throwAlert } from '../../Alerts/actions';
 import {
   mailToInstructions as _mailToInstructions,
@@ -31,10 +31,6 @@ const logFileZippedPath = path.resolve(
 const mailToInstructions = _mailToInstructions(zippedLogFileBaseName);
 
 class GenerateErrorReport extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   compressLog = () => {
     try {
       compressFile(logFile, logFileZippedPath);

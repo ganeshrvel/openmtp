@@ -1,18 +1,14 @@
 'use strict';
 
 import React, { PureComponent } from 'react';
-import { styles } from '../styles/FileExplorerBodyRender';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import classNames from 'classnames';
 import FileExplorerTableBodyRender from './FileExplorerTableBodyRender';
 import FileExplorerTableFooterRender from './FileExplorerTableFooterRender';
+import { styles } from '../styles/FileExplorerBodyRender';
 
 class FileExplorerBodyRender extends PureComponent {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const {
       classes: styles,
@@ -23,7 +19,7 @@ class FileExplorerBodyRender extends PureComponent {
       directoryLists,
       mtpDevice,
       OnHoverDropZoneActivate,
-      filesDrag,
+      filesDrag, // eslint-disable-line no-unused-vars
       tableSort,
       onContextMenuClick,
       onFilesDragOver,
@@ -46,7 +42,7 @@ class FileExplorerBodyRender extends PureComponent {
     const _eventTarget = 'tableWrapperTarget';
 
     return (
-      <Paper className={styles.root} elevation={0} square={true}>
+      <Paper className={styles.root} elevation={0} square>
         <div
           className={classNames(styles.tableWrapper, {
             [`onHoverDropZone`]: OnHoverDropZoneActivate(deviceType)

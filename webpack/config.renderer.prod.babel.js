@@ -12,10 +12,7 @@ import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import merge from 'webpack-merge';
 import TerserPlugin from 'terser-webpack-plugin';
 import baseConfig from './config.base';
-import CheckNodeEnv from '../internals/scripts/CheckNodeEnv';
 import { PATHS } from '../app/utils/paths';
-
-CheckNodeEnv('production');
 
 export default merge.smart(baseConfig, {
   devtool: 'source-map',
@@ -47,7 +44,7 @@ export default merge.smart(baseConfig, {
             loader: 'css-loader',
             options: {
               publicPath: './'
-              //sourceMap: true
+              // sourceMap: true
             }
           }
         ]
@@ -68,7 +65,7 @@ export default merge.smart(baseConfig, {
               publicPath: './',
               modules: true,
               localIdentName: '[name]__[local]__[hash:base64:5]'
-              //sourceMap: true
+              // sourceMap: true
             }
           }
         ]
@@ -87,7 +84,7 @@ export default merge.smart(baseConfig, {
             loader: 'css-loader',
             options: {
               publicPath: './',
-              //sourceMap: true,
+              // sourceMap: true,
               importLoaders: 1
             }
           },
@@ -95,7 +92,7 @@ export default merge.smart(baseConfig, {
             loader: 'sass-loader',
             options: {
               publicPath: './'
-              //sourceMap: true
+              // sourceMap: true
             }
           }
         ]
@@ -117,14 +114,14 @@ export default merge.smart(baseConfig, {
               modules: true,
               importLoaders: 1,
               localIdentName: '[name]__[local]__[hash:base64:5]'
-              //sourceMap: true
+              // sourceMap: true
             }
           },
           {
             loader: 'sass-loader',
             options: {
               publicPath: './'
-              //sourceMap: true
+              // sourceMap: true
             }
           }
         ]
@@ -136,7 +133,7 @@ export default merge.smart(baseConfig, {
           loader: 'url-loader',
           options: {
             publicPath: './',
-            limit: 10000, //kb
+            limit: 10000, // kb
             mimetype: 'application/font-woff',
             name: 'fonts/[name].[hash].[ext]'
           }
@@ -250,7 +247,7 @@ export default merge.smart(baseConfig, {
       openAnalyzer: process.env.OPEN_ANALYZER === 'true'
     })
   ],
-  
+
   /**
    * Disables webpack processing of __dirname and __filename.
    * If you run the bundle in node.js it falls back to these values of node.js.

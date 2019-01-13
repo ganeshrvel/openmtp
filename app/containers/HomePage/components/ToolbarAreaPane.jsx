@@ -1,11 +1,13 @@
 'use strict';
 
+/* eslint no-case-declarations: off */
+
 import React, { Component } from 'react';
-import { styles } from '../styles/ToolbarAreaPane';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { log } from '@Log';
+import { styles } from '../styles/ToolbarAreaPane';
 import { withReducer } from '../../../store/reducers/withReducer';
 import reducers from '../reducers';
 import {
@@ -22,9 +24,9 @@ import {
   makeMtpDevice,
   makeMtpStoragesList,
   makeSidebarFavouriteList,
-  makeToolbarList
+  makeToolbarList,
+  makeCurrentBrowsePath
 } from '../selectors';
-import { makeCurrentBrowsePath } from '../selectors';
 import { makeHideHiddenFiles } from '../../Settings/selectors';
 import { delLocalFiles, delMtpFiles } from '../../../api/sys';
 import { DEVICES_DEFAULT_PATH, DEVICES_TYPE_CONST } from '../../../constants';
@@ -108,7 +110,7 @@ class ToolbarAreaPane extends Component {
     this._delFiles({ deviceType });
   };
 
-  _handleToggleSettings = toggle => {
+  _handleToggleSettings = () => {
     const { handleToggleSettings } = this.props;
     handleToggleSettings(true);
   };
@@ -279,7 +281,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
                   error: localError,
                   stderr: localStderr,
                   data: localData,
-                  callback: a => {
+                  callback: () => {
                     dispatch(
                       fetchDirList(
                         { ...fetchDirListArgs },
@@ -310,7 +312,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
                   error: mtpError,
                   stderr: mtpStderr,
                   data: mtpData,
-                  callback: a => {
+                  callback: () => {
                     dispatch(
                       fetchDirList(
                         { ...fetchDirListArgs },

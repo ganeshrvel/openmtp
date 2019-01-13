@@ -1,5 +1,7 @@
 'use strict';
 
+/* eslint global-require: off */
+
 import { app, BrowserWindow, ipcMain } from 'electron';
 import electronIs from 'electron-is';
 import MenuBuilder from './menu';
@@ -30,12 +32,12 @@ if (IS_DEV || DEBUG_PROD) {
 
 async function bootTheDevice() {
   try {
-    //For an existing installation
+    // For an existing installation
     if (bootLoader.quickVerify()) {
       return true;
     }
 
-    //For a fresh installation
+    // For a fresh installation
     await bootLoader.init();
     return await bootLoader.verify();
   } catch (e) {
@@ -79,6 +81,7 @@ if (!isDeviceBootable) {
         message,
         `main.dev -> ipcMain -> on ELECTRON_BROWSER_WINDOW_ALERT -> ${title}`
       );
+      // eslint-disable-next-line no-param-reassign
       event.returnValue = 0;
     });
   }
@@ -103,7 +106,7 @@ if (!isDeviceBootable) {
     app.quit();
   } else {
     try {
-      app.on('second-instance', (event, commandLine, workingDirectory) => {
+      app.on('second-instance', () => {
         if (mainWindow) {
           if (mainWindow.isMinimized()) {
             mainWindow.restore();
@@ -151,7 +154,7 @@ if (!isDeviceBootable) {
         }
       });
 
-      mainWindow.onerror = (error, url, line) => {
+      mainWindow.onerror = error => {
         log.error(error, `main.dev -> mainWindow -> onerror`);
       };
 
@@ -221,5 +224,5 @@ if (!isDeviceBootable) {
     }
   });
 
-  app.on('before-quit', () => (app.quitting = true));
+  app.on('before-quit', () => (app.quitting = true)); // eslint-disable-line no-return-assign
 }

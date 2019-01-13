@@ -1,12 +1,14 @@
 'use strict';
 
+/*  eslint-disable react/destructuring-assignment */
+
 import React, { PureComponent } from 'react';
-import { styles } from '../styles/FileExplorerTableBodyGridWrapperRender';
 import { withStyles } from '@material-ui/core/styles';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import FileExplorerTableGridRender from './FileExplorerTableBodyGridRender';
 import { quickHash } from '../../../utils/funcs';
+import { styles } from '../styles/FileExplorerTableBodyGridWrapperRender';
 
 class FileExplorerTableBodyGridWrapperRender extends PureComponent {
   constructor(props) {
@@ -23,16 +25,16 @@ class FileExplorerTableBodyGridWrapperRender extends PureComponent {
     this.recursiveFilesFetch();
   }
 
-  componentWillUnmount() {
-    this.clearRecursiveFilesFetchTimeOut();
-  }
-
-  componentWillUpdate(prevProps, prevState, snapshot) {
+  componentWillUpdate(prevProps) {
     if (prevProps.tableSort === this.props.tableSort) {
       return null;
     }
 
     this.recursiveFilesFetch();
+  }
+
+  componentWillUnmount() {
+    this.clearRecursiveFilesFetchTimeOut();
   }
 
   recursiveFilesFetch = () => {

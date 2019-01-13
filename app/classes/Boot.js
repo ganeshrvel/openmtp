@@ -28,7 +28,7 @@ export default class Boot {
 
   async init() {
     try {
-      for (let i in this.verifyDirList) {
+      for (let i = 0; i < this.verifyDirList.length; i += 1) {
         const item = this.verifyDirList[i];
 
         if (!(await this.verifyDir(item))) {
@@ -40,7 +40,7 @@ export default class Boot {
         await this.createFile(this.settingsFile);
       }
 
-      for (let i in this.verifyFileList) {
+      for (let i = 0; i < this.verifyFileList.length; i += 1) {
         const item = this.verifyFileList[i];
 
         if (!this.verifyFile(item)) {
@@ -56,15 +56,14 @@ export default class Boot {
 
   async verify() {
     try {
-      for (let i in this.verifyDirList) {
+      for (let i = 0; i < this.verifyFileList.length; i += 1) {
         const item = this.verifyDirList[i];
 
         if (!(await this.verifyDir(item))) {
           return false;
         }
       }
-
-      for (let i in this.verifyFileList) {
+      for (let i = 0; i < this.verifyFileList.length; i += 1) {
         const item = this.verifyFileList[i];
 
         if (!this.verifyFile(item)) {
@@ -80,7 +79,7 @@ export default class Boot {
 
   quickVerify() {
     try {
-      for (let i in this.verifyFileList) {
+      for (let i = 0; i < this.verifyFileList.length; i += 1) {
         const item = this.verifyFileList[i];
 
         if (!this.verifyFile(item)) {

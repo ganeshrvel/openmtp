@@ -1,0 +1,31 @@
+/* eslint global-require: off */
+
+/* eslint-disable */
+
+/* eslint-enable */
+
+// eslint-disable-next-line
+
+// eslint-disable-line no-unused-vars
+
+// eslint-disable-line no-return-assign
+
+// eslint-disable-line prefer-const
+
+// eslint-disable-line no-restricted-globals
+
+// eslint-disable-line no-param-reassign
+
+// eslint-disable-line no-unused-vars
+
+// eslint-disable-line no-restricted-properties
+
+// eslint-disable-line no-bitwise
+
+// eslint-disable-line func-names
+
+// eslint-disable-line no-bitwise
+
+// eslint-disable-line no-continue
+
+// eslint-disable-line no-useless-escape

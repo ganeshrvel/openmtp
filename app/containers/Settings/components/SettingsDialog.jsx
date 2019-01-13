@@ -16,10 +16,6 @@ import { privacyPolicyWindow } from '../../../utils/createWindows';
 import { DEVICES_TYPE_CONST } from '../../../constants';
 
 export default class SettingsDialog extends PureComponent {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const {
       open,
@@ -46,8 +42,8 @@ export default class SettingsDialog extends PureComponent {
     return (
       <Dialog
         open={open}
-        fullWidth={true}
-        maxWidth={'sm'}
+        fullWidth
+        maxWidth="sm"
         aria-labelledby="settings-dialogbox"
         disableEscapeKeyDown={false}
         onEscapeKeyDown={() =>
@@ -75,7 +71,7 @@ export default class SettingsDialog extends PureComponent {
                   control={
                     <Switch
                       checked={enableAutoUpdateCheck}
-                      onChange={event =>
+                      onChange={() =>
                         onAutoUpdateCheckChange({
                           toggle: !enableAutoUpdateCheck
                         })
@@ -85,7 +81,7 @@ export default class SettingsDialog extends PureComponent {
                   label={enableAutoUpdateCheck ? `Enabled` : `Disabled`}
                 />
               </FormGroup>
-              
+
               <FormGroup className={styles.formGroup}>
                 <Typography variant="subtitle2" className={styles.subtitle}>
                   Enable anonymous usage statistics gathering
@@ -96,7 +92,7 @@ export default class SettingsDialog extends PureComponent {
                   control={
                     <Switch
                       checked={enableAnalytics}
-                      onChange={event =>
+                      onChange={() =>
                         onAnalyticsChange({
                           toggle: !enableAnalytics
                         })
@@ -123,7 +119,7 @@ export default class SettingsDialog extends PureComponent {
                   the User Experience and squash some bugs.&nbsp;
                   <a
                     className={styles.a}
-                    onClick={event => {
+                    onClick={() => {
                       privacyPolicyWindow(true);
                     }}
                   >
@@ -147,7 +143,7 @@ export default class SettingsDialog extends PureComponent {
                   control={
                     <Switch
                       checked={!hideHiddenFilesLocal}
-                      onChange={event =>
+                      onChange={() =>
                         onHiddenFilesChange(
                           { toggle: !hideHiddenFilesLocal },
                           DEVICES_TYPE_CONST.local
@@ -162,7 +158,7 @@ export default class SettingsDialog extends PureComponent {
                   control={
                     <Switch
                       checked={!hideHiddenFilesMtp}
-                      onChange={event =>
+                      onChange={() =>
                         onHiddenFilesChange(
                           { toggle: !hideHiddenFilesMtp },
                           DEVICES_TYPE_CONST.mtp
@@ -173,7 +169,12 @@ export default class SettingsDialog extends PureComponent {
                   label="MTP Device"
                 />
 
-                <Typography variant="subtitle2" className={`${styles.subtitle} ${styles.fmSettingsStylesFix} `}>
+                <Typography
+                  variant="subtitle2"
+                  className={`${styles.subtitle} ${
+                    styles.fmSettingsStylesFix
+                  } `}
+                >
                   View As Grid
                 </Typography>
                 <FormControlLabel
@@ -181,7 +182,7 @@ export default class SettingsDialog extends PureComponent {
                   control={
                     <Switch
                       checked={fileExplorerListingTypeLocalGrid}
-                      onChange={event =>
+                      onChange={() =>
                         onFileExplorerListingType(
                           {
                             type: fileExplorerListingTypeLocalGrid
@@ -200,7 +201,7 @@ export default class SettingsDialog extends PureComponent {
                   control={
                     <Switch
                       checked={fileExplorerListingTypeMtpGrid}
-                      onChange={event =>
+                      onChange={() =>
                         onFileExplorerListingType(
                           {
                             type: fileExplorerListingTypeMtpGrid
@@ -220,7 +221,7 @@ export default class SettingsDialog extends PureComponent {
         </DialogContent>
         <DialogActions>
           <Button
-            onClick={e =>
+            onClick={() =>
               onDialogBoxCloseBtnClick({
                 confirm: false
               })

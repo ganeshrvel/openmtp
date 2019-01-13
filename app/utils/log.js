@@ -1,11 +1,11 @@
 'use strict';
 
+import os, { EOL } from 'os';
 import { IS_DEV } from '../constants/env';
 import { APP_NAME, APP_VERSION } from '../constants/meta';
 import { PATHS } from './paths';
 import { appendFileAsync } from '../api/sys/fileOps';
 import { dateTimeUnixTimestampNow } from './date';
-import os, { EOL } from 'os';
 
 const { logFile } = PATHS;
 
@@ -17,7 +17,9 @@ export const log = {
       console.info(`${title} => `, e);
       return;
     }
-    IS_DEV && console.info(`${title} => `, e);
+    if (IS_DEV) {
+      console.info(`${title} => `, e);
+    }
   },
 
   error(e, title = `Log`, logError = true, allowInProd = false) {
@@ -35,7 +37,9 @@ export const log = {
       console.error(`${title} => `, e);
       return;
     }
-    IS_DEV && console.error(`${title} => `, e);
+    if (IS_DEV) {
+      console.error(`${title} => `, e);
+    }
   },
 
   doLog(e, logError = true, consoleError = null) {

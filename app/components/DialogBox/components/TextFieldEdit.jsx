@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react';
-import { styles } from '../styles/TextFieldEdit';
 import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -10,6 +9,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
+import { styles } from '../styles/TextFieldEdit';
 
 class TextFieldEdit extends PureComponent {
   constructor(props) {

@@ -3,22 +3,17 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import { styles } from './styles';
 import { log } from '@Log';
-import { remote } from 'electron';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Helmet } from 'react-helmet';
-import { APP_NAME, APP_TITLE, AUTHOR_EMAIL } from '../../constants/meta';
+import { APP_NAME, APP_TITLE } from '../../constants/meta';
 import { openExternalUrl } from '../../utils/url';
 import { resetOverFlowY } from '../../utils/styleResets';
 import { PRIVACY_POLICY_PAGE_TITLE } from '../../templates/privacyPolicyPage';
+import { styles } from './styles';
 
 class PrivacyPolicyPage extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   componentWillMount() {
     resetOverFlowY();
   }

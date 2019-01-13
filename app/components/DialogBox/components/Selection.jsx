@@ -1,7 +1,6 @@
 'use strict';
 
 import React, { PureComponent } from 'react';
-import { styles } from '../styles/Selection';
 import { withStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import Avatar from '@material-ui/core/Avatar';
@@ -11,6 +10,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
 import SdStorageIcon from '@material-ui/icons/SdStorage';
+import { styles } from '../styles/Selection';
 
 class Selection extends PureComponent {
   handleListItemClick = ({ ...args }) => {
@@ -19,7 +19,7 @@ class Selection extends PureComponent {
   };
 
   render() {
-    const { id, list, titleText, open, showDiskAvatars } = this.props;
+    const { list, titleText, open, showDiskAvatars } = this.props;
     if (Object.keys(list).length < 1) {
       return <React.Fragment />;
     }

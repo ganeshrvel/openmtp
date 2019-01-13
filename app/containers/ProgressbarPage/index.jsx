@@ -1,12 +1,11 @@
 'use strict';
 
+import { ipcRenderer } from 'electron';
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import { styles } from './styles';
-import { log } from '@Log';
-import { ipcRenderer } from 'electron';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Typography from '@material-ui/core/Typography';
+import { styles } from './styles';
 
 class ProgressbarPage extends Component {
   constructor(props) {

@@ -15,5 +15,7 @@ export const getPlatform = () => {
       return 'mac';
     case 'win32':
       return 'win';
+    default:
+      return null;
   }
 };

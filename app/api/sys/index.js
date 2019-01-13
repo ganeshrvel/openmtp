@@ -13,12 +13,13 @@ import rimraf from 'rimraf';
 import mkdirp from 'mkdirp';
 import path from 'path';
 import moment from 'moment';
-import { log } from '../../utils/log';
-import { mtp as _mtpCli } from '../../utils/binaries';
 import { spawn, exec } from 'child_process';
 import findLodash from 'lodash/find';
+import { log } from '../../utils/log';
+import { mtp as _mtpCli } from '../../utils/binaries';
+
 import { DEVICES_TYPE_CONST } from '../../constants';
-import { baseName, getExtension, PATHS } from '../../utils/paths';
+import { baseName, getExtension } from '../../utils/paths';
 import {
   clearFileTransfer,
   fetchDirList,
@@ -52,12 +53,14 @@ export const escapeShellMtp = cmd => {
       .replace(/`/g, '\\`')
       .replace(/\\/g, `\\\\\\\\`)
       .replace(/"/g, `\\\\\\"`);
-  } else if (cmd.indexOf(`\\"`) !== -1) {
+  }
+  if (cmd.indexOf(`\\"`) !== -1) {
     return cmd
       .replace(/`/g, '\\`')
       .replace(/\\/g, `\\\\\\`)
       .replace(/"/g, `\\\\\\\\"`);
-  } else if (cmd.indexOf(`"\\`) !== -1) {
+  }
+  if (cmd.indexOf(`"\\`) !== -1) {
     return cmd
       .replace(/`/g, '\\`')
       .replace(/\\/g, `\\\\\\\\`)
@@ -73,12 +76,12 @@ const mtpCli = `"${escapeShellMtp(_mtpCli)}"`;
 
 const promisifiedExec = command => {
   try {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       execPromise(command, (error, stdout, stderr) => {
         return resolve({
           data: stdout,
-          stderr: stderr,
-          error: error
+          stderr,
+          error
         });
       });
     });
@@ -88,12 +91,12 @@ const promisifiedExec = command => {
 };
 
 const promisifiedExecNoCatch = command => {
-  return new Promise((resolve, reject) => {
+  return new Promise(resolve => {
     execPromise(command, (error, stdout, stderr) =>
       resolve({
         data: stdout,
-        stderr: stderr,
-        error: error
+        stderr,
+        error
       })
     );
   });
@@ -103,7 +106,7 @@ const checkMtpFileExists = async (filePath, mtpStoragesListSelected) => {
   const storageSelectCmd = `"storage ${mtpStoragesListSelected}"`;
   const escapedFilePath = `${escapeShellMtp(filePath)}`;
 
-  const { data, error, stderr } = await promisifiedExecNoCatch(
+  const { stderr } = await promisifiedExecNoCatch(
     `${mtpCli} ${storageSelectCmd} "properties \\"${escapedFilePath}\\""`
   );
 
@@ -129,8 +132,8 @@ export const checkFileExists = async (
     switch (deviceType) {
       case DEVICES_TYPE_CONST.local:
         if (_isArray) {
-          for (let i in filePath) {
-            let item = filePath[i];
+          for (let i = 0; i < filePath.length; i += 1) {
+            const item = filePath[i];
             fullPath = path.resolve(item);
             if (await existsSync(fullPath)) {
               return true;
@@ -141,11 +144,11 @@ export const checkFileExists = async (
 
         fullPath = path.resolve(filePath);
         return await existsSync(fullPath);
-        break;
+
       case DEVICES_TYPE_CONST.mtp:
         if (_isArray) {
-          for (let i in filePath) {
-            let item = filePath[i];
+          for (let i = 0; i < filePath.length; i += 1) {
+            const item = filePath[i];
             fullPath = path.resolve(item);
             if (await checkMtpFileExists(fullPath, mtpStoragesListSelected)) {
               return true;
@@ -156,7 +159,7 @@ export const checkFileExists = async (
 
         fullPath = path.resolve(filePath);
         return await checkMtpFileExists(fullPath, mtpStoragesListSelected);
-        break;
+
       default:
         break;
     }
@@ -172,7 +175,7 @@ export const checkFileExists = async (
  */
 export const asyncReadLocalDir = async ({ filePath, ignoreHidden }) => {
   try {
-    let response = [];
+    const response = [];
     const { error, data } = await readdir(filePath, 'utf8')
       .then(res => {
         return {
@@ -196,31 +199,31 @@ export const asyncReadLocalDir = async ({ filePath, ignoreHidden }) => {
 
     files = data.filter(junk.not);
     if (ignoreHidden) {
-      files = data.filter(item => !/(^|\/)\.[^\/\.]/g.test(item));
+      files = data.filter(item => !/(^|\/)\.[^\/\.]/g.test(item)); // eslint-disable-line no-useless-escape
     }
 
-    for (let file of files) {
-      let fullPath = path.resolve(filePath, file);
+    for (let i = 0; i < files.length; i += 1) {
+      const file = files[i];
+      const fullPath = path.resolve(filePath, file);
 
       if (!existsSync(fullPath)) {
-        continue;
+        continue; // eslint-disable-line no-continue
       }
       const stat = statSync(fullPath);
       const isFolder = lstatSync(fullPath).isDirectory();
       const extension = path.extname(fullPath);
-      const size = stat.size;
-      const dateTime = stat.atime;
+      const { size, atime: dateTime } = stat;
 
       if (findLodash(response, { path: fullPath })) {
-        continue;
+        continue; // eslint-disable-line no-continue
       }
 
       response.push({
         name: file,
         path: fullPath,
-        extension: extension,
-        size: size,
-        isFolder: isFolder,
+        extension,
+        size,
+        isFolder,
         dateAdded: moment(dateTime).format('YYYY-MM-DD HH:mm:ss')
       });
     }
@@ -232,12 +235,12 @@ export const asyncReadLocalDir = async ({ filePath, ignoreHidden }) => {
 
 export const promisifiedRimraf = item => {
   try {
-    return new Promise(function(resolve, reject) {
+    return new Promise(resolve => {
       rimraf(item, {}, error => {
         resolve({
           data: null,
           stderr: error,
-          error: error
+          error
         });
       });
     });
@@ -252,7 +255,7 @@ export const delLocalFiles = async ({ fileList }) => {
       return { error: `No files selected.`, stderr: null, data: null };
     }
 
-    for (let i in fileList) {
+    for (let i = 0; i < fileList.length; i += 1) {
       const item = fileList[i];
       const { error } = await promisifiedRimraf(item);
       if (error) {
@@ -269,12 +272,12 @@ export const delLocalFiles = async ({ fileList }) => {
 
 const promisifiedRename = ({ oldFilePath, newFilePath }) => {
   try {
-    return new Promise(function(resolve, reject) {
+    return new Promise(resolve => {
       fsRename(oldFilePath, newFilePath, error => {
         resolve({
           data: null,
           stderr: error,
-          error: error
+          error
         });
       });
     });
@@ -308,9 +311,9 @@ export const renameLocalFiles = async ({ oldFilePath, newFilePath }) => {
 
 const promisifiedMkdir = ({ newFolderPath }) => {
   try {
-    return new Promise(function(resolve, reject) {
+    return new Promise(resolve => {
       mkdirp(newFolderPath, error => {
-        resolve({ data: null, stderr: error, error: error });
+        resolve({ data: null, stderr: error, error });
       });
     });
   } catch (e) {
@@ -356,8 +359,8 @@ export const fetchMtpStorageOptions = async () => {
 
     const _storageList = splitIntoLines(data);
 
-    let descMatchPattern = /description:(.*)/i;
-    let storageIdMatchPattern = /([^\D]+)/;
+    const descMatchPattern = /description:(.*)/i;
+    const storageIdMatchPattern = /([^\D]+)/;
 
     let storageList = {};
     _storageList
@@ -389,6 +392,8 @@ export const fetchMtpStorageOptions = async () => {
             selected: index === 0
           }
         };
+
+        return storageList;
       });
 
     if (
@@ -416,7 +421,7 @@ export const asyncReadMtpDir = async ({
       dateAdded: 4,
       timeAdded: 5
     };
-    let response = [];
+    const response = [];
     const storageSelectCmd = `"storage ${mtpStoragesListSelected}"`;
 
     const {
@@ -439,27 +444,28 @@ export const asyncReadMtpDir = async ({
 
     fileProps = fileProps.filter(a => !filterOutMtpLines(a));
 
-    for (let i = 0; i < fileProps.length; i++) {
+    for (let i = 0; i < fileProps.length; i += 1) {
       const item = fileProps[i];
       const matchedProps = item.match(
         /^(.*?)\s+\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}/g
       );
 
       if (matchedProps === null || matchedProps.length < 1) {
-        continue;
+        continue; // eslint-disable-line no-continue
       }
 
       const _matchedProps = matchedProps[0];
       const itemSplit = item.split(_matchedProps);
 
       if (itemSplit === null || itemSplit.length < 2 || itemSplit[1] === '') {
-        continue;
+        continue; // eslint-disable-line no-continue
       }
       const matchedFileName = itemSplit[1].replace(/^\s{2}|\s$/g, '');
       const filePropsList = _matchedProps.replace(/\s\s+/g, ' ').split(' ');
 
-      if (ignoreHidden && /(^|\/)\.[^\/\.]/g.test(matchedFileName)) {
-        continue;
+      // eslint-disable-next-line no-useless-escape
+      if (ignoreHidden && /(^|\/)\.[^\/.]/g.test(matchedFileName)) {
+        continue; // eslint-disable-line no-continue
       }
 
       const fullPath = path.resolve(filePath, matchedFileName);
@@ -469,16 +475,16 @@ export const asyncReadMtpDir = async ({
       }`;
       const extension = getExtension(fullPath, isFolder);
 
-      //avoid duplicate values
+      // avoid duplicate values
       if (findLodash(response, { path: fullPath })) {
-        continue;
+        continue; // eslint-disable-line no-continue
       }
       response.push({
         name: matchedFileName,
         path: fullPath,
-        extension: extension,
+        extension,
         size: null,
-        isFolder: isFolder,
+        isFolder,
         dateAdded: moment(dateTime).format('YYYY-MM-DD HH:mm:ss')
       });
     }
@@ -508,7 +514,7 @@ export const renameMtpFiles = async ({
     const escapedOldFilePath = `${escapeShellMtp(oldFilePath)}`;
     const escapedNewFilePath = `${escapeShellMtp(baseName(newFilePath))}`;
 
-    const { data, error, stderr } = await promisifiedExec(
+    const { error, stderr } = await promisifiedExec(
       `${mtpCli} ${storageSelectCmd} "rename \\"${escapedOldFilePath}\\" \\"${escapedNewFilePath}\\""`
     );
 
@@ -530,8 +536,8 @@ export const delMtpFiles = async ({ fileList, mtpStoragesListSelected }) => {
     }
 
     const storageSelectCmd = `"storage ${mtpStoragesListSelected}"`;
-    for (let i in fileList) {
-      const { data, error, stderr } = await promisifiedExec(
+    for (let i = 0; i < fileList.length; i += 1) {
+      const { error, stderr } = await promisifiedExec(
         `${mtpCli} ${storageSelectCmd} "rm \\"${escapeShellMtp(
           fileList[i]
         )}\\""`
@@ -560,7 +566,7 @@ export const newMtpFolder = async ({
 
     const storageSelectCmd = `"storage ${mtpStoragesListSelected}"`;
     const escapedNewFolderPath = `${escapeShellMtp(newFolderPath)}`;
-    const { data, error, stderr } = await promisifiedExec(
+    const { error, stderr } = await promisifiedExec(
       `${mtpCli} ${storageSelectCmd} "mkpath \\"${escapedNewFolderPath}\\""`
     );
 
@@ -601,7 +607,7 @@ export const pasteFiles = (
           error: `Invalid path.`,
           stderr: null,
           data: null,
-          callback: a => {
+          callback: () => {
             dispatch(
               fetchDirList({ ...fetchDirListArgs }, deviceType, getState)
             );
@@ -611,7 +617,7 @@ export const pasteFiles = (
     }
 
     const storageSelectCmd = `"storage ${mtpStoragesListSelected}"`;
-    let { queue } = fileTransferClipboard;
+    const { queue } = fileTransferClipboard;
 
     if (typeof queue === 'undefined' || queue === null || queue.length < 1) {
       dispatch(
@@ -620,7 +626,7 @@ export const pasteFiles = (
           error: `No files selected`,
           stderr: null,
           data: null,
-          callback: a => {
+          callback: () => {
             dispatch(
               fetchDirList({ ...fetchDirListArgs }, deviceType, getState)
             );
@@ -629,8 +635,8 @@ export const pasteFiles = (
       );
     }
 
-    let _queue = [],
-      cmdArgs = {};
+    let _queue = [];
+    let cmdArgs = {};
     switch (direction) {
       case 'mtpToLocal':
         _queue = queue.map(sourcePath => {
@@ -655,7 +661,6 @@ export const pasteFiles = (
           getState,
           getCurrentWindow
         );
-        break;
 
       case 'localtoMtp':
         _queue = queue.map(sourcePath => {
@@ -679,7 +684,7 @@ export const pasteFiles = (
           getState,
           getCurrentWindow
         );
-        break;
+
       default:
         break;
     }
@@ -689,8 +694,8 @@ export const pasteFiles = (
 };
 
 const _pasteFiles = (
-  { ...pasteArgs },
-  { ...fetchDirListArgs },
+  { ...pasteArgs }, // eslint-disable-line no-unused-vars
+  { ...fetchDirListArgs }, // eslint-disable-line no-unused-vars
   { ...cmdArgs },
   deviceType,
   dispatch,
@@ -769,7 +774,7 @@ const _pasteFiles = (
         return null;
       }
 
-      for (let i in _bufferedOutput) {
+      for (let i = 0; i < _bufferedOutput.length; i += 1) {
         const item = _bufferedOutput[i];
         const bufferedOutputSplit = item.split(' ');
 
@@ -791,9 +796,8 @@ const _pasteFiles = (
         }
 
         const matchedItemSplit = matchedItem[0].split(' ');
-
-        let currentProgressSize = parseInt(matchedItemSplit[0]);
-        let totalFileSize = parseInt(matchedItemSplit[1]);
+        const currentProgressSize = parseInt(matchedItemSplit[0], 10);
+        const totalFileSize = parseInt(matchedItemSplit[1], 10);
 
         if (event === `:done`) {
           prevCopiedBlockSize = 0;
@@ -839,7 +843,7 @@ const _pasteFiles = (
           error: e,
           stderr: null,
           data: null,
-          callback: a => {
+          callback: () => {
             transferList = null;
             getCurrentWindow().setProgressBar(-1);
             dispatch(clearFileTransfer());
@@ -851,7 +855,7 @@ const _pasteFiles = (
       );
     });
 
-    cmd.on('exit', code => {
+    cmd.on('exit', () => {
       transferList = null;
       getCurrentWindow().setProgressBar(-1);
       dispatch(clearFileTransfer());
@@ -867,15 +871,17 @@ const _pasteFiles = (
 export const mtpVerboseReport = async () => {
   try {
     const { data, error, stderr } = await promisifiedExec(`${mtpCli} "pwd" -v`);
+
     if (error) {
       log.doLog(`${error}`);
       return { error, stderr, data: null };
-    } else if (stderr) {
+    }
+    if (stderr) {
       log.doLog(`${stderr}`);
       return { error, stderr, data: null };
     }
 
-    return { error: null, stderr: null, data: data };
+    return { error: null, stderr: null, data };
   } catch (e) {
     log.error(e);
   }

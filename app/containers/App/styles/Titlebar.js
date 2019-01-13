@@ -2,7 +2,7 @@
 
 import { variables, mixins } from '../../../styles/js';
 
-export const styles = args => {
+export const styles = themes => {
   return {
     root: {
       width: `100%`,

@@ -1,5 +1,7 @@
 'use strict';
 
+/* eslint global-require: off */
+
 /**
  * Builds the DLL for development electron renderer process
  */
@@ -9,10 +11,7 @@ import path from 'path';
 import merge from 'webpack-merge';
 import baseConfig from './config.base';
 import { dependencies } from '../package.json';
-import CheckNodeEnv from '../internals/scripts/CheckNodeEnv';
 import { PATHS } from '../app/utils/paths';
-
-CheckNodeEnv('development');
 
 const dll = path.join(PATHS.root, 'dll');
 

@@ -1,5 +1,6 @@
 'use strict';
-import prefixer from '../../utils/reducerPrefixer.js';
+
+import prefixer from '../../utils/reducerPrefixer';
 
 const prefix = '@@App';
 const actionTypesList = ['REQ_LOAD', 'RES_LOAD', 'FAIL_LOAD'];

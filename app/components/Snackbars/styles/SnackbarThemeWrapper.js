@@ -1,4 +1,5 @@
 'use strict';
+
 import green from '@material-ui/core/colors/green';
 import amber from '@material-ui/core/colors/amber';
 import { variables, mixins } from '../../../styles/js';

@@ -1,4 +1,5 @@
 'use strict';
+
 import { log } from '../utils/log';
 import { readFileSync, writeFileSync } from '../api/sys/fileOps';
 
@@ -30,8 +31,10 @@ export default class Storage {
       }
 
       const allItem = this.getAll();
+      // eslint-disable-next-line prefer-const
       let _return = {};
 
+      // eslint-disable-next-line array-callback-return
       keys.map(a => {
         if (typeof allItem[a] === 'undefined' || allItem[a] === null) {
           return null;

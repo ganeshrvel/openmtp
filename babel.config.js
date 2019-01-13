@@ -1,6 +1,8 @@
 'use strict';
-const developmentEnvironments = ['development', 'test'];
 
+/* eslint global-require: off */
+
+const developmentEnvironments = ['development', 'test'];
 const developmentPlugins = [require('react-hot-loader/babel')];
 
 const productionPlugins = [
@@ -12,7 +14,7 @@ const productionPlugins = [
 
 module.exports = api => {
   const development = api.env(developmentEnvironments);
-  
+
   return {
     presets: [
       [
@@ -27,7 +29,7 @@ module.exports = api => {
     plugins: [
       // Stage 0
       require('@babel/plugin-proposal-function-bind'),
-      
+
       // Stage 1
       require('@babel/plugin-proposal-export-default-from'),
       require('@babel/plugin-proposal-logical-assignment-operators'),
@@ -41,20 +43,20 @@ module.exports = api => {
         { loose: false }
       ],
       require('@babel/plugin-proposal-do-expressions'),
-      
+
       // Stage 2
       [require('@babel/plugin-proposal-decorators'), { legacy: true }],
       require('@babel/plugin-proposal-function-sent'),
       require('@babel/plugin-proposal-export-namespace-from'),
       require('@babel/plugin-proposal-numeric-separator'),
       require('@babel/plugin-proposal-throw-expressions'),
-      
+
       // Stage 3
       require('@babel/plugin-syntax-dynamic-import'),
       require('@babel/plugin-syntax-import-meta'),
       [require('@babel/plugin-proposal-class-properties'), { loose: true }],
       require('@babel/plugin-proposal-json-strings'),
-      
+
       ...(development ? developmentPlugins : productionPlugins)
     ]
   };

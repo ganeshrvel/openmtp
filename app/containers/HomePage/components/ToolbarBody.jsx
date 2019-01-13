@@ -1,8 +1,6 @@
 'use strict';
 
 import React, { PureComponent } from 'react';
-import { LazyLoaderOverLay } from '../styles/ToolbarAreaPane';
-import { imgsrc } from '../../../utils/imgsrc.js';
 import MenuIcon from '@material-ui/icons/Menu';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -11,16 +9,15 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import classNames from 'classnames';
 import SidebarAreaPaneLists from './SidebarAreaPaneLists';
-
+import { LazyLoaderOverLay } from '../styles/ToolbarAreaPane';
+import { imgsrc } from '../../../utils/imgsrc';
 import { DEVICES_TYPE_CONST } from '../../../constants';
-import { Confirm as ConfirmDialog } from '../../../components/DialogBox';
-import { Selection as SelectionDialog } from '../../../components/DialogBox';
+import {
+  Confirm as ConfirmDialog,
+  Selection as SelectionDialog
+} from '../../../components/DialogBox';
 
 export default class ToolbarAreaPane extends PureComponent {
-  constructor(props) {
-    super(props);
-  }
-
   activeToolbarList = ({ ...args }) => {
     const {
       toolbarList,
@@ -77,6 +74,8 @@ export default class ToolbarAreaPane extends PureComponent {
         default:
           break;
       }
+
+      return _activeToolbarList;
     });
 
     return _activeToolbarList;
@@ -117,7 +116,7 @@ export default class ToolbarAreaPane extends PureComponent {
     return (
       <div className={styles.root}>
         <ConfirmDialog
-          fullWidthDialog={true}
+          fullWidthDialog
           maxWidthDialog="xs"
           bodyText="Are you sure you want to delete the items?"
           trigger={toggleDeleteConfirmDialog}
@@ -127,7 +126,7 @@ export default class ToolbarAreaPane extends PureComponent {
           titleText="Select Storage Option"
           list={mtpStoragesList}
           id="selectionDialog"
-          showDiskAvatars={true}
+          showDiskAvatars
           open={
             deviceType === DEVICES_TYPE_CONST.mtp &&
             toggleMtpStorageSelectionDialog
@@ -154,7 +153,7 @@ export default class ToolbarAreaPane extends PureComponent {
         <AppBar position="static" elevation={0} className={styles.appBar}>
           <Toolbar
             className={styles.toolbar}
-            disableGutters={true}
+            disableGutters
             onDoubleClick={event => {
               handleDoubleClickToolBar(event);
             }}
@@ -174,7 +173,7 @@ export default class ToolbarAreaPane extends PureComponent {
                       <IconButton
                         aria-label={item.label}
                         disabled={!item.enabled}
-                        onClick={events => handleToolbarAction(a)}
+                        onClick={() => handleToolbarAction(a)}
                         className={classNames({
                           [styles.disabledNavBtns]: !item.enabled,
                           [styles.invertedNavBtns]: item.invert

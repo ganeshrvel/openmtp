@@ -1,16 +1,12 @@
 'use strict';
 
 import React, { PureComponent } from 'react';
-import { styles } from '../styles/FileExplorerTableFooterRender';
 import { withStyles } from '@material-ui/core/styles';
 import TableFooter from '@material-ui/core/TableFooter';
+import { styles } from '../styles/FileExplorerTableFooterRender';
 import Breadcrumb from '../../../components/Breadcrumb';
 
 class FileExplorerTableFooterRender extends PureComponent {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const {
       classes: styles,

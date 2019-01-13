@@ -1,16 +1,18 @@
 'use strict';
 
+/* eslint no-case-declarations: off */
+
 import React, { Component } from 'react';
 import { remote, ipcRenderer, shell } from 'electron';
 import lodashSortBy from 'lodash/sortBy';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { log } from '@Log';
 import {
   TextFieldEdit as TextFieldEditDialog,
   ProgressBar as ProgressBarDialog,
   Confirm as ConfirmDialog
 } from '../../../components/DialogBox';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { log } from '@Log';
 import { withReducer } from '../../../store/reducers/withReducer';
 import reducers from '../reducers';
 import {
@@ -59,9 +61,10 @@ import {
 import { throwAlert } from '../../Alerts/actions';
 import { imgsrc } from '../../../utils/imgsrc';
 import FileExplorerBodyRender from './FileExplorerBodyRender';
+
 const { Menu, getCurrentWindow } = remote;
 
-let filesDragGhostImg = new Image(0, 0);
+const filesDragGhostImg = new Image(0, 0);
 filesDragGhostImg.src = imgsrc('FileExplorer/copy.svg');
 
 let allowFileDropFlag = false;
@@ -116,7 +119,7 @@ class FileExplorer extends Component {
     } else {
       this._fetchDirList({
         path: currentBrowsePath[deviceType],
-        deviceType: deviceType
+        deviceType
       });
     }
   }
@@ -207,7 +210,7 @@ class FileExplorer extends Component {
     } = this.props;
     const { queue } = directoryLists[deviceType];
     const _contextMenuList = contextMenuList[deviceType];
-    let contextMenuActiveList = [];
+    const contextMenuActiveList = [];
 
     Object.keys(_contextMenuList).map(a => {
       const item = _contextMenuList[a];
@@ -217,7 +220,7 @@ class FileExplorer extends Component {
             label: item.label,
             enabled: Object.keys(rowData).length > 0,
             data: rowData,
-            click: e => {
+            click: () => {
               this._handleContextMenuListActions({
                 [a]: {
                   ...item,
@@ -232,7 +235,7 @@ class FileExplorer extends Component {
           contextMenuActiveList.push({
             label: item.label,
             enabled: queue.selected.length > 0,
-            click: e => {
+            click: () => {
               this._handleContextMenuListActions({
                 [a]: {
                   ...item,
@@ -249,7 +252,7 @@ class FileExplorer extends Component {
             enabled:
               fileTransferClipboard.queue.length > 0 &&
               fileTransferClipboard.source !== deviceType,
-            click: e => {
+            click: () => {
               this._handleContextMenuListActions({
                 [a]: {
                   ...item,
@@ -265,7 +268,7 @@ class FileExplorer extends Component {
           contextMenuActiveList.push({
             label: item.label,
             data: tableData,
-            click: e => {
+            click: () => {
               this._handleContextMenuListActions({
                 [a]: {
                   ...item,
@@ -279,6 +282,8 @@ class FileExplorer extends Component {
         default:
           break;
       }
+
+      return contextMenuActiveList;
     });
 
     return contextMenuActiveList;
@@ -303,6 +308,7 @@ class FileExplorer extends Component {
           );
           break;
         case 'copy':
+          // eslint-disable-next-line prefer-destructuring
           selected = directoryLists[deviceType].queue.selected;
           handleCopy({ selected, deviceType });
           break;
@@ -321,6 +327,7 @@ class FileExplorer extends Component {
           );
           break;
         case 'pasteFromDrag':
+          // eslint-disable-next-line prefer-destructuring
           selected = directoryLists[item.data.sourceDeviceType].queue.selected;
           handleCopy({ selected, deviceType: item.data.sourceDeviceType });
           this._handlePaste();
@@ -330,6 +337,8 @@ class FileExplorer extends Component {
         default:
           break;
       }
+
+      return selected;
     });
   };
 
@@ -354,6 +363,8 @@ class FileExplorer extends Component {
       currentBrowsePath,
       mtpStoragesListSelected
     } = this.props;
+
+    // eslint-disable-next-line react/destructuring-assignment
     const { data } = this.state.toggleDialog.rename;
     const { confirm, textFieldValue: newFileName } = args;
     const targetAction = 'rename';
@@ -374,7 +385,7 @@ class FileExplorer extends Component {
       return null;
     }
 
-    //same file name; no change
+    // same file name; no change
     const _pathUp = pathUp(data.path);
     const newFilePath = sanitizePath(`${_pathUp}/${newFileName}`);
     const oldFilePath = data.path;
@@ -398,8 +409,8 @@ class FileExplorer extends Component {
     }
     handleRenameFile(
       {
-        oldFilePath: oldFilePath,
-        newFilePath: newFilePath,
+        oldFilePath,
+        newFilePath,
         deviceType
       },
       {
@@ -444,7 +455,7 @@ class FileExplorer extends Component {
 
   handleFilesDragStart = (e, { sourceDeviceType }) => {
     this.setFilesDrag({
-      sourceDeviceType: sourceDeviceType,
+      sourceDeviceType,
       destinationDeviceType: null,
       enter: false,
       lock: false
@@ -466,7 +477,7 @@ class FileExplorer extends Component {
       allowFileDropFlag = false;
       this.setFilesDrag({
         sourceDeviceType: filesDrag.sourceDeviceType,
-        destinationDeviceType: destinationDeviceType,
+        destinationDeviceType,
         enter: false,
         lock: false,
         sameSourceDestinationLock: true
@@ -481,18 +492,18 @@ class FileExplorer extends Component {
     allowFileDropFlag = true;
     this.setFilesDrag({
       sourceDeviceType: filesDrag.sourceDeviceType,
-      destinationDeviceType: destinationDeviceType,
+      destinationDeviceType,
       enter: true,
       lock: true,
       sameSourceDestinationLock: false
     });
   };
 
-  handleFilesDragEnd = e => {
+  handleFilesDragEnd = () => {
     this.clearFilesDrag();
   };
 
-  handleTableDrop = e => {
+  handleTableDrop = () => {
     const { filesDrag } = this.props;
     const { sourceDeviceType, destinationDeviceType } = filesDrag;
 
@@ -512,7 +523,7 @@ class FileExplorer extends Component {
         data: {
           ...filesDrag
         },
-        click: e => {
+        click: () => {
           this._handleContextMenuListActions({
             [`pasteFromDrag`]: {
               data: {
@@ -526,7 +537,7 @@ class FileExplorer extends Component {
         label: `Cancel`,
         enabled: true,
         data: {},
-        click: e => {
+        click: () => {
           this._handleContextMenuListActions({
             [`cancel`]: {
               data: {}
@@ -579,6 +590,8 @@ class FileExplorer extends Component {
       currentBrowsePath,
       mtpStoragesListSelected
     } = this.props;
+
+    // eslint-disable-next-line react/destructuring-assignment
     const { data } = this.state.toggleDialog.newFolder;
     const { confirm, textFieldValue: newFolderName } = args;
     const targetAction = 'newFolder';
@@ -616,7 +629,7 @@ class FileExplorer extends Component {
 
     handleNewFolder(
       {
-        newFolderPath: newFolderPath,
+        newFolderPath,
         deviceType
       },
       {
@@ -709,7 +722,7 @@ class FileExplorer extends Component {
     );
   };
 
-  _handleRequestSort = (deviceType, property, event) => {
+  _handleRequestSort = (deviceType, property) => {
     const { directoryLists, handleRequestSort } = this.props;
     const orderBy = property;
     const { orderBy: _orderBy, order: _order } = directoryLists[deviceType];
@@ -731,7 +744,7 @@ class FileExplorer extends Component {
     handleSelectAllClick({ selected }, isChecked, deviceType);
   };
 
-  _handleTableClick = (path, deviceType, event) => {
+  _handleTableClick = (path, deviceType) => {
     const { directoryLists, handleTableClick } = this.props;
 
     const { selected } = directoryLists[deviceType].queue;
@@ -754,7 +767,7 @@ class FileExplorer extends Component {
     handleTableClick({ selected: newSelected }, deviceType);
   };
 
-  handleTableDoubleClick = (item, deviceType, event) => {
+  handleTableDoubleClick = (item, deviceType) => {
     const { isFolder, path } = item;
 
     if (!isFolder) {
@@ -765,8 +778,8 @@ class FileExplorer extends Component {
     }
 
     this._fetchDirList({
-      path: path,
-      deviceType: deviceType
+      path,
+      deviceType
     });
   };
 
@@ -788,7 +801,7 @@ class FileExplorer extends Component {
   };
 
   _lodashSortConstraints = ({ value, orderBy }) => {
-    if (orderBy === 'size' && value['isFolder']) {
+    if (orderBy === 'size' && value.isFolder) {
       return 0;
     }
 
@@ -797,15 +810,15 @@ class FileExplorer extends Component {
 
     if (isNumber(item)) {
       if (isInt(item)) {
-        _primer = parseInt(item);
+        _primer = parseInt(item, 10);
       } else if (isFloat) {
         _primer = parseFloat(item);
       }
     }
 
     if (_primer === null) {
-      if (!value['isFolder']) {
-        const _pathInfo = pathInfo(item, value['isFolder']);
+      if (!value.isFolder) {
+        const _pathInfo = pathInfo(item, value.isFolder);
 
         _primer = _pathInfo.name.toLowerCase();
       } else {
@@ -848,12 +861,12 @@ class FileExplorer extends Component {
           defaultValue={rename.data.name || ''}
           label={rename.data.isFolder ? `New folder name` : `New file name`}
           id="renameDialog"
-          required={true}
-          multiline={false}
-          fullWidthDialog={true}
+          required
+          multiline
+          fullWidthDialog
           maxWidthDialog="sm"
-          fullWidthTextField={true}
-          autoFocus={true}
+          fullWidthTextField
+          autoFocus
           onClickHandler={this.handleRenameEditDialog}
           btnPositiveText="Rename"
           btnNegativeText="Cancel"
@@ -864,15 +877,15 @@ class FileExplorer extends Component {
           titleText={`Create a new folder on your ${DEVICES_LABEL[deviceType]}`}
           bodyText={`Path: ${newFolder.data.path || ''}`}
           trigger={newFolder.toggle}
-          defaultValue={''}
+          defaultValue=""
           label="New folder name"
           id="newFolderDialog"
-          required={true}
-          multiline={false}
-          fullWidthDialog={true}
+          required
+          multiline
+          fullWidthDialog
           maxWidthDialog="sm"
-          fullWidthTextField={true}
-          autoFocus={true}
+          fullWidthTextField
+          autoFocus
           onClickHandler={this.handleNewFolderEditDialog}
           btnPositiveText="Create"
           btnNegativeText="Cancel"
@@ -880,7 +893,7 @@ class FileExplorer extends Component {
         />
 
         <ProgressBarDialog
-          titleText={`Transferring files...`}
+          titleText="Transferring files..."
           bodyText1={`${
             fileTransferProgess.bodyText1 ? fileTransferProgess.bodyText1 : ''
           }`}
@@ -888,16 +901,16 @@ class FileExplorer extends Component {
             fileTransferProgess.bodyText2 ? fileTransferProgess.bodyText2 : ''
           }`}
           trigger={togglePasteDialog}
-          fullWidthDialog={true}
+          fullWidthDialog
           maxWidthDialog="sm"
           onClickHandler={this.handleNewFolderEditDialog}
           variant="determinate"
-          helpText={`In case the progress bar freezes while transferring the files, restart the app and reconnect the device. This is a well known Android MTP bug.`}
+          helpText="In case the progress bar freezes while transferring the files, restart the app and reconnect the device. This is a well known Android MTP bug."
           progressValue={fileTransferProgess.percentage}
         />
 
         <ConfirmDialog
-          fullWidthDialog={true}
+          fullWidthDialog
           maxWidthDialog="xs"
           bodyText="Replace and merge the existing items?"
           trigger={togglePasteConfirmDialog}
@@ -1008,7 +1021,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
                   error: localError,
                   stderr: localStderr,
                   data: localData,
-                  callback: a => {
+                  callback: () => {
                     dispatch(
                       fetchDirList(
                         { ...fetchDirListArgs },
@@ -1029,8 +1042,8 @@ const mapDispatchToProps = (dispatch, ownProps) =>
                 stderr: mtpStderr,
                 data: mtpData
               } = await renameMtpFiles({
-                oldFilePath: oldFilePath,
-                newFilePath: newFilePath,
+                oldFilePath,
+                newFilePath,
                 mtpStoragesListSelected
               });
 
@@ -1040,7 +1053,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
                   error: mtpError,
                   stderr: mtpStderr,
                   data: mtpData,
-                  callback: a => {
+                  callback: () => {
                     dispatch(
                       fetchDirList(
                         { ...fetchDirListArgs },
@@ -1080,7 +1093,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
                   error: localError,
                   stderr: localStderr,
                   data: localData,
-                  callback: a => {
+                  callback: () => {
                     dispatch(
                       fetchDirList(
                         { ...fetchDirListArgs },
@@ -1111,7 +1124,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
                   error: mtpError,
                   stderr: mtpStderr,
                   data: mtpData,
-                  callback: a => {
+                  callback: () => {
                     dispatch(
                       fetchDirList(
                         { ...fetchDirListArgs },

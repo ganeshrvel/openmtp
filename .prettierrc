@@ -1,7 +1,7 @@
 {
   "overrides": [
     {
-      "files": [".prettierrc", ".babelrc"],
+      "files": [".prettierrc", ".babelrc", ".eslintrc", ".stylelintrc"],
       "options": {
         "parser": "json"
       }

@@ -1,7 +1,6 @@
 'use strict';
 
 import React, { PureComponent } from 'react';
-import { styles } from '../styles/FileExplorerTableBodyListRender';
 import { withStyles } from '@material-ui/core/styles';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
@@ -12,12 +11,9 @@ import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 import classNames from 'classnames';
 import { niceBytes, springTruncate } from '../../../utils/funcs';
 import { FILE_EXPLORER_TABLE_TRUNCATE_MAX_CHARS } from '../../../constants';
+import { styles } from '../styles/FileExplorerTableBodyListRender';
 
 class FileExplorerTableBodyListRender extends PureComponent {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const {
       classes: styles,
@@ -39,7 +35,7 @@ class FileExplorerTableBodyListRender extends PureComponent {
 
     return (
       <TableRow
-        hover={true}
+        hover
         role="checkbox"
         aria-checked={isSelected}
         tabIndex={-1}

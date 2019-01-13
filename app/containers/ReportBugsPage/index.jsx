@@ -2,20 +2,15 @@
 
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import { styles } from './styles';
+import { Helmet } from 'react-helmet';
 import { log } from '@Log';
-import { remote } from 'electron';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import GenerateErrorReport from '../ErrorBoundary/components/GenerateErrorReport';
-import { Helmet } from 'react-helmet';
 import { APP_TITLE } from '../../constants/meta';
+import { styles } from './styles';
 
 class ReportBugsPage extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const { classes: styles } = this.props;
     return (

@@ -55,6 +55,7 @@ class Docs {
       }
     };
   }
+
   init() {
     this._checkLatestGitHubRelease();
     this._checkDownloadRequestUrl();
@@ -96,7 +97,7 @@ class Docs {
       };
     }
 
-    //if api request limit gets exhausted or api is not found forward the url to github releases page
+    // if api request limit gets exhausted or api is not found forward the url to github releases page
     return {
       latest: `OpenMTP`,
       url: {
@@ -110,13 +111,16 @@ class Docs {
       return this.gitHubLatestReleaseData;
     }
 
-    this._checkLatestGitHubRelease().then(() => {
-      if (undefinedOrNull(this.gitHubLatestReleaseData)) {
-        return null;
-      }
+    this._checkLatestGitHubRelease()
+      .then(() => {
+        if (undefinedOrNull(this.gitHubLatestReleaseData)) {
+          return null;
+        }
 
-      window.location.href = this.gitHubLatestReleaseData.url[platform];
-    });
+        window.location.href = this.gitHubLatestReleaseData.url[platform];
+        return true;
+      })
+      .catch(() => {});
 
     return null;
   };
@@ -149,18 +153,21 @@ class Docs {
       const item = this.lazyLoadImages[a];
       const imgLoad = imgsrc(item.imgSrc);
 
-      imageLoaded(imgLoad).then(res => {
-        if (!res.status) {
-          return null;
-        }
+      return imageLoaded(imgLoad)
+        .then(res => {
+          if (!res.status) {
+            return null;
+          }
 
-        if (!undefinedOrNull(item.loader)) {
-          const loader = item.parentSelector.querySelector(item.loader);
-          item.parentSelector.removeChild(loader);
-        }
+          if (!undefinedOrNull(item.loader)) {
+            const loader = item.parentSelector.querySelector(item.loader);
+            item.parentSelector.removeChild(loader);
+          }
 
-        this._createImg(res.src, item.parentSelector, item.id);
-      });
+          this._createImg(res.src, item.parentSelector, item.id);
+          return true;
+        })
+        .catch(() => {});
     });
   };
 
@@ -193,7 +200,7 @@ class Docs {
   };
 
   _releaseInformationSet = ({ latest, url }) => {
-    for (let i = 0; i < this.$el.gitHubLatestVersionWrapper.length; i++) {
+    for (let i = 0; i < this.$el.gitHubLatestVersionWrapper.length; i += 1) {
       this.$el.gitHubLatestVersionWrapper[i].innerHTML = `<a href="${
         url.mac
       }">${latest}</a>`;
@@ -203,10 +210,3 @@ class Docs {
 
 const docsObj = new Docs();
 docsObj.init();
-
-const AUTHOR = 'Ganesh Rathinavel';
-const LICENSE = 'MIT';
-const PRICE = 'FREE';
-const SYSTEM_REQUIREMENTS = 'macOS v10.10 or higher';
-const GITHUB_URL = 'https://github.com/ganeshrvel/openmtp';
-const CONTACT_US = 'ganeshrvel@outlook.com';

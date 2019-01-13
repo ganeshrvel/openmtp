@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react';
-import { styles } from '../styles/Confirm';
 import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -8,12 +7,9 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import { styles } from '../styles/Confirm';
 
 class Confirm extends PureComponent {
-  constructor(props) {
-    super(props);
-  }
-
   handleClick = ({ confirm = false }) => {
     const { onClickHandler } = this.props;
     onClickHandler(confirm);
@@ -35,7 +31,7 @@ class Confirm extends PureComponent {
         maxWidth={maxWidthDialog}
         aria-labelledby="confirm-dialogbox"
         disableEscapeKeyDown={false}
-        onEscapeKeyDown={event => this.handleClick({ confirm: false })}
+        onEscapeKeyDown={() => this.handleClick({ confirm: false })}
       >
         <DialogTitle>{titleText}</DialogTitle>
         <DialogContent>
@@ -43,14 +39,14 @@ class Confirm extends PureComponent {
         </DialogContent>
         <DialogActions>
           <Button
-            onClick={event => this.handleClick({ confirm: true })}
+            onClick={() => this.handleClick({ confirm: true })}
             color="primary"
             className={classNames(styles.btnPositive)}
           >
             Yes
           </Button>
           <Button
-            onClick={event => this.handleClick({ confirm: false })}
+            onClick={() => this.handleClick({ confirm: false })}
             color="secondary"
             className={classNames(styles.btnNegative)}
           >

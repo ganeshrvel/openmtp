@@ -1,9 +1,9 @@
 'use strict';
 
+import path from 'path';
 import { actionTypes } from './actions';
 import { PATHS } from '../../utils/paths';
 import { DEVICES_DEFAULT_PATH, DEVICES_TYPE_CONST } from '../../constants';
-import path from 'path';
 
 export const initialState = {
   /* <Meta Data> */
@@ -212,6 +212,7 @@ export const initialState = {
 };
 
 export default function Home(state = initialState, action) {
+  // eslint-disable-next-line prefer-const
   let { type, payload, deviceType = null } = action;
   switch (type) {
     case actionTypes.SET_SORTING_DIR_LISTS:

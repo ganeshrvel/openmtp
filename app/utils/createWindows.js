@@ -11,7 +11,6 @@ import { PRIVACY_POLICY_PAGE_TITLE } from '../templates/privacyPolicyPage';
 let _nonBootableDeviceWindow = null;
 let _reportBugsWindow = null;
 let _privacyPolicyWindow = null;
-let _privacyPolicyWindowId = null;
 
 /**
  * Non Bootable Device Window
@@ -102,7 +101,7 @@ export const reportBugsWindow = () => {
       _reportBugsWindow.focus();
     });
 
-    _reportBugsWindow.onerror = (error, url, line) => {
+    _reportBugsWindow.onerror = error => {
       log.error(error, `createWindows -> reportBugsWindow -> onerror`);
     };
 
@@ -136,7 +135,7 @@ const privacyPolicyCreateWindow = isRenderedPage => {
     }
   };
 
-  //incoming call from a rendered page
+  // incoming call from a rendered page
   if (isRenderedPage) {
     const allWindows = remote.BrowserWindow.getAllWindows();
 
@@ -145,7 +144,7 @@ const privacyPolicyCreateWindow = isRenderedPage => {
       : new remote.BrowserWindow(config);
   }
 
-  //incoming call from the main process
+  // incoming call from the main process
   const allWindows = BrowserWindow.getAllWindows();
 
   return loadExistingWindow(allWindows, PRIVACY_POLICY_PAGE_TITLE)
@@ -161,7 +160,7 @@ export const privacyPolicyWindow = (isRenderedPage = false) => {
       return _privacyPolicyWindow;
     }
 
-    //show the existing _privacyPolicyWindow
+    // show the existing _privacyPolicyWindow
     const _privacyPolicyWindowTemp = privacyPolicyCreateWindow(isRenderedPage);
     if (!_privacyPolicyWindowTemp) {
       return _privacyPolicyWindow;
@@ -174,7 +173,7 @@ export const privacyPolicyWindow = (isRenderedPage = false) => {
       _privacyPolicyWindow.focus();
     });
 
-    _privacyPolicyWindow.onerror = (error, url, line) => {
+    _privacyPolicyWindow.onerror = error => {
       log.error(error, `createWindows -> privacyPolicyWindow -> onerror`);
     };
 
@@ -190,7 +189,7 @@ export const privacyPolicyWindow = (isRenderedPage = false) => {
 
 const loadExistingWindow = (allWindows, title) => {
   if (!undefinedOrNull(allWindows)) {
-    for (let i in allWindows) {
+    for (let i = 0; i < allWindows.length; i += 1) {
       const item = allWindows[i];
       if (item.getTitle().indexOf(title) !== -1) {
         item.focus();

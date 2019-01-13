@@ -1,6 +1,6 @@
 'use strict';
 
-import { dialog, BrowserWindow, remote, ipcMain } from 'electron';
+import { dialog, BrowserWindow, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import { isConnected } from '../utils/isOnline';
 import { log } from '../utils/log';
@@ -64,11 +64,11 @@ const fireProgressbar = () => {
       progressbarWindow.focus();
     });
 
-    progressbarWindow.on('closed', function() {
+    progressbarWindow.on('closed', () => {
       progressbarWindow = null;
     });
 
-    progressbarWindow.onerror = (error, url, line) => {
+    progressbarWindow.onerror = error => {
       log.error(error, `AppUpdate -> progressbarWindow -> onerror`);
     };
   } catch (e) {
@@ -209,22 +209,25 @@ export default class AppUpdate {
         return;
       }
 
-      isConnected().then(connected => {
-        if (!connected) {
-          return null;
-        }
+      isConnected()
+        .then(connected => {
+          if (!connected) {
+            return null;
+          }
 
-        if (this.updateIsActive === 1 || this.disableAutoUpdateCheck) {
-          return null;
-        }
+          if (this.updateIsActive === 1 || this.disableAutoUpdateCheck) {
+            return null;
+          }
 
-        this.autoUpdater.on('update-not-available', () => {
-          this.updateIsActive = 0;
-        });
+          this.autoUpdater.on('update-not-available', () => {
+            this.updateIsActive = 0;
+          });
 
-        this.autoUpdater.checkForUpdates();
-        this.updateIsActive = 1;
-      });
+          this.autoUpdater.checkForUpdates();
+          this.updateIsActive = 1;
+          return true;
+        })
+        .catch(() => {});
     } catch (e) {
       log.error(e, `AppUpdate -> checkForUpdates`);
     }
@@ -269,7 +272,9 @@ export default class AppUpdate {
 
       if (this.updateIsActive === 1) {
         return null;
-      } else if (this.updateIsActive === -1) {
+      }
+
+      if (this.updateIsActive === -1) {
         dialog.showMessageBox(
           {
             title: 'Update in progress',
@@ -303,27 +308,30 @@ export default class AppUpdate {
 
   setCheckUpdatesProgress() {
     try {
-      isConnected().then(connected => {
-        if (!connected) {
-          this.spitMessageDialog(
-            'Checking For Updates',
-            'Internet connection is unavailable.'
-          );
-          return null;
-        }
+      isConnected()
+        .then(connected => {
+          if (!connected) {
+            this.spitMessageDialog(
+              'Checking For Updates',
+              'Internet connection is unavailable.'
+            );
+            return null;
+          }
 
-        fireProgressbar();
-        this.setTaskBarProgressBar(2);
+          fireProgressbar();
+          this.setTaskBarProgressBar(2);
 
-        progressbarWindow.webContents.once('dom-ready', () => {
-          progressbarWindow.webContents.send('progressBarDataCommunication', {
-            progressTitle: `Checking For Updates`,
-            progressBodyText: `Please wait...`,
-            value: 0,
-            variant: `indeterminate`
+          progressbarWindow.webContents.once('dom-ready', () => {
+            progressbarWindow.webContents.send('progressBarDataCommunication', {
+              progressTitle: `Checking For Updates`,
+              progressBodyText: `Please wait...`,
+              value: 0,
+              variant: `indeterminate`
+            });
           });
-        });
-      });
+          return true;
+        })
+        .catch(() => {});
     } catch (e) {
       log.error(e, `AppUpdate -> setCheckUpdatesProgress`);
     }
@@ -331,19 +339,22 @@ export default class AppUpdate {
 
   initDownloadUpdatesProgress() {
     try {
-      isConnected().then(connected => {
-        if (!connected) {
-          this.spitMessageDialog(
-            'Downloading Updates',
-            'Internet connection is unavailable.'
-          );
-          return null;
-        }
+      isConnected()
+        .then(connected => {
+          if (!connected) {
+            this.spitMessageDialog(
+              'Downloading Updates',
+              'Internet connection is unavailable.'
+            );
+            return null;
+          }
 
-        fireProgressbar();
-        this.domReadyFlag = false;
-        this.setUpdateProgressWindow({ value: 0 });
-      });
+          fireProgressbar();
+          this.domReadyFlag = false;
+          this.setUpdateProgressWindow({ value: 0 });
+          return true;
+        })
+        .catch(() => {});
     } catch (e) {
       log.error(e, `AppUpdate -> initDownloadUpdatesProgress`);
     }
@@ -351,10 +362,10 @@ export default class AppUpdate {
 
   setUpdateProgressWindow({ value = 0 }) {
     try {
-      let data = {
+      const data = {
         progressTitle: `Downloading Updates`,
         progressBodyText: `Please wait...`,
-        value: value,
+        value,
         variant: `determinate`
       };
 
@@ -434,8 +445,8 @@ export default class AppUpdate {
       case 'message':
         dialog.showMessageBox(
           {
-            title: title,
-            message: message,
+            title,
+            message,
             buttons: ['Close']
           },
           buttonIndex => {

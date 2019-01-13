@@ -1,7 +1,6 @@
 'use strict';
 
 import React, { PureComponent } from 'react';
-import { styles } from '../styles/FileExplorerTableHeadRender';
 import { withStyles } from '@material-ui/core/styles';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
@@ -9,6 +8,7 @@ import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Tooltip from '@material-ui/core/Tooltip';
+import { styles } from '../styles/FileExplorerTableHeadRender';
 
 const rows = [
   {
@@ -32,10 +32,6 @@ const rows = [
 ];
 
 class FileExplorerTableHeadRender extends PureComponent {
-  constructor(props) {
-    super(props);
-  }
-
   createSortHandler = property => event => {
     const { onRequestSort } = this.props;
 

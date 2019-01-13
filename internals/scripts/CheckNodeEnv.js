@@ -8,7 +8,7 @@ export default function CheckNodeEnv(expectedEnv) {
   }
 
   if (process.env.NODE_ENV !== expectedEnv) {
-    console.info(
+    console.log(
       chalk.whiteBright.bgRed.bold(
         `"process.env.NODE_ENV" must be "${expectedEnv}" to use this webpack config`
       )

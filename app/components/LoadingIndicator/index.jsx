@@ -1,7 +1,7 @@
 import React from 'react';
-import { styles } from './styles';
 import { withStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { styles } from './styles';
 
 function LoadingIndicator(props) {
   const { classes: styles } = props;

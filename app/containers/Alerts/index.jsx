@@ -1,28 +1,26 @@
 'use strict';
 
 import React, { Component } from 'react';
-import Snackbars from '../../components/Snackbars';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withReducer } from '../../store/reducers/withReducer';
 import reducers from './reducers';
 import { clearAlert } from './actions';
+import Snackbars from '../../components/Snackbars';
 
 class Alerts extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  handleClose = event => {
-    this.props.clearAlert();
+  handleClose = () => {
+    const { clearAlert } = this.props;
+    clearAlert();
   };
 
   render() {
-    const { message, variant, autoHideDuration } = this.props.Alerts;
+    const { Alerts } = this.props;
+    const { message, variant, autoHideDuration } = Alerts;
     return (
       message && (
         <Snackbars
-          OnSnackBarsCloseAlerts={a => this.handleClose()}
+          OnSnackBarsCloseAlerts={() => this.handleClose()}
           message={message}
           variant={variant}
           autoHideDuration={autoHideDuration}
@@ -35,7 +33,7 @@ class Alerts extends Component {
 const mapDispatchToProps = (dispatch, ownProps) =>
   bindActionCreators(
     {
-      clearAlert: (message, event) => (_, getState) => {
+      clearAlert: () => (_, getState) => {
         dispatch(clearAlert());
       }
     },

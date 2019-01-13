@@ -3,6 +3,7 @@
 import React from 'react';
 import { object } from 'prop-types';
 
+/* eslint-disable */
 const withReducer = (key, reducer) => WrappedComponent => {
   const Extended = (props, context) => {
     context.store.injectReducer(key, reducer);
@@ -15,5 +16,5 @@ const withReducer = (key, reducer) => WrappedComponent => {
 
   return Extended;
 };
-
+/* eslint-enable */
 export { withReducer };

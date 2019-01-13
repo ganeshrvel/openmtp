@@ -14,11 +14,8 @@ import chalk from 'chalk';
 import merge from 'webpack-merge';
 import { spawn, execSync } from 'child_process';
 import baseConfig from './config.base';
-import CheckNodeEnv from '../internals/scripts/CheckNodeEnv';
 import { PATHS } from '../app/utils/paths';
 import { PORT } from '../config/env';
-
-CheckNodeEnv('development');
 
 const publicPath = `http://localhost:${PORT}/dist`;
 const dll = path.resolve(PATHS.root, 'dll');
@@ -209,7 +206,7 @@ export default merge.smart(baseConfig, {
       ? null
       : new webpack.DllReferencePlugin({
           context: PATHS.root,
-          manifest: require(manifest),
+          manifest: require(manifest), // eslint-disable-line
           sourceType: 'var'
         }),
 

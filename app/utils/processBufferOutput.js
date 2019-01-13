@@ -1,8 +1,8 @@
 'use strict';
 
+import { EOL } from 'os';
 import { replaceBulk } from './funcs';
 import { log } from './log';
-import { EOL } from 'os';
 
 export const processMtpBuffer = ({ error, stderr }) => {
   const errorTpl = {
@@ -61,7 +61,7 @@ export const processMtpBuffer = ({ error, stderr }) => {
   );
 
   if (
-    /*No MTP device found*/
+    /* No MTP device found */
     noMtpError
   ) {
     return {
@@ -70,8 +70,9 @@ export const processMtpBuffer = ({ error, stderr }) => {
       logError: false,
       status: false
     };
-  } else if (
-    /*MTP device may be locked*/
+  }
+  if (
+    /* MTP device may be locked */
     checkError('deviceLocked')
   ) {
     return {
@@ -80,8 +81,9 @@ export const processMtpBuffer = ({ error, stderr }) => {
       logError: true,
       status: false
     };
-  } else if (
-    /*error: Get: invalid response code InvalidObjectHandle (0x2009)*/
+  }
+  if (
+    /* error: Get: invalid response code InvalidObjectHandle (0x2009) */
     checkError('invalidObjectHandle')
   ) {
     return {
@@ -90,8 +92,9 @@ export const processMtpBuffer = ({ error, stderr }) => {
       logError: true,
       status: false
     };
-  } else if (
-    /*error: Get: invalid response code InvalidStorageID*/
+  }
+  if (
+    /* error: Get: invalid response code InvalidStorageID */
     checkError('invalidStorageID')
   ) {
     return {
@@ -100,8 +103,9 @@ export const processMtpBuffer = ({ error, stderr }) => {
       logError: true,
       status: false
     };
-  } else if (
-    /*error: (*interface)->WritePipe(interface, ep->GetRefIndex(), buffer.data(), r): error 0xe00002eb*/
+  }
+  if (
+    /* error: (*interface)->WritePipe(interface, ep->GetRefIndex(), buffer.data(), r): error 0xe00002eb */
     checkError('writePipe')
   ) {
     return {
@@ -110,8 +114,9 @@ export const processMtpBuffer = ({ error, stderr }) => {
       logError: true,
       status: false
     };
-  } else if (
-    /*MTP storage not accessible*/
+  }
+  if (
+    /* MTP storage not accessible */
     checkError('mtpStorageNotAccessible1') ||
     checkError('mtpStorageNotAccessible2')
   ) {
@@ -121,8 +126,9 @@ export const processMtpBuffer = ({ error, stderr }) => {
       logError: true,
       status: false
     };
-  } else if (
-    /*Path not found*/
+  }
+  if (
+    /* Path not found */
     checkError('fileNotFound')
   ) {
     return {
@@ -131,8 +137,9 @@ export const processMtpBuffer = ({ error, stderr }) => {
       logError: true,
       status: true
     };
-  } else if (
-    /*No such file or directory*/
+  }
+  if (
+    /* No such file or directory */
     checkError('noSuchFiles')
   ) {
     return {
@@ -141,8 +148,9 @@ export const processMtpBuffer = ({ error, stderr }) => {
       logError: true,
       status: true
     };
-  } else if (
-    /*No files selected*/
+  }
+  if (
+    /* No files selected */
     checkError('noFilesSelected') ||
     checkError('invalidPath')
   ) {
@@ -152,8 +160,9 @@ export const processMtpBuffer = ({ error, stderr }) => {
       logError: true,
       status: true
     };
-  } else if (
-    /*No files selected*/
+  }
+  if (
+    /* No files selected */
     checkError('partialDeletion')
   ) {
     return {
@@ -162,15 +171,14 @@ export const processMtpBuffer = ({ error, stderr }) => {
       logError: true,
       status: true
     };
-  } else {
-    /*common errors*/
-    return {
-      error: errorDictionary.common,
-      throwAlert: true,
-      logError: true,
-      status: true
-    };
   }
+  /* common errors */
+  return {
+    error: errorDictionary.common,
+    throwAlert: true,
+    logError: true,
+    status: true
+  };
 };
 
 export const processLocalBuffer = ({ error, stderr }) => {
@@ -219,7 +227,7 @@ export const processLocalBuffer = ({ error, stderr }) => {
   );
 
   if (
-    /*No Permission*/
+    /* No Permission */
     checkError('noPerm1') ||
     checkError('noPerm2')
   ) {
@@ -228,8 +236,9 @@ export const processLocalBuffer = ({ error, stderr }) => {
       throwAlert: true,
       logError: true
     };
-  } else if (
-    /*Command failed*/
+  }
+  if (
+    /* Command failed */
     checkError('commandFailed')
   ) {
     return {
@@ -237,8 +246,9 @@ export const processLocalBuffer = ({ error, stderr }) => {
       throwAlert: true,
       logError: true
     };
-  } else if (
-    /*No such file or directory*/
+  }
+  if (
+    /* No such file or directory */
     checkError('noSuchFiles')
   ) {
     return {
@@ -247,8 +257,9 @@ export const processLocalBuffer = ({ error, stderr }) => {
       logError: true,
       status: true
     };
-  } else if (
-    /*Resource busy or locked*/
+  }
+  if (
+    /* Resource busy or locked */
     checkError('resourceBusy')
   ) {
     return {
@@ -256,22 +267,21 @@ export const processLocalBuffer = ({ error, stderr }) => {
       throwAlert: true,
       logError: true
     };
-  } else {
-    /*common errors*/
-    return {
-      error: errorDictionary.common,
-      throwAlert: true,
-      logError: true
-    };
   }
+  /* common errors */
+  return {
+    error: errorDictionary.common,
+    throwAlert: true,
+    logError: true
+  };
 };
 
 const sanitizeErrors = string => {
   if (string === null) {
     return `Oops.. Try again`;
   }
-  string = string.replace(/^(error: )/, '').trim();
-  string = replaceBulk(string, ['error:', 'stat failed:'], ['', '']).trim();
+  string = string.replace(/^(error: )/, '').trim(); // eslint-disable-line no-param-reassign
+  string = replaceBulk(string, ['error:', 'stat failed:'], ['', '']).trim(); // eslint-disable-line no-param-reassign
 
   return string.charAt(0).toUpperCase() + string.slice(1);
 };

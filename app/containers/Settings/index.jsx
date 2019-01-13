@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { styles } from './styles';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { styles } from './styles';
 import { withReducer } from '../../store/reducers/withReducer';
 import reducers from './reducers';
 import {
@@ -29,10 +29,6 @@ import {
 import SettingsDialog from './components/SettingsDialog';
 
 class Settings extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   _handleDialogBoxCloseBtnClick = ({ confirm = false }) => {
     const { freshInstall } = this.props;
     this._handleToggleSettings(confirm);
@@ -74,13 +70,7 @@ class Settings extends Component {
   };
 
   _handleFileExplorerListingType = ({ ...args }, deviceType) => {
-    const {
-      hideHiddenFiles,
-      handleFileExplorerListingType,
-      handleReloadDirList,
-      mtpStoragesList,
-      currentBrowsePath
-    } = this.props;
+    const { handleFileExplorerListingType } = this.props;
 
     handleFileExplorerListingType({ ...args }, deviceType);
   };

@@ -1,13 +1,17 @@
 import React, { PureComponent } from 'react';
-import { styles } from './styles';
 import Snackbar from '@material-ui/core/Snackbar';
 import { withStyles } from '@material-ui/core/styles';
 import SnackbarThemeWrapper from './components/SnackbarThemeWrapper';
+import { styles } from './styles';
 
 class Snackbars extends PureComponent {
   constructor(props) {
     super(props);
     this.snackbarOpen = false;
+  }
+
+  componentWillMount() {
+    this.fireSnackbar();
   }
 
   fireSnackbar = () => {
@@ -23,10 +27,6 @@ class Snackbars extends PureComponent {
     this.snackbarOpen = false;
     OnSnackBarsCloseAlerts();
   };
-
-  componentWillMount() {
-    this.fireSnackbar();
-  }
 
   render() {
     const { classes: styles, message, variant, autoHideDuration } = this.props;

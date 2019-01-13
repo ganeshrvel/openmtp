@@ -1,22 +1,25 @@
 'use strict';
 
 import React, { Component } from 'react';
+import { log } from '@Log';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import {
+  MuiThemeProvider,
+  createMuiTheme,
+  withStyles
+} from '@material-ui/core/styles';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { IS_PROD } from '../../constants/env';
 import { theme, styles } from './styles';
 import Alerts from '../Alerts';
 import Titlebar from './components/Titlebar';
 import ErrorBoundary from '../ErrorBoundary';
-import { log } from '@Log';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-import { withStyles } from '@material-ui/core/styles';
 import Routes from '../../routing';
 import { bootLoader } from '../../utils/bootHelper';
 import { settingsStorage } from '../../utils/storageHelper';
 import SettingsDialog from '../Settings';
 import { withReducer } from '../../store/reducers/withReducer';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import reducers from './reducers';
 import { copyJsonFileToSettings, freshInstall } from '../Settings/actions';
 import { analytics } from '../../utils/analyticsHelper';
@@ -62,24 +65,23 @@ class App extends Component {
       switch (isFreshInstallSettings.freshInstall) {
         case undefined:
         case null:
-          //app was just installed
+          // app was just installed
           isFreshInstall = 1;
           break;
         case 1:
-          //second boot after installation
+          // second boot after installation
           isFreshInstall = 0;
           break;
         case -1:
-          //isFreshInstall was reset
+          // isFreshInstall was reset
           isFreshInstall = 1;
           break;
         case 0:
         default:
-          //more than 2 boot ups have occured
+          // more than 2 boot ups have occured
           isFreshInstall = 0;
           this.allowWritingJsonToSettings = true;
           return null;
-          break;
       }
 
       _freshInstall({ isFreshInstall });
@@ -104,10 +106,14 @@ class App extends Component {
     ]);
     try {
       if (isAnalyticsEnabledSettings.enableAnalytics && IS_PROD) {
-        isConnected().then(connected => {
-          analytics.send('screenview', { cd: '/Home' });
-          analytics.send(`pageview`, { dp: '/Home' });
-        });
+        isConnected()
+          .then(connected => {
+            analytics.send('screenview', { cd: '/Home' });
+            analytics.send(`pageview`, { dp: '/Home' });
+
+            return connected;
+          })
+          .catch(() => {});
       }
     } catch (e) {
       log.error(e, `App -> runAnalytics`);

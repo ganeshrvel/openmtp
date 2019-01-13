@@ -1,4 +1,7 @@
 'use strict';
+
+/* eslint global-require: off, import/no-dynamic-require: 0, prefer-template: 0 */
+
 import { ALLOWED_GITHUB_FETCH_STATUSES } from './consts';
 
 /**
@@ -27,14 +30,14 @@ export const fetchUrl = ({ url }) => {
 
       return null;
     })
-    .catch(e => {});
+    .catch(() => {});
 };
 
 export const imageLoaded = src => {
   return new Promise(resolve => {
     const img = new Image();
-    img.onload = () => resolve({ src: src, status: 'ok' });
-    img.onerror = () => resolve({ src: src, status: 'error' });
+    img.onload = () => resolve({ src, status: 'ok' });
+    img.onerror = () => resolve({ src, status: 'error' });
 
     img.src = src;
   });
@@ -42,11 +45,12 @@ export const imageLoaded = src => {
 
 export const urls = {
   get({ param = '', url = '' }) {
-    let data = {};
+    const data = {};
     if (url === '') {
-      url = window.location.href;
+      url = window.location.href; // eslint-disable-line no-param-reassign
     }
-    url.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m, key, value) {
+
+    url.replace(/[?&]+([^=&]+)=([^&]*)/gi, (m, key, value) => {
       data[key] = decodeURI(value);
     });
 
@@ -61,26 +65,24 @@ export const urls = {
 
   getUrlWithoutHash({ url = '' }) {
     if (url !== '') {
-      let hash = url.split('#')[0];
+      const hash = url.split('#')[0];
       if (hash) {
         return hash;
-      } else {
-        return null;
       }
+      return null;
     }
     return window.location.href.split('#')[0];
   },
 
   getHash({ url = '' }) {
     if (url !== '') {
-      let hash = url.split('#')[1];
+      const hash = url.split('#')[1];
       if (hash) {
         return hash;
-      } else {
-        return null;
       }
+      return null;
     }
-    return location.hash.replace('#', '').trim();
+    return location.hash.replace('#', '').trim(); // eslint-disable-line no-restricted-globals
   },
 
   parseHash({ param = '', url = '' }) {
@@ -88,15 +90,15 @@ export const urls = {
     if (url !== '') {
       urlDATA = url;
     }
-    let hash = urls.getHash({ url: urlDATA });
+    const hash = urls.getHash({ url: urlDATA });
     if (hash === '') {
       return null;
     }
-    let pieces = hash.split('&'),
-      data = {},
-      i,
-      parts;
-    for (i = 0; i < pieces.length; i++) {
+    const pieces = hash.split('&');
+    const data = {};
+    let i;
+    let parts;
+    for (i = 0; i < pieces.length; i += 1) {
       parts = pieces[i].split('=');
       if (parts.length < 2) {
         parts.push('');

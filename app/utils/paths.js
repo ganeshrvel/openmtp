@@ -6,12 +6,12 @@
  */
 
 import { join, parse, resolve } from 'path';
-import { isPackaged } from '../utils/isPackaged';
 import { homedir as homedirOs } from 'os';
-import { IS_DEV, IS_PROD } from '../constants/env';
+import url from 'url';
+import { isPackaged } from './isPackaged';
+import { IS_DEV } from '../constants/env';
 import { yearMonthNow } from './date';
 import { APP_IDENTIFIER, APP_NAME } from '../constants/meta';
-import url from 'url';
 
 const root = process.cwd();
 const appPath = join(root, `./app`);

@@ -45,9 +45,7 @@ export const readFileSync = filePath => {
   return _readFileSync(filePath, options);
 };
 
-export const fileExistsSync = filePath => {
-  return _existsSync(filePath);
-};
+export const fileExistsSync = filePath => _existsSync(filePath);
 
 export const createDirSync = newFolderPath => {
   mkdirp.sync(newFolderPath);

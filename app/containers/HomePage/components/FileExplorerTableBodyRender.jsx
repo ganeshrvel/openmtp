@@ -1,7 +1,6 @@
 'use strict';
 
 import React, { PureComponent } from 'react';
-import { styles } from '../styles/FileExplorerTableBodyRender';
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -10,12 +9,9 @@ import FileExplorerTableEmptyRowRender from './FileExplorerTableBodyEmptyRender'
 import { DEVICES_TYPE_CONST } from '../../../constants';
 import FileExplorerTableBodyGridWrapperRender from './FileExplorerTableBodyGridWrapperRender';
 import FileExplorerTableBodyListWrapperRender from './FileExplorerTableBodyListWrapperRender';
+import { styles } from '../styles/FileExplorerTableBodyRender';
 
 class FileExplorerTableBodyRender extends PureComponent {
-  constructor(props) {
-    super(props);
-  }
-
   isSelected = path => {
     const { directoryLists, deviceType } = this.props;
     const _directoryLists = directoryLists[deviceType].queue.selected;
@@ -27,6 +23,8 @@ class FileExplorerTableBodyRender extends PureComponent {
     const { deviceType, directoryLists, tableSort } = this.props;
     const { nodes, order, orderBy } = directoryLists[deviceType];
     const _eventTarget = 'tableCellTarget';
+
+    // eslint-disable-next-line  no-unused-vars
     const { classes, ...parentProps } = this.props;
 
     switch (type) {
@@ -44,7 +42,6 @@ class FileExplorerTableBodyRender extends PureComponent {
             isSelected={this.isSelected}
           />
         );
-        break;
 
       case 'list':
         return (
@@ -59,7 +56,6 @@ class FileExplorerTableBodyRender extends PureComponent {
             isSelected={this.isSelected}
           />
         );
-        break;
     }
   };
 

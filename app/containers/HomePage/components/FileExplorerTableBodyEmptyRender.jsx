@@ -1,18 +1,14 @@
 'use strict';
 
 import React, { PureComponent } from 'react';
-import { styles } from '../styles/FileExplorerTableBodyEmptyRender';
 import { withStyles } from '@material-ui/core/styles';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
+import { styles } from '../styles/FileExplorerTableBodyEmptyRender';
 
 class FileExplorerTableBodyEmptyRender extends PureComponent {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const {
       classes: styles,
@@ -47,18 +43,19 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
                 <li>Unlock your Android device.</li>
                 <li>With a USB cable, connect your device to your computer.</li>
                 <li>
-                  On your device, tap the "Charging this device via USB"
-                  notification.
+                  On your device, tap the &quot;Charging this device via
+                  USB&quot; notification.
                 </li>
-                <li>Under "Use USB for" select File Transfer.</li>
+                <li>Under &quot;Use USB for&quot; select File Transfer.</li>
                 <li>Click Refresh Button above.</li>
                 <li>
                   Reconnect the cable and repeat all the above steps if you keep
                   seeing this message.
                 </li>
                 <li>
-                  Uninstall or disable "Google Android File Transfer" app if it
-                  keeps popping up everytime you connect the MTP device.
+                  Uninstall or disable &quot;Google Android File Transfer&quot;
+                  app if it keeps popping up everytime you connect the MTP
+                  device.
                 </li>
               </ul>
             </Paper>

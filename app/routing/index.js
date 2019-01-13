@@ -34,16 +34,14 @@ export const routes = {
   }
 };
 
-export default () => {
-  return (
-    <Switch>
-      {Object.keys(routes).map(a => (
-        <Route
-          key={routes[a].path || 'notfound'}
-          {...routes[a]}
-          component={routes[a].component}
-        />
-      ))}
-    </Switch>
-  );
-};
+export default () => (
+  <Switch>
+    {Object.keys(routes).map(a => (
+      <Route
+        key={routes[a].path || 'notfound'}
+        {...routes[a]}
+        component={routes[a].component}
+      />
+    ))}
+  </Switch>
+);

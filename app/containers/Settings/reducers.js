@@ -1,4 +1,5 @@
 'use strict';
+
 import { actionTypes } from './actions';
 import { DEVICES_TYPE_CONST } from '../../constants';
 
@@ -19,6 +20,7 @@ export const initialState = {
 };
 
 export default function Settings(state = initialState, action) {
+  // eslint-disable-next-line prefer-const
   let { type, payload, deviceType = null } = action;
   switch (type) {
     case actionTypes.FRESH_INSTALL:

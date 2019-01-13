@@ -1,6 +1,7 @@
 'use strict';
+
 import { log } from '@Log';
-import prefixer from '../../utils/reducerPrefixer.js';
+import prefixer from '../../utils/reducerPrefixer';
 import omitLodash from 'lodash/omit';
 import { settingsStorage } from '../../utils/storageHelper';
 

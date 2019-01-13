@@ -1,5 +1,6 @@
 'use strict';
-import prefixer from '../../utils/reducerPrefixer.js';
+
+import prefixer from '../../utils/reducerPrefixer';
 import {
   asyncReadLocalDir,
   asyncReadMtpDir,
@@ -82,10 +83,10 @@ export function getMtpStoragesListSelected(state) {
     return null;
   }
 
-  const mtpStoragesList = state.mtpStoragesList;
+  const { mtpStoragesList } = state;
   const mtpStoragesListKeys = Object.keys(mtpStoragesList);
 
-  for (let i in mtpStoragesListKeys) {
+  for (let i = 0; i < mtpStoragesListKeys.length; i += 1) {
     const itemKey = mtpStoragesListKeys[i];
     if (mtpStoragesList[itemKey].selected) {
       return itemKey;
@@ -110,7 +111,7 @@ export function setMtpStorageOptions(
           error,
           stderr,
           data,
-          callback: a => {
+          callback: () => {
             let changeMtpIdsFlag = true;
             if (
               Object.keys(deviceChangeCheck).length > 0 &&
@@ -155,7 +156,7 @@ export function processMtpOutput({
   deviceType,
   error,
   stderr,
-  data,
+  data, // eslint-disable-line no-unused-vars
   callback
 }) {
   return dispatch => {
@@ -190,10 +191,10 @@ export function processMtpOutput({
 }
 
 export function processLocalOutput({
-  deviceType,
+  deviceType, // eslint-disable-line no-unused-vars
   error,
   stderr,
-  data,
+  data, // eslint-disable-line no-unused-vars
   callback
 }) {
   return dispatch => {
@@ -240,7 +241,6 @@ export function fetchDirList({ ...args }, deviceType, getState) {
           dispatch(setSelectedDirLists({ selected: [] }, deviceType));
         };
 
-        break;
       case DEVICES_TYPE_CONST.mtp:
         return async dispatch => {
           const mtpStoragesListSelected = getMtpStoragesListSelected(
@@ -258,7 +258,7 @@ export function fetchDirList({ ...args }, deviceType, getState) {
               error,
               stderr,
               data,
-              callback: a => {
+              callback: () => {
                 dispatch(_fetchDirList(data, deviceType));
                 dispatch(setSelectedDirLists({ selected: [] }, deviceType));
                 dispatch(setCurrentBrowsePath(args.filePath, deviceType));
@@ -267,7 +267,6 @@ export function fetchDirList({ ...args }, deviceType, getState) {
           );
         };
 
-        break;
       default:
         break;
     }
