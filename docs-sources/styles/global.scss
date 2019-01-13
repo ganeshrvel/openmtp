@@ -1,10 +1,14 @@
 @import 'base/base';
 
+/*Paddings*/
+$paddingNonFlex: 50px 0;
 $mobileMaxWidth: 639;
 $nonMobileMinWidth: 640;
+$minHeightFor100vh: 480;
 
 /*Colors*/
 $whiteColor: #ffffff;
+$blackColor: #000000;
 $macWindowDarkBgColor: #292a2b;
 $syntaxHighlighterColor: rgb(221, 221, 221);
 $syntaxHighlighterStringColor: #ffeb3b;
@@ -13,16 +17,13 @@ $boxShadow2: 0 0 0 0 rgba(0, 0, 0, 0.3), 0 23px 38px 0 rgba(0, 0, 0, 0.43),
   0 25px 65px 0 rgba(0, 0, 0, 0.1);
 $boxShadowMacWindow: rgba(0, 0, 0, 0.55) 0 20px 68px;
 
-/*Paddings*/
-$paddingNonFlex: 50px 0;
-
 /* Btns */
 $btn-names-list: download-btn navigate-to-github;
 
 //btns for light mode
 $background-color-list: transparent transparent;
-$color-list: $appSecondaryColor #000000;
-$border-color-list: $appSecondaryColor #000000;
+$color-list: $appSecondaryColor $blackColor;
+$border-color-list: $appSecondaryColor $blackColor;
 
 $background-color-active-hover-list: transparent transparent;
 $border-color-active-hover-list: #606c76 #606c76;
@@ -204,11 +205,11 @@ pre {
 section.first {
   background: linear-gradient(45deg, $appSecondaryColor 0%, #0080ff 100%);
   .item-left {
-    @include item-align();
     position: relative;
 
     //for mobile devices
     @media (max-width:#{$mobileMaxWidth}px) {
+      @include item-align();
       @include horz-vert-center();
       h1.heading {
         margin-bottom: 45px;
@@ -229,6 +230,10 @@ section.first {
 
     //for non-mobile devices
     @media (min-width:#{$nonMobileMinWidth}px) {
+      //only use 100vh when min-height of vp is greater than a certain value
+      @media (min-height: #{$minHeightFor100vh}px) {
+        @include item-align();
+      }
       @include horz-vert-center(false);
 
       h1.heading,
@@ -258,7 +263,14 @@ section.first {
 
     //for non-mobile devices
     @media (min-width:#{$nonMobileMinWidth}px) {
-      @include item-align();
+      //only use 100vh when min-height of vp is greater than a certain value
+      @media (min-height: #{$minHeightFor100vh}px) {
+        @include item-align();
+      }
+
+      @media (max-height: #{$minHeightFor100vh - 1}px) {
+        padding: $paddingNonFlex;
+      }
     }
 
     .mac-window {
@@ -466,7 +478,24 @@ section.second {
 
 footer {
   background: linear-gradient(45deg, #ff5d50 0%, #ff5d50 100%);
-  height: 100vh;
+
+  //for mobile devices
+  @media (max-width:#{$mobileMaxWidth}px) {
+    @include item-align();
+  }
+
+  //for non-mobile devices
+  @media (min-width:#{$nonMobileMinWidth}px) {
+    //only use 100vh when min-height of vp is greater than a certain value
+    @media (min-height: #{$minHeightFor100vh}px) {
+      @include item-align();
+    }
+
+    @media (max-height: #{$minHeightFor100vh - 1}px) {
+      padding: $paddingNonFlex;
+    }
+  }
+
   @include horz-vert-center();
   .footer-wrapper {
     height: 70%;
