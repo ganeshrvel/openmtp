@@ -24,7 +24,13 @@ const baseConfig = {
       template: './docs-sources/templates/index.html',
       inject: true,
       chunks: ['index'],
-      filename: 'index.html'
+      filename: 'index.html',
+      minify: {
+        collapseWhitespace: true,
+        removeComments: true,
+        minifyJS: true,
+        minifyCSS: true
+      }
     })
   ],
   module: {
