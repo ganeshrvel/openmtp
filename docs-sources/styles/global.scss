@@ -2,13 +2,19 @@
 
 $mobileMaxWidth: 639;
 $nonMobileMinWidth: 640;
-$macWindowBgColor: #292a2b;
+
+/*Colors*/
+$whiteColor: #ffffff;
+$macWindowDarkBgColor: #292a2b;
 $syntaxHighlighterColor: rgb(221, 221, 221);
 $syntaxHighlighterStringColor: #ffeb3b;
 $boxShadowColor1: #004977;
 $boxShadow2: 0 0 0 0 rgba(0, 0, 0, 0.3), 0 23px 38px 0 rgba(0, 0, 0, 0.43),
   0 25px 65px 0 rgba(0, 0, 0, 0.1);
 $boxShadowMacWindow: rgba(0, 0, 0, 0.55) 0 20px 68px;
+
+/*Paddings*/
+$paddingNonFlex: 50px 0;
 
 /* Btns */
 $btn-names-list: download-btn navigate-to-github;
@@ -23,14 +29,14 @@ $border-color-active-hover-list: #606c76 #606c76;
 $color-active-hover-list: #606c76 #606c76;
 
 //btns for dark mode
-$background-color-list-dark: $appSecondaryColor #ffffff;
-$color-list-dark: #ffffff $appSecondaryColor;
-$border-color-list-dark: $appSecondaryColor #ffffff;
+$background-color-list-dark: $appSecondaryColor $whiteColor;
+$color-list-dark: $whiteColor $appSecondaryColor;
+$border-color-list-dark: $appSecondaryColor $whiteColor;
 
 $background-color-active-hover-list-dark: rgba(255, 255, 255, 0.32)
   rgba(255, 255, 255, 0.32);
-$border-color-active-hover-list-dark: #ffffff #ffffff;
-$color-active-hover-list-dark: #ffffff #ffffff;
+$border-color-active-hover-list-dark: $whiteColor $whiteColor;
+$color-active-hover-list-dark: $whiteColor $whiteColor;
 
 body {
   font-family: 'Roboto', sans-serif;
@@ -97,15 +103,16 @@ pre {
 }
 
 .spinner {
+  $spinnerBorderColor: 1.1em solid rgba(255, 255, 255, 0.2);
   margin-left: auto;
   margin-right: auto;
   font-size: 5px;
   position: relative;
   text-indent: -9999em;
-  border-top: 1.1em solid rgba(255, 255, 255, 0.2);
-  border-right: 1.1em solid rgba(255, 255, 255, 0.2);
-  border-bottom: 1.1em solid rgba(255, 255, 255, 0.2);
-  border-left: 1.1em solid #ffffff;
+  border-top: $spinnerBorderColor;
+  border-right: $spinnerBorderColor;
+  border-bottom: $spinnerBorderColor;
+  border-left: 1.1em solid $whiteColor;
   @include transform-1(translateZ(0));
   @include animation(spinner-animation 1.1s infinite linear);
 
@@ -142,11 +149,11 @@ pre {
   padding: 0;
   border-radius: 5px;
   overflow: hidden;
-  background: #ffffff;
+  background: $whiteColor;
   min-height: 300px;
 
   &.dark {
-    background: $macWindowBgColor !important;
+    background: $macWindowDarkBgColor !important;
 
     h1,
     h2,
@@ -156,7 +163,7 @@ pre {
     h6,
     p,
     a {
-      color: #fff;
+      color: $whiteColor;
     }
     a:hover,
     a:active {
@@ -206,15 +213,15 @@ section.first {
       h1.heading {
         margin-bottom: 45px;
         font-weight: 400;
-        color: #ffffff;
+        color: $whiteColor;
       }
       p.latest-version-link {
         margin-top: 45px;
-        color: #ffffff;
+        color: $whiteColor;
       }
       .github-latest-version-wrapper {
         a {
-          color: #ffffff;
+          color: $whiteColor;
           text-decoration: underline;
         }
       }
@@ -246,7 +253,7 @@ section.first {
 
     //for mobile devices
     @media (max-width:#{$mobileMaxWidth}px) {
-      padding: 50px 0;
+      padding: $paddingNonFlex;
     }
 
     //for non-mobile devices
@@ -345,7 +352,7 @@ section.first {
     }
   }
 }
-//padding: 50px 0 50px 0;
+
 section.second {
   background: linear-gradient(45deg, #263238 0%, #435b71 100%);
 
@@ -365,7 +372,7 @@ section.second {
 
     //for mobile devices
     @media (max-width:#{$mobileMaxWidth}px) {
-      padding: 50px 0;
+      padding: $paddingNonFlex;
     }
 
     //for non-mobile devices
@@ -393,7 +400,7 @@ section.second {
 
     //for mobile devices
     @media (max-width:#{$mobileMaxWidth}px) {
-      padding: 50px 0;
+      padding: $paddingNonFlex;
     }
 
     //for non-mobile devices
@@ -421,10 +428,10 @@ section.second {
         }
 
         span {
-          padding: 5px 60px 5px 18px;
+          padding: 6px 60px 6px 20px;
           line-height: 20px;
           background: $appSecondaryColor;
-          color: #fff;
+          color: $whiteColor;
           text-decoration: none;
           @include border-radius(0 8px 8px 0);
           @include box-shadow-1(0 0 2px $boxShadowColor1);
@@ -440,7 +447,7 @@ section.second {
             width: 10px;
             height: 10px;
             @include border-radius(5px);
-            background: #fff;
+            background: $whiteColor;
             @include box-shadow-1(-1px -1px 2px $boxShadowColor1);
           }
 
@@ -474,7 +481,7 @@ footer {
 
 pre::-webkit-scrollbar-track {
   border-radius: 0;
-  background-color: $macWindowBgColor;
+  background-color: $macWindowDarkBgColor;
 }
 
 pre::-webkit-scrollbar {
