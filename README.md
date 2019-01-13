@@ -102,7 +102,6 @@ $ yarn package-all
 - Industry standard State management.
 - JSS, SASS/SCSS styling.
 - Port assigned: **4642**
-- *Prettier* is used for maintaining code standards.
 
 ### Configurations
 - *config/env/env.dev.js* and *config/env/env.prod.js* contain the PORT number of the app.
@@ -147,9 +146,9 @@ $ set UPGRADE_EXTENSIONS=1 && npm run dev
 
 ### Contribute
 - Fork the repo and create your branch from master.
-- Make the necessary changes to the code. 
-- If you've changed APIs, update the documentation.
-- Ensure that the code is formatted using prettier.
+- Ensure that the changes pass linting.
+- Update the documentation if needed.
+- Make sure your code lints.
 - Issue a pull request!
 
 When you submit code changes, your submissions are understood to be under the same [MIT License](https://github.com/ganeshrvel/openmtp/blob/master/LICENSE "MIT License") that covers the project. Feel free to contact the maintainers if that's a concern.
