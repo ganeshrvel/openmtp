@@ -383,7 +383,7 @@ section.second {
         }
 
         span {
-          padding: 5px 60px 5px 12px;
+          padding: 5px 60px 5px 18px;
           background: $appSecondaryColor;
           color: #fff;
           text-decoration: none;
@@ -396,7 +396,7 @@ section.second {
             transform: translateY(-50%);
             content: '';
             position: absolute;
-            left: -5px;
+            left: 4px;
             float: left;
             width: 10px;
             height: 10px;
