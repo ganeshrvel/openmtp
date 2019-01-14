@@ -21,11 +21,11 @@ if (isPackaged) {
   if (electronIs.renderer()) {
     // renderer process - prod build
     root = join(__dirname, '..');
-  } else if (process.env.RUN_TYPE === 'dry') {
-    // main process - prod build (dry run)
+  } else if (!module.parent) {
+    // main process - prod build (case: run "start")
     root = join(__dirname, '..');
   } else {
-    // main process - prod build (compiling)
+    // main process - prod (case: run "build")
     root = join(__dirname, '..', '..');
   }
 } else if (electronIs.renderer()) {
