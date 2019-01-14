@@ -3,9 +3,9 @@
 import { app, Menu } from 'electron';
 import { privacyPolicyWindow, reportBugsWindow } from './utils/createWindows';
 import { DEBUG_PROD, IS_DEV } from './constants/env';
-import { APP_NAME } from './constants/meta';
+import { APP_NAME, APP_GITHUB_URL } from './constants/meta';
 import { openExternalUrl } from './utils/url';
-import { APP_GITHUB_URL, DONATE_PAYPAL_URL } from './constants';
+import { DONATE_PAYPAL_URL } from './constants';
 import { inviteViaEmail } from './templates/menu';
 
 export default class MenuBuilder {

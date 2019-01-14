@@ -1,7 +1,6 @@
 'use strict';
 
-import { APP_NAME } from '../constants/meta';
-import { APP_WEBSITE } from '../constants';
+import { APP_NAME, APP_WEBSITE } from '../constants/meta';
 
 const inviteViaEmailSubject = `Android File Transfer for macOS - OpenMTP`;
 

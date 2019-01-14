@@ -6,9 +6,6 @@
  */
 
 import { PATHS } from '../utils/paths';
-import { pkginfo } from '../utils/pkginfo';
-
-const { repository, homepage } = pkginfo;
 
 export const DEVICES_TYPE_CONST = { mtp: 'mtp', local: 'local' };
 
@@ -31,11 +28,5 @@ export const AUTO_UPDATE_CHECK_FIREUP_DELAY = 10000; // in ms
 export const FILE_EXPLORER_TABLE_TRUNCATE_MAX_CHARS = 37;
 
 export const FILE_EXPLORER_GRID_TRUNCATE_MAX_CHARS = 20;
-
-export const APP_GITHUB_URL = repository.url.replace(/.git$/, '');
-
-export const APP_GITHUB_RELEASES_URL = `${APP_GITHUB_URL}/releases`;
-
-export const APP_WEBSITE = `${homepage}`;
 
 export const DONATE_PAYPAL_URL = `https://paypal.me/ganeshrvel`;
