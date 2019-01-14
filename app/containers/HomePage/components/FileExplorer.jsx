@@ -862,7 +862,7 @@ class FileExplorer extends Component {
           label={rename.data.isFolder ? `New folder name` : `New file name`}
           id="renameDialog"
           required
-          multiline
+          multiline={false}
           fullWidthDialog
           maxWidthDialog="sm"
           fullWidthTextField
@@ -881,7 +881,7 @@ class FileExplorer extends Component {
           label="New folder name"
           id="newFolderDialog"
           required
-          multiline
+          multiline={false}
           fullWidthDialog
           maxWidthDialog="sm"
           fullWidthTextField
