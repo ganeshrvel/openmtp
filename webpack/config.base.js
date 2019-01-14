@@ -48,18 +48,10 @@ export default {
 
   plugins: [
     new webpack.EnvironmentPlugin({
-      NODE_ENV: 'production',
-      VERSION: JSON.stringify('Ganesh R')
+      NODE_ENV: 'production'
     }),
 
-    new webpack.DefinePlugin({
-      /*  PKG_NAME: JSON.stringify(pkg.name),
-      PKG_PRODUCT_NAME: JSON.stringify(pkg.productName),
-      PKG_DESCRIPTION: JSON.stringify(pkg.description),
-      PKG_AUTHOR: JSON.stringify(pkg.author),
-      PKG_REPOSITORY: JSON.stringify(pkg.repository),
-      PKG_HOMEPAGE: JSON.stringify(pkg.homepage) */
-    }),
+    new webpack.DefinePlugin({}),
 
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
 
