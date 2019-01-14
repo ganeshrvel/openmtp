@@ -12,8 +12,8 @@ import { isPackaged } from './isPackaged';
 import { IS_DEV } from '../constants/env';
 import { yearMonthNow } from './date';
 import { APP_IDENTIFIER, APP_NAME } from '../constants/meta';
+import { appRoot as root } from './getAppRoot';
 
-const root = process.cwd();
 const appPath = join(root, `./app`);
 const configDir = join(root, `./config`);
 const homeDir = homedirOs();
