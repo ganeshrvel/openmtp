@@ -1,16 +1,18 @@
 'use strict';
 
+/* eslint global-require: off */
+
 /**
  * Base webpack config used across other specific configs
  */
 
 import path from 'path';
 import webpack from 'webpack';
-import { dependencies } from '../package.json';
 import { PATHS } from '../app/utils/paths';
+import { pkginfo } from '../app/utils/pkginfo';
 
 export default {
-  externals: [...Object.keys(dependencies || {})],
+  externals: [...Object.keys(JSON.stringify(pkginfo.dependencies) || {})],
 
   module: {
     rules: [
@@ -46,7 +48,17 @@ export default {
 
   plugins: [
     new webpack.EnvironmentPlugin({
-      NODE_ENV: 'production'
+      NODE_ENV: 'production',
+      VERSION: JSON.stringify('Ganesh R')
+    }),
+
+    new webpack.DefinePlugin({
+      /*  PKG_NAME: JSON.stringify(pkg.name),
+      PKG_PRODUCT_NAME: JSON.stringify(pkg.productName),
+      PKG_DESCRIPTION: JSON.stringify(pkg.description),
+      PKG_AUTHOR: JSON.stringify(pkg.author),
+      PKG_REPOSITORY: JSON.stringify(pkg.repository),
+      PKG_HOMEPAGE: JSON.stringify(pkg.homepage) */
     }),
 
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),

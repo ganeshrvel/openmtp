@@ -6,7 +6,9 @@
  */
 
 import { PATHS } from '../utils/paths';
-import { repository, homepage } from '../../package.json';
+import { pkginfo } from '../utils/pkginfo';
+
+const { repository, homepage } = pkginfo;
 
 export const DEVICES_TYPE_CONST = { mtp: 'mtp', local: 'local' };
 

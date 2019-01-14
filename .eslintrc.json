@@ -63,6 +63,7 @@
     "class-methods-use-this": "off",
     "no-shadow": "off",
     "react/prop-types": "off",
+    "import/no-dynamic-require": "off",
     "no-unused-vars": [
       "error",
       {

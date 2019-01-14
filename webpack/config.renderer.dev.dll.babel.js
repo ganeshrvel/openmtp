@@ -1,6 +1,6 @@
 'use strict';
 
-/* eslint global-require: off */
+/* eslint global-require: off,  */
 
 /**
  * Builds the DLL for development electron renderer process
@@ -10,8 +10,8 @@ import webpack from 'webpack';
 import path from 'path';
 import merge from 'webpack-merge';
 import baseConfig from './config.base';
-import { dependencies } from '../package.json';
 import { PATHS } from '../app/utils/paths';
+import { pkginfo } from '../app/utils/pkginfo';
 
 const dll = path.join(PATHS.root, 'dll');
 
@@ -28,7 +28,7 @@ export default merge.smart(baseConfig, {
   module: require('./config.renderer.dev.babel').default.module,
 
   entry: {
-    renderer: Object.keys(dependencies || {})
+    renderer: Object.keys(JSON.stringify(pkginfo.dependencies) || {})
   },
 
   output: {

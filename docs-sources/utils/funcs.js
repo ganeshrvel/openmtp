@@ -1,6 +1,6 @@
 'use strict';
 
-/* eslint global-require: off, import/no-dynamic-require: 0, prefer-template: 0 */
+/* eslint global-require: off, prefer-template: off */
 
 import { ALLOWED_GITHUB_FETCH_STATUSES } from './consts';
 

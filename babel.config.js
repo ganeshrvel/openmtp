@@ -4,7 +4,6 @@
 
 const developmentEnvironments = ['development', 'test'];
 const developmentPlugins = [require('react-hot-loader/babel')];
-
 const productionPlugins = [
   require('babel-plugin-dev-expression'),
   require('@babel/plugin-transform-react-constant-elements'),
@@ -20,7 +19,9 @@ module.exports = api => {
       [
         require('@babel/preset-env'),
         {
-          targets: { electron: require('electron/package.json').version },
+          targets: {
+            electron: 4
+          },
           useBuiltIns: 'usage'
         }
       ],
@@ -56,7 +57,6 @@ module.exports = api => {
       require('@babel/plugin-syntax-import-meta'),
       [require('@babel/plugin-proposal-class-properties'), { loose: true }],
       require('@babel/plugin-proposal-json-strings'),
-
       ...(development ? developmentPlugins : productionPlugins)
     ]
   };
