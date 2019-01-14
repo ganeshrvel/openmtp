@@ -11,7 +11,8 @@ import path from 'path';
 import merge from 'webpack-merge';
 import baseConfig from './config.base';
 import { PATHS } from '../app/utils/paths';
-import { pkginfo } from '../app/utils/pkginfo';
+
+const pkg = require('../package.json');
 
 const dll = path.join(PATHS.root, 'dll');
 
@@ -28,7 +29,7 @@ export default merge.smart(baseConfig, {
   module: require('./config.renderer.dev.babel').default.module,
 
   entry: {
-    renderer: Object.keys(JSON.stringify(pkginfo.dependencies) || {})
+    renderer: Object.keys(pkg.dependencies || {})
   },
 
   output: {

@@ -9,10 +9,11 @@
 import path from 'path';
 import webpack from 'webpack';
 import { PATHS } from '../app/utils/paths';
-import { pkginfo } from '../app/utils/pkginfo';
+
+const pkg = require('../package.json');
 
 export default {
-  externals: [...Object.keys(JSON.stringify(pkginfo.dependencies) || {})],
+  externals: [...Object.keys(pkg.dependencies || {})],
 
   module: {
     rules: [
@@ -51,7 +52,17 @@ export default {
       NODE_ENV: 'production'
     }),
 
-    new webpack.DefinePlugin({}),
+    new webpack.DefinePlugin({
+      PKG_INFO: {
+        productName: JSON.stringify(pkg.productName),
+        description: JSON.stringify(pkg.description),
+        name: JSON.stringify(pkg.name),
+        author: JSON.stringify(pkg.author),
+        version: JSON.stringify(pkg.version),
+        repository: JSON.stringify(pkg.repository),
+        homepage: JSON.stringify(pkg.homepage)
+      }
+    }),
 
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
 

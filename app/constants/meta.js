@@ -27,7 +27,7 @@ export const APP_TITLE = `${description}`;
 
 export const APP_IDENTIFIER = `${name}`;
 
-export const APP_GITHUB_URL = repository.url.replace(/.git$/, '');
+export const APP_GITHUB_URL = repository.url.replace(/^git\+|\.git/g, '');
 
 export const APP_GITHUB_RELEASES_URL = `${APP_GITHUB_URL}/releases`;
 
