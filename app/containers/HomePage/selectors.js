@@ -1,3 +1,5 @@
+'use strict';
+
 import { createSelector } from 'reselect';
 import { getMtpStoragesListSelected } from './actions';
 import { initialState } from './reducers';
@@ -60,9 +62,4 @@ export const makeFileTransferProgess = createSelector(
 export const makeFilesDrag = createSelector(
   make,
   state => (state ? state.filesDrag : initialState.filesDrag)
-);
-
-export const makeIsLoading = createSelector(
-  make,
-  state => (state ? state.___isLoading : initialState.___isLoading)
 );

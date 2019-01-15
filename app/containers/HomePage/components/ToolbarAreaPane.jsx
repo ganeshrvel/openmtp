@@ -20,7 +20,6 @@ import {
 } from '../actions';
 import {
   makeDirectoryLists,
-  makeIsLoading,
   makeMtpDevice,
   makeMtpStoragesList,
   makeSidebarFavouriteList,
@@ -375,7 +374,6 @@ const mapStateToProps = (state, props) => {
     sidebarFavouriteList: makeSidebarFavouriteList(state),
     mtpDevice: makeMtpDevice(state),
     toolbarList: makeToolbarList(state),
-    isLoading: makeIsLoading(state),
     currentBrowsePath: makeCurrentBrowsePath(state),
     hideHiddenFiles: makeHideHiddenFiles(state),
     directoryLists: makeDirectoryLists(state),

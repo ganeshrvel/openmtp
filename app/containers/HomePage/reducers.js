@@ -6,14 +6,6 @@ import { PATHS } from '../../utils/paths';
 import { DEVICES_DEFAULT_PATH, DEVICES_TYPE_CONST } from '../../constants';
 
 export const initialState = {
-  /* <Meta Data> */
-  ___isDefault: true,
-  ___isLoading: false,
-  ___timeGenerated: null,
-  ___timeLastModified: null,
-  ___error: null,
-  /* </Meta Data> */
-
   sidebarFavouriteList: {
     top: [
       {
@@ -218,7 +210,6 @@ export default function Home(state = initialState, action) {
     case actionTypes.SET_SORTING_DIR_LISTS:
       return {
         ...state,
-        ...setLoadedMetaData(state),
         directoryLists: {
           ...state.directoryLists,
           [deviceType]: {
@@ -231,7 +222,6 @@ export default function Home(state = initialState, action) {
     case actionTypes.SET_SELECTED_DIR_LISTS:
       return {
         ...state,
-        ...setLoadedMetaData(state),
         directoryLists: {
           ...state.directoryLists,
           [deviceType]: {
@@ -246,7 +236,6 @@ export default function Home(state = initialState, action) {
     case actionTypes.SET_CURRENT_BROWSE_PATH:
       return {
         ...state,
-        ...setLoadedMetaData(state),
         currentBrowsePath: {
           ...state.currentBrowsePath,
           [deviceType]: payload
@@ -256,7 +245,6 @@ export default function Home(state = initialState, action) {
     case actionTypes.SET_MTP_STATUS:
       return {
         ...state,
-        ...setLoadedMetaData(state),
         mtpDevice: {
           ...state.mtpDevice,
           isAvailable: payload
@@ -266,7 +254,6 @@ export default function Home(state = initialState, action) {
     case actionTypes.FETCH_DIR_LIST:
       return {
         ...state,
-        ...setLoadedMetaData(state),
         directoryLists: {
           ...state.directoryLists,
           [deviceType]: {
@@ -280,7 +267,6 @@ export default function Home(state = initialState, action) {
     case actionTypes.CHANGE_MTP_STORAGE:
       return {
         ...state,
-        ...setLoadedMetaData(state),
         mtpStoragesList: {
           ...initialState.mtpStoragesList,
           ...payload
@@ -290,7 +276,6 @@ export default function Home(state = initialState, action) {
     case actionTypes.SET_FILE_TRANSFER_CLIPBOARD:
       return {
         ...state,
-        ...setLoadedMetaData(state),
         fileTransfer: {
           ...state.fileTransfer,
           clipboard: {
@@ -302,7 +287,6 @@ export default function Home(state = initialState, action) {
     case actionTypes.SET_FILE_TRANSFER_PROGRESS:
       return {
         ...state,
-        ...setLoadedMetaData(state),
         fileTransfer: {
           ...state.fileTransfer,
           progress: {
@@ -314,7 +298,6 @@ export default function Home(state = initialState, action) {
     case actionTypes.CLEAR_FILE_TRANSFER:
       return {
         ...state,
-        ...setLoadedMetaData(state),
         fileTransfer: {
           ...initialState.fileTransfer
         }
@@ -323,7 +306,6 @@ export default function Home(state = initialState, action) {
     case actionTypes.SET_FILES_DRAG:
       return {
         ...state,
-        ...setLoadedMetaData(state),
         filesDrag: {
           ...state.filesDrag,
           ...payload
@@ -333,42 +315,11 @@ export default function Home(state = initialState, action) {
     case actionTypes.CLEAR_FILES_DRAG:
       return {
         ...state,
-        ...setLoadedMetaData(state),
         filesDrag: {
           ...initialState.filesDrag
         }
       };
-
-    /* <Meta Data> */
-    case actionTypes.REQ_LOAD:
-      return {
-        ...state,
-        ___isLoading: true
-      };
-    case actionTypes.RES_LOAD:
-      return {
-        ...state,
-        ...setLoadedMetaData(state)
-      };
-    case actionTypes.FAIL_LOAD:
-      return {
-        ...state,
-        ___isLoading: false,
-        ___error: payload.error
-      };
-    /* </Meta Data> */
     default:
       return state;
   }
-}
-
-function setLoadedMetaData(state) {
-  const ms = Date.now();
-  return {
-    ___isLoading: false,
-    ___isDefault: false,
-    ___timeGenerated: state.___timeGenerated ? state.___timeGenerated : ms,
-    ___timeLastModified: ms,
-    ___error: null
-  };
 }

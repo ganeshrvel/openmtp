@@ -29,7 +29,6 @@ import {
 } from '../actions';
 import {
   makeDirectoryLists,
-  makeIsLoading,
   makeCurrentBrowsePath,
   makeMtpDevice,
   makeContextMenuList,
@@ -1219,7 +1218,6 @@ const mapStateToProps = (state, props) => {
     currentBrowsePath: makeCurrentBrowsePath(state),
     mtpDevice: makeMtpDevice(state),
     directoryLists: makeDirectoryLists(state),
-    isLoading: makeIsLoading(state),
     hideHiddenFiles: makeHideHiddenFiles(state),
     contextMenuList: makeContextMenuList(state),
     mtpStoragesListSelected: makeMtpStoragesListSelected(state),
