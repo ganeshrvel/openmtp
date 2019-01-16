@@ -60,3 +60,7 @@ certs/*
 todo.txt
 *yarn-error.log
 eslint-common-rules.txt
+
+build/entitlements.mas.plist
+build/entitlements.mac.plist
+build/.provisionprofile

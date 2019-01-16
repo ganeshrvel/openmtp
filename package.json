@@ -83,10 +83,21 @@
       }
     ],
     "mac": {
+      "type": "distribution",
       "category": "public.app-category.productivity",
+      "entitlements": "build/entitlements.mac.plist",
+      "icon": "build/icon.icns",
       "target": [
-        "dmg",
-        "zip"
+        "mas"
+      ]
+    },
+    "mas": {
+      "type": "distribution",
+      "category": "public.app-category.productivity",
+      "entitlements": "build/entitlements.mas.plist",
+      "icon": "build/icon.icns",
+      "binaries": [
+        "build/mac/bin/mtp-cli"
       ]
     },
     "dmg": {
@@ -113,7 +124,7 @@
         "deb",
         "AppImage"
       ],
-      "category": "Data Transfer"
+      "category": "public.app-category.productivity"
     }
   },
   "repository": {

@@ -19,6 +19,7 @@ import { isPackaged } from './utils/isPackaged';
 
 const isSingleInstance = app.requestSingleInstanceLock();
 const isDeviceBootable = bootTheDevice();
+const isMas = electronIs.mas();
 let mainWindow = null;
 
 if (IS_PROD) {
@@ -135,6 +136,7 @@ if (!isDeviceBootable) {
         minHeight: 640,
         titleBarStyle: 'hidden',
         webPreferences: {
+          sandbox: isMas,
           nodeIntegration: true
         }
       });
@@ -184,7 +186,7 @@ if (!isDeviceBootable) {
 
       let appUpdaterEnable = true;
       if (isPackaged && process.platform === 'darwin') {
-        appUpdaterEnable = !electronIs.mas() && app.isInApplicationsFolder();
+        appUpdaterEnable = !isMas && app.isInApplicationsFolder();
       }
 
       const autoAppUpdate = new AppUpdate();
