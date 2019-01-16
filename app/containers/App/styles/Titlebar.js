@@ -7,7 +7,7 @@ export const styles = themes => {
     root: {
       width: `100%`,
       height: 14,
-      ...mixins().appDrag
+      ...mixins().appDragEnable
     }
   };
 };

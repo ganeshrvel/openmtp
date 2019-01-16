@@ -169,7 +169,7 @@ export default class ToolbarAreaPane extends PureComponent {
                 const item = _toolbarList[a];
                 return (
                   <Tooltip key={a} title={item.label}>
-                    <div className={styles.navBtns}>
+                    <div className={`${styles.navBtns} ${styles.noAppDrag}`}>
                       <IconButton
                         aria-label={item.label}
                         disabled={!item.enabled}

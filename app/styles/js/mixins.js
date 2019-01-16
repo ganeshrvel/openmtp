@@ -31,9 +31,14 @@ export default args => {
       marginLeft: `auto`,
       marginRight: `auto`
     },
-    appDrag: {
-      [`-webkitUserSelect`]: `none`,
-      [`-webkitAppRegion`]: `drag`
+    get appDragEnable() {
+      return {
+        [`-webkitAppRegion`]: `drag`,
+        ...this.noselect
+      };
+    },
+    appDragDisable: {
+      [`-webkitAppRegion`]: `no-drag`
     },
     a: {
       cursor: `pointer`,

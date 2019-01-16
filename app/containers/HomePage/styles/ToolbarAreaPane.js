@@ -6,7 +6,7 @@ import { variables, mixins } from '../../../styles/js';
 export const styles = theme => {
   return {
     root: {
-      ...mixins().appDrag
+      ...mixins().appDragEnable
     },
     grow: {
       flexGrow: 1
@@ -30,6 +30,9 @@ export const styles = theme => {
     appBar: {},
     navBtns: {
       paddingLeft: 5
+    },
+    noAppDrag: {
+      ...mixins().appDragDisable
     },
     navBtnImgs: {
       height: 25,
