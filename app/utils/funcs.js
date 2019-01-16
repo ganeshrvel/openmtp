@@ -137,6 +137,70 @@ export const undefinedOrNull = _var => {
   return typeof _var === 'undefined' || _var === null;
 };
 
+/**
+ * Chained object validator
+ * Validates the chained object values
+ * @returns {{encode: string, decode: string}}
+ * @param mainObj: object or array
+ * @param key: string
+ */
+export const undefinedOrNullChained = (mainObj, key = null) => {
+  const _return = undefined;
+
+  if (typeof mainObj === 'undefined' || !mainObj) {
+    return _return;
+  }
+
+  if (
+    !key ||
+    (Object.prototype.toString.call(key) !== '[object String]' &&
+      key.trim() === '')
+  ) {
+    return _return;
+  }
+
+  const keyArray = key.split('.');
+
+  if (!keyArray || keyArray.length < 1) {
+    return _return;
+  }
+  let temp = mainObj;
+
+  keyArray.map(a => {
+    if (typeof temp !== 'undefined') {
+      const _matches = a.match(/[^[\]]+(?=])/g);
+
+      if (_matches && _matches.length > 0) {
+        const aSplits = a.split('[')[0];
+        let lTemp = temp[aSplits];
+
+        _matches.map(e => {
+          if (typeof lTemp !== 'undefined' && typeof lTemp[e] !== 'undefined') {
+            lTemp = lTemp[e];
+            return lTemp;
+          }
+          lTemp = undefined;
+
+          return lTemp;
+        });
+        temp = lTemp;
+
+        return temp;
+      }
+      if (typeof temp[a] !== 'undefined') {
+        temp = temp[a];
+        return temp;
+      }
+    }
+
+    temp = _return;
+
+    return temp;
+  });
+
+  return typeof temp !== 'undefined' ? temp : _return;
+};
+
 export const diffObj = (obj1, obj2) => {
   let isSame = true;
   // eslint-disable-next-line no-restricted-syntax

@@ -6,6 +6,7 @@
  */
 
 import { pkginfo } from '../utils/pkginfo';
+import { undefinedOrNullChained } from '../utils/funcs';
 
 const {
   productName,
@@ -21,13 +22,17 @@ export const APP_NAME = `${productName}`;
 
 export const APP_VERSION = `${version}`;
 
-export const AUTHOR_EMAIL = `${author.email}`;
+export const AUTHOR_EMAIL = undefinedOrNullChained(author, 'email')
+  ? author.email
+  : null;
 
 export const APP_TITLE = `${description}`;
 
 export const APP_IDENTIFIER = `${name}`;
 
-export const APP_GITHUB_URL = repository.url.replace(/^git\+|\.git/g, '');
+export const APP_GITHUB_URL = undefinedOrNullChained(repository, 'url')
+  ? repository.url.replace(/^git\+|\.git/g, '')
+  : null;
 
 export const APP_GITHUB_RELEASES_URL = `${APP_GITHUB_URL}/releases`;
 
