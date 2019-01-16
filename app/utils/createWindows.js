@@ -1,7 +1,6 @@
 'use strict';
 
 import { BrowserWindow, remote } from 'electron';
-import electronIs from 'electron-is';
 import { PATHS } from './paths';
 import { log } from './log';
 import { loadProfileErrorHtml } from '../templates/loadProfileError';
@@ -9,7 +8,6 @@ import { APP_TITLE } from '../constants/meta';
 import { undefinedOrNull } from './funcs';
 import { PRIVACY_POLICY_PAGE_TITLE } from '../templates/privacyPolicyPage';
 
-const isMas = electronIs.mas();
 let _nonBootableDeviceWindow = null;
 let _reportBugsWindow = null;
 let _privacyPolicyWindow = null;
@@ -38,7 +36,6 @@ const nonBootableDeviceCreateWindow = () => {
     height: 320,
     resizable: false,
     webPreferences: {
-      sandbox: isMas,
       nodeIntegration: true
     }
   });
@@ -83,7 +80,6 @@ const reportBugsCreateWindow = () => {
     minimizable: false,
     fullscreenable: false,
     webPreferences: {
-      sandbox: isMas,
       nodeIntegration: true
     }
   });
@@ -135,7 +131,6 @@ const privacyPolicyCreateWindow = isRenderedPage => {
     minimizable: true,
     fullscreenable: true,
     webPreferences: {
-      sandbox: isMas,
       nodeIntegration: true
     }
   };

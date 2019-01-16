@@ -1,7 +1,6 @@
 'use strict';
 
 import { dialog, BrowserWindow, ipcMain } from 'electron';
-import electronIs from 'electron-is';
 import { autoUpdater } from 'electron-updater';
 import { isConnected } from '../utils/isOnline';
 import { log } from '../utils/log';
@@ -12,7 +11,6 @@ import { unixTimestampNow } from '../utils/date';
 import { getMainWindow } from '../utils/createWindows';
 import { undefinedOrNull } from '../utils/funcs';
 
-const isMas = electronIs.mas();
 let progressbarWindow = null;
 let isFileTransferActiveFlag = false;
 let mainWindow = null;
@@ -32,7 +30,6 @@ const createChildWindow = () => {
       fullscreenable: false,
       movable: false,
       webPreferences: {
-        sandbox: isMas,
         nodeIntegration: true
       }
     });

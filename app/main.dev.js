@@ -136,7 +136,6 @@ if (!isDeviceBootable) {
         minHeight: 640,
         titleBarStyle: 'hidden',
         webPreferences: {
-          sandbox: isMas,
           nodeIntegration: true
         }
       });

@@ -62,4 +62,4 @@ todo.txt
 eslint-common-rules.txt
 
 build/entitlements.mas.plist
-build/entitlements.mac.plist
+*embedded.provisionprofile
