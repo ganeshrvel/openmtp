@@ -1,6 +1,7 @@
 'use strict';
 
 import React, { PureComponent } from 'react';
+import electronIs from 'electron-is';
 import classNames from 'classnames';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
@@ -14,6 +15,8 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { privacyPolicyWindow } from '../../../utils/createWindows';
 import { DEVICES_TYPE_CONST } from '../../../constants';
+
+const isMas = electronIs.mas();
 
 export default class SettingsDialog extends PureComponent {
   render() {
@@ -61,26 +64,29 @@ export default class SettingsDialog extends PureComponent {
               <Typography variant="body1" className={styles.subheading}>
                 General Settings
               </Typography>
-              <FormGroup>
-                <Typography variant="subtitle2" className={styles.subtitle}>
-                  Enable auto-update check
-                </Typography>
 
-                <FormControlLabel
-                  className={styles.switch}
-                  control={
-                    <Switch
-                      checked={enableAutoUpdateCheck}
-                      onChange={() =>
-                        onAutoUpdateCheckChange({
-                          toggle: !enableAutoUpdateCheck
-                        })
-                      }
-                    />
-                  }
-                  label={enableAutoUpdateCheck ? `Enabled` : `Disabled`}
-                />
-              </FormGroup>
+              {!isMas && (
+                <FormGroup>
+                  <Typography variant="subtitle2" className={styles.subtitle}>
+                    Enable auto-update check
+                  </Typography>
+
+                  <FormControlLabel
+                    className={styles.switch}
+                    control={
+                      <Switch
+                        checked={enableAutoUpdateCheck}
+                        onChange={() =>
+                          onAutoUpdateCheckChange({
+                            toggle: !enableAutoUpdateCheck
+                          })
+                        }
+                      />
+                    }
+                    label={enableAutoUpdateCheck ? `Enabled` : `Disabled`}
+                  />
+                </FormGroup>
+              )}
 
               <FormGroup className={styles.formGroup}>
                 <Typography variant="subtitle2" className={styles.subtitle}>

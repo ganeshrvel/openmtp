@@ -4,24 +4,25 @@ const path = require('path');
 const glob = require('glob');
 const fs = require('fs-extra');
 
-// eslint-disable-next-line func-names
-exports.default = function(context) {
+exports.default = context => {
   // clean languages unnecessary folder from packed app
   const lprojRegEx = /(en)\.lproj/g;
-  const cwd = path.join(
-    context.appOutDir,
-    `${context.packager.appInfo.productFilename}.app/Contents/Resources`
-  );
+  const APP_NAME = context.packager.appInfo.productFilename;
+  const APP_OUT_DIR = context.appOutDir;
+  const PLATFORM = context.packager.platform.name;
+
+  const cwd = path.join(`${APP_OUT_DIR}`, `${APP_NAME}.app/Contents/Resources`);
   const lproj = glob.sync('*.lproj', { cwd });
   const _promises = [];
 
-  switch (context.packager.platform.name) {
+  switch (PLATFORM) {
     case 'mac':
       lproj.forEach(dir => {
         if (!lprojRegEx.test(dir)) {
           _promises.push(fs.remove(path.join(cwd, dir)));
         }
       });
+
       break;
     default:
       break;

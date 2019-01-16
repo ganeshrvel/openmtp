@@ -88,6 +88,8 @@
       "entitlements": "build/entitlements.mac.plist",
       "icon": "build/icon.icns",
       "target": [
+        "mas",
+        "pkg",
         "dmg",
         "zip"
       ]
@@ -98,7 +100,7 @@
       "entitlements": "build/entitlements.mas.plist",
       "icon": "build/icon.icns",
       "binaries": [
-        "build/mac/bin/mtp-cli"
+        "dist/mas/OpenMTP.app/Contents/Resources/bin/mtp-cli"
       ]
     },
     "dmg": {
