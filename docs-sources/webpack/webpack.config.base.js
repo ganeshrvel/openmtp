@@ -31,6 +31,19 @@ const baseConfig = {
         minifyJS: true,
         minifyCSS: true
       }
+    }),
+
+    new HtmlWebpackPlugin({
+      template: './docs-sources/templates/privacy.html',
+      inject: true,
+      chunks: ['privacy'],
+      filename: 'privacy.html',
+      minify: {
+        collapseWhitespace: true,
+        removeComments: true,
+        minifyJS: true,
+        minifyCSS: true
+      }
     })
   ],
   module: {

@@ -35,8 +35,8 @@ class PrivacyPolicyPage extends Component {
           <p>
             <span>
               OpenMTP (&quot;us&quot;, &quot;we&quot;, or &quot;our&quot;)
-              operates the https://github.com/ganeshrvel/openmtp app
-              (hereinafter referred to as the &quot;Service&quot;).
+              operates the app (hereinafter referred to as the
+              &quot;Service&quot;).
             </span>
           </p>
           <p>
