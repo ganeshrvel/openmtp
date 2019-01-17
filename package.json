@@ -87,7 +87,6 @@
       "category": "public.app-category.productivity",
       "icon": "build/icon.icns",
       "target": [
-        "mas",
         "dmg",
         "zip"
       ]
