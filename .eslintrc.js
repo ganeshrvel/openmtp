@@ -30,7 +30,12 @@ module.exports = {
     'jsx-a11y/label-has-associated-control': 'off',
     'jsx-a11y/no-static-element-interactions': 'off',
     'jsx-a11y/click-events-have-key-events': 'off',
-    'no-console': 'off',
+    'no-console': [
+      'error',
+      {
+        allow: ['info', 'error', 'warn']
+      }
+    ],
     'no-use-before-define': 'off',
     'no-multi-assign': 'off',
     'prettier/prettier': ['error', { singleQuote: true }],
