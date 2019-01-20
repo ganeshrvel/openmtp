@@ -11,7 +11,9 @@ if (typeof PKG_INFO !== 'undefined' && PKG_INFO !== null) {
   // eslint-disable-next-line no-undef
   _pkginfo = PKG_INFO;
 } else {
-  _pkginfo = readFileSync(join(rootPath, 'package.json'), { encoding: 'utf8' });
+  _pkginfo = JSON.parse(
+    readFileSync(join(rootPath, 'package.json'), { encoding: 'utf8' })
+  );
 }
 
 export const pkginfo = _pkginfo;
