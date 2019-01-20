@@ -112,7 +112,7 @@ $ yarn package-all
 
 ### Accolades and Credits
 
-- Sincere thanks to [Vladimir Menshakov](https://github.com/whoozle "Vladimir Menshakov") for the fantastic C++ library and for all the help and support that were extended towards this project.
+- Sincere thanks to [Vladimir Menshakov](https://github.com/whoozle "Vladimir Menshakov") for [android-file-transfer-linux](https://github.com/whoozle/android-file-transfer-linux "android-file-transfer-linux") c++ library and for all his help and support that were extended towards this project.
 
 - Thanks to Ms [Ayushi Bothra](https://www.linkedin.com/in/ayushi-bothra-3103/ "Ayushi Bothra") for contributing to the documentation and pages.
 
