@@ -35,9 +35,9 @@ Find the latest *dmg* file from [GitHub Releases](https://github.com/ganeshrvel/
 
 ### Screengrabs
 
-![OpenMTP File Explorer](https://github.com/ganeshrvel/openmtp/raw/master/blobs/images/file-explorer.jpg "OpenMTP File Explorer")
+![OpenMTP File Explorer](https://github.com/ganeshrvel/openmtp/raw/master/blobs/images/file-explorer-bluebg.png "OpenMTP File Explorer")
 
-![OpenMTP File Transfer](https://github.com/ganeshrvel/openmtp/raw/master/blobs/images/file-transfer.jpg "OpenMTP File Transfer")
+![OpenMTP File Transfer](https://github.com/ganeshrvel/openmtp/raw/master/blobs/images/file-transfer-bluebg.png "OpenMTP File Transfer")
 
 ## Building from Source
 
