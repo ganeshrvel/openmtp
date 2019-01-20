@@ -17,9 +17,6 @@ import { isArraysEqual } from '../../utils/funcs';
 
 const prefix = '@@Home';
 const actionTypesList = [
-  'REQ_LOAD',
-  'RES_LOAD',
-  'FAIL_LOAD',
   'SET_CURRENT_BROWSE_PATH',
   'SET_SORTING_DIR_LISTS',
   'SET_SELECTED_DIR_LISTS',
@@ -343,20 +340,5 @@ export function setFilesDrag({ ...data }) {
 export function clearFilesDrag() {
   return {
     type: actionTypes.CLEAR_FILES_DRAG
-  };
-}
-
-export function reqLoadHome() {
-  return {
-    type: actionTypes.REQ_LOAD
-  };
-}
-
-export function failLoadHome(e) {
-  return {
-    type: actionTypes.FAIL_LOAD,
-    payload: {
-      error: e
-    }
   };
 }

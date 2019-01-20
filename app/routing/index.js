@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Switch, Route } from 'react-router';
+import { HashRouter } from 'react-router-dom';
 import HomePage from '../containers/HomePage/Loadable';
 import ReportBugsPage from '../containers/ReportBugsPage/Loadable';
 import ProgressbarPage from '../containers/ProgressbarPage';
@@ -35,13 +36,15 @@ export const routes = {
 };
 
 export default () => (
-  <Switch>
-    {Object.keys(routes).map(a => (
-      <Route
-        key={routes[a].path || 'notfound'}
-        {...routes[a]}
-        component={routes[a].component}
-      />
-    ))}
-  </Switch>
+  <HashRouter>
+    <Switch>
+      {Object.keys(routes).map(a => (
+        <Route
+          key={routes[a].path || 'notfound'}
+          {...routes[a]}
+          component={routes[a].component}
+        />
+      ))}
+    </Switch>
+  </HashRouter>
 );

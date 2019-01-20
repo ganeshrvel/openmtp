@@ -2,7 +2,7 @@
 
 /* eslint no-case-declarations: off */
 
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -34,7 +34,7 @@ import { toggleSettings } from '../../Settings/actions';
 import { toggleWindowSizeOnDoubleClick } from '../../../utils/titlebarDoubleClick';
 import ToolbarBody from './ToolbarBody';
 
-class ToolbarAreaPane extends Component {
+class ToolbarAreaPane extends PureComponent {
   constructor(props) {
     super(props);
     this.initialState = {
