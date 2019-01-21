@@ -92,7 +92,7 @@ class Docs {
         url: {
           mac: `https://github.com/ganeshrvel/openmtp/releases/download/${
             data.tag_name
-          }/${data.name}-mac.zip`
+          }/${data.name}-mac.dmg`
         }
       };
     }
