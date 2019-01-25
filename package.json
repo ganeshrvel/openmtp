@@ -1,7 +1,7 @@
 {
   "name": "openmtp",
   "productName": "OpenMTP",
-  "version": "1.30.10",
+  "version": "1.30.12",
   "description": "OpenMTP | Android File Transfer for macOS",
   "scripts": {
     "build": "yarn lint && concurrently \"yarn build-main\" \"yarn build-renderer\"",
@@ -33,7 +33,8 @@
   },
   "lint-staged": {
     "*.{js,jsx}": [
-      "yarn lint && yarn postlint-fix",
+      "yarn lint",
+      "yarn postlint-fix",
       "git add"
     ],
     "{*.json,.{babelrc,eslintrc,prettierrc,stylelintrc}}": [
@@ -41,7 +42,8 @@
       "git add"
     ],
     "*.{css,scss}": [
-      "yarn lint-styles && yarn postlint-styles-fix",
+      "yarn lint-styles",
+      "yarn postlint-styles-fix",
       "git add"
     ],
     "*.{yml}": [
@@ -241,6 +243,7 @@
     "moment": "^2.22.2",
     "normalize.css": "^8.0.1",
     "prop-types": "^15.6.2",
+    "ps-list": "^6.1.0",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
     "react-helmet": "^5.2.0",

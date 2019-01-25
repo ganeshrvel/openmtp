@@ -156,14 +156,14 @@ export function processMtpOutput({
   data, // eslint-disable-line no-unused-vars
   callback
 }) {
-  return dispatch => {
+  return async dispatch => {
     try {
       const {
         status: mtpStatus,
         error: mtpError,
         throwAlert: mtpThrowAlert,
         logError: mtpLogError
-      } = processMtpBuffer({ error, stderr });
+      } = await processMtpBuffer({ error, stderr });
 
       dispatch(setMtpStatus(mtpStatus));
 

@@ -3,8 +3,9 @@
 import { EOL } from 'os';
 import { replaceBulk } from './funcs';
 import { log } from './log';
+import { isGoogleAndroidFileTransferActive } from './isGoogleAndroidFileTransferActive';
 
-export const processMtpBuffer = ({ error, stderr }) => {
+export const processMtpBuffer = async ({ error, stderr }) => {
   const errorTpl = {
     noMtp: `No MTP device found`,
     deviceLocked: `your device may be locked`,
@@ -22,6 +23,7 @@ export const processMtpBuffer = ({ error, stderr }) => {
 
   const errorDictionary = {
     noMtp: `No MTP device found.`,
+    googleAndroidFileTransferIsActive: `Quit 'Google Android File Transfer' app and reload.`,
     deviceLocked: `Your MTP device may be locked. Unlock it and reload.`,
     unResponsive: `MTP device is not responding. Reload or reconnect the device.`,
     mtpStorageNotAccessible: `MTP storage not accessible.`,
@@ -54,6 +56,7 @@ export const processMtpBuffer = ({ error, stderr }) => {
         .indexOf(errorTpl[errorTplKey].toLowerCase()) !== -1
     );
   };
+
   const noMtpError = checkError('noMtp');
   log.doLog(
     `MTP buffer o/p logging;${EOL}error: ${errorStringified.trim()}${EOL}stderr: ${stderrStringified.trim()}`,
@@ -64,6 +67,17 @@ export const processMtpBuffer = ({ error, stderr }) => {
     /* No MTP device found */
     noMtpError
   ) {
+    const _isGoogleAndroidFileTransferActive = await isGoogleAndroidFileTransferActive();
+
+    if (_isGoogleAndroidFileTransferActive) {
+      return {
+        error: errorDictionary.googleAndroidFileTransferIsActive,
+        throwAlert: true,
+        logError: true,
+        status: false
+      };
+    }
+
     return {
       error: errorDictionary.noMtp,
       throwAlert: false,
