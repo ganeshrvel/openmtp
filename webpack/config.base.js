@@ -6,11 +6,12 @@
  * Base webpack config used across other specific configs
  */
 
-import path from 'path';
+import path, { join } from 'path';
 import webpack from 'webpack';
+import { rootPath } from 'electron-root-path';
 import { PATHS } from '../app/utils/paths';
 
-const pkg = require('../package.json');
+const pkg = require(join(rootPath, 'package.json'));
 
 export default {
   externals: [...Object.keys(pkg.dependencies || {})],

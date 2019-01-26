@@ -135,7 +135,8 @@ $ set UPGRADE_EXTENSIONS=1 && npm run dev
 ### More repos
 
 - [electron-root-path](https://github.com/ganeshrvel/npm-electron-root-path "Get the root path of an Electron Application")
-- [Electron-React-Redux Advanced Boilerplate](https://github.com/ganeshrvel/electron-react-redux-advanced-boilerplate "Electron-React-Redux advanced boilerplate")
+- [Electron React Redux Advanced Boilerplate](https://github.com/ganeshrvel/electron-react-redux-advanced-boilerplate "Electron React Redux advanced boilerplate")
+- [Tutorial Series by Ganesh Rathinavel](https://github.com/ganeshrvel/tutorial-series-ganesh-rathinavel "Tutorial Series by Ganesh Rathinavel")
 
 ### Accolades and Credits
 
@@ -170,4 +171,4 @@ Please feel free to contact me at ganeshrvel@outlook.com
 ### License
 OpenMTP | Android File Transfer for macOS is released under [MIT License](https://github.com/ganeshrvel/openmtp/blob/master/LICENSE "MIT License").
 
-Copyright © 2018 - 2019 Ganesh Rathinavel
+Copyright © 2018-Present Ganesh Rathinavel

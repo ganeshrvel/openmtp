@@ -5,7 +5,7 @@ const glob = require('glob');
 const fs = require('fs-extra');
 
 exports.default = context => {
-  // clean languages unnecessary folder from packed app
+  // clean the unnecessary locales from packed app
   const lprojRegEx = /(en)\.lproj/g;
   const APP_NAME = context.packager.appInfo.productFilename;
   const APP_OUT_DIR = context.appOutDir;
