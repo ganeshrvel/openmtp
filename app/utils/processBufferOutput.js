@@ -23,7 +23,7 @@ export const processMtpBuffer = async ({ error, stderr }) => {
 
   const errorDictionary = {
     noMtp: `No MTP device found.`,
-    googleAndroidFileTransferIsActive: `Quit 'Google Android File Transfer' app and reload.`,
+    googleAndroidFileTransferIsActive: `Quit 'Android File Transfer' app (by Google) and reload.`,
     deviceLocked: `Your MTP device may be locked. Unlock it and reload.`,
     unResponsive: `MTP device is not responding. Reload or reconnect the device.`,
     mtpStorageNotAccessible: `MTP storage not accessible.`,
