@@ -53,9 +53,9 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
                   seeing this message.
                 </li>
                 <li>
-                  Uninstall or disable &quot;Google Android File Transfer&quot;
-                  app if it keeps popping up everytime you connect the MTP
-                  device.
+                  Uninstall or disable &quot;Android File Transfer&quot; app (by
+                  Google) if it keeps popping up everytime you connect your
+                  Android device.
                 </li>
               </ul>
             </Paper>

@@ -68,7 +68,10 @@ export const replaceBulk = (str, findArray, replaceArray) => {
 };
 
 export const splitIntoLines = str => {
-  return str.split(/(\r?\n)/g);
+  if (undefinedOrNull(str)) {
+    return null;
+  }
+  return str.toString().split(/(\r?\n)/g);
 };
 
 export const quickHash = str => {

@@ -33,7 +33,8 @@ import {
   percentage,
   splitIntoLines,
   truncate,
-  isArray
+  isArray,
+  undefinedOrNull
 } from '../../utils/funcs';
 import { msToTime, unixTimestampNow } from '../../utils/date';
 
@@ -76,14 +77,66 @@ export const escapeShellMtp = cmd => {
 
 const mtpCli = `"${escapeShellMtp(_mtpCli)}"`;
 
+const filterOutMtpLines = (string, index) => {
+  return (
+    filterJunkMtpErrors(string) ||
+    (index < 2 && string.toLowerCase().indexOf(`selected storage`) !== -1)
+  );
+};
+
+const filterJunkMtpErrors = string => {
+  return (
+    string === '\n' ||
+    string === '\r\n' ||
+    string === '' ||
+    string.toLowerCase().indexOf(`device::find failed`) !== -1 ||
+    string.toLowerCase().indexOf(`iocreateplugininterfaceforservice`) !== -1
+  );
+};
+
+const cleanJunkMtpError = ({ error = null, stdout = null, stderr = null }) => {
+  const splittedError = splitIntoLines(error);
+  const filteredError = splittedError
+    ? splittedError.filter(a => !filterJunkMtpErrors(a))
+    : [];
+
+  const splittedStderr = splitIntoLines(stderr);
+  const filteredStderr = splittedStderr
+    ? splittedStderr.filter(a => !filterJunkMtpErrors(a))
+    : [];
+
+  return {
+    filteredError,
+    filteredStderr,
+    filteredStdout: stdout
+  };
+};
+
 const promisifiedExec = command => {
   try {
     return new Promise(resolve => {
       execPromise(command, (error, stdout, stderr) => {
+        const {
+          filteredStderr,
+          filteredError,
+          filteredStdout
+        } = cleanJunkMtpError({ error, stdout, stderr });
+
+        if (
+          (undefinedOrNull(filteredStderr) || filteredStderr.length < 1) &&
+          (undefinedOrNull(filteredError) || filteredError.length < 1)
+        ) {
+          return resolve({
+            data: filteredStdout,
+            stderr: null,
+            error: null
+          });
+        }
+
         return resolve({
-          data: stdout,
-          stderr,
-          error
+          data: filteredStdout,
+          stderr: filteredStderr.join('\n'),
+          error: filteredError.join('\n')
         });
       });
     });
@@ -94,13 +147,30 @@ const promisifiedExec = command => {
 
 const promisifiedExecNoCatch = command => {
   return new Promise(resolve => {
-    execPromise(command, (error, stdout, stderr) =>
-      resolve({
+    execPromise(command, (error, stdout, stderr) => {
+      const {
+        filteredStderr,
+        filteredError,
+        filteredStdout
+      } = cleanJunkMtpError({ error, stdout, stderr });
+
+      if (
+        (undefinedOrNull(filteredStderr) || filteredStderr.length < 1) &&
+        (undefinedOrNull(filteredError) || filteredError.length < 1)
+      ) {
+        return resolve({
+          data: filteredStdout,
+          stderr: null,
+          error: null
+        });
+      }
+
+      return resolve({
         data: stdout,
         stderr,
         error
-      })
-    );
+      });
+    });
   });
 };
 
@@ -201,7 +271,8 @@ export const asyncReadLocalDir = async ({ filePath, ignoreHidden }) => {
 
     files = data.filter(junk.not);
     if (ignoreHidden) {
-      files = data.filter(item => !/(^|\/)\.[^\/\.]/g.test(item)); // eslint-disable-line no-useless-escape
+      // eslint-disable-next-line no-useless-escape
+      files = data.filter(item => !/(^|\/)\.[^\/\.]/g.test(item));
     }
 
     for (let i = 0; i < files.length; i += 1) {
@@ -366,7 +437,7 @@ export const fetchMtpStorageOptions = async () => {
 
     let storageList = {};
     _storageList
-      .filter(a => !filterOutMtpLines(a))
+      .filter((a, index) => !filterOutMtpLines(a, index))
       .map((a, index) => {
         if (!a) {
           return null;
@@ -444,7 +515,7 @@ export const asyncReadMtpDir = async ({
 
     let fileProps = splitIntoLines(filePropsData);
 
-    fileProps = fileProps.filter(a => !filterOutMtpLines(a));
+    fileProps = fileProps.filter((a, index) => !filterOutMtpLines(a, index));
 
     for (let i = 0; i < fileProps.length; i += 1) {
       const item = fileProps[i];
@@ -466,7 +537,7 @@ export const asyncReadMtpDir = async ({
       const filePropsList = _matchedProps.replace(/\s\s+/g, ' ').split(' ');
 
       // eslint-disable-next-line no-useless-escape
-      if (ignoreHidden && /(^|\/)\.[^\/.]/g.test(matchedFileName)) {
+      if (ignoreHidden && /(^|\/)\.[^\/\.]/g.test(matchedFileName)) {
         continue; // eslint-disable-line no-continue
       }
 
@@ -769,7 +840,7 @@ const _pasteFiles = (
       }
 
       const _bufferedOutput = splitIntoLines(bufferedOutput).filter(
-        a => !filterOutMtpLines(a)
+        (a, index) => !filterOutMtpLines(a, index)
       );
 
       if (_bufferedOutput.length < 1) {
@@ -838,11 +909,17 @@ const _pasteFiles = (
       }
     });
 
-    cmd.stderr.on('data', e => {
+    cmd.stderr.on('data', error => {
+      const { filteredError } = cleanJunkMtpError({ error });
+
+      if (undefinedOrNull(filteredError) || filteredError.length < 1) {
+        return null;
+      }
+
       dispatch(
         processMtpOutput({
           deviceType,
-          error: e,
+          error,
           stderr: null,
           data: null,
           callback: () => {
@@ -887,14 +964,4 @@ export const mtpVerboseReport = async () => {
   } catch (e) {
     log.error(e);
   }
-};
-
-const filterOutMtpLines = string => {
-  return (
-    string === '\n' ||
-    string === '\r\n' ||
-    string === '' ||
-    string.toLowerCase().indexOf(`selected storage`) !== -1 ||
-    string.toLowerCase().indexOf(`device::find failed`) !== -1
-  );
 };

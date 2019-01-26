@@ -325,12 +325,6 @@ class FileExplorer extends Component {
             'newFolder'
           );
           break;
-        case 'pasteFromDrag':
-          // eslint-disable-next-line prefer-destructuring
-          selected = directoryLists[item.data.sourceDeviceType].queue.selected;
-          handleCopy({ selected, deviceType: item.data.sourceDeviceType });
-          this._handlePaste();
-          break;
         case 'cancel':
           break;
         default:
@@ -503,7 +497,7 @@ class FileExplorer extends Component {
   };
 
   handleTableDrop = () => {
-    const { filesDrag } = this.props;
+    const { directoryLists, handleCopy, filesDrag } = this.props;
     const { sourceDeviceType, destinationDeviceType } = filesDrag;
 
     if (
@@ -515,39 +509,14 @@ class FileExplorer extends Component {
       return null;
     }
 
-    const contextMenu = [
-      {
-        label: `Paste`,
-        enabled: true,
-        data: {
-          ...filesDrag
-        },
-        click: () => {
-          this._handleContextMenuListActions({
-            [`pasteFromDrag`]: {
-              data: {
-                ...filesDrag
-              }
-            }
-          });
-        }
-      },
-      {
-        label: `Cancel`,
-        enabled: true,
-        data: {},
-        click: () => {
-          this._handleContextMenuListActions({
-            [`cancel`]: {
-              data: {}
-            }
-          });
-        }
-      }
-    ];
+    // eslint-disable-next-line prefer-destructuring
+    const selected = directoryLists[sourceDeviceType].queue.selected;
+    handleCopy({ selected, deviceType: sourceDeviceType });
 
-    this.clearFilesDrag();
-    this.fireElectronMenu(contextMenu);
+    setTimeout(() => {
+      this._handlePaste();
+      this.clearFilesDrag();
+    }, 200);
   };
 
   handleOnHoverDropZoneActivate = deviceType => {
@@ -595,12 +564,23 @@ class FileExplorer extends Component {
     const { confirm, textFieldValue: newFolderName } = args;
     const targetAction = 'newFolder';
 
-    if (!confirm || newFolderName === null) {
+    if (!confirm) {
       this.clearEditDialog(targetAction);
       return null;
     }
 
-    if (newFolderName.trim() === '' || /[/\\?%*:|"<>]/g.test(newFolderName)) {
+    if (newFolderName === null || newFolderName.trim() === '') {
+      this.handleErrorsEditDialog(
+        {
+          toggle: true,
+          message: `Error: Folder name cannot be empty.`
+        },
+        targetAction
+      );
+      return null;
+    }
+
+    if (/[/\\?%*:|"<>]/g.test(newFolderName)) {
       this.handleErrorsEditDialog(
         {
           toggle: true,
@@ -648,6 +628,7 @@ class FileExplorer extends Component {
       fileTransferClipboard,
       handleThrowError
     } = this.props;
+
     let { queue } = fileTransferClipboard;
     const destinationFolder = currentBrowsePath[deviceType];
     let invalidFileNameFlag = false;
@@ -664,7 +645,7 @@ class FileExplorer extends Component {
 
     if (invalidFileNameFlag) {
       handleThrowError({
-        message: `Invalid file name in the path. \\: are not allowed.`
+        message: `Invalid file name in the path. \\: characters are not allowed.`
       });
       return null;
     }
@@ -904,7 +885,7 @@ class FileExplorer extends Component {
           maxWidthDialog="sm"
           onClickHandler={this.handleNewFolderEditDialog}
           variant="determinate"
-          helpText="In case the progress bar freezes while transferring the files, restart the app and reconnect the device. This is a well known Android MTP bug."
+          helpText="If the progress bar freezes while transferring the files, restart the app and reconnect the device. This is a known Android MTP bug."
           progressValue={fileTransferProgess.percentage}
         />
 

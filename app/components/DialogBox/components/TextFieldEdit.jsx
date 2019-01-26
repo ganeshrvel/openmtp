@@ -20,8 +20,8 @@ class TextFieldEdit extends PureComponent {
 
   handleClick = ({ confirm = false }, event) => {
     const { onClickHandler } = this.props;
-
     event.preventDefault();
+
     onClickHandler({ confirm, textFieldValue: this.textFieldValue });
   };
 
@@ -83,6 +83,8 @@ class TextFieldEdit extends PureComponent {
               autoComplete="off"
               defaultValue={defaultValue}
               multiline={multiline}
+              onFocus={event => this.handleChange(event)}
+              onBlur={event => this.handleChange(event)}
               onChange={event => this.handleChange(event)}
               error={errors.toggle}
             />
