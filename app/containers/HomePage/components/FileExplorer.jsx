@@ -185,12 +185,14 @@ class FileExplorer extends Component {
       mtpDevice,
       directoryLists,
       actionHandleCopy,
-      fileTransferClipboard
+      fileTransferClipboard,
+      currentBrowsePath
     } = this.props;
     const { tableData, deviceType } = data;
 
     // eslint-disable-next-line prefer-destructuring
     const selected = directoryLists[deviceType].queue.selected;
+    const _currentBrowsePath = currentBrowsePath[deviceType];
 
     if (focussedFileExplorerDeviceType !== deviceType) {
       return null;
@@ -198,7 +200,8 @@ class FileExplorer extends Component {
 
     if (
       focussedFileExplorerDeviceType === DEVICES_TYPE_CONST.mtp &&
-      !mtpDevice.isAvailable
+      !mtpDevice.isAvailable &&
+      type !== 'refresh'
     ) {
       return null;
     }
@@ -247,6 +250,17 @@ class FileExplorer extends Component {
         break;
 
       case 'refresh':
+        getMainWindowRendererProcess().webContents.send(
+          'fileExplorerToolbarActionCommunication',
+          { type, deviceType: focussedFileExplorerDeviceType }
+        );
+        break;
+
+      case 'up':
+        if (_currentBrowsePath === '/') {
+          break;
+        }
+
         getMainWindowRendererProcess().webContents.send(
           'fileExplorerToolbarActionCommunication',
           { type, deviceType: focussedFileExplorerDeviceType }

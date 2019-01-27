@@ -22,7 +22,8 @@ class FileExplorerBodyRender extends PureComponent {
       copy: this.acceleratorCopy,
       paste: this.acceleratorPaste,
       delete: this.acceleratorDelete,
-      refresh: this.acceleratorRefresh
+      refresh: this.acceleratorRefresh,
+      up: this.acceleratorUp
     };
 
     const fileExplorerKeymapString = Object.keys(fileExplorerKeymaps).reduce(
@@ -111,7 +112,19 @@ class FileExplorerBodyRender extends PureComponent {
     });
   };
 
-  _currentMouseHover = type => {
+  acceleratorUp = event => {
+    const { onAcceleratorActivation, deviceType } = this.props;
+
+    onAcceleratorActivation({
+      type: 'up',
+      data: {
+        event,
+        deviceType
+      }
+    });
+  };
+
+  currentMouseHover = type => {
     const { onFocussedFileExplorerDeviceType, deviceType } = this.props;
     const curentFocussedDeviceType = type === 'enter' ? deviceType : null;
 
@@ -146,8 +159,8 @@ class FileExplorerBodyRender extends PureComponent {
     return (
       <Paper
         onFocus={() => {}}
-        onMouseOver={() => this._currentMouseHover('enter')}
-        onMouseLeave={() => this._currentMouseHover('leave')}
+        onMouseOver={() => this.currentMouseHover('enter')}
+        onMouseLeave={() => this.currentMouseHover('leave')}
         className={styles.root}
         elevation={0}
         square

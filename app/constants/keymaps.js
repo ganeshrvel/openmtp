@@ -8,5 +8,6 @@ export const fileExplorerKeymaps = {
   copy: ['cmd+c'],
   paste: ['cmd+v'],
   delete: ['backspace'],
-  refresh: IS_DEV ? ['cmd+alt+r'] : ['cmd+r']
+  refresh: IS_DEV ? ['cmd+alt+r'] : ['cmd+r'],
+  up: ['cmd+u']
 };
