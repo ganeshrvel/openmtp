@@ -20,7 +20,9 @@ class FileExplorerBodyRender extends PureComponent {
     const keymapActionsList = {
       newFolder: this.acceleratorCreateNewFolder,
       copy: this.acceleratorCopy,
-      paste: this.acceleratorPaste
+      paste: this.acceleratorPaste,
+      delete: this.acceleratorDelete,
+      refresh: this.acceleratorRefresh
     };
 
     const fileExplorerKeymapString = Object.keys(fileExplorerKeymaps).reduce(
@@ -78,6 +80,30 @@ class FileExplorerBodyRender extends PureComponent {
 
     onAcceleratorActivation({
       type: 'paste',
+      data: {
+        event,
+        deviceType
+      }
+    });
+  };
+
+  acceleratorDelete = event => {
+    const { onAcceleratorActivation, deviceType } = this.props;
+
+    onAcceleratorActivation({
+      type: 'delete',
+      data: {
+        event,
+        deviceType
+      }
+    });
+  };
+
+  acceleratorRefresh = event => {
+    const { onAcceleratorActivation, deviceType } = this.props;
+
+    onAcceleratorActivation({
+      type: 'refresh',
       data: {
         event,
         deviceType

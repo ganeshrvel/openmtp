@@ -15,6 +15,12 @@ class Confirm extends PureComponent {
     onClickHandler(confirm);
   };
 
+  handleKeyPress = event => {
+    if (event.key === 'Enter') {
+      this.handleClick({ confirm: true });
+    }
+  };
+
   render() {
     const {
       classes: styles,
@@ -26,6 +32,7 @@ class Confirm extends PureComponent {
     } = this.props;
     return (
       <Dialog
+        onKeyPress={this.handleKeyPress}
         open={trigger}
         fullWidth={fullWidthDialog}
         maxWidth={maxWidthDialog}

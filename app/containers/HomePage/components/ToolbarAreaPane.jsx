@@ -3,6 +3,7 @@
 /* eslint no-case-declarations: off */
 
 import React, { PureComponent } from 'react';
+import { ipcRenderer } from 'electron';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -45,6 +46,21 @@ class ToolbarAreaPane extends PureComponent {
     this.state = {
       ...this.initialState
     };
+  }
+
+  componentWillMount() {
+    const { deviceType } = this.props;
+    ipcRenderer.on(
+      'fileExplorerToolbarActionCommunication',
+      (event, { ...args }) => {
+        const { type, deviceType: focussedFileExplorerDeviceType } = args;
+        if (deviceType !== focussedFileExplorerDeviceType) {
+          return null;
+        }
+
+        this.handleToolbarAction(type);
+      }
+    );
   }
 
   handleDoubleClickToolBar = event => {

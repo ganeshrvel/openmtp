@@ -8,8 +8,8 @@ import { isPackaged } from '../utils/isPackaged';
 import { PATHS } from '../utils/paths';
 import { ENABLE_BACKGROUND_AUTO_UPDATE } from '../constants';
 import { unixTimestampNow } from '../utils/date';
-import { getMainWindow } from '../utils/createWindows';
 import { undefinedOrNull } from '../utils/funcs';
+import { getMainWindowMainProcess } from '../utils/windowHelper';
 
 let progressbarWindow = null;
 let isFileTransferActiveFlag = false;
@@ -392,7 +392,7 @@ export default class AppUpdate {
   }
 
   setMainWindow() {
-    const _mainWindow = getMainWindow();
+    const _mainWindow = getMainWindowMainProcess();
     if (undefinedOrNull(_mainWindow)) {
       return null;
     }

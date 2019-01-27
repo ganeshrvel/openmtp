@@ -13,8 +13,6 @@ import reducers from './reducers';
 import { DEVICES_TYPE_CONST } from '../../constants';
 
 class Home extends Component {
-  componentWillMount() {}
-
   render() {
     const { classes: styles } = this.props;
 

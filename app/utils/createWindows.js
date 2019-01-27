@@ -16,15 +16,6 @@ let _privacyPolicyWindow = null;
  * Non Bootable Device Window
  */
 
-export const getMainWindow = () => {
-  const _mainWindow = BrowserWindow.getAllWindows();
-  if (typeof _mainWindow === 'undefined' || _mainWindow === null) {
-    return null;
-  }
-
-  return BrowserWindow.getAllWindows()[_mainWindow.length - 1];
-};
-
 const nonBootableDeviceCreateWindow = () => {
   return new BrowserWindow({
     title: `${APP_TITLE}`,

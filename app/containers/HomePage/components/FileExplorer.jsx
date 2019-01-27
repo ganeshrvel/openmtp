@@ -57,6 +57,7 @@ import {
   isNumber,
   undefinedOrNull
 } from '../../../utils/funcs';
+import { getMainWindowRendererProcess } from '../../../utils/windowHelper';
 import { throwAlert } from '../../Alerts/actions';
 import { imgsrc } from '../../../utils/imgsrc';
 import FileExplorerBodyRender from './FileExplorerBodyRender';
@@ -188,18 +189,22 @@ class FileExplorer extends Component {
     } = this.props;
     const { tableData, deviceType } = data;
 
+    // eslint-disable-next-line prefer-destructuring
+    const selected = directoryLists[deviceType].queue.selected;
+
     if (focussedFileExplorerDeviceType !== deviceType) {
+      return null;
+    }
+
+    if (
+      focussedFileExplorerDeviceType === DEVICES_TYPE_CONST.mtp &&
+      !mtpDevice.isAvailable
+    ) {
       return null;
     }
 
     switch (type) {
       case 'newFolder':
-        if (
-          focussedFileExplorerDeviceType === DEVICES_TYPE_CONST.mtp &&
-          !mtpDevice.isAvailable
-        ) {
-          break;
-        }
         this.handleToggleDialogBox(
           {
             toggle: true,
@@ -212,8 +217,6 @@ class FileExplorer extends Component {
         break;
 
       case 'copy':
-        // eslint-disable-next-line prefer-destructuring
-        const selected = directoryLists[deviceType].queue.selected;
         if (selected.length < 1) {
           break;
         }
@@ -223,13 +226,6 @@ class FileExplorer extends Component {
 
       case 'paste':
         if (
-          focussedFileExplorerDeviceType === DEVICES_TYPE_CONST.mtp &&
-          !mtpDevice.isAvailable
-        ) {
-          break;
-        }
-
-        if (
           fileTransferClipboard.queue.length < 1 ||
           fileTransferClipboard.source === deviceType
         ) {
@@ -238,6 +234,25 @@ class FileExplorer extends Component {
 
         this._handlePaste();
         break;
+
+      case 'delete':
+        if (selected.length < 1) {
+          break;
+        }
+
+        getMainWindowRendererProcess().webContents.send(
+          'fileExplorerToolbarActionCommunication',
+          { type, deviceType: focussedFileExplorerDeviceType }
+        );
+        break;
+
+      case 'refresh':
+        getMainWindowRendererProcess().webContents.send(
+          'fileExplorerToolbarActionCommunication',
+          { type, deviceType: focussedFileExplorerDeviceType }
+        );
+        break;
+
       default:
         break;
     }
