@@ -17,6 +17,12 @@ class FileExplorerBodyRender extends PureComponent {
   }
 
   accelerators = () => {
+    const keymapActionsList = {
+      newFolder: this.acceleratorCreateNewFolder,
+      copy: this.acceleratorCopy,
+      paste: this.acceleratorPaste
+    };
+
     const fileExplorerKeymapString = Object.keys(fileExplorerKeymaps).reduce(
       (accumulator, currentValue) => {
         const itemCurrentValue = fileExplorerKeymaps[currentValue];
@@ -31,14 +37,14 @@ class FileExplorerBodyRender extends PureComponent {
     );
 
     hotkeys(fileExplorerKeymapString, (event, handler) => {
-      switch (handler.key) {
-        case 'ctrl+n':
-        case 'cmd+n':
-          this.acceleratorCreateNewFolder(event);
-          break;
-        default:
-          break;
-      }
+      Object.keys(fileExplorerKeymaps).map(a => {
+        const item = fileExplorerKeymaps[a];
+        if (item.indexOf(handler.key) === -1) {
+          return null;
+        }
+
+        return keymapActionsList[a](event);
+      });
     });
   };
 
@@ -50,6 +56,30 @@ class FileExplorerBodyRender extends PureComponent {
       data: {
         event,
         tableData: this.tableData(),
+        deviceType
+      }
+    });
+  };
+
+  acceleratorCopy = event => {
+    const { onAcceleratorActivation, deviceType } = this.props;
+
+    onAcceleratorActivation({
+      type: 'copy',
+      data: {
+        event,
+        deviceType
+      }
+    });
+  };
+
+  acceleratorPaste = event => {
+    const { onAcceleratorActivation, deviceType } = this.props;
+
+    onAcceleratorActivation({
+      type: 'paste',
+      data: {
+        event,
         deviceType
       }
     });

@@ -180,29 +180,67 @@ class FileExplorer extends Component {
 
   _handleAcceleratorActivation = ({ type, data }) => {
     const { focussedFileExplorerDeviceType } = this.state;
-    const { mtpDevice } = this.props;
+    const {
+      mtpDevice,
+      directoryLists,
+      actionHandleCopy,
+      fileTransferClipboard
+    } = this.props;
     const { tableData, deviceType } = data;
 
     if (focussedFileExplorerDeviceType !== deviceType) {
       return null;
     }
 
-    if (
-      focussedFileExplorerDeviceType === DEVICES_TYPE_CONST.mtp &&
-      !mtpDevice.isAvailable
-    ) {
-      return null;
-    }
-
-    this.handleToggleDialogBox(
-      {
-        toggle: true,
-        data: {
-          ...tableData
+    switch (type) {
+      case 'newFolder':
+        if (
+          focussedFileExplorerDeviceType === DEVICES_TYPE_CONST.mtp &&
+          !mtpDevice.isAvailable
+        ) {
+          break;
         }
-      },
-      type
-    );
+        this.handleToggleDialogBox(
+          {
+            toggle: true,
+            data: {
+              ...tableData
+            }
+          },
+          type
+        );
+        break;
+
+      case 'copy':
+        // eslint-disable-next-line prefer-destructuring
+        const selected = directoryLists[deviceType].queue.selected;
+        if (selected.length < 1) {
+          break;
+        }
+
+        actionHandleCopy({ selected, deviceType });
+        break;
+
+      case 'paste':
+        if (
+          focussedFileExplorerDeviceType === DEVICES_TYPE_CONST.mtp &&
+          !mtpDevice.isAvailable
+        ) {
+          break;
+        }
+
+        if (
+          fileTransferClipboard.queue.length < 1 ||
+          fileTransferClipboard.source === deviceType
+        ) {
+          break;
+        }
+
+        this._handlePaste();
+        break;
+      default:
+        break;
+    }
   };
 
   _handleContextMenuClick = (
@@ -330,7 +368,6 @@ class FileExplorer extends Component {
 
   _handleContextMenuListActions = ({ ...args }) => {
     const { deviceType, directoryLists, actionHandleCopy } = this.props;
-    let selected = null;
 
     Object.keys(args).map(a => {
       const item = args[a];
@@ -349,7 +386,7 @@ class FileExplorer extends Component {
 
         case 'copy':
           // eslint-disable-next-line prefer-destructuring
-          selected = directoryLists[deviceType].queue.selected;
+          const selected = directoryLists[deviceType].queue.selected;
           actionHandleCopy({ selected, deviceType });
           break;
 
@@ -376,7 +413,7 @@ class FileExplorer extends Component {
           break;
       }
 
-      return selected;
+      return a;
     });
   };
 
