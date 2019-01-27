@@ -4,51 +4,104 @@ import React, { PureComponent } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import classNames from 'classnames';
+import hotkeys from 'hotkeys-js';
 import FileExplorerTableBodyRender from './FileExplorerTableBodyRender';
 import FileExplorerTableFooterRender from './FileExplorerTableFooterRender';
 import { styles } from '../styles/FileExplorerBodyRender';
+import { fileExplorerKeymaps } from '../../../constants/keymaps';
+import { undefinedOrNull } from '../../../utils/funcs';
 
 class FileExplorerBodyRender extends PureComponent {
+  componentDidMount() {
+    this.accelerators();
+  }
+
+  accelerators = () => {
+    const fileExplorerKeymapString = Object.keys(fileExplorerKeymaps).reduce(
+      (accumulator, currentValue) => {
+        const itemCurrentValue = fileExplorerKeymaps[currentValue];
+
+        if (undefinedOrNull(accumulator) || accumulator.trim() === '') {
+          return itemCurrentValue.join(', ');
+        }
+
+        return `${accumulator}, ${itemCurrentValue.join(', ')}`;
+      },
+      ''
+    );
+
+    hotkeys(fileExplorerKeymapString, (event, handler) => {
+      switch (handler.key) {
+        case 'ctrl+n':
+        case 'cmd+n':
+          this.acceleratorCreateNewFolder(event);
+          break;
+        default:
+          break;
+      }
+    });
+  };
+
+  acceleratorCreateNewFolder = event => {
+    const { onAcceleratorActivation, deviceType } = this.props;
+
+    onAcceleratorActivation({
+      type: 'newFolder',
+      data: {
+        event,
+        tableData: this.tableData(),
+        deviceType
+      }
+    });
+  };
+
+  _currentMouseHover = type => {
+    const { onFocussedFileExplorerDeviceType, deviceType } = this.props;
+    const curentFocussedDeviceType = type === 'enter' ? deviceType : null;
+
+    onFocussedFileExplorerDeviceType(curentFocussedDeviceType);
+  };
+
+  tableData = () => {
+    const { deviceType, currentBrowsePath, directoryLists } = this.props;
+    return {
+      path: currentBrowsePath[deviceType],
+      directoryLists: directoryLists[deviceType]
+    };
+  };
+
   render() {
     const {
       classes: styles,
       deviceType,
-      fileExplorerListingType,
-      hideColList,
       currentBrowsePath,
-      directoryLists,
-      mtpDevice,
       OnHoverDropZoneActivate,
       filesDrag, // eslint-disable-line no-unused-vars
-      tableSort,
       onContextMenuClick,
       onFilesDragOver,
       onFilesDragEnd,
       onTableDrop,
-      onSelectAllClick,
-      onRequestSort,
-      onTableDoubleClick,
-      onTableClick,
-      onIsDraggable,
-      onDragStart,
-      onBreadcrumbPathClick
+      onBreadcrumbPathClick,
+      ...parentProps
     } = this.props;
-
-    const tableData = {
-      path: currentBrowsePath[deviceType],
-      directoryLists: directoryLists[deviceType]
-    };
 
     const _eventTarget = 'tableWrapperTarget';
 
     return (
-      <Paper className={styles.root} elevation={0} square>
+      <Paper
+        onFocus={() => {}}
+        onMouseOver={() => this._currentMouseHover('enter')}
+        onMouseLeave={() => this._currentMouseHover('leave')}
+        className={styles.root}
+        elevation={0}
+        square
+      >
         <div
           className={classNames(styles.tableWrapper, {
             [`onHoverDropZone`]: OnHoverDropZoneActivate(deviceType)
           })}
           onContextMenu={event =>
-            onContextMenuClick(event, {}, { ...tableData }, _eventTarget)
+            onContextMenuClick(event, {}, { ...this.tableData() }, _eventTarget)
           }
           onDragOver={event => {
             onFilesDragOver(event, {
@@ -63,26 +116,16 @@ class FileExplorerBodyRender extends PureComponent {
           }}
         >
           <FileExplorerTableBodyRender
+            tableData={this.tableData()}
             deviceType={deviceType}
-            fileExplorerListingType={fileExplorerListingType}
-            hideColList={hideColList}
             currentBrowsePath={currentBrowsePath}
-            directoryLists={directoryLists}
-            mtpDevice={mtpDevice}
-            tableData={tableData}
-            tableSort={tableSort}
-            onSelectAllClick={onSelectAllClick}
-            onRequestSort={onRequestSort}
             onContextMenuClick={onContextMenuClick}
-            onTableDoubleClick={onTableDoubleClick}
-            onTableClick={onTableClick}
-            onIsDraggable={onIsDraggable}
-            onDragStart={onDragStart}
+            {...parentProps}
           />
         </div>
         <FileExplorerTableFooterRender
-          currentBrowsePath={currentBrowsePath}
           deviceType={deviceType}
+          currentBrowsePath={currentBrowsePath}
           onBreadcrumbPathClick={onBreadcrumbPathClick}
         />
       </Paper>

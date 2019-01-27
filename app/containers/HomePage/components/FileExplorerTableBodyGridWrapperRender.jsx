@@ -65,7 +65,7 @@ class FileExplorerTableBodyGridWrapperRender extends PureComponent {
   }
 
   render() {
-    const { classes: styles, isSelected, ...sendProps } = this.props;
+    const { classes: styles, isSelected, ...parentProps } = this.props;
 
     return (
       <TableRow>
@@ -77,7 +77,7 @@ class FileExplorerTableBodyGridWrapperRender extends PureComponent {
                   key={quickHash(item.path)}
                   item={item}
                   isSelected={isSelected(item.path)}
-                  {...sendProps}
+                  {...parentProps}
                 />
               );
             })}

@@ -224,3 +224,34 @@ export const diffObj = (obj1, obj2) => {
   }
   return isSame;
 };
+
+export const arrayEquality = (array1, array2) => {
+  return (
+    array1.length === array2.length &&
+    array1.sort().every((value, index) => {
+      return value === array2.sort()[index];
+    })
+  );
+};
+
+export const arrayIntersection = (array1, array2) => {
+  return array1.filter(element => array2.includes(element));
+};
+
+export const keymapSearch = (keymap, keyedList) => {
+  let matchedWith = null;
+  Object.keys(keymap).map(a => {
+    const item = keymap[a];
+    if (matchedWith !== null) {
+      return null;
+    }
+
+    if (arrayEquality(item, keyedList)) {
+      matchedWith = a;
+    }
+
+    return true;
+  });
+
+  return matchedWith;
+};

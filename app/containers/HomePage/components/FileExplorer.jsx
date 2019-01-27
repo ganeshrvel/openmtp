@@ -72,6 +72,7 @@ class FileExplorer extends Component {
   constructor(props) {
     super(props);
     this.initialState = {
+      focussedFileExplorerDeviceType: null,
       togglePasteConfirmDialog: false,
       toggleDialog: {
         rename: {
@@ -103,12 +104,12 @@ class FileExplorer extends Component {
     const {
       currentBrowsePath,
       deviceType,
-      handleFetchMtpStorageOptions,
+      actionHandleFetchMtpStorageOptions,
       hideHiddenFiles
     } = this.props;
 
     if (deviceType === DEVICES_TYPE_CONST.mtp) {
-      handleFetchMtpStorageOptions(
+      actionHandleFetchMtpStorageOptions(
         {
           filePath: currentBrowsePath[deviceType],
           ignoreHidden: hideHiddenFiles[deviceType]
@@ -148,10 +149,10 @@ class FileExplorer extends Component {
   }
 
   _fetchDirList({ ...args }) {
-    const { handleFetchDirList, hideHiddenFiles } = this.props;
+    const { actionHandleFetchDirList, hideHiddenFiles } = this.props;
     const { path, deviceType } = args;
 
-    handleFetchDirList(
+    actionHandleFetchDirList(
       {
         filePath: path,
         ignoreHidden: hideHiddenFiles[deviceType]
@@ -164,6 +165,45 @@ class FileExplorer extends Component {
     this.electronMenu = Menu.buildFromTemplate(menuItems);
     this.electronMenu.popup(remote.getCurrentWindow());
   }
+
+  _handleFocussedFileExplorerDeviceType = deviceType => {
+    const { focussedFileExplorerDeviceType } = this.state;
+
+    if (focussedFileExplorerDeviceType === deviceType) {
+      return null;
+    }
+
+    this.setState({
+      focussedFileExplorerDeviceType: deviceType
+    });
+  };
+
+  _handleAcceleratorActivation = ({ type, data }) => {
+    const { focussedFileExplorerDeviceType } = this.state;
+    const { mtpDevice } = this.props;
+    const { tableData, deviceType } = data;
+
+    if (focussedFileExplorerDeviceType !== deviceType) {
+      return null;
+    }
+
+    if (
+      focussedFileExplorerDeviceType === DEVICES_TYPE_CONST.mtp &&
+      !mtpDevice.isAvailable
+    ) {
+      return null;
+    }
+
+    this.handleToggleDialogBox(
+      {
+        toggle: true,
+        data: {
+          ...tableData
+        }
+      },
+      type
+    );
+  };
 
   _handleContextMenuClick = (
     event,
@@ -289,7 +329,7 @@ class FileExplorer extends Component {
   }
 
   _handleContextMenuListActions = ({ ...args }) => {
-    const { deviceType, directoryLists, handleCopy } = this.props;
+    const { deviceType, directoryLists, actionHandleCopy } = this.props;
     let selected = null;
 
     Object.keys(args).map(a => {
@@ -306,14 +346,17 @@ class FileExplorer extends Component {
             'rename'
           );
           break;
+
         case 'copy':
           // eslint-disable-next-line prefer-destructuring
           selected = directoryLists[deviceType].queue.selected;
-          handleCopy({ selected, deviceType });
+          actionHandleCopy({ selected, deviceType });
           break;
+
         case 'paste':
           this._handlePaste();
           break;
+
         case 'newFolder':
           this.handleToggleDialogBox(
             {
@@ -325,8 +368,10 @@ class FileExplorer extends Component {
             'newFolder'
           );
           break;
+
         case 'cancel':
           break;
+
         default:
           break;
       }
@@ -351,7 +396,7 @@ class FileExplorer extends Component {
   handleRenameEditDialog = async ({ ...args }) => {
     const {
       deviceType,
-      handleRenameFile,
+      actionHandleRenameFile,
       hideHiddenFiles,
       currentBrowsePath,
       mtpStoragesListSelected
@@ -400,7 +445,7 @@ class FileExplorer extends Component {
       );
       return null;
     }
-    handleRenameFile(
+    actionHandleRenameFile(
       {
         oldFilePath,
         newFilePath,
@@ -446,7 +491,7 @@ class FileExplorer extends Component {
     });
   };
 
-  handleFilesDragStart = (e, { sourceDeviceType }) => {
+  _handleFilesDragStart = (e, { sourceDeviceType }) => {
     this.setFilesDrag({
       sourceDeviceType,
       destinationDeviceType: null,
@@ -457,7 +502,7 @@ class FileExplorer extends Component {
     e.dataTransfer.setDragImage(filesDragGhostImg, 0, 0);
   };
 
-  handleFilesDragOver = (e, { destinationDeviceType }) => {
+  _handleFilesDragOver = (e, { destinationDeviceType }) => {
     const { filesDrag } = this.props;
     e.preventDefault();
     e.stopPropagation();
@@ -492,12 +537,12 @@ class FileExplorer extends Component {
     });
   };
 
-  handleFilesDragEnd = () => {
+  _handleFilesDragEnd = () => {
     this.clearFilesDrag();
   };
 
-  handleTableDrop = () => {
-    const { directoryLists, handleCopy, filesDrag } = this.props;
+  _handleTableDrop = () => {
+    const { directoryLists, actionHandleCopy, filesDrag } = this.props;
     const { sourceDeviceType, destinationDeviceType } = filesDrag;
 
     if (
@@ -511,7 +556,7 @@ class FileExplorer extends Component {
 
     // eslint-disable-next-line prefer-destructuring
     const selected = directoryLists[sourceDeviceType].queue.selected;
-    handleCopy({ selected, deviceType: sourceDeviceType });
+    actionHandleCopy({ selected, deviceType: sourceDeviceType });
 
     setTimeout(() => {
       this._handlePaste();
@@ -530,7 +575,7 @@ class FileExplorer extends Component {
     return destinationDeviceType === deviceType;
   };
 
-  handleIsDraggable = deviceType => {
+  _handleIsDraggable = deviceType => {
     const { directoryLists, mtpDevice } = this.props;
     const { queue } = directoryLists[deviceType];
     const { selected } = queue;
@@ -539,21 +584,21 @@ class FileExplorer extends Component {
   };
 
   setFilesDrag({ ...args }) {
-    const { handleSetFilesDrag } = this.props;
+    const { actionHandleSetFilesDrag } = this.props;
 
-    handleSetFilesDrag({ ...args });
+    actionHandleSetFilesDrag({ ...args });
   }
 
   clearFilesDrag() {
-    const { handleClearFilesDrag } = this.props;
+    const { actionHandleClearFilesDrag } = this.props;
 
-    handleClearFilesDrag();
+    actionHandleClearFilesDrag();
   }
 
   handleNewFolderEditDialog = async ({ ...args }) => {
     const {
       deviceType,
-      handleNewFolder,
+      actionHandleNewFolder,
       hideHiddenFiles,
       currentBrowsePath,
       mtpStoragesListSelected
@@ -606,7 +651,7 @@ class FileExplorer extends Component {
       return null;
     }
 
-    handleNewFolder(
+    actionHandleNewFolder(
       {
         newFolderPath,
         deviceType
@@ -626,7 +671,7 @@ class FileExplorer extends Component {
       currentBrowsePath,
       mtpStoragesListSelected,
       fileTransferClipboard,
-      handleThrowError
+      actionHandleThrowError
     } = this.props;
 
     let { queue } = fileTransferClipboard;
@@ -644,7 +689,7 @@ class FileExplorer extends Component {
     });
 
     if (invalidFileNameFlag) {
-      handleThrowError({
+      actionHandleThrowError({
         message: `Invalid file name in the path. \\: characters are not allowed.`
       });
       return null;
@@ -664,7 +709,7 @@ class FileExplorer extends Component {
       hideHiddenFiles,
       currentBrowsePath,
       mtpStoragesListSelected,
-      handlePaste,
+      actionHandlePaste,
       fileTransferClipboard
     } = this.props;
     const destinationFolder = currentBrowsePath[deviceType];
@@ -675,7 +720,7 @@ class FileExplorer extends Component {
       return null;
     }
 
-    handlePaste(
+    actionHandlePaste(
       {
         destinationFolder,
         mtpStoragesListSelected,
@@ -690,10 +735,14 @@ class FileExplorer extends Component {
   };
 
   _handleBreadcrumbPathClick = ({ ...args }) => {
-    const { handleFetchDirList, hideHiddenFiles, deviceType } = this.props;
+    const {
+      actionHandleFetchDirList,
+      hideHiddenFiles,
+      deviceType
+    } = this.props;
     const { path } = args;
 
-    handleFetchDirList(
+    actionHandleFetchDirList(
       {
         filePath: path,
         ignoreHidden: hideHiddenFiles[deviceType]
@@ -703,7 +752,7 @@ class FileExplorer extends Component {
   };
 
   _handleRequestSort = (deviceType, property) => {
-    const { directoryLists, handleRequestSort } = this.props;
+    const { directoryLists, actionHandleRequestSort } = this.props;
     const orderBy = property;
     const { orderBy: _orderBy, order: _order } = directoryLists[deviceType];
     let order = 'asc';
@@ -712,20 +761,20 @@ class FileExplorer extends Component {
       order = 'desc';
     }
 
-    handleRequestSort({ order, orderBy }, deviceType);
+    actionHandleRequestSort({ order, orderBy }, deviceType);
   };
 
   _handleSelectAllClick = (deviceType, event) => {
-    const { directoryLists, handleSelectAllClick } = this.props;
+    const { directoryLists, actionHandleSelectAllClick } = this.props;
     const selected =
       directoryLists[deviceType].nodes.map(item => item.path) || [];
     const isChecked = event.target.checked;
 
-    handleSelectAllClick({ selected }, isChecked, deviceType);
+    actionHandleSelectAllClick({ selected }, isChecked, deviceType);
   };
 
   _handleTableClick = (path, deviceType) => {
-    const { directoryLists, handleTableClick } = this.props;
+    const { directoryLists, actionHandleTableClick } = this.props;
 
     const { selected } = directoryLists[deviceType].queue;
     const selectedIndex = selected.indexOf(path);
@@ -744,7 +793,7 @@ class FileExplorer extends Component {
       );
     }
 
-    handleTableClick({ selected: newSelected }, deviceType);
+    actionHandleTableClick({ selected: newSelected }, deviceType);
   };
 
   handleTableDoubleClick = (item, deviceType) => {
@@ -883,7 +932,6 @@ class FileExplorer extends Component {
           trigger={togglePasteDialog}
           fullWidthDialog
           maxWidthDialog="sm"
-          onClickHandler={this.handleNewFolderEditDialog}
           variant="determinate"
           helpText="If the progress bar freezes while transferring the files, restart the app and reconnect the device. This is a known Android MTP bug."
           progressValue={fileTransferProgess.percentage}
@@ -907,17 +955,21 @@ class FileExplorer extends Component {
           filesDrag={filesDrag}
           tableSort={this.tableSort}
           OnHoverDropZoneActivate={this.handleOnHoverDropZoneActivate}
-          onFilesDragOver={this.handleFilesDragOver}
-          onFilesDragEnd={this.handleFilesDragEnd}
-          onTableDrop={this.handleTableDrop}
+          onFilesDragOver={this._handleFilesDragOver}
+          onFilesDragEnd={this._handleFilesDragEnd}
+          onTableDrop={this._handleTableDrop}
           onBreadcrumbPathClick={this._handleBreadcrumbPathClick}
           onSelectAllClick={this._handleSelectAllClick}
           onRequestSort={this._handleRequestSort}
           onContextMenuClick={this._handleContextMenuClick}
           onTableDoubleClick={this.handleTableDoubleClick}
           onTableClick={this._handleTableClick}
-          onIsDraggable={this.handleIsDraggable}
-          onDragStart={this.handleFilesDragStart}
+          onIsDraggable={this._handleIsDraggable}
+          onDragStart={this._handleFilesDragStart}
+          onFocussedFileExplorerDeviceType={
+            this._handleFocussedFileExplorerDeviceType
+          }
+          onAcceleratorActivation={this._handleAcceleratorActivation}
         />
       </React.Fragment>
     );
@@ -927,15 +979,15 @@ class FileExplorer extends Component {
 const mapDispatchToProps = (dispatch, ownProps) =>
   bindActionCreators(
     {
-      handleThrowError: ({ ...args }) => (_, getState) => {
+      actionHandleThrowError: ({ ...args }) => (_, getState) => {
         dispatch(throwAlert({ ...args }));
       },
 
-      handleRequestSort: ({ ...args }, deviceType) => (_, getState) => {
+      actionHandleRequestSort: ({ ...args }, deviceType) => (_, getState) => {
         dispatch(setSortingDirLists({ ...args }, deviceType));
       },
 
-      handleSelectAllClick: ({ selected }, isChecked, deviceType) => (
+      actionHandleSelectAllClick: ({ selected }, isChecked, deviceType) => (
         _,
         getState
       ) => {
@@ -954,11 +1006,11 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         dispatch(setSelectedDirLists({ selected: [] }, deviceType));
       },
 
-      handleTableClick: ({ selected }, deviceType) => (_, getState) => {
+      actionHandleTableClick: ({ selected }, deviceType) => (_, getState) => {
         dispatch(setSelectedDirLists({ selected }, deviceType));
       },
 
-      handleFetchMtpStorageOptions: ({ ...args }, deviceType) => (
+      actionHandleFetchMtpStorageOptions: ({ ...args }, deviceType) => (
         _,
         getState
       ) => {
@@ -975,11 +1027,11 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         );
       },
 
-      handleFetchDirList: ({ ...args }, deviceType) => (_, getState) => {
+      actionHandleFetchDirList: ({ ...args }, deviceType) => (_, getState) => {
         dispatch(fetchDirList({ ...args }, deviceType, getState));
       },
 
-      handleRenameFile: (
+      actionHandleRenameFile: (
         { oldFilePath, newFilePath, deviceType },
         { ...fetchDirListArgs }
       ) => async (_, getState) => {
@@ -1052,7 +1104,8 @@ const mapDispatchToProps = (dispatch, ownProps) =>
           log.error(e);
         }
       },
-      handleNewFolder: (
+
+      actionHandleNewFolder: (
         { newFolderPath, deviceType },
         { ...fetchDirListArgs }
       ) => async (_, getState) => {
@@ -1124,7 +1177,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         }
       },
 
-      handleCopy: ({ selected, deviceType }) => async (_, getState) => {
+      actionHandleCopy: ({ selected, deviceType }) => async (_, getState) => {
         try {
           dispatch(
             setFileTransferClipboard({
@@ -1139,10 +1192,11 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         }
       },
 
-      handlePaste: ({ ...pasteArgs }, { ...fetchDirListArgs }, deviceType) => (
-        _,
-        getState
-      ) => {
+      actionHandlePaste: (
+        { ...pasteArgs },
+        { ...fetchDirListArgs },
+        deviceType
+      ) => (_, getState) => {
         try {
           switch (deviceType) {
             case DEVICES_TYPE_CONST.local:
@@ -1175,7 +1229,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         }
       },
 
-      handleSetFilesDrag: ({ ...args }) => (_, getState) => {
+      actionHandleSetFilesDrag: ({ ...args }) => (_, getState) => {
         try {
           dispatch(setFilesDrag({ ...args }));
         } catch (e) {
@@ -1183,7 +1237,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         }
       },
 
-      handleClearFilesDrag: () => (_, getState) => {
+      actionHandleClearFilesDrag: () => (_, getState) => {
         try {
           dispatch(clearFilesDrag());
         } catch (e) {
