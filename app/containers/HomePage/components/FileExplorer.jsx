@@ -189,9 +189,10 @@ class FileExplorer extends Component {
       currentBrowsePath
     } = this.props;
     const { tableData, deviceType } = data;
+    const { queue, nodes } = directoryLists[deviceType];
 
     // eslint-disable-next-line prefer-destructuring
-    const selected = directoryLists[deviceType].queue.selected;
+    const selected = queue.selected;
     const _currentBrowsePath = currentBrowsePath[deviceType];
 
     if (focussedFileExplorerDeviceType !== deviceType) {
@@ -264,6 +265,26 @@ class FileExplorer extends Component {
         getMainWindowRendererProcess().webContents.send(
           'fileExplorerToolbarActionCommunication',
           { type, deviceType: focussedFileExplorerDeviceType }
+        );
+        break;
+
+      case 'selectAll':
+        this._handleSelectAllClick(deviceType);
+        break;
+
+      case 'rename':
+        if (selected.length !== 1) {
+          break;
+        }
+
+        this.handleToggleDialogBox(
+          {
+            toggle: true,
+            data: {
+              ...(nodes.filter(item => selected[0] === item.path)[0] || [])
+            }
+          },
+          'rename'
         );
         break;
 
@@ -448,6 +469,7 @@ class FileExplorer extends Component {
 
   handleToggleDialogBox = ({ ...args }, targetAction) => {
     const { toggleDialog } = this.state;
+
     this.setState({
       toggleDialog: {
         ...toggleDialog,
@@ -834,7 +856,11 @@ class FileExplorer extends Component {
     const { directoryLists, actionHandleSelectAllClick } = this.props;
     const selected =
       directoryLists[deviceType].nodes.map(item => item.path) || [];
-    const isChecked = event.target.checked;
+    let isChecked = true;
+
+    if (event) {
+      isChecked = event.target.checked;
+    }
 
     actionHandleSelectAllClick({ selected }, isChecked, deviceType);
   };

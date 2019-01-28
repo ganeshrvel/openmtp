@@ -9,5 +9,7 @@ export const fileExplorerKeymaps = {
   paste: ['cmd+v'],
   delete: ['backspace'],
   refresh: IS_DEV ? ['cmd+alt+r'] : ['cmd+r'],
-  up: ['cmd+u']
+  up: ['cmd+u'],
+  selectAll: ['cmd+a'],
+  rename: ['cmd+d']
 };

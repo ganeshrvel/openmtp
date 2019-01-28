@@ -18,12 +18,14 @@ class FileExplorerBodyRender extends PureComponent {
 
   accelerators = () => {
     const keymapActionsList = {
-      newFolder: this.acceleratorCreateNewFolder,
-      copy: this.acceleratorCopy,
-      paste: this.acceleratorPaste,
-      delete: this.acceleratorDelete,
-      refresh: this.acceleratorRefresh,
-      up: this.acceleratorUp
+      newFolder: this.acceleratorNewFolder,
+      copy: this.acceleratorCreateAction,
+      paste: this.acceleratorCreateAction,
+      delete: this.acceleratorCreateAction,
+      refresh: this.acceleratorCreateAction,
+      up: this.acceleratorCreateAction,
+      selectAll: this.acceleratorCreateAction,
+      rename: this.acceleratorRename
     };
 
     const fileExplorerKeymapString = Object.keys(fileExplorerKeymaps).reduce(
@@ -46,12 +48,12 @@ class FileExplorerBodyRender extends PureComponent {
           return null;
         }
 
-        return keymapActionsList[a](event);
+        return keymapActionsList[a](event, a);
       });
     });
   };
 
-  acceleratorCreateNewFolder = event => {
+  acceleratorNewFolder = event => {
     const { onAcceleratorActivation, deviceType } = this.props;
 
     onAcceleratorActivation({
@@ -64,59 +66,24 @@ class FileExplorerBodyRender extends PureComponent {
     });
   };
 
-  acceleratorCopy = event => {
+  acceleratorRename = event => {
     const { onAcceleratorActivation, deviceType } = this.props;
 
     onAcceleratorActivation({
-      type: 'copy',
+      type: 'rename',
       data: {
         event,
+        tableData: this.tableData(),
         deviceType
       }
     });
   };
 
-  acceleratorPaste = event => {
+  acceleratorCreateAction = (event, type) => {
     const { onAcceleratorActivation, deviceType } = this.props;
 
     onAcceleratorActivation({
-      type: 'paste',
-      data: {
-        event,
-        deviceType
-      }
-    });
-  };
-
-  acceleratorDelete = event => {
-    const { onAcceleratorActivation, deviceType } = this.props;
-
-    onAcceleratorActivation({
-      type: 'delete',
-      data: {
-        event,
-        deviceType
-      }
-    });
-  };
-
-  acceleratorRefresh = event => {
-    const { onAcceleratorActivation, deviceType } = this.props;
-
-    onAcceleratorActivation({
-      type: 'refresh',
-      data: {
-        event,
-        deviceType
-      }
-    });
-  };
-
-  acceleratorUp = event => {
-    const { onAcceleratorActivation, deviceType } = this.props;
-
-    onAcceleratorActivation({
-      type: 'up',
+      type,
       data: {
         event,
         deviceType
