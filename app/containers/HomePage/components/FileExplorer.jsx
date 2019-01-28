@@ -65,12 +65,9 @@ import { imgsrc } from '../../../utils/imgsrc';
 import FileExplorerBodyRender from './FileExplorerBodyRender';
 
 const { Menu, getCurrentWindow } = remote;
-
 const _mainWindowRendererProcess = getMainWindowRendererProcess();
 const filesDragGhostImg = new Image(0, 0);
-
 filesDragGhostImg.src = imgsrc('FileExplorer/copy.svg');
-
 let allowFileDropFlag = false;
 
 class FileExplorer extends Component {
@@ -157,6 +154,9 @@ class FileExplorer extends Component {
       'fileExplorerToolbarActionCommunication',
       () => {}
     );
+
+    ipcRenderer.removeListener('isFileTransferActiveSeek', () => {});
+    ipcRenderer.removeListener('isFileTransferActiveReply', () => {});
   }
 
   _fetchDirList({ ...args }) {
@@ -212,12 +212,7 @@ class FileExplorer extends Component {
     switch (type) {
       case 'newFolder':
         this.handleToggleDialogBox(
-          {
-            toggle: true,
-            data: {
-              ...tableData
-            }
-          },
+          { toggle: true, data: { ...tableData } },
           type
         );
         break;
@@ -227,7 +222,10 @@ class FileExplorer extends Component {
           break;
         }
 
-        actionHandleCopy({ selected, deviceType });
+        actionHandleCopy({
+          selected,
+          deviceType
+        });
         break;
 
       case 'paste':
@@ -248,14 +246,20 @@ class FileExplorer extends Component {
 
         _mainWindowRendererProcess.webContents.send(
           'fileExplorerToolbarActionCommunication',
-          { type, deviceType: _focussedFileExplorerDeviceType }
+          {
+            type,
+            deviceType: _focussedFileExplorerDeviceType
+          }
         );
         break;
 
       case 'refresh':
         _mainWindowRendererProcess.webContents.send(
           'fileExplorerToolbarActionCommunication',
-          { type, deviceType: _focussedFileExplorerDeviceType }
+          {
+            type,
+            deviceType: _focussedFileExplorerDeviceType
+          }
         );
         break;
 
@@ -266,7 +270,10 @@ class FileExplorer extends Component {
 
         _mainWindowRendererProcess.webContents.send(
           'fileExplorerToolbarActionCommunication',
-          { type, deviceType: _focussedFileExplorerDeviceType }
+          {
+            type,
+            deviceType: _focussedFileExplorerDeviceType
+          }
         );
         break;
 
@@ -280,12 +287,7 @@ class FileExplorer extends Component {
         }
 
         this.handleToggleDialogBox(
-          {
-            toggle: true,
-            data: {
-              ...firstSelectedItem
-            }
-          },
+          { toggle: true, data: { ...firstSelectedItem } },
           'rename'
         );
         break;

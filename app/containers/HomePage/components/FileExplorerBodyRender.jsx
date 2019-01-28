@@ -10,6 +10,7 @@ import FileExplorerTableFooterRender from './FileExplorerTableFooterRender';
 import { styles } from '../styles/FileExplorerBodyRender';
 import { fileExplorerKeymaps } from '../../../constants/keymaps';
 import {
+  isFileExplorerOnFocus,
   toggleFileExplorerDeviceType,
   undefinedOrNull
 } from '../../../utils/funcs';
@@ -62,6 +63,11 @@ class FileExplorerBodyRender extends PureComponent {
       Object.keys(fileExplorerKeymaps).map(a => {
         const item = fileExplorerKeymaps[a];
         if (item.indexOf(handler.key) === -1) {
+          return null;
+        }
+
+        /* We check if there are any overlays and whether the file explorer is in focus else not fire keymapactions */
+        if (!isFileExplorerOnFocus()) {
           return null;
         }
 

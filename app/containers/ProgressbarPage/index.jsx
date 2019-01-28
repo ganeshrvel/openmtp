@@ -29,6 +29,10 @@ class ProgressbarPage extends Component {
     });
   }
 
+  componentWillUnmount() {
+    ipcRenderer.removeListener('progressBarDataCommunication', () => {});
+  }
+
   render() {
     const { classes: styles } = this.props;
     const { progressTitle, progressBodyText, value, variant } = this.state;

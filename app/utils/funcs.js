@@ -1,5 +1,7 @@
 'use strict';
 
+import { APP_TITLEBAR_DOM_ID } from '../constants/dom';
+
 export const isArraysEqual = (a, b) => {
   if (a === b) {
     return true;
@@ -263,4 +265,8 @@ export const toggleFileExplorerDeviceType = (
   return currentDeviceType === DEVICES_TYPE_CONST.local
     ? DEVICES_TYPE_CONST.mtp
     : DEVICES_TYPE_CONST.local;
+};
+
+export const isFileExplorerOnFocus = () => {
+  return document.elementFromPoint(0, 0).id === APP_TITLEBAR_DOM_ID;
 };
