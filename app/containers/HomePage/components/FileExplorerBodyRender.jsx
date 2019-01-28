@@ -25,6 +25,7 @@ class FileExplorerBodyRender extends PureComponent {
       refresh: this.acceleratorCreateAction,
       up: this.acceleratorCreateAction,
       selectAll: this.acceleratorCreateAction,
+      open: this.acceleratorCreateAction,
       rename: this.acceleratorRename
     };
 

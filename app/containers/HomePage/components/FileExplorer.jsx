@@ -193,6 +193,8 @@ class FileExplorer extends Component {
 
     // eslint-disable-next-line prefer-destructuring
     const selected = queue.selected;
+    const firstSelectedItem =
+      nodes.filter(item => selected[0] === item.path)[0] || [];
     const _currentBrowsePath = currentBrowsePath[deviceType];
 
     if (focussedFileExplorerDeviceType !== deviceType) {
@@ -281,11 +283,18 @@ class FileExplorer extends Component {
           {
             toggle: true,
             data: {
-              ...(nodes.filter(item => selected[0] === item.path)[0] || [])
+              ...firstSelectedItem
             }
           },
           'rename'
         );
+        break;
+
+      case 'open':
+        if (selected.length !== 1) {
+          break;
+        }
+        this._handleTableDoubleClick(firstSelectedItem, deviceType);
         break;
 
       default:
@@ -888,7 +897,7 @@ class FileExplorer extends Component {
     actionHandleTableClick({ selected: newSelected }, deviceType);
   };
 
-  handleTableDoubleClick = (item, deviceType) => {
+  _handleTableDoubleClick = (item, deviceType) => {
     const { isFolder, path } = item;
 
     if (!isFolder) {
@@ -1054,7 +1063,7 @@ class FileExplorer extends Component {
           onSelectAllClick={this._handleSelectAllClick}
           onRequestSort={this._handleRequestSort}
           onContextMenuClick={this._handleContextMenuClick}
-          onTableDoubleClick={this.handleTableDoubleClick}
+          onTableDoubleClick={this._handleTableDoubleClick}
           onTableClick={this._handleTableClick}
           onIsDraggable={this._handleIsDraggable}
           onDragStart={this._handleFilesDragStart}
