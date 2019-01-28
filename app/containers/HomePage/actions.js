@@ -34,10 +34,12 @@ const actionTypesList = [
 
 export const actionTypes = prefixer(prefix, actionTypesList);
 
-export function setFocussedFileExplorerDeviceType(deviceType) {
+export function setFocussedFileExplorerDeviceType(data) {
   return {
     type: actionTypes.SET_FOCUSSED_FILE_EXPLORER_DEVICE_TYPE,
-    payload: deviceType
+    payload: {
+      ...data
+    }
   };
 }
 

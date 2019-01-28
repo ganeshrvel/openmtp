@@ -13,5 +13,5 @@ export const fileExplorerKeymaps = {
   selectAll: ['cmd+a'],
   rename: ['cmd+d'],
   open: ['enter'],
-  fileExplorerTabSwitch: ['cmd+s']
+  fileExplorerTabSwitch: ['cmd+1']
 };

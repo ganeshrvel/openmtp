@@ -72,7 +72,6 @@ const filesDragGhostImg = new Image(0, 0);
 filesDragGhostImg.src = imgsrc('FileExplorer/copy.svg');
 
 let allowFileDropFlag = false;
-let _focussedFileExplorerDeviceType = DEVICES_TYPE_CONST.local;
 
 class FileExplorer extends Component {
   constructor(props) {
@@ -195,13 +194,15 @@ class FileExplorer extends Component {
     const firstSelectedItem =
       nodes.filter(item => selected[0] === item.path)[0] || [];
     const _currentBrowsePath = currentBrowsePath[deviceType];
+    const _focussedFileExplorerDeviceType =
+      focussedFileExplorerDeviceType.value;
 
-    if (focussedFileExplorerDeviceType !== deviceType) {
+    if (_focussedFileExplorerDeviceType !== deviceType) {
       return null;
     }
 
     if (
-      focussedFileExplorerDeviceType === DEVICES_TYPE_CONST.mtp &&
+      _focussedFileExplorerDeviceType === DEVICES_TYPE_CONST.mtp &&
       !mtpDevice.isAvailable &&
       type !== 'refresh'
     ) {
@@ -247,14 +248,14 @@ class FileExplorer extends Component {
 
         _mainWindowRendererProcess.webContents.send(
           'fileExplorerToolbarActionCommunication',
-          { type, deviceType: focussedFileExplorerDeviceType }
+          { type, deviceType: _focussedFileExplorerDeviceType }
         );
         break;
 
       case 'refresh':
         _mainWindowRendererProcess.webContents.send(
           'fileExplorerToolbarActionCommunication',
-          { type, deviceType: focussedFileExplorerDeviceType }
+          { type, deviceType: _focussedFileExplorerDeviceType }
         );
         break;
 
@@ -265,7 +266,7 @@ class FileExplorer extends Component {
 
         _mainWindowRendererProcess.webContents.send(
           'fileExplorerToolbarActionCommunication',
-          { type, deviceType: focussedFileExplorerDeviceType }
+          { type, deviceType: _focussedFileExplorerDeviceType }
         );
         break;
 
@@ -307,21 +308,27 @@ class FileExplorer extends Component {
       focussedFileExplorerDeviceType
     } = this.props;
 
-    if (toggle) {
-      if (focussedFileExplorerDeviceType === deviceType) {
-        return null;
-      }
-
-      _focussedFileExplorerDeviceType = deviceType;
-      /* _focussedFileExplorerDeviceType =
-        _focussedFileExplorerDeviceType === DEVICES_TYPE_CONST.local
-          ? DEVICES_TYPE_CONST.mtp
-          : DEVICES_TYPE_CONST.local; */
-    } else {
-      _focussedFileExplorerDeviceType = deviceType;
+    if (focussedFileExplorerDeviceType.value === deviceType) {
+      return null;
     }
 
-    actionHandleFocussedFileExplorerDeviceType(_focussedFileExplorerDeviceType);
+    let _focussedFileExplorerDeviceType = {};
+
+    if (toggle) {
+      _focussedFileExplorerDeviceType = {
+        accelerator: deviceType,
+        value: deviceType
+      };
+    } else {
+      _focussedFileExplorerDeviceType = {
+        onClick: deviceType,
+        value: deviceType
+      };
+    }
+
+    actionHandleFocussedFileExplorerDeviceType({
+      ..._focussedFileExplorerDeviceType
+    });
   };
 
   _handleContextMenuClick = (
@@ -1106,11 +1113,11 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         dispatch(throwAlert({ ...args }));
       },
 
-      actionHandleFocussedFileExplorerDeviceType: deviceType => (
+      actionHandleFocussedFileExplorerDeviceType: ({ ...args }) => (
         _,
         getState
       ) => {
-        dispatch(setFocussedFileExplorerDeviceType(deviceType));
+        dispatch(setFocussedFileExplorerDeviceType({ ...args }));
       },
 
       actionHandleRequestSort: ({ ...args }, deviceType) => (_, getState) => {

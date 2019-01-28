@@ -6,7 +6,11 @@ import { PATHS } from '../../utils/paths';
 import { DEVICES_DEFAULT_PATH, DEVICES_TYPE_CONST } from '../../constants';
 
 export const initialState = {
-  focussedFileExplorerDeviceType: DEVICES_TYPE_CONST.local,
+  focussedFileExplorerDeviceType: {
+    accelerator: DEVICES_TYPE_CONST.local,
+    onClick: DEVICES_TYPE_CONST.local,
+    value: DEVICES_TYPE_CONST.local
+  },
 
   sidebarFavouriteList: {
     top: [
@@ -212,7 +216,10 @@ export default function Home(state = initialState, action) {
     case actionTypes.SET_FOCUSSED_FILE_EXPLORER_DEVICE_TYPE:
       return {
         ...state,
-        focussedFileExplorerDeviceType: payload
+        focussedFileExplorerDeviceType: {
+          ...state.focussedFileExplorerDeviceType,
+          ...payload
+        }
       };
 
     case actionTypes.SET_SORTING_DIR_LISTS:

@@ -9,13 +9,18 @@ import FileExplorerTableBodyRender from './FileExplorerTableBodyRender';
 import FileExplorerTableFooterRender from './FileExplorerTableFooterRender';
 import { styles } from '../styles/FileExplorerBodyRender';
 import { fileExplorerKeymaps } from '../../../constants/keymaps';
-import { undefinedOrNull } from '../../../utils/funcs';
+import {
+  toggleFileExplorerDeviceType,
+  undefinedOrNull
+} from '../../../utils/funcs';
+import { DEVICES_TYPE_CONST } from '../../../constants';
 
 class FileExplorerBodyRender extends PureComponent {
   constructor(props) {
     super(props);
 
     this.fileExplorerKeymapString = null;
+    this.focussedFileExplorerDeviceTypeCached = DEVICES_TYPE_CONST.local;
   }
 
   componentDidMount() {
@@ -93,8 +98,21 @@ class FileExplorerBodyRender extends PureComponent {
 
   acceleratorFileExplorerTabSwitch = (event, type, toggle = true) => {
     const { onFocussedFileExplorerDeviceType, deviceType } = this.props;
+    let _focussedFileExplorerDeviceType = null;
 
-    onFocussedFileExplorerDeviceType(toggle, deviceType);
+    if (toggle) {
+      this.focussedFileExplorerDeviceTypeCached = toggleFileExplorerDeviceType(
+        this.focussedFileExplorerDeviceTypeCached,
+        DEVICES_TYPE_CONST
+      );
+
+      _focussedFileExplorerDeviceType = this
+        .focussedFileExplorerDeviceTypeCached;
+    } else {
+      _focussedFileExplorerDeviceType = deviceType;
+    }
+
+    onFocussedFileExplorerDeviceType(toggle, _focussedFileExplorerDeviceType);
   };
 
   acceleratorCreateAction = (event, type) => {

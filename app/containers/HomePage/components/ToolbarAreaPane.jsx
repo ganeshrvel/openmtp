@@ -41,7 +41,6 @@ class ToolbarAreaPane extends PureComponent {
   constructor(props) {
     super(props);
     this.initialState = {
-      focussedFileExplorerDeviceType: DEVICES_TYPE_CONST.local,
       toggleDrawer: false,
       toggleDeleteConfirmDialog: false,
       toggleMtpStorageSelectionDialog: false
@@ -56,8 +55,8 @@ class ToolbarAreaPane extends PureComponent {
     ipcRenderer.on(
       'fileExplorerToolbarActionCommunication',
       (event, { ...args }) => {
-        const { type, deviceType: focussedFileExplorerDeviceType } = args;
-        if (deviceType !== focussedFileExplorerDeviceType) {
+        const { type, deviceType: _focussedFileExplorerDeviceType } = args;
+        if (deviceType !== _focussedFileExplorerDeviceType) {
           return null;
         }
 
@@ -266,7 +265,7 @@ class ToolbarAreaPane extends PureComponent {
         <div
           className={classNames({
             [styles.focussedFileExplorer]:
-              focussedFileExplorerDeviceType === deviceType
+              focussedFileExplorerDeviceType.value === deviceType
           })}
         />
       </Fragment>

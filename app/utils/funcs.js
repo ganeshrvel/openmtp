@@ -255,3 +255,12 @@ export const keymapSearch = (keymap, keyedList) => {
 
   return matchedWith;
 };
+
+export const toggleFileExplorerDeviceType = (
+  currentDeviceType,
+  DEVICES_TYPE_CONST
+) => {
+  return currentDeviceType === DEVICES_TYPE_CONST.local
+    ? DEVICES_TYPE_CONST.mtp
+    : DEVICES_TYPE_CONST.local;
+};
