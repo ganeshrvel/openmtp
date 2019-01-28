@@ -2,8 +2,9 @@
 
 /* eslint no-case-declarations: off */
 
-import React, { PureComponent } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import { ipcRenderer } from 'electron';
+import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -25,7 +26,8 @@ import {
   makeMtpStoragesList,
   makeSidebarFavouriteList,
   makeToolbarList,
-  makeCurrentBrowsePath
+  makeCurrentBrowsePath,
+  makeFocussedFileExplorerDeviceType
 } from '../selectors';
 import { makeHideHiddenFiles } from '../../Settings/selectors';
 import { delLocalFiles, delMtpFiles } from '../../../api/sys';
@@ -39,6 +41,7 @@ class ToolbarAreaPane extends PureComponent {
   constructor(props) {
     super(props);
     this.initialState = {
+      focussedFileExplorerDeviceType: DEVICES_TYPE_CONST.local,
       toggleDrawer: false,
       toggleDeleteConfirmDialog: false,
       toggleMtpStorageSelectionDialog: false
@@ -60,6 +63,13 @@ class ToolbarAreaPane extends PureComponent {
 
         this.handleToolbarAction(type);
       }
+    );
+  }
+
+  componentWillUnmount() {
+    ipcRenderer.removeListener(
+      'fileExplorerToolbarActionCommunication',
+      () => {}
     );
   }
 
@@ -218,7 +228,8 @@ class ToolbarAreaPane extends PureComponent {
       currentBrowsePath,
       mtpStoragesList,
       directoryLists,
-      mtpDevice
+      mtpDevice,
+      focussedFileExplorerDeviceType
     } = this.props;
 
     const {
@@ -230,27 +241,35 @@ class ToolbarAreaPane extends PureComponent {
     const { isLoaded: isLoadedDirectoryLists } = directoryLists[deviceType];
 
     return (
-      <ToolbarBody
-        directoryLists={directoryLists}
-        mtpDevice={mtpDevice}
-        styles={styles}
-        sidebarFavouriteList={sidebarFavouriteList}
-        deviceType={deviceType}
-        showMenu={showMenu}
-        currentBrowsePath={currentBrowsePath}
-        mtpStoragesList={mtpStoragesList}
-        toggleDeleteConfirmDialog={toggleDeleteConfirmDialog}
-        toggleMtpStorageSelectionDialog={toggleMtpStorageSelectionDialog}
-        toolbarList={toolbarList}
-        isLoadedDirectoryLists={isLoadedDirectoryLists}
-        toggleDrawer={toggleDrawer}
-        handleDeleteConfirmDialog={this.handleDeleteConfirmDialog}
-        handleMtpStoragesListClick={this.handleMtpStoragesListClick}
-        handleToggleDrawer={this.handleToggleDrawer}
-        fetchDirList={this._fetchDirList}
-        handleDoubleClickToolBar={this.handleDoubleClickToolBar}
-        handleToolbarAction={this.handleToolbarAction}
-      />
+      <Fragment>
+        <ToolbarBody
+          directoryLists={directoryLists}
+          mtpDevice={mtpDevice}
+          styles={styles}
+          sidebarFavouriteList={sidebarFavouriteList}
+          deviceType={deviceType}
+          showMenu={showMenu}
+          currentBrowsePath={currentBrowsePath}
+          mtpStoragesList={mtpStoragesList}
+          toggleDeleteConfirmDialog={toggleDeleteConfirmDialog}
+          toggleMtpStorageSelectionDialog={toggleMtpStorageSelectionDialog}
+          toolbarList={toolbarList}
+          isLoadedDirectoryLists={isLoadedDirectoryLists}
+          toggleDrawer={toggleDrawer}
+          handleDeleteConfirmDialog={this.handleDeleteConfirmDialog}
+          handleMtpStoragesListClick={this.handleMtpStoragesListClick}
+          handleToggleDrawer={this.handleToggleDrawer}
+          fetchDirList={this._fetchDirList}
+          handleDoubleClickToolBar={this.handleDoubleClickToolBar}
+          handleToolbarAction={this.handleToolbarAction}
+        />
+        <div
+          className={classNames({
+            [styles.focussedFileExplorer]:
+              focussedFileExplorerDeviceType === deviceType
+          })}
+        />
+      </Fragment>
     );
   }
 }
@@ -393,7 +412,8 @@ const mapStateToProps = (state, props) => {
     currentBrowsePath: makeCurrentBrowsePath(state),
     hideHiddenFiles: makeHideHiddenFiles(state),
     directoryLists: makeDirectoryLists(state),
-    mtpStoragesList: makeMtpStoragesList(state)
+    mtpStoragesList: makeMtpStoragesList(state),
+    focussedFileExplorerDeviceType: makeFocussedFileExplorerDeviceType(state)
   };
 };
 

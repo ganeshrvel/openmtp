@@ -25,7 +25,8 @@ import {
   getMtpStoragesListSelected,
   setFileTransferClipboard,
   setFilesDrag,
-  clearFilesDrag
+  clearFilesDrag,
+  setFocussedFileExplorerDeviceType
 } from '../actions';
 import {
   makeDirectoryLists,
@@ -35,7 +36,8 @@ import {
   makeMtpStoragesListSelected,
   makeFileTransferClipboard,
   makeFileTransferProgess,
-  makeFilesDrag
+  makeFilesDrag,
+  makeFocussedFileExplorerDeviceType
 } from '../selectors';
 import {
   makeFileExplorerListingType,
@@ -64,16 +66,18 @@ import FileExplorerBodyRender from './FileExplorerBodyRender';
 
 const { Menu, getCurrentWindow } = remote;
 
+const _mainWindowRendererProcess = getMainWindowRendererProcess();
 const filesDragGhostImg = new Image(0, 0);
+
 filesDragGhostImg.src = imgsrc('FileExplorer/copy.svg');
 
 let allowFileDropFlag = false;
+let _focussedFileExplorerDeviceType = DEVICES_TYPE_CONST.local;
 
 class FileExplorer extends Component {
   constructor(props) {
     super(props);
     this.initialState = {
-      focussedFileExplorerDeviceType: null,
       togglePasteConfirmDialog: false,
       toggleDialog: {
         rename: {
@@ -149,6 +153,13 @@ class FileExplorer extends Component {
     }
   }
 
+  componentWillUnmount() {
+    _mainWindowRendererProcess.webContents.removeListener(
+      'fileExplorerToolbarActionCommunication',
+      () => {}
+    );
+  }
+
   _fetchDirList({ ...args }) {
     const { actionHandleFetchDirList, hideHiddenFiles } = this.props;
     const { path, deviceType } = args;
@@ -167,20 +178,8 @@ class FileExplorer extends Component {
     this.electronMenu.popup(remote.getCurrentWindow());
   }
 
-  _handleFocussedFileExplorerDeviceType = deviceType => {
-    const { focussedFileExplorerDeviceType } = this.state;
-
-    if (focussedFileExplorerDeviceType === deviceType) {
-      return null;
-    }
-
-    this.setState({
-      focussedFileExplorerDeviceType: deviceType
-    });
-  };
-
   _handleAcceleratorActivation = ({ type, data }) => {
-    const { focussedFileExplorerDeviceType } = this.state;
+    const { focussedFileExplorerDeviceType } = this.props;
     const {
       mtpDevice,
       directoryLists,
@@ -246,14 +245,14 @@ class FileExplorer extends Component {
           break;
         }
 
-        getMainWindowRendererProcess().webContents.send(
+        _mainWindowRendererProcess.webContents.send(
           'fileExplorerToolbarActionCommunication',
           { type, deviceType: focussedFileExplorerDeviceType }
         );
         break;
 
       case 'refresh':
-        getMainWindowRendererProcess().webContents.send(
+        _mainWindowRendererProcess.webContents.send(
           'fileExplorerToolbarActionCommunication',
           { type, deviceType: focussedFileExplorerDeviceType }
         );
@@ -264,7 +263,7 @@ class FileExplorer extends Component {
           break;
         }
 
-        getMainWindowRendererProcess().webContents.send(
+        _mainWindowRendererProcess.webContents.send(
           'fileExplorerToolbarActionCommunication',
           { type, deviceType: focussedFileExplorerDeviceType }
         );
@@ -300,6 +299,29 @@ class FileExplorer extends Component {
       default:
         break;
     }
+  };
+
+  _handleFocussedFileExplorerDeviceType = (toggle, deviceType) => {
+    const {
+      actionHandleFocussedFileExplorerDeviceType,
+      focussedFileExplorerDeviceType
+    } = this.props;
+
+    if (toggle) {
+      if (focussedFileExplorerDeviceType === deviceType) {
+        return null;
+      }
+
+      _focussedFileExplorerDeviceType = deviceType;
+      /* _focussedFileExplorerDeviceType =
+        _focussedFileExplorerDeviceType === DEVICES_TYPE_CONST.local
+          ? DEVICES_TYPE_CONST.mtp
+          : DEVICES_TYPE_CONST.local; */
+    } else {
+      _focussedFileExplorerDeviceType = deviceType;
+    }
+
+    actionHandleFocussedFileExplorerDeviceType(_focussedFileExplorerDeviceType);
   };
 
   _handleContextMenuClick = (
@@ -1084,6 +1106,13 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         dispatch(throwAlert({ ...args }));
       },
 
+      actionHandleFocussedFileExplorerDeviceType: deviceType => (
+        _,
+        getState
+      ) => {
+        dispatch(setFocussedFileExplorerDeviceType(deviceType));
+      },
+
       actionHandleRequestSort: ({ ...args }, deviceType) => (_, getState) => {
         dispatch(setSortingDirLists({ ...args }, deviceType));
       },
@@ -1360,7 +1389,8 @@ const mapStateToProps = (state, props) => {
     fileTransferClipboard: makeFileTransferClipboard(state),
     fileTransferProgess: makeFileTransferProgess(state),
     filesDrag: makeFilesDrag(state),
-    fileExplorerListingType: makeFileExplorerListingType(state)
+    fileExplorerListingType: makeFileExplorerListingType(state),
+    focussedFileExplorerDeviceType: makeFocussedFileExplorerDeviceType(state)
   };
 };
 

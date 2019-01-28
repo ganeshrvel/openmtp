@@ -6,6 +6,8 @@ import { PATHS } from '../../utils/paths';
 import { DEVICES_DEFAULT_PATH, DEVICES_TYPE_CONST } from '../../constants';
 
 export const initialState = {
+  focussedFileExplorerDeviceType: DEVICES_TYPE_CONST.local,
+
   sidebarFavouriteList: {
     top: [
       {
@@ -207,6 +209,12 @@ export default function Home(state = initialState, action) {
   // eslint-disable-next-line prefer-const
   let { type, payload, deviceType = null } = action;
   switch (type) {
+    case actionTypes.SET_FOCUSSED_FILE_EXPLORER_DEVICE_TYPE:
+      return {
+        ...state,
+        focussedFileExplorerDeviceType: payload
+      };
+
     case actionTypes.SET_SORTING_DIR_LISTS:
       return {
         ...state,
@@ -319,6 +327,7 @@ export default function Home(state = initialState, action) {
           ...initialState.filesDrag
         }
       };
+
     default:
       return state;
   }

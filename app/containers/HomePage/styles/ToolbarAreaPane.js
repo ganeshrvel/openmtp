@@ -51,6 +51,13 @@ export const styles = theme => {
         filter: `invert(100)`,
         background: variables().styles.primaryColor.main
       }
+    },
+    focussedFileExplorer: {
+      width: '100%',
+      height: 5,
+      marginTop: -5,
+      overflow: 'hidden',
+      background: 'rgba(0, 176, 255, 0.22)'
     }
   };
 };

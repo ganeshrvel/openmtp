@@ -17,6 +17,7 @@ import { isArraysEqual } from '../../utils/funcs';
 
 const prefix = '@@Home';
 const actionTypesList = [
+  'SET_FOCUSSED_FILE_EXPLORER_DEVICE_TYPE',
   'SET_CURRENT_BROWSE_PATH',
   'SET_SORTING_DIR_LISTS',
   'SET_SELECTED_DIR_LISTS',
@@ -32,6 +33,13 @@ const actionTypesList = [
 ];
 
 export const actionTypes = prefixer(prefix, actionTypesList);
+
+export function setFocussedFileExplorerDeviceType(deviceType) {
+  return {
+    type: actionTypes.SET_FOCUSSED_FILE_EXPLORER_DEVICE_TYPE,
+    payload: deviceType
+  };
+}
 
 export function setSortingDirLists(data, deviceType) {
   return {

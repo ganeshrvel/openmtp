@@ -12,8 +12,18 @@ import { fileExplorerKeymaps } from '../../../constants/keymaps';
 import { undefinedOrNull } from '../../../utils/funcs';
 
 class FileExplorerBodyRender extends PureComponent {
+  constructor(props) {
+    super(props);
+
+    this.fileExplorerKeymapString = null;
+  }
+
   componentDidMount() {
     this.accelerators();
+  }
+
+  componentWillUnmount() {
+    hotkeys.unbind(this.fileExplorerKeymapString);
   }
 
   accelerators = () => {
@@ -25,11 +35,12 @@ class FileExplorerBodyRender extends PureComponent {
       refresh: this.acceleratorCreateAction,
       up: this.acceleratorCreateAction,
       selectAll: this.acceleratorCreateAction,
+      rename: this.acceleratorRename,
       open: this.acceleratorCreateAction,
-      rename: this.acceleratorRename
+      fileExplorerTabSwitch: this.acceleratorFileExplorerTabSwitch
     };
 
-    const fileExplorerKeymapString = Object.keys(fileExplorerKeymaps).reduce(
+    this.fileExplorerKeymapString = Object.keys(fileExplorerKeymaps).reduce(
       (accumulator, currentValue) => {
         const itemCurrentValue = fileExplorerKeymaps[currentValue];
 
@@ -42,7 +53,7 @@ class FileExplorerBodyRender extends PureComponent {
       ''
     );
 
-    hotkeys(fileExplorerKeymapString, (event, handler) => {
+    hotkeys(this.fileExplorerKeymapString, (event, handler) => {
       Object.keys(fileExplorerKeymaps).map(a => {
         const item = fileExplorerKeymaps[a];
         if (item.indexOf(handler.key) === -1) {
@@ -80,6 +91,12 @@ class FileExplorerBodyRender extends PureComponent {
     });
   };
 
+  acceleratorFileExplorerTabSwitch = (event, type, toggle = true) => {
+    const { onFocussedFileExplorerDeviceType, deviceType } = this.props;
+
+    onFocussedFileExplorerDeviceType(toggle, deviceType);
+  };
+
   acceleratorCreateAction = (event, type) => {
     const { onAcceleratorActivation, deviceType } = this.props;
 
@@ -90,13 +107,6 @@ class FileExplorerBodyRender extends PureComponent {
         deviceType
       }
     });
-  };
-
-  currentMouseHover = type => {
-    const { onFocussedFileExplorerDeviceType, deviceType } = this.props;
-    const curentFocussedDeviceType = type === 'enter' ? deviceType : null;
-
-    onFocussedFileExplorerDeviceType(curentFocussedDeviceType);
   };
 
   tableData = () => {
@@ -126,9 +136,13 @@ class FileExplorerBodyRender extends PureComponent {
 
     return (
       <Paper
-        onFocus={() => {}}
-        onMouseOver={() => this.currentMouseHover('enter')}
-        onMouseLeave={() => this.currentMouseHover('leave')}
+        onClick={event =>
+          this.acceleratorFileExplorerTabSwitch(
+            event,
+            'fileExplorerTabSwitch',
+            false
+          )
+        }
         className={styles.root}
         elevation={0}
         square
