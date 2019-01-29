@@ -101,6 +101,10 @@ class FileExplorer extends Component {
     };
 
     this.electronMenu = new Menu();
+
+    this.keyedAcceleratorList = {
+      shift: false
+    };
   }
 
   componentWillMount() {
@@ -128,7 +132,46 @@ class FileExplorer extends Component {
   }
 
   componentDidMount() {
+    this.registerAccelerators();
+    this.registerAppUpdate();
+  }
+
+  componentWillUnmount() {
+    this.deregisterAccelerators();
+
+    _mainWindowRendererProcess.webContents.removeListener(
+      'fileExplorerToolbarActionCommunication',
+      () => {}
+    );
+    ipcRenderer.removeListener('isFileTransferActiveSeek', () => {});
+    ipcRenderer.removeListener('isFileTransferActiveReply', () => {});
+  }
+
+  registerAccelerators = () => {
+    document.addEventListener(
+      'keydown',
+      this._handleAccelerator.bind(this, true)
+    );
+    document.addEventListener(
+      'keyup',
+      this._handleAccelerator.bind(this, false)
+    );
+  };
+
+  deregisterAccelerators = () => {
+    document.removeEventListener(
+      'keydown',
+      this._handleAccelerator.bind(this, false)
+    );
+    document.removeEventListener(
+      'keyup',
+      this._handleAccelerator.bind(this, false)
+    );
+  };
+
+  registerAppUpdate = () => {
     const { deviceType } = this.props;
+
     /**
      * check whether an active file trasfer window is available.
      * This is to prevent race between file transfer and app update taskbar progressbar access
@@ -149,17 +192,25 @@ class FileExplorer extends Component {
         });
       });
     }
-  }
+  };
 
-  componentWillUnmount() {
-    _mainWindowRendererProcess.webContents.removeListener(
-      'fileExplorerToolbarActionCommunication',
-      () => {}
-    );
+  _handleAccelerator = (pressed, event) => {
+    if (undefinedOrNull(event)) {
+      return;
+    }
 
-    ipcRenderer.removeListener('isFileTransferActiveSeek', () => {});
-    ipcRenderer.removeListener('isFileTransferActiveReply', () => {});
-  }
+    switch (event.key) {
+      case 'Shift':
+      case 'shift':
+        this.keyedAcceleratorList = {
+          ...this.keyedAcceleratorList,
+          shift: pressed
+        };
+        break;
+      default:
+        break;
+    }
+  };
 
   _fetchDirList({ ...args }) {
     const { actionHandleFetchDirList, hideHiddenFiles } = this.props;
@@ -184,6 +235,7 @@ class FileExplorer extends Component {
       index: -1,
       item: []
     };
+
     nodes.filter((item, index) => {
       if (
         undefinedOrNull(selected) ||
@@ -201,6 +253,46 @@ class FileExplorer extends Component {
         index,
         item
       };
+
+      return _return;
+    });
+
+    return _return;
+  };
+
+  lastSelectedNodeOfTableSort = (nodes, selected, reverse = false) => {
+    let _return = {
+      index: -1,
+      item: []
+    };
+
+    nodes.filter((item, index) => {
+      if (
+        undefinedOrNull(selected) ||
+        !isArray(selected) ||
+        selected.length < 1
+      ) {
+        return null;
+      }
+
+      for (let i = 0; i < selected.length; i += 1) {
+        if (selected[i] === item.path) {
+          if (reverse) {
+            if (_return.index < 0) {
+              _return = {
+                index,
+                item
+              };
+              return _return;
+            }
+          } else {
+            _return = {
+              index,
+              item
+            };
+          }
+        }
+      }
 
       return _return;
     });
@@ -229,7 +321,8 @@ class FileExplorer extends Component {
     const _lastSelectedNode = this.lastSelectedNode(nodes, selected);
 
     let _tableSort = [];
-    let lastSelectedNodeOfTableSort = {};
+    let _lastSelectedNodeOfTableSort = {};
+    let _lastSelectedNodeOfTableSortReverse = {};
     let nextPathToNavigate = {};
     let navigationInReverse = false;
 
@@ -260,12 +353,12 @@ class FileExplorer extends Component {
           orderBy
         });
 
-        lastSelectedNodeOfTableSort = this.lastSelectedNode(
+        _lastSelectedNodeOfTableSort = this.lastSelectedNodeOfTableSort(
           _tableSort,
           selected
         );
-
         break;
+
       default:
         break;
     }
@@ -380,9 +473,9 @@ class FileExplorer extends Component {
 
         nextPathToNavigate =
           _tableSort[
-            lastSelectedNodeOfTableSort.index - 1 < 0
+            _lastSelectedNodeOfTableSort.index - 1 < 0
               ? 0
-              : lastSelectedNodeOfTableSort.index - 1
+              : _lastSelectedNodeOfTableSort.index - 1
           ];
         if (undefinedOrNull(nextPathToNavigate)) {
           break;
@@ -414,7 +507,7 @@ class FileExplorer extends Component {
           break;
         }
 
-        nextPathToNavigate = _tableSort[lastSelectedNodeOfTableSort.index + 1];
+        nextPathToNavigate = _tableSort[_lastSelectedNodeOfTableSort.index + 1];
         if (undefinedOrNull(nextPathToNavigate)) {
           break;
         }
@@ -453,23 +546,30 @@ class FileExplorer extends Component {
         if (navigationInReverse) {
           nextPathToNavigate =
             _tableSort[
-              lastSelectedNodeOfTableSort.index < 0
+              _lastSelectedNodeOfTableSort.index < 0
                 ? 0
-                : lastSelectedNodeOfTableSort.index
+                : _lastSelectedNodeOfTableSort.index
             ];
         } else {
+          _lastSelectedNodeOfTableSortReverse = this.lastSelectedNodeOfTableSort(
+            _tableSort,
+            selected,
+            true
+          );
+
           nextPathToNavigate =
             _tableSort[
-              lastSelectedNodeOfTableSort.index - 1 < 0
+              _lastSelectedNodeOfTableSortReverse.index - 1 < 0
                 ? 0
-                : lastSelectedNodeOfTableSort.index - 1
+                : _lastSelectedNodeOfTableSortReverse.index - 1
             ];
           multipleSelectDirection = type;
         }
 
         if (
           undefinedOrNull(nextPathToNavigate) ||
-          lastSelectedNodeOfTableSort.index <= 0
+          _lastSelectedNodeOfTableSort.index <= 0 ||
+          _lastSelectedNodeOfTableSortReverse.index <= 0
         ) {
           break;
         }
@@ -507,11 +607,18 @@ class FileExplorer extends Component {
           ) !== -1 && selected.length > 1;
 
         if (navigationInReverse) {
-          nextPathToNavigate = _tableSort[lastSelectedNodeOfTableSort.index];
+          _lastSelectedNodeOfTableSortReverse = this.lastSelectedNodeOfTableSort(
+            _tableSort,
+            selected,
+            true
+          );
+
+          nextPathToNavigate =
+            _tableSort[_lastSelectedNodeOfTableSortReverse.index];
         } else {
           multipleSelectDirection = type;
           nextPathToNavigate =
-            _tableSort[lastSelectedNodeOfTableSort.index + 1];
+            _tableSort[_lastSelectedNodeOfTableSort.index + 1];
         }
 
         if (undefinedOrNull(nextPathToNavigate)) {
@@ -920,7 +1027,7 @@ class FileExplorer extends Component {
     }, 200);
   };
 
-  handleOnHoverDropZoneActivate = deviceType => {
+  _handleOnHoverDropZoneActivate = deviceType => {
     const { filesDrag, mtpDevice } = this.props;
     const { sourceDeviceType, destinationDeviceType } = filesDrag;
 
@@ -1133,7 +1240,13 @@ class FileExplorer extends Component {
     actionHandleSelectAllClick({ selected }, isChecked, deviceType);
   };
 
-  _handleTableClick = (path, deviceType, event, dontAppend = false) => {
+  _handleTableClick = (
+    path,
+    deviceType,
+    event,
+    dontAppend = false,
+    shiftKeyAcceleratorEnable = false
+  ) => {
     if (undefinedOrNull(path)) {
       return null;
     }
@@ -1141,9 +1254,14 @@ class FileExplorer extends Component {
     const { directoryLists, actionHandleTableClick } = this.props;
     const { selected } = directoryLists[deviceType].queue;
     const selectedIndex = selected.indexOf(path);
+    let _dontAppend = dontAppend;
     let newSelected = [];
 
-    if (dontAppend) {
+    if (shiftKeyAcceleratorEnable && this.keyedAcceleratorList.shift) {
+      _dontAppend = false;
+    }
+
+    if (_dontAppend) {
       newSelected = [path];
     } else if (selectedIndex === -1) {
       newSelected = newSelected.concat(selected, path);
@@ -1157,6 +1275,7 @@ class FileExplorer extends Component {
         selected.slice(selectedIndex + 1)
       );
     }
+
     actionHandleTableClick({ selected: newSelected }, deviceType);
   };
 
@@ -1312,6 +1431,7 @@ class FileExplorer extends Component {
         />
 
         <FileExplorerBodyRender
+          tabIndex="0"
           deviceType={deviceType}
           fileExplorerListingType={fileExplorerListingType}
           hideColList={hideColList}
@@ -1320,7 +1440,7 @@ class FileExplorer extends Component {
           mtpDevice={mtpDevice}
           filesDrag={filesDrag}
           tableSort={this.tableSort}
-          OnHoverDropZoneActivate={this.handleOnHoverDropZoneActivate}
+          OnHoverDropZoneActivate={this._handleOnHoverDropZoneActivate}
           onFilesDragOver={this._handleFilesDragOver}
           onFilesDragEnd={this._handleFilesDragEnd}
           onTableDrop={this._handleTableDrop}

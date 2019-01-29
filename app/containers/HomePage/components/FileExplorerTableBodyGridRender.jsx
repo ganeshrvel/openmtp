@@ -45,7 +45,9 @@ class FileExplorerTableBodyGridRender extends PureComponent {
           <Checkbox
             className={styles.itemCheckBox}
             checked={isSelected}
-            onClick={event => onTableClick(item.path, deviceType, event)}
+            onClick={event =>
+              onTableClick(item.path, deviceType, event, true, true)
+            }
           />
           {item.isFolder ? (
             <FolderIcon
