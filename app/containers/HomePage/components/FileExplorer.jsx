@@ -230,7 +230,7 @@ class FileExplorer extends Component {
 
     let _tableSort = [];
     let lastSelectedNodeOfTableSort = {};
-    let nextPathIndexToNavigate = 0;
+    let nextPathToNavigate = {};
     let navigationInReverse = false;
 
     if (_focussedFileExplorerDeviceType !== deviceType) {
@@ -378,18 +378,18 @@ class FileExplorer extends Component {
           break;
         }
 
-        nextPathIndexToNavigate =
+        nextPathToNavigate =
           _tableSort[
             lastSelectedNodeOfTableSort.index - 1 < 0
               ? 0
               : lastSelectedNodeOfTableSort.index - 1
           ];
-        if (undefinedOrNull(nextPathIndexToNavigate)) {
+        if (undefinedOrNull(nextPathToNavigate)) {
           break;
         }
 
         this._handleTableClick(
-          nextPathIndexToNavigate.path,
+          nextPathToNavigate.path,
           deviceType,
           event,
           true
@@ -414,14 +414,13 @@ class FileExplorer extends Component {
           break;
         }
 
-        nextPathIndexToNavigate =
-          _tableSort[lastSelectedNodeOfTableSort.index + 1];
-        if (undefinedOrNull(nextPathIndexToNavigate)) {
+        nextPathToNavigate = _tableSort[lastSelectedNodeOfTableSort.index + 1];
+        if (undefinedOrNull(nextPathToNavigate)) {
           break;
         }
 
         this._handleTableClick(
-          nextPathIndexToNavigate.path,
+          nextPathToNavigate.path,
           deviceType,
           event,
           true
@@ -449,17 +448,17 @@ class FileExplorer extends Component {
         navigationInReverse =
           ['multipleSelectRight', 'multipleSelectDown'].indexOf(
             multipleSelectDirection
-          ) !== -1 && nodes.length > 1;
+          ) !== -1 && selected.length > 1;
 
         if (navigationInReverse) {
-          nextPathIndexToNavigate =
+          nextPathToNavigate =
             _tableSort[
               lastSelectedNodeOfTableSort.index < 0
                 ? 0
                 : lastSelectedNodeOfTableSort.index
             ];
         } else {
-          nextPathIndexToNavigate =
+          nextPathToNavigate =
             _tableSort[
               lastSelectedNodeOfTableSort.index - 1 < 0
                 ? 0
@@ -468,12 +467,15 @@ class FileExplorer extends Component {
           multipleSelectDirection = type;
         }
 
-        if (undefinedOrNull(nextPathIndexToNavigate)) {
+        if (
+          undefinedOrNull(nextPathToNavigate) ||
+          lastSelectedNodeOfTableSort.index <= 0
+        ) {
           break;
         }
 
         this._handleTableClick(
-          nextPathIndexToNavigate.path,
+          nextPathToNavigate.path,
           deviceType,
           event,
           false
@@ -502,23 +504,22 @@ class FileExplorer extends Component {
         navigationInReverse =
           ['multipleSelectLeft', 'multipleSelectUp'].indexOf(
             multipleSelectDirection
-          ) !== -1 && nodes.length > 1;
+          ) !== -1 && selected.length > 1;
 
         if (navigationInReverse) {
-          nextPathIndexToNavigate =
-            _tableSort[lastSelectedNodeOfTableSort.index];
+          nextPathToNavigate = _tableSort[lastSelectedNodeOfTableSort.index];
         } else {
           multipleSelectDirection = type;
-          nextPathIndexToNavigate =
+          nextPathToNavigate =
             _tableSort[lastSelectedNodeOfTableSort.index + 1];
         }
 
-        if (undefinedOrNull(nextPathIndexToNavigate)) {
+        if (undefinedOrNull(nextPathToNavigate)) {
           break;
         }
 
         this._handleTableClick(
-          nextPathIndexToNavigate.path,
+          nextPathToNavigate.path,
           deviceType,
           event,
           false
