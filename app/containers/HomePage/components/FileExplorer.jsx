@@ -70,6 +70,7 @@ const _mainWindowRendererProcess = getMainWindowRendererProcess();
 const filesDragGhostImg = new Image(0, 0);
 filesDragGhostImg.src = imgsrc('FileExplorer/copy.svg');
 let allowFileDropFlag = false;
+let multipleSelectDirection = null;
 
 class FileExplorer extends Component {
   constructor(props) {
@@ -230,6 +231,7 @@ class FileExplorer extends Component {
     let _tableSort = [];
     let lastSelectedNodeOfTableSort = {};
     let nextPathIndexToNavigate = 0;
+    let navigationInReverse = false;
 
     if (_focussedFileExplorerDeviceType !== deviceType) {
       return null;
@@ -248,6 +250,10 @@ class FileExplorer extends Component {
       case 'navigationRight':
       case 'navigationUp':
       case 'navigationDown':
+      case 'multipleSelectLeft':
+      case 'multipleSelectUp':
+      case 'multipleSelectRight':
+      case 'multipleSelectDown':
         _tableSort = this.tableSort({
           nodes,
           order,
@@ -420,6 +426,104 @@ class FileExplorer extends Component {
           event,
           true
         );
+        break;
+
+      case 'multipleSelectLeft':
+      case 'multipleSelectUp':
+        if (nodes.length < 1) {
+          break;
+        }
+
+        if (
+          type === 'multipleSelectLeft' &&
+          fileExplorerListingType[deviceType] === 'list'
+        ) {
+          break;
+        } else if (
+          type === 'multipleSelectUp' &&
+          fileExplorerListingType[deviceType] === 'grid'
+        ) {
+          break;
+        }
+
+        navigationInReverse =
+          ['multipleSelectRight', 'multipleSelectDown'].indexOf(
+            multipleSelectDirection
+          ) !== -1 && nodes.length > 1;
+
+        if (navigationInReverse) {
+          nextPathIndexToNavigate =
+            _tableSort[
+              lastSelectedNodeOfTableSort.index < 0
+                ? 0
+                : lastSelectedNodeOfTableSort.index
+            ];
+        } else {
+          nextPathIndexToNavigate =
+            _tableSort[
+              lastSelectedNodeOfTableSort.index - 1 < 0
+                ? 0
+                : lastSelectedNodeOfTableSort.index - 1
+            ];
+          multipleSelectDirection = type;
+        }
+
+        if (undefinedOrNull(nextPathIndexToNavigate)) {
+          break;
+        }
+
+        this._handleTableClick(
+          nextPathIndexToNavigate.path,
+          deviceType,
+          event,
+          false
+        );
+
+        break;
+
+      case 'multipleSelectRight':
+      case 'multipleSelectDown':
+        if (nodes.length < 1) {
+          break;
+        }
+
+        if (
+          type === 'multipleSelectRight' &&
+          fileExplorerListingType[deviceType] === 'list'
+        ) {
+          break;
+        } else if (
+          type === 'multipleSelectDown' &&
+          fileExplorerListingType[deviceType] === 'grid'
+        ) {
+          break;
+        }
+
+        navigationInReverse =
+          ['multipleSelectLeft', 'multipleSelectUp'].indexOf(
+            multipleSelectDirection
+          ) !== -1 && nodes.length > 1;
+
+        if (navigationInReverse) {
+          nextPathIndexToNavigate =
+            _tableSort[lastSelectedNodeOfTableSort.index];
+        } else {
+          multipleSelectDirection = type;
+          nextPathIndexToNavigate =
+            _tableSort[lastSelectedNodeOfTableSort.index + 1];
+        }
+
+        if (undefinedOrNull(nextPathIndexToNavigate)) {
+          break;
+        }
+
+        this._handleTableClick(
+          nextPathIndexToNavigate.path,
+          deviceType,
+          event,
+          false
+        );
+
         break;
 
       default:

@@ -62,7 +62,11 @@ class FileExplorerBodyRender extends PureComponent {
       navigationRight: this.acceleratorCreateAction,
       navigationLeft: this.acceleratorCreateAction,
       navigationUp: this.acceleratorCreateAction,
-      navigationDown: this.acceleratorCreateAction
+      navigationDown: this.acceleratorCreateAction,
+      multipleSelectLeft: this.acceleratorCreateAction,
+      multipleSelectRight: this.acceleratorCreateAction,
+      multipleSelectUp: this.acceleratorCreateAction,
+      multipleSelectDown: this.acceleratorCreateAction
     };
 
     this.fileExplorerKeymapString = Object.keys(fileExplorerKeymaps).reduce(

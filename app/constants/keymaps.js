@@ -17,5 +17,9 @@ export const fileExplorerKeymaps = {
   navigationLeft: ['left'],
   navigationRight: ['right'],
   navigationUp: ['up'],
-  navigationDown: ['down']
+  navigationDown: ['down'],
+  multipleSelectLeft: ['shift+left'],
+  multipleSelectRight: ['shift+right'],
+  multipleSelectUp: ['shift+up'],
+  multipleSelectDown: ['shift+down']
 };
