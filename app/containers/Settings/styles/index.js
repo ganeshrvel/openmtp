@@ -24,7 +24,8 @@ export const styles = theme => ({
     padding: `24px 24px 8px`
   },
   switch: {
-    height: 30
+    height: 30,
+    marginBottom: 7
   },
   block: {
     marginBottom: 20
