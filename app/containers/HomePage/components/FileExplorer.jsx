@@ -202,6 +202,8 @@ class FileExplorer extends Component {
     switch (event.key) {
       case 'Shift':
       case 'shift':
+      case 'Meta':
+      case 'meta':
         this.keyedAcceleratorList = {
           ...this.keyedAcceleratorList,
           shift: pressed
