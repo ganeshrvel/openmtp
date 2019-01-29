@@ -268,5 +268,5 @@ export const toggleFileExplorerDeviceType = (
 };
 
 export const isFileExplorerOnFocus = () => {
-  return document.elementFromPoint(0, 0).id === APP_TITLEBAR_DOM_ID;
+  return document.elementFromPoint(3, 2).id === APP_TITLEBAR_DOM_ID;
 };

@@ -21,7 +21,7 @@ Countless searches to find an app to solve these problems and failing to find on
 - Connect via USB cable - Highest data transfer rates.
 - Transfer multiple files which are larger than 4GB in one go.
 - Select between Internal Memory or SD Card.
-- Split pane views for both Local Computer and MTP device.
+- Split pane views for both Local Computer and Android device.
 - Drag 'n Drop, Grid/List views and the other advanced File Manager features are available.
 - Safe, Transparent and Open-Source.
 - We don't collect any personally identifiable information.

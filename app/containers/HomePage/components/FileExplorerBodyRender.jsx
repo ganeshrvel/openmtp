@@ -14,23 +14,38 @@ import {
   toggleFileExplorerDeviceType,
   undefinedOrNull
 } from '../../../utils/funcs';
-import { DEVICES_TYPE_CONST } from '../../../constants';
+import {
+  DEVICES_TYPE_CONST,
+  FILE_EXPLORER_DEFAULT_FOCUSSED_DEVICE_TYPE
+} from '../../../constants';
+import { FILE_EXPLORER_BODY_WRAPPER_ID } from '../../../constants/dom';
 
 class FileExplorerBodyRender extends PureComponent {
   constructor(props) {
     super(props);
+    const { deviceType } = this.props;
 
     this.fileExplorerKeymapString = null;
-    this.focussedFileExplorerDeviceTypeCached = DEVICES_TYPE_CONST.local;
+    this.focussedFileExplorerDeviceTypeCached = FILE_EXPLORER_DEFAULT_FOCUSSED_DEVICE_TYPE;
+    this.fileExplorerBodyWrapperId = `${FILE_EXPLORER_BODY_WRAPPER_ID}-${deviceType}`;
   }
 
   componentDidMount() {
     this.accelerators();
+    this.focusItem();
   }
 
   componentWillUnmount() {
     hotkeys.unbind(this.fileExplorerKeymapString);
   }
+
+  focusItem = () => {
+    const { deviceType } = this.props;
+
+    if (FILE_EXPLORER_DEFAULT_FOCUSSED_DEVICE_TYPE === deviceType) {
+      document.getElementById(this.fileExplorerBodyWrapperId).focus();
+    }
+  };
 
   accelerators = () => {
     const keymapActionsList = {
@@ -43,7 +58,11 @@ class FileExplorerBodyRender extends PureComponent {
       selectAll: this.acceleratorCreateAction,
       rename: this.acceleratorRename,
       open: this.acceleratorCreateAction,
-      fileExplorerTabSwitch: this.acceleratorFileExplorerTabSwitch
+      fileExplorerTabSwitch: this.acceleratorFileExplorerTabSwitch,
+      navigationRight: this.acceleratorCreateAction,
+      navigationLeft: this.acceleratorCreateAction,
+      navigationUp: this.acceleratorCreateAction,
+      navigationDown: this.acceleratorCreateAction
     };
 
     this.fileExplorerKeymapString = Object.keys(fileExplorerKeymaps).reduce(
@@ -62,7 +81,11 @@ class FileExplorerBodyRender extends PureComponent {
     hotkeys(this.fileExplorerKeymapString, (event, handler) => {
       Object.keys(fileExplorerKeymaps).map(a => {
         const item = fileExplorerKeymaps[a];
-        if (item.indexOf(handler.key) === -1) {
+        if (
+          undefinedOrNull(keymapActionsList[a]) ||
+          undefinedOrNull(item) ||
+          item.indexOf(handler.key) === -1
+        ) {
           return null;
         }
 
@@ -116,6 +139,13 @@ class FileExplorerBodyRender extends PureComponent {
         .focussedFileExplorerDeviceTypeCached;
     } else {
       _focussedFileExplorerDeviceType = deviceType;
+    }
+
+    if (
+      `${FILE_EXPLORER_BODY_WRAPPER_ID}-${_focussedFileExplorerDeviceType}` ===
+      this.fileExplorerBodyWrapperId
+    ) {
+      document.getElementById(this.fileExplorerBodyWrapperId).focus();
     }
 
     onFocussedFileExplorerDeviceType(toggle, _focussedFileExplorerDeviceType);
@@ -172,6 +202,8 @@ class FileExplorerBodyRender extends PureComponent {
         square
       >
         <div
+          tabIndex={-1}
+          id={this.fileExplorerBodyWrapperId}
           className={classNames(styles.tableWrapper, {
             [`onHoverDropZone`]: OnHoverDropZoneActivate(deviceType)
           })}

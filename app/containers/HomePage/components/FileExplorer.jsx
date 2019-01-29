@@ -54,6 +54,7 @@ import {
 } from '../../../api/sys';
 import { baseName, pathInfo, pathUp, sanitizePath } from '../../../utils/paths';
 import {
+  isArray,
   isFloat,
   isInt,
   isNumber,
@@ -177,6 +178,35 @@ class FileExplorer extends Component {
     this.electronMenu.popup(remote.getCurrentWindow());
   }
 
+  lastSelectedNode = (nodes, selected) => {
+    let _return = {
+      index: -1,
+      item: []
+    };
+    nodes.filter((item, index) => {
+      if (
+        undefinedOrNull(selected) ||
+        !isArray(selected) ||
+        selected.length < 1
+      ) {
+        return null;
+      }
+
+      if (selected[selected.length - 1] !== item.path) {
+        return null;
+      }
+
+      _return = {
+        index,
+        item
+      };
+
+      return _return;
+    });
+
+    return _return;
+  };
+
   _handleAcceleratorActivation = ({ type, data }) => {
     const { focussedFileExplorerDeviceType } = this.props;
     const {
@@ -184,18 +214,22 @@ class FileExplorer extends Component {
       directoryLists,
       actionHandleCopy,
       fileTransferClipboard,
-      currentBrowsePath
+      currentBrowsePath,
+      fileExplorerListingType
     } = this.props;
-    const { tableData, deviceType } = data;
-    const { queue, nodes } = directoryLists[deviceType];
+    const { tableData, deviceType, event } = data;
+    const { queue, nodes, order, orderBy } = directoryLists[deviceType];
 
     // eslint-disable-next-line prefer-destructuring
     const selected = queue.selected;
-    const firstSelectedItem =
-      nodes.filter(item => selected[0] === item.path)[0] || [];
     const _currentBrowsePath = currentBrowsePath[deviceType];
     const _focussedFileExplorerDeviceType =
       focussedFileExplorerDeviceType.value;
+    const _lastSelectedNode = this.lastSelectedNode(nodes, selected);
+
+    let _tableSort = [];
+    let lastSelectedNodeOfTableSort = {};
+    let nextPathIndexToNavigate = 0;
 
     if (_focussedFileExplorerDeviceType !== deviceType) {
       return null;
@@ -207,6 +241,27 @@ class FileExplorer extends Component {
       type !== 'refresh'
     ) {
       return null;
+    }
+
+    switch (type) {
+      case 'navigationLeft':
+      case 'navigationRight':
+      case 'navigationUp':
+      case 'navigationDown':
+        _tableSort = this.tableSort({
+          nodes,
+          order,
+          orderBy
+        });
+
+        lastSelectedNodeOfTableSort = this.lastSelectedNode(
+          _tableSort,
+          selected
+        );
+
+        break;
+      default:
+        break;
     }
 
     switch (type) {
@@ -287,7 +342,7 @@ class FileExplorer extends Component {
         }
 
         this.handleToggleDialogBox(
-          { toggle: true, data: { ...firstSelectedItem } },
+          { toggle: true, data: { ..._lastSelectedNode.item } },
           'rename'
         );
         break;
@@ -296,7 +351,75 @@ class FileExplorer extends Component {
         if (selected.length !== 1) {
           break;
         }
-        this._handleTableDoubleClick(firstSelectedItem, deviceType);
+        this._handleTableDoubleClick(_lastSelectedNode.item, deviceType);
+        break;
+
+      case 'navigationLeft':
+      case 'navigationUp':
+        if (nodes.length < 1) {
+          break;
+        }
+
+        if (
+          type === 'navigationLeft' &&
+          fileExplorerListingType[deviceType] === 'list'
+        ) {
+          break;
+        } else if (
+          type === 'navigationUp' &&
+          fileExplorerListingType[deviceType] === 'grid'
+        ) {
+          break;
+        }
+
+        nextPathIndexToNavigate =
+          _tableSort[
+            lastSelectedNodeOfTableSort.index - 1 < 0
+              ? 0
+              : lastSelectedNodeOfTableSort.index - 1
+          ];
+        if (undefinedOrNull(nextPathIndexToNavigate)) {
+          break;
+        }
+
+        this._handleTableClick(
+          nextPathIndexToNavigate.path,
+          deviceType,
+          event,
+          true
+        );
+        break;
+
+      case 'navigationRight':
+      case 'navigationDown':
+        if (nodes.length < 1) {
+          break;
+        }
+
+        if (
+          type === 'navigationRight' &&
+          fileExplorerListingType[deviceType] === 'list'
+        ) {
+          break;
+        } else if (
+          type === 'navigationDown' &&
+          fileExplorerListingType[deviceType] === 'grid'
+        ) {
+          break;
+        }
+
+        nextPathIndexToNavigate =
+          _tableSort[lastSelectedNodeOfTableSort.index + 1];
+        if (undefinedOrNull(nextPathIndexToNavigate)) {
+          break;
+        }
+
+        this._handleTableClick(
+          nextPathIndexToNavigate.path,
+          deviceType,
+          event,
+          true
+        );
         break;
 
       default:
@@ -905,14 +1028,19 @@ class FileExplorer extends Component {
     actionHandleSelectAllClick({ selected }, isChecked, deviceType);
   };
 
-  _handleTableClick = (path, deviceType) => {
-    const { directoryLists, actionHandleTableClick } = this.props;
+  _handleTableClick = (path, deviceType, event, dontAppend = false) => {
+    if (undefinedOrNull(path)) {
+      return null;
+    }
 
+    const { directoryLists, actionHandleTableClick } = this.props;
     const { selected } = directoryLists[deviceType].queue;
     const selectedIndex = selected.indexOf(path);
     let newSelected = [];
 
-    if (selectedIndex === -1) {
+    if (dontAppend) {
+      newSelected = [path];
+    } else if (selectedIndex === -1) {
       newSelected = newSelected.concat(selected, path);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
@@ -924,7 +1052,6 @@ class FileExplorer extends Component {
         selected.slice(selectedIndex + 1)
       );
     }
-
     actionHandleTableClick({ selected: newSelected }, deviceType);
   };
 
@@ -1007,7 +1134,9 @@ class FileExplorer extends Component {
       deviceType === DEVICES_TYPE_CONST.mtp && fileTransferProgess.toggle;
     const renameSecondaryText =
       deviceType === DEVICES_TYPE_CONST.mtp
-        ? `Every MTP device does not support the Rename feature.`
+        ? `Every ${
+            DEVICES_LABEL[DEVICES_TYPE_CONST.mtp]
+          } does not support the Rename feature.`
         : ``;
 
     return (

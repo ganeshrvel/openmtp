@@ -4,6 +4,7 @@ import { EOL } from 'os';
 import { replaceBulk } from './funcs';
 import { log } from './log';
 import { isGoogleAndroidFileTransferActive } from './isGoogleAndroidFileTransferActive';
+import { DEVICES_LABEL, DEVICES_TYPE_CONST } from '../constants';
 
 export const processMtpBuffer = async ({ error, stderr }) => {
   const errorTpl = {
@@ -22,14 +23,22 @@ export const processMtpBuffer = async ({ error, stderr }) => {
   };
 
   const errorDictionary = {
-    noMtp: `No MTP device found.`,
+    noMtp: `No ${DEVICES_LABEL[DEVICES_TYPE_CONST.mtp]} or MTP device found.`,
     googleAndroidFileTransferIsActive: `Quit 'Android File Transfer' app (by Google) and reload.`,
-    deviceLocked: `Your MTP device may be locked. Unlock it and reload.`,
-    unResponsive: `MTP device is not responding. Reload or reconnect the device.`,
-    mtpStorageNotAccessible: `MTP storage not accessible.`,
+    deviceLocked: `Your ${
+      DEVICES_LABEL[DEVICES_TYPE_CONST.mtp]
+    } may be locked. Unlock it and reload.`,
+    unResponsive: `Your ${
+      DEVICES_LABEL[DEVICES_TYPE_CONST.mtp]
+    } is not responding. Reload or reconnect the device.`,
+    mtpStorageNotAccessible: `Your ${
+      DEVICES_LABEL[DEVICES_TYPE_CONST.mtp]
+    } storage is not accessible.`,
     fileNotFound: `File not found! Try again.`,
     partialDeletion: `The path is inaccessible.`,
-    common: `Oops.. Your MTP device has gone crazy! Try again.`
+    common: `Oops.. Your ${
+      DEVICES_LABEL[DEVICES_TYPE_CONST.mtp]
+    } has gone crazy! Try again.`
   };
 
   const errorStringified =

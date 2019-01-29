@@ -20,7 +20,7 @@ import findLodash from 'lodash/find';
 import { log } from '../../utils/log';
 import { mtp as _mtpCli } from '../../utils/binaries';
 
-import { DEVICES_TYPE_CONST } from '../../constants';
+import { DEVICES_LABEL, DEVICES_TYPE_CONST } from '../../constants';
 import { baseName, getExtension } from '../../utils/paths';
 import {
   clearFileTransfer,
@@ -474,7 +474,13 @@ export const fetchMtpStorageOptions = async () => {
       storageList === null ||
       storageList.length < 1
     ) {
-      return { error: `MTP storage not accessible`, stderr: null, data: null };
+      return {
+        error: `${
+          DEVICES_LABEL[DEVICES_TYPE_CONST.mtp]
+        } storage not accessible`,
+        stderr: null,
+        data: null
+      };
     }
 
     return { error: null, stderr: null, data: storageList };

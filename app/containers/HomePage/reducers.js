@@ -3,13 +3,17 @@
 import path from 'path';
 import { actionTypes } from './actions';
 import { PATHS } from '../../utils/paths';
-import { DEVICES_DEFAULT_PATH, DEVICES_TYPE_CONST } from '../../constants';
+import {
+  DEVICES_DEFAULT_PATH,
+  DEVICES_TYPE_CONST,
+  FILE_EXPLORER_DEFAULT_FOCUSSED_DEVICE_TYPE
+} from '../../constants';
 
 export const initialState = {
   focussedFileExplorerDeviceType: {
-    accelerator: DEVICES_TYPE_CONST.local,
-    onClick: DEVICES_TYPE_CONST.local,
-    value: DEVICES_TYPE_CONST.local
+    accelerator: FILE_EXPLORER_DEFAULT_FOCUSSED_DEVICE_TYPE,
+    onClick: FILE_EXPLORER_DEFAULT_FOCUSSED_DEVICE_TYPE,
+    value: FILE_EXPLORER_DEFAULT_FOCUSSED_DEVICE_TYPE
   },
 
   sidebarFavouriteList: {

@@ -14,7 +14,7 @@ import FormControl from '@material-ui/core/FormControl';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { privacyPolicyWindow } from '../../../utils/createWindows';
-import { DEVICES_TYPE_CONST } from '../../../constants';
+import { DEVICES_LABEL, DEVICES_TYPE_CONST } from '../../../constants';
 
 const isMas = electronIs.mas();
 
@@ -157,7 +157,7 @@ export default class SettingsDialog extends PureComponent {
                       }
                     />
                   }
-                  label="Desktop"
+                  label={DEVICES_LABEL[DEVICES_TYPE_CONST.local]}
                 />
                 <FormControlLabel
                   className={styles.switch}
@@ -172,7 +172,7 @@ export default class SettingsDialog extends PureComponent {
                       }
                     />
                   }
-                  label="MTP Device"
+                  label={DEVICES_LABEL[DEVICES_TYPE_CONST.mtp]}
                 />
 
                 <Typography
@@ -200,7 +200,7 @@ export default class SettingsDialog extends PureComponent {
                       }
                     />
                   }
-                  label="Desktop"
+                  label={DEVICES_LABEL[DEVICES_TYPE_CONST.local]}
                 />
                 <FormControlLabel
                   className={styles.switch}
@@ -219,7 +219,7 @@ export default class SettingsDialog extends PureComponent {
                       }
                     />
                   }
-                  label="MTP Device"
+                  label={DEVICES_LABEL[DEVICES_TYPE_CONST.mtp]}
                 />
               </FormGroup>
             </div>

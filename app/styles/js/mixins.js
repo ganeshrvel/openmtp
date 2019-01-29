@@ -20,6 +20,9 @@ export default args => {
       OUserDrag: 'none',
       userDrag: 'none'
     },
+    noOutline: {
+      outline: `none !important`
+    },
     absoluteCenter: {
       position: 'absolute',
       left: '50%',

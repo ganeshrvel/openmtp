@@ -11,7 +11,7 @@ import classNames from 'classnames';
 import SidebarAreaPaneLists from './SidebarAreaPaneLists';
 import { LazyLoaderOverLay } from '../styles/ToolbarAreaPane';
 import { imgsrc } from '../../../utils/imgsrc';
-import { DEVICES_TYPE_CONST } from '../../../constants';
+import { DEVICES_LABEL, DEVICES_TYPE_CONST } from '../../../constants';
 import {
   Confirm as ConfirmDialog,
   Selection as SelectionDialog
@@ -118,7 +118,9 @@ export default class ToolbarAreaPane extends PureComponent {
         <ConfirmDialog
           fullWidthDialog
           maxWidthDialog="xs"
-          bodyText="Are you sure you want to delete the items?"
+          bodyText={`Are you sure you want to delete the items from your ${
+            DEVICES_LABEL[deviceType]
+          }?`}
           trigger={toggleDeleteConfirmDialog}
           onClickHandler={handleDeleteConfirmDialog}
         />

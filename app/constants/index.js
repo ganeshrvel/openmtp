@@ -15,9 +15,12 @@ export const DEVICES_DEFAULT_PATH = {
 };
 
 export const DEVICES_LABEL = {
-  [DEVICES_TYPE_CONST.mtp]: 'MTP Device',
+  [DEVICES_TYPE_CONST.mtp]: 'Phone',
   [DEVICES_TYPE_CONST.local]: `Computer`
 };
+
+export const FILE_EXPLORER_DEFAULT_FOCUSSED_DEVICE_TYPE =
+  DEVICES_TYPE_CONST.local;
 
 export const LOG_FILE_ROTATION_CLEANUP_THRESHOLD = 60; // in days
 

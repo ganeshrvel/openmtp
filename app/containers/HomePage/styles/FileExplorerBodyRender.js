@@ -8,6 +8,7 @@ export const styles = theme => ({
     ...mixins().noselect
   },
   tableWrapper: {
+    ...mixins().noOutline,
     height: `calc(100vh - 128px)`,
     overflowY: 'auto',
     overflowX: 'auto',
