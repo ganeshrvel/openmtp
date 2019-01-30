@@ -282,7 +282,7 @@ export function fetchDirList({ ...args }, deviceType, getState) {
   }
 }
 
-export function handleReloadDirList(
+export function reloadDirList(
   { ...args },
   deviceType,
   mtpStoragesList,
@@ -299,10 +299,7 @@ export function handleReloadDirList(
           setMtpStorageOptions(
             { ...args },
             deviceType,
-            {
-              changeMtpStorageIdsOnlyOnDeviceChange: true,
-              mtpStoragesList
-            },
+            { changeMtpStorageIdsOnlyOnDeviceChange: true, mtpStoragesList },
             getState
           )
         );

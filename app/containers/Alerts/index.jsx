@@ -9,9 +9,9 @@ import { clearAlert } from './actions';
 import Snackbars from '../../components/Snackbars';
 
 class Alerts extends Component {
-  handleClose = () => {
-    const { clearAlert } = this.props;
-    clearAlert();
+  _handleClose = () => {
+    const { actionCreateClearAlert } = this.props;
+    actionCreateClearAlert();
   };
 
   render() {
@@ -20,7 +20,7 @@ class Alerts extends Component {
     return (
       message && (
         <Snackbars
-          OnSnackBarsCloseAlerts={() => this.handleClose()}
+          OnSnackBarsCloseAlerts={() => this._handleClose()}
           message={message}
           variant={variant}
           autoHideDuration={autoHideDuration}
@@ -33,7 +33,7 @@ class Alerts extends Component {
 const mapDispatchToProps = (dispatch, ownProps) =>
   bindActionCreators(
     {
-      clearAlert: () => (_, getState) => {
+      actionCreateClearAlert: () => (_, getState) => {
         dispatch(clearAlert());
       }
     },

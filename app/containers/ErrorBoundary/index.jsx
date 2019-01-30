@@ -1,14 +1,12 @@
 'use strict';
 
 import React, { Component } from 'react';
+import { remote } from 'electron';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import { log } from '@Log';
-import { remote } from 'electron';
 import { EOL } from 'os';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { styles } from './styles';
 import { imgsrc } from '../../utils/imgsrc';
 import GenerateErrorReport from './components/GenerateErrorReport';
@@ -33,11 +31,11 @@ class ErrorBoundary extends Component {
     );
   }
 
-  handleReload = () => {
+  _handleReload = () => {
     try {
       remote.getCurrentWindow().reload();
     } catch (e) {
-      log.error(e, `ErrorBoundary -> handleReload`);
+      log.error(e, `ErrorBoundary -> _handleReload`);
     }
   };
 
@@ -65,7 +63,7 @@ class ErrorBoundary extends Component {
           <Button
             variant="outlined"
             className={styles.goBackBtn}
-            onClick={this.handleReload}
+            onClick={this._handleReload}
           >
             Reload
           </Button>
@@ -77,14 +75,4 @@ class ErrorBoundary extends Component {
   }
 }
 
-const mapDispatchToProps = (dispatch, ownProps) =>
-  bindActionCreators({}, dispatch);
-
-const mapStateToProps = (state, props) => {
-  return {};
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withStyles(styles)(ErrorBoundary));
+export default withStyles(styles)(ErrorBoundary);

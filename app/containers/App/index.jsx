@@ -35,7 +35,7 @@ class App extends Component {
     this.allowWritingJsonToSettings = false;
   }
 
-  async componentWillMount() {
+  componentWillMount() {
     try {
       this.setFreshInstall();
       if (this.allowWritingJsonToSettings) {
@@ -58,7 +58,7 @@ class App extends Component {
 
   setFreshInstall() {
     try {
-      const { _freshInstall } = this.props;
+      const { actionCreateFreshInstall } = this.props;
       const isFreshInstallSettings = settingsStorage.getItems(['freshInstall']);
       let isFreshInstall = 0;
 
@@ -84,7 +84,7 @@ class App extends Component {
           return null;
       }
 
-      _freshInstall({ isFreshInstall });
+      actionCreateFreshInstall({ isFreshInstall });
     } catch (e) {
       log.error(e, `App -> setFreshInstall`);
     }
@@ -92,9 +92,9 @@ class App extends Component {
 
   writeJsonToSettings() {
     try {
-      const { _copyJsonFileToSettings } = this.props;
+      const { actionCreateCopyJsonFileToSettings } = this.props;
       const settingsFromStorage = settingsStorage.getAll();
-      _copyJsonFileToSettings({ ...settingsFromStorage });
+      actionCreateCopyJsonFileToSettings({ ...settingsFromStorage });
     } catch (e) {
       log.error(e, `App -> writeJsonToSettings`);
     }
@@ -141,11 +141,11 @@ class App extends Component {
 const mapDispatchToProps = (dispatch, ownProps) =>
   bindActionCreators(
     {
-      _copyJsonFileToSettings: ({ ...data }) => (_, getState) => {
+      actionCreateCopyJsonFileToSettings: ({ ...data }) => (_, getState) => {
         dispatch(copyJsonFileToSettings({ ...data }));
       },
 
-      _freshInstall: ({ ...data }) => (_, getState) => {
+      actionCreateFreshInstall: ({ ...data }) => (_, getState) => {
         dispatch(freshInstall({ ...data }, getState));
       }
     },

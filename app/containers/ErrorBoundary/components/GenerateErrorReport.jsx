@@ -41,14 +41,14 @@ class GenerateErrorReport extends Component {
 
   handleGenerateErrorLogs = async () => {
     try {
-      const { actionHandleThrowError } = this.props;
+      const { actionCreateThrowError } = this.props;
 
       await mtpVerboseReport();
 
       const { error } = await promisifiedRimraf(logFileZippedPath);
 
       if (error) {
-        actionHandleThrowError({
+        actionCreateThrowError({
           message: reportGenerateError
         });
         return null;
@@ -57,7 +57,7 @@ class GenerateErrorReport extends Component {
       this.compressLog();
 
       if (!fileExistsSync(logFileZippedPath)) {
-        actionHandleThrowError({
+        actionCreateThrowError({
           message: reportGenerateError
         });
         return null;
@@ -91,7 +91,7 @@ class GenerateErrorReport extends Component {
 const mapDispatchToProps = (dispatch, ownProps) =>
   bindActionCreators(
     {
-      actionHandleThrowError: ({ ...args }) => (_, getState) => {
+      actionCreateThrowError: ({ ...args }) => (_, getState) => {
         dispatch(throwAlert({ ...args }));
       }
     },

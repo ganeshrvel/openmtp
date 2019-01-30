@@ -7,6 +7,7 @@ export const initialState = {
   freshInstall: 0,
   toggleSettings: false,
   enableAutoUpdateCheck: true,
+  enablePrereleaseUpdates: true,
   enableAnalytics: true,
   hideHiddenFiles: {
     [DEVICES_TYPE_CONST.local]: true,

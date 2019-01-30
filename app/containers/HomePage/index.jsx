@@ -1,15 +1,11 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { log } from '@Log';
 import { withStyles } from '@material-ui/core/styles';
 import FileExplorer from './components/FileExplorer';
 import ToolbarAreaPane from './components/ToolbarAreaPane';
-import { withReducer } from '../../store/reducers/withReducer';
 import { styles } from './styles';
-import reducers from './reducers';
 import { DEVICES_TYPE_CONST } from '../../constants';
 
 class Home extends Component {
@@ -42,16 +38,4 @@ class Home extends Component {
   }
 }
 
-const mapDispatchToProps = (dispatch, ownProps) =>
-  bindActionCreators({}, dispatch);
-
-const mapStateToProps = (state, props) => {
-  return {};
-};
-
-export default withReducer('Home', reducers)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(withStyles(styles)(Home))
-);
+export default withStyles(styles)(Home);

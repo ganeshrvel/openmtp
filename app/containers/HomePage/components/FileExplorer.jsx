@@ -111,12 +111,12 @@ class FileExplorer extends Component {
     const {
       currentBrowsePath,
       deviceType,
-      actionHandleFetchMtpStorageOptions,
+      actionCreateFetchMtpStorageOptions,
       hideHiddenFiles
     } = this.props;
 
     if (deviceType === DEVICES_TYPE_CONST.mtp) {
-      actionHandleFetchMtpStorageOptions(
+      actionCreateFetchMtpStorageOptions(
         {
           filePath: currentBrowsePath[deviceType],
           ignoreHidden: hideHiddenFiles[deviceType]
@@ -124,7 +124,7 @@ class FileExplorer extends Component {
         deviceType
       );
     } else {
-      this._fetchDirList({
+      this._handleFetchDirList({
         path: currentBrowsePath[deviceType],
         deviceType
       });
@@ -214,22 +214,17 @@ class FileExplorer extends Component {
     }
   };
 
-  _fetchDirList({ ...args }) {
-    const { actionHandleFetchDirList, hideHiddenFiles } = this.props;
+  _handleFetchDirList({ ...args }) {
+    const { actionCreateFetchDirList, hideHiddenFiles } = this.props;
     const { path, deviceType } = args;
 
-    actionHandleFetchDirList(
+    actionCreateFetchDirList(
       {
         filePath: path,
         ignoreHidden: hideHiddenFiles[deviceType]
       },
       deviceType
     );
-  }
-
-  fireElectronMenu(menuItems) {
-    this.electronMenu = Menu.buildFromTemplate(menuItems);
-    this.electronMenu.popup(remote.getCurrentWindow());
   }
 
   lastSelectedNode = (nodes, selected) => {
@@ -307,7 +302,7 @@ class FileExplorer extends Component {
     const {
       mtpDevice,
       directoryLists,
-      actionHandleCopy,
+      actionCreateCopy,
       fileTransferClipboard,
       currentBrowsePath,
       fileExplorerListingType
@@ -367,7 +362,7 @@ class FileExplorer extends Component {
 
     switch (type) {
       case 'newFolder':
-        this.handleToggleDialogBox(
+        this._handleToggleDialogBox(
           { toggle: true, data: { ...tableData } },
           type
         );
@@ -378,7 +373,7 @@ class FileExplorer extends Component {
           break;
         }
 
-        actionHandleCopy({
+        actionCreateCopy({
           selected,
           deviceType
         });
@@ -442,7 +437,7 @@ class FileExplorer extends Component {
           break;
         }
 
-        this.handleToggleDialogBox(
+        this._handleToggleDialogBox(
           { toggle: true, data: { ..._lastSelectedNode.item } },
           'rename'
         );
@@ -643,7 +638,7 @@ class FileExplorer extends Component {
 
   _handleFocussedFileExplorerDeviceType = (toggle, deviceType) => {
     const {
-      actionHandleFocussedFileExplorerDeviceType,
+      actionCreateFocussedFileExplorerDeviceType,
       focussedFileExplorerDeviceType
     } = this.props;
 
@@ -665,10 +660,15 @@ class FileExplorer extends Component {
       };
     }
 
-    actionHandleFocussedFileExplorerDeviceType({
+    actionCreateFocussedFileExplorerDeviceType({
       ..._focussedFileExplorerDeviceType
     });
   };
+
+  fireElectronMenu(menuItems) {
+    this.electronMenu = Menu.buildFromTemplate(menuItems);
+    this.electronMenu.popup(remote.getCurrentWindow());
+  }
 
   _handleContextMenuClick = (
     event,
@@ -794,13 +794,13 @@ class FileExplorer extends Component {
   }
 
   _handleContextMenuListActions = ({ ...args }) => {
-    const { deviceType, directoryLists, actionHandleCopy } = this.props;
+    const { deviceType, directoryLists, actionCreateCopy } = this.props;
 
     Object.keys(args).map(a => {
       const item = args[a];
       switch (a) {
         case 'rename':
-          this.handleToggleDialogBox(
+          this._handleToggleDialogBox(
             {
               toggle: true,
               data: {
@@ -814,7 +814,7 @@ class FileExplorer extends Component {
         case 'copy':
           // eslint-disable-next-line prefer-destructuring
           const selected = directoryLists[deviceType].queue.selected;
-          actionHandleCopy({ selected, deviceType });
+          actionCreateCopy({ selected, deviceType });
           break;
 
         case 'paste':
@@ -822,7 +822,7 @@ class FileExplorer extends Component {
           break;
 
         case 'newFolder':
-          this.handleToggleDialogBox(
+          this._handleToggleDialogBox(
             {
               toggle: true,
               data: {
@@ -844,7 +844,7 @@ class FileExplorer extends Component {
     });
   };
 
-  handleToggleDialogBox = ({ ...args }, targetAction) => {
+  _handleToggleDialogBox = ({ ...args }, targetAction) => {
     const { toggleDialog } = this.state;
 
     this.setState({
@@ -858,10 +858,10 @@ class FileExplorer extends Component {
     });
   };
 
-  handleRenameEditDialog = async ({ ...args }) => {
+  _handleRenameEditDialog = async ({ ...args }) => {
     const {
       deviceType,
-      actionHandleRenameFile,
+      actionCreateRenameFile,
       hideHiddenFiles,
       currentBrowsePath,
       mtpStoragesListSelected
@@ -910,7 +910,7 @@ class FileExplorer extends Component {
       );
       return null;
     }
-    actionHandleRenameFile(
+    actionCreateRenameFile(
       {
         oldFilePath,
         newFilePath,
@@ -925,7 +925,7 @@ class FileExplorer extends Component {
     this.clearEditDialog(targetAction);
   };
 
-  handleErrorsEditDialog = ({ ...args }, targetAction) => {
+  _handleErrorsEditDialog = ({ ...args }, targetAction) => {
     const { toggleDialog } = this.state;
     this.setState({
       toggleDialog: {
@@ -950,14 +950,14 @@ class FileExplorer extends Component {
     });
   };
 
-  handleTogglePasteConfirmDialog = status => {
+  _handleTogglePasteConfirmDialog = status => {
     this.setState({
       togglePasteConfirmDialog: status
     });
   };
 
   _handleFilesDragStart = (e, { sourceDeviceType }) => {
-    this.setFilesDrag({
+    this._handleSetFilesDrag({
       sourceDeviceType,
       destinationDeviceType: null,
       enter: false,
@@ -978,7 +978,7 @@ class FileExplorer extends Component {
       }
 
       allowFileDropFlag = false;
-      this.setFilesDrag({
+      this._handleSetFilesDrag({
         sourceDeviceType: filesDrag.sourceDeviceType,
         destinationDeviceType,
         enter: false,
@@ -993,7 +993,7 @@ class FileExplorer extends Component {
     }
 
     allowFileDropFlag = true;
-    this.setFilesDrag({
+    this._handleSetFilesDrag({
       sourceDeviceType: filesDrag.sourceDeviceType,
       destinationDeviceType,
       enter: true,
@@ -1003,11 +1003,11 @@ class FileExplorer extends Component {
   };
 
   _handleFilesDragEnd = () => {
-    this.clearFilesDrag();
+    this._handleClearFilesDrag();
   };
 
   _handleTableDrop = () => {
-    const { directoryLists, actionHandleCopy, filesDrag } = this.props;
+    const { directoryLists, actionCreateCopy, filesDrag } = this.props;
     const { sourceDeviceType, destinationDeviceType } = filesDrag;
 
     if (
@@ -1021,11 +1021,11 @@ class FileExplorer extends Component {
 
     // eslint-disable-next-line prefer-destructuring
     const selected = directoryLists[sourceDeviceType].queue.selected;
-    actionHandleCopy({ selected, deviceType: sourceDeviceType });
+    actionCreateCopy({ selected, deviceType: sourceDeviceType });
 
     setTimeout(() => {
       this._handlePaste();
-      this.clearFilesDrag();
+      this._handleClearFilesDrag();
     }, 200);
   };
 
@@ -1048,22 +1048,22 @@ class FileExplorer extends Component {
     return selected.length > 0 && mtpDevice.isAvailable;
   };
 
-  setFilesDrag({ ...args }) {
-    const { actionHandleSetFilesDrag } = this.props;
+  _handleSetFilesDrag({ ...args }) {
+    const { actionCreateSetFilesDrag } = this.props;
 
-    actionHandleSetFilesDrag({ ...args });
+    actionCreateSetFilesDrag({ ...args });
   }
 
-  clearFilesDrag() {
-    const { actionHandleClearFilesDrag } = this.props;
+  _handleClearFilesDrag() {
+    const { actionCreateClearFilesDrag } = this.props;
 
-    actionHandleClearFilesDrag();
+    actionCreateClearFilesDrag();
   }
 
-  handleNewFolderEditDialog = async ({ ...args }) => {
+  _handleNewFolderEditDialog = async ({ ...args }) => {
     const {
       deviceType,
-      actionHandleNewFolder,
+      actionCreateNewFolder,
       hideHiddenFiles,
       currentBrowsePath,
       mtpStoragesListSelected
@@ -1080,7 +1080,7 @@ class FileExplorer extends Component {
     }
 
     if (newFolderName === null || newFolderName.trim() === '') {
-      this.handleErrorsEditDialog(
+      this._handleErrorsEditDialog(
         {
           toggle: true,
           message: `Error: Folder name cannot be empty.`
@@ -1091,7 +1091,7 @@ class FileExplorer extends Component {
     }
 
     if (/[/\\?%*:|"<>]/g.test(newFolderName)) {
-      this.handleErrorsEditDialog(
+      this._handleErrorsEditDialog(
         {
           toggle: true,
           message: `Error: Illegal characters.`
@@ -1106,7 +1106,7 @@ class FileExplorer extends Component {
     if (
       await checkFileExists(newFolderPath, deviceType, mtpStoragesListSelected)
     ) {
-      this.handleErrorsEditDialog(
+      this._handleErrorsEditDialog(
         {
           toggle: true,
           message: `Error: The name "${newFolderName}" is already taken.`
@@ -1116,7 +1116,7 @@ class FileExplorer extends Component {
       return null;
     }
 
-    actionHandleNewFolder(
+    actionCreateNewFolder(
       {
         newFolderPath,
         deviceType
@@ -1136,7 +1136,7 @@ class FileExplorer extends Component {
       currentBrowsePath,
       mtpStoragesListSelected,
       fileTransferClipboard,
-      actionHandleThrowError
+      actionCreateThrowError
     } = this.props;
 
     let { queue } = fileTransferClipboard;
@@ -1154,38 +1154,38 @@ class FileExplorer extends Component {
     });
 
     if (invalidFileNameFlag) {
-      actionHandleThrowError({
+      actionCreateThrowError({
         message: `Invalid file name in the path. \\: characters are not allowed.`
       });
       return null;
     }
 
     if (await checkFileExists(queue, deviceType, mtpStoragesListSelected)) {
-      this.handleTogglePasteConfirmDialog(true);
+      this._handleTogglePasteConfirmDialog(true);
       return null;
     }
 
-    this.handlePasteConfirmDialog(true);
+    this._handlePasteConfirmDialog(true);
   };
 
-  handlePasteConfirmDialog = confirm => {
+  _handlePasteConfirmDialog = confirm => {
     const {
       deviceType,
       hideHiddenFiles,
       currentBrowsePath,
       mtpStoragesListSelected,
-      actionHandlePaste,
+      actionCreatePaste,
       fileTransferClipboard
     } = this.props;
     const destinationFolder = currentBrowsePath[deviceType];
 
-    this.handleTogglePasteConfirmDialog(false);
+    this._handleTogglePasteConfirmDialog(false);
 
     if (!confirm) {
       return null;
     }
 
-    actionHandlePaste(
+    actionCreatePaste(
       {
         destinationFolder,
         mtpStoragesListSelected,
@@ -1201,13 +1201,13 @@ class FileExplorer extends Component {
 
   _handleBreadcrumbPathClick = ({ ...args }) => {
     const {
-      actionHandleFetchDirList,
+      actionCreateFetchDirList,
       hideHiddenFiles,
       deviceType
     } = this.props;
     const { path } = args;
 
-    actionHandleFetchDirList(
+    actionCreateFetchDirList(
       {
         filePath: path,
         ignoreHidden: hideHiddenFiles[deviceType]
@@ -1217,7 +1217,7 @@ class FileExplorer extends Component {
   };
 
   _handleRequestSort = (deviceType, property) => {
-    const { directoryLists, actionHandleRequestSort } = this.props;
+    const { directoryLists, actionCreateRequestSort } = this.props;
     const orderBy = property;
     const { orderBy: _orderBy, order: _order } = directoryLists[deviceType];
     let order = 'asc';
@@ -1226,11 +1226,11 @@ class FileExplorer extends Component {
       order = 'desc';
     }
 
-    actionHandleRequestSort({ order, orderBy }, deviceType);
+    actionCreateRequestSort({ order, orderBy }, deviceType);
   };
 
   _handleSelectAllClick = (deviceType, event) => {
-    const { directoryLists, actionHandleSelectAllClick } = this.props;
+    const { directoryLists, actionCreateSelectAllClick } = this.props;
     const selected =
       directoryLists[deviceType].nodes.map(item => item.path) || [];
     let isChecked = true;
@@ -1239,7 +1239,7 @@ class FileExplorer extends Component {
       isChecked = event.target.checked;
     }
 
-    actionHandleSelectAllClick({ selected }, isChecked, deviceType);
+    actionCreateSelectAllClick({ selected }, isChecked, deviceType);
   };
 
   _handleTableClick = (
@@ -1253,7 +1253,7 @@ class FileExplorer extends Component {
       return null;
     }
 
-    const { directoryLists, actionHandleTableClick } = this.props;
+    const { directoryLists, actionCreateTableClick } = this.props;
     const { selected } = directoryLists[deviceType].queue;
     const selectedIndex = selected.indexOf(path);
     let _dontAppend = dontAppend;
@@ -1278,7 +1278,7 @@ class FileExplorer extends Component {
       );
     }
 
-    actionHandleTableClick({ selected: newSelected }, deviceType);
+    actionCreateTableClick({ selected: newSelected }, deviceType);
   };
 
   _handleTableDoubleClick = (item, deviceType) => {
@@ -1291,7 +1291,7 @@ class FileExplorer extends Component {
       return null;
     }
 
-    this._fetchDirList({
+    this._handleFetchDirList({
       path,
       deviceType
     });
@@ -1360,9 +1360,9 @@ class FileExplorer extends Component {
       deviceType === DEVICES_TYPE_CONST.mtp && fileTransferProgess.toggle;
     const renameSecondaryText =
       deviceType === DEVICES_TYPE_CONST.mtp
-        ? `Every ${
+        ? `Not all ${
             DEVICES_LABEL[DEVICES_TYPE_CONST.mtp]
-          } does not support the Rename feature.`
+          } support the rename feature.`
         : ``;
 
     return (
@@ -1383,7 +1383,7 @@ class FileExplorer extends Component {
           maxWidthDialog="sm"
           fullWidthTextField
           autoFocus
-          onClickHandler={this.handleRenameEditDialog}
+          onClickHandler={this._handleRenameEditDialog}
           btnPositiveText="Rename"
           btnNegativeText="Cancel"
           errors={rename.errors}
@@ -1402,7 +1402,7 @@ class FileExplorer extends Component {
           maxWidthDialog="sm"
           fullWidthTextField
           autoFocus
-          onClickHandler={this.handleNewFolderEditDialog}
+          onClickHandler={this._handleNewFolderEditDialog}
           btnPositiveText="Create"
           btnNegativeText="Cancel"
           errors={newFolder.errors}
@@ -1429,11 +1429,10 @@ class FileExplorer extends Component {
           maxWidthDialog="xs"
           bodyText="Replace and merge the existing items?"
           trigger={togglePasteConfirmDialog}
-          onClickHandler={this.handlePasteConfirmDialog}
+          onClickHandler={this._handlePasteConfirmDialog}
         />
 
         <FileExplorerBodyRender
-          tabIndex="0"
           deviceType={deviceType}
           fileExplorerListingType={fileExplorerListingType}
           hideColList={hideColList}
@@ -1467,22 +1466,22 @@ class FileExplorer extends Component {
 const mapDispatchToProps = (dispatch, ownProps) =>
   bindActionCreators(
     {
-      actionHandleThrowError: ({ ...args }) => (_, getState) => {
+      actionCreateThrowError: ({ ...args }) => (_, getState) => {
         dispatch(throwAlert({ ...args }));
       },
 
-      actionHandleFocussedFileExplorerDeviceType: ({ ...args }) => (
+      actionCreateFocussedFileExplorerDeviceType: ({ ...args }) => (
         _,
         getState
       ) => {
         dispatch(setFocussedFileExplorerDeviceType({ ...args }));
       },
 
-      actionHandleRequestSort: ({ ...args }, deviceType) => (_, getState) => {
+      actionCreateRequestSort: ({ ...args }, deviceType) => (_, getState) => {
         dispatch(setSortingDirLists({ ...args }, deviceType));
       },
 
-      actionHandleSelectAllClick: ({ selected }, isChecked, deviceType) => (
+      actionCreateSelectAllClick: ({ selected }, isChecked, deviceType) => (
         _,
         getState
       ) => {
@@ -1501,11 +1500,11 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         dispatch(setSelectedDirLists({ selected: [] }, deviceType));
       },
 
-      actionHandleTableClick: ({ selected }, deviceType) => (_, getState) => {
+      actionCreateTableClick: ({ selected }, deviceType) => (_, getState) => {
         dispatch(setSelectedDirLists({ selected }, deviceType));
       },
 
-      actionHandleFetchMtpStorageOptions: ({ ...args }, deviceType) => (
+      actionCreateFetchMtpStorageOptions: ({ ...args }, deviceType) => (
         _,
         getState
       ) => {
@@ -1522,11 +1521,11 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         );
       },
 
-      actionHandleFetchDirList: ({ ...args }, deviceType) => (_, getState) => {
+      actionCreateFetchDirList: ({ ...args }, deviceType) => (_, getState) => {
         dispatch(fetchDirList({ ...args }, deviceType, getState));
       },
 
-      actionHandleRenameFile: (
+      actionCreateRenameFile: (
         { oldFilePath, newFilePath, deviceType },
         { ...fetchDirListArgs }
       ) => async (_, getState) => {
@@ -1600,7 +1599,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         }
       },
 
-      actionHandleNewFolder: (
+      actionCreateNewFolder: (
         { newFolderPath, deviceType },
         { ...fetchDirListArgs }
       ) => async (_, getState) => {
@@ -1672,7 +1671,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         }
       },
 
-      actionHandleCopy: ({ selected, deviceType }) => async (_, getState) => {
+      actionCreateCopy: ({ selected, deviceType }) => async (_, getState) => {
         try {
           dispatch(
             setFileTransferClipboard({
@@ -1687,7 +1686,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         }
       },
 
-      actionHandlePaste: (
+      actionCreatePaste: (
         { ...pasteArgs },
         { ...fetchDirListArgs },
         deviceType
@@ -1724,7 +1723,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         }
       },
 
-      actionHandleSetFilesDrag: ({ ...args }) => (_, getState) => {
+      actionCreateSetFilesDrag: ({ ...args }) => (_, getState) => {
         try {
           dispatch(setFilesDrag({ ...args }));
         } catch (e) {
@@ -1732,7 +1731,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         }
       },
 
-      actionHandleClearFilesDrag: () => (_, getState) => {
+      actionCreateClearFilesDrag: () => (_, getState) => {
         try {
           dispatch(clearFilesDrag());
         } catch (e) {

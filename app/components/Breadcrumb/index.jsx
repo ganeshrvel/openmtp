@@ -12,7 +12,7 @@ import { quickHash } from '../../utils/funcs';
 import { styles } from './styles';
 
 class Breadcrumb extends PureComponent {
-  handleClickPath = (enabled, value, event) => {
+  _handleClickPath = (enabled, value, event) => {
     const { onBreadcrumbPathClick } = this.props;
     event.preventDefault();
 
@@ -106,7 +106,7 @@ class Breadcrumb extends PureComponent {
                       [`& bold`]: bold
                     })}
                     onClick={event => {
-                      this.handleClickPath(enabled, path, event);
+                      this._handleClickPath(enabled, path, event);
                     }}
                   >
                     {label}

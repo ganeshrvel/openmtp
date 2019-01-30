@@ -30,6 +30,12 @@ export const makeEnableAutoUpdateCheck = createSelector(
     state ? state.enableAutoUpdateCheck : initialState.enableAutoUpdateCheck
 );
 
+export const makeEnablePrereleaseUpdates = createSelector(
+  make,
+  state =>
+    state ? state.enablePrereleaseUpdates : initialState.enablePrereleaseUpdates
+);
+
 export const makeEnableAnalytics = createSelector(
   make,
   state => (state ? state.enableAnalytics : initialState.enableAnalytics)

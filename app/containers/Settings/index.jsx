@@ -11,17 +11,19 @@ import {
   makeEnableAutoUpdateCheck,
   makeEnableAnalytics,
   makeFreshInstall,
-  makeFileExplorerListingType
+  makeFileExplorerListingType,
+  makeEnablePrereleaseUpdates
 } from './selectors';
 import {
   enableAnalytics,
   enableAutoUpdateCheck,
+  enablePrereleaseUpdates,
   fileExplorerListingType,
   freshInstall,
   hideHiddenFiles,
   toggleSettings
 } from './actions';
-import { handleReloadDirList } from '../HomePage/actions';
+import { reloadDirList } from '../HomePage/actions';
 import {
   makeCurrentBrowsePath,
   makeMtpStoragesList
@@ -39,27 +41,27 @@ class Settings extends Component {
   };
 
   _handleToggleSettings = confirm => {
-    const { handleToggleSettings } = this.props;
-    handleToggleSettings(confirm);
+    const { actionCreateToggleSettings } = this.props;
+    actionCreateToggleSettings(confirm);
   };
 
   _handleFreshInstall = () => {
-    const { handleFreshInstall } = this.props;
+    const { actionCreateFreshInstall } = this.props;
 
-    handleFreshInstall({ isFreshInstall: 0 });
+    actionCreateFreshInstall({ isFreshInstall: 0 });
   };
 
   _handleHiddenFilesChange = ({ ...args }, deviceType) => {
     const {
-      handleHideHiddenFiles,
-      handleReloadDirList,
+      actionCreateHideHiddenFiles,
+      actionCreateReloadDirList,
       mtpStoragesList,
       currentBrowsePath
     } = this.props;
     const { toggle } = args;
 
-    handleHideHiddenFiles({ ...args }, deviceType);
-    handleReloadDirList(
+    actionCreateHideHiddenFiles({ ...args }, deviceType);
+    actionCreateReloadDirList(
       {
         filePath: currentBrowsePath[deviceType],
         ignoreHidden: toggle
@@ -70,32 +72,29 @@ class Settings extends Component {
   };
 
   _handleFileExplorerListingType = ({ ...args }, deviceType) => {
-    const { handleFileExplorerListingType } = this.props;
+    const { actionCreateFileExplorerListingType } = this.props;
 
-    handleFileExplorerListingType({ ...args }, deviceType);
+    actionCreateFileExplorerListingType({ ...args }, deviceType);
   };
 
   _handleAutoUpdateCheckChange = ({ ...args }) => {
-    const { handleEnableAutoUpdateCheck } = this.props;
+    const { actionCreateEnableAutoUpdateCheck } = this.props;
 
-    handleEnableAutoUpdateCheck({ ...args });
+    actionCreateEnableAutoUpdateCheck({ ...args });
   };
 
   _handleAnalyticsChange = ({ ...args }) => {
-    const { handleEnableAnalytics } = this.props;
+    const { actionCreateEnableAnalytics } = this.props;
 
-    handleEnableAnalytics({ ...args });
+    actionCreateEnableAnalytics({ ...args });
   };
 
   render() {
     const {
       freshInstall,
       toggleSettings,
-      hideHiddenFiles,
-      fileExplorerListingType,
       classes: styles,
-      enableAutoUpdateCheck,
-      enableAnalytics
+      ...parentProps
     } = this.props;
     const showSettings = toggleSettings || freshInstall !== 0;
 
@@ -104,16 +103,13 @@ class Settings extends Component {
         open={showSettings}
         freshInstall={freshInstall}
         toggleSettings={toggleSettings}
-        hideHiddenFiles={hideHiddenFiles}
-        fileExplorerListingType={fileExplorerListingType}
         styles={styles}
-        enableAutoUpdateCheck={enableAutoUpdateCheck}
-        enableAnalytics={enableAnalytics}
         onAnalyticsChange={this._handleAnalyticsChange}
         onHiddenFilesChange={this._handleHiddenFilesChange}
         onFileExplorerListingType={this._handleFileExplorerListingType}
         onDialogBoxCloseBtnClick={this._handleDialogBoxCloseBtnClick}
         onAutoUpdateCheckChange={this._handleAutoUpdateCheckChange}
+        {...parentProps}
       />
     );
   }
@@ -122,44 +118,46 @@ class Settings extends Component {
 const mapDispatchToProps = (dispatch, ownProps) =>
   bindActionCreators(
     {
-      handleToggleSettings: data => (_, getState) => {
+      actionCreateToggleSettings: data => (_, getState) => {
         dispatch(toggleSettings(data));
       },
 
-      handleFreshInstall: data => (_, getState) => {
+      actionCreateFreshInstall: data => (_, getState) => {
         dispatch(freshInstall({ ...data }, getState));
       },
 
-      handleHideHiddenFiles: ({ ...data }, deviceType) => (_, getState) => {
+      actionCreateHideHiddenFiles: ({ ...data }, deviceType) => (
+        _,
+        getState
+      ) => {
         dispatch(hideHiddenFiles({ ...data }, deviceType, getState));
       },
 
-      handleFileExplorerListingType: ({ ...data }, deviceType) => (
+      actionCreateFileExplorerListingType: ({ ...data }, deviceType) => (
         _,
         getState
       ) => {
         dispatch(fileExplorerListingType({ ...data }, deviceType, getState));
       },
 
-      handleEnableAutoUpdateCheck: ({ ...data }) => (_, getState) => {
+      actionCreateEnableAutoUpdateCheck: ({ ...data }) => (_, getState) => {
         dispatch(enableAutoUpdateCheck({ ...data }, getState));
       },
 
-      handleEnableAnalytics: ({ ...data }) => (_, getState) => {
+      actionCreateEnablePrereleaseUpdates: ({ ...data }) => (_, getState) => {
+        dispatch(enablePrereleaseUpdates({ ...data }, getState));
+      },
+
+      actionCreateEnableAnalytics: ({ ...data }) => (_, getState) => {
         dispatch(enableAnalytics({ ...data }, getState));
       },
 
-      handleReloadDirList: ({ ...args }, deviceType, mtpStoragesList) => (
+      actionCreateReloadDirList: ({ ...args }, deviceType, mtpStoragesList) => (
         _,
         getState
       ) => {
         dispatch(
-          handleReloadDirList(
-            { ...args },
-            deviceType,
-            mtpStoragesList,
-            getState
-          )
+          reloadDirList({ ...args }, deviceType, mtpStoragesList, getState)
         );
       }
     },
@@ -173,6 +171,7 @@ const mapStateToProps = (state, props) => {
     hideHiddenFiles: makeHideHiddenFiles(state),
     fileExplorerListingType: makeFileExplorerListingType(state),
     enableAutoUpdateCheck: makeEnableAutoUpdateCheck(state),
+    enablePrereleaseUpdates: makeEnablePrereleaseUpdates(state),
     enableAnalytics: makeEnableAnalytics(state),
     currentBrowsePath: makeCurrentBrowsePath(state),
     mtpStoragesList: makeMtpStoragesList(state)

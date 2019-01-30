@@ -18,7 +18,7 @@ import {
   processLocalOutput,
   changeMtpStorage,
   getMtpStoragesListSelected,
-  handleReloadDirList
+  reloadDirList
 } from '../actions';
 import {
   makeDirectoryLists,
@@ -60,7 +60,7 @@ class ToolbarAreaPane extends PureComponent {
           return null;
         }
 
-        this.handleToolbarAction(type);
+        this._handleToolbarAction(type);
       }
     );
   }
@@ -72,7 +72,7 @@ class ToolbarAreaPane extends PureComponent {
     );
   }
 
-  handleDoubleClickToolBar = event => {
+  _handleDoubleClickToolBar = event => {
     if (event.target !== event.currentTarget) {
       return null;
     }
@@ -80,40 +80,40 @@ class ToolbarAreaPane extends PureComponent {
     toggleWindowSizeOnDoubleClick();
   };
 
-  handleToggleDrawer = status => () => {
+  _handleToggleDrawer = status => () => {
     this.setState({
       toggleDrawer: status
     });
   };
 
-  handleToggleDeleteConfirmDialog = status => {
+  _handleToggleDeleteConfirmDialog = status => {
     this.setState({
       toggleDeleteConfirmDialog: status
     });
   };
 
-  handleToggleMtpStorageSelectionDialog = status => {
+  _handleToggleMtpStorageSelectionDialog = status => {
     this.setState({
       toggleMtpStorageSelectionDialog: status
     });
   };
 
-  handleMtpStoragesListClick = ({ ...args }) => {
+  _handleMtpStoragesListClick = ({ ...args }) => {
     const {
-      handleSetMtpStorage,
+      actionCreateSetMtpStorage,
       mtpStoragesList,
       deviceType,
       hideHiddenFiles
     } = this.props;
 
     const { selectedValue, triggerChange } = args;
-    this.handleToggleMtpStorageSelectionDialog(false);
+    this._handleToggleMtpStorageSelectionDialog(false);
 
     if (!triggerChange) {
       return null;
     }
 
-    handleSetMtpStorage(
+    actionCreateSetMtpStorage(
       { selectedValue, mtpStoragesList },
       {
         filePath: DEVICES_DEFAULT_PATH.mtp,
@@ -123,40 +123,41 @@ class ToolbarAreaPane extends PureComponent {
     );
   };
 
-  handleDeleteConfirmDialog = confirm => {
+  _handleDeleteConfirmDialog = confirm => {
     const { deviceType } = this.props;
 
-    this.handleToggleDeleteConfirmDialog(false);
+    this._handleToggleDeleteConfirmDialog(false);
     if (!confirm) {
       return null;
     }
 
-    this._delFiles({ deviceType });
+    this._handleDelFiles({ deviceType });
   };
 
   _handleToggleSettings = () => {
-    const { handleToggleSettings } = this.props;
-    handleToggleSettings(true);
+    const { actionCreateToggleSettings } = this.props;
+    actionCreateToggleSettings(true);
   };
 
-  handleToolbarAction = itemType => {
+  _handleToolbarAction = itemType => {
     const {
       currentBrowsePath,
       deviceType,
       hideHiddenFiles,
-      handleReloadDirList,
+      actionCreateReloadDirList,
       mtpStoragesList
     } = this.props;
+
     let filePath = '/';
     switch (itemType) {
       case 'up':
         filePath = pathUp(currentBrowsePath[deviceType]);
-        this._fetchDirList({ filePath, deviceType });
+        this._handleFetchDirList({ filePath, deviceType });
         break;
 
       case 'refresh':
         filePath = currentBrowsePath[deviceType];
-        handleReloadDirList(
+        actionCreateReloadDirList(
           {
             filePath,
             ignoreHidden: hideHiddenFiles[deviceType]
@@ -167,11 +168,11 @@ class ToolbarAreaPane extends PureComponent {
         break;
 
       case 'delete':
-        this.handleToggleDeleteConfirmDialog(true);
+        this._handleToggleDeleteConfirmDialog(true);
         break;
 
       case 'storage':
-        this.handleToggleMtpStorageSelectionDialog(true);
+        this._handleToggleMtpStorageSelectionDialog(true);
         break;
 
       case 'settings':
@@ -183,10 +184,10 @@ class ToolbarAreaPane extends PureComponent {
     }
   };
 
-  _fetchDirList = ({ filePath, deviceType, isSidemenu = false }) => {
-    const { handleFetchDirList, hideHiddenFiles } = this.props;
+  _handleFetchDirList = ({ filePath, deviceType, isSidemenu = false }) => {
+    const { actionCreateFetchDirList, hideHiddenFiles } = this.props;
 
-    handleFetchDirList(
+    actionCreateFetchDirList(
       {
         filePath,
         ignoreHidden: hideHiddenFiles[deviceType]
@@ -194,18 +195,18 @@ class ToolbarAreaPane extends PureComponent {
       deviceType
     );
     if (isSidemenu) {
-      this.handleToggleDrawer(false)();
+      this._handleToggleDrawer(false)();
     }
   };
 
-  _delFiles = ({ deviceType }) => {
+  _handleDelFiles = ({ deviceType }) => {
     const {
       directoryLists,
-      handleDelFiles,
+      actionCreateDelFiles,
       hideHiddenFiles,
       currentBrowsePath
     } = this.props;
-    handleDelFiles(
+    actionCreateDelFiles(
       {
         fileList: directoryLists[deviceType].queue.selected,
         deviceType
@@ -220,15 +221,10 @@ class ToolbarAreaPane extends PureComponent {
   render() {
     const {
       classes: styles,
-      toolbarList,
-      sidebarFavouriteList,
       deviceType,
-      showMenu,
-      currentBrowsePath,
-      mtpStoragesList,
       directoryLists,
-      mtpDevice,
-      focussedFileExplorerDeviceType
+      focussedFileExplorerDeviceType,
+      ...parentProps
     } = this.props;
 
     const {
@@ -242,25 +238,20 @@ class ToolbarAreaPane extends PureComponent {
     return (
       <Fragment>
         <ToolbarBody
-          directoryLists={directoryLists}
-          mtpDevice={mtpDevice}
           styles={styles}
-          sidebarFavouriteList={sidebarFavouriteList}
+          directoryLists={directoryLists}
           deviceType={deviceType}
-          showMenu={showMenu}
-          currentBrowsePath={currentBrowsePath}
-          mtpStoragesList={mtpStoragesList}
+          isLoadedDirectoryLists={isLoadedDirectoryLists}
           toggleDeleteConfirmDialog={toggleDeleteConfirmDialog}
           toggleMtpStorageSelectionDialog={toggleMtpStorageSelectionDialog}
-          toolbarList={toolbarList}
-          isLoadedDirectoryLists={isLoadedDirectoryLists}
           toggleDrawer={toggleDrawer}
-          handleDeleteConfirmDialog={this.handleDeleteConfirmDialog}
-          handleMtpStoragesListClick={this.handleMtpStoragesListClick}
-          handleToggleDrawer={this.handleToggleDrawer}
-          fetchDirList={this._fetchDirList}
-          handleDoubleClickToolBar={this.handleDoubleClickToolBar}
-          handleToolbarAction={this.handleToolbarAction}
+          onDeleteConfirmDialog={this._handleDeleteConfirmDialog}
+          onMtpStoragesListClick={this._handleMtpStoragesListClick}
+          onToggleDrawer={this._handleToggleDrawer}
+          onFetchDirList={this._handleFetchDirList}
+          onDoubleClickToolBar={this._handleDoubleClickToolBar}
+          onToolbarAction={this._handleToolbarAction}
+          {...parentProps}
         />
         <div
           className={classNames({
@@ -275,25 +266,20 @@ class ToolbarAreaPane extends PureComponent {
 const mapDispatchToProps = (dispatch, ownProps) =>
   bindActionCreators(
     {
-      handleFetchDirList: ({ ...args }, deviceType) => (_, getState) => {
+      actionCreateFetchDirList: ({ ...args }, deviceType) => (_, getState) => {
         dispatch(fetchDirList({ ...args }, deviceType, getState));
       },
 
-      handleReloadDirList: ({ ...args }, deviceType, mtpStoragesList) => (
+      actionCreateReloadDirList: ({ ...args }, deviceType, mtpStoragesList) => (
         _,
         getState
       ) => {
         dispatch(
-          handleReloadDirList(
-            { ...args },
-            deviceType,
-            mtpStoragesList,
-            getState
-          )
+          reloadDirList({ ...args }, deviceType, mtpStoragesList, getState)
         );
       },
 
-      handleDelFiles: (
+      actionCreateDelFiles: (
         { fileList, deviceType },
         { ...fetchDirListArgs }
       ) => async (_, getState) => {
@@ -365,7 +351,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         }
       },
 
-      handleSetMtpStorage: (
+      actionCreateSetMtpStorage: (
         { selectedValue, mtpStoragesList },
         { ...fetchDirArgs },
         deviceType
@@ -396,7 +382,8 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         dispatch(changeMtpStorage({ ..._mtpStoragesList }));
         dispatch(fetchDirList({ ...fetchDirArgs }, deviceType, getState));
       },
-      handleToggleSettings: data => (_, getState) => {
+
+      actionCreateToggleSettings: data => (_, getState) => {
         dispatch(toggleSettings(data));
       }
     },

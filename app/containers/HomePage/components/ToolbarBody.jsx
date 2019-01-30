@@ -96,12 +96,12 @@ export default class ToolbarAreaPane extends PureComponent {
       toolbarList,
       isLoadedDirectoryLists,
       toggleDrawer,
-      handleDeleteConfirmDialog,
-      handleMtpStoragesListClick,
-      handleToggleDrawer,
-      fetchDirList,
-      handleDoubleClickToolBar,
-      handleToolbarAction
+      onDeleteConfirmDialog,
+      onMtpStoragesListClick,
+      onToggleDrawer,
+      onFetchDirList,
+      onDoubleClickToolBar,
+      onToolbarAction
     } = this.props;
 
     const _toolbarList = this.activeToolbarList({
@@ -122,7 +122,7 @@ export default class ToolbarAreaPane extends PureComponent {
             DEVICES_LABEL[deviceType]
           }?`}
           trigger={toggleDeleteConfirmDialog}
-          onClickHandler={handleDeleteConfirmDialog}
+          onClickHandler={onDeleteConfirmDialog}
         />
         <SelectionDialog
           titleText="Select Storage Option"
@@ -133,17 +133,17 @@ export default class ToolbarAreaPane extends PureComponent {
             deviceType === DEVICES_TYPE_CONST.mtp &&
             toggleMtpStorageSelectionDialog
           }
-          onClose={handleMtpStoragesListClick}
+          onClose={onMtpStoragesListClick}
         />
-        <Drawer open={toggleDrawer} onClose={handleToggleDrawer(false)}>
+        <Drawer open={toggleDrawer} onClose={onToggleDrawer(false)}>
           <div
             tabIndex={0}
             role="button"
-            onClick={handleToggleDrawer(false)}
-            onKeyDown={handleToggleDrawer(false)}
+            onClick={onToggleDrawer(false)}
+            onKeyDown={onToggleDrawer(false)}
           />
           <SidebarAreaPaneLists
-            onClickHandler={fetchDirList}
+            onClickHandler={onFetchDirList}
             sidebarFavouriteList={sidebarFavouriteList}
             deviceType={deviceType}
             currentBrowsePath={currentBrowsePath[deviceType]}
@@ -157,11 +157,11 @@ export default class ToolbarAreaPane extends PureComponent {
             className={styles.toolbar}
             disableGutters
             onDoubleClick={event => {
-              handleDoubleClickToolBar(event);
+              onDoubleClickToolBar(event);
             }}
           >
             {showMenu && (
-              <IconButton color="inherit" onClick={handleToggleDrawer(true)}>
+              <IconButton color="inherit" onClick={onToggleDrawer(true)}>
                 <MenuIcon />
               </IconButton>
             )}
@@ -175,7 +175,7 @@ export default class ToolbarAreaPane extends PureComponent {
                       <IconButton
                         aria-label={item.label}
                         disabled={!item.enabled}
-                        onClick={() => handleToolbarAction(a)}
+                        onClick={() => onToolbarAction(a)}
                         className={classNames({
                           [styles.disabledNavBtns]: !item.enabled,
                           [styles.invertedNavBtns]: item.invert

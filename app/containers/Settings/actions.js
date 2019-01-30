@@ -12,6 +12,7 @@ const actionTypesList = [
   'HIDE_HIDDEN_FILES',
   'FILE_EXPLORER_LISTING_TYPE',
   'ENABLE_AUTO_UPDATE_CHECK',
+  'ENABLE_PRERELEASE_UPDATES',
   'ENABLE_ANALYTICS',
   'COPY_JSON_FILE_TO_SETTINGS'
 ];
@@ -71,6 +72,18 @@ export function enableAutoUpdateCheck({ ...data }, getState) {
   return dispatch => {
     dispatch({
       type: actionTypes.ENABLE_AUTO_UPDATE_CHECK,
+      payload: toggle
+    });
+    dispatch(copySettingsToJsonFile(getState));
+  };
+}
+
+export function enablePrereleaseUpdates({ ...data }, getState) {
+  const { toggle } = data;
+
+  return dispatch => {
+    dispatch({
+      type: actionTypes.ENABLE_PRERELEASE_UPDATES,
       payload: toggle
     });
     dispatch(copySettingsToJsonFile(getState));
