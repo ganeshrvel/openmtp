@@ -11,6 +11,7 @@ import { PRIVACY_POLICY_PAGE_TITLE } from '../templates/privacyPolicyPage';
 let _nonBootableDeviceWindow = null;
 let _reportBugsWindow = null;
 let _privacyPolicyWindow = null;
+let _appUpdateAvailableWindow = null;
 
 /**
  * Non Bootable Device Window
@@ -178,7 +179,7 @@ export const privacyPolicyWindow = (isRenderedPage = false) => {
   }
 };
 
-const loadExistingWindow = (allWindows, title) => {
+export const loadExistingWindow = (allWindows, title) => {
   if (!undefinedOrNull(allWindows)) {
     for (let i = 0; i < allWindows.length; i += 1) {
       const item = allWindows[i];
@@ -192,4 +193,60 @@ const loadExistingWindow = (allWindows, title) => {
   }
 
   return null;
+};
+
+/**
+ * App Update Available Window
+ */
+
+const appUpdateAvailableCreateWindow = () => {
+  return new BrowserWindow({
+    width: 650,
+    height: 552,
+    show: false,
+    resizable: false,
+    title: `${APP_TITLE}`,
+    minimizable: true,
+    fullscreenable: false,
+    webPreferences: {
+      nodeIntegration: true
+    }
+  });
+};
+
+export const appUpdateAvailableWindow = () => {
+  try {
+    if (_appUpdateAvailableWindow) {
+      _appUpdateAvailableWindow.focus();
+      _appUpdateAvailableWindow.show();
+      return _appUpdateAvailableWindow;
+    }
+
+    // show the existing _appUpdateAvailableWindow
+    const _appUpdateAvailableWindowTemp = appUpdateAvailableCreateWindow();
+    if (!_appUpdateAvailableWindowTemp) {
+      return _appUpdateAvailableWindow;
+    }
+
+    _appUpdateAvailableWindow = _appUpdateAvailableWindowTemp;
+    _appUpdateAvailableWindow.loadURL(
+      `${PATHS.loadUrlPath}#appUpdatePage/updateAvailable`
+    );
+    _appUpdateAvailableWindow.webContents.on('did-finish-load', () => {
+      _appUpdateAvailableWindow.show();
+      _appUpdateAvailableWindow.focus();
+    });
+
+    _appUpdateAvailableWindow.onerror = error => {
+      log.error(error, `createWindows -> appUpdateAvailableWindow -> onerror`);
+    };
+
+    _appUpdateAvailableWindow.on('closed', () => {
+      _appUpdateAvailableWindow = null;
+    });
+
+    return _appUpdateAvailableWindow;
+  } catch (e) {
+    log.error(e, `createWindows -> appUpdateAvailableWindow`);
+  }
 };

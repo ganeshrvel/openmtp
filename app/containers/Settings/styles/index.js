@@ -8,6 +8,9 @@ export const styles = theme => ({
   fieldset: {
     width: `100%`
   },
+  tabHeadingWrapper: {
+    borderBottom: `1px solid rgba(0, 123, 255, 0.2)`
+  },
   tabContainer: {
     paddingTop: 20,
     height: 280,

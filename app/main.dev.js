@@ -188,7 +188,15 @@ if (!isDeviceBootable) {
         appUpdaterEnable = !isMas && app.isInApplicationsFolder();
       }
 
-      const autoAppUpdate = new AppUpdate();
+      const autoUpdateCheckSettings = settingsStorage.getItems([
+        'enableAutoUpdateCheck',
+        'enablePrereleaseUpdates'
+      ]);
+
+      const autoAppUpdate = new AppUpdate({
+        allowPrerelease:
+          autoUpdateCheckSettings.enablePrereleaseUpdates === true
+      });
       autoAppUpdate.init();
 
       const menuBuilder = new MenuBuilder({
@@ -197,10 +205,6 @@ if (!isDeviceBootable) {
         appUpdaterEnable
       });
       menuBuilder.buildMenu();
-
-      const autoUpdateCheckSettings = settingsStorage.getItems([
-        'enableAutoUpdateCheck'
-      ]);
 
       if (
         autoUpdateCheckSettings.enableAutoUpdateCheck !== false &&

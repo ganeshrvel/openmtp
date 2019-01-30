@@ -5,7 +5,8 @@ import { Switch, Route } from 'react-router';
 import { HashRouter } from 'react-router-dom';
 import HomePage from '../containers/HomePage/Loadable';
 import ReportBugsPage from '../containers/ReportBugsPage/Loadable';
-import ProgressbarPage from '../containers/ProgressbarPage';
+import AppUpdatePageUpdateAvailable from '../containers/AppUpdatePage/UpdateAvailable';
+import AppUpdatePageUpdateProgress from '../containers/AppUpdatePage/UpdateProgress';
 import PrivacyPolicyPage from '../containers/PrivacyPolicyPage/Loadable';
 import NotFoundPage from '../containers/NotFoundPage/Loadable';
 
@@ -20,10 +21,15 @@ export const routes = {
     exact: true,
     component: ReportBugsPage
   },
-  ProgressbarPage: {
-    path: '/progressbarPage',
+  AppUpdatePageUpdateProgress: {
+    path: '/appUpdatePage/updateProgress',
     exact: true,
-    component: ProgressbarPage
+    component: AppUpdatePageUpdateProgress
+  },
+  AppUpdatePageUpdateAvailable: {
+    path: '/appUpdatePage/updateAvailable',
+    exact: true,
+    component: AppUpdatePageUpdateAvailable
   },
   PrivacyPolicyPage: {
     path: '/privacyPolicyPage',

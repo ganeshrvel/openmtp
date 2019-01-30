@@ -84,6 +84,7 @@ export default class SettingsDialog extends PureComponent {
         </Typography>
         <DialogContent>
           <Tabs
+            className={styles.tabHeadingWrapper}
             value={tabIndex}
             onChange={this._handleTabChange}
             indicatorColor="secondary"

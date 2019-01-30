@@ -63,6 +63,7 @@ export default args => {
         boxShadow: '0 0 0 0.2rem rgba(0,123,255,0.5)'
       }
     },
+
     btnNegative: {
       backgroundColor: `rgba(0, 122, 245, 0.08)`,
       borderColor: `rgba(0, 122, 245, 0.08)`,
@@ -74,6 +75,24 @@ export default args => {
         boxShadow: 'none',
         backgroundColor: `rgba(0, 122, 245, 0.23)`,
         borderColor: '#005cbf'
+      },
+      '&:focus': {
+        boxShadow: '0 0 0 0.2rem rgba(0,123,255,0.5)'
+      }
+    },
+
+    btnNegativeWhite: {
+      border: '1px solid rgba(0, 0, 0, 0.21)',
+      backgroundColor: '#fff',
+      color: '#000',
+      '&:hover': {
+        backgroundColor: `rgba(255, 255, 255, 0.65)`,
+        borderColor: '1px solid rgba(0, 0, 0, 0.21)'
+      },
+      '&:active': {
+        boxShadow: 'none',
+        backgroundColor: `rgba(255, 255, 255, 0.55)`,
+        borderColor: '1px solid rgba(0, 0, 0, 0.21)'
       },
       '&:focus': {
         boxShadow: '0 0 0 0.2rem rgba(0,123,255,0.5)'

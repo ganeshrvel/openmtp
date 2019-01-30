@@ -10,6 +10,7 @@ import { ENABLE_BACKGROUND_AUTO_UPDATE } from '../constants';
 import { unixTimestampNow } from '../utils/date';
 import { undefinedOrNull } from '../utils/funcs';
 import { getMainWindowMainProcess } from '../utils/windowHelper';
+import { appUpdateAvailableWindow } from '../utils/createWindows';
 
 let progressbarWindow = null;
 let isFileTransferActiveFlag = false;
@@ -57,7 +58,9 @@ const fireProgressbar = () => {
     });
 
     progressbarWindow = createChildWindow();
-    progressbarWindow.loadURL(`${PATHS.loadUrlPath}#progressbarPage`);
+    progressbarWindow.loadURL(
+      `${PATHS.loadUrlPath}#appUpdatePage/updateProgress`
+    );
 
     progressbarWindow.webContents.on('did-finish-load', () => {
       progressbarWindow.show();
@@ -77,14 +80,15 @@ const fireProgressbar = () => {
 };
 
 export default class AppUpdate {
-  constructor() {
+  constructor({ allowPrerelease }) {
     this.autoUpdater = autoUpdater;
     if (!isPackaged) {
       this.autoUpdater.updateConfigPath = PATHS.appUpdateFile;
     }
 
     this.autoUpdater.autoDownload = ENABLE_BACKGROUND_AUTO_UPDATE;
-    this.domReadyFlag = null;
+    this.autoUpdater.allowPrerelease = allowPrerelease;
+    this.progressbarWindowDomReadyFlag = null;
     this.updateInitFlag = false;
     this.updateForceCheckFlag = false;
     this._errorDialog = {
@@ -131,37 +135,42 @@ export default class AppUpdate {
         log.error(errorMsg, `AppUpdate -> onerror`);
       });
 
-      this.autoUpdater.on('update-available', () => {
+      this.autoUpdater.on('update-available', info => {
         if (progressbarWindow !== null && this.updateIsActive !== -1) {
           progressbarWindow.close();
         }
 
-        dialog.showMessageBox(
-          {
-            type: 'info',
-            title: 'Updates Found',
-            message: 'New version available. Update the app now?',
-            buttons: ['Yes', 'No']
-          },
-          buttonIndex => {
-            switch (buttonIndex) {
-              case 0:
-                if (progressbarWindow !== null) {
-                  progressbarWindow.close();
-                }
-                this.closeActiveUpdates(-1);
-                this.initDownloadUpdatesProgress();
-                this.autoUpdater.downloadUpdate();
-                break;
-              default:
-              case 1:
-                if (this.updateIsActive !== -1) {
-                  this.closeActiveUpdates();
-                }
-                break;
-            }
+        const _appUpdateAvailableWindow = appUpdateAvailableWindow();
+
+        _appUpdateAvailableWindow.on('close', () => {
+          if (this.updateIsActive !== -1) {
+            this.closeActiveUpdates();
           }
-        );
+        });
+
+        _appUpdateAvailableWindow.webContents.once('dom-ready', () => {
+          _appUpdateAvailableWindow.webContents.send(
+            'appUpdatesUpdateAvailableCommunication',
+            info
+          );
+        });
+
+        ipcMain.once('appUpdatesUpdateAvailableReply', (event, { ...args }) => {
+          const { confirm } = args;
+          if (!confirm) {
+            if (this.updateIsActive !== -1) {
+              this.closeActiveUpdates();
+            }
+            return null;
+          }
+
+          if (progressbarWindow !== null) {
+            progressbarWindow.close();
+          }
+          this.closeActiveUpdates(-1);
+          this.initDownloadUpdatesProgress();
+          this.autoUpdater.downloadUpdate();
+        });
       });
 
       this.autoUpdater.on('download-progress', progress => {
@@ -322,12 +331,15 @@ export default class AppUpdate {
           this.setTaskBarProgressBar(2);
 
           progressbarWindow.webContents.once('dom-ready', () => {
-            progressbarWindow.webContents.send('progressBarDataCommunication', {
-              progressTitle: `Checking For Updates`,
-              progressBodyText: `Please wait...`,
-              value: 0,
-              variant: `indeterminate`
-            });
+            progressbarWindow.webContents.send(
+              'appUpdatesProgressBarCommunication',
+              {
+                progressTitle: `Checking For Updates`,
+                progressBodyText: `Please wait...`,
+                value: 0,
+                variant: `indeterminate`
+              }
+            );
           });
           return true;
         })
@@ -350,7 +362,7 @@ export default class AppUpdate {
           }
 
           fireProgressbar();
-          this.domReadyFlag = false;
+          this.progressbarWindowDomReadyFlag = false;
           this.setUpdateProgressWindow({ value: 0 });
           return true;
         })
@@ -370,9 +382,9 @@ export default class AppUpdate {
       };
 
       this.setTaskBarProgressBar(value / 100);
-      if (this.domReadyFlag) {
+      if (this.progressbarWindowDomReadyFlag) {
         progressbarWindow.webContents.send(
-          'progressBarDataCommunication',
+          'appUpdatesProgressBarCommunication',
           data
         );
         return null;
@@ -380,11 +392,11 @@ export default class AppUpdate {
 
       progressbarWindow.webContents.once('dom-ready', () => {
         progressbarWindow.webContents.send(
-          'progressBarDataCommunication',
+          'appUpdatesProgressBarCommunication',
           data
         );
 
-        this.domReadyFlag = true;
+        this.progressbarWindowDomReadyFlag = true;
       });
     } catch (e) {
       log.error(e, `AppUpdate -> setUpdateProgressWindow`);

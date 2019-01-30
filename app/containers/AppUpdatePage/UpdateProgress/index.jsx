@@ -24,13 +24,16 @@ class ProgressbarPage extends Component {
   }
 
   componentWillMount() {
-    ipcRenderer.on('progressBarDataCommunication', (event, { ...args }) => {
-      this.setState({ ...args });
-    });
+    ipcRenderer.on(
+      'appUpdatesProgressBarCommunication',
+      (event, { ...args }) => {
+        this.setState({ ...args });
+      }
+    );
   }
 
   componentWillUnmount() {
-    ipcRenderer.removeListener('progressBarDataCommunication', () => {});
+    ipcRenderer.removeListener('appUpdatesProgressBarCommunication', () => {});
   }
 
   render() {

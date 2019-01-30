@@ -29,6 +29,15 @@ export const dateTimeNow = ({ monthInletters = false }) => {
   return moment().format(`YYYY-${monthFormat}-DD HH:mm:ss`);
 };
 
+export const dateConvertUkStyle = ({ date, monthInletters = false }) => {
+  let monthFormat = `MM`;
+  if (monthInletters) {
+    monthFormat = `MMM`;
+  }
+
+  return moment(date).format(`DD-${monthFormat}-YYYY`);
+};
+
 export const dateTimeUnixTimestampNow = ({ monthInletters = false }) => {
   let monthFormat = `MM`;
   if (monthInletters) {
