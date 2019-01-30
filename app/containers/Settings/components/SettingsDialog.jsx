@@ -1,6 +1,6 @@
 'use strict';
 
-import React, { PureComponent } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import electronIs from 'electron-is';
 import classNames from 'classnames';
 import Typography from '@material-ui/core/Typography';
@@ -66,26 +66,28 @@ export default class SettingsDialog extends PureComponent {
               </Typography>
 
               {!isMas && (
-                <FormGroup>
-                  <Typography variant="subtitle2" className={styles.subtitle}>
-                    Enable auto-update check
-                  </Typography>
+                <Fragment>
+                  <FormGroup>
+                    <Typography variant="subtitle2" className={styles.subtitle}>
+                      Enable auto-update check
+                    </Typography>
 
-                  <FormControlLabel
-                    className={styles.switch}
-                    control={
-                      <Switch
-                        checked={enableAutoUpdateCheck}
-                        onChange={() =>
-                          onAutoUpdateCheckChange({
-                            toggle: !enableAutoUpdateCheck
-                          })
-                        }
-                      />
-                    }
-                    label={enableAutoUpdateCheck ? `Enabled` : `Disabled`}
-                  />
-                </FormGroup>
+                    <FormControlLabel
+                      className={styles.switch}
+                      control={
+                        <Switch
+                          checked={enableAutoUpdateCheck}
+                          onChange={() =>
+                            onAutoUpdateCheckChange({
+                              toggle: !enableAutoUpdateCheck
+                            })
+                          }
+                        />
+                      }
+                      label={enableAutoUpdateCheck ? `Enabled` : `Disabled`}
+                    />
+                  </FormGroup>
+                </Fragment>
               )}
 
               <FormGroup className={styles.formGroup}>

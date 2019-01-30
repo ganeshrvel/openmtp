@@ -1,6 +1,6 @@
 'use strict';
 
-import React, { PureComponent } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -80,7 +80,7 @@ class FileExplorerTableBodyRender extends PureComponent {
     const isMtp = deviceType === DEVICES_TYPE_CONST.mtp;
 
     return (
-      <React.Fragment>
+      <Fragment>
         <Table className={styles.table}>
           <FileExplorerTableHeadRender
             numSelected={selected.length}
@@ -113,7 +113,7 @@ class FileExplorerTableBodyRender extends PureComponent {
             )}
           </TableBody>
         </Table>
-      </React.Fragment>
+      </Fragment>
     );
   }
 }

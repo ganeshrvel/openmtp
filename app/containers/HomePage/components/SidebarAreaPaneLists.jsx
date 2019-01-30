@@ -1,6 +1,6 @@
 'use strict';
 
-import React, { PureComponent } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
@@ -13,7 +13,7 @@ import { styles } from '../styles/SidebarAreaPaneLists';
 import { quickHash } from '../../../utils/funcs';
 
 class SidebarAreaPaneLists extends PureComponent {
-  _fetchDirList({ ...args }) {
+  _handleFetchDirList({ ...args }) {
     const { onClickHandler } = this.props;
     onClickHandler({ ...args });
   }
@@ -30,7 +30,7 @@ class SidebarAreaPaneLists extends PureComponent {
               selected={currentBrowsePath === item.path}
               disabled={!item.enabled}
               onClick={() =>
-                this._fetchDirList({
+                this._handleFetchDirList({
                   filePath: item.path,
                   deviceType,
                   isSidemenu: true
@@ -60,10 +60,10 @@ class SidebarAreaPaneLists extends PureComponent {
         {sidebarTop.length > 1 && this.ListsRender(sidebarTop)}
 
         {sidebarBottom.length > 1 && (
-          <React.Fragment>
+          <Fragment>
             <Divider />
             {this.ListsRender(sidebarBottom)}
-          </React.Fragment>
+          </Fragment>
         )}
       </div>
     );

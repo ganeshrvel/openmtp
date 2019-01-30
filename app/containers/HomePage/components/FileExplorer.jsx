@@ -2,7 +2,7 @@
 
 /* eslint no-case-declarations: off */
 
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { remote, ipcRenderer, shell } from 'electron';
 import lodashSortBy from 'lodash/sortBy';
 import { connect } from 'react-redux';
@@ -1366,7 +1366,7 @@ class FileExplorer extends Component {
         : ``;
 
     return (
-      <React.Fragment>
+      <Fragment>
         <TextFieldEditDialog
           titleText={`Rename a ${
             rename.data.isFolder ? `folder` : `file`
@@ -1458,7 +1458,7 @@ class FileExplorer extends Component {
           }
           onAcceleratorActivation={this._handleAcceleratorActivation}
         />
-      </React.Fragment>
+      </Fragment>
     );
   }
 }

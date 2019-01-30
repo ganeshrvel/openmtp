@@ -1,6 +1,6 @@
 'use strict';
 
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { routes } from '../../routing';
@@ -10,7 +10,7 @@ import { APP_TITLE } from '../../constants/meta';
 export default class NotFound extends Component {
   render() {
     return (
-      <React.Fragment>
+      <Fragment>
         <Helmet titleTemplate={`%s - ${APP_TITLE}`}>
           <title>Resource not found!</title>
         </Helmet>
@@ -18,7 +18,7 @@ export default class NotFound extends Component {
           <h1>Resource not found!</h1>
           <Link to={routes.Home.path}>Go back</Link>
         </div>
-      </React.Fragment>
+      </Fragment>
     );
   }
 }

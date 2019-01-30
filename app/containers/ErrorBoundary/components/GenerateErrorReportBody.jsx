@@ -1,6 +1,6 @@
 'use strict';
 
-import React, { PureComponent } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 
@@ -15,7 +15,7 @@ export default class GenerateErrorReportBody extends PureComponent {
       onGenerateErrorLogs
     } = this.props;
     return (
-      <React.Fragment>
+      <Fragment>
         <Typography variant="subtitle1" className={styles.subHeading}>
           <ul className={styles.instructions}>
             <li>Connect your phone to the computer via USB.</li>
@@ -47,7 +47,7 @@ export default class GenerateErrorReportBody extends PureComponent {
             {AUTHOR_EMAIL}
           </a>
         </Typography>
-      </React.Fragment>
+      </Fragment>
     );
   }
 }

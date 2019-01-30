@@ -1,6 +1,6 @@
 'use strict';
 
-import React, { PureComponent } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
 import Paper from '@material-ui/core/Paper';
@@ -84,14 +84,14 @@ class Breadcrumb extends PureComponent {
         compressedCounter += compressedCounter;
       }
       return (
-        <React.Fragment key={quickHash(path)}>
+        <Fragment key={quickHash(path)}>
           {isCompressed ? (
             this.CompressedBreadcrumbCellRender({
               isCompressed,
               compressedCounter
             })
           ) : (
-            <React.Fragment>
+            <Fragment>
               {index > 0 && (
                 <span>
                   <KeyboardArrowRightIcon
@@ -113,9 +113,9 @@ class Breadcrumb extends PureComponent {
                   </a>
                 </Tooltip>
               </li>
-            </React.Fragment>
+            </Fragment>
           )}
-        </React.Fragment>
+        </Fragment>
       );
     });
   }
@@ -128,7 +128,7 @@ class Breadcrumb extends PureComponent {
         <MoreHorizIcon className={styles.breadcrumbSeperator} />
       </span>
     ) : (
-      <React.Fragment />
+      <Fragment />
     );
   }
 

@@ -1,6 +1,6 @@
 'use strict';
 
-import React, { PureComponent } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import Avatar from '@material-ui/core/Avatar';
@@ -21,7 +21,7 @@ class Selection extends PureComponent {
   render() {
     const { list, titleText, open, showDiskAvatars } = this.props;
     if (Object.keys(list).length < 1) {
-      return <React.Fragment />;
+      return <Fragment />;
     }
     return (
       <Dialog
@@ -39,7 +39,7 @@ class Selection extends PureComponent {
             {Object.keys(list).map(a => {
               const item = list[a];
               return (
-                <React.Fragment key={a}>
+                <Fragment key={a}>
                   <ListItem
                     button
                     onClick={() =>
@@ -59,7 +59,7 @@ class Selection extends PureComponent {
 
                     <ListItemText primary={item.name} />
                   </ListItem>
-                </React.Fragment>
+                </Fragment>
               );
             })}
           </List>

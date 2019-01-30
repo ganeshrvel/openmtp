@@ -1,6 +1,6 @@
 'use strict';
 
-import React, { PureComponent } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
@@ -83,7 +83,7 @@ class FileExplorerTableHeadRender extends PureComponent {
                 </Tooltip>
               </TableCell>
             ) : (
-              <React.Fragment key={row.id} />
+              <Fragment key={row.id} />
             );
           }, this)}
         </TableRow>
