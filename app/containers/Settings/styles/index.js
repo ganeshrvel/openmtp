@@ -8,6 +8,12 @@ export const styles = theme => ({
   fieldset: {
     width: `100%`
   },
+  tabContainer: {
+    paddingTop: 20,
+    height: 280,
+    overflowX: `auto`,
+    overflowY: `auto`
+  },
   subtitle: {},
   fmSettingsStylesFix: {
     marginTop: 10

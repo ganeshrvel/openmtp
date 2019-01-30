@@ -7,7 +7,7 @@ export const initialState = {
   freshInstall: 0,
   toggleSettings: false,
   enableAutoUpdateCheck: true,
-  enablePrereleaseUpdates: true,
+  enablePrereleaseUpdates: false,
   enableAnalytics: true,
   hideHiddenFiles: {
     [DEVICES_TYPE_CONST.local]: true,
@@ -47,6 +47,9 @@ export default function Settings(state = initialState, action) {
 
     case actionTypes.ENABLE_AUTO_UPDATE_CHECK:
       return { ...state, enableAutoUpdateCheck: payload };
+
+    case actionTypes.ENABLE_PRERELEASE_UPDATES:
+      return { ...state, enablePrereleaseUpdates: payload };
 
     case actionTypes.ENABLE_ANALYTICS:
       return { ...state, enableAnalytics: payload };

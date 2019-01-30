@@ -83,6 +83,12 @@ class Settings extends Component {
     actionCreateEnableAutoUpdateCheck({ ...args });
   };
 
+  _handlePrereleaseUpdatesChange = ({ ...args }) => {
+    const { actionCreateEnablePrereleaseUpdates } = this.props;
+
+    actionCreateEnablePrereleaseUpdates({ ...args });
+  };
+
   _handleAnalyticsChange = ({ ...args }) => {
     const { actionCreateEnableAnalytics } = this.props;
 
@@ -109,6 +115,7 @@ class Settings extends Component {
         onFileExplorerListingType={this._handleFileExplorerListingType}
         onDialogBoxCloseBtnClick={this._handleDialogBoxCloseBtnClick}
         onAutoUpdateCheckChange={this._handleAutoUpdateCheckChange}
+        onPrereleaseUpdatesChange={this._handlePrereleaseUpdatesChange}
         {...parentProps}
       />
     );
