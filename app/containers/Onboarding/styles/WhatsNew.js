@@ -6,5 +6,8 @@ export const styles = theme => ({
   root: {},
   title: {
     fontWeight: `bold`
+  },
+  nestedPanel: {
+    paddingLeft: 16
   }
 });

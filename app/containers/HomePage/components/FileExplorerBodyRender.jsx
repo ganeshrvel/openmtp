@@ -28,6 +28,7 @@ class FileExplorerBodyRender extends PureComponent {
     this.fileExplorerKeymapString = null;
     this.focussedFileExplorerDeviceTypeCached = FILE_EXPLORER_DEFAULT_FOCUSSED_DEVICE_TYPE;
     this.fileExplorerBodyWrapperId = `${FILE_EXPLORER_BODY_WRAPPER_ID}-${deviceType}`;
+    this.acceleratorIgnoreList = ['multipleSelectClick'];
   }
 
   componentDidMount() {
@@ -70,26 +71,32 @@ class FileExplorerBodyRender extends PureComponent {
     };
 
     this.fileExplorerKeymapString = Object.keys(fileExplorerKeymaps).reduce(
-      (accumulator, currentValue) => {
-        const itemCurrentValue = fileExplorerKeymaps[currentValue];
-
+      (accumulator, currentKey) => {
+        const itemCurrentKey = fileExplorerKeymaps[currentKey].keys;
+        if (this.acceleratorIgnoreList.indexOf(currentKey) !== -1) {
+          return accumulator;
+        }
         if (undefinedOrNull(accumulator) || accumulator.trim() === '') {
-          return itemCurrentValue.join(', ');
+          return itemCurrentKey.join(', ');
         }
 
-        return `${accumulator}, ${itemCurrentValue.join(', ')}`;
+        return `${accumulator}, ${itemCurrentKey.join(', ')}`;
       },
       ''
     );
 
     hotkeys(this.fileExplorerKeymapString, (event, handler) => {
       Object.keys(fileExplorerKeymaps).map(a => {
-        const item = fileExplorerKeymaps[a];
+        const item = fileExplorerKeymaps[a].keys;
         if (
           undefinedOrNull(keymapActionsList[a]) ||
           undefinedOrNull(item) ||
           item.indexOf(handler.key) === -1
         ) {
+          return null;
+        }
+
+        if (this.acceleratorIgnoreList.indexOf(a) !== -1) {
           return null;
         }
 

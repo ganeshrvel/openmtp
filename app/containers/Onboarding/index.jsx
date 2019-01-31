@@ -58,10 +58,9 @@ class Onboarding extends PureComponent {
         scroll="paper"
         aria-labelledby="onboaring-dialogbox"
         onClose={() => this._handleClose()}
-        open={true || fireOnboarding}
+        open={fireOnboarding}
       >
-        {/* todo: fix me ^ */}
-        <DialogTitle>Hiya!</DialogTitle>
+        <DialogTitle>At a Glance!</DialogTitle>
         <DialogContent>
           <div>
             {freshInstall ? (
