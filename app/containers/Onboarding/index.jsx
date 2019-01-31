@@ -60,12 +60,12 @@ class Onboarding extends PureComponent {
         onClose={() => this._handleClose()}
         open={fireOnboarding}
       >
-        <DialogTitle>At a Glance!</DialogTitle>
+        <DialogTitle>Release at a Glance!</DialogTitle>
         <DialogContent>
-          <div>
+          <div className={styles.contentBox}>
             {freshInstall ? (
               <Fragment>
-                <Features />
+                <Features hideTitle={false} />
                 <Divider className={styles.divider} />
                 <WhatsNew />
               </Fragment>
@@ -74,7 +74,7 @@ class Onboarding extends PureComponent {
               <Fragment>
                 <WhatsNew />
                 <Divider className={styles.divider} />
-                <Features />
+                <Features hideTitle={false} />
               </Fragment>
             ) : null}
           </div>

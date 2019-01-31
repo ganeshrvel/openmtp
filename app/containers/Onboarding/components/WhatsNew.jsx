@@ -11,8 +11,10 @@ import SystemUpdateIcon from '@material-ui/icons/SystemUpdate';
 import InsertChartIcon from '@material-ui/icons/InsertChart';
 import TabIcon from '@material-ui/icons/Tab';
 import SettingsIcon from '@material-ui/icons/Settings';
+import HelpIcon from '@material-ui/icons/Help';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import OfflineBoltIcon from '@material-ui/icons/OfflineBolt';
 import { styles } from '../styles/WhatsNew';
 import KeyboadShortcuts from '../../../components/KeyboardShortcuts';
 import { APP_NAME, APP_VERSION } from '../../../constants/meta';
@@ -45,7 +47,7 @@ class WhatsNew extends PureComponent {
 
     return (
       <div className={styles.root}>
-        <Typography variant="body1" className={styles.title}>
+        <Typography variant="body1" className={styles.title} color="secondary">
           What&apos;s new in {APP_NAME}-{APP_VERSION}?
         </Typography>
         <List>
@@ -62,7 +64,11 @@ class WhatsNew extends PureComponent {
             </ListItemIcon>
             <ListItemText
               primary="Keyboard Navigation"
-              secondary="Click here to view the Keyboard Shortcuts"
+              secondary={
+                !expansionPanel.keyboardNavigation
+                  ? 'Click here to view the keyboard shortcuts'
+                  : 'Click here to hide the keyboard shortcuts'
+              }
             />
             {expansionPanel.keyboardNavigation ? (
               <ExpandLessIcon />
@@ -87,25 +93,55 @@ class WhatsNew extends PureComponent {
             <ListItemIcon>
               <TabIcon />
             </ListItemIcon>
-            <ListItemText primary="New Tab Layout" />
+            <ListItemText
+              primary="New Tab Layout"
+              secondary="Use mouse clicks or keyboard shortcut to navigate through them"
+            />
           </ListItem>
           <ListItem>
             <ListItemIcon>
               <SystemUpdateIcon />
             </ListItemIcon>
-            <ListItemText primary="New Software Update Manager" />
+            <ListItemText
+              primary="New Software Update Manager"
+              secondary="Release notes and many more"
+            />
+          </ListItem>
+          <ListItem>
+            <ListItemIcon>
+              <OfflineBoltIcon />
+            </ListItemIcon>
+            <ListItemText
+              primary="Beta Test the App"
+              secondary="Settings > 'Software Update' Tab"
+            />
           </ListItem>
           <ListItem>
             <ListItemIcon>
               <InsertChartIcon />
             </ListItemIcon>
-            <ListItemText primary="New Onboarding UI" />
+            <ListItemText
+              primary="New Onboarding UI"
+              secondary="Latest software update information"
+            />
           </ListItem>
           <ListItem>
             <ListItemIcon>
               <SettingsIcon />
             </ListItemIcon>
-            <ListItemText primary="New Settings UI" />
+            <ListItemText
+              primary="New Settings UI"
+              secondary="Enjoy the new tabbed view"
+            />
+          </ListItem>
+          <ListItem>
+            <ListItemIcon>
+              <HelpIcon />
+            </ListItemIcon>
+            <ListItemText
+              primary="New Instructions UI"
+              secondary="Android device connectivity instructions and other features at a glance"
+            />
           </ListItem>
         </List>
       </div>

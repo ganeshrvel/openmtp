@@ -6,7 +6,7 @@ import { IS_DEV } from './env';
 export const fileExplorerKeymaps = {
   newFolder: {
     label: `New Folder`,
-    keys: ['command+n', 'control+n']
+    keys: ['command+n']
   },
   copy: {
     label: `Copy`,

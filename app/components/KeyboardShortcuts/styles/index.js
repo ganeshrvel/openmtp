@@ -8,13 +8,15 @@ export const styles = theme => ({
     fontWeight: `bold`
   },
   kbdWrapper: {
-    display: `inline-block`,
-    paddingBottom: 15
+    paddingBottom: 14
+  },
+  kbdInnerWrapper: {
+    display: `inline-block`
   },
   kbdTitle: {
-    fontSize: 13,
-    fontWeight: `bold`,
-    marginRight: 5,
-    color: `rgba(0, 0, 0, 0.83)`
+    display: 'block',
+    color: 'rgba(0, 0, 0, 0.54)',
+    padding: '0 0 5px 0',
+    fontSize: 14
   }
 });

@@ -14,12 +14,18 @@ import { styles } from '../styles/Features';
 
 class Features extends PureComponent {
   render() {
-    const { classes: styles } = this.props;
+    const { classes: styles, hideTitle } = this.props;
     return (
       <div className={styles.root}>
-        <Typography variant="body1" className={styles.title}>
-          Other Features
-        </Typography>
+        {hideTitle ? null : (
+          <Typography
+            variant="body1"
+            className={styles.title}
+            color="secondary"
+          >
+            Other Features
+          </Typography>
+        )}
         <List>
           <ListItem>
             <ListItemIcon>
@@ -42,7 +48,7 @@ class Features extends PureComponent {
             </ListItemIcon>
             <ListItemText
               primary="Choose between Grid and List view"
-              secondary='Settings > "File Manager" Tab'
+              secondary="Settings > 'File Manager' Tab"
             />
           </ListItem>
           <ListItem>
