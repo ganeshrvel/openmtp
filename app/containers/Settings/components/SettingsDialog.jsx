@@ -1,6 +1,6 @@
 'use strict';
 
-import React, { PureComponent, Fragment } from 'react';
+import React, { PureComponent } from 'react';
 import electronIs from 'electron-is';
 import classNames from 'classnames';
 import Tabs from '@material-ui/core/Tabs';
@@ -28,6 +28,8 @@ export default class SettingsDialog extends PureComponent {
     this.state = {
       tabIndex: 0
     };
+
+    this.isMasHidePosition = 1;
   }
 
   _handleTabChange = (event, index) => {
@@ -36,7 +38,21 @@ export default class SettingsDialog extends PureComponent {
     });
   };
 
-  TabContainer = () => {};
+  shoudThisTabHeadRender = position => {
+    return !(isMas && this.isMasHidePosition === position);
+  };
+
+  tabBodyRenderTabIndex = position => {
+    if (isMas && this.isMasHidePosition === position) {
+      return null;
+    }
+
+    if (isMas && position > this.isMasHidePosition) {
+      return position - 1 < 1 ? 0 : position - 1;
+    }
+
+    return position;
+  };
 
   render() {
     const {
@@ -91,11 +107,12 @@ export default class SettingsDialog extends PureComponent {
             textColor="secondary"
             variant="fullWidth"
           >
-            <Tab label="General" />
-            <Tab label="Privacy" />
+            {this.shoudThisTabHeadRender(0) && <Tab label="File Manager" />}
+            {this.shoudThisTabHeadRender(1) && <Tab label="Software Updates" />}
+            {this.shoudThisTabHeadRender(2) && <Tab label="Privacy" />}
           </Tabs>
           <FormControl component="fieldset" className={styles.fieldset}>
-            {tabIndex === 0 && (
+            {tabIndex === this.tabBodyRenderTabIndex(0) && (
               <SettingsDialogTabContainer>
                 <div className={styles.tabContainer}>
                   <FormGroup>
@@ -137,7 +154,7 @@ export default class SettingsDialog extends PureComponent {
                       variant="subtitle2"
                       className={`${styles.subtitle} ${
                         styles.fmSettingsStylesFix
-                      } `}
+                      }`}
                     >
                       View As Grid
                     </Typography>
@@ -183,68 +200,61 @@ export default class SettingsDialog extends PureComponent {
                 </div>
               </SettingsDialogTabContainer>
             )}
-            {tabIndex === 1 && (
+            {tabIndex === this.tabBodyRenderTabIndex(1) && (
               <SettingsDialogTabContainer>
                 <div className={styles.tabContainer}>
-                  {!isMas && (
-                    <Fragment>
-                      <FormGroup>
-                        <Typography
-                          variant="subtitle2"
-                          className={styles.subtitle}
-                        >
-                          Enable auto-update check
-                        </Typography>
+                  <FormGroup>
+                    <Typography variant="subtitle2" className={styles.subtitle}>
+                      Enable auto-update check
+                    </Typography>
 
-                        <FormControlLabel
-                          className={styles.switch}
-                          control={
-                            <Switch
-                              checked={enableAutoUpdateCheck}
-                              onChange={() =>
-                                onAutoUpdateCheckChange({
-                                  toggle: !enableAutoUpdateCheck
-                                })
-                              }
-                            />
-                          }
-                          label={enableAutoUpdateCheck ? `Enabled` : `Disabled`}
-                        />
-                      </FormGroup>
-
-                      <FormGroup>
-                        <Typography
-                          variant="subtitle2"
-                          className={styles.subtitle}
-                        >
-                          Enable Beta update channel
-                        </Typography>
-
-                        <FormControlLabel
-                          className={styles.switch}
-                          control={
-                            <Switch
-                              checked={enablePrereleaseUpdates}
-                              onChange={() =>
-                                onPrereleaseUpdatesChange({
-                                  toggle: !enablePrereleaseUpdates
-                                })
-                              }
-                            />
-                          }
-                          label={
-                            enablePrereleaseUpdates ? `Enabled` : `Disabled`
+                    <FormControlLabel
+                      className={styles.switch}
+                      control={
+                        <Switch
+                          checked={enableAutoUpdateCheck}
+                          onChange={() =>
+                            onAutoUpdateCheckChange({
+                              toggle: !enableAutoUpdateCheck
+                            })
                           }
                         />
-                      </FormGroup>
-                      <Typography variant="caption">
-                        Early access preview of the upcoming features but might
-                        result in crashes.
-                      </Typography>
-                    </Fragment>
-                  )}
+                      }
+                      label={enableAutoUpdateCheck ? `Enabled` : `Disabled`}
+                    />
+                  </FormGroup>
 
-                  <FormGroup className={styles.formGroup}>
+                  <FormGroup>
+                    <Typography variant="subtitle2" className={styles.subtitle}>
+                      Enable Beta update channel
+                    </Typography>
+
+                    <FormControlLabel
+                      className={styles.switch}
+                      control={
+                        <Switch
+                          checked={enablePrereleaseUpdates}
+                          onChange={() =>
+                            onPrereleaseUpdatesChange({
+                              toggle: !enablePrereleaseUpdates
+                            })
+                          }
+                        />
+                      }
+                      label={enablePrereleaseUpdates ? `Enabled` : `Disabled`}
+                    />
+                  </FormGroup>
+                  <Typography variant="caption">
+                    Early access preview of the upcoming features but might
+                    result in crashes.
+                  </Typography>
+                </div>
+              </SettingsDialogTabContainer>
+            )}
+            {tabIndex === this.tabBodyRenderTabIndex(2) && (
+              <SettingsDialogTabContainer>
+                <div className={styles.tabContainer}>
+                  <FormGroup>
                     <Typography variant="subtitle2" className={styles.subtitle}>
                       Enable anonymous usage statistics gathering
                     </Typography>

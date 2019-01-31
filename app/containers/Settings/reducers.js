@@ -5,6 +5,9 @@ import { DEVICES_TYPE_CONST } from '../../constants';
 
 export const initialState = {
   freshInstall: 0,
+  onboarding: {
+    lastFiredVersion: null
+  },
   toggleSettings: false,
   enableAutoUpdateCheck: true,
   enablePrereleaseUpdates: false,
@@ -26,6 +29,15 @@ export default function Settings(state = initialState, action) {
   switch (type) {
     case actionTypes.FRESH_INSTALL:
       return { ...state, freshInstall: payload };
+
+    case actionTypes.SET_ONBOARDING:
+      return {
+        ...state,
+        onboarding: {
+          ...state.onboarding,
+          ...payload
+        }
+      };
 
     case actionTypes.TOGGLE_SETTINGS:
       return { ...state, toggleSettings: payload };

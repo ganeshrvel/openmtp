@@ -8,6 +8,11 @@ export const makeFreshInstall = createSelector(
   state => (state ? state.freshInstall : initialState.freshInstall)
 );
 
+export const makeOnboarding = createSelector(
+  make,
+  state => (state ? state.onboarding : initialState.onboarding)
+);
+
 export const makeToggleSettings = createSelector(
   make,
   state => (state ? state.toggleSettings : initialState.toggleSettings)

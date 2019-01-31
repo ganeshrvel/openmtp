@@ -45,7 +45,7 @@ export default class Storage {
 
       return _return;
     } catch (e) {
-      log.error(e, `Storage -> getAll`);
+      log.error(e, `Storage -> getItems`);
     }
   }
 

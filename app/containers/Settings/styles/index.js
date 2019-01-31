@@ -13,16 +13,13 @@ export const styles = theme => ({
   },
   tabContainer: {
     paddingTop: 20,
-    height: 280,
+    height: 235,
     overflowX: `auto`,
     overflowY: `auto`
   },
   subtitle: {},
   fmSettingsStylesFix: {
     marginTop: 10
-  },
-  formGroup: {
-    paddingTop: 10
   },
   subheading: {
     marginBottom: 5
