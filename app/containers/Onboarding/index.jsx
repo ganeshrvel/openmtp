@@ -54,7 +54,7 @@ class Onboarding extends PureComponent {
         disableEscapeKeyDown
         className={styles.root}
         fullWidth
-        maxWidth="lg"
+        maxWidth="md"
         scroll="paper"
         aria-labelledby="onboaring-dialogbox"
         onClose={() => this._handleClose()}
