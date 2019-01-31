@@ -14,7 +14,7 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { styles } from '../styles/WhatsNew';
-import KeyboadShortcuts from './KeyboadShortcuts';
+import KeyboadShortcuts from '../../../components/KeyboardShortcuts';
 import { APP_NAME, APP_VERSION } from '../../../constants/meta';
 
 class WhatsNew extends PureComponent {

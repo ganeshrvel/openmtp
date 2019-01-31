@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import { styles } from '../styles/KeyboadShortcuts';
-import KbdRender from './KbdRender';
+import { styles } from './styles';
+import KbdRender from './components/KbdRender';
 
 class KeyboadShortcuts extends PureComponent {
   render() {
