@@ -5,11 +5,11 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import Keyboard from '@material-ui/icons/Keyboard';
-import SystemUpdate from '@material-ui/icons/SystemUpdate';
-import InsertChart from '@material-ui/icons/InsertChart';
-import Tab from '@material-ui/icons/Tab';
-import Settings from '@material-ui/icons/Settings';
+import KeyboardIcon from '@material-ui/icons/Keyboard';
+import SystemUpdateIcon from '@material-ui/icons/SystemUpdate';
+import InsertChartIcon from '@material-ui/icons/InsertChart';
+import TabIcon from '@material-ui/icons/Tab';
+import SettingsIcon from '@material-ui/icons/Settings';
 import { styles } from '../styles/Features';
 import { APP_NAME, APP_VERSION } from '../../../constants/meta';
 
@@ -24,31 +24,31 @@ class WhatsNew extends PureComponent {
         <List>
           <ListItem>
             <ListItemIcon>
-              <Keyboard />
+              <KeyboardIcon />
             </ListItemIcon>
             <ListItemText primary="Keyboard Navigation" />
           </ListItem>
           <ListItem>
             <ListItemIcon>
-              <Tab />
+              <TabIcon />
             </ListItemIcon>
             <ListItemText primary="New Tab Layout" />
           </ListItem>
           <ListItem>
             <ListItemIcon>
-              <SystemUpdate />
+              <SystemUpdateIcon />
             </ListItemIcon>
             <ListItemText primary="New Software Update Manager" />
           </ListItem>
           <ListItem>
             <ListItemIcon>
-              <InsertChart />
+              <InsertChartIcon />
             </ListItemIcon>
             <ListItemText primary="New Onboarding UI" />
           </ListItem>
           <ListItem>
             <ListItemIcon>
-              <Settings />
+              <SettingsIcon />
             </ListItemIcon>
             <ListItemText primary="New Settings UI" />
           </ListItem>

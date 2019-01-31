@@ -8,16 +8,14 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
-import semver from 'semver';
 import { styles } from './styles';
 import { setOnboarding } from '../Settings/actions';
 import { withReducer } from '../../store/reducers/withReducer';
 import reducers from '../Alerts/reducers';
 import { makeFreshInstall, makeOnboarding } from '../Settings/selectors';
-import { APP_VERSION } from '../../constants/meta';
-import { undefinedOrNull } from '../../utils/funcs';
 import WhatsNew from './components/WhatsNew';
 import Features from './components/Features';
+import { latestUpdatePushVersion } from '../../constants/onboarding';
 
 class Onboarding extends PureComponent {
   constructor(props) {
@@ -33,9 +31,7 @@ class Onboarding extends PureComponent {
     const { lastFiredVersion } = onboarding;
 
     this.setState({
-      fireOnboarding:
-        undefinedOrNull(lastFiredVersion) ||
-        semver.lt(lastFiredVersion, APP_VERSION)
+      fireOnboarding: latestUpdatePushVersion !== lastFiredVersion
     });
   }
 
@@ -45,7 +41,7 @@ class Onboarding extends PureComponent {
       fireOnboarding: false
     });
 
-    actionCreateOnboarding({ lastFiredVersion: APP_VERSION });
+    actionCreateOnboarding({ lastFiredVersion: latestUpdatePushVersion });
   };
 
   render() {

@@ -5,11 +5,11 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import FileCopy from '@material-ui/icons/FileCopy';
-import ViewList from '@material-ui/icons/ViewList';
-import SdStorage from '@material-ui/icons/SdStorage';
-import Collections from '@material-ui/icons/Collections';
-import Usb from '@material-ui/icons/Usb';
+import UsbIcon from '@material-ui/icons/Usb';
+import FileCopyIcon from '@material-ui/icons/FileCopy';
+import ViewListIcon from '@material-ui/icons/ViewList';
+import SdStorageIcon from '@material-ui/icons/SdStorage';
+import CollectionsIcon from '@material-ui/icons/Collections';
 import { styles } from '../styles/Features';
 
 class Features extends PureComponent {
@@ -23,7 +23,7 @@ class Features extends PureComponent {
         <List>
           <ListItem>
             <ListItemIcon>
-              <Usb />
+              <UsbIcon />
             </ListItemIcon>
             <ListItemText
               primary="Connect via USB cable"
@@ -32,28 +32,28 @@ class Features extends PureComponent {
           </ListItem>
           <ListItem>
             <ListItemIcon>
-              <FileCopy />
+              <FileCopyIcon />
             </ListItemIcon>
-            <ListItemText primary="Drag 'n Drop feature available" />
+            <ListItemText primary="Drag 'n Drop your files" />
           </ListItem>
           <ListItem>
             <ListItemIcon>
-              <ViewList />
+              <ViewListIcon />
             </ListItemIcon>
             <ListItemText
               primary="Choose between Grid and List view"
-              secondary='Settings > "General" Tab'
+              secondary='Settings > "File Manager" Tab'
             />
           </ListItem>
           <ListItem>
             <ListItemIcon>
-              <SdStorage />
+              <SdStorageIcon />
             </ListItemIcon>
             <ListItemText primary="Choose between Internal Memory and SD Card" />
           </ListItem>
           <ListItem>
             <ListItemIcon>
-              <Collections />
+              <CollectionsIcon />
             </ListItemIcon>
             <ListItemText primary="Transfer multiple files which are larger than 4GB in one go." />
           </ListItem>

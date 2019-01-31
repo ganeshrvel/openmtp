@@ -13,9 +13,12 @@ export const styles = theme => ({
   },
   tabContainer: {
     paddingTop: 20,
-    height: 235,
+    height: 290,
     overflowX: `auto`,
     overflowY: `auto`
+  },
+  subtitleMarginFix: {
+    marginTop: 10
   },
   subtitle: {},
   fmSettingsStylesFix: {
@@ -36,13 +39,13 @@ export const styles = theme => ({
   block: {
     marginBottom: 20
   },
-  onBoardingPaper: {
+  onboardingPaper: {
     position: `relative`,
     padding: 10,
     marginTop: 4,
     backgroundColor: variables().styles.secondaryColor.main
   },
-  onBoardingPaperArrow: {
+  onboardingPaperArrow: {
     fontWeight: `bold`,
     content: ' ',
     borderBottom: `11px solid ${variables().styles.secondaryColor.main}`,
@@ -52,7 +55,7 @@ export const styles = theme => ({
     top: -10,
     left: 2
   },
-  onBoardingPaperBody: {
+  onboardingPaperBody: {
     color: variables().styles.primaryColor.main
   },
   a: {

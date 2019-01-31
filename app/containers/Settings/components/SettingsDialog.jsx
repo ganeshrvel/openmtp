@@ -196,6 +196,23 @@ export default class SettingsDialog extends PureComponent {
                       }
                       label={DEVICES_LABEL[DEVICES_TYPE_CONST.mtp]}
                     />
+                    {freshInstall ? (
+                      <Paper
+                        className={`${styles.onboardingPaper}`}
+                        elevation={0}
+                      >
+                        <div className={styles.onboardingPaperArrow} />
+                        <Typography
+                          component="p"
+                          className={`${styles.onboardingPaperBody}`}
+                        >
+                          Use the toggles to enable or disable them.
+                        </Typography>
+                      </Paper>
+                    ) : null}
+                    <Typography variant="caption">
+                      Toggle to choose between Grid and List views
+                    </Typography>
                   </FormGroup>
                 </div>
               </SettingsDialogTabContainer>
@@ -225,7 +242,12 @@ export default class SettingsDialog extends PureComponent {
                   </FormGroup>
 
                   <FormGroup>
-                    <Typography variant="subtitle2" className={styles.subtitle}>
+                    <Typography
+                      variant="subtitle2"
+                      className={`${styles.subtitle} ${
+                        styles.subtitleMarginFix
+                      }`}
+                    >
                       Enable Beta update channel
                     </Typography>
 
@@ -273,21 +295,6 @@ export default class SettingsDialog extends PureComponent {
                       }
                       label={enableAnalytics ? `Enabled` : `Disabled`}
                     />
-                    {freshInstall ? (
-                      <Paper
-                        className={`${styles.onBoardingPaper}`}
-                        elevation={0}
-                      >
-                        <div className={styles.onBoardingPaperArrow} />
-                        <Typography
-                          component="p"
-                          className={`${styles.onBoardingPaperBody}`}
-                        >
-                          Choose your privacy settings. Use the toggles above to
-                          enable or disable them.
-                        </Typography>
-                      </Paper>
-                    ) : null}
                     <Typography variant="caption">
                       We do not gather any kind of personal information and
                       neither do we sell your data. We use this information only
