@@ -23,7 +23,7 @@ class Features extends PureComponent {
             className={styles.title}
             color="secondary"
           >
-            Other Features
+            Features
           </Typography>
         )}
         <List>

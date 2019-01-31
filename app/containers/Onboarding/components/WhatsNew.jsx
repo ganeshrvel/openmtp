@@ -140,7 +140,7 @@ class WhatsNew extends PureComponent {
             </ListItemIcon>
             <ListItemText
               primary="New Instructions UI"
-              secondary="Android device connectivity instructions and other features at a glance"
+              secondary="Android device connectivity instructions and features at a glance"
             />
           </ListItem>
         </List>
