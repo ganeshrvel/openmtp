@@ -3,6 +3,7 @@
 import { app, Menu } from 'electron';
 import {
   appFeaturesWindow,
+  keyboardShortcutsWindow,
   privacyPolicyWindow,
   reportBugsWindow
 } from './utils/createWindows';
@@ -193,6 +194,12 @@ export default class MenuBuilder {
           }
         },
         {
+          label: 'Keyboard Shortcuts',
+          click: () => {
+            keyboardShortcutsWindow();
+          }
+        },
+        {
           label: 'New Features And Updates',
           click: () => {
             appFeaturesWindow();
@@ -304,6 +311,12 @@ export default class MenuBuilder {
             label: 'Report Bugs',
             click: () => {
               reportBugsWindow();
+            }
+          },
+          {
+            label: 'Keyboard Shortcuts',
+            click: () => {
+              keyboardShortcutsWindow();
             }
           },
           {

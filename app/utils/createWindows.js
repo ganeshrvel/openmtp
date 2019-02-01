@@ -8,12 +8,14 @@ import { APP_TITLE } from '../constants/meta';
 import { undefinedOrNull } from './funcs';
 import { PRIVACY_POLICY_PAGE_TITLE } from '../templates/privacyPolicyPage';
 import { APP_FEATURES_PAGE_TITLE } from '../templates/appFeaturesPage';
+import { KEYBOARD_SHORTCUTS_PAGE_TITLE } from '../templates/keyboardShortcutsPage';
 
 let _nonBootableDeviceWindow = null;
 let _reportBugsWindow = null;
 let _privacyPolicyWindow = null;
 let _appUpdateAvailableWindow = null;
 let _appFeaturesWindow = null;
+let _keyboardShortcutsWindow = null;
 
 /**
  * Non Bootable Device Window
@@ -304,6 +306,82 @@ export const appFeaturesWindow = (isRenderedPage = false) => {
     return _appFeaturesWindow;
   } catch (e) {
     log.error(e, `createWindows -> appFeaturesWindow`);
+  }
+};
+
+/**
+ * Keyboard Shortcuts Window
+ */
+
+const keyboardShortcutsCreateWindow = isRenderedPage => {
+  const config = {
+    width: 800,
+    height: 600,
+    minWidth: 600,
+    minHeight: 400,
+    show: false,
+    resizable: true,
+    title: `${APP_TITLE}`,
+    minimizable: true,
+    fullscreenable: true,
+    webPreferences: {
+      nodeIntegration: true
+    }
+  };
+
+  // incoming call from a rendered page
+  if (isRenderedPage) {
+    const allWindows = remote.BrowserWindow.getAllWindows();
+
+    return loadExistingWindow(allWindows, KEYBOARD_SHORTCUTS_PAGE_TITLE)
+      ? null
+      : new remote.BrowserWindow(config);
+  }
+
+  // incoming call from the main process
+  const allWindows = BrowserWindow.getAllWindows();
+
+  return loadExistingWindow(allWindows, KEYBOARD_SHORTCUTS_PAGE_TITLE)
+    ? null
+    : new BrowserWindow(config);
+};
+
+export const keyboardShortcutsWindow = (isRenderedPage = false) => {
+  try {
+    if (_keyboardShortcutsWindow) {
+      _keyboardShortcutsWindow.focus();
+      _keyboardShortcutsWindow.show();
+      return _keyboardShortcutsWindow;
+    }
+
+    // show the existing _keyboardShortcutsWindow
+    const _keyboardShortcutsWindowTemp = keyboardShortcutsCreateWindow(
+      isRenderedPage
+    );
+    if (!_keyboardShortcutsWindowTemp) {
+      return _keyboardShortcutsWindow;
+    }
+
+    _keyboardShortcutsWindow = _keyboardShortcutsWindowTemp;
+    _keyboardShortcutsWindow.loadURL(
+      `${PATHS.loadUrlPath}#keyboardShortcutsPage`
+    );
+    _keyboardShortcutsWindow.webContents.on('did-finish-load', () => {
+      _keyboardShortcutsWindow.show();
+      _keyboardShortcutsWindow.focus();
+    });
+
+    _keyboardShortcutsWindow.onerror = error => {
+      log.error(error, `createWindows -> keyboardShortcutsWindow -> onerror`);
+    };
+
+    _keyboardShortcutsWindow.on('closed', () => {
+      _keyboardShortcutsWindow = null;
+    });
+
+    return _keyboardShortcutsWindow;
+  } catch (e) {
+    log.error(e, `createWindows -> keyboardShortcutsWindow`);
   }
 };
 
