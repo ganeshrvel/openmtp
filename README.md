@@ -22,7 +22,9 @@ Countless searches to find an app to solve these problems and failing to find on
 - Transfer multiple files which are larger than 4GB in one go.
 - Select between Internal Memory and SD Card.
 - Split pane views for both Local Computer and Android device.
-- Drag 'n Drop, Grid/List views and the other advanced File Manager features are available.
+- Drag 'n Drop your files.
+- Choose between Grid and List view.
+- Use Keyboard Shortcuts to navigate through your files.
 - Safe, Transparent and Open-Source.
 - We don't collect any personally identifiable information.
 - It's FREE and shall ALWAYS remain FREE!!
@@ -38,6 +40,64 @@ Find the latest *dmg* file from [GitHub Releases](https://github.com/ganeshrvel/
 ![OpenMTP File Explorer](https://github.com/ganeshrvel/openmtp/raw/master/blobs/images/file-explorer-bluebg.png "OpenMTP File Explorer")
 
 ![OpenMTP File Transfer](https://github.com/ganeshrvel/openmtp/raw/master/blobs/images/file-transfer-bluebg.png "OpenMTP File Transfer")
+
+### Keyboard Shortcuts
+New Folder
+<kbd>command</kbd>+<kbd>n</kbd>
+
+Copy
+<kbd>command</kbd>+<kbd>c</kbd>
+
+Paste
+<kbd>command</kbd>+<kbd>v</kbd>
+
+Delete
+<kbd>backspace</kbd>
+
+Refresh
+<kbd>command</kbd>+<kbd>alt</kbd>+<kbd>r</kbd>
+
+Folder Up
+<kbd>command</kbd>+<kbd>b</kbd>
+
+Select All
+<kbd>command</kbd>+<kbd>a</kbd>
+
+Rename
+<kbd>command</kbd>+<kbd>d</kbd>
+
+Open
+<kbd>enter</kbd>
+
+Switch Tab
+<kbd>command</kbd>+<kbd>1</kbd>
+
+Navigate Left
+<kbd>left</kbd>
+
+Navigate Right
+<kbd>right</kbd>
+
+Navigate Up
+<kbd>up</kbd>
+
+Navigate Down
+<kbd>down</kbd>
+
+Select Multiple Items Forward (for Grid view)
+<kbd>shift</kbd>+<kbd>left</kbd>
+
+Select Multiple Items Backward (for Grid view)
+<kbd>shift</kbd>+<kbd>right</kbd>
+
+Select Multiple Items Forward (for List view)
+<kbd>shift</kbd>+<kbd>up</kbd>
+
+Select Multiple Items Backward (for List view)
+<kbd>shift</kbd>+<kbd>down</kbd>
+
+Select Multiple Items (using mouse)
+<kbd>command</kbd>+<kbd>click</kbd> or <kbd>shift</kbd>+<kbd>click</kbd>
 
 ## Building from Source
 

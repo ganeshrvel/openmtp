@@ -425,7 +425,14 @@ section.second {
 
     //for non-mobile devices
     @media (min-width: #{$nonMobileMinWidth}px) {
-      @include item-align();
+      //only use 100vh when min-height of vp is greater than a certain value
+      @media (min-height: #{$minHeightFor100vh}px) {
+        @include item-align();
+      }
+
+      @media (max-height: #{$minHeightFor100vh - 1}px) {
+        padding: $paddingNonFlex;
+      }
     }
 
     .desc-wrapper {
