@@ -7,11 +7,13 @@ import { loadProfileErrorHtml } from '../templates/loadProfileError';
 import { APP_TITLE } from '../constants/meta';
 import { undefinedOrNull } from './funcs';
 import { PRIVACY_POLICY_PAGE_TITLE } from '../templates/privacyPolicyPage';
+import { APP_FEATURES_PAGE_TITLE } from '../templates/appFeaturesPage';
 
 let _nonBootableDeviceWindow = null;
 let _reportBugsWindow = null;
 let _privacyPolicyWindow = null;
 let _appUpdateAvailableWindow = null;
+let _appFeaturesWindow = null;
 
 /**
  * Non Bootable Device Window
@@ -179,22 +181,6 @@ export const privacyPolicyWindow = (isRenderedPage = false) => {
   }
 };
 
-export const loadExistingWindow = (allWindows, title) => {
-  if (!undefinedOrNull(allWindows)) {
-    for (let i = 0; i < allWindows.length; i += 1) {
-      const item = allWindows[i];
-      if (item.getTitle().indexOf(title) !== -1) {
-        item.focus();
-        item.show();
-
-        return item;
-      }
-    }
-  }
-
-  return null;
-};
-
 /**
  * App Update Available Window
  */
@@ -249,4 +235,92 @@ export const appUpdateAvailableWindow = () => {
   } catch (e) {
     log.error(e, `createWindows -> appUpdateAvailableWindow`);
   }
+};
+
+/**
+ * App Features Window
+ */
+
+const appFeaturesCreateWindow = isRenderedPage => {
+  const config = {
+    width: 800,
+    height: 630,
+    show: false,
+    resizable: false,
+    title: `${APP_TITLE}`,
+    minimizable: true,
+    fullscreenable: false,
+    webPreferences: {
+      nodeIntegration: true
+    }
+  };
+
+  // incoming call from a rendered page
+  if (isRenderedPage) {
+    const allWindows = remote.BrowserWindow.getAllWindows();
+
+    return loadExistingWindow(allWindows, APP_FEATURES_PAGE_TITLE)
+      ? null
+      : new remote.BrowserWindow(config);
+  }
+
+  // incoming call from the main process
+  const allWindows = BrowserWindow.getAllWindows();
+
+  return loadExistingWindow(allWindows, APP_FEATURES_PAGE_TITLE)
+    ? null
+    : new BrowserWindow(config);
+};
+
+export const appFeaturesWindow = (isRenderedPage = false) => {
+  try {
+    if (_appFeaturesWindow) {
+      _appFeaturesWindow.focus();
+      _appFeaturesWindow.show();
+      return _appFeaturesWindow;
+    }
+
+    // show the existing _appFeaturesWindow
+    const _appFeaturesWindowTemp = appFeaturesCreateWindow(isRenderedPage);
+    if (!_appFeaturesWindowTemp) {
+      return _appFeaturesWindow;
+    }
+
+    _appFeaturesWindow = _appFeaturesWindowTemp;
+    _appFeaturesWindow.loadURL(`${PATHS.loadUrlPath}#appFeaturesPage`);
+    _appFeaturesWindow.webContents.on('did-finish-load', () => {
+      _appFeaturesWindow.show();
+      _appFeaturesWindow.focus();
+    });
+
+    _appFeaturesWindow.onerror = error => {
+      log.error(error, `createWindows -> appFeaturesWindow -> onerror`);
+    };
+
+    _appFeaturesWindow.on('closed', () => {
+      _appFeaturesWindow = null;
+    });
+
+    return _appFeaturesWindow;
+  } catch (e) {
+    log.error(e, `createWindows -> appFeaturesWindow`);
+  }
+};
+
+// Load an Existing Window
+
+export const loadExistingWindow = (allWindows, title) => {
+  if (!undefinedOrNull(allWindows)) {
+    for (let i = 0; i < allWindows.length; i += 1) {
+      const item = allWindows[i];
+      if (item.getTitle().indexOf(title) !== -1) {
+        item.focus();
+        item.show();
+
+        return item;
+      }
+    }
+  }
+
+  return null;
 };

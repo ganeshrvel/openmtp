@@ -67,12 +67,12 @@ class Onboarding extends PureComponent {
               <Fragment>
                 <Features hideTitle={false} />
                 <Divider className={styles.divider} />
-                <WhatsNew />
+                <WhatsNew hideTitle={false} />
               </Fragment>
             ) : null}
             {!freshInstall ? (
               <Fragment>
-                <WhatsNew />
+                <WhatsNew hideTitle={false} />
                 <Divider className={styles.divider} />
                 <Features hideTitle={false} />
               </Fragment>

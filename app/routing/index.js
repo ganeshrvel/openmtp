@@ -8,6 +8,7 @@ import ReportBugsPage from '../containers/ReportBugsPage/Loadable';
 import AppUpdatePageUpdateAvailable from '../containers/AppUpdatePage/UpdateAvailable';
 import AppUpdatePageUpdateProgress from '../containers/AppUpdatePage/UpdateProgress';
 import PrivacyPolicyPage from '../containers/PrivacyPolicyPage/Loadable';
+import AppFeaturesPage from '../containers/AppFeaturesPage/Loadable';
 import NotFoundPage from '../containers/NotFoundPage/Loadable';
 
 export const routes = {
@@ -35,6 +36,11 @@ export const routes = {
     path: '/privacyPolicyPage',
     exact: true,
     component: PrivacyPolicyPage
+  },
+  AppFeaturesPage: {
+    path: '/appFeaturesPage',
+    exact: true,
+    component: AppFeaturesPage
   },
   NotFound: {
     component: NotFoundPage

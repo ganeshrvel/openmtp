@@ -26,6 +26,10 @@ export const AUTHOR_EMAIL = undefinedOrNullChained(author, 'email')
   ? author.email
   : null;
 
+export const AUTHOR_NAME = undefinedOrNullChained(author, 'name')
+  ? author.name
+  : null;
+
 export const APP_DESC = `${description}`;
 
 export const APP_TITLE = `${APP_DESC}`;

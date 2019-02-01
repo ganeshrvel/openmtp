@@ -7,7 +7,13 @@ import { log } from '@Log';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Helmet } from 'react-helmet';
-import { APP_NAME, APP_TITLE } from '../../constants/meta';
+import {
+  APP_GITHUB_URL,
+  APP_NAME,
+  APP_TITLE,
+  AUTHOR_EMAIL,
+  AUTHOR_NAME
+} from '../../constants/meta';
 import { openExternalUrl } from '../../utils/url';
 import { resetOverFlowY } from '../../utils/styleResets';
 import { PRIVACY_POLICY_PAGE_TITLE } from '../../templates/privacyPolicyPage';
@@ -34,16 +40,16 @@ class PrivacyPolicyPage extends Component {
           </p>
           <p>
             <span>
-              OpenMTP (&quot;us&quot;, &quot;we&quot;, or &quot;our&quot;)
+              {APP_NAME} (&quot;us&quot;, &quot;we&quot;, or &quot;our&quot;)
               operates the app (hereinafter referred to as the
               &quot;Service&quot;).
             </span>
           </p>
           <p>
             <span>
-              Ganesh Rathinavel built the &quot;OpenMTP&quot; app as an Open
-              Source app. This SERVICE is provided by Ganesh Rathinavel at no
-              cost and is intended for use as is.
+              {AUTHOR_NAME} built the &quot;{APP_NAME}&quot; app as an Open
+              Source app. This SERVICE is provided by {AUTHOR_NAME} at no cost
+              and is intended for use as is.
             </span>
           </p>
           <p>
@@ -165,7 +171,9 @@ class PrivacyPolicyPage extends Component {
             </span>
           </p>
           <p>
-            <span>OpenMTP uses the collected data for various purposes:</span>
+            <span>
+              {APP_NAME} uses the collected data for various purposes:
+            </span>
           </p>
           <ul>
             <li>
@@ -217,7 +225,7 @@ class PrivacyPolicyPage extends Component {
           </p>
           <p>
             <span>
-              OpenMTP will take all steps reasonably necessary to ensure that
+              {APP_NAME} will take all steps reasonably necessary to ensure that
               your data is treated securely and in accordance with this Privacy
               Policy and no transfer of your Personal Data will take place to an
               organization or a country unless there are adequate controls in
@@ -237,8 +245,8 @@ class PrivacyPolicyPage extends Component {
           </p>
           <p>
             <span>
-              OpenMTP may disclose your data in the good faith belief that such
-              action is necessary to:
+              {APP_NAME} may disclose your data in the good faith belief that
+              such action is necessary to:
             </span>
           </p>
           <ul>
@@ -247,7 +255,7 @@ class PrivacyPolicyPage extends Component {
             </li>
             <li>
               <span>
-                To protect and defend the rights or property of OpenMTP
+                To protect and defend the rights or property of {APP_NAME}
               </span>
             </li>
             <li>
@@ -403,8 +411,8 @@ class PrivacyPolicyPage extends Component {
           </p>
           <p>
             <span>
-              We have used google-ga npm package to facilitate the Google
-              analytics feature inside the app.
+              We have used &quot;google-ga&quot; npm package to facilitate the
+              Google analytics feature inside the app.
             </span>
           </p>
           <p>
@@ -418,10 +426,10 @@ class PrivacyPolicyPage extends Component {
               report the Crash Reports and bug encountered by the application.
               The Crash Reports are stored inside your device as log files.
               These log files can be accessed by navigating to
-              &quot;~/.io.ganeshrvel/openmtp/logs/&quot; folder. You may choose
-              to send us these log files by selecting the &quot;Help&quot; menu
-              &gt; &quot;Report Bugs&quot; and clicking on the &quot;EMAIL ERROR
-              LOGS&quot; buttons.
+              &quot;~/.io.ganeshrvel/{APP_NAME}/logs/&quot; folder. You may
+              choose to send us these log files by selecting the
+              &quot;Help&quot; menu &gt; &quot;Report Bugs&quot; and clicking on
+              the &quot;EMAIL ERROR LOGS&quot; buttons.
             </span>
           </p>
           <p>
@@ -480,10 +488,10 @@ class PrivacyPolicyPage extends Component {
               By email:&nbsp;
               <a
                 onClick={events => {
-                  openExternalUrl('mailto:ganeshrvel@outlook.com', events);
+                  openExternalUrl(`mailto:${AUTHOR_EMAIL}`, events);
                 }}
               >
-                ganeshrvel@outlook.com
+                {AUTHOR_EMAIL}
               </a>
             </span>
           </p>
@@ -492,10 +500,10 @@ class PrivacyPolicyPage extends Component {
               By visiting this page on the website:&nbsp;
               <a
                 onClick={events => {
-                  openExternalUrl('https://github.com/ganeshrvel', events);
+                  openExternalUrl(`${APP_GITHUB_URL}`, events);
                 }}
               >
-                https://github.com/ganeshrvel
+                {APP_GITHUB_URL}
               </a>
             </span>
           </p>

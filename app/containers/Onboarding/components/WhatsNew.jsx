@@ -42,14 +42,21 @@ class WhatsNew extends PureComponent {
   };
 
   render() {
-    const { classes: styles } = this.props;
+    const { classes: styles, hideTitle } = this.props;
     const { expansionPanel } = this.state;
 
     return (
       <div className={styles.root}>
-        <Typography variant="body1" className={styles.title} color="secondary">
-          What&apos;s new in {APP_NAME}-{APP_VERSION}?
-        </Typography>
+        {hideTitle ? null : (
+          <Typography
+            variant="body1"
+            className={styles.title}
+            color="secondary"
+          >
+            What&apos;s new in {APP_NAME}-{APP_VERSION}?
+          </Typography>
+        )}
+
         <List>
           <ListItem
             button

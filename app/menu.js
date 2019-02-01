@@ -1,7 +1,11 @@
 'use strict';
 
 import { app, Menu } from 'electron';
-import { privacyPolicyWindow, reportBugsWindow } from './utils/createWindows';
+import {
+  appFeaturesWindow,
+  privacyPolicyWindow,
+  reportBugsWindow
+} from './utils/createWindows';
 import { DEBUG_PROD, IS_DEV } from './constants/env';
 import { APP_NAME, APP_GITHUB_URL } from './constants/meta';
 import { openExternalUrl } from './utils/url';
@@ -189,25 +193,31 @@ export default class MenuBuilder {
           }
         },
         {
+          label: 'New Features And Updates',
+          click: () => {
+            appFeaturesWindow();
+          }
+        },
+        {
           label: 'Privacy Policy',
           click: () => {
             privacyPolicyWindow();
           }
         },
         {
-          label: 'Buy me a coffee!',
+          label: 'Buy Me A Coffee!',
           click: () => {
             openExternalUrl(DONATE_PAYPAL_URL);
           }
         },
         {
-          label: `Invite a friend`,
+          label: `Invite A Friend`,
           click: () => {
             openExternalUrl(`${inviteViaEmail}`);
           }
         },
         {
-          label: 'Find us on GitHub',
+          label: 'Find Us On GitHub',
           click: () => {
             openExternalUrl(APP_GITHUB_URL);
           }
@@ -297,25 +307,31 @@ export default class MenuBuilder {
             }
           },
           {
+            label: 'New Features And Updates',
+            click: () => {
+              appFeaturesWindow();
+            }
+          },
+          {
             label: 'Privacy Policy',
             click: () => {
               privacyPolicyWindow();
             }
           },
           {
-            label: 'Buy me a coffee!',
+            label: 'Buy Me A Coffee!',
             click: () => {
               openExternalUrl(DONATE_PAYPAL_URL);
             }
           },
           {
-            label: `Invite a friend`,
+            label: `Invite A Friend`,
             click: () => {
               openExternalUrl(`${inviteViaEmail}`);
             }
           },
           {
-            label: 'Find us on GitHub',
+            label: 'Find Us On GitHub',
             click: () => {
               openExternalUrl(APP_GITHUB_URL);
             }
