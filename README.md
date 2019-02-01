@@ -55,7 +55,7 @@ Delete
 <kbd>backspace</kbd>
 
 Refresh
-<kbd>command</kbd>+<kbd>alt</kbd>+<kbd>r</kbd>
+<kbd>command</kbd>+<kbd>r</kbd>
 
 Folder Up
 <kbd>command</kbd>+<kbd>b</kbd>
