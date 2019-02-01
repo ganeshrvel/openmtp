@@ -18,14 +18,14 @@ class TextFieldEdit extends PureComponent {
     this.textFieldValue = null;
   }
 
-  handleClick = ({ confirm = false }, event) => {
+  _handleBtnClick = ({ confirm = false }, event) => {
     const { onClickHandler } = this.props;
     event.preventDefault();
 
     onClickHandler({ confirm, textFieldValue: this.textFieldValue });
   };
 
-  handleChange = event => {
+  _handleChange = event => {
     this.textFieldValue = event.target.value;
   };
 
@@ -57,11 +57,13 @@ class TextFieldEdit extends PureComponent {
         fullWidth={fullWidthDialog}
         maxWidth={maxWidthDialog}
         disableEscapeKeyDown={false}
-        onEscapeKeyDown={event => this.handleClick({ confirm: false }, event)}
+        onEscapeKeyDown={event =>
+          this._handleBtnClick({ confirm: false }, event)
+        }
       >
         <DialogTitle>{titleText}</DialogTitle>
         <form
-          onSubmit={event => this.handleClick({ confirm: true }, event)}
+          onSubmit={event => this._handleBtnClick({ confirm: true }, event)}
           noValidate
           autoComplete="off"
         >
@@ -83,22 +85,22 @@ class TextFieldEdit extends PureComponent {
               autoComplete="off"
               defaultValue={defaultValue}
               multiline={multiline}
-              onFocus={event => this.handleChange(event)}
-              onBlur={event => this.handleChange(event)}
-              onChange={event => this.handleChange(event)}
+              onFocus={event => this._handleChange(event)}
+              onBlur={event => this._handleChange(event)}
+              onChange={event => this._handleChange(event)}
               error={errors.toggle}
             />
           </DialogContent>
           <DialogActions>
             <Button
-              onClick={event => this.handleClick({ confirm: false }, event)}
+              onClick={event => this._handleBtnClick({ confirm: false }, event)}
               color="secondary"
               className={classNames(styles.btnNegative)}
             >
               {btnNegativeText}
             </Button>
             <Button
-              onClick={event => this.handleClick({ confirm: true }, event)}
+              onClick={event => this._handleBtnClick({ confirm: true }, event)}
               color="primary"
               className={classNames(styles.btnPositive)}
             >

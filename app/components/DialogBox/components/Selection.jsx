@@ -13,7 +13,7 @@ import SdStorageIcon from '@material-ui/icons/SdStorage';
 import { styles } from '../styles/Selection';
 
 class Selection extends PureComponent {
-  handleListItemClick = ({ ...args }) => {
+  _handleListItemClick = ({ ...args }) => {
     const { onClose } = this.props;
     onClose({ ...args });
   };
@@ -26,7 +26,7 @@ class Selection extends PureComponent {
     return (
       <Dialog
         onClose={() =>
-          this.handleListItemClick({
+          this._handleListItemClick({
             selectedValue: null,
             triggerChange: false
           })
@@ -43,7 +43,7 @@ class Selection extends PureComponent {
                   <ListItem
                     button
                     onClick={() =>
-                      this.handleListItemClick({
+                      this._handleListItemClick({
                         selectedValue: a,
                         triggerChange: true
                       })

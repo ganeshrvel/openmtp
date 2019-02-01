@@ -39,7 +39,7 @@ class GenerateErrorReport extends Component {
     }
   };
 
-  handleGenerateErrorLogs = async () => {
+  _handleGenerateErrorLogs = async () => {
     try {
       const { actionCreateThrowError } = this.props;
 
@@ -82,7 +82,7 @@ class GenerateErrorReport extends Component {
         mailTo={mailTo}
         mailToInstructions={mailToInstructions}
         AUTHOR_EMAIL={AUTHOR_EMAIL}
-        onGenerateErrorLogs={this.handleGenerateErrorLogs}
+        onGenerateErrorLogs={this._handleGenerateErrorLogs}
       />
     );
   }

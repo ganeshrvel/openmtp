@@ -873,12 +873,12 @@ class FileExplorer extends Component {
     const targetAction = 'rename';
 
     if (!confirm || newFileName === null) {
-      this.clearEditDialog(targetAction);
+      this._handleClearEditDialog(targetAction);
       return null;
     }
 
     if (newFileName.trim() === '' || /[/\\?%*:|"<>]/g.test(newFileName)) {
-      this.handleErrorsEditDialog(
+      this._handleErrorsEditDialog(
         {
           toggle: true,
           message: `Error: Illegal characters.`
@@ -894,14 +894,14 @@ class FileExplorer extends Component {
     const oldFilePath = data.path;
 
     if (newFilePath === data.path) {
-      this.clearEditDialog(targetAction);
+      this._handleClearEditDialog(targetAction);
       return null;
     }
 
     if (
       await checkFileExists(newFilePath, deviceType, mtpStoragesListSelected)
     ) {
-      this.handleErrorsEditDialog(
+      this._handleErrorsEditDialog(
         {
           toggle: true,
           message: `Error: The name "${newFileName}" is already taken.`
@@ -922,7 +922,7 @@ class FileExplorer extends Component {
       }
     );
 
-    this.clearEditDialog(targetAction);
+    this._handleClearEditDialog(targetAction);
   };
 
   _handleErrorsEditDialog = ({ ...args }, targetAction) => {
@@ -938,7 +938,7 @@ class FileExplorer extends Component {
     });
   };
 
-  clearEditDialog = targetAction => {
+  _handleClearEditDialog = targetAction => {
     const { toggleDialog } = this.state;
     this.setState({
       toggleDialog: {
@@ -1075,7 +1075,7 @@ class FileExplorer extends Component {
     const targetAction = 'newFolder';
 
     if (!confirm) {
-      this.clearEditDialog(targetAction);
+      this._handleClearEditDialog(targetAction);
       return null;
     }
 
@@ -1127,7 +1127,7 @@ class FileExplorer extends Component {
       }
     );
 
-    this.clearEditDialog(targetAction);
+    this._handleClearEditDialog(targetAction);
   };
 
   _handlePaste = async () => {

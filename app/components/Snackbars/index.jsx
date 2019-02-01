@@ -18,7 +18,7 @@ class Snackbars extends PureComponent {
     this.snackbarOpen = true;
   };
 
-  handleClose = (event, reason) => {
+  _handleClose = (event, reason) => {
     const { OnSnackBarsCloseAlerts } = this.props;
     if (reason === 'clickaway') {
       return;
@@ -37,10 +37,10 @@ class Snackbars extends PureComponent {
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         open={this.snackbarOpen}
         autoHideDuration={autoHideDuration}
-        onClose={this.handleClose}
+        onClose={this._handleClose}
       >
         <SnackbarThemeWrapper
-          onClose={this.handleClose}
+          onClose={this._handleClose}
           variant={variant}
           message={message}
         />
