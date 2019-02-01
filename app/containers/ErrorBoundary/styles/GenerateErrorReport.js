@@ -16,14 +16,17 @@ export const styles = theme => ({
     paddingLeft: 0,
     marginBottom: 15
   },
+  generateLogsBtnWrapper: {},
   generateLogsBtn: {
-    marginTop: 0
+    marginTop: 0,
+    ...mixins().btnPositive
   },
   emailIdWrapper: {
     color: variables().styles.textLightColor,
     marginTop: 15
   },
   emailId: {
+    marginLeft: 16,
     fontWeight: `bold`
   }
 });

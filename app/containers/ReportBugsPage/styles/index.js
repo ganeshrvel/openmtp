@@ -7,6 +7,6 @@ export const styles = theme => ({
     textAlign: `center`,
     ...mixins().center,
     width: 500,
-    marginTop: 77
+    marginTop: 7
   }
 });

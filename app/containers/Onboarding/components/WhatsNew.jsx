@@ -150,6 +150,15 @@ class WhatsNew extends PureComponent {
               secondary="Android device connectivity instructions and features at a glance"
             />
           </ListItem>
+          <ListItem>
+            <ListItemIcon>
+              <HelpIcon />
+            </ListItemIcon>
+            <ListItemText
+              primary="New Bugs Report UI"
+              secondary="'Help' menu > 'Report Bugs'"
+            />
+          </ListItem>
         </List>
       </div>
     );

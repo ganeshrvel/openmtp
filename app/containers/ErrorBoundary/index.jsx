@@ -56,16 +56,13 @@ class ErrorBoundary extends Component {
           <Typography variant="h5" className={styles.headings}>
             I promise it&apos;s not you, it&apos;s me.
           </Typography>
-          <Typography variant="subtitle1" className={styles.subHeading}>
-            Please send us the error log so that I can fix this issue.
-          </Typography>
           <GenerateErrorReport />
           <Button
             variant="outlined"
             className={styles.goBackBtn}
             onClick={this._handleReload}
           >
-            Reload
+            Reload The App
           </Button>
         </div>
       );

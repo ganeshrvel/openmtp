@@ -24,6 +24,6 @@ export const styles = theme => ({
     marginTop: 15
   },
   goBackBtn: {
-    marginTop: 20
+    marginTop: 5
   }
 });
