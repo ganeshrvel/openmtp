@@ -16,7 +16,7 @@ import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import OfflineBoltIcon from '@material-ui/icons/OfflineBolt';
 import { styles } from '../styles/WhatsNew';
-import KeyboadShortcuts from '../../../components/KeyboardShortcuts';
+import KeyboadShortcuts from '../../KeyboardShortcutsPage/components/KeyboadShortcuts';
 import { APP_NAME, APP_VERSION } from '../../../constants/meta';
 
 class WhatsNew extends PureComponent {

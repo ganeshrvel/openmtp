@@ -24,7 +24,7 @@ import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Paper from '@material-ui/core/Paper';
 import { styles } from '../styles/FileExplorerTableBodyEmptyRender';
-import KeyboadShortcuts from '../../../components/KeyboardShortcuts';
+import KeyboadShortcuts from '../../KeyboardShortcutsPage/components/KeyboadShortcuts';
 import Features from '../../Onboarding/components/Features';
 
 class FileExplorerTableBodyEmptyRender extends PureComponent {

@@ -8,7 +8,7 @@ import { Helmet } from 'react-helmet';
 import { APP_TITLE } from '../../constants/meta';
 import { resetOverFlowY } from '../../utils/styleResets';
 import { styles } from './styles';
-import KeyboadShortcuts from '../../components/KeyboardShortcuts';
+import KeyboadShortcuts from './components/KeyboadShortcuts';
 import { KEYBOARD_SHORTCUTS_PAGE_TITLE } from '../../templates/keyboardShortcutsPage';
 
 class KeyboardShortcutsPage extends Component {
