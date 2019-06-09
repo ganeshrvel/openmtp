@@ -27,7 +27,6 @@
     "lint-styles-fix": "yarn --silent lint-styles --fix; exit 0",
     "postlint-fix": "prettier --ignore-path .eslintignore --single-quote --write '**/*.*{js,jsx,json}'",
     "postlint-styles-fix": "prettier --ignore-path .eslintignore --single-quote --write '**/*.{css,scss}'",
-    "precommit": "lint-staged",
     "preinstall": "node ./internals/scripts/CheckYarn.js",
     "postinstall": "yarn build-dll && electron-builder install-app-deps package.json"
   },
