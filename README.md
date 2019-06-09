@@ -212,14 +212,7 @@ $ set UPGRADE_EXTENSIONS=1 && npm run dev
 
 
 ### Contribute
-- Fork the repo and create your branch from master.
-- Ensure that the changes pass linting.
-- Update the documentation if needed.
-- Make sure your code lints.
-- Issue a pull request!
-
-When you submit code changes, your submissions are understood to be under the same [MIT License](https://github.com/ganeshrvel/openmtp/blob/master/LICENSE "MIT License") that covers the project. Feel free to contact the maintainers if that's a concern.
-
+If you are interested in fixing issues and contributing directly to the code base, please see the [guidelines](https://github.com/ganeshrvel/openmtp/blob/master/CONTRIBUTING.md "guidelines").
 
 ### Buy me a coffee
 Help me keep the app FREE and open for all.

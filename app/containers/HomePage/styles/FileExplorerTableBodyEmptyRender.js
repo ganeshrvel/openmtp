@@ -6,6 +6,10 @@ import { tableCellFileExplorerTableRowsRender } from './FileExplorerTableBodyLis
 export const styles = theme => ({
   emptyTableRowWrapper: {},
   tableCell: tableCellFileExplorerTableRowsRender,
+  helpPhoneNotRecognized: {
+    width: '100%',
+    ...mixins().center
+  },
   noMtp: {
     marginTop: 10
   },
