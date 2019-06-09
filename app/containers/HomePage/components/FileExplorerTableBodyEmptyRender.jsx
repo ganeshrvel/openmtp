@@ -23,9 +23,12 @@ import SettingsInputHdmiIcon from '@material-ui/icons/SettingsInputHdmi';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Paper from '@material-ui/core/Paper';
+import Button from '@material-ui/core/Button';
 import { styles } from '../styles/FileExplorerTableBodyEmptyRender';
 import KeyboadShortcuts from '../../KeyboardShortcutsPage/components/KeyboadShortcuts';
 import Features from '../../Onboarding/components/Features';
+import { Notification as NotificationDialog } from '../../../components/DialogBox';
+import FileExplorerTableBodyEmptyHelpPhoneNotRecognizedRender from './FileExplorerTableBodyEmptyHelpPhoneNotRecognizedRender';
 
 class FileExplorerTableBodyEmptyRender extends PureComponent {
   constructor(props) {
@@ -36,7 +39,8 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
         noMtpInstructions: true,
         keyboardNavigation: false,
         features: false
-      }
+      },
+      showHelpPhoneNotRecognizedDialog: false
     };
   }
 
@@ -51,6 +55,14 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
     });
   };
 
+  _handleHelpPhoneNotRecognizedBtn = value => {
+    this.setState({ showHelpPhoneNotRecognizedDialog: value });
+  };
+
+  _handleHelpPhoneNotRecognizedDialog = () => {
+    this._handleHelpPhoneNotRecognizedBtn(false);
+  };
+
   render() {
     const {
       classes: styles,
@@ -62,7 +74,7 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
       onContextMenuClick
     } = this.props;
 
-    const { expansionPanel } = this.state;
+    const { expansionPanel, showHelpPhoneNotRecognizedDialog } = this.state;
 
     const _eventTarget = 'emptyRowTarget';
 
@@ -76,6 +88,14 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
         <TableRow className={styles.emptyTableRowWrapper}>
           <TableCell colSpan={6} className={styles.tableCell}>
             <Paper style={{ height: `100%` }} elevation={0}>
+              <Button
+                color="secondary"
+                className={styles.helpPhoneNotRecognized}
+                onClick={() => this._handleHelpPhoneNotRecognizedBtn(true)}
+              >
+                Help - My phone is not recognized!
+              </Button>
+
               <List>
                 <ListItem
                   button
@@ -243,6 +263,17 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
                   </div>
                 </Collapse>
               </List>
+
+              <NotificationDialog
+                fullWidthDialog
+                maxWidthDialog="sm"
+                titleText="Help - My phone is not recognized!"
+                bodyText={
+                  <FileExplorerTableBodyEmptyHelpPhoneNotRecognizedRender />
+                }
+                trigger={showHelpPhoneNotRecognizedDialog}
+                onClickHandler={this._handleHelpPhoneNotRecognizedDialog}
+              />
             </Paper>
           </TableCell>
         </TableRow>
