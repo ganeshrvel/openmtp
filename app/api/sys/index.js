@@ -718,7 +718,7 @@ export const pasteFiles = (
     let cmdArgs = {};
     switch (direction) {
       case 'mtpToLocal':
-        _queue = queue.map(sourcePath => {
+        _queue = (queue || []).map(sourcePath => {
           const destinationPath = path.resolve(destinationFolder);
           const escapedDestinationPath = escapeShellMtp(
             `${destinationPath}/${baseName(sourcePath)}`
@@ -742,7 +742,7 @@ export const pasteFiles = (
         );
 
       case 'localtoMtp':
-        _queue = queue.map(sourcePath => {
+        _queue = (queue || []).map(sourcePath => {
           const destinationPath = path.resolve(destinationFolder);
           const escapedDestinationPath = `${escapeShellMtp(destinationPath)}`;
           const escapedSourcePath = `${escapeShellMtp(sourcePath)}`;
