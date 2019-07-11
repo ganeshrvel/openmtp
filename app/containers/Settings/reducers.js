@@ -9,6 +9,7 @@ export const initialState = {
     lastFiredVersion: null
   },
   toggleSettings: false,
+  enableBackgroundAutoUpdate: true,
   enableAutoUpdateCheck: true,
   enablePrereleaseUpdates: false,
   enableAnalytics: true,
@@ -24,8 +25,7 @@ export const initialState = {
 };
 
 export default function Settings(state = initialState, action) {
-  // eslint-disable-next-line prefer-const
-  let { type, payload, deviceType = null } = action;
+  const { type, payload, deviceType = null } = action;
   switch (type) {
     case actionTypes.FRESH_INSTALL:
       return { ...state, freshInstall: payload };
