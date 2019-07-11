@@ -4,48 +4,52 @@ import React, { PureComponent } from 'react';
 import FileExplorerTableRowsRender from './FileExplorerTableBodyListRender';
 import { quickHash } from '../../../utils/funcs';
 
-/*  eslint-disable react/destructuring-assignment */
-
 export default class FileExplorerTableBodyListWrapperRender extends PureComponent {
   constructor(props) {
     super(props);
 
+    const { tableSort } = this.props;
+
     this.recursiveFilesFetchTimeOut = null;
     this.filesPreFetchCount = 50;
     this.state = {
-      items: this.props.tableSort.slice(0, this.filesPreFetchCount)
+      items: tableSort.slice(0, this.filesPreFetchCount)
     };
   }
 
   componentDidMount() {
-    this.recursiveFilesFetch();
+    const { tableSort } = this.props;
+
+    this.recursiveFilesFetch(tableSort);
   }
 
-  componentWillUpdate(prevProps) {
-    if (prevProps.tableSort === this.props.tableSort) {
-      return null;
-    }
+  componentWillReceiveProps({
+    tableSort: nextTableSort,
+    directoryGeneratedTime: nextDirectoryGeneratedTime
+  }) {
+    const { directoryGeneratedTime } = this.props;
 
-    this.recursiveFilesFetch();
+    if (nextDirectoryGeneratedTime !== directoryGeneratedTime) {
+      this.recursiveFilesFetch(nextTableSort);
+    }
   }
 
   componentWillUnmount() {
     this.clearRecursiveFilesFetchTimeOut();
   }
 
-  recursiveFilesFetch = () => {
-    this.recursiveFilesFetchTimeOut = setTimeout(() => {
-      const hasMore = this.state.items.length + 1 < this.props.tableSort.length;
+  recursiveFilesFetch = tableSort => {
+    const { items } = this.state;
 
-      this.setState((prev, props) => ({
-        items: props.tableSort.slice(
-          0,
-          prev.items.length + this.filesPreFetchCount
-        )
+    this.recursiveFilesFetchTimeOut = setTimeout(() => {
+      const hasMore = items.length + 1 < tableSort.length;
+
+      this.setState(({ items: prevItems }) => ({
+        items: tableSort.slice(0, prevItems.length + this.filesPreFetchCount)
       }));
 
       if (hasMore) {
-        this.recursiveFilesFetch();
+        this.recursiveFilesFetch(tableSort);
       } else {
         this.clearRecursiveFilesFetchTimeOut();
         return null;
@@ -62,8 +66,9 @@ export default class FileExplorerTableBodyListWrapperRender extends PureComponen
 
   render() {
     const { isSelected, ...parentProps } = this.props;
+    const { items } = this.state;
 
-    return this.state.items.map(item => {
+    return items.map(item => {
       return (
         <FileExplorerTableRowsRender
           key={quickHash(item.path)}
