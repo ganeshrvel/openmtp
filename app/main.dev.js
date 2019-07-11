@@ -189,13 +189,16 @@ if (!isDeviceBootable) {
       }
 
       const autoUpdateCheckSettings = settingsStorage.getItems([
+        'enableBackgroundAutoUpdate',
         'enableAutoUpdateCheck',
         'enablePrereleaseUpdates'
       ]);
 
       const autoAppUpdate = new AppUpdate({
         allowPrerelease:
-          autoUpdateCheckSettings.enablePrereleaseUpdates === true
+          autoUpdateCheckSettings.enablePrereleaseUpdates === true,
+        autoDownload:
+          autoUpdateCheckSettings.enableBackgroundAutoUpdate !== false
       });
       autoAppUpdate.init();
 

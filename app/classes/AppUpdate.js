@@ -6,7 +6,6 @@ import { isConnected } from '../utils/isOnline';
 import { log } from '../utils/log';
 import { isPackaged } from '../utils/isPackaged';
 import { PATHS } from '../utils/paths';
-import { ENABLE_BACKGROUND_AUTO_UPDATE } from '../constants';
 import { unixTimestampNow } from '../utils/date';
 import { undefinedOrNull } from '../utils/funcs';
 import { getMainWindowMainProcess } from '../utils/windowHelper';
@@ -80,13 +79,13 @@ const fireProgressbar = () => {
 };
 
 export default class AppUpdate {
-  constructor({ allowPrerelease }) {
+  constructor({ allowPrerelease, autoDownload }) {
     this.autoUpdater = autoUpdater;
     if (!isPackaged) {
       this.autoUpdater.updateConfigPath = PATHS.appUpdateFile;
     }
 
-    this.autoUpdater.autoDownload = ENABLE_BACKGROUND_AUTO_UPDATE;
+    this.autoUpdater.autoDownload = autoDownload;
     this.autoUpdater.allowPrerelease = allowPrerelease;
     this.progressbarWindowDomReadyFlag = null;
     this.updateInitFlag = false;
@@ -138,6 +137,13 @@ export default class AppUpdate {
       this.autoUpdater.on('update-available', info => {
         if (progressbarWindow !== null && this.updateIsActive !== -1) {
           progressbarWindow.close();
+        }
+
+        // Auto Background Download is active, prevent other ways of download handling
+        if (this.autoUpdater.autoDownload) {
+          this.closeActiveUpdates(-1);
+
+          return;
         }
 
         const _appUpdateAvailableWindow = appUpdateAvailableWindow();

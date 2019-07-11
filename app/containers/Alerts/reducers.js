@@ -9,8 +9,7 @@ export const initialState = {
 };
 
 export default function Alerts(state = initialState, action) {
-  // eslint-disable-next-line prefer-const
-  let { type, payload } = action;
+  const { type, payload } = action;
   switch (type) {
     case actionTypes.THROW_ALERT:
       return {

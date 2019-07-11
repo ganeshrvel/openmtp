@@ -31,16 +31,16 @@ export default class Storage {
       }
 
       const allItem = this.getAll();
-      // eslint-disable-next-line prefer-const
-      let _return = {};
+      const _return = {};
 
-      // eslint-disable-next-line array-callback-return
       keys.map(a => {
         if (typeof allItem[a] === 'undefined' || allItem[a] === null) {
           return null;
         }
 
         _return[a] = allItem[a];
+
+        return a;
       });
 
       return _return;
