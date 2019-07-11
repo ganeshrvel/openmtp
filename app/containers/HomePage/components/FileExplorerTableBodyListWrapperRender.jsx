@@ -15,6 +15,12 @@ export default class FileExplorerTableBodyListWrapperRender extends PureComponen
     this.state = {
       items: tableSort.slice(0, this.filesPreFetchCount)
     };
+
+    this.state = {
+      items: []
+    };
+
+    this.prevInQueueList = [];
   }
 
   componentDidMount() {
@@ -25,12 +31,55 @@ export default class FileExplorerTableBodyListWrapperRender extends PureComponen
 
   componentWillReceiveProps({
     tableSort: nextTableSort,
-    directoryGeneratedTime: nextDirectoryGeneratedTime
+    directoryGeneratedTime: nextDirectoryGeneratedTime,
+    directoryLists: nextDirectoryLists,
+    ...nextParentProps
   }) {
-    const { directoryGeneratedTime } = this.props;
+    const {
+      directoryGeneratedTime,
+      directoryLists,
+      deviceType,
+      isSelected
+    } = this.props;
+    const prevDirectoryLists = directoryLists[deviceType].queue.selected;
 
     if (nextDirectoryGeneratedTime !== directoryGeneratedTime) {
+      this.prevInQueueList = [];
       this.recursiveFilesFetch(nextTableSort);
+    } else if (prevDirectoryLists !== nextDirectoryLists) {
+      const nextInQueueList = [];
+
+      nextTableSort.map((item, index) => {
+        if (isSelected(item.path)) {
+          nextInQueueList.push(index);
+        }
+
+        return item;
+      });
+
+      [...this.prevInQueueList, ...nextInQueueList].map(index => {
+        this.setState(({ items }) => {
+          const _items = items;
+          const item = nextTableSort[index];
+
+          _items[index] = (
+            <FileExplorerTableRowsRender
+              {...nextParentProps}
+              key={quickHash(item.path)}
+              item={item}
+              isSelected={nextInQueueList.indexOf(index) > -1}
+            />
+          );
+
+          return {
+            items: _items
+          };
+        });
+
+        return index;
+      });
+
+      this.prevInQueueList = nextInQueueList;
     }
   }
 
@@ -42,16 +91,36 @@ export default class FileExplorerTableBodyListWrapperRender extends PureComponen
     const { items } = this.state;
 
     this.recursiveFilesFetchTimeOut = setTimeout(() => {
+      const { isSelected, ...parentProps } = this.props;
       const hasMore = items.length + 1 < tableSort.length;
 
-      this.setState(({ items: prevItems }) => ({
-        items: tableSort.slice(0, prevItems.length + this.filesPreFetchCount)
-      }));
+      this.setState(({ items: prevItems }) => {
+        const slicedItems = tableSort.slice(
+          0,
+          prevItems.length + this.filesPreFetchCount
+        );
+
+        const mappedSlicedItems = slicedItems.map(item => {
+          return (
+            <FileExplorerTableRowsRender
+              {...parentProps}
+              key={quickHash(item.path)}
+              item={item}
+              isSelected={isSelected(item.path)}
+            />
+          );
+        });
+
+        return {
+          items: mappedSlicedItems
+        };
+      });
 
       if (hasMore) {
         this.recursiveFilesFetch(tableSort);
       } else {
         this.clearRecursiveFilesFetchTimeOut();
+
         return null;
       }
     }, 0);
@@ -65,18 +134,8 @@ export default class FileExplorerTableBodyListWrapperRender extends PureComponen
   }
 
   render() {
-    const { isSelected, ...parentProps } = this.props;
     const { items } = this.state;
 
-    return items.map(item => {
-      return (
-        <FileExplorerTableRowsRender
-          key={quickHash(item.path)}
-          item={item}
-          isSelected={isSelected(item.path)}
-          {...parentProps}
-        />
-      );
-    });
+    return items;
   }
 }
