@@ -35,6 +35,14 @@ export const makeEnableAutoUpdateCheck = createSelector(
     state ? state.enableAutoUpdateCheck : initialState.enableAutoUpdateCheck
 );
 
+export const makeEnableBackgroundAutoUpdate = createSelector(
+  make,
+  state =>
+    state
+      ? state.enableBackgroundAutoUpdate
+      : initialState.enableBackgroundAutoUpdate
+);
+
 export const makeEnablePrereleaseUpdates = createSelector(
   make,
   state =>

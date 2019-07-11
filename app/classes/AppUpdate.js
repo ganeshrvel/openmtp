@@ -79,7 +79,7 @@ const fireProgressbar = () => {
 };
 
 export default class AppUpdate {
-  constructor({ allowPrerelease, autoDownload }) {
+  constructor({ autoUpdateCheck, autoDownload, allowPrerelease }) {
     this.autoUpdater = autoUpdater;
     if (!isPackaged) {
       this.autoUpdater.updateConfigPath = PATHS.appUpdateFile;
@@ -87,6 +87,8 @@ export default class AppUpdate {
 
     this.autoUpdater.autoDownload = autoDownload;
     this.autoUpdater.allowPrerelease = allowPrerelease;
+
+    this.autoUpdateCheck = autoUpdateCheck;
     this.progressbarWindowDomReadyFlag = null;
     this.updateInitFlag = false;
     this.updateForceCheckFlag = false;
@@ -139,8 +141,8 @@ export default class AppUpdate {
           progressbarWindow.close();
         }
 
-        // Auto Background Download is active, prevent other ways of download handling
-        if (this.autoUpdater.autoDownload) {
+        // When auto background update download and auto update check are active prevent other ways (manual) of download handling.
+        if (this.autoUpdater.autoDownload && this.autoUpdateCheck) {
           this.closeActiveUpdates(-1);
 
           return;

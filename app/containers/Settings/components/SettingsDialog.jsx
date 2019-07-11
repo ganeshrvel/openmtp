@@ -62,6 +62,7 @@ export default class SettingsDialog extends PureComponent {
       fileExplorerListingType,
       styles,
       enableAutoUpdateCheck,
+      enableBackgroundAutoUpdate,
       enablePrereleaseUpdates,
       enableAnalytics,
       onAnalyticsChange,
@@ -69,6 +70,7 @@ export default class SettingsDialog extends PureComponent {
       onFileExplorerListingType,
       onDialogBoxCloseBtnClick,
       onAutoUpdateCheckChange,
+      onEnableBackgroundAutoUpdateChange,
       onPrereleaseUpdatesChange
     } = this.props;
 
@@ -222,7 +224,7 @@ export default class SettingsDialog extends PureComponent {
                 <div className={styles.tabContainer}>
                   <FormGroup>
                     <Typography variant="subtitle2" className={styles.subtitle}>
-                      Enable auto-update check
+                      Automatically check for updates
                     </Typography>
 
                     <FormControlLabel
@@ -242,13 +244,38 @@ export default class SettingsDialog extends PureComponent {
                   </FormGroup>
 
                   <FormGroup>
+                    <Typography variant="subtitle2" className={styles.subtitle}>
+                      Automatically download the new updates when available
+                      (recommended)
+                    </Typography>
+
+                    <FormControlLabel
+                      className={styles.switch}
+                      control={
+                        <Switch
+                          checked={enableBackgroundAutoUpdate}
+                          disabled={!enableAutoUpdateCheck}
+                          onChange={() =>
+                            onEnableBackgroundAutoUpdateChange({
+                              toggle: !enableBackgroundAutoUpdate
+                            })
+                          }
+                        />
+                      }
+                      label={
+                        enableBackgroundAutoUpdate ? `Enabled` : `Disabled`
+                      }
+                    />
+                  </FormGroup>
+
+                  <FormGroup>
                     <Typography
                       variant="subtitle2"
                       className={`${styles.subtitle} ${
                         styles.subtitleMarginFix
                       }`}
                     >
-                      Enable Beta update channel
+                      Enable beta update channel
                     </Typography>
 
                     <FormControlLabel

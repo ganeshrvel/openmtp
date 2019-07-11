@@ -194,11 +194,15 @@ if (!isDeviceBootable) {
         'enablePrereleaseUpdates'
       ]);
 
+      const autoUpdateCheck =
+        autoUpdateCheckSettings.enableAutoUpdateCheck !== false;
+
       const autoAppUpdate = new AppUpdate({
-        allowPrerelease:
-          autoUpdateCheckSettings.enablePrereleaseUpdates === true,
+        autoUpdateCheck,
         autoDownload:
-          autoUpdateCheckSettings.enableBackgroundAutoUpdate !== false
+          autoUpdateCheckSettings.enableBackgroundAutoUpdate !== false,
+        allowPrerelease:
+          autoUpdateCheckSettings.enablePrereleaseUpdates === true
       });
       autoAppUpdate.init();
 
@@ -209,10 +213,7 @@ if (!isDeviceBootable) {
       });
       menuBuilder.buildMenu();
 
-      if (
-        autoUpdateCheckSettings.enableAutoUpdateCheck !== false &&
-        appUpdaterEnable
-      ) {
+      if (autoUpdateCheck && appUpdaterEnable) {
         setTimeout(() => {
           autoAppUpdate.checkForUpdates();
         }, AUTO_UPDATE_CHECK_FIREUP_DELAY);
