@@ -9,8 +9,8 @@ export const initialState = {
     lastFiredVersion: null
   },
   toggleSettings: false,
-  enableBackgroundAutoUpdate: true,
   enableAutoUpdateCheck: true,
+  enableBackgroundAutoUpdate: true,
   enablePrereleaseUpdates: false,
   enableAnalytics: true,
   hideHiddenFiles: {
@@ -59,6 +59,9 @@ export default function Settings(state = initialState, action) {
 
     case actionTypes.ENABLE_AUTO_UPDATE_CHECK:
       return { ...state, enableAutoUpdateCheck: payload };
+
+    case actionTypes.ENABLE_BACKGROUND_AUTO_UPDATE:
+      return { ...state, enableBackgroundAutoUpdate: payload };
 
     case actionTypes.ENABLE_PRERELEASE_UPDATES:
       return { ...state, enablePrereleaseUpdates: payload };
