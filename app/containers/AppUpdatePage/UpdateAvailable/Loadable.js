@@ -1,8 +1,14 @@
 'use strict';
 
-import Loadable from 'react-imported-component';
+import React, { lazy, Suspense } from 'react';
 import LoadingIndicator from '../../../components/LoadingIndicator';
 
-export default Loadable(() => import('../../Alerts'), {
-  LoadingComponent: LoadingIndicator
-});
+const Component = lazy(() => import('.'));
+
+export default function() {
+  return (
+    <Suspense fallback={<LoadingIndicator />}>
+      <Component />
+    </Suspense>
+  );
+}
