@@ -26,6 +26,7 @@ export const styles = theme => ({
   itemFileNameWrapper: {
     marginLeft: 12,
     marginRight: 12,
-    marginTop: -8
+    marginTop: -8,
+    textAlign: `center`
   }
 });

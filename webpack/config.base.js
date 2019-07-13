@@ -43,6 +43,7 @@ export default {
   resolve: {
     extensions: ['.js', '.jsx', '.json'],
     alias: {
+      'react-dom': '@hot-loader/react-dom',
       '@Log': path.resolve(__dirname, '../app/utils/log.js'),
       '@Alerts': path.resolve(__dirname, '../app/containers/Alerts/actions.js')
     }

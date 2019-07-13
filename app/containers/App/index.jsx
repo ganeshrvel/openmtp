@@ -1,5 +1,6 @@
 'use strict';
 
+import { hot } from 'react-hot-loader/root';
 import React, { Component } from 'react';
 import { log } from '@Log';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -160,5 +161,5 @@ export default withReducer('App', reducers)(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(withStyles(styles)(App))
+  )(withStyles(styles)(hot(App)))
 );
