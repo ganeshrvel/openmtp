@@ -55,7 +55,7 @@ class Notification extends PureComponent {
             color="primary"
             className={classNames(styles.btnPositive)}
           >
-            Ok
+            Close
           </Button>
         </DialogActions>
       </Dialog>
