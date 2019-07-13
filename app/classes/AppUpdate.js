@@ -297,16 +297,16 @@ export default class AppUpdate {
             title: 'Update in progress',
             message:
               'Another update is in progess. Are you sure want to restart the update?',
-            buttons: ['Yes', 'No']
+            buttons: ['No', 'Yes']
           },
           buttonIndex => {
             switch (buttonIndex) {
               case 0:
-                this.autoUpdater.checkForUpdates();
-                this.updateIsActive = -1;
+              default:
                 break;
               case 1:
-              default:
+                this.autoUpdater.checkForUpdates();
+                this.updateIsActive = -1;
                 break;
             }
           }
