@@ -29,6 +29,7 @@ import KeyboadShortcuts from '../../KeyboardShortcutsPage/components/KeyboadShor
 import Features from '../../Onboarding/components/Features';
 import { Notification as NotificationDialog } from '../../../components/DialogBox';
 import FileExplorerTableBodyEmptyHelpPhoneNotRecognizedRender from './FileExplorerTableBodyEmptyHelpPhoneNotRecognizedRender';
+import { helpPhoneNotConnecting } from '../../../templates/fileExplorer';
 
 class FileExplorerTableBodyEmptyRender extends PureComponent {
   constructor(props) {
@@ -93,7 +94,7 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
                 className={styles.helpPhoneNotRecognized}
                 onClick={() => this._handleHelpPhoneNotRecognizedBtn(true)}
               >
-                Help - My phone is not recognized!
+                {helpPhoneNotConnecting}
               </Button>
 
               <List>
@@ -267,7 +268,7 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
               <NotificationDialog
                 fullWidthDialog
                 maxWidthDialog="sm"
-                titleText="Help - My phone is not recognized!"
+                titleText={helpPhoneNotConnecting}
                 bodyText={
                   <FileExplorerTableBodyEmptyHelpPhoneNotRecognizedRender />
                 }
