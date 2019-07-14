@@ -15,7 +15,8 @@ const {
   author,
   version,
   repository,
-  homepage
+  homepage,
+  bugs
 } = pkginfo;
 
 export const APP_NAME = `${productName}`;
@@ -41,5 +42,9 @@ export const APP_GITHUB_URL = undefinedOrNullChained(repository, 'url')
   : null;
 
 export const APP_GITHUB_RELEASES_URL = `${APP_GITHUB_URL}/releases`;
+
+export const APP_GITHUB_ISSUES_URL = undefinedOrNullChained(bugs, 'url')
+  ? bugs.url
+  : null;
 
 export const APP_WEBSITE = `${homepage}`;
