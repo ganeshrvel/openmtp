@@ -95,6 +95,7 @@ class App extends Component {
     try {
       const { actionCreateCopyJsonFileToSettings } = this.props;
       const settingsFromStorage = settingsStorage.getAll();
+
       actionCreateCopyJsonFileToSettings({ ...settingsFromStorage });
     } catch (e) {
       log.error(e, `App -> writeJsonToSettings`);

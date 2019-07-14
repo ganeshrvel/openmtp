@@ -1,7 +1,6 @@
 'use strict';
 
 import React, { Component, Fragment } from 'react';
-import { log } from '@Log';
 import { withStyles } from '@material-ui/core/styles';
 import FileExplorer from './components/FileExplorer';
 import ToolbarAreaPane from './components/ToolbarAreaPane';
