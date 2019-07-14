@@ -77,6 +77,12 @@ export const initialState = {
         label: 'Settings',
         imgSrc: 'Toolbar/settings.svg',
         invert: false
+      },
+      gitHub: {
+        enabled: true,
+        label: 'GitHub',
+        imgSrc: 'Toolbar/github.svg',
+        invert: false
       }
     },
     [DEVICES_TYPE_CONST.mtp]: {
