@@ -7,7 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import { styles } from '../styles/FileExplorerTableBodyEmptyHelpPhoneNotRecognizedRender';
 import { openExternalUrl } from '../../../utils/url';
 import {
-  APP_GITHUB_URL,
+  APP_GITHUB_ISSUES_URL,
   APP_NAME,
   APP_VERSION,
   AUTHOR_EMAIL
@@ -68,7 +68,7 @@ class FileExplorerTableBodyEmptyHelpPhoneNotRecognizedRender extends PureCompone
             &nbsp;or check out this&nbsp;
             <a
               onClick={events => {
-                openExternalUrl(`${APP_GITHUB_URL}/issues/8`, events);
+                openExternalUrl(`${APP_GITHUB_ISSUES_URL}8`, events);
               }}
             >
               thread
