@@ -12,11 +12,13 @@ import {
   makeEnableAnalytics,
   makeFreshInstall,
   makeFileExplorerListingType,
-  makeEnablePrereleaseUpdates
+  makeEnablePrereleaseUpdates,
+  makeEnableBackgroundAutoUpdate
 } from './selectors';
 import {
   enableAnalytics,
   enableAutoUpdateCheck,
+  enableBackgroundAutoUpdate,
   enablePrereleaseUpdates,
   fileExplorerListingType,
   freshInstall,
@@ -83,6 +85,12 @@ class Settings extends Component {
     actionCreateEnableAutoUpdateCheck({ ...args });
   };
 
+  _handleEnableBackgroundAutoUpdateChange = ({ ...args }) => {
+    const { actionCreateEnableBackgroundAutoUpdate } = this.props;
+
+    actionCreateEnableBackgroundAutoUpdate({ ...args });
+  };
+
   _handlePrereleaseUpdatesChange = ({ ...args }) => {
     const { actionCreateEnablePrereleaseUpdates } = this.props;
 
@@ -115,6 +123,9 @@ class Settings extends Component {
         onFileExplorerListingType={this._handleFileExplorerListingType}
         onDialogBoxCloseBtnClick={this._handleDialogBoxCloseBtnClick}
         onAutoUpdateCheckChange={this._handleAutoUpdateCheckChange}
+        onEnableBackgroundAutoUpdateChange={
+          this._handleEnableBackgroundAutoUpdateChange
+        }
         onPrereleaseUpdatesChange={this._handlePrereleaseUpdatesChange}
         {...parentProps}
       />
@@ -151,6 +162,13 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         dispatch(enableAutoUpdateCheck({ ...data }, getState));
       },
 
+      actionCreateEnableBackgroundAutoUpdate: ({ ...data }) => (
+        _,
+        getState
+      ) => {
+        dispatch(enableBackgroundAutoUpdate({ ...data }, getState));
+      },
+
       actionCreateEnablePrereleaseUpdates: ({ ...data }) => (_, getState) => {
         dispatch(enablePrereleaseUpdates({ ...data }, getState));
       },
@@ -178,6 +196,7 @@ const mapStateToProps = (state, props) => {
     hideHiddenFiles: makeHideHiddenFiles(state),
     fileExplorerListingType: makeFileExplorerListingType(state),
     enableAutoUpdateCheck: makeEnableAutoUpdateCheck(state),
+    enableBackgroundAutoUpdate: makeEnableBackgroundAutoUpdate(state),
     enablePrereleaseUpdates: makeEnablePrereleaseUpdates(state),
     enableAnalytics: makeEnableAnalytics(state),
     currentBrowsePath: makeCurrentBrowsePath(state),

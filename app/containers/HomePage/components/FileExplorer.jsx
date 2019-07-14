@@ -94,7 +94,8 @@ class FileExplorer extends Component {
           toggle: false,
           data: {}
         }
-      }
+      },
+      directoryGeneratedTime: Date.now()
     };
     this.state = {
       ...this.initialState
@@ -134,6 +135,19 @@ class FileExplorer extends Component {
   componentDidMount() {
     this.registerAccelerators();
     this.registerAppUpdate();
+  }
+
+  componentWillReceiveProps({ directoryLists: nextDirectoryLists }) {
+    const { deviceType, directoryLists } = this.props;
+
+    const { nodes: prevDirectoryNodes } = directoryLists[deviceType];
+    const { nodes: nextDirectoryNodes } = nextDirectoryLists[deviceType];
+
+    if (nextDirectoryNodes !== prevDirectoryNodes) {
+      this.setState({
+        directoryGeneratedTime: Date.now()
+      });
+    }
   }
 
   componentWillUnmount() {
@@ -1354,7 +1368,11 @@ class FileExplorer extends Component {
       filesDrag,
       fileExplorerListingType
     } = this.props;
-    const { toggleDialog, togglePasteConfirmDialog } = this.state;
+    const {
+      toggleDialog,
+      togglePasteConfirmDialog,
+      directoryGeneratedTime
+    } = this.state;
     const { rename, newFolder } = toggleDialog;
     const togglePasteDialog =
       deviceType === DEVICES_TYPE_CONST.mtp && fileTransferProgess.toggle;
@@ -1457,6 +1475,7 @@ class FileExplorer extends Component {
             this._handleFocussedFileExplorerDeviceType
           }
           onAcceleratorActivation={this._handleAcceleratorActivation}
+          directoryGeneratedTime={directoryGeneratedTime}
         />
       </Fragment>
     );

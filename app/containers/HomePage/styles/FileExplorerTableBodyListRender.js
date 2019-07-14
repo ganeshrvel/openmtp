@@ -10,7 +10,6 @@ export const tableCellFileExplorerTableRowsRender = {
   [`&.nameCell`]: {
     display: 'flex',
     alignItems: 'center',
-    marginTop: 10,
     whiteSpace: `nowrap`,
     overflow: `hidden`,
     textOverflow: `ellipsis`

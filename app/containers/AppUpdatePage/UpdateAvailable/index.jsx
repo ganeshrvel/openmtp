@@ -125,18 +125,18 @@ class AppUpdatePage extends Component {
 
         <div className={styles.btnWrapper}>
           <Button
-            onClick={() => this._handleBtnClick({ confirm: true })}
-            color="primary"
-            className={styles.btnPositive}
-          >
-            Yes
-          </Button>
-          <Button
             onClick={() => this._handleBtnClick({ confirm: false })}
             color="secondary"
             className={styles.btnNegative}
           >
             No
+          </Button>
+          <Button
+            onClick={() => this._handleBtnClick({ confirm: true })}
+            color="primary"
+            className={styles.btnPositive}
+          >
+            Yes
           </Button>
         </div>
       </div>

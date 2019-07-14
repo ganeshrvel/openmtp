@@ -6,7 +6,6 @@ import { isConnected } from '../utils/isOnline';
 import { log } from '../utils/log';
 import { isPackaged } from '../utils/isPackaged';
 import { PATHS } from '../utils/paths';
-import { ENABLE_BACKGROUND_AUTO_UPDATE } from '../constants';
 import { unixTimestampNow } from '../utils/date';
 import { undefinedOrNull } from '../utils/funcs';
 import { getMainWindowMainProcess } from '../utils/windowHelper';
@@ -80,14 +79,16 @@ const fireProgressbar = () => {
 };
 
 export default class AppUpdate {
-  constructor({ allowPrerelease }) {
+  constructor({ autoUpdateCheck, autoDownload, allowPrerelease }) {
     this.autoUpdater = autoUpdater;
     if (!isPackaged) {
       this.autoUpdater.updateConfigPath = PATHS.appUpdateFile;
     }
 
-    this.autoUpdater.autoDownload = ENABLE_BACKGROUND_AUTO_UPDATE;
+    this.autoUpdater.autoDownload = autoDownload;
     this.autoUpdater.allowPrerelease = allowPrerelease;
+
+    this.autoUpdateCheck = autoUpdateCheck;
     this.progressbarWindowDomReadyFlag = null;
     this.updateInitFlag = false;
     this.updateForceCheckFlag = false;
@@ -138,6 +139,13 @@ export default class AppUpdate {
       this.autoUpdater.on('update-available', info => {
         if (progressbarWindow !== null && this.updateIsActive !== -1) {
           progressbarWindow.close();
+        }
+
+        // When auto background update download and auto update check are active prevent other ways (manual) of download handling.
+        if (this.autoUpdater.autoDownload && this.autoUpdateCheck) {
+          this.closeActiveUpdates(-1);
+
+          return;
         }
 
         const _appUpdateAvailableWindow = appUpdateAvailableWindow();
@@ -289,16 +297,16 @@ export default class AppUpdate {
             title: 'Update in progress',
             message:
               'Another update is in progess. Are you sure want to restart the update?',
-            buttons: ['Yes', 'No']
+            buttons: ['No', 'Yes']
           },
           buttonIndex => {
             switch (buttonIndex) {
               case 0:
-                this.autoUpdater.checkForUpdates();
-                this.updateIsActive = -1;
+              default:
                 break;
               case 1:
-              default:
+                this.autoUpdater.checkForUpdates();
+                this.updateIsActive = -1;
                 break;
             }
           }

@@ -13,6 +13,7 @@ export const styles = theme => ({
   },
   tabContainer: {
     paddingTop: 20,
+    paddingLeft: 15,
     height: 290,
     overflowX: `auto`,
     overflowY: `auto`

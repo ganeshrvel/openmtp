@@ -49,6 +49,7 @@ export const routes = {
     component: KeyboardShortcutsPage
   },
   NotFound: {
+    path: '*',
     component: NotFoundPage
   }
 };
@@ -56,13 +57,19 @@ export const routes = {
 export default () => (
   <HashRouter>
     <Switch>
-      {Object.keys(routes).map(a => (
-        <Route
-          key={routes[a].path || 'notfound'}
-          {...routes[a]}
-          component={routes[a].component}
-        />
-      ))}
+      {Object.keys(routes).map(a => {
+        const route = routes[a];
+        const { component: Component, path, exact } = route;
+
+        return (
+          <Route
+            key={path || 'notfound'}
+            path={path}
+            exact={exact}
+            render={() => <Component />}
+          />
+        );
+      })}
     </Switch>
   </HashRouter>
 );

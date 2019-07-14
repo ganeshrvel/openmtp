@@ -43,6 +43,7 @@ export default {
   resolve: {
     extensions: ['.js', '.jsx', '.json'],
     alias: {
+      'react-dom': '@hot-loader/react-dom',
       '@Log': path.resolve(__dirname, '../app/utils/log.js'),
       '@Alerts': path.resolve(__dirname, '../app/containers/Alerts/actions.js')
     }
@@ -61,7 +62,8 @@ export default {
         author: JSON.stringify(pkg.author),
         version: JSON.stringify(pkg.version),
         repository: JSON.stringify(pkg.repository),
-        homepage: JSON.stringify(pkg.homepage)
+        homepage: JSON.stringify(pkg.homepage),
+        bugs: JSON.stringify(pkg.bugs)
       }
     }),
 

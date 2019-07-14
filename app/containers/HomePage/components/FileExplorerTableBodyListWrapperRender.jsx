@@ -4,50 +4,123 @@ import React, { PureComponent } from 'react';
 import FileExplorerTableRowsRender from './FileExplorerTableBodyListRender';
 import { quickHash } from '../../../utils/funcs';
 
-/*  eslint-disable react/destructuring-assignment */
-
 export default class FileExplorerTableBodyListWrapperRender extends PureComponent {
   constructor(props) {
     super(props);
 
+    const { tableSort } = this.props;
+
     this.recursiveFilesFetchTimeOut = null;
     this.filesPreFetchCount = 50;
     this.state = {
-      items: this.props.tableSort.slice(0, this.filesPreFetchCount)
+      items: tableSort.slice(0, this.filesPreFetchCount)
     };
+
+    this.state = {
+      items: []
+    };
+
+    this.prevInQueueList = [];
   }
 
   componentDidMount() {
-    this.recursiveFilesFetch();
+    const { tableSort } = this.props;
+
+    this.recursiveFilesFetch(tableSort);
   }
 
-  componentWillUpdate(prevProps) {
-    if (prevProps.tableSort === this.props.tableSort) {
-      return null;
-    }
+  componentWillReceiveProps({
+    tableSort: nextTableSort,
+    directoryGeneratedTime: nextDirectoryGeneratedTime,
+    directoryLists: nextDirectoryLists,
+    ...nextParentProps
+  }) {
+    const {
+      directoryGeneratedTime,
+      directoryLists,
+      deviceType,
+      isSelected
+    } = this.props;
+    const prevDirectoryLists = directoryLists[deviceType].queue.selected;
 
-    this.recursiveFilesFetch();
+    if (nextDirectoryGeneratedTime !== directoryGeneratedTime) {
+      this.prevInQueueList = [];
+      this.recursiveFilesFetch(nextTableSort);
+    } else if (prevDirectoryLists !== nextDirectoryLists) {
+      const nextInQueueList = [];
+
+      nextTableSort.map((item, index) => {
+        if (isSelected(item.path)) {
+          nextInQueueList.push(index);
+        }
+
+        return item;
+      });
+
+      [...this.prevInQueueList, ...nextInQueueList].map(index => {
+        this.setState(({ items }) => {
+          const _items = items;
+          const item = nextTableSort[index];
+
+          _items[index] = (
+            <FileExplorerTableRowsRender
+              {...nextParentProps}
+              key={quickHash(item.path)}
+              item={item}
+              isSelected={nextInQueueList.indexOf(index) > -1}
+            />
+          );
+
+          return {
+            items: _items
+          };
+        });
+
+        return index;
+      });
+
+      this.prevInQueueList = nextInQueueList;
+    }
   }
 
   componentWillUnmount() {
     this.clearRecursiveFilesFetchTimeOut();
   }
 
-  recursiveFilesFetch = () => {
-    this.recursiveFilesFetchTimeOut = setTimeout(() => {
-      const hasMore = this.state.items.length + 1 < this.props.tableSort.length;
+  recursiveFilesFetch = tableSort => {
+    const { items } = this.state;
 
-      this.setState((prev, props) => ({
-        items: props.tableSort.slice(
+    this.recursiveFilesFetchTimeOut = setTimeout(() => {
+      const { isSelected, ...parentProps } = this.props;
+      const hasMore = items.length + 1 < tableSort.length;
+
+      this.setState(({ items: prevItems }) => {
+        const slicedItems = tableSort.slice(
           0,
-          prev.items.length + this.filesPreFetchCount
-        )
-      }));
+          prevItems.length + this.filesPreFetchCount
+        );
+
+        const mappedSlicedItems = slicedItems.map(item => {
+          return (
+            <FileExplorerTableRowsRender
+              {...parentProps}
+              key={quickHash(item.path)}
+              item={item}
+              isSelected={isSelected(item.path)}
+            />
+          );
+        });
+
+        return {
+          items: mappedSlicedItems
+        };
+      });
 
       if (hasMore) {
-        this.recursiveFilesFetch();
+        this.recursiveFilesFetch(tableSort);
       } else {
         this.clearRecursiveFilesFetchTimeOut();
+
         return null;
       }
     }, 0);
@@ -61,17 +134,8 @@ export default class FileExplorerTableBodyListWrapperRender extends PureComponen
   }
 
   render() {
-    const { isSelected, ...parentProps } = this.props;
+    const { items } = this.state;
 
-    return this.state.items.map(item => {
-      return (
-        <FileExplorerTableRowsRender
-          key={quickHash(item.path)}
-          item={item}
-          isSelected={isSelected(item.path)}
-          {...parentProps}
-        />
-      );
-    });
+    return items;
   }
 }

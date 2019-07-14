@@ -1,5 +1,6 @@
 'use strict';
 
+import { hot } from 'react-hot-loader/root';
 import React, { Component } from 'react';
 import { log } from '@Log';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -94,6 +95,7 @@ class App extends Component {
     try {
       const { actionCreateCopyJsonFileToSettings } = this.props;
       const settingsFromStorage = settingsStorage.getAll();
+
       actionCreateCopyJsonFileToSettings({ ...settingsFromStorage });
     } catch (e) {
       log.error(e, `App -> writeJsonToSettings`);
@@ -160,5 +162,5 @@ export default withReducer('App', reducers)(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(withStyles(styles)(App))
+  )(withStyles(styles)(hot(App)))
 );
