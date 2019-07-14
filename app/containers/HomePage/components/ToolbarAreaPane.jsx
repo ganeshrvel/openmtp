@@ -36,6 +36,8 @@ import { pathUp } from '../../../utils/paths';
 import { toggleSettings } from '../../Settings/actions';
 import { toggleWindowSizeOnDoubleClick } from '../../../utils/titlebarDoubleClick';
 import ToolbarBody from './ToolbarBody';
+import { openExternalUrl } from '../../../utils/url';
+import { APP_GITHUB_URL } from '../../../constants/meta';
 
 class ToolbarAreaPane extends PureComponent {
   constructor(props) {
@@ -139,6 +141,10 @@ class ToolbarAreaPane extends PureComponent {
     actionCreateToggleSettings(true);
   };
 
+  _handleOpenGitHubRepo = () => {
+    openExternalUrl(APP_GITHUB_URL);
+  };
+
   _handleToolbarAction = itemType => {
     const {
       currentBrowsePath,
@@ -177,6 +183,10 @@ class ToolbarAreaPane extends PureComponent {
 
       case 'settings':
         this._handleToggleSettings(true);
+        break;
+
+      case 'gitHub':
+        this._handleOpenGitHubRepo();
         break;
 
       default:
