@@ -49,6 +49,8 @@ class FileExplorerTableBodyGridWrapperRender extends PureComponent {
     const prevDirectoryLists = directoryLists[deviceType].queue.selected;
 
     if (nextDirectoryGeneratedTime !== directoryGeneratedTime) {
+      this.clearRecursiveFilesFetchTimeOut();
+
       this.prevInQueueList = [];
       this.recursiveFilesFetch(nextTableSort);
     } else if (prevDirectoryLists !== nextDirectoryLists) {
