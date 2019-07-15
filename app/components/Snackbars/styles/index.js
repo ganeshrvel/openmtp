@@ -4,7 +4,7 @@ import { variables, mixins } from '../../../styles/js';
 
 export const styles = theme => ({
   margin: {
-    margin: theme.spacing.unit
+    margin: 10
   },
   root: {
     top: 10,
