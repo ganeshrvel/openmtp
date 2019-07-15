@@ -41,7 +41,7 @@ export const styles = theme => {
       ...mixins().noselect
     },
     disabledNavBtns: {
-      backgroundColor: `#f9f9f9`
+      backgroundColor: `#f9f9f9 !important`
     },
     invertedNavBtns: {
       [`&:hover`]: {
