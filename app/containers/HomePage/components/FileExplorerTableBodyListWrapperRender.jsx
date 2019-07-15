@@ -41,12 +41,17 @@ export default class FileExplorerTableBodyListWrapperRender extends PureComponen
       deviceType,
       isSelected
     } = this.props;
-    const prevDirectoryLists = directoryLists[deviceType].queue.selected;
+    const prevSelectedDirectoryLists =
+      directoryLists[deviceType].queue.selected;
+    const nextSelectedDirectoryLists =
+      nextDirectoryLists[deviceType].queue.selected;
 
     if (nextDirectoryGeneratedTime !== directoryGeneratedTime) {
+      this.clearRecursiveFilesFetchTimeOut();
+
       this.prevInQueueList = [];
       this.recursiveFilesFetch(nextTableSort);
-    } else if (prevDirectoryLists !== nextDirectoryLists) {
+    } else if (prevSelectedDirectoryLists !== nextSelectedDirectoryLists) {
       const nextInQueueList = [];
 
       nextTableSort.map((item, index) => {
