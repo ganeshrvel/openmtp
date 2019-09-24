@@ -1,15 +1,28 @@
 module.exports = {
-  parser: 'babel-eslint',
+  parser: '@typescript-eslint/parser',
   parserOptions: {
-    sourceType: 'module',
-    allowImportExportEverywhere: true
+    project: './tsconfig.json',
+    tsconfigRootDir: '.'
   },
   env: {
     browser: true,
     node: true
   },
-  plugins: ['import', 'promise', 'compat', 'react'],
-  extends: ['airbnb', 'plugin:prettier/recommended', 'prettier/react'],
+  plugins: [
+    '@typescript-eslint',
+    'react-hooks',
+    'prettier',
+    'import',
+    'promise',
+    'compat'
+  ],
+  extends: [
+    'airbnb',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:import/typescript',
+    'plugin:prettier/recommended',
+    'prettier/@typescript-eslint'
+  ],
   settings: {
     'import/resolver': {
       webpack: {
@@ -18,6 +31,8 @@ module.exports = {
     }
   },
   rules: {
+    '@typescript-eslint/explicit-function-return-type': 'off',
+    '@typescript-eslint/no-explicit-any': 'off',
     'arrow-parens': 'off',
     'compat/compat': 'error',
     'consistent-return': 'off',
@@ -56,7 +71,10 @@ module.exports = {
       }
     ],
     'react/jsx-no-bind': 'off',
-    'react/jsx-filename-extension': ['error', { extensions: ['.js', '.jsx'] }],
+    'react/jsx-filename-extension': [
+      'error',
+      { extensions: ['.js', '.jsx', '.tsx'] }
+    ],
     'react/prefer-stateless-function': 'off',
     strict: 'off',
     'import/prefer-default-export': 'off',

@@ -26,6 +26,7 @@ const logDir = join(profileDir, `./logs`);
 const logFile = join(logDir, `./${APP_NAME}-${logFileName}`);
 const settingsFile = join(profileDir, `./settings.json`);
 const appUpdateFile = join(configDir, `./dev-app-update.yml`);
+const tsConfigFile = join(root, `./tsconfig.json`);
 
 export const PATHS = {
   root: resolve(root),
@@ -39,6 +40,7 @@ export const PATHS = {
   logFile: resolve(logFile),
   settingsFile: resolve(settingsFile),
   appUpdateFile: resolve(appUpdateFile),
+  tsConfigFile: resolve(tsConfigFile),
   loadUrlPath: url.format({
     protocol: 'file',
     slashes: true,

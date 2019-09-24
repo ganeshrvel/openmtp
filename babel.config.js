@@ -25,7 +25,8 @@ module.exports = api => {
           useBuiltIns: 'usage'
         }
       ],
-      [require('@babel/preset-react'), { development }]
+      [require('@babel/preset-react'), { development }],
+      require('@babel/preset-typescript')
     ],
     plugins: [
       // Stage 0

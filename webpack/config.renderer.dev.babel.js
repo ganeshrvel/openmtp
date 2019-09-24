@@ -12,6 +12,7 @@ import fs from 'fs';
 import webpack from 'webpack';
 import chalk from 'chalk';
 import merge from 'webpack-merge';
+import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import { spawn, execSync } from 'child_process';
 import baseConfig from './config.base';
 import { PATHS } from '../app/utils/paths';
@@ -54,16 +55,6 @@ export default merge.smart(baseConfig, {
 
   module: {
     rules: [
-      {
-        test: /\.jsx?$/,
-        exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            cacheDirectory: true
-          }
-        }
-      },
       // Extract all .global.css to style.css as is
       {
         test: /\.global\.css$/,
@@ -212,6 +203,17 @@ export default merge.smart(baseConfig, {
 
     new webpack.HotModuleReplacementPlugin({
       multiStep: false
+    }),
+
+    new ForkTsCheckerWebpackPlugin({
+      async: false,
+      watch: PATHS.app,
+      tsconfig: PATHS.tsConfigFile,
+      tslint: false,
+      ignoreLintWarnings: true,
+      ignoreLints: true,
+      useTypescriptIncrementalApi: true,
+      measureCompilationTime: true
     }),
 
     new webpack.NoEmitOnErrorsPlugin(),

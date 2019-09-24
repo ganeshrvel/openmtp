@@ -1,6 +1,6 @@
 'use strict';
 
-/* eslint global-require: off,  */
+/* eslint global-require: off, @typescript-eslint/no-var-requires: off */
 
 /**
  * Builds the DLL for development electron renderer process

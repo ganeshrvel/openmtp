@@ -1,0 +1,12 @@
+{
+  "editor.tabCompletion": "on",
+  "files.autoSave": "afterDelay",
+  "files.autoSaveDelay": 500,
+  "editor.tabSize": 2,
+  "editor.accessibilitySupport": "off",
+  "editor.wordWrap": "bounded",
+  "editor.fontWeight": "bold",
+  "editor.formatOnSave": true,
+  "editor.formatOnType": true,
+  "npm-scripts.showStartNotification": false
+}

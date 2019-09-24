@@ -1,6 +1,6 @@
 'use strict';
 
-/* eslint global-require: off */
+/* eslint global-require: off, @typescript-eslint/no-var-requires: off */
 
 /**
  * Base webpack config used across other specific configs
@@ -19,7 +19,7 @@ export default {
   module: {
     rules: [
       {
-        test: /\.(js|jsx)?$/,
+        test: /\.(ts|js)x?$/,
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
@@ -41,7 +41,7 @@ export default {
    * Determine the array of extensions that should be used to resolve modules.
    */
   resolve: {
-    extensions: ['.js', '.jsx', '.json'],
+    extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
     alias: {
       'react-dom': '@hot-loader/react-dom',
       '@Log': path.resolve(__dirname, '../app/utils/log.js'),

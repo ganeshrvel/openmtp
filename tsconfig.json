@@ -1,0 +1,52 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "incremental": true,
+    "outDir": "app/dist",
+    "module": "es6",
+    "target": "esnext",
+    "lib": [
+      "es6",
+      "dom",
+      "es2015",
+      "dom.iterable",
+      "es2016.array.include",
+      "es2017.object"
+    ],
+    "sourceMap": true,
+    "allowJs": true,
+    "noEmit": true,
+    "jsx": "react",
+    "removeComments": true,
+    "alwaysStrict": true,
+    "moduleResolution": "node",
+    "skipLibCheck": true,
+    "rootDir": "./app",
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "noUnusedLocals": false,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "allowUnreachableCode": false
+  },
+  "include": ["app/**/*"],
+  "exclude": [
+    "node_modules/**/*",
+    "node_modules",
+    "app/dist",
+    "build",
+    "scripts",
+    "blobs",
+    "dist",
+    "dll",
+    "docs-sources",
+    "webpack",
+    "jest",
+    "mtp-kernel"
+  ]
+}

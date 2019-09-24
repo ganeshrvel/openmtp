@@ -6,6 +6,7 @@
 
 import path from 'path';
 import webpack from 'webpack';
+import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import OptimizeCSSAssetsPlugin from 'optimize-css-assets-webpack-plugin';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
@@ -235,6 +236,11 @@ export default merge.smart(baseConfig, {
      */
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'production'
+    }),
+
+    new ForkTsCheckerWebpackPlugin({
+      async: false,
+      tsconfig: PATHS.tsConfigFile
     }),
 
     new MiniCssExtractPlugin({

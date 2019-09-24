@@ -3,7 +3,7 @@
 import { variables } from './index';
 
 // eslint-disable-next-line no-unused-vars
-export default args => {
+export default (args?: React.CSSProperties) => {
   return {
     noselect: {
       [`-webkitTouchCallout`]: `none`,
@@ -38,7 +38,7 @@ export default args => {
       return {
         [`-webkitAppRegion`]: `drag`,
         ...this.noselect
-      };
+      } as React.CSSProperties;
     },
     appDragDisable: {
       [`-webkitAppRegion`]: `no-drag`
