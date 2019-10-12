@@ -3,7 +3,6 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import { Helmet } from 'react-helmet';
-import { log } from '@Log';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import GenerateErrorReport from '../ErrorBoundary/components/GenerateErrorReport';

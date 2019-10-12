@@ -1,8 +1,8 @@
 'use strict';
 
+import omitLodash from 'lodash/omit';
 import { log } from '@Log';
 import prefixer from '../../utils/reducerPrefixer';
-import omitLodash from 'lodash/omit';
 import { settingsStorage } from '../../utils/storageHelper';
 
 const prefix = '@@Settings';

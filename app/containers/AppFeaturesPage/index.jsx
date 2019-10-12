@@ -2,7 +2,6 @@
 
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import { log } from '@Log';
 import { Helmet } from 'react-helmet';
 import { APP_TITLE } from '../../constants/meta';
 import { resetOverFlowY } from '../../utils/styleResets';
