@@ -2,7 +2,6 @@
 
 import { hot } from 'react-hot-loader/root';
 import React, { Component } from 'react';
-import { log } from '@Log';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import {
   MuiThemeProvider,
@@ -11,6 +10,7 @@ import {
 } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { log } from '@Log';
 import { IS_PROD } from '../../constants/env';
 import { theme, styles } from './styles';
 import Alerts from '../Alerts';
