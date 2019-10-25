@@ -56,7 +56,6 @@ __snapshots__
 package.json
 .travis.yml
 
-.env*
 .idea
 vendors
 build

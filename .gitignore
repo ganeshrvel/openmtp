@@ -52,7 +52,6 @@ main.js.map
 npm-debug.log.*
 yarn.lock
 package-lock.json
-.env*
 
 app/certs/*.pem
 certs/*
