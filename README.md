@@ -170,6 +170,7 @@ $ yarn package
 $ yarn package-all
 ```
 
+
 ### Technical Features
 - Built using Electron v6, React v16.8, Redux v4, Webpack v4, Babel v7 and Material UI v4.2
 - Hot module Reload (HMR) for instant feedback.
