@@ -20,5 +20,8 @@ export const styles = theme => ({
   },
   titleText: {
     float: `left`
+  },
+  childrenWrapper: {
+    padding: '0px 0 5px 0'
   }
 });
