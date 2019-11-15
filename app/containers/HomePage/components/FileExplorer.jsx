@@ -3,6 +3,7 @@
 /* eslint no-case-declarations: off */
 
 import React, { Component, Fragment } from 'react';
+import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import { remote, ipcRenderer, shell } from 'electron';
 import lodashSortBy from 'lodash/sortBy';
@@ -90,35 +91,35 @@ let multipleSelectDirection = null;
 const socialMediaShareBtnsList = [
   {
     enabled: true,
-    label: 'GitHub',
+    label: 'Find us on GitHub',
     imgSrc: 'SocialMediaShare/github.svg',
     url: APP_GITHUB_URL,
     invert: false
   },
   {
     enabled: true,
-    label: 'Share on tweet',
+    label: 'Share it on Twitter',
     imgSrc: 'SocialMediaShare/twitter.svg',
     url: twitterShareUrl,
     invert: false
   },
   {
     enabled: true,
-    label: 'Share on Facebook',
+    label: 'Share it on Facebook',
     imgSrc: 'SocialMediaShare/facebook.svg',
     url: fbShareUrl,
     invert: false
   },
   {
     enabled: true,
-    label: 'Share on Reddit',
+    label: 'Share it on Reddit',
     imgSrc: 'SocialMediaShare/reddit.svg',
     url: redditShareUrl,
     invert: false
   },
   {
     enabled: true,
-    label: 'Buy me a coffee',
+    label: 'Buy me a Coffee',
     imgSrc: 'SocialMediaShare/paypal.svg',
     url: DONATE_PAYPAL_URL,
     invert: false
@@ -1483,10 +1484,10 @@ class FileExplorer extends Component {
         <ProgressBarDialog
           titleText="Transferring files..."
           bodyText1={`${
-            fileTransferProgess.bodyText1 ? fileTransferProgess.bodyText1 : null
+            fileTransferProgess.bodyText1 ? fileTransferProgess.bodyText1 : ''
           }`}
           bodyText2={`${
-            fileTransferProgess.bodyText2 ? fileTransferProgess.bodyText2 : null
+            fileTransferProgess.bodyText2 ? fileTransferProgess.bodyText2 : ''
           }`}
           trigger={togglePasteDialog}
           fullWidthDialog
@@ -1495,26 +1496,30 @@ class FileExplorer extends Component {
           helpText="If the progress bar freezes while transferring the files, restart the app and reconnect the device. This is a known Android MTP bug."
           progressValue={fileTransferProgess.percentage}
         >
-          <div className={styles.socialMediaShareBtnsWrapper}>
-            {socialMediaShareBtnsList.map((a, index) => (
-              // eslint-disable-next-line react/no-array-index-key
-              <Tooltip key={index} title={a.label}>
-                <div>
-                  <IconButton
-                    aria-label={a.label}
-                    disabled={!a.enabled}
-                    onClick={() => openExternalUrl(a.url)}
-                  >
-                    <img
-                      className={styles.socialMediaShareBtn}
-                      src={imgsrc(a.imgSrc)}
-                      title={a.label}
-                      alt={a.label}
-                    />
-                  </IconButton>
-                </div>
-              </Tooltip>
-            ))}
+          <div className={styles.socialMediaShareContainer}>
+            <Typography className={styles.socialMediaShareTitle}>
+              Liked using the App?
+            </Typography>
+            <div className={styles.socialMediaShareBtnsWrapper}>
+              {socialMediaShareBtnsList.map((a, index) => (
+                // eslint-disable-next-line react/no-array-index-key
+                <Tooltip key={index} title={a.label}>
+                  <div>
+                    <IconButton
+                      aria-label={a.label}
+                      disabled={!a.enabled}
+                      onClick={() => openExternalUrl(a.url)}
+                    >
+                      <img
+                        className={styles.socialMediaShareBtn}
+                        src={imgsrc(a.imgSrc)}
+                        alt={a.label}
+                      />
+                    </IconButton>
+                  </div>
+                </Tooltip>
+              ))}
+            </div>
           </div>
         </ProgressBarDialog>
 
