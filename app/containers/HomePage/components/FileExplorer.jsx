@@ -3,11 +3,15 @@
 /* eslint no-case-declarations: off */
 
 import React, { Component, Fragment } from 'react';
+import { withStyles } from '@material-ui/core/styles';
 import { remote, ipcRenderer, shell } from 'electron';
 import lodashSortBy from 'lodash/sortBy';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import IconButton from '@material-ui/core/IconButton';
+import Tooltip from '@material-ui/core/Tooltip';
 import { log } from '@Log';
+import { styles } from '../styles/FileExplorer';
 import {
   TextFieldEdit as TextFieldEditDialog,
   ProgressBar as ProgressBarDialog,
@@ -43,7 +47,11 @@ import {
   makeFileExplorerListingType,
   makeHideHiddenFiles
 } from '../../Settings/selectors';
-import { DEVICES_LABEL, DEVICES_TYPE_CONST } from '../../../constants';
+import {
+  DEVICES_LABEL,
+  DEVICES_TYPE_CONST,
+  DONATE_PAYPAL_URL
+} from '../../../constants';
 import {
   renameLocalFiles,
   checkFileExists,
@@ -64,6 +72,13 @@ import { getMainWindowRendererProcess } from '../../../utils/windowHelper';
 import { throwAlert } from '../../Alerts/actions';
 import { imgsrc } from '../../../utils/imgsrc';
 import FileExplorerBodyRender from './FileExplorerBodyRender';
+import { openExternalUrl } from '../../../utils/url';
+import { APP_GITHUB_URL } from '../../../constants/meta';
+import {
+  fbShareUrl,
+  redditShareUrl,
+  twitterShareUrl
+} from '../../../templates/socialMediaShareBtns';
 
 const { Menu, getCurrentWindow } = remote;
 const _mainWindowRendererProcess = getMainWindowRendererProcess();
@@ -71,6 +86,44 @@ const filesDragGhostImg = new Image(0, 0);
 filesDragGhostImg.src = imgsrc('FileExplorer/copy.svg');
 let allowFileDropFlag = false;
 let multipleSelectDirection = null;
+
+const socialMediaShareBtnsList = [
+  {
+    enabled: true,
+    label: 'GitHub',
+    imgSrc: 'SocialMediaShare/github.svg',
+    url: APP_GITHUB_URL,
+    invert: false
+  },
+  {
+    enabled: true,
+    label: 'Share on tweet',
+    imgSrc: 'SocialMediaShare/twitter.svg',
+    url: twitterShareUrl,
+    invert: false
+  },
+  {
+    enabled: true,
+    label: 'Share on Facebook',
+    imgSrc: 'SocialMediaShare/facebook.svg',
+    url: fbShareUrl,
+    invert: false
+  },
+  {
+    enabled: true,
+    label: 'Share on Reddit',
+    imgSrc: 'SocialMediaShare/reddit.svg',
+    url: redditShareUrl,
+    invert: false
+  },
+  {
+    enabled: true,
+    label: 'Buy me a coffee',
+    imgSrc: 'SocialMediaShare/paypal.svg',
+    url: DONATE_PAYPAL_URL,
+    invert: false
+  }
+];
 
 class FileExplorer extends Component {
   constructor(props) {
@@ -1359,6 +1412,7 @@ class FileExplorer extends Component {
 
   render() {
     const {
+      classes: styles,
       deviceType,
       hideColList,
       currentBrowsePath,
@@ -1429,10 +1483,10 @@ class FileExplorer extends Component {
         <ProgressBarDialog
           titleText="Transferring files..."
           bodyText1={`${
-            fileTransferProgess.bodyText1 ? fileTransferProgess.bodyText1 : ''
+            fileTransferProgess.bodyText1 ? fileTransferProgess.bodyText1 : null
           }`}
           bodyText2={`${
-            fileTransferProgess.bodyText2 ? fileTransferProgess.bodyText2 : ''
+            fileTransferProgess.bodyText2 ? fileTransferProgess.bodyText2 : null
           }`}
           trigger={togglePasteDialog}
           fullWidthDialog
@@ -1440,7 +1494,29 @@ class FileExplorer extends Component {
           variant="determinate"
           helpText="If the progress bar freezes while transferring the files, restart the app and reconnect the device. This is a known Android MTP bug."
           progressValue={fileTransferProgess.percentage}
-        />
+        >
+          <div className={styles.socialMediaShareBtnsWrapper}>
+            {socialMediaShareBtnsList.map((a, index) => (
+              // eslint-disable-next-line react/no-array-index-key
+              <Tooltip key={index} title={a.label}>
+                <div>
+                  <IconButton
+                    aria-label={a.label}
+                    disabled={!a.enabled}
+                    onClick={() => openExternalUrl(a.url)}
+                  >
+                    <img
+                      className={styles.socialMediaShareBtn}
+                      src={imgsrc(a.imgSrc)}
+                      title={a.label}
+                      alt={a.label}
+                    />
+                  </IconButton>
+                </div>
+              </Tooltip>
+            ))}
+          </div>
+        </ProgressBarDialog>
 
         <ConfirmDialog
           fullWidthDialog
@@ -1781,5 +1857,5 @@ export default withReducer('Home', reducers)(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(FileExplorer)
+  )(withStyles(styles)(FileExplorer))
 );

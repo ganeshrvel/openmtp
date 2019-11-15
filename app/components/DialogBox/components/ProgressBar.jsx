@@ -21,7 +21,8 @@ class ProgressBar extends PureComponent {
       maxWidthDialog,
       progressValue,
       variant,
-      helpText
+      helpText,
+      children
     } = this.props;
 
     return (
@@ -61,6 +62,8 @@ class ProgressBar extends PureComponent {
           <DialogContentText className={styles.dialogContentTextBottom}>
             {bodyText2}
           </DialogContentText>
+
+          {children && <div className={styles.childrenWrapper}>{children}</div>}
         </DialogContent>
       </Dialog>
     );
