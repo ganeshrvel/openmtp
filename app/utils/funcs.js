@@ -278,3 +278,14 @@ export const isString = variable => {
 export const removeArrayDuplicates = array => {
   return array.filter((v, i) => array.indexOf(v) === i);
 };
+
+export const getPluralText = (string, count, customPluralString = null) => {
+  if (count > 1) {
+    if (customPluralString) {
+      return customPluralString;
+    }
+    return `${string}s`;
+  }
+
+  return string;
+};

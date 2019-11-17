@@ -1450,7 +1450,8 @@ class FileExplorer extends Component {
       mtpDevice,
       filesDrag,
       fileExplorerListingType,
-      isStatusBarEnabled
+      isStatusBarEnabled,
+      fileTransferClipboard
     } = this.props;
     const {
       toggleDialog,
@@ -1566,10 +1567,12 @@ class FileExplorer extends Component {
           hideColList={hideColList}
           currentBrowsePath={currentBrowsePath}
           directoryLists={directoryLists}
+          fileTransferClipboard={fileTransferClipboard}
           mtpDevice={mtpDevice}
           filesDrag={filesDrag}
           tableSort={this.tableSort}
           isStatusBarEnabled={isStatusBarEnabled}
+          directoryGeneratedTime={directoryGeneratedTime}
           OnHoverDropZoneActivate={this._handleOnHoverDropZoneActivate}
           onFilesDragOver={this._handleFilesDragOver}
           onFilesDragEnd={this._handleFilesDragEnd}
@@ -1586,7 +1589,6 @@ class FileExplorer extends Component {
             this._handleFocussedFileExplorerDeviceType
           }
           onAcceleratorActivation={this._handleAcceleratorActivation}
-          directoryGeneratedTime={directoryGeneratedTime}
         />
       </Fragment>
     );
