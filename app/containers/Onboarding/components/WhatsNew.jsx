@@ -5,9 +5,8 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import SystemUpdateIcon from '@material-ui/icons/SystemUpdate';
-import SentimentSatisfiedAltIcon from '@material-ui/icons/SentimentSatisfiedAlt';
-import OfflineBoltIcon from '@material-ui/icons/OfflineBolt';
+import QueueIcon from '@material-ui/icons/Queue';
+import InfoIcon from '@material-ui/icons/Info';
 import { styles } from '../styles/WhatsNew';
 import { APP_NAME, APP_VERSION } from '../../../constants/meta';
 
@@ -30,24 +29,18 @@ class WhatsNew extends PureComponent {
         <List>
           <ListItem>
             <ListItemIcon>
-              <OfflineBoltIcon />
-            </ListItemIcon>
-            <ListItemText primary="Performance Optimizations" />
-          </ListItem>
-          <ListItem>
-            <ListItemIcon>
-              <SentimentSatisfiedAltIcon />
-            </ListItemIcon>
-            <ListItemText primary="UI Improvements" />
-          </ListItem>
-          <ListItem>
-            <ListItemIcon>
-              <SystemUpdateIcon />
+              <InfoIcon />
             </ListItemIcon>
             <ListItemText
-              primary="Software Update Manager Improvements"
-              secondary="Settings > 'Software Update' Tab"
+              primary="New Status Bar"
+              secondary="Settings > 'General' Tab"
             />
+          </ListItem>
+          <ListItem>
+            <ListItemIcon>
+              <QueueIcon />
+            </ListItemIcon>
+            <ListItemText primary="New 'Copy to Queue' context menu option" />
           </ListItem>
         </List>
       </div>
