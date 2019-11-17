@@ -1,5 +1,3 @@
-
-
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -24,6 +22,7 @@ class PrivacyPolicyPage extends Component {
   }
 
   render() {
+    /* eslint-disable react/jsx-one-expression-per-line */
     const { classes: styles } = this.props;
     return (
       <div className={styles.root}>
@@ -509,6 +508,8 @@ class PrivacyPolicyPage extends Component {
         </div>
       </div>
     );
+
+    /* eslint-enable react/jsx-one-expression-per-line */
   }
 }
 

@@ -1,5 +1,3 @@
-
-
 import React from 'react';
 import { Switch, Route } from 'react-router';
 import { HashRouter } from 'react-router-dom';

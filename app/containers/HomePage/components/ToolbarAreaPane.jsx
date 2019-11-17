@@ -1,5 +1,3 @@
-
-
 /* eslint no-case-declarations: off */
 
 import React, { PureComponent, Fragment } from 'react';
@@ -413,7 +411,10 @@ const mapStateToProps = (state, props) => {
   };
 };
 
-export default withReducer('Home', reducers)(
+export default withReducer(
+  'Home',
+  reducers
+)(
   connect(
     mapStateToProps,
     mapDispatchToProps

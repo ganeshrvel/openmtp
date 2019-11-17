@@ -1,5 +1,3 @@
-
-
 import React, { Component } from 'react';
 import { shell, remote } from 'electron';
 import path from 'path';

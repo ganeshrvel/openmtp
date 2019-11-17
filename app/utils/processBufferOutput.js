@@ -1,5 +1,3 @@
-
-
 import { EOL } from 'os';
 import { replaceBulk } from './funcs';
 import { log } from './log';

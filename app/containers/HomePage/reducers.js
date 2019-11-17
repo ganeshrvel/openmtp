@@ -1,5 +1,3 @@
-
-
 import path from 'path';
 import { actionTypes } from './actions';
 import { PATHS } from '../../utils/paths';

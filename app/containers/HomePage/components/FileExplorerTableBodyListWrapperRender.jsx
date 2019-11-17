@@ -1,5 +1,3 @@
-
-
 import React, { PureComponent } from 'react';
 import FileExplorerTableRowsRender from './FileExplorerTableBodyListRender';
 import { quickHash } from '../../../utils/funcs';

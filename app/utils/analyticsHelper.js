@@ -1,5 +1,3 @@
-
-
 import Analytics from 'electron-ga';
 import { TRACKING_ID } from '../../config/google-analytics-key';
 import { APP_NAME, APP_VERSION } from '../constants/meta';

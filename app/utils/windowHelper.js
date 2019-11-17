@@ -1,5 +1,3 @@
-
-
 import { BrowserWindow, remote } from 'electron';
 
 export const getMainWindowMainProcess = () => {

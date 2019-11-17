@@ -1,5 +1,3 @@
-
-
 /* eslint global-require: off */
 
 import React from 'react';

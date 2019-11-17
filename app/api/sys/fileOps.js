@@ -1,5 +1,3 @@
-
-
 import {
   existsSync as _existsSync,
   writeFile as _writeFileAsync,

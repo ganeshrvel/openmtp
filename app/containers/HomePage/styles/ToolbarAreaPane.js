@@ -1,5 +1,3 @@
-
-
 import styled, { keyframes } from 'styled-components';
 import { variables, mixins } from '../../../styles/js';
 

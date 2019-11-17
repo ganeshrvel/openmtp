@@ -1,5 +1,3 @@
-
-
 import { APP_TITLEBAR_DOM_ID } from '../constants/dom';
 
 export const isArraysEqual = (a, b) => {

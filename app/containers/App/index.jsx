@@ -1,5 +1,3 @@
-
-
 import { hot } from 'react-hot-loader/root';
 
 import React, { Component } from 'react';
@@ -159,9 +157,7 @@ const mapStateToProps = (state, props) => {
   return {};
 };
 
-export default withReducer('App', reducers)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(withStyles(styles)(hot(App)))
-);
+export default withReducer(
+  'App',
+  reducers
+)(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(hot(App))));

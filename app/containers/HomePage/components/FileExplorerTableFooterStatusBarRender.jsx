@@ -1,5 +1,3 @@
-
-
 import React, { PureComponent, Fragment } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -49,14 +47,16 @@ class FileExplorerTableFooterStatusBarRender extends PureComponent {
           {selectedTotal > 0 ? (
             <Fragment>{`${selectedTotal} of ${total} selected`}</Fragment>
           ) : (
-            <Fragment>{`${total} ${getPluralText(
-              'item',
-              total
-            )} (${directories} ${getPluralText(
-              'directory',
-              directories,
-              'directories'
-            )}, ${files} ${getPluralText('file', files)})`}</Fragment>
+            <Fragment>
+              {`${total} ${getPluralText(
+                'item',
+                total
+              )} (${directories} ${getPluralText(
+                'directory',
+                directories,
+                'directories'
+              )}, ${files} ${getPluralText('file', files)})`}
+            </Fragment>
           )}
           {`, ${fileTransferClipboardLength} ${getPluralText(
             'item',

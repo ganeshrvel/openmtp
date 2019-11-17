@@ -1,5 +1,3 @@
-
-
 import { APP_NAME, APP_VERSION, AUTHOR_EMAIL } from '../constants/meta';
 
 const subject = `Error Logs for ${APP_NAME} | Version: ${APP_VERSION}`;

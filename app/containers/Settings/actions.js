@@ -1,5 +1,3 @@
-
-
 import omitLodash from 'lodash/omit';
 import { log } from '@Log';
 import prefixer from '../../utils/reducerPrefixer';

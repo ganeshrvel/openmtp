@@ -1,5 +1,3 @@
-
-
 import { ipcRenderer } from 'electron';
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
@@ -101,11 +99,11 @@ class AppUpdatePage extends Component {
           <title>Software Update</title>
         </Helmet>
         <Typography variant="subtitle1" className={styles.title}>
-          A new version of {APP_NAME} is available!
+          {`A new version of ${APP_NAME} is available!`}
         </Typography>
         <Typography variant="caption">
-          {releaseName} is now available &ndash; you have {APP_VERSION}. Would
-          you like to download it now?
+          {`${releaseName} is now available &ndash; you have ${APP_VERSION}. Would
+          you like to download it now?`}
         </Typography>
 
         <Typography variant="body2" className={styles.releaseNotes}>

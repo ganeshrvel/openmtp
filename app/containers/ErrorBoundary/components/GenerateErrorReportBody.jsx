@@ -1,5 +1,3 @@
-
-
 import React, { PureComponent, Fragment } from 'react';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';

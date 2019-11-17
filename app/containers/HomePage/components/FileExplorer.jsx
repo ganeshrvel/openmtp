@@ -1,5 +1,3 @@
-
-
 /* eslint no-case-declarations: off */
 
 import React, { Component, Fragment } from 'react';
@@ -1907,9 +1905,9 @@ const mapStateToProps = (state, props) => {
   };
 };
 
-export default withReducer('Home', reducers)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(withStyles(styles)(FileExplorer))
+export default withReducer(
+  'Home',
+  reducers
+)(
+  connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(FileExplorer))
 );

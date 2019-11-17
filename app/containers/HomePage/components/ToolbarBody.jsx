@@ -1,5 +1,3 @@
-
-
 import React, { PureComponent } from 'react';
 import MenuIcon from '@material-ui/icons/Menu';
 import AppBar from '@material-ui/core/AppBar';
@@ -118,9 +116,7 @@ export default class ToolbarAreaPane extends PureComponent {
         <ConfirmDialog
           fullWidthDialog
           maxWidthDialog="xs"
-          bodyText={`Are you sure you want to permanently delete the items from your ${
-            DEVICES_LABEL[deviceType]
-          }?`}
+          bodyText={`Are you sure you want to permanently delete the items from your ${DEVICES_LABEL[deviceType]}?`}
           trigger={toggleDeleteConfirmDialog}
           onClickHandler={onDeleteConfirmDialog}
         />
