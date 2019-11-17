@@ -9,7 +9,7 @@ import {
 } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { log } from '@Log';
+import { log } from '../../utils/log';
 import { IS_PROD } from '../../constants/env';
 import { theme, styles } from './styles';
 import Alerts from '../Alerts';
@@ -24,18 +24,14 @@ import reducers from './reducers';
 import { copyJsonFileToSettings, freshInstall } from '../Settings/actions';
 import { analytics } from '../../utils/analyticsHelper';
 import { isConnected } from '../../utils/isOnline';
+import { AppProps } from './types';
 
 const appTheme = createMuiTheme(theme());
 
-class App extends Component {
-  constructor(props) {
-    super(props);
+class App extends Component<AppProps> {
+  private allowWritingJsonToSettings = false;
 
-    this.state = {};
-    this.allowWritingJsonToSettings = false;
-  }
-
-  componentWillMount() {
+  public componentWillMount() {
     try {
       this.setFreshInstall();
       if (this.allowWritingJsonToSettings) {
@@ -48,7 +44,7 @@ class App extends Component {
     }
   }
 
-  componentDidMount() {
+  public componentDidMount() {
     try {
       bootLoader.cleanRotationFiles();
     } catch (e) {
@@ -56,7 +52,7 @@ class App extends Component {
     }
   }
 
-  setFreshInstall() {
+  private setFreshInstall(): void {
     try {
       const { actionCreateFreshInstall } = this.props;
       const isFreshInstallSettings = settingsStorage.getItems(['freshInstall']);
@@ -82,7 +78,7 @@ class App extends Component {
           isFreshInstall = 0;
           this.allowWritingJsonToSettings = true;
 
-          return null;
+          return;
       }
 
       actionCreateFreshInstall({ isFreshInstall });
@@ -91,7 +87,7 @@ class App extends Component {
     }
   }
 
-  writeJsonToSettings() {
+  private writeJsonToSettings() {
     try {
       const { actionCreateCopyJsonFileToSettings } = this.props;
       const settingsFromStorage = settingsStorage.getAll();
@@ -102,7 +98,7 @@ class App extends Component {
     }
   }
 
-  runAnalytics() {
+  private runAnalytics() {
     const isAnalyticsEnabledSettings = settingsStorage.getItems([
       'enableAnalytics'
     ]);
@@ -123,7 +119,7 @@ class App extends Component {
     }
   }
 
-  render() {
+  public render() {
     const { classes: styles } = this.props;
 
     return (
@@ -145,22 +141,30 @@ class App extends Component {
 const mapDispatchToProps = (dispatch, ownProps) =>
   bindActionCreators(
     {
-      actionCreateCopyJsonFileToSettings: ({ ...data }) => (_, getState) => {
+      actionCreateCopyJsonFileToSettings: ({ ...data }) => () => {
         dispatch(copyJsonFileToSettings({ ...data }));
       },
 
-      actionCreateFreshInstall: ({ ...data }) => (_, getState) => {
+      actionCreateFreshInstall: ({ ...data }) => (
+        _: any,
+        getState: () => any
+      ) => {
         dispatch(freshInstall({ ...data }, getState));
       }
     },
     dispatch
   );
 
-const mapStateToProps = (state, props) => {
+const mapStateToProps = () => {
   return {};
 };
 
 export default withReducer(
   'App',
   reducers
-)(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(hot(App))));
+)(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(withStyles(styles as any)(hot(App)))
+);

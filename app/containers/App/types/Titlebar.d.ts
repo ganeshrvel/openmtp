@@ -1,5 +1,3 @@
-import { IClasses } from '../../../types';
+import { Classes } from '../../../types';
 
-export interface TitlebarPropsTypes extends IClasses {
-  //
-}
+export type TitlebarProps = Classes;

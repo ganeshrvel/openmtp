@@ -33,14 +33,11 @@ export const theme = args => {
 };
 
 // eslint-disable-next-line no-unused-vars,@typescript-eslint/no-unused-vars
-export const styles = args => {
-  // eslint-disable-line no-unused-vars
-  return {
-    root: {},
-    noProfileError: {
-      textAlign: `center`,
-      ...mixins().center,
-      ...mixins().absoluteCenter
-    }
-  };
+export const styles = {
+  root: {},
+  noProfileError: {
+    textAlign: `center`,
+    ...mixins().center,
+    ...mixins().absoluteCenter
+  }
 };

@@ -1,13 +1,11 @@
-
-
 import * as React from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import { TitlebarPropsTypes } from '../types/Titlebar';
+import { TitlebarProps } from '../types/Titlebar';
 import { styles } from '../styles/Titlebar';
 import { toggleWindowSizeOnDoubleClick } from '../../../utils/titlebarDoubleClick';
 import { APP_TITLEBAR_DOM_ID } from '../../../constants/dom';
 
-class Titlebar extends React.PureComponent<TitlebarPropsTypes> {
+class Titlebar extends React.PureComponent<TitlebarProps> {
   public render(): React.ReactElement {
     const { classes: styles } = this.props;
 

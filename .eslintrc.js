@@ -46,6 +46,7 @@ module.exports = {
       'error',
       { functions: false, classes: false, variables: true }
     ],
+    '@typescript-eslint/explicit-member-accessibility': 'error',
     'arrow-body-style': 'off',
     'arrow-parens': 'off',
     'class-methods-use-this': 'off',
