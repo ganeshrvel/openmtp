@@ -5,6 +5,7 @@ import { withStyles } from '@material-ui/core/styles';
 import TableFooter from '@material-ui/core/TableFooter';
 import { styles } from '../styles/FileExplorerTableFooterRender';
 import Breadcrumb from '../../../components/Breadcrumb';
+import FileExplorerTableFooterStatusBarRender from './FileExplorerTableFooterStatusBarRender';
 
 class FileExplorerTableFooterRender extends PureComponent {
   render() {
@@ -12,11 +13,19 @@ class FileExplorerTableFooterRender extends PureComponent {
       classes: styles,
       currentBrowsePath,
       deviceType,
-      onBreadcrumbPathClick
+      onBreadcrumbPathClick,
+      isStatusBarEnabled,
+      directoryLists,
+      fileTransferClipboard
     } = this.props;
-
     return (
       <TableFooter component="div" className={styles.tableFooter}>
+        {isStatusBarEnabled && (
+          <FileExplorerTableFooterStatusBarRender
+            directoryLists={directoryLists}
+            fileTransferClipboard={fileTransferClipboard}
+          />
+        )}
         <Breadcrumb
           onBreadcrumbPathClick={onBreadcrumbPathClick}
           currentBrowsePath={currentBrowsePath[deviceType]}

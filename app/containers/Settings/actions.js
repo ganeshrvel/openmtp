@@ -1,8 +1,8 @@
 'use strict';
 
+import omitLodash from 'lodash/omit';
 import { log } from '@Log';
 import prefixer from '../../utils/reducerPrefixer';
-import omitLodash from 'lodash/omit';
 import { settingsStorage } from '../../utils/storageHelper';
 
 const prefix = '@@Settings';
@@ -16,6 +16,7 @@ const actionTypesList = [
   'ENABLE_BACKGROUND_AUTO_UPDATE',
   'ENABLE_PRERELEASE_UPDATES',
   'ENABLE_ANALYTICS',
+  'ENABLE_STATUS_BAR',
   'COPY_JSON_FILE_TO_SETTINGS'
 ];
 
@@ -120,6 +121,18 @@ export function enableAnalytics({ ...data }, getState) {
   return dispatch => {
     dispatch({
       type: actionTypes.ENABLE_ANALYTICS,
+      payload: toggle
+    });
+    dispatch(copySettingsToJsonFile(getState));
+  };
+}
+
+export function enableStatusBar({ ...data }, getState) {
+  const { toggle } = data;
+
+  return dispatch => {
+    dispatch({
+      type: actionTypes.ENABLE_STATUS_BAR,
       payload: toggle
     });
     dispatch(copySettingsToJsonFile(getState));

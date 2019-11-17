@@ -52,6 +52,7 @@ class FileExplorerBodyRender extends PureComponent {
     const keymapActionsList = {
       newFolder: this.acceleratorNewFolder,
       copy: this.acceleratorCreateAction,
+      copyToQueue: this.acceleratorCreateAction,
       paste: this.acceleratorCreateAction,
       delete: this.acceleratorCreateAction,
       refresh: this.acceleratorCreateAction,
@@ -194,8 +195,11 @@ class FileExplorerBodyRender extends PureComponent {
       onFilesDragEnd,
       onTableDrop,
       onBreadcrumbPathClick,
+      isStatusBarEnabled,
+      fileTransferClipboard,
       ...parentProps
     } = this.props;
+    const { directoryLists } = this.props;
 
     const _eventTarget = 'tableWrapperTarget';
 
@@ -216,7 +220,8 @@ class FileExplorerBodyRender extends PureComponent {
           tabIndex={-1}
           id={this.fileExplorerBodyWrapperId}
           className={classNames(styles.tableWrapper, {
-            [`onHoverDropZone`]: OnHoverDropZoneActivate(deviceType)
+            [`onHoverDropZone`]: OnHoverDropZoneActivate(deviceType),
+            [`statusBarActive`]: isStatusBarEnabled
           })}
           onContextMenu={event =>
             onContextMenuClick(event, {}, { ...this.tableData() }, _eventTarget)
@@ -245,6 +250,9 @@ class FileExplorerBodyRender extends PureComponent {
           deviceType={deviceType}
           currentBrowsePath={currentBrowsePath}
           onBreadcrumbPathClick={onBreadcrumbPathClick}
+          isStatusBarEnabled={isStatusBarEnabled}
+          directoryLists={directoryLists[deviceType]}
+          fileTransferClipboard={fileTransferClipboard}
         />
       </Paper>
     );

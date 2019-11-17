@@ -38,6 +38,7 @@ module.exports = {
     'consistent-return': 'off',
     'comma-dangle': 'off',
     'generator-star-spacing': 'off',
+    'import/no-cycle': 'off',
     'import/no-unresolved': 'error',
     'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
     'jsx-a11y/anchor-is-valid': 'off',

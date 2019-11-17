@@ -52,6 +52,7 @@ main.js.map
 npm-debug.log.*
 yarn.lock
 package-lock.json
+.env*
 
 app/certs/*.pem
 certs/*
@@ -62,3 +63,4 @@ eslint-common-rules.txt
 
 build/entitlements.mas.plist
 *embedded.provisionprofile
+extras/*

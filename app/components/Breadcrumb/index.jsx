@@ -81,7 +81,7 @@ class Breadcrumb extends PureComponent {
     return tokenizeCurrentBrowsePath.map((item, index) => {
       const { label, path, isCompressed, enabled, bold } = item;
       if (isCompressed) {
-        compressedCounter += compressedCounter;
+        compressedCounter += 1;
       }
       return (
         <Fragment key={quickHash(path)}>

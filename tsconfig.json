@@ -21,7 +21,7 @@
     "alwaysStrict": true,
     "moduleResolution": "node",
     "skipLibCheck": true,
-    "rootDir": "./app",
+    "rootDir": "./",
     "forceConsistentCasingInFileNames": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
@@ -34,7 +34,7 @@
     "importHelpers": true,
     "allowUnreachableCode": false
   },
-  "include": ["app/**/*"],
+  "include": ["app/**/*", "config/**/*", "webpack/**/*"],
   "exclude": [
     "node_modules/**/*",
     "node_modules",
@@ -47,6 +47,7 @@
     "docs-sources",
     "webpack",
     "jest",
-    "mtp-kernel"
+    "mtp-kernel",
+    "extras"
   ]
 }

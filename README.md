@@ -48,6 +48,9 @@ New Folder
 Copy
 <kbd>command</kbd>+<kbd>c</kbd>
 
+Copy to Queue
+<kbd>command</kbd>+<kbd>shift</kbd>+<kbd>c</kbd>
+
 Paste
 <kbd>command</kbd>+<kbd>v</kbd>
 
@@ -97,7 +100,7 @@ Select Multiple Items Backward (for List view)
 <kbd>shift</kbd>+<kbd>down</kbd>
 
 Select Multiple Items (using mouse)
-<kbd>command</kbd>+<kbd>click</kbd> or <kbd>shift</kbd>+<kbd>click</kbd>
+<kbd>command</kbd>+<kbd>click</kbd> or <kbd>shift</kbd>+<kbd>click</kbd>
 
 ## Building from Source
 
@@ -139,6 +142,23 @@ $ yarn start
 
 Setup the *code signing* to build, package and publish the app.
 
+**App Notarization for macOS** (skip this section for non macOS builds)
+- Rename *sample.env* file as *.env*
+- Update APPLEID in *.env* file
+- Log into your [Apple Account](https://appleid.apple.com/account/manage "Apple Account")
+- Goto **Security > APP-SPECIFIC PASSWORDS**
+- Click on **Generate Password...**, enter a password label and click *Create*
+- Copy the displayed *app-specific-password*
+- Run
+```shell
+security add-generic-password -a "<apple-developer-account-username>" -w <app-specific-password*> -s "ELECTRON_NOTORIZE_PASSWORD"
+```
+
+- Log into your [Apple App Store Connect Account](appstoreconnect.apple.com/agreements/# "Apple App Store Connect Account")
+- Accept to all agreements
+- The statuses shall turn *Active*
+
+**Packaging**
 Instructions: [https://www.electron.build/code-signing](https://www.electron.build/code-signing "https://www.electron.build/code-signing")
 
 ```shell
@@ -153,8 +173,9 @@ $ yarn package
 $ yarn package-all
 ```
 
+
 ### Technical Features
-- Built using Electron v4, React v16.4, Redux v4, Webpack v4, Babel v7 and Material UI v3.8
+- Built using Electron v6, React v16.8, Redux v4, Webpack v4, Babel v7 and Material UI v4.2
 - Hot module Reload (HMR) for instant feedback.
 - Highly modular.
 - Inbuilt error logging and profile/settings management.
@@ -191,6 +212,10 @@ $ UPGRADE_EXTENSIONS=1 npm run dev
 # For Windows
 $ set UPGRADE_EXTENSIONS=1 && npm run dev
 ```
+
+### Troubleshooting
+\# **Notarizing Electron apps throws - “You must first sign the relevant contracts online. (1048)” error**
+[https://stackoverflow.com/questions/58358449/notarizing-electron-apps-throws-you-must-first-sign-the-relevant-contracts-on](https://stackoverflow.com/questions/58358449/notarizing-electron-apps-throws-you-must-first-sign-the-relevant-contracts-on "https://stackoverflow.com/questions/58358449/notarizing-electron-apps-throws-you-must-first-sign-the-relevant-contracts-on")
 
 ### More repos
 

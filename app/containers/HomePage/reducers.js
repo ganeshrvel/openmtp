@@ -160,6 +160,11 @@ export const initialState = {
         label: 'Copy',
         data: {}
       },
+      copyToQueue: {
+        enabled: true,
+        label: 'Copy to Queue',
+        data: {}
+      },
       paste: {
         enabled: true,
         label: 'Paste',
@@ -180,6 +185,11 @@ export const initialState = {
       copy: {
         enabled: true,
         label: 'Copy',
+        data: {}
+      },
+      copyToQueue: {
+        enabled: true,
+        label: 'Copy to Queue',
         data: {}
       },
       paste: {

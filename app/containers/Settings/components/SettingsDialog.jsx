@@ -65,13 +65,15 @@ export default class SettingsDialog extends PureComponent {
       enableBackgroundAutoUpdate,
       enablePrereleaseUpdates,
       enableAnalytics,
+      enableStatusBar,
       onAnalyticsChange,
       onHiddenFilesChange,
       onFileExplorerListingType,
       onDialogBoxCloseBtnClick,
       onAutoUpdateCheckChange,
       onEnableBackgroundAutoUpdateChange,
-      onPrereleaseUpdatesChange
+      onPrereleaseUpdatesChange,
+      onStatusBarChange
     } = this.props;
 
     const { tabIndex } = this.state;
@@ -198,6 +200,30 @@ export default class SettingsDialog extends PureComponent {
                       }
                       label={DEVICES_LABEL[DEVICES_TYPE_CONST.mtp]}
                     />
+
+                    <Typography
+                      variant="subtitle2"
+                      className={`${styles.subtitle} ${
+                        styles.fmSettingsStylesFix
+                      }`}
+                    >
+                      Show Status Bar
+                    </Typography>
+                    <FormControlLabel
+                      className={styles.switch}
+                      control={
+                        <Switch
+                          checked={enableStatusBar}
+                          onChange={() =>
+                            onStatusBarChange({
+                              toggle: !enableStatusBar
+                            })
+                          }
+                        />
+                      }
+                      label={enableStatusBar ? `Enabled` : `Disabled`}
+                    />
+
                     {freshInstall ? (
                       <Paper
                         className={`${styles.onboardingPaper}`}
@@ -212,9 +238,6 @@ export default class SettingsDialog extends PureComponent {
                         </Typography>
                       </Paper>
                     ) : null}
-                    <Typography variant="caption">
-                      Toggle to choose between Grid and List views
-                    </Typography>
                   </FormGroup>
                 </div>
               </SettingsDialogTabContainer>

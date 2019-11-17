@@ -3,11 +3,16 @@
 /* eslint no-case-declarations: off */
 
 import React, { Component, Fragment } from 'react';
+import Typography from '@material-ui/core/Typography';
+import { withStyles } from '@material-ui/core/styles';
 import { remote, ipcRenderer, shell } from 'electron';
 import lodashSortBy from 'lodash/sortBy';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import IconButton from '@material-ui/core/IconButton';
+import Tooltip from '@material-ui/core/Tooltip';
 import { log } from '@Log';
+import { styles } from '../styles/FileExplorer';
 import {
   TextFieldEdit as TextFieldEditDialog,
   ProgressBar as ProgressBarDialog,
@@ -40,10 +45,15 @@ import {
   makeFocussedFileExplorerDeviceType
 } from '../selectors';
 import {
+  makeEnableStatusBar,
   makeFileExplorerListingType,
   makeHideHiddenFiles
 } from '../../Settings/selectors';
-import { DEVICES_LABEL, DEVICES_TYPE_CONST } from '../../../constants';
+import {
+  DEVICES_LABEL,
+  DEVICES_TYPE_CONST,
+  DONATE_PAYPAL_URL
+} from '../../../constants';
 import {
   renameLocalFiles,
   checkFileExists,
@@ -58,12 +68,20 @@ import {
   isFloat,
   isInt,
   isNumber,
+  removeArrayDuplicates,
   undefinedOrNull
 } from '../../../utils/funcs';
 import { getMainWindowRendererProcess } from '../../../utils/windowHelper';
 import { throwAlert } from '../../Alerts/actions';
 import { imgsrc } from '../../../utils/imgsrc';
 import FileExplorerBodyRender from './FileExplorerBodyRender';
+import { openExternalUrl } from '../../../utils/url';
+import { APP_GITHUB_URL } from '../../../constants/meta';
+import {
+  fbShareUrl,
+  redditShareUrl,
+  twitterShareUrl
+} from '../../../templates/socialMediaShareBtns';
 
 const { Menu, getCurrentWindow } = remote;
 const _mainWindowRendererProcess = getMainWindowRendererProcess();
@@ -71,6 +89,44 @@ const filesDragGhostImg = new Image(0, 0);
 filesDragGhostImg.src = imgsrc('FileExplorer/copy.svg');
 let allowFileDropFlag = false;
 let multipleSelectDirection = null;
+
+const socialMediaShareBtnsList = [
+  {
+    enabled: true,
+    label: 'Find us on GitHub',
+    imgSrc: 'SocialMediaShare/github.svg',
+    url: APP_GITHUB_URL,
+    invert: false
+  },
+  {
+    enabled: true,
+    label: 'Share it on Twitter',
+    imgSrc: 'SocialMediaShare/twitter.svg',
+    url: twitterShareUrl,
+    invert: false
+  },
+  {
+    enabled: true,
+    label: 'Share it on Facebook',
+    imgSrc: 'SocialMediaShare/facebook.svg',
+    url: fbShareUrl,
+    invert: false
+  },
+  {
+    enabled: true,
+    label: 'Share it on Reddit',
+    imgSrc: 'SocialMediaShare/reddit.svg',
+    url: redditShareUrl,
+    invert: false
+  },
+  {
+    enabled: true,
+    label: 'Buy me a Coffee',
+    imgSrc: 'SocialMediaShare/paypal.svg',
+    url: DONATE_PAYPAL_URL,
+    invert: false
+  }
+];
 
 class FileExplorer extends Component {
   constructor(props) {
@@ -311,6 +367,7 @@ class FileExplorer extends Component {
     return _return;
   };
 
+  /* activate actions using keyboard */
   _handleAcceleratorActivation = ({ type, data }) => {
     const { focussedFileExplorerDeviceType } = this.props;
     const {
@@ -390,6 +447,18 @@ class FileExplorer extends Component {
         actionCreateCopy({
           selected,
           deviceType
+        });
+        break;
+
+      case 'copyToQueue':
+        if (selected.length < 1) {
+          break;
+        }
+
+        actionCreateCopy({
+          selected,
+          deviceType,
+          toQueue: true
         });
         break;
 
@@ -750,6 +819,7 @@ class FileExplorer extends Component {
           break;
 
         case 'copy':
+        case 'copyToQueue':
           contextMenuActiveList.push({
             label: item.label,
             enabled: queue.selected.length > 0,
@@ -807,6 +877,7 @@ class FileExplorer extends Component {
     return contextMenuActiveList;
   }
 
+  /* activate actions using mouse */
   _handleContextMenuListActions = ({ ...args }) => {
     const { deviceType, directoryLists, actionCreateCopy } = this.props;
 
@@ -827,8 +898,19 @@ class FileExplorer extends Component {
 
         case 'copy':
           // eslint-disable-next-line prefer-destructuring
-          const selected = directoryLists[deviceType].queue.selected;
-          actionCreateCopy({ selected, deviceType });
+          const selectedItemsToCopy = directoryLists[deviceType].queue.selected;
+          actionCreateCopy({ selected: selectedItemsToCopy, deviceType });
+          break;
+
+        case 'copyToQueue':
+          // eslint-disable-next-line prefer-destructuring
+          const selectedItemsToCopyToQueue =
+            directoryLists[deviceType].queue.selected;
+          actionCreateCopy({
+            selected: selectedItemsToCopyToQueue,
+            deviceType,
+            toQueue: true
+          });
           break;
 
         case 'paste':
@@ -1359,6 +1441,7 @@ class FileExplorer extends Component {
 
   render() {
     const {
+      classes: styles,
       deviceType,
       hideColList,
       currentBrowsePath,
@@ -1366,7 +1449,9 @@ class FileExplorer extends Component {
       fileTransferProgess,
       mtpDevice,
       filesDrag,
-      fileExplorerListingType
+      fileExplorerListingType,
+      isStatusBarEnabled,
+      fileTransferClipboard
     } = this.props;
     const {
       toggleDialog,
@@ -1440,7 +1525,33 @@ class FileExplorer extends Component {
           variant="determinate"
           helpText="If the progress bar freezes while transferring the files, restart the app and reconnect the device. This is a known Android MTP bug."
           progressValue={fileTransferProgess.percentage}
-        />
+        >
+          <div className={styles.socialMediaShareContainer}>
+            <Typography className={styles.socialMediaShareTitle}>
+              Liked using the App?
+            </Typography>
+            <div className={styles.socialMediaShareBtnsWrapper}>
+              {socialMediaShareBtnsList.map((a, index) => (
+                // eslint-disable-next-line react/no-array-index-key
+                <Tooltip key={index} title={a.label}>
+                  <div>
+                    <IconButton
+                      aria-label={a.label}
+                      disabled={!a.enabled}
+                      onClick={() => openExternalUrl(a.url)}
+                    >
+                      <img
+                        className={styles.socialMediaShareBtn}
+                        src={imgsrc(a.imgSrc)}
+                        alt={a.label}
+                      />
+                    </IconButton>
+                  </div>
+                </Tooltip>
+              ))}
+            </div>
+          </div>
+        </ProgressBarDialog>
 
         <ConfirmDialog
           fullWidthDialog
@@ -1456,9 +1567,12 @@ class FileExplorer extends Component {
           hideColList={hideColList}
           currentBrowsePath={currentBrowsePath}
           directoryLists={directoryLists}
+          fileTransferClipboard={fileTransferClipboard}
           mtpDevice={mtpDevice}
           filesDrag={filesDrag}
           tableSort={this.tableSort}
+          isStatusBarEnabled={isStatusBarEnabled}
+          directoryGeneratedTime={directoryGeneratedTime}
           OnHoverDropZoneActivate={this._handleOnHoverDropZoneActivate}
           onFilesDragOver={this._handleFilesDragOver}
           onFilesDragEnd={this._handleFilesDragEnd}
@@ -1475,7 +1589,6 @@ class FileExplorer extends Component {
             this._handleFocussedFileExplorerDeviceType
           }
           onAcceleratorActivation={this._handleAcceleratorActivation}
-          directoryGeneratedTime={directoryGeneratedTime}
         />
       </Fragment>
     );
@@ -1690,11 +1803,27 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         }
       },
 
-      actionCreateCopy: ({ selected, deviceType }) => async (_, getState) => {
+      actionCreateCopy: ({ selected, deviceType, toQueue = false }) => async (
+        _,
+        getState
+      ) => {
         try {
+          let queue = [];
+
+          if (toQueue && isArray(selected) && selected.length > 0) {
+            const currentClipboardQueue = getState().Home.fileTransfer.clipboard
+              .queue;
+
+            queue = [...currentClipboardQueue, ...selected];
+          } else {
+            queue = selected || [];
+          }
+
+          queue = removeArrayDuplicates(queue);
+
           dispatch(
             setFileTransferClipboard({
-              queue: selected || [],
+              queue,
               source: deviceType
             })
           );
@@ -1767,6 +1896,7 @@ const mapStateToProps = (state, props) => {
     mtpDevice: makeMtpDevice(state),
     directoryLists: makeDirectoryLists(state),
     hideHiddenFiles: makeHideHiddenFiles(state),
+    isStatusBarEnabled: makeEnableStatusBar(state),
     contextMenuList: makeContextMenuList(state),
     mtpStoragesListSelected: makeMtpStoragesListSelected(state),
     fileTransferClipboard: makeFileTransferClipboard(state),
@@ -1781,5 +1911,5 @@ export default withReducer('Home', reducers)(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(FileExplorer)
+  )(withStyles(styles)(FileExplorer))
 );

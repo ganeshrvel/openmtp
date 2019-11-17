@@ -3,5 +3,7 @@
 import { variables, mixins } from '../../../styles/js';
 
 export const styles = theme => ({
-  tableFooter: {}
+  tableFooter: {
+    display: 'unset !important'
+  }
 });

@@ -9,13 +9,16 @@ export const styles = theme => ({
   },
   tableWrapper: {
     ...mixins().noOutline,
-    height: `calc(100vh - 128px)`,
+    height: `calc(100vh - 120px)`,
     overflowY: 'auto',
     overflowX: 'auto',
     borderBottom: variables().styles.borderThinDividerColor,
     borderLeft: variables().styles.borderThinDividerColor,
     [`&.onHoverDropZone`]: {
       backgroundColor: `#e0e0e0`
+    },
+    [`&.statusBarActive`]: {
+      height: `calc(100vh - 150px) !important`
     }
   }
 });
