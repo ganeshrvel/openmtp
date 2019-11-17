@@ -7,17 +7,18 @@ export const styles = theme => ({
     width: `100%`,
     height: `100%`
   },
+
   rootBreadcrumbs: {
     width: `100%`,
     height: `100%`
   },
 
   breadcrumb: {
-    padding: '1px 15px',
+    padding: '10px 15px',
     backgroundColor: variables().styles.primaryColor.main,
     display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    ...mixins().resetUl
   },
 
   breadcrumbLi: {
@@ -39,6 +40,6 @@ export const styles = theme => ({
     }
   },
   breadcrumbSeperator: {
-    fontSize: 17
+    fontSize: 18
   }
 });

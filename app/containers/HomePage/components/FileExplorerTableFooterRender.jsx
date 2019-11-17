@@ -17,6 +17,7 @@ class FileExplorerTableFooterRender extends PureComponent {
 
     return (
       <TableFooter component="div" className={styles.tableFooter}>
+        <div className={styles.statusBarContainer}>---- Status bar ---</div>
         <Breadcrumb
           onBreadcrumbPathClick={onBreadcrumbPathClick}
           currentBrowsePath={currentBrowsePath[deviceType]}

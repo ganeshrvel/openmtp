@@ -9,7 +9,7 @@ export const styles = theme => ({
   },
   tableWrapper: {
     ...mixins().noOutline,
-    height: `calc(100vh - 128px)`,
+    height: `calc(100vh - 150px)`, // calc(100vh - 120px) - no status bar, with status bar -> calc(100vh - 150px)
     overflowY: 'auto',
     overflowX: 'auto',
     borderBottom: variables().styles.borderThinDividerColor,
