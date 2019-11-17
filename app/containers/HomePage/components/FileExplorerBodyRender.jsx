@@ -196,6 +196,7 @@ class FileExplorerBodyRender extends PureComponent {
       onBreadcrumbPathClick,
       ...parentProps
     } = this.props;
+    const { directoryLists } = this.props;
 
     const _eventTarget = 'tableWrapperTarget';
 
@@ -245,6 +246,7 @@ class FileExplorerBodyRender extends PureComponent {
           deviceType={deviceType}
           currentBrowsePath={currentBrowsePath}
           onBreadcrumbPathClick={onBreadcrumbPathClick}
+          directoryLists={directoryLists[deviceType]}
         />
       </Paper>
     );
