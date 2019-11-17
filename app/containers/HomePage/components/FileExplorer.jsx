@@ -45,6 +45,7 @@ import {
   makeFocussedFileExplorerDeviceType
 } from '../selectors';
 import {
+  makeEnableStatusBar,
   makeFileExplorerListingType,
   makeHideHiddenFiles
 } from '../../Settings/selectors';
@@ -1421,7 +1422,8 @@ class FileExplorer extends Component {
       fileTransferProgess,
       mtpDevice,
       filesDrag,
-      fileExplorerListingType
+      fileExplorerListingType,
+      isStatusBarEnabled
     } = this.props;
     const {
       toggleDialog,
@@ -1540,6 +1542,7 @@ class FileExplorer extends Component {
           mtpDevice={mtpDevice}
           filesDrag={filesDrag}
           tableSort={this.tableSort}
+          isStatusBarEnabled={isStatusBarEnabled}
           OnHoverDropZoneActivate={this._handleOnHoverDropZoneActivate}
           onFilesDragOver={this._handleFilesDragOver}
           onFilesDragEnd={this._handleFilesDragEnd}
@@ -1848,6 +1851,7 @@ const mapStateToProps = (state, props) => {
     mtpDevice: makeMtpDevice(state),
     directoryLists: makeDirectoryLists(state),
     hideHiddenFiles: makeHideHiddenFiles(state),
+    isStatusBarEnabled: makeEnableStatusBar(state),
     contextMenuList: makeContextMenuList(state),
     mtpStoragesListSelected: makeMtpStoragesListSelected(state),
     fileTransferClipboard: makeFileTransferClipboard(state),

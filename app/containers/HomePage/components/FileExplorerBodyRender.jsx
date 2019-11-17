@@ -194,6 +194,7 @@ class FileExplorerBodyRender extends PureComponent {
       onFilesDragEnd,
       onTableDrop,
       onBreadcrumbPathClick,
+      isStatusBarEnabled,
       ...parentProps
     } = this.props;
     const { directoryLists } = this.props;
@@ -217,7 +218,8 @@ class FileExplorerBodyRender extends PureComponent {
           tabIndex={-1}
           id={this.fileExplorerBodyWrapperId}
           className={classNames(styles.tableWrapper, {
-            [`onHoverDropZone`]: OnHoverDropZoneActivate(deviceType)
+            [`onHoverDropZone`]: OnHoverDropZoneActivate(deviceType),
+            [`statusBarActive`]: isStatusBarEnabled
           })}
           onContextMenu={event =>
             onContextMenuClick(event, {}, { ...this.tableData() }, _eventTarget)
@@ -247,6 +249,7 @@ class FileExplorerBodyRender extends PureComponent {
           currentBrowsePath={currentBrowsePath}
           onBreadcrumbPathClick={onBreadcrumbPathClick}
           directoryLists={directoryLists[deviceType]}
+          isStatusBarEnabled={isStatusBarEnabled}
         />
       </Paper>
     );
