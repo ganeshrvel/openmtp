@@ -48,6 +48,9 @@ New Folder
 Copy
 <kbd>command</kbd>+<kbd>c</kbd>
 
+Copy to Queue
+<kbd>command</kbd>+<kbd>shift</kbd>+<kbd>c</kbd>
+
 Paste
 <kbd>command</kbd>+<kbd>v</kbd>
 
