@@ -13,13 +13,15 @@ import {
   makeFreshInstall,
   makeFileExplorerListingType,
   makeEnablePrereleaseUpdates,
-  makeEnableBackgroundAutoUpdate
+  makeEnableBackgroundAutoUpdate,
+  makeEnableStatusBar
 } from './selectors';
 import {
   enableAnalytics,
   enableAutoUpdateCheck,
   enableBackgroundAutoUpdate,
   enablePrereleaseUpdates,
+  enableStatusBar,
   fileExplorerListingType,
   freshInstall,
   hideHiddenFiles,
@@ -103,6 +105,12 @@ class Settings extends Component {
     actionCreateEnableAnalytics({ ...args });
   };
 
+  _handleStatusBarChange = ({ ...args }) => {
+    const { actionCreateEnableStatusBar } = this.props;
+
+    actionCreateEnableStatusBar({ ...args });
+  };
+
   render() {
     const {
       freshInstall,
@@ -127,6 +135,7 @@ class Settings extends Component {
           this._handleEnableBackgroundAutoUpdateChange
         }
         onPrereleaseUpdatesChange={this._handlePrereleaseUpdatesChange}
+        onStatusBarChange={this._handleStatusBarChange}
         {...parentProps}
       />
     );
@@ -177,6 +186,10 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         dispatch(enableAnalytics({ ...data }, getState));
       },
 
+      actionCreateEnableStatusBar: ({ ...data }) => (_, getState) => {
+        dispatch(enableStatusBar({ ...data }, getState));
+      },
+
       actionCreateReloadDirList: ({ ...args }, deviceType, mtpStoragesList) => (
         _,
         getState
@@ -199,6 +212,7 @@ const mapStateToProps = (state, props) => {
     enableBackgroundAutoUpdate: makeEnableBackgroundAutoUpdate(state),
     enablePrereleaseUpdates: makeEnablePrereleaseUpdates(state),
     enableAnalytics: makeEnableAnalytics(state),
+    enableStatusBar: makeEnableStatusBar(state),
     currentBrowsePath: makeCurrentBrowsePath(state),
     mtpStoragesList: makeMtpStoragesList(state)
   };

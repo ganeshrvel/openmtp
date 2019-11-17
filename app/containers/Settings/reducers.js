@@ -13,6 +13,7 @@ export const initialState = {
   enableBackgroundAutoUpdate: true,
   enablePrereleaseUpdates: false,
   enableAnalytics: true,
+  enableStatusBar: true,
   hideHiddenFiles: {
     [DEVICES_TYPE_CONST.local]: true,
     [DEVICES_TYPE_CONST.mtp]: true
@@ -68,6 +69,9 @@ export default function Settings(state = initialState, action) {
 
     case actionTypes.ENABLE_ANALYTICS:
       return { ...state, enableAnalytics: payload };
+
+    case actionTypes.ENABLE_STATUS_BAR:
+      return { ...state, enableStatusBar: payload };
 
     case actionTypes.COPY_JSON_FILE_TO_SETTINGS:
       return { ...state, ...payload };
