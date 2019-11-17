@@ -52,6 +52,7 @@ class FileExplorerBodyRender extends PureComponent {
     const keymapActionsList = {
       newFolder: this.acceleratorNewFolder,
       copy: this.acceleratorCreateAction,
+      copyToQueue: this.acceleratorCreateAction,
       paste: this.acceleratorCreateAction,
       delete: this.acceleratorCreateAction,
       refresh: this.acceleratorCreateAction,

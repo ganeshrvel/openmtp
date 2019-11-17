@@ -274,3 +274,7 @@ export const isFileExplorerOnFocus = () => {
 export const isString = variable => {
   return typeof variable === 'string' || variable instanceof String;
 };
+
+export const removeArrayDuplicates = array => {
+  return array.filter((v, i) => array.indexOf(v) === i);
+};

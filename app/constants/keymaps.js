@@ -12,6 +12,10 @@ export const fileExplorerKeymaps = {
     label: `Copy`,
     keys: ['command+c']
   },
+  copyToQueue: {
+    label: `Copy to Queue`,
+    keys: ['command+shift+c']
+  },
   paste: {
     label: `Paste`,
     keys: ['command+v']
