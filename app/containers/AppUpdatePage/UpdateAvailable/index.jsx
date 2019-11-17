@@ -102,7 +102,7 @@ class AppUpdatePage extends Component {
           {`A new version of ${APP_NAME} is available!`}
         </Typography>
         <Typography variant="caption">
-          {`${releaseName} is now available &ndash; you have ${APP_VERSION}. Would
+          {`${releaseName} is now available – you have ${APP_VERSION}. Would
           you like to download it now?`}
         </Typography>
 

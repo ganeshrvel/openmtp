@@ -4,6 +4,17 @@ import { log } from './log';
 import { isGoogleAndroidFileTransferActive } from './isGoogleAndroidFileTransferActive';
 import { DEVICES_LABEL, DEVICES_TYPE_CONST } from '../constants';
 
+const sanitizeErrors = string => {
+  if (string === null) {
+    return `Oops.. Try again`;
+  }
+
+  string = string.replace(/^(error: )/, '').trim(); // eslint-disable-line no-param-reassign
+  string = replaceBulk(string, ['error:', 'stat failed:'], ['', '']).trim(); // eslint-disable-line no-param-reassign
+
+  return string.charAt(0).toUpperCase() + string.slice(1);
+};
+
 export const processMtpBuffer = async ({ error, stderr }) => {
   const errorTpl = {
     noMtp: `No MTP device found`,
@@ -310,15 +321,4 @@ export const processLocalBuffer = ({ error, stderr }) => {
     throwAlert: true,
     logError: true
   };
-};
-
-const sanitizeErrors = string => {
-  if (string === null) {
-    return `Oops.. Try again`;
-  }
-
-  string = string.replace(/^(error: )/, '').trim(); // eslint-disable-line no-param-reassign
-  string = replaceBulk(string, ['error:', 'stat failed:'], ['', '']).trim(); // eslint-disable-line no-param-reassign
-
-  return string.charAt(0).toUpperCase() + string.slice(1);
 };

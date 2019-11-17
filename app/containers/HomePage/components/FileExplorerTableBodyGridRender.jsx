@@ -35,58 +35,63 @@ class FileExplorerTableBodyGridRender extends PureComponent {
           [styles.itemSelected]: isSelected
         })}
         onDoubleClick={event => onTableDoubleClick(item, deviceType, event)}
-        onContextMenu={event =>
-          onContextMenuClick(event, { ...item }, { ...tableData }, _eventTarget)
-        }
+        onContextMenu={event => {
+          onContextMenuClick(
+            event,
+            { ...item },
+            { ...tableData },
+            _eventTarget
+          );
+        }}
       >
         <label>
           <Checkbox
             className={styles.itemCheckBox}
             checked={isSelected}
-            onClick={event =>
-              onTableClick(item.path, deviceType, event, true, true)
-            }
+            onClick={event => {
+              onTableClick(item.path, deviceType, event, true, true);
+            }}
           />
           {item.isFolder ? (
             <FolderIcon
               color="secondary"
               className={classNames(styles.itemIcon, `isFolder`)}
               fontSize="small"
-              onContextMenu={event =>
+              onContextMenu={event => {
                 onContextMenuClick(
                   event,
                   { ...item },
                   { ...tableData },
                   _eventTarget
-                )
-              }
+                );
+              }}
             />
           ) : (
             <InsertDriveFileIcon
               className={classNames(styles.itemIcon, `isFile`)}
               fontSize="small"
-              onContextMenu={event =>
+              onContextMenu={event => {
                 onContextMenuClick(
                   event,
                   { ...item },
                   { ...tableData },
                   _eventTarget
-                )
-              }
+                );
+              }}
             />
           )}
           <div className={styles.itemFileNameWrapper}>
             <Typography
               variant="caption"
               className={styles.itemFileName}
-              onContextMenu={event =>
+              onContextMenu={event => {
                 onContextMenuClick(
                   event,
                   { ...item },
                   { ...tableData },
                   _eventTarget
-                )
-              }
+                );
+              }}
             >
               {fileName.isTruncated ? (
                 <Tooltip title={fileName.text}>

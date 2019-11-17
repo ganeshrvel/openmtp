@@ -22,7 +22,7 @@ class WhatsNew extends PureComponent {
             className={styles.title}
             color="secondary"
           >
-            What&apos;s new in {APP_NAME}-{APP_VERSION}?
+            {`What's new in ${APP_NAME}-${APP_VERSION}?`}
           </Typography>
         )}
 

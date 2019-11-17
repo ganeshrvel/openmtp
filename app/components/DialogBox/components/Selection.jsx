@@ -26,12 +26,12 @@ class Selection extends PureComponent {
 
     return (
       <Dialog
-        onClose={() =>
+        onClose={() => {
           this._handleListItemClick({
             selectedValue: null,
             triggerChange: false
-          })
-        }
+          });
+        }}
         open={open}
       >
         <DialogTitle>{titleText}</DialogTitle>
@@ -44,12 +44,12 @@ class Selection extends PureComponent {
                 <Fragment key={a}>
                   <ListItem
                     button
-                    onClick={() =>
+                    onClick={() => {
                       this._handleListItemClick({
                         selectedValue: a,
                         triggerChange: true
-                      })
-                    }
+                      });
+                    }}
                   >
                     {showDiskAvatars && (
                       <ListItemAvatar>

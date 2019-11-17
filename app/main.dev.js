@@ -1,4 +1,4 @@
-/* eslint global-require: off */
+/* eslint-disable @typescript-eslint/no-var-requires, global-require */
 
 import { app, BrowserWindow, ipcMain } from 'electron';
 import electronIs from 'electron-is';

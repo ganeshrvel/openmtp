@@ -7,6 +7,10 @@ import { dateTimeUnixTimestampNow } from './date';
 
 const { logFile } = PATHS;
 
+const isConsoleError = e => {
+  return e && e.stack;
+};
+
 export const log = {
   info(e, title = `Log`, logError = false, allowInProd = false) {
     this.doLog(`Info title: ${title}${EOL}Info body: ${e}${EOL}`, logError);
@@ -72,8 +76,4 @@ export const log = {
       )}${EOL}OS type: ${os.type()} / OS Platform: ${os.platform()} / OS Release: ${os.release()}${EOL}${_consoleError.toString()}${EOL}${_consoleError}${EOL}${sectionSeperator}${EOL}`
     );
   }
-};
-
-const isConsoleError = e => {
-  return e && e.stack;
 };

@@ -42,6 +42,10 @@ module.exports = {
         varsIgnorePattern: '^(variables|mixins|args|log)'
       }
     ],
+    '@typescript-eslint/no-use-before-define': [
+      'error',
+      { functions: false, classes: false, variables: true }
+    ],
     'arrow-body-style': 'off',
     'arrow-parens': 'off',
     'class-methods-use-this': 'off',
@@ -66,7 +70,10 @@ module.exports = {
         allow: ['info', 'error', 'warn']
       }
     ],
-    'no-use-before-define': 'off',
+    'no-use-before-define': [
+      'error',
+      { functions: false, classes: false, variables: true }
+    ],
     'no-multi-assign': 'off',
     'no-shadow': 'off',
     'no-underscore-dangle': 'off',
@@ -116,6 +123,7 @@ module.exports = {
     'react/jsx-fragments': 0,
     'react/jsx-no-bind': 'off',
     'react/jsx-props-no-spreading': 'off',
+    'react/jsx-wrap-multilines': 'off',
     'react/jsx-filename-extension': [
       'error',
       { extensions: ['.js', '.jsx', '.tsx'] }

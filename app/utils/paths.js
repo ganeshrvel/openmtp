@@ -56,6 +56,10 @@ export const sanitizePath = filePath => {
   return filePath.replace(/\/\/+/g, '/');
 };
 
+export const pathInfo = filePath => {
+  return parse(filePath);
+};
+
 export const baseName = filePath => {
   if (typeof filePath === 'undefined' || filePath === null) {
     return null;
@@ -74,8 +78,4 @@ export const getExtension = (fileName, isFolder) => {
   const parsedPath = pathInfo(fileName);
 
   return parsedPath !== null ? parsedPath.ext : null;
-};
-
-export const pathInfo = filePath => {
-  return parse(filePath);
 };

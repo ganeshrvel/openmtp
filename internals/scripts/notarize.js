@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-var-requires, global-require */
+
 require('dotenv').config();
 const path = require('path');
 const fs = require('fs');

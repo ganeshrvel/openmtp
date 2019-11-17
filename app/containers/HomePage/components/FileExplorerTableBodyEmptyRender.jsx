@@ -98,11 +98,11 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
               <List>
                 <ListItem
                   button
-                  onClick={() =>
+                  onClick={() => {
                     this._handleExpansionPanel({
                       key: 'noMtpInstructions'
-                    })
-                  }
+                    });
+                  }}
                 >
                   <ListItemIcon>
                     <WarningIcon color="error" />
@@ -188,11 +188,11 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
 
                 <ListItem
                   button
-                  onClick={() =>
+                  onClick={() => {
                     this._handleExpansionPanel({
                       key: 'keyboardNavigation'
-                    })
-                  }
+                    });
+                  }}
                 >
                   <ListItemIcon>
                     <KeyboardIcon />
@@ -229,11 +229,11 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
 
                 <ListItem
                   button
-                  onClick={() =>
+                  onClick={() => {
                     this._handleExpansionPanel({
                       key: 'features'
-                    })
-                  }
+                    });
+                  }}
                 >
                   <ListItemIcon>
                     <StarRateIcon />
@@ -284,9 +284,9 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
         <TableCell
           colSpan={6}
           className={styles.tableCell}
-          onContextMenu={event =>
-            onContextMenuClick(event, {}, { ...tableData }, _eventTarget)
-          }
+          onContextMenu={event => {
+            onContextMenuClick(event, {}, { ...tableData }, _eventTarget);
+          }}
         />
       </TableRow>
     );

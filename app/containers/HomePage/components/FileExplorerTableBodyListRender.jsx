@@ -45,14 +45,14 @@ class FileExplorerTableBodyListRender extends PureComponent {
         <TableCell
           padding="none"
           className={`${styles.tableCell} checkboxCell`}
-          onContextMenu={event =>
+          onContextMenu={event => {
             onContextMenuClick(
               event,
               { ...item },
               { ...tableData },
               _eventTarget
-            )
-          }
+            );
+          }}
         >
           <Checkbox
             checked={isSelected}
@@ -64,14 +64,14 @@ class FileExplorerTableBodyListRender extends PureComponent {
             padding="default"
             onClick={event => onTableClick(item.path, deviceType, event)}
             className={`${styles.tableCell} nameCell`}
-            onContextMenu={event =>
+            onContextMenu={event => {
               onContextMenuClick(
                 event,
                 { ...item },
                 { ...tableData },
                 _eventTarget
-              )
-            }
+              );
+            }}
             onDoubleClick={event => onTableDoubleClick(item, deviceType, event)}
           >
             {item.isFolder ? (
@@ -104,14 +104,14 @@ class FileExplorerTableBodyListRender extends PureComponent {
             padding="none"
             onClick={event => onTableClick(item.path, deviceType, event)}
             className={`${styles.tableCell} sizeCell`}
-            onContextMenu={event =>
+            onContextMenu={event => {
               onContextMenuClick(
                 event,
                 { ...item },
                 { ...tableData },
                 _eventTarget
-              )
-            }
+              );
+            }}
             onDoubleClick={event => onTableDoubleClick(item, deviceType, event)}
           >
             {item.isFolder ? `--` : `${niceBytes(item.size)}`}
@@ -122,14 +122,14 @@ class FileExplorerTableBodyListRender extends PureComponent {
             padding="none"
             onClick={event => onTableClick(item.path, deviceType, event)}
             className={`${styles.tableCell} dateAddedCell`}
-            onContextMenu={event =>
+            onContextMenu={event => {
               onContextMenuClick(
                 event,
                 { ...item },
                 { ...tableData },
                 _eventTarget
-              )
-            }
+              );
+            }}
             onDoubleClick={event => onTableDoubleClick(item, deviceType, event)}
           >
             {item.dateAdded}

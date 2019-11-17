@@ -14,6 +14,7 @@ import { DONATE_PAYPAL_URL } from '../../../constants';
 import { helpPhoneNotConnecting } from '../../../templates/fileExplorer';
 
 class FileExplorerTableBodyEmptyHelpPhoneNotRecognizedRender extends PureComponent {
+  /* eslint-disable react/jsx-one-expression-per-line */
   render() {
     const { classes: styles } = this.props;
 
@@ -95,6 +96,8 @@ class FileExplorerTableBodyEmptyHelpPhoneNotRecognizedRender extends PureCompone
       </div>
     );
   }
+
+  /* eslint-enable react/jsx-one-expression-per-line */
 }
 
 export default withStyles(styles)(

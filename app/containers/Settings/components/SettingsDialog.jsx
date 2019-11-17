@@ -91,11 +91,11 @@ export default class SettingsDialog extends PureComponent {
         maxWidth="sm"
         aria-labelledby="settings-dialogbox"
         disableEscapeKeyDown={false}
-        onEscapeKeyDown={() =>
+        onEscapeKeyDown={() => {
           onDialogBoxCloseBtnClick({
             confirm: false
-          })
-        }
+          });
+        }}
       >
         <Typography variant="h5" className={styles.title}>
           Settings
@@ -126,12 +126,12 @@ export default class SettingsDialog extends PureComponent {
                       control={
                         <Switch
                           checked={!hideHiddenFilesLocal}
-                          onChange={() =>
+                          onChange={() => {
                             onHiddenFilesChange(
                               { toggle: !hideHiddenFilesLocal },
                               DEVICES_TYPE_CONST.local
-                            )
-                          }
+                            );
+                          }}
                         />
                       }
                       label={DEVICES_LABEL[DEVICES_TYPE_CONST.local]}
@@ -141,12 +141,12 @@ export default class SettingsDialog extends PureComponent {
                       control={
                         <Switch
                           checked={!hideHiddenFilesMtp}
-                          onChange={() =>
+                          onChange={() => {
                             onHiddenFilesChange(
                               { toggle: !hideHiddenFilesMtp },
                               DEVICES_TYPE_CONST.mtp
-                            )
-                          }
+                            );
+                          }}
                         />
                       }
                       label={DEVICES_LABEL[DEVICES_TYPE_CONST.mtp]}
@@ -163,7 +163,7 @@ export default class SettingsDialog extends PureComponent {
                       control={
                         <Switch
                           checked={fileExplorerListingTypeLocalGrid}
-                          onChange={() =>
+                          onChange={() => {
                             onFileExplorerListingType(
                               {
                                 type: fileExplorerListingTypeLocalGrid
@@ -171,8 +171,8 @@ export default class SettingsDialog extends PureComponent {
                                   : 'grid'
                               },
                               DEVICES_TYPE_CONST.local
-                            )
-                          }
+                            );
+                          }}
                         />
                       }
                       label={DEVICES_LABEL[DEVICES_TYPE_CONST.local]}
@@ -182,7 +182,7 @@ export default class SettingsDialog extends PureComponent {
                       control={
                         <Switch
                           checked={fileExplorerListingTypeMtpGrid}
-                          onChange={() =>
+                          onChange={() => {
                             onFileExplorerListingType(
                               {
                                 type: fileExplorerListingTypeMtpGrid
@@ -190,8 +190,8 @@ export default class SettingsDialog extends PureComponent {
                                   : 'grid'
                               },
                               DEVICES_TYPE_CONST.mtp
-                            )
-                          }
+                            );
+                          }}
                         />
                       }
                       label={DEVICES_LABEL[DEVICES_TYPE_CONST.mtp]}
@@ -208,11 +208,11 @@ export default class SettingsDialog extends PureComponent {
                       control={
                         <Switch
                           checked={enableStatusBar}
-                          onChange={() =>
+                          onChange={() => {
                             onStatusBarChange({
                               toggle: !enableStatusBar
-                            })
-                          }
+                            });
+                          }}
                         />
                       }
                       label={enableStatusBar ? `Enabled` : `Disabled`}
@@ -249,11 +249,11 @@ export default class SettingsDialog extends PureComponent {
                       control={
                         <Switch
                           checked={enableAutoUpdateCheck}
-                          onChange={() =>
+                          onChange={() => {
                             onAutoUpdateCheckChange({
                               toggle: !enableAutoUpdateCheck
-                            })
-                          }
+                            });
+                          }}
                         />
                       }
                       label={enableAutoUpdateCheck ? `Enabled` : `Disabled`}
@@ -272,11 +272,11 @@ export default class SettingsDialog extends PureComponent {
                         <Switch
                           checked={enableBackgroundAutoUpdate}
                           disabled={!enableAutoUpdateCheck}
-                          onChange={() =>
+                          onChange={() => {
                             onEnableBackgroundAutoUpdateChange({
                               toggle: !enableBackgroundAutoUpdate
-                            })
-                          }
+                            });
+                          }}
                         />
                       }
                       label={
@@ -298,11 +298,11 @@ export default class SettingsDialog extends PureComponent {
                       control={
                         <Switch
                           checked={enablePrereleaseUpdates}
-                          onChange={() =>
+                          onChange={() => {
                             onPrereleaseUpdatesChange({
                               toggle: !enablePrereleaseUpdates
-                            })
-                          }
+                            });
+                          }}
                         />
                       }
                       label={enablePrereleaseUpdates ? `Enabled` : `Disabled`}
@@ -328,11 +328,11 @@ export default class SettingsDialog extends PureComponent {
                       control={
                         <Switch
                           checked={enableAnalytics}
-                          onChange={() =>
+                          onChange={() => {
                             onAnalyticsChange({
                               toggle: !enableAnalytics
-                            })
-                          }
+                            });
+                          }}
                         />
                       }
                       label={enableAnalytics ? `Enabled` : `Disabled`}
@@ -360,11 +360,11 @@ export default class SettingsDialog extends PureComponent {
         </DialogContent>
         <DialogActions>
           <Button
-            onClick={() =>
+            onClick={() => {
               onDialogBoxCloseBtnClick({
                 confirm: false
-              })
-            }
+              });
+            }}
             color="primary"
             className={classNames(styles.btnPositive)}
           >

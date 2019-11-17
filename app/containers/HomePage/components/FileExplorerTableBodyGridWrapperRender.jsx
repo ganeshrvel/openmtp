@@ -32,7 +32,7 @@ class FileExplorerTableBodyGridWrapperRender extends PureComponent {
   }
 
   componentWillReceiveProps({
-    classes, // eslint-disable-line no-unused-vars
+    classes, // eslint-disable-line no-unused-vars, @typescript-eslint/no-unused-vars
     tableSort: nextTableSort,
     directoryGeneratedTime: nextDirectoryGeneratedTime,
     directoryLists: nextDirectoryLists,
@@ -99,7 +99,7 @@ class FileExplorerTableBodyGridWrapperRender extends PureComponent {
     const { items } = this.state;
 
     this.recursiveFilesFetchTimeOut = setTimeout(() => {
-      // eslint-disable-next-line no-unused-vars
+      // eslint-disable-next-line no-unused-vars,@typescript-eslint/no-unused-vars
       const { classes: styles, isSelected, ...parentProps } = this.props;
       const hasMore = items.length + 1 < tableSort.length;
 

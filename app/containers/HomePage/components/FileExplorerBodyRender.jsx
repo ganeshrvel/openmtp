@@ -191,7 +191,7 @@ class FileExplorerBodyRender extends PureComponent {
       deviceType,
       currentBrowsePath,
       OnHoverDropZoneActivate,
-      filesDrag, // eslint-disable-line no-unused-vars
+      filesDrag, // eslint-disable-line no-unused-vars, @typescript-eslint/no-unused-vars
       onContextMenuClick,
       onFilesDragOver,
       onFilesDragEnd,
@@ -207,13 +207,13 @@ class FileExplorerBodyRender extends PureComponent {
 
     return (
       <Paper
-        onClick={event =>
+        onClick={event => {
           this.acceleratorFileExplorerTabSwitch(
             event,
             'fileExplorerTabSwitch',
             false
-          )
-        }
+          );
+        }}
         className={styles.root}
         elevation={0}
         square
@@ -225,9 +225,14 @@ class FileExplorerBodyRender extends PureComponent {
             [`onHoverDropZone`]: OnHoverDropZoneActivate(deviceType),
             [`statusBarActive`]: isStatusBarEnabled
           })}
-          onContextMenu={event =>
-            onContextMenuClick(event, {}, { ...this.tableData() }, _eventTarget)
-          }
+          onContextMenu={event => {
+            onContextMenuClick(
+              event,
+              {},
+              { ...this.tableData() },
+              _eventTarget
+            );
+          }}
           onDragOver={event => {
             onFilesDragOver(event, {
               destinationDeviceType: deviceType

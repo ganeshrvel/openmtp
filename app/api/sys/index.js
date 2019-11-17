@@ -79,13 +79,6 @@ export const escapeShellMtp = cmd => {
 
 const mtpCli = `"${escapeShellMtp(_mtpCli)}"`;
 
-const filterOutMtpLines = (string, index) => {
-  return (
-    filterJunkMtpErrors(string) ||
-    (index < 2 && string.toLowerCase().indexOf(`selected storage`) !== -1)
-  );
-};
-
 const filterJunkMtpErrors = string => {
   return (
     string === '\n' ||
@@ -93,6 +86,13 @@ const filterJunkMtpErrors = string => {
     string === '' ||
     string.toLowerCase().indexOf(`device::find failed`) !== -1 ||
     string.toLowerCase().indexOf(`iocreateplugininterfaceforservice`) !== -1
+  );
+};
+
+const filterOutMtpLines = (string, index) => {
+  return (
+    filterJunkMtpErrors(string) ||
+    (index < 2 && string.toLowerCase().indexOf(`selected storage`) !== -1)
   );
 };
 
@@ -690,122 +690,8 @@ export const newMtpFolder = async ({
   }
 };
 
-export const pasteFiles = (
-  { ...pasteArgs },
-  { ...fetchDirListArgs },
-  direction,
-  deviceType,
-  dispatch,
-  getState,
-  getCurrentWindow
-) => {
-  try {
-    const {
-      destinationFolder,
-      mtpStoragesListSelected,
-      fileTransferClipboard
-    } = pasteArgs;
-
-    if (
-      typeof destinationFolder === 'undefined' ||
-      destinationFolder === null
-    ) {
-      dispatch(
-        processMtpOutput({
-          deviceType,
-          error: `Invalid path.`,
-          stderr: null,
-          data: null,
-          callback: () => {
-            dispatch(
-              fetchDirList({ ...fetchDirListArgs }, deviceType, getState)
-            );
-          }
-        })
-      );
-    }
-
-    const storageSelectCmd = `"storage ${mtpStoragesListSelected}"`;
-    const { queue } = fileTransferClipboard;
-
-    if (typeof queue === 'undefined' || queue === null || queue.length < 1) {
-      dispatch(
-        processMtpOutput({
-          deviceType,
-          error: `No files selected`,
-          stderr: null,
-          data: null,
-          callback: () => {
-            dispatch(
-              fetchDirList({ ...fetchDirListArgs }, deviceType, getState)
-            );
-          }
-        })
-      );
-    }
-
-    let _queue = [];
-    let cmdArgs = {};
-
-    switch (direction) {
-      case 'mtpToLocal':
-        _queue = (queue || []).map(sourcePath => {
-          const destinationPath = path.resolve(destinationFolder);
-          const escapedDestinationPath = escapeShellMtp(
-            `${destinationPath}/${baseName(sourcePath)}`
-          );
-          const escapedSourcePath = `${escapeShellMtp(sourcePath)}`;
-
-          return `-e ${storageSelectCmd} "get \\"${escapedSourcePath}\\" \\"${escapedDestinationPath}\\""`;
-        });
-
-        cmdArgs = {
-          _queue
-        };
-
-        return _pasteFiles(
-          { ...pasteArgs },
-          { ...fetchDirListArgs },
-          { ...cmdArgs },
-          deviceType,
-          dispatch,
-          getState,
-          getCurrentWindow
-        );
-
-      case 'localtoMtp':
-        _queue = (queue || []).map(sourcePath => {
-          const destinationPath = path.resolve(destinationFolder);
-          const escapedDestinationPath = `${escapeShellMtp(destinationPath)}`;
-          const escapedSourcePath = `${escapeShellMtp(sourcePath)}`;
-
-          return `-e ${storageSelectCmd} "put \\"${escapedSourcePath}\\" \\"${escapedDestinationPath}\\""`;
-        });
-
-        cmdArgs = {
-          _queue
-        };
-
-        return _pasteFiles(
-          { ...pasteArgs },
-          { ...fetchDirListArgs },
-          { ...cmdArgs },
-          deviceType,
-          dispatch,
-          getState,
-          getCurrentWindow
-        );
-
-      default:
-        break;
-    }
-  } catch (e) {
-    log.error(e);
-  }
-};
-
 const _pasteFiles = (
-  { ...pasteArgs }, // eslint-disable-line no-unused-vars
+  { ...pasteArgs }, // eslint-disable-line no-unused-vars,@typescript-eslint/no-unused-vars
   { ...fetchDirListArgs }, // eslint-disable-line no-unused-vars
   { ...cmdArgs },
   deviceType,
@@ -985,6 +871,120 @@ const _pasteFiles = (
     });
 
     return { error: null, stderr: null, data: true };
+  } catch (e) {
+    log.error(e);
+  }
+};
+
+export const pasteFiles = (
+  { ...pasteArgs },
+  { ...fetchDirListArgs },
+  direction,
+  deviceType,
+  dispatch,
+  getState,
+  getCurrentWindow
+) => {
+  try {
+    const {
+      destinationFolder,
+      mtpStoragesListSelected,
+      fileTransferClipboard
+    } = pasteArgs;
+
+    if (
+      typeof destinationFolder === 'undefined' ||
+      destinationFolder === null
+    ) {
+      dispatch(
+        processMtpOutput({
+          deviceType,
+          error: `Invalid path.`,
+          stderr: null,
+          data: null,
+          callback: () => {
+            dispatch(
+              fetchDirList({ ...fetchDirListArgs }, deviceType, getState)
+            );
+          }
+        })
+      );
+    }
+
+    const storageSelectCmd = `"storage ${mtpStoragesListSelected}"`;
+    const { queue } = fileTransferClipboard;
+
+    if (typeof queue === 'undefined' || queue === null || queue.length < 1) {
+      dispatch(
+        processMtpOutput({
+          deviceType,
+          error: `No files selected`,
+          stderr: null,
+          data: null,
+          callback: () => {
+            dispatch(
+              fetchDirList({ ...fetchDirListArgs }, deviceType, getState)
+            );
+          }
+        })
+      );
+    }
+
+    let _queue = [];
+    let cmdArgs = {};
+
+    switch (direction) {
+      case 'mtpToLocal':
+        _queue = (queue || []).map(sourcePath => {
+          const destinationPath = path.resolve(destinationFolder);
+          const escapedDestinationPath = escapeShellMtp(
+            `${destinationPath}/${baseName(sourcePath)}`
+          );
+          const escapedSourcePath = `${escapeShellMtp(sourcePath)}`;
+
+          return `-e ${storageSelectCmd} "get \\"${escapedSourcePath}\\" \\"${escapedDestinationPath}\\""`;
+        });
+
+        cmdArgs = {
+          _queue
+        };
+
+        return _pasteFiles(
+          { ...pasteArgs },
+          { ...fetchDirListArgs },
+          { ...cmdArgs },
+          deviceType,
+          dispatch,
+          getState,
+          getCurrentWindow
+        );
+
+      case 'localtoMtp':
+        _queue = (queue || []).map(sourcePath => {
+          const destinationPath = path.resolve(destinationFolder);
+          const escapedDestinationPath = `${escapeShellMtp(destinationPath)}`;
+          const escapedSourcePath = `${escapeShellMtp(sourcePath)}`;
+
+          return `-e ${storageSelectCmd} "put \\"${escapedSourcePath}\\" \\"${escapedDestinationPath}\\""`;
+        });
+
+        cmdArgs = {
+          _queue
+        };
+
+        return _pasteFiles(
+          { ...pasteArgs },
+          { ...fetchDirListArgs },
+          { ...cmdArgs },
+          deviceType,
+          dispatch,
+          getState,
+          getCurrentWindow
+        );
+
+      default:
+        break;
+    }
   } catch (e) {
     log.error(e);
   }

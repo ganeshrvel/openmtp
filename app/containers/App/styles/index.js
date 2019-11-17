@@ -1,6 +1,6 @@
 import { variables, mixins } from '../../../styles/js';
 
-// eslint-disable-next-line no-unused-vars
+// eslint-disable-next-line no-unused-vars,@typescript-eslint/no-unused-vars
 export const theme = args => {
   return {
     palette: {
@@ -32,7 +32,7 @@ export const theme = args => {
   };
 };
 
-// eslint-disable-next-line no-unused-vars
+// eslint-disable-next-line no-unused-vars,@typescript-eslint/no-unused-vars
 export const styles = args => {
   // eslint-disable-line no-unused-vars
   return {

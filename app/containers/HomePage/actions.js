@@ -165,7 +165,7 @@ export function processMtpOutput({
   deviceType,
   error,
   stderr,
-  data, // eslint-disable-line no-unused-vars
+  data, // eslint-disable-line no-unused-vars, @typescript-eslint/no-unused-vars
   callback
 }) {
   return async dispatch => {
@@ -201,10 +201,10 @@ export function processMtpOutput({
 }
 
 export function processLocalOutput({
-  deviceType, // eslint-disable-line no-unused-vars
+  deviceType, // eslint-disable-line no-unused-vars,@typescript-eslint/no-unused-vars
   error,
   stderr,
-  data, // eslint-disable-line no-unused-vars
+  data, // eslint-disable-line no-unused-vars,@typescript-eslint/no-unused-vars
   callback
 }) {
   return dispatch => {

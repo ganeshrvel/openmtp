@@ -35,6 +35,24 @@ const nonBootableDeviceCreateWindow = () => {
   });
 };
 
+// Load an Existing Window
+export const loadExistingWindow = (allWindows, title) => {
+  if (!undefinedOrNull(allWindows)) {
+    for (let i = 0; i < allWindows.length; i += 1) {
+      const item = allWindows[i];
+
+      if (item.getTitle().indexOf(title) !== -1) {
+        item.focus();
+        item.show();
+
+        return item;
+      }
+    }
+  }
+
+  return null;
+};
+
 export const nonBootableDeviceWindow = () => {
   _nonBootableDeviceWindow = nonBootableDeviceCreateWindow();
   _nonBootableDeviceWindow.loadURL(
@@ -391,23 +409,4 @@ export const keyboardShortcutsWindow = (isRenderedPage = false) => {
   } catch (e) {
     log.error(e, `createWindows -> keyboardShortcutsWindow`);
   }
-};
-
-// Load an Existing Window
-
-export const loadExistingWindow = (allWindows, title) => {
-  if (!undefinedOrNull(allWindows)) {
-    for (let i = 0; i < allWindows.length; i += 1) {
-      const item = allWindows[i];
-
-      if (item.getTitle().indexOf(title) !== -1) {
-        item.focus();
-        item.show();
-
-        return item;
-      }
-    }
-  }
-
-  return null;
 };
