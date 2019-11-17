@@ -14,14 +14,17 @@ class FileExplorerTableFooterRender extends PureComponent {
       currentBrowsePath,
       deviceType,
       onBreadcrumbPathClick,
-      directoryLists
+      directoryLists,
+      isStatusBarEnabled
     } = this.props;
 
     return (
       <TableFooter component="div" className={styles.tableFooter}>
-        <FileExplorerTableFooterStatusBarRender
-          directoryLists={directoryLists}
-        />
+        {isStatusBarEnabled && (
+          <FileExplorerTableFooterStatusBarRender
+            directoryLists={directoryLists}
+          />
+        )}
         <Breadcrumb
           onBreadcrumbPathClick={onBreadcrumbPathClick}
           currentBrowsePath={currentBrowsePath[deviceType]}
