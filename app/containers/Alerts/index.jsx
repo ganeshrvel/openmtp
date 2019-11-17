@@ -9,12 +9,14 @@ import Snackbars from '../../components/Snackbars';
 class Alerts extends Component {
   _handleClose = () => {
     const { actionCreateClearAlert } = this.props;
+
     actionCreateClearAlert();
   };
 
   render() {
     const { Alerts } = this.props;
     const { message, variant, autoHideDuration } = Alerts;
+
     return (
       message && (
         <Snackbars

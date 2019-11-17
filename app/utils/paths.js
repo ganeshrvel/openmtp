@@ -60,6 +60,7 @@ export const baseName = filePath => {
   if (typeof filePath === 'undefined' || filePath === null) {
     return null;
   }
+
   const parsedPath = pathInfo(filePath);
 
   return parsedPath !== null ? parsedPath.base : null;
@@ -69,6 +70,7 @@ export const getExtension = (fileName, isFolder) => {
   if (isFolder) {
     return null;
   }
+
   const parsedPath = pathInfo(fileName);
 
   return parsedPath !== null ? parsedPath.ext : null;

@@ -20,6 +20,7 @@ class TextFieldEdit extends PureComponent {
 
   _handleBtnClick = ({ confirm = false }, event) => {
     const { onClickHandler } = this.props;
+
     event.preventDefault();
 
     onClickHandler({ confirm, textFieldValue: this.textFieldValue });
@@ -57,9 +58,9 @@ class TextFieldEdit extends PureComponent {
         fullWidth={fullWidthDialog}
         maxWidth={maxWidthDialog}
         disableEscapeKeyDown={false}
-        onEscapeKeyDown={event =>
-          this._handleBtnClick({ confirm: false }, event)
-        }
+        onEscapeKeyDown={event => {
+          this._handleBtnClick({ confirm: false }, event);
+        }}
       >
         <DialogTitle>{titleText}</DialogTitle>
         <form

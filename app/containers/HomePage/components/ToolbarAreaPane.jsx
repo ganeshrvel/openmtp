@@ -52,10 +52,12 @@ class ToolbarAreaPane extends PureComponent {
 
   componentWillMount() {
     const { deviceType } = this.props;
+
     ipcRenderer.on(
       'fileExplorerToolbarActionCommunication',
       (event, { ...args }) => {
         const { type, deviceType: _focussedFileExplorerDeviceType } = args;
+
         if (deviceType !== _focussedFileExplorerDeviceType) {
           return null;
         }
@@ -107,6 +109,7 @@ class ToolbarAreaPane extends PureComponent {
     } = this.props;
 
     const { selectedValue, triggerChange } = args;
+
     this._handleToggleMtpStorageSelectionDialog(false);
 
     if (!triggerChange) {
@@ -136,6 +139,7 @@ class ToolbarAreaPane extends PureComponent {
 
   _handleToggleSettings = () => {
     const { actionCreateToggleSettings } = this.props;
+
     actionCreateToggleSettings(true);
   };
 
@@ -153,6 +157,7 @@ class ToolbarAreaPane extends PureComponent {
     } = this.props;
 
     let filePath = '/';
+
     switch (itemType) {
       case 'up':
         filePath = pathUp(currentBrowsePath[deviceType]);
@@ -214,6 +219,7 @@ class ToolbarAreaPane extends PureComponent {
       hideHiddenFiles,
       currentBrowsePath
     } = this.props;
+
     actionCreateDelFiles(
       {
         fileList: directoryLists[deviceType].queue.selected,
@@ -369,9 +375,11 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         }
 
         let _mtpStoragesList = {};
+
         Object.keys(mtpStoragesList).map(a => {
           const item = mtpStoragesList[a];
           let _selectedValue = false;
+
           if (selectedValue === a) {
             _selectedValue = true;
           }
@@ -384,6 +392,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
               selected: _selectedValue
             }
           };
+
           return null;
         });
 

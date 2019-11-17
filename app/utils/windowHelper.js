@@ -2,6 +2,7 @@ import { BrowserWindow, remote } from 'electron';
 
 export const getMainWindowMainProcess = () => {
   const _mainWindow = BrowserWindow.getAllWindows();
+
   if (typeof _mainWindow === 'undefined' || _mainWindow === null) {
     return null;
   }
@@ -11,6 +12,7 @@ export const getMainWindowMainProcess = () => {
 
 export const getMainWindowRendererProcess = () => {
   const _mainWindow = remote.BrowserWindow.getAllWindows();
+
   if (typeof _mainWindow === 'undefined' || _mainWindow === null) {
     return null;
   }

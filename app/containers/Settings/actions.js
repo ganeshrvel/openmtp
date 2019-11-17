@@ -144,6 +144,7 @@ export function copySettingsToJsonFile(getState) {
       settingsState,
       excludeItemsFromSettingsFile
     );
+
     settingsStorage.setAll({ ...filteredSettings });
   };
 }

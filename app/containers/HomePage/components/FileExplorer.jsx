@@ -84,6 +84,7 @@ import {
 const { Menu, getCurrentWindow } = remote;
 const _mainWindowRendererProcess = getMainWindowRendererProcess();
 const filesDragGhostImg = new Image(0, 0);
+
 filesDragGhostImg.src = imgsrc('FileExplorer/copy.svg');
 let allowFileDropFlag = false;
 let multipleSelectDirection = null;
@@ -248,6 +249,7 @@ class FileExplorer extends Component {
     if (deviceType === DEVICES_TYPE_CONST.local) {
       ipcRenderer.on('isFileTransferActiveSeek', (event, { ...args }) => {
         const { check: checkIsFileTransferActiveSeek } = args;
+
         if (!checkIsFileTransferActiveSeek) {
           return null;
         }
@@ -348,6 +350,7 @@ class FileExplorer extends Component {
                 index,
                 item
               };
+
               return _return;
             }
           } else {
@@ -528,6 +531,7 @@ class FileExplorer extends Component {
         if (selected.length !== 1) {
           break;
         }
+
         this._handleTableDoubleClick(_lastSelectedNode.item, deviceType);
         break;
 
@@ -783,6 +787,7 @@ class FileExplorer extends Component {
       );
 
       this.fireElectronMenu(contextMenuActiveList);
+
       return null;
     }
   };
@@ -799,6 +804,7 @@ class FileExplorer extends Component {
 
     Object.keys(_contextMenuList).map(a => {
       const item = _contextMenuList[a];
+
       switch (a) {
         case 'rename':
           contextMenuActiveList.push({
@@ -881,6 +887,7 @@ class FileExplorer extends Component {
 
     Object.keys(args).map(a => {
       const item = args[a];
+
       switch (a) {
         case 'rename':
           this._handleToggleDialogBox(
@@ -897,6 +904,7 @@ class FileExplorer extends Component {
         case 'copy':
           // eslint-disable-next-line prefer-destructuring
           const selectedItemsToCopy = directoryLists[deviceType].queue.selected;
+
           actionCreateCopy({ selected: selectedItemsToCopy, deviceType });
           break;
 
@@ -904,6 +912,7 @@ class FileExplorer extends Component {
           // eslint-disable-next-line prefer-destructuring
           const selectedItemsToCopyToQueue =
             directoryLists[deviceType].queue.selected;
+
           actionCreateCopy({
             selected: selectedItemsToCopyToQueue,
             deviceType,
@@ -968,6 +977,7 @@ class FileExplorer extends Component {
 
     if (!confirm || newFileName === null) {
       this._handleClearEditDialog(targetAction);
+
       return null;
     }
 
@@ -979,6 +989,7 @@ class FileExplorer extends Component {
         },
         targetAction
       );
+
       return null;
     }
 
@@ -989,6 +1000,7 @@ class FileExplorer extends Component {
 
     if (newFilePath === data.path) {
       this._handleClearEditDialog(targetAction);
+
       return null;
     }
 
@@ -1002,8 +1014,10 @@ class FileExplorer extends Component {
         },
         targetAction
       );
+
       return null;
     }
+
     actionCreateRenameFile(
       {
         oldFilePath,
@@ -1021,6 +1035,7 @@ class FileExplorer extends Component {
 
   _handleErrorsEditDialog = ({ ...args }, targetAction) => {
     const { toggleDialog } = this.state;
+
     this.setState({
       toggleDialog: {
         ...toggleDialog,
@@ -1034,6 +1049,7 @@ class FileExplorer extends Component {
 
   _handleClearEditDialog = targetAction => {
     const { toggleDialog } = this.state;
+
     this.setState({
       toggleDialog: {
         ...toggleDialog,
@@ -1063,6 +1079,7 @@ class FileExplorer extends Component {
 
   _handleFilesDragOver = (e, { destinationDeviceType }) => {
     const { filesDrag } = this.props;
+
     e.preventDefault();
     e.stopPropagation();
 
@@ -1079,6 +1096,7 @@ class FileExplorer extends Component {
         lock: false,
         sameSourceDestinationLock: true
       });
+
       return null;
     }
 
@@ -1115,6 +1133,7 @@ class FileExplorer extends Component {
 
     // eslint-disable-next-line prefer-destructuring
     const selected = directoryLists[sourceDeviceType].queue.selected;
+
     actionCreateCopy({ selected, deviceType: sourceDeviceType });
 
     setTimeout(() => {
@@ -1170,6 +1189,7 @@ class FileExplorer extends Component {
 
     if (!confirm) {
       this._handleClearEditDialog(targetAction);
+
       return null;
     }
 
@@ -1181,6 +1201,7 @@ class FileExplorer extends Component {
         },
         targetAction
       );
+
       return null;
     }
 
@@ -1192,6 +1213,7 @@ class FileExplorer extends Component {
         },
         targetAction
       );
+
       return null;
     }
 
@@ -1207,6 +1229,7 @@ class FileExplorer extends Component {
         },
         targetAction
       );
+
       return null;
     }
 
@@ -1240,6 +1263,7 @@ class FileExplorer extends Component {
     queue = queue.map(a => {
       const _baseName = baseName(a);
       const fullPath = `${destinationFolder}/${_baseName}`;
+
       if (fullPath.trim() === '' || /[\\:]/g.test(fullPath)) {
         invalidFileNameFlag = true;
       }
@@ -1251,11 +1275,13 @@ class FileExplorer extends Component {
       actionCreateThrowError({
         message: `Invalid file name in the path. \\: characters are not allowed.`
       });
+
       return null;
     }
 
     if (await checkFileExists(queue, deviceType, mtpStoragesListSelected)) {
       this._handleTogglePasteConfirmDialog(true);
+
       return null;
     }
 
@@ -1382,6 +1408,7 @@ class FileExplorer extends Component {
       if (deviceType === DEVICES_TYPE_CONST.local) {
         shell.openItem(path);
       }
+
       return null;
     }
 
@@ -1403,6 +1430,7 @@ class FileExplorer extends Component {
         value => this._lodashSortConstraints({ value, orderBy })
       ]);
     }
+
     return lodashSortBy(nodes, [
       value => this._lodashSortConstraints({ value, orderBy })
     ]).reverse();
@@ -1624,6 +1652,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
               deviceType
             )
           );
+
           return;
         }
 

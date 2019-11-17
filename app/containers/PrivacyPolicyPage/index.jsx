@@ -24,6 +24,7 @@ class PrivacyPolicyPage extends Component {
   render() {
     /* eslint-disable react/jsx-one-expression-per-line */
     const { classes: styles } = this.props;
+
     return (
       <div className={styles.root}>
         <Helmet titleTemplate={`%s - ${APP_TITLE}`}>

@@ -81,6 +81,7 @@ class App extends Component {
           // more than 2 boot ups have occured
           isFreshInstall = 0;
           this.allowWritingJsonToSettings = true;
+
           return null;
       }
 
@@ -105,6 +106,7 @@ class App extends Component {
     const isAnalyticsEnabledSettings = settingsStorage.getItems([
       'enableAnalytics'
     ]);
+
     try {
       if (isAnalyticsEnabledSettings.enableAnalytics && IS_PROD) {
         isConnected()
@@ -123,6 +125,7 @@ class App extends Component {
 
   render() {
     const { classes: styles } = this.props;
+
     return (
       <div className={styles.root}>
         <CssBaseline>

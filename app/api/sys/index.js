@@ -49,24 +49,28 @@ export const escapeShellMtp = cmd => {
       .replace(/\\/g, `\\\\\\\\`)
       .replace(/"/g, `\\\\\\"`);
   }
+
   if (cmd.indexOf(`"\\"`) !== -1) {
     return cmd
       .replace(/`/g, '\\`')
       .replace(/\\/g, `\\\\\\\\`)
       .replace(/"/g, `\\\\\\"`);
   }
+
   if (cmd.indexOf(`\\"`) !== -1) {
     return cmd
       .replace(/`/g, '\\`')
       .replace(/\\/g, `\\\\\\`)
       .replace(/"/g, `\\\\\\\\"`);
   }
+
   if (cmd.indexOf(`"\\`) !== -1) {
     return cmd
       .replace(/`/g, '\\`')
       .replace(/\\/g, `\\\\\\\\`)
       .replace(/"/g, `\\\\\\"`);
   }
+
   return cmd
     .replace(/`/g, '\\`')
     .replace(/\\/g, `\\\\\\`)
@@ -194,40 +198,48 @@ export const checkFileExists = async (
     }
 
     let _isArray = false;
+
     if (isArray(filePath)) {
       _isArray = true;
     }
 
     let fullPath = null;
+
     switch (deviceType) {
       case DEVICES_TYPE_CONST.local:
         if (_isArray) {
           for (let i = 0; i < filePath.length; i += 1) {
             const item = filePath[i];
+
             fullPath = path.resolve(item);
             if (await existsSync(fullPath)) {
               return true;
             }
           }
+
           return null;
         }
 
         fullPath = path.resolve(filePath);
+
         return await existsSync(fullPath);
 
       case DEVICES_TYPE_CONST.mtp:
         if (_isArray) {
           for (let i = 0; i < filePath.length; i += 1) {
             const item = filePath[i];
+
             fullPath = path.resolve(item);
             if (await checkMtpFileExists(fullPath, mtpStoragesListSelected)) {
               return true;
             }
           }
+
           return null;
         }
 
         fullPath = path.resolve(filePath);
+
         return await checkMtpFileExists(fullPath, mtpStoragesListSelected);
 
       default:
@@ -262,6 +274,7 @@ export const asyncReadLocalDir = async ({ filePath, ignoreHidden }) => {
 
     if (error) {
       log.error(error, `asyncReadLocalDir`);
+
       return { error: true, data: null };
     }
 
@@ -280,6 +293,7 @@ export const asyncReadLocalDir = async ({ filePath, ignoreHidden }) => {
       if (!existsSync(fullPath)) {
         continue; // eslint-disable-line no-continue
       }
+
       const stat = statSync(fullPath);
       const isFolder = lstatSync(fullPath).isDirectory();
       const extension = path.extname(fullPath);
@@ -298,6 +312,7 @@ export const asyncReadLocalDir = async ({ filePath, ignoreHidden }) => {
         dateAdded: moment(dateTime).format('YYYY-MM-DD HH:mm:ss')
       });
     }
+
     return { error, data: response };
   } catch (e) {
     log.error(e);
@@ -329,8 +344,10 @@ export const delLocalFiles = async ({ fileList }) => {
     for (let i = 0; i < fileList.length; i += 1) {
       const item = fileList[i];
       const { error } = await promisifiedRimraf(item);
+
       if (error) {
         log.error(`${error}`, `delLocalFiles -> rm error`);
+
         return { error, stderr: null, data: false };
       }
     }
@@ -369,8 +386,10 @@ export const renameLocalFiles = async ({ oldFilePath, newFilePath }) => {
     }
 
     const { error } = await promisifiedRename({ oldFilePath, newFilePath });
+
     if (error) {
       log.error(`${error}`, `renameLocalFiles -> mv error`);
+
       return { error, stderr: null, data: false };
     }
 
@@ -399,8 +418,10 @@ export const newLocalFolder = async ({ newFolderPath }) => {
     }
 
     const { error } = await promisifiedMkdir({ newFolderPath });
+
     if (error) {
       log.error(`${error}`, `newLocalFolder -> mkdir error`);
+
       return { error, stderr: null, data: false };
     }
 
@@ -425,6 +446,7 @@ export const fetchMtpStorageOptions = async () => {
         `fetchMtpStorageOptions -> storage-list error`,
         false
       );
+
       return { error, stderr, data: null };
     }
 
@@ -434,12 +456,14 @@ export const fetchMtpStorageOptions = async () => {
     const storageIdMatchPattern = /([^\D]+)/;
 
     let storageList = {};
+
     _storageList
       .filter((a, index) => !filterOutMtpLines(a, index))
       .map((a, index) => {
         if (!a) {
           return null;
         }
+
         const _matchDesc = descMatchPattern.exec(a);
         const _matchedStorageId = storageIdMatchPattern.exec(a);
 
@@ -456,6 +480,7 @@ export const fetchMtpStorageOptions = async () => {
 
         const matchDesc = _matchDesc[1].trim();
         const matchedStorageId = _matchedStorageId[1].trim();
+
         storageList = {
           ...storageList,
           [matchedStorageId]: {
@@ -514,6 +539,7 @@ export const asyncReadMtpDir = async ({
         `${filePropsError} : ${filePropsStderr}`,
         `asyncReadMtpDir -> lsext error`
       );
+
       return { error: filePropsError, stderr: filePropsStderr, data: null };
     }
 
@@ -537,6 +563,7 @@ export const asyncReadMtpDir = async ({
       if (itemSplit === null || itemSplit.length < 2 || itemSplit[1] === '') {
         continue; // eslint-disable-line no-continue
       }
+
       const matchedFileName = itemSplit[1].replace(/^\s{2}|\s$/g, '');
       const filePropsList = _matchedProps.replace(/\s\s+/g, ' ').split(' ');
 
@@ -556,6 +583,7 @@ export const asyncReadMtpDir = async ({
       if (findLodash(response, { path: fullPath })) {
         continue; // eslint-disable-line no-continue
       }
+
       response.push({
         name: matchedFileName,
         path: fullPath,
@@ -597,6 +625,7 @@ export const renameMtpFiles = async ({
 
     if (error || stderr) {
       log.error(`${error} : ${stderr}`, `renameMtpFiles -> rename error`);
+
       return { error, stderr, data: false };
     }
 
@@ -613,6 +642,7 @@ export const delMtpFiles = async ({ fileList, mtpStoragesListSelected }) => {
     }
 
     const storageSelectCmd = `"storage ${mtpStoragesListSelected}"`;
+
     for (let i = 0; i < fileList.length; i += 1) {
       const { error, stderr } = await promisifiedExec(
         `${mtpCli} ${storageSelectCmd} "rm \\"${escapeShellMtp(
@@ -622,6 +652,7 @@ export const delMtpFiles = async ({ fileList, mtpStoragesListSelected }) => {
 
       if (error || stderr) {
         log.error(`${error} : ${stderr}`, `delMtpDir -> rm error`);
+
         return { error, stderr, data: false };
       }
     }
@@ -649,6 +680,7 @@ export const newMtpFolder = async ({
 
     if (error || stderr) {
       log.error(`${error} : ${stderr}`, `newMtpFolder -> mkpath error`);
+
       return { error, stderr, data: false };
     }
 
@@ -714,6 +746,7 @@ export const pasteFiles = (
 
     let _queue = [];
     let cmdArgs = {};
+
     switch (direction) {
       case 'mtpToLocal':
         _queue = (queue || []).map(sourcePath => {
@@ -729,6 +762,7 @@ export const pasteFiles = (
         cmdArgs = {
           _queue
         };
+
         return _pasteFiles(
           { ...pasteArgs },
           { ...fetchDirListArgs },
@@ -794,6 +828,7 @@ const _pasteFiles = (
       if (transferList === null) {
         clearInterval(handleTransferListInterval);
         handleTransferListInterval = 0;
+
         return null;
       }
 
@@ -810,6 +845,7 @@ const _pasteFiles = (
           : 0;
       const _speed = speed ? `${niceBytes(speed)}` : `--`;
       const elapsedTime = msToTime(currentCopiedTime - startTime);
+
       prevCopiedTime = currentCopiedTime;
       prevCopiedBlockSize = currentCopiedBlockSize;
 
@@ -868,6 +904,7 @@ const _pasteFiles = (
 
         const event = bufferedOutputSplit[eventIndex];
         const matchedItem = item.match(/(\d+?\d*)\s(\d+?\d*)$/);
+
         if (matchedItem === null) {
           return null;
         }
@@ -881,6 +918,7 @@ const _pasteFiles = (
           currentCopiedBlockSize = 0;
           prevCopiedTime = 0;
           currentCopiedTime = 0;
+
           return null;
         }
 
@@ -898,6 +936,7 @@ const _pasteFiles = (
           .join(' ');
 
         const perc = percentage(currentProgressSize, totalFileSize);
+
         currentCopiedBlockSize = totalFileSize - currentProgressSize;
         currentCopiedTime = unixTimestampNow();
 
@@ -957,10 +996,13 @@ export const mtpVerboseReport = async () => {
 
     if (error) {
       log.doLog(`${error}`);
+
       return { error, stderr, data: null };
     }
+
     if (stderr) {
       log.doLog(`${stderr}`);
+
       return { error, stderr, data: null };
     }
 

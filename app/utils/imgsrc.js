@@ -14,6 +14,7 @@ export const imgsrc = (filePath, returnNoImageFound = true) => {
     if (!returnNoImageFound) {
       return null;
     }
+
     return require('../public/images/no-image.png');
   }
 };

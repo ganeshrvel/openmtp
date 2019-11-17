@@ -22,6 +22,7 @@ export default class GenerateErrorReportBody extends PureComponent {
       AUTHOR_EMAIL,
       onGenerateErrorLogs
     } = this.props;
+
     return (
       <Fragment>
         <List>

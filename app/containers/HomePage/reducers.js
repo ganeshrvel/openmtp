@@ -229,6 +229,7 @@ export const initialState = {
 
 export default function Home(state = initialState, action) {
   const { type, payload, deviceType = null } = action;
+
   switch (type) {
     case actionTypes.SET_FOCUSSED_FILE_EXPLORER_DEVICE_TYPE:
       return {

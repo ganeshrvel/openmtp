@@ -14,5 +14,6 @@ const withReducer = (key, reducer) => WrappedComponent => {
 
   return Extended;
 };
+
 /* eslint-enable */
 export { withReducer };

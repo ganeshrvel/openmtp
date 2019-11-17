@@ -8,6 +8,7 @@ export const initialState = {
 
 export default function Alerts(state = initialState, action) {
   const { type, payload } = action;
+
   switch (type) {
     case actionTypes.THROW_ALERT:
       return {

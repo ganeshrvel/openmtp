@@ -34,6 +34,14 @@ module.exports = {
   rules: {
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/no-unused-vars': [
+      'error',
+      {
+        args: 'after-used',
+        argsIgnorePattern: '^(theme|props|state|ownProps|dispatch|getState)|_',
+        varsIgnorePattern: '^(variables|mixins|args|log)'
+      }
+    ],
     'arrow-body-style': 'off',
     'arrow-parens': 'off',
     'class-methods-use-this': 'off',
@@ -51,6 +59,7 @@ module.exports = {
     'jsx-a11y/label-has-associated-control': 'off',
     'jsx-a11y/no-static-element-interactions': 'off',
     'jsx-a11y/click-events-have-key-events': 'off',
+    'jsx-a11y/control-has-associated-label': 'off',
     'no-console': [
       'error',
       {
@@ -69,6 +78,17 @@ module.exports = {
         varsIgnorePattern: '^(variables|mixins|args|log)'
       }
     ],
+    'padding-line-between-statements': [
+      'error',
+      { blankLine: 'always', prev: '*', next: 'return' },
+      { blankLine: 'always', prev: ['block-like'], next: '*' },
+      { blankLine: 'always', prev: ['const', 'let', 'var'], next: '*' },
+      {
+        blankLine: 'any',
+        prev: ['const', 'let', 'var'],
+        next: ['const', 'let', 'var']
+      }
+    ],
     'prettier/prettier': ['error', { singleQuote: true }],
     'promise/param-names': 'error',
     'promise/always-return': 'error',
@@ -78,16 +98,24 @@ module.exports = {
       'error',
       {
         order: [
-          'type-annotations',
+          'defaultProps',
+          'static-variables',
           'static-methods',
+          'instance-variables',
+          'type-annotations',
           'lifecycle',
           'everything-else',
           'render'
         ]
       }
     ],
+    'react/jsx-curly-brace-presence': [
+      'error',
+      { props: 'never', children: 'ignore' }
+    ],
     'react/jsx-fragments': 0,
     'react/jsx-no-bind': 'off',
+    'react/jsx-props-no-spreading': 'off',
     'react/jsx-filename-extension': [
       'error',
       { extensions: ['.js', '.jsx', '.tsx'] }

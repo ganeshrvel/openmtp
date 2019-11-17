@@ -103,11 +103,11 @@ class Features extends PureComponent {
           </ListItem>
           <ListItem
             button
-            onClick={() =>
+            onClick={() => {
               this._handleExpansionPanel({
                 key: 'keyboardNavigation'
-              })
-            }
+              });
+            }}
           >
             <ListItemIcon>
               <KeyboardIcon />

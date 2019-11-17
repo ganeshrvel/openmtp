@@ -12,6 +12,7 @@ import { styles } from '../styles/Confirm';
 class Confirm extends PureComponent {
   _handleBtnClick = ({ confirm = false }) => {
     const { onClickHandler } = this.props;
+
     onClickHandler(confirm);
   };
 
@@ -30,6 +31,7 @@ class Confirm extends PureComponent {
       fullWidthDialog,
       maxWidthDialog
     } = this.props;
+
     return (
       <Dialog
         onKeyPress={this._handleKeyPress}

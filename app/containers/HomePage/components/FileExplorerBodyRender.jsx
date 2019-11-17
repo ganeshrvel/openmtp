@@ -72,9 +72,11 @@ class FileExplorerBodyRender extends PureComponent {
     this.fileExplorerKeymapString = Object.keys(fileExplorerKeymaps).reduce(
       (accumulator, currentKey) => {
         const itemCurrentKey = fileExplorerKeymaps[currentKey].keys;
+
         if (this.acceleratorIgnoreList.indexOf(currentKey) !== -1) {
           return accumulator;
         }
+
         if (undefinedOrNull(accumulator) || accumulator.trim() === '') {
           return itemCurrentKey.join(', ');
         }
@@ -87,6 +89,7 @@ class FileExplorerBodyRender extends PureComponent {
     hotkeys(this.fileExplorerKeymapString, (event, handler) => {
       Object.keys(fileExplorerKeymaps).map(a => {
         const item = fileExplorerKeymaps[a].keys;
+
         if (
           undefinedOrNull(keymapActionsList[a]) ||
           undefinedOrNull(item) ||
@@ -175,6 +178,7 @@ class FileExplorerBodyRender extends PureComponent {
 
   tableData = () => {
     const { deviceType, currentBrowsePath, directoryLists } = this.props;
+
     return {
       path: currentBrowsePath[deviceType],
       directoryLists: directoryLists[deviceType]

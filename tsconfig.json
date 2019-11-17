@@ -39,7 +39,8 @@
     "config/**/*",
     "webpack/**/*",
     "internals/**/*",
-    "docs-sources/**/*"
+    "docs-sources/**/*",
+    "babel.config.js"
   ],
   "exclude": [
     "node_modules/**/*",

@@ -3,6 +3,7 @@ export function fetchUrl({ url }) {
     if (res.status === 200) {
       return res.json();
     }
+
     return null;
   });
 }

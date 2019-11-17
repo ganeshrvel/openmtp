@@ -13,11 +13,13 @@ import { quickHash } from '../../../utils/funcs';
 class SidebarAreaPaneLists extends PureComponent {
   _handleFetchDirList({ ...args }) {
     const { onClickHandler } = this.props;
+
     onClickHandler({ ...args });
   }
 
   ListsRender = listData => {
     const { classes: styles, deviceType, currentBrowsePath } = this.props;
+
     return (
       <List component="nav" dense className={styles.listsBottom}>
         {listData.map(item => {
@@ -27,13 +29,13 @@ class SidebarAreaPaneLists extends PureComponent {
               button
               selected={currentBrowsePath === item.path}
               disabled={!item.enabled}
-              onClick={() =>
+              onClick={() => {
                 this._handleFetchDirList({
                   filePath: item.path,
                   deviceType,
                   isSidemenu: true
-                })
-              }
+                });
+              }}
             >
               <ListItemIcon>
                 {item.icon === 'folder' && <FolderIcon />}

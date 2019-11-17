@@ -25,6 +25,7 @@ export const initialState = {
 
 export default function Settings(state = initialState, action) {
   const { type, payload, deviceType = null } = action;
+
   switch (type) {
     case actionTypes.FRESH_INSTALL:
       return { ...state, freshInstall: payload };

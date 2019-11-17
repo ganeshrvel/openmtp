@@ -37,6 +37,7 @@ class ProgressbarPage extends Component {
   render() {
     const { classes: styles } = this.props;
     const { progressTitle, progressBodyText, value, variant } = this.state;
+
     return (
       <div className={styles.root}>
         <Typography variant="body1" className={styles.progressTitle}>

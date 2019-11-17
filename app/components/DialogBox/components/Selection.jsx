@@ -13,14 +13,17 @@ import { styles } from '../styles/Selection';
 class Selection extends PureComponent {
   _handleListItemClick = ({ ...args }) => {
     const { onClose } = this.props;
+
     onClose({ ...args });
   };
 
   render() {
     const { list, titleText, open, showDiskAvatars } = this.props;
+
     if (Object.keys(list).length < 1) {
       return <Fragment />;
     }
+
     return (
       <Dialog
         onClose={() =>
@@ -36,6 +39,7 @@ class Selection extends PureComponent {
           <List>
             {Object.keys(list).map(a => {
               const item = list[a];
+
               return (
                 <Fragment key={a}>
                   <ListItem

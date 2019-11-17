@@ -30,6 +30,7 @@ const configureStore = initialState => {
 
   // Router Middleware
   const router = routerMiddleware(history);
+
   middleware.push(router);
 
   // If Redux DevTools Extension is installed use it, otherwise use Redux compose
@@ -49,6 +50,7 @@ const configureStore = initialState => {
   store.injectReducer = (key, reducer) => {
     store.asyncReducers[key] = reducer;
     store.replaceReducer(rootReducer(store.asyncReducers));
+
     return store;
   };
 

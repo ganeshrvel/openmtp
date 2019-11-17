@@ -65,6 +65,7 @@ export const processMtpBuffer = async ({ error, stderr }) => {
   };
 
   const noMtpError = checkError('noMtp');
+
   log.doLog(
     `MTP buffer o/p logging;${EOL}error: ${errorStringified.trim()}${EOL}stderr: ${stderrStringified.trim()}`,
     !noMtpError
@@ -92,6 +93,7 @@ export const processMtpBuffer = async ({ error, stderr }) => {
       status: false
     };
   }
+
   if (
     /* MTP device may be locked */
     checkError('deviceLocked')
@@ -103,6 +105,7 @@ export const processMtpBuffer = async ({ error, stderr }) => {
       status: false
     };
   }
+
   if (
     /* error: Get: invalid response code InvalidObjectHandle (0x2009) */
     checkError('invalidObjectHandle')
@@ -114,6 +117,7 @@ export const processMtpBuffer = async ({ error, stderr }) => {
       status: false
     };
   }
+
   if (
     /* error: Get: invalid response code InvalidStorageID */
     checkError('invalidStorageID')
@@ -125,6 +129,7 @@ export const processMtpBuffer = async ({ error, stderr }) => {
       status: false
     };
   }
+
   if (
     /* error: (*interface)->WritePipe(interface, ep->GetRefIndex(), buffer.data(), r): error 0xe00002eb */
     checkError('writePipe')
@@ -136,6 +141,7 @@ export const processMtpBuffer = async ({ error, stderr }) => {
       status: false
     };
   }
+
   if (
     /* MTP storage not accessible */
     checkError('mtpStorageNotAccessible1') ||
@@ -148,6 +154,7 @@ export const processMtpBuffer = async ({ error, stderr }) => {
       status: false
     };
   }
+
   if (
     /* Path not found */
     checkError('fileNotFound')
@@ -159,6 +166,7 @@ export const processMtpBuffer = async ({ error, stderr }) => {
       status: true
     };
   }
+
   if (
     /* No such file or directory */
     checkError('noSuchFiles')
@@ -170,6 +178,7 @@ export const processMtpBuffer = async ({ error, stderr }) => {
       status: true
     };
   }
+
   if (
     /* No files selected */
     checkError('noFilesSelected') ||
@@ -182,6 +191,7 @@ export const processMtpBuffer = async ({ error, stderr }) => {
       status: true
     };
   }
+
   if (
     /* No files selected */
     checkError('partialDeletion')
@@ -193,6 +203,7 @@ export const processMtpBuffer = async ({ error, stderr }) => {
       status: true
     };
   }
+
   /* common errors */
   return {
     error: errorDictionary.common,
@@ -258,6 +269,7 @@ export const processLocalBuffer = ({ error, stderr }) => {
       logError: true
     };
   }
+
   if (
     /* Command failed */
     checkError('commandFailed')
@@ -268,6 +280,7 @@ export const processLocalBuffer = ({ error, stderr }) => {
       logError: true
     };
   }
+
   if (
     /* No such file or directory */
     checkError('noSuchFiles')
@@ -279,6 +292,7 @@ export const processLocalBuffer = ({ error, stderr }) => {
       status: true
     };
   }
+
   if (
     /* Resource busy or locked */
     checkError('resourceBusy')
@@ -289,6 +303,7 @@ export const processLocalBuffer = ({ error, stderr }) => {
       logError: true
     };
   }
+
   /* common errors */
   return {
     error: errorDictionary.common,
@@ -301,6 +316,7 @@ const sanitizeErrors = string => {
   if (string === null) {
     return `Oops.. Try again`;
   }
+
   string = string.replace(/^(error: )/, '').trim(); // eslint-disable-line no-param-reassign
   string = replaceBulk(string, ['error:', 'stat failed:'], ['', '']).trim(); // eslint-disable-line no-param-reassign
 

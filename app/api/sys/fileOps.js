@@ -11,9 +11,11 @@ import rimraf from 'rimraf';
 
 export const writeFileAsync = (filePath, text) => {
   const options = { mode: 0o755 };
+
   _writeFileAsync(filePath, text, options, err => {
     if (err) {
       console.error(err, `writeFileAsync`);
+
       return null;
     }
   });
@@ -21,6 +23,7 @@ export const writeFileAsync = (filePath, text) => {
 
 export const writeFileSync = (filePath, text) => {
   const options = { mode: 0o755 };
+
   try {
     _writeFileSync(filePath, text, options);
   } catch (err) {
@@ -30,9 +33,11 @@ export const writeFileSync = (filePath, text) => {
 
 export const appendFileAsync = (filePath, text) => {
   const options = { mode: 0o755 };
+
   _appendFileAsync(filePath, text + EOL, options, err => {
     if (err) {
       console.error(err, `appendFileAsync`);
+
       return null;
     }
   });
@@ -40,6 +45,7 @@ export const appendFileAsync = (filePath, text) => {
 
 export const readFileSync = filePath => {
   const options = { encoding: 'utf8' };
+
   return _readFileSync(filePath, options);
 };
 

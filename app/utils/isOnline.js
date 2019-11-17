@@ -8,8 +8,10 @@ export const isConnected = () => {
       dns.lookup('github.com', err => {
         if (err && err.code === 'ENOTFOUND') {
           resolve(false);
+
           return null;
         }
+
         resolve(true);
       });
     });

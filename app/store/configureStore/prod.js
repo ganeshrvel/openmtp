@@ -15,8 +15,10 @@ const configureStore = initialState => {
   store.injectReducer = (key, reducer) => {
     store.asyncReducers[key] = reducer;
     store.replaceReducer(rootReducer(store.asyncReducers));
+
     return store;
   };
+
   return store;
 };
 
