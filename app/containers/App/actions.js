@@ -1,4 +1,4 @@
-'use strict';
+
 
 import prefixer from '../../utils/reducerPrefixer';
 

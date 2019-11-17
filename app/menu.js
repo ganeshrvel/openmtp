@@ -1,4 +1,4 @@
-'use strict';
+
 
 import { app, Menu } from 'electron';
 import {

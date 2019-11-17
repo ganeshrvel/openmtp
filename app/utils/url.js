@@ -1,4 +1,4 @@
-'use strict';
+
 
 import { shell } from 'electron';
 

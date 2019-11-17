@@ -1,4 +1,4 @@
-'use strict';
+
 
 import { actionTypes } from './actions';
 

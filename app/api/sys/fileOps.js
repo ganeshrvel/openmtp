@@ -1,4 +1,4 @@
-'use strict';
+
 
 import {
   existsSync as _existsSync,

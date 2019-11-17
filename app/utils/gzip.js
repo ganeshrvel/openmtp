@@ -1,4 +1,4 @@
-'use strict';
+
 
 import zlib from 'zlib';
 import { createReadStream, createWriteStream } from 'fs';

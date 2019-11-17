@@ -1,4 +1,4 @@
-'use strict';
+
 
 import { log } from '../utils/log';
 import { readFileSync, writeFileSync } from '../api/sys/fileOps';

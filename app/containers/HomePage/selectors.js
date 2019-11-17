@@ -1,4 +1,4 @@
-'use strict';
+
 
 import { createSelector } from 'reselect';
 import { getMtpStoragesListSelected } from './actions';

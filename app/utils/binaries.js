@@ -1,4 +1,4 @@
-'use strict';
+
 
 import path from 'path';
 import { remote } from 'electron';

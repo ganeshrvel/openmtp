@@ -1,4 +1,4 @@
-'use strict';
+
 
 export const ALLOWED_GITHUB_FETCH_STATUSES = [200, 403, 404];
 

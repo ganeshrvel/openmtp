@@ -1,4 +1,4 @@
-'use strict';
+
 
 import EventEmitter from 'events';
 import util from 'util';

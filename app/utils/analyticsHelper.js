@@ -1,4 +1,4 @@
-'use strict';
+
 
 import Analytics from 'electron-ga';
 import { TRACKING_ID } from '../../config/google-analytics-key';

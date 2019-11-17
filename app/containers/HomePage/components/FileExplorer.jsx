@@ -1,4 +1,4 @@
-'use strict';
+
 
 /* eslint no-case-declarations: off */
 

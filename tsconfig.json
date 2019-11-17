@@ -34,7 +34,13 @@
     "importHelpers": true,
     "allowUnreachableCode": false
   },
-  "include": ["app/**/*", "config/**/*", "webpack/**/*"],
+  "include": [
+    "app/**/*",
+    "config/**/*",
+    "webpack/**/*",
+    "internals/**/*",
+    "docs-sources/**/*"
+  ],
   "exclude": [
     "node_modules/**/*",
     "node_modules",
@@ -44,8 +50,6 @@
     "blobs",
     "dist",
     "dll",
-    "docs-sources",
-    "webpack",
     "jest",
     "mtp-kernel",
     "extras"

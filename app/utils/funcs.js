@@ -1,4 +1,4 @@
-'use strict';
+
 
 import { APP_TITLEBAR_DOM_ID } from '../constants/dom';
 

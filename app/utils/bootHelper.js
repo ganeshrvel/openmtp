@@ -1,4 +1,4 @@
-'use strict';
+
 
 import Boot from '../classes/Boot';
 

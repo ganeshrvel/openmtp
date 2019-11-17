@@ -1,4 +1,4 @@
-'use strict';
+
 
 import configureStoreDev from './dev';
 import configureStoreProd from './prod';

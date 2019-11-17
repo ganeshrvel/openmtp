@@ -1,4 +1,4 @@
-'use strict';
+
 
 import React, { PureComponent } from 'react';
 import MenuIcon from '@material-ui/icons/Menu';

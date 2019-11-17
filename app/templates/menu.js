@@ -1,4 +1,4 @@
-'use strict';
+
 
 import { APP_NAME, APP_WEBSITE } from '../constants/meta';
 
