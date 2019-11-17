@@ -68,6 +68,7 @@ import {
   isFloat,
   isInt,
   isNumber,
+  removeArrayDuplicates,
   undefinedOrNull
 } from '../../../utils/funcs';
 import { getMainWindowRendererProcess } from '../../../utils/windowHelper';
@@ -366,6 +367,7 @@ class FileExplorer extends Component {
     return _return;
   };
 
+  /* activate actions using keyboard */
   _handleAcceleratorActivation = ({ type, data }) => {
     const { focussedFileExplorerDeviceType } = this.props;
     const {
@@ -445,6 +447,18 @@ class FileExplorer extends Component {
         actionCreateCopy({
           selected,
           deviceType
+        });
+        break;
+
+      case 'copyToQueue':
+        if (selected.length < 1) {
+          break;
+        }
+
+        actionCreateCopy({
+          selected,
+          deviceType,
+          toQueue: true
         });
         break;
 
@@ -805,6 +819,7 @@ class FileExplorer extends Component {
           break;
 
         case 'copy':
+        case 'copyToQueue':
           contextMenuActiveList.push({
             label: item.label,
             enabled: queue.selected.length > 0,
@@ -862,6 +877,7 @@ class FileExplorer extends Component {
     return contextMenuActiveList;
   }
 
+  /* activate actions using mouse */
   _handleContextMenuListActions = ({ ...args }) => {
     const { deviceType, directoryLists, actionCreateCopy } = this.props;
 
@@ -882,8 +898,19 @@ class FileExplorer extends Component {
 
         case 'copy':
           // eslint-disable-next-line prefer-destructuring
-          const selected = directoryLists[deviceType].queue.selected;
-          actionCreateCopy({ selected, deviceType });
+          const selectedItemsToCopy = directoryLists[deviceType].queue.selected;
+          actionCreateCopy({ selected: selectedItemsToCopy, deviceType });
+          break;
+
+        case 'copyToQueue':
+          // eslint-disable-next-line prefer-destructuring
+          const selectedItemsToCopyToQueue =
+            directoryLists[deviceType].queue.selected;
+          actionCreateCopy({
+            selected: selectedItemsToCopyToQueue,
+            deviceType,
+            toQueue: true
+          });
           break;
 
         case 'paste':
@@ -1423,7 +1450,8 @@ class FileExplorer extends Component {
       mtpDevice,
       filesDrag,
       fileExplorerListingType,
-      isStatusBarEnabled
+      isStatusBarEnabled,
+      fileTransferClipboard
     } = this.props;
     const {
       toggleDialog,
@@ -1539,10 +1567,12 @@ class FileExplorer extends Component {
           hideColList={hideColList}
           currentBrowsePath={currentBrowsePath}
           directoryLists={directoryLists}
+          fileTransferClipboard={fileTransferClipboard}
           mtpDevice={mtpDevice}
           filesDrag={filesDrag}
           tableSort={this.tableSort}
           isStatusBarEnabled={isStatusBarEnabled}
+          directoryGeneratedTime={directoryGeneratedTime}
           OnHoverDropZoneActivate={this._handleOnHoverDropZoneActivate}
           onFilesDragOver={this._handleFilesDragOver}
           onFilesDragEnd={this._handleFilesDragEnd}
@@ -1559,7 +1589,6 @@ class FileExplorer extends Component {
             this._handleFocussedFileExplorerDeviceType
           }
           onAcceleratorActivation={this._handleAcceleratorActivation}
-          directoryGeneratedTime={directoryGeneratedTime}
         />
       </Fragment>
     );
@@ -1774,11 +1803,27 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         }
       },
 
-      actionCreateCopy: ({ selected, deviceType }) => async (_, getState) => {
+      actionCreateCopy: ({ selected, deviceType, toQueue = false }) => async (
+        _,
+        getState
+      ) => {
         try {
+          let queue = [];
+
+          if (toQueue && isArray(selected) && selected.length > 0) {
+            const currentClipboardQueue = getState().Home.fileTransfer.clipboard
+              .queue;
+
+            queue = [...currentClipboardQueue, ...selected];
+          } else {
+            queue = selected || [];
+          }
+
+          queue = removeArrayDuplicates(queue);
+
           dispatch(
             setFileTransferClipboard({
-              queue: selected || [],
+              queue,
               source: deviceType
             })
           );

@@ -52,6 +52,7 @@ class FileExplorerBodyRender extends PureComponent {
     const keymapActionsList = {
       newFolder: this.acceleratorNewFolder,
       copy: this.acceleratorCreateAction,
+      copyToQueue: this.acceleratorCreateAction,
       paste: this.acceleratorCreateAction,
       delete: this.acceleratorCreateAction,
       refresh: this.acceleratorCreateAction,
@@ -195,6 +196,7 @@ class FileExplorerBodyRender extends PureComponent {
       onTableDrop,
       onBreadcrumbPathClick,
       isStatusBarEnabled,
+      fileTransferClipboard,
       ...parentProps
     } = this.props;
     const { directoryLists } = this.props;
@@ -248,8 +250,9 @@ class FileExplorerBodyRender extends PureComponent {
           deviceType={deviceType}
           currentBrowsePath={currentBrowsePath}
           onBreadcrumbPathClick={onBreadcrumbPathClick}
-          directoryLists={directoryLists[deviceType]}
           isStatusBarEnabled={isStatusBarEnabled}
+          directoryLists={directoryLists[deviceType]}
+          fileTransferClipboard={fileTransferClipboard}
         />
       </Paper>
     );
