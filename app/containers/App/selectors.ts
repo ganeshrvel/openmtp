@@ -1,8 +1,7 @@
 /* eslint-disable no-unused-vars, @typescript-eslint/no-unused-vars */
 
-import { createSelector } from 'reselect';
-import { initialState } from './reducers';
+import { RootState } from '../../types/store';
 
-const make = (state, props) => (state ? state.App : {});
+const make = (state: RootState) => (state ? state.App : {});
 
 /* eslint-enable no-unused-vars, @typescript-eslint/no-unused-vars */

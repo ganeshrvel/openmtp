@@ -46,7 +46,6 @@ module.exports = {
       'error',
       { functions: false, classes: false, variables: true }
     ],
-    '@typescript-eslint/explicit-member-accessibility': 'error',
     'arrow-body-style': 'off',
     'arrow-parens': 'off',
     'class-methods-use-this': 'off',
@@ -131,5 +130,13 @@ module.exports = {
     ],
     'react/prefer-stateless-function': 'off',
     'react/prop-types': 'off'
-  }
+  },
+  overrides: [
+    {
+      files: ['*.ts', '*.tsx'],
+      rules: {
+        '@typescript-eslint/explicit-member-accessibility': ['error']
+      }
+    }
+  ]
 };

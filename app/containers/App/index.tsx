@@ -1,5 +1,5 @@
 import { hot } from 'react-hot-loader/root';
-
+import 'tslib';
 import React, { Component } from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import {
@@ -55,7 +55,9 @@ class App extends Component<AppProps> {
   private setFreshInstall(): void {
     try {
       const { actionCreateFreshInstall } = this.props;
-      const isFreshInstallSettings = settingsStorage.getItems(['freshInstall']);
+      const isFreshInstallSettings: any = settingsStorage.getItems([
+        'freshInstall'
+      ]);
       let isFreshInstall = 0;
 
       switch (isFreshInstallSettings.freshInstall) {
@@ -99,14 +101,14 @@ class App extends Component<AppProps> {
   }
 
   private runAnalytics() {
-    const isAnalyticsEnabledSettings = settingsStorage.getItems([
+    const isAnalyticsEnabledSettings: any = settingsStorage.getItems([
       'enableAnalytics'
     ]);
 
     try {
       if (isAnalyticsEnabledSettings.enableAnalytics && IS_PROD) {
         isConnected()
-          .then(connected => {
+          .then((connected: any) => {
             analytics.send('screenview', { cd: '/Home' });
             analytics.send(`pageview`, { dp: '/Home' });
 
@@ -138,7 +140,7 @@ class App extends Component<AppProps> {
     );
   }
 }
-const mapDispatchToProps = (dispatch, ownProps) =>
+const mapDispatchToProps = (dispatch: any, ownProps: any) =>
   bindActionCreators(
     {
       actionCreateCopyJsonFileToSettings: ({ ...data }) => () => {

@@ -1,5 +1,7 @@
-import { Classes } from '../types/Titlebar';
+import { ClassesProp } from '../../../types';
 
-export interface AppProps extends Classes {
-  actionCreateCopyJsonFileToSettings: () => void;
+export interface AppProps extends ClassesProp {
+  actionCreateFreshInstall: any;
+  actionCreateCopyJsonFileToSettings: any;
+  isAnalyticsEnabledSettings: any;
 }

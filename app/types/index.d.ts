@@ -1,11 +1,17 @@
-export interface Classes {
-  classes: {
-    [key in string]: string;
-  };
+export interface ClassesProp {
+  classes: GenericString;
 }
 
-export interface GenericObjectTypes {
-  classes: {
-    [key in string]: any;
-  };
+export interface GenericObjectType {
+  [key: string]: any;
+}
+
+export type NullOrGenericObject = null | GenericObject;
+
+export interface GenericString {
+  [key: string]: string;
+}
+
+export interface GenericAlphaNumeric {
+  [key: string]: string | number;
 }

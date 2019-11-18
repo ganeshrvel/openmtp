@@ -1,3 +1,3 @@
-import { Classes } from '../../../types';
+import { ClassesProp } from '../../../types';
 
-export type TitlebarProps = Classes;
+export type TitlebarProps = ClassesProp;
