@@ -25,6 +25,8 @@ import { copyJsonFileToSettings, freshInstall } from '../Settings/actions';
 import { analytics } from '../../utils/analyticsHelper';
 import { isConnected } from '../../utils/isOnline';
 import { AppProps } from './types';
+import { action } from 'typesafe-actions';
+import { GetState } from '../../types/store';
 
 const appTheme = createMuiTheme(theme());
 
@@ -149,7 +151,7 @@ const mapDispatchToProps = (dispatch: any, ownProps: any) =>
 
       actionCreateFreshInstall: ({ ...data }) => (
         _: any,
-        getState: () => any
+        getState: GetState
       ) => {
         dispatch(freshInstall({ ...data }, getState));
       }

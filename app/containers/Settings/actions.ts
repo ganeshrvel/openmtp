@@ -1,10 +1,18 @@
 import omitLodash from 'lodash/omit';
-import { log } from '@Log';
+import { action } from 'typesafe-actions';
 import prefixer from '../../utils/reducerPrefixer';
 import { settingsStorage } from '../../utils/storageHelper';
+import {
+  CopyJsonFileToSettings,
+  SettingsReducersState
+} from './types/reducers';
+import { GetState, RootState } from '../../types/store';
+import { DevicesTypeEnum } from '../../constants/index.td';
+import { SettingsActionTypesList } from './types/actions';
 
 const prefix = '@@Settings';
-const actionTypesList = [
+
+const actionTypesList: SettingsActionTypesList[] = [
   'TOGGLE_SETTINGS',
   'FRESH_INSTALL',
   'SET_ONBOARDING',
@@ -20,7 +28,10 @@ const actionTypesList = [
 
 const excludeItemsFromSettingsFile = ['toggleSettings'];
 
-export const actionTypes = prefixer(prefix, actionTypesList);
+export const actionTypes = prefixer<SettingsActionTypesList>(
+  prefix,
+  actionTypesList
+);
 
 export function toggleSettings(data) {
   return {
@@ -29,7 +40,7 @@ export function toggleSettings(data) {
   };
 }
 
-export function freshInstall({ ...data }, getState) {
+export function freshInstall({ ...data }, getState: GetState) {
   const { isFreshInstall } = data;
 
   return dispatch => {
@@ -41,7 +52,7 @@ export function freshInstall({ ...data }, getState) {
   };
 }
 
-export function setOnboarding({ ...data }, getState) {
+export function setOnboarding({ ...data }, getState: GetState) {
   return dispatch => {
     dispatch({
       type: actionTypes.SET_ONBOARDING,
@@ -51,7 +62,7 @@ export function setOnboarding({ ...data }, getState) {
   };
 }
 
-export function hideHiddenFiles({ ...data }, deviceType, getState) {
+export function hideHiddenFiles({ ...data }, deviceType, getState: GetState) {
   const { toggle } = data;
 
   return dispatch => {
@@ -64,7 +75,11 @@ export function hideHiddenFiles({ ...data }, deviceType, getState) {
   };
 }
 
-export function fileExplorerListingType({ ...data }, deviceType, getState) {
+export function fileExplorerListingType(
+  { ...data },
+  deviceType,
+  getState: GetState
+) {
   const { type } = data;
 
   return dispatch => {
@@ -77,7 +92,7 @@ export function fileExplorerListingType({ ...data }, deviceType, getState) {
   };
 }
 
-export function enableAutoUpdateCheck({ ...data }, getState) {
+export function enableAutoUpdateCheck({ ...data }, getState: GetState) {
   const { toggle } = data;
 
   return dispatch => {
@@ -89,7 +104,7 @@ export function enableAutoUpdateCheck({ ...data }, getState) {
   };
 }
 
-export function enableBackgroundAutoUpdate({ ...data }, getState) {
+export function enableBackgroundAutoUpdate({ ...data }, getState: GetState) {
   const { toggle } = data;
 
   return dispatch => {
@@ -101,7 +116,7 @@ export function enableBackgroundAutoUpdate({ ...data }, getState) {
   };
 }
 
-export function enablePrereleaseUpdates({ ...data }, getState) {
+export function enablePrereleaseUpdates({ ...data }, getState: GetState) {
   const { toggle } = data;
 
   return dispatch => {
@@ -113,7 +128,7 @@ export function enablePrereleaseUpdates({ ...data }, getState) {
   };
 }
 
-export function enableAnalytics({ ...data }, getState) {
+export function enableAnalytics({ ...data }, getState: GetState) {
   const { toggle } = data;
 
   return dispatch => {
@@ -125,7 +140,7 @@ export function enableAnalytics({ ...data }, getState) {
   };
 }
 
-export function enableStatusBar({ ...data }, getState) {
+export function enableStatusBar({ ...data }, getState: GetState) {
   const { toggle } = data;
 
   return dispatch => {
@@ -137,7 +152,7 @@ export function enableStatusBar({ ...data }, getState) {
   };
 }
 
-export function copySettingsToJsonFile(getState) {
+export function copySettingsToJsonFile(getState: GetState) {
   return dispatch => {
     const settingsState = getState().Settings ? getState().Settings : {};
     const filteredSettings = omitLodash(

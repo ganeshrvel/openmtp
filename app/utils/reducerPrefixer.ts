@@ -1,10 +1,20 @@
-import { GenericString } from '../types';
+const reducerPrefixer = <T extends string>(
+  prefix: string,
+  typesList: T[]
+): {
+  [key in T]: string;
+} => {
+  const _return = {} as {
+    [key in T]: string;
+  };
 
-export default (prefix: string, typesList: string[]): GenericString => {
-  return typesList.reduce((result, value) => {
-    // eslint-disable-next-line no-param-reassign
-    result[value] = `${prefix}/${value}`;
+  typesList.map(a => {
+    _return[a] = `${prefix}/${a}`;
 
-    return result;
-  }, {});
+    return a;
+  });
+
+  return _return;
 };
+
+export default reducerPrefixer;
