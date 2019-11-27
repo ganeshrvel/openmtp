@@ -154,7 +154,7 @@ Setup the *code signing* to build, package and publish the app.
 security add-generic-password -a "<apple-developer-account-username>" -w <app-specific-password*> -s "ELECTRON_NOTORIZE_PASSWORD"
 ```
 
-- Log into your [Apple App Store Connect Account](appstoreconnect.apple.com/agreements/# "Apple App Store Connect Account")
+- Log into your [Apple App Store Connect Account](https://appstoreconnect.apple.com/agreements/# "Apple App Store Connect Account")
 - Accept to all agreements
 - The statuses shall turn *Active*
 
