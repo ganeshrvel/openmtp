@@ -200,9 +200,7 @@ class FileExplorer extends Component {
     const { nodes: nextDirectoryNodes } = nextDirectoryLists[deviceType];
 
     if (nextDirectoryNodes !== prevDirectoryNodes) {
-      this.setState({
-        directoryGeneratedTime: Date.now()
-      });
+      this._handleDirectoryGeneratedTime();
     }
   }
 
@@ -1323,6 +1321,8 @@ class FileExplorer extends Component {
     }
 
     actionCreateRequestSort({ order, orderBy }, deviceType);
+
+    this._handleDirectoryGeneratedTime();
   };
 
   _handleSelectAllClick = (deviceType, event) => {
@@ -1437,6 +1437,12 @@ class FileExplorer extends Component {
     }
 
     return _primer;
+  };
+
+  _handleDirectoryGeneratedTime = () => {
+    this.setState({
+      directoryGeneratedTime: Date.now()
+    });
   };
 
   render() {
