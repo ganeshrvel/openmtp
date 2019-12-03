@@ -1,7 +1,9 @@
 import { actionTypes } from './actions';
-import { DEVICES_TYPE_CONST } from '../../constants';
+import { SettingsReducersState } from './types/reducers';
+import { SettingsActions } from './types/actions';
+import { DevicesTypeEnum } from '../../constants/index.td';
 
-export const initialState = {
+export const initialState: SettingsReducersState = {
   freshInstall: 0,
   onboarding: {
     lastFiredVersion: null
@@ -13,17 +15,20 @@ export const initialState = {
   enableAnalytics: true,
   enableStatusBar: true,
   hideHiddenFiles: {
-    [DEVICES_TYPE_CONST.local]: true,
-    [DEVICES_TYPE_CONST.mtp]: true
+    [DevicesTypeEnum.local]: true,
+    [DevicesTypeEnum.mtp]: true
   },
 
   fileExplorerListingType: {
-    [DEVICES_TYPE_CONST.local]: 'grid',
-    [DEVICES_TYPE_CONST.mtp]: 'grid'
+    [DevicesTypeEnum.local]: 'grid',
+    [DevicesTypeEnum.mtp]: 'grid'
   }
 };
 
-export default function Settings(state = initialState, action) {
+export default function Settings(
+  state = initialState,
+  action: SettingsActions
+): SettingsReducersState {
   const { type, payload, deviceType = null } = action;
 
   switch (type) {
@@ -45,7 +50,10 @@ export default function Settings(state = initialState, action) {
     case actionTypes.HIDE_HIDDEN_FILES:
       return {
         ...state,
-        hideHiddenFiles: { ...state.hideHiddenFiles, [deviceType]: payload }
+        hideHiddenFiles: {
+          ...state.hideHiddenFiles,
+          [deviceType as DevicesTypeEnum]: payload
+        }
       };
 
     case actionTypes.FILE_EXPLORER_LISTING_TYPE:
@@ -53,7 +61,7 @@ export default function Settings(state = initialState, action) {
         ...state,
         fileExplorerListingType: {
           ...state.fileExplorerListingType,
-          [deviceType]: payload
+          [deviceType as DevicesTypeEnum]: payload
         }
       };
 

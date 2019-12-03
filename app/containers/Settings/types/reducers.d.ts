@@ -16,8 +16,8 @@ export interface SettingsReducersState {
     [DevicesTypeEnum.mtp]: boolean;
   };
   fileExplorerListingType: {
-    [DevicesTypeEnum.local]: 'grid' | 'list';
-    [DevicesTypeEnum.mtp]: 'grid' | 'list';
+    [DevicesTypeEnum.local]: FileExplorerListingTypes;
+    [DevicesTypeEnum.mtp]: FileExplorerListingTypes;
   };
 }
 
@@ -25,3 +25,5 @@ export type CopyJsonFileToSettings = Exclude<
   Partial<SettingsReducersState>,
   'freshInstall'
 >;
+
+export type FileExplorerListingTypes = 'grid' | 'list';

@@ -1,5 +1,4 @@
 import omitLodash from 'lodash/omit';
-import { action } from 'typesafe-actions';
 import prefixer from '../../utils/reducerPrefixer';
 import { settingsStorage } from '../../utils/storageHelper';
 import {
@@ -32,6 +31,7 @@ export const actionTypes = prefixer<SettingsActionTypesList>(
   prefix,
   actionTypesList
 );
+
 
 export function toggleSettings(data) {
   return {
