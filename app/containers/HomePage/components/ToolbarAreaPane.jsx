@@ -413,7 +413,10 @@ const mapStateToProps = (state, props) => {
   };
 };
 
-export default withReducer('Home', reducers)(
+export default withReducer(
+  'Home',
+  reducers
+)(
   connect(
     mapStateToProps,
     mapDispatchToProps

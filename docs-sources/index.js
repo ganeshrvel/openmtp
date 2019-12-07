@@ -90,9 +90,7 @@ class Docs {
       return {
         latest: data.name,
         url: {
-          mac: `https://github.com/ganeshrvel/openmtp/releases/download/${
-            data.tag_name
-          }/${data.name}.dmg`
+          mac: `https://github.com/ganeshrvel/openmtp/releases/download/${data.tag_name}/${data.name}.dmg`
         }
       };
     }
@@ -201,9 +199,9 @@ class Docs {
 
   _releaseInformationSet = ({ latest, url }) => {
     for (let i = 0; i < this.$el.gitHubLatestVersionWrapper.length; i += 1) {
-      this.$el.gitHubLatestVersionWrapper[i].innerHTML = `<a href="${
-        url.mac
-      }">${latest}</a>`;
+      this.$el.gitHubLatestVersionWrapper[
+        i
+      ].innerHTML = `<a href="${url.mac}">${latest}</a>`;
     }
   };
 }

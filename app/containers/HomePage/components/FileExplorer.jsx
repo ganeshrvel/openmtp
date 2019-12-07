@@ -1913,9 +1913,9 @@ const mapStateToProps = (state, props) => {
   };
 };
 
-export default withReducer('Home', reducers)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(withStyles(styles)(FileExplorer))
+export default withReducer(
+  'Home',
+  reducers
+)(
+  connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(FileExplorer))
 );
