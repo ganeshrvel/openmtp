@@ -110,9 +110,7 @@ const mapStateToProps = (state, props) => {
   };
 };
 
-export default withReducer('App', reducers)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(withStyles(styles)(Onboarding))
-);
+export default withReducer(
+  'App',
+  reducers
+)(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Onboarding)));
