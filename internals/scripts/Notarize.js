@@ -4,8 +4,15 @@ const fs = require('fs');
 
 const { notarize: electronNotarize } = require('electron-notarize');
 
+const { ELECTRON_NOTARIZE } = process.env;
+
 exports.default = async context => {
   const { electronPlatformName, appOutDir } = context;
+
+  if (ELECTRON_NOTARIZE === 'NO') {
+    return;
+  }
+
   if (electronPlatformName !== 'darwin') {
     return;
   }
