@@ -7,7 +7,7 @@ if (
   process.mainModule.filename.indexOf('app.asar') !== -1
 ) {
   _isPackaged = true;
-} else if (process.argv.filter(a => a.indexOf('app.asar') === -1).length > 1) {
+} else if (process.argv.filter(a => a.indexOf('app.asar') !== -1).length > 1) {
   _isPackaged = true;
 }
 
