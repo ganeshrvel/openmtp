@@ -9,10 +9,18 @@ import { styles } from './styles';
 import Features from '../Onboarding/components/Features';
 import WhatsNew from '../Onboarding/components/WhatsNew';
 import { APP_FEATURES_PAGE_TITLE } from '../../templates/appFeaturesPage';
+import { setStyle } from '../../utils/styles';
+import { variables } from '../../styles/js';
 
 class AppFeaturesPage extends Component {
   componentWillMount() {
     resetOverFlowY();
+  }
+
+  componentDidMount() {
+    setStyle(document.body, {
+      background: `${variables().styles.bgColor} !important`
+    });
   }
 
   render() {

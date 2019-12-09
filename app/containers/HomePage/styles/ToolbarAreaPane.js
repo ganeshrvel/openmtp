@@ -24,7 +24,7 @@ export const styles = theme => {
       left: 0,
       right: 0,
       bottom: 0,
-      backgroundColor: variables().styles.appBgColor,
+      backgroundColor: variables().styles.bgColor,
       zIndex: 9999
     },
     appBar: {},
@@ -83,7 +83,7 @@ export const LazyLoaderOverLay = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: ${variables().styles.appBgColor};
+  background-color: ${variables().styles.bgColor};
   z-index: 9999;
 
   animation: ${animateLazyLoaderOverLay} 0s 3s forwards;

@@ -10,7 +10,7 @@ export const styles = theme => ({
   },
   instructions: {
     listStyle: `none`,
-    color: variables().styles.textLightColor,
+    color: variables().styles.lightText1Color,
     lineHeight: '24px',
     marginTop: 15,
     paddingLeft: 0,
@@ -22,7 +22,7 @@ export const styles = theme => ({
     ...mixins().btnPositive
   },
   emailIdWrapper: {
-    color: variables().styles.textLightColor,
+    color: variables().styles.lightText1Color,
     marginTop: 15
   },
   emailId: {

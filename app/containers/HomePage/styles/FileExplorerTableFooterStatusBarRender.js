@@ -13,6 +13,6 @@ export const styles = theme => ({
 
   bodyWrapper: {
     fontWeight: '500',
-    color: 'rgba(0, 0, 0, 0.50)'
+    color: variables().styles.lightText1Color
   }
 });

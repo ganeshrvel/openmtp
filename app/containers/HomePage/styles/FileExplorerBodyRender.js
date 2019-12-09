@@ -12,8 +12,12 @@ export const styles = theme => ({
     height: `calc(100vh - 120px)`,
     overflowY: 'auto',
     overflowX: 'auto',
-    borderBottom: variables().styles.borderThinDividerColor,
-    borderLeft: variables().styles.borderThinDividerColor,
+    borderBottom: `solid 1px ${
+      variables().styles.fileExplorerThinLineDividerColor
+    }`,
+    borderLeft: `solid 1px ${
+      variables().styles.fileExplorerThinLineDividerColor
+    }`,
     [`&.onHoverDropZone`]: {
       backgroundColor: `#e0e0e0`
     },

@@ -1,6 +1,6 @@
 body {
   width: 100%;
-  background: var(--app-bg-color) !important;
+  background-color: var(--app-bg-color) !important;
   @include rem('font-size', $regularSize);
 
   font-family: $roboto;

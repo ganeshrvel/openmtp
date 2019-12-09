@@ -11,20 +11,22 @@ export default _ => {
       sidebarAreaPaddingTop: 40
     },
     styles: {
+      bgColor: APP_THEME_COLOR_VAR.bgColor,
       primaryColor: {
-        main: APP_THEME_COLOR_VAR.appBgColor
+        main: APP_THEME_COLOR_VAR.primaryMainColor
       },
       secondaryColor: {
-        main: APP_THEME_COLOR_VAR.appSecondaryMainColor
+        main: APP_THEME_COLOR_VAR.secondaryMainColor
       },
       background: {
-        paper: APP_THEME_COLOR_VAR.appBackgroundPaperColor
+        paper: APP_THEME_COLOR_VAR.backgroundPaperColor
       },
       regularFontSize: 14,
-      nativeSystemColor: APP_THEME_COLOR_VAR.appNativeSystemColor,
-      tableHeaderFooterBgColor: APP_THEME_COLOR_VAR.appTableHeaderFooterBgColor,
-      borderThinDividerColor: APP_THEME_COLOR_VAR.appBorderThinDividerColor,
-      textLightColor: APP_THEME_COLOR_VAR.appTextLightColor
+      nativeSystemColor: APP_THEME_COLOR_VAR.nativeSystemColor,
+      tableHeaderFooterBgColor: APP_THEME_COLOR_VAR.tableHeaderFooterBgColor,
+      fileExplorerThinLineDividerColor:
+        APP_THEME_COLOR_VAR.fileExplorerThinLineDividerColor,
+      lightText1Color: APP_THEME_COLOR_VAR.lightText1Color
     }
   };
 };

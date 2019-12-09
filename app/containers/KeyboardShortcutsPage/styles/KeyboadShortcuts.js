@@ -15,7 +15,7 @@ export const styles = theme => ({
   },
   kbdTitle: {
     display: 'block',
-    color: 'rgba(0, 0, 0, 0.54)',
+    color: variables().styles.lightText1Color,
     padding: '1px 0 6px 0',
     fontSize: 14
   }
