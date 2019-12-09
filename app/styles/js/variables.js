@@ -1,7 +1,26 @@
 'use strict';
 
-// eslint-disable-next-line no-unused-vars
-export default args => {
+import { APP_THEME_COLORS, APP_THEME_VARS } from '../../constants/theme';
+
+// theming used my material ui createMuiTheme
+export const appThemeStyles = ({ ...args }) => {
+  const { appThemeMode } = args;
+
+  return {
+    primaryColor: {
+      main: `${APP_THEME_COLORS[appThemeMode].primaryMain}`
+    },
+    secondaryColor: {
+      main: `${APP_THEME_COLORS[appThemeMode].secondaryMain}`
+    },
+    background: {
+      paper: `${APP_THEME_COLORS[appThemeMode].primaryMain}`
+    }
+  };
+};
+
+// common styling variable object which can be imported by components
+export default _ => {
   return {
     sizes: {
       toolbarHeight: 64,
@@ -10,15 +29,20 @@ export default args => {
     },
     styles: {
       primaryColor: {
-        main: '#ffffff'
+        main: APP_THEME_VARS.appBgColor.value
       },
       secondaryColor: {
-        main: '#007af5'
+        main: APP_THEME_VARS.appSecondaryMainColor.value
+      },
+      background: {
+        paper: APP_THEME_VARS.appBackgroundPaperColor.value
       },
       regularFontSize: 14,
-      borderThinDividerColor:
-        'solid 1px var(--black-transparent-12,rgba(0,0,0,.12))',
-      textLightColor: `rgba(0, 0, 0, 0.64)`
+      nativeSystemColor: APP_THEME_VARS.appNativeSystemColor.value,
+      tableHeaderFooterBgColor:
+        APP_THEME_VARS.appTableHeaderFooterBgColor.value,
+      borderThinDividerColor: APP_THEME_VARS.appBorderThinDividerColor.value,
+      textLightColor: APP_THEME_VARS.appTextLightColor.value
     }
   };
 };

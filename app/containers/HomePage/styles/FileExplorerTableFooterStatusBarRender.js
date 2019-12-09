@@ -6,7 +6,7 @@ export const styles = theme => ({
   root: {
     padding: '5px 15px 0 15px',
     width: '100%',
-    background: '#fbfbfb',
+    background: variables().styles.tableHeaderFooterBgColor,
     height: 30,
     textAlign: 'center'
   },

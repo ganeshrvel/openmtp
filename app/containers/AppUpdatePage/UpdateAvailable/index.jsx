@@ -11,6 +11,8 @@ import { styles } from './styles';
 import releaseNotesStyles from './styles/release-notes.scss';
 import { undefinedOrNull } from '../../../utils/funcs';
 import { APP_NAME, APP_VERSION } from '../../../constants/meta';
+import { setStyle } from '../../../utils/styles';
+import { variables } from '../../../styles/js';
 
 class AppUpdatePage extends Component {
   constructor(props) {
@@ -56,7 +58,9 @@ class AppUpdatePage extends Component {
   }
 
   componentDidMount() {
-    document.body.setAttribute('style', 'background:#ececec !important');
+    setStyle(document.body, {
+      background: `${variables().styles.nativeSystemColor} !important`
+    });
   }
 
   componentWillUnmount() {

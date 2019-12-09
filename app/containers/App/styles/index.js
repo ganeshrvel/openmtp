@@ -1,16 +1,23 @@
 'use strict';
 
-import { variables, mixins } from '../../../styles/js';
+import { variables, appThemeStyles, mixins } from '../../../styles/js';
 
 // eslint-disable-next-line no-unused-vars
-export const theme = args => {
+export const theme = ({ ...args }) => {
+  const { appThemeMode } = args;
+  console.info(appThemeMode);
+
   return {
     palette: {
+      type: appThemeMode,
       primary: {
-        ...variables().styles.primaryColor
+        ...appThemeStyles({ appThemeMode }).primaryColor
       },
       secondary: {
-        ...variables().styles.secondaryColor
+        ...appThemeStyles({ appThemeMode }).secondaryColor
+      },
+      background: {
+        ...appThemeStyles({ appThemeMode }).background
       }
     },
     typography: {

@@ -25,19 +25,28 @@ import reducers from './reducers';
 import { copyJsonFileToSettings, freshInstall } from '../Settings/actions';
 import { analytics } from '../../utils/analyticsHelper';
 import { isConnected } from '../../utils/isOnline';
-
-const appTheme = createMuiTheme(theme());
+import { setStyle } from '../../utils/styles';
+import { APP_THEME_VARS } from '../../constants/theme';
+import { appThemeStyles } from '../../styles/js';
 
 class App extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      appThemeMode: 'dark' //'light'
+    };
     this.allowWritingJsonToSettings = false;
   }
 
   componentWillMount() {
+    const { appThemeMode } = this.state;
+
     try {
+      this.appTheme = createMuiTheme(theme({ appThemeMode }));
+
+      this.setAppTheme();
+
       this.setFreshInstall();
       if (this.allowWritingJsonToSettings) {
         this.writeJsonToSettings();
@@ -56,6 +65,58 @@ class App extends Component {
       log.error(e, `App -> componentDidMount`);
     }
   }
+
+  /**
+   * Function: Toggle app theme without restart.
+   * The styles are converted to css variables and set to body tag;
+   * which will be available in the whole app
+   *
+   * How to:
+   * 1) Add the css key, value pair to APP_THEME_VARS in app/constants/theme.js
+   * 2) Add the same to styleList constant below as `[APP_THEME_VARS.<colorName>.key]: color`
+   *
+   * Different ways to use in the app:
+   * i) add the styling variable to app/styles/js/variables.js and call it as variables().styles.colorName (recommended)
+   * ii) refer the color in css/js as APP_THEME_VARS.colorName.value
+   * iii) refer the color in css as var(--app-some-color)
+   * */
+  setAppTheme = () => {
+    try {
+      const { appThemeMode } = this.state;
+
+      const appstyle = appThemeStyles({ appThemeMode });
+
+      let appTableHeaderFooterBgColor = `#fbfbfb`;
+
+      switch (appThemeMode) {
+        case 'dark':
+          appTableHeaderFooterBgColor = `#313131`;
+          break;
+
+        case 'light':
+        default:
+          break;
+      }
+
+      const styleList = {
+        [APP_THEME_VARS.appBgColor.key]: appstyle.primaryColor.main,
+        [APP_THEME_VARS.appPrimaryMainColor.key]: appstyle.primaryColor.main,
+        [APP_THEME_VARS.appSecondaryMainColor.key]:
+          appstyle.secondaryColor.main,
+        [APP_THEME_VARS.appBackgroundPaperColor.key]: appstyle.background.paper,
+        [APP_THEME_VARS.appTableHeaderFooterBgColor
+          .key]: appTableHeaderFooterBgColor,
+        [APP_THEME_VARS.appNativeSystemColor.key]: `#ececec`,
+        [APP_THEME_VARS.appBorderThinDividerColor
+          .key]: `solid 1px var(--black-transparent-12,rgba(0,0,0,.12))`,
+        [APP_THEME_VARS.appTextLightColor.key]: `rgba(0, 0, 0, 0.64)`
+      };
+
+      setStyle(document.body, styleList);
+    } catch (e) {
+      log.error(e, `App -> setAppTheme`);
+    }
+  };
 
   setFreshInstall() {
     try {
@@ -127,7 +188,7 @@ class App extends Component {
     return (
       <div className={styles.root}>
         <CssBaseline>
-          <MuiThemeProvider theme={appTheme}>
+          <MuiThemeProvider theme={this.appTheme}>
             <Titlebar />
             <Alerts />
             <ErrorBoundary>

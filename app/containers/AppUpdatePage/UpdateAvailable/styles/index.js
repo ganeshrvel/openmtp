@@ -22,7 +22,7 @@ export const styles = theme => ({
     ...mixins().center,
     marginTop: 5,
     border: `1px solid #000`,
-    background: `#fff`,
+    background: variables().styles.appBgColor,
     height: 350,
     width: '100%',
     padding: 15,
