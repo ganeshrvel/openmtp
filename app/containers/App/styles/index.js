@@ -1,23 +1,38 @@
 'use strict';
 
-import { variables, appThemeStyles, mixins } from '../../../styles/js';
+import {
+  variables,
+  materialUiSkeletonThemeStyles,
+  mixins
+} from '../../../styles/js';
+import { APP_THEME_COLOR_KEY } from '../../../constants/theme';
 
-// eslint-disable-next-line no-unused-vars
-export const theme = ({ ...args }) => {
+// Styles for App/index.jsx component
+export const styles = _ => {
+  return {
+    root: {},
+    noProfileError: {
+      textAlign: `center`,
+      ...mixins().center,
+      ...mixins().absoluteCenter
+    }
+  };
+};
+
+export const materialUiTheme = ({ ...args }) => {
   const { appThemeMode } = args;
-  console.info(appThemeMode);
 
   return {
     palette: {
       type: appThemeMode,
       primary: {
-        ...appThemeStyles({ appThemeMode }).primaryColor
+        ...materialUiSkeletonThemeStyles({ appThemeMode }).primaryColor
       },
       secondary: {
-        ...appThemeStyles({ appThemeMode }).secondaryColor
+        ...materialUiSkeletonThemeStyles({ appThemeMode }).secondaryColor
       },
       background: {
-        ...appThemeStyles({ appThemeMode }).background
+        ...materialUiSkeletonThemeStyles({ appThemeMode }).background
       }
     },
     typography: {
@@ -41,15 +56,32 @@ export const theme = ({ ...args }) => {
   };
 };
 
-// eslint-disable-next-line no-unused-vars
-export const styles = args => {
-  // eslint-disable-line no-unused-vars
+export const appBodyStylesStore = ({ appThemeMode }) => {
+  const appStyle = materialUiSkeletonThemeStyles({ appThemeMode });
+
+  // light color themes
+  const styleList = {
+    [APP_THEME_COLOR_KEY.appTableHeaderFooterBgColor]: `#fbfbfb`
+  };
+
+  switch (appThemeMode) {
+    case 'dark':
+      styleList[APP_THEME_COLOR_KEY.appTableHeaderFooterBgColor] = `#313131`;
+      break;
+
+    case 'light':
+    default:
+      break;
+  }
+
   return {
-    root: {},
-    noProfileError: {
-      textAlign: `center`,
-      ...mixins().center,
-      ...mixins().absoluteCenter
-    }
+    [APP_THEME_COLOR_KEY.appBgColor]: appStyle.primaryColor.main,
+    [APP_THEME_COLOR_KEY.appPrimaryMainColor]: appStyle.primaryColor.main,
+    [APP_THEME_COLOR_KEY.appSecondaryMainColor]: appStyle.secondaryColor.main,
+    [APP_THEME_COLOR_KEY.appBackgroundPaperColor]: appStyle.background.paper,
+    [APP_THEME_COLOR_KEY.appNativeSystemColor]: `#ececec`,
+    [APP_THEME_COLOR_KEY.appBorderThinDividerColor]: `solid 1px var(--black-transparent-12,rgba(0,0,0,.12))`,
+    [APP_THEME_COLOR_KEY.appTextLightColor]: `rgba(0, 0, 0, 0.64)`,
+    ...styleList
   };
 };

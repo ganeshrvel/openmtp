@@ -1,47 +1,17 @@
-// App theme color constants
-export const APP_THEME_COLORS = {
-  light: {
-    primaryMain: '#fff',
-    secondaryMain: '#007af5'
-  },
-  dark: {
-    primaryMain: '#242424',
-    secondaryMain: '#007af5'
-  }
+import { getAppCssColorVar } from '../utils/theme';
+
+// app theme css style variables key
+export const APP_THEME_COLOR_KEY = {
+  appBgColor: '--app-bg-color',
+  appPrimaryMainColor: '--app-primary-main-color',
+  appSecondaryMainColor: '--app-secondary-main-color',
+  appBackgroundPaperColor: '--app-background-paper-color',
+  appNativeSystemColor: '--app-native-system-color',
+  appTableHeaderFooterBgColor: '--app-table-header-footer-bg-color',
+  appBorderThinDividerColor: '--app-border-thin-divider-color',
+  appTextLightColor: '--app-text-light-color'
 };
 
-// css style variables as key, value pair
-export const APP_THEME_VARS = {
-  appBgColor: {
-    key: '--app-bg-color',
-    value: `var(--app-bg-color)`
-  },
-  appPrimaryMainColor: {
-    key: '--app-primary-main-color',
-    value: `var(--app-primary-main-color)`
-  },
-  appSecondaryMainColor: {
-    key: '--app-secondary-main-color',
-    value: `var(--app-secondary-main-color)`
-  },
-  appBackgroundPaperColor: {
-    key: '--app-background-paper-color',
-    value: `var(--app-background-paper-color)`
-  },
-  appNativeSystemColor: {
-    key: '--app-native-system-color',
-    value: `var(--app-native-system-color)`
-  },
-  appTableHeaderFooterBgColor: {
-    key: '--app-table-header-footer-bg-color',
-    value: `var(--app-table-header-footer-bg-color)`
-  },
-  appBorderThinDividerColor: {
-    key: '--app-border-thin-divider-color',
-    value: `var(--app-border-thin-divider-color)`
-  },
-  appTextLightColor: {
-    key: '--app-text-light-color',
-    value: `var(--app-text-light-color)`
-  }
-};
+// app theme css style variables value.
+// outputted as {appBgColor: `var(--app-bg-color)` }
+export const APP_THEME_COLOR_VAR = getAppCssColorVar();

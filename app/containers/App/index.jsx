@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { log } from '@Log';
 import { IS_PROD } from '../../constants/env';
-import { theme, styles } from './styles';
+import { materialUiTheme, styles, appBodyStylesStore } from './styles';
 import Alerts from '../Alerts';
 import Titlebar from './components/Titlebar';
 import ErrorBoundary from '../ErrorBoundary';
@@ -26,8 +26,6 @@ import { copyJsonFileToSettings, freshInstall } from '../Settings/actions';
 import { analytics } from '../../utils/analyticsHelper';
 import { isConnected } from '../../utils/isOnline';
 import { setStyle } from '../../utils/styles';
-import { APP_THEME_VARS } from '../../constants/theme';
-import { appThemeStyles } from '../../styles/js';
 
 class App extends Component {
   constructor(props) {
@@ -43,7 +41,7 @@ class App extends Component {
     const { appThemeMode } = this.state;
 
     try {
-      this.appTheme = createMuiTheme(theme({ appThemeMode }));
+      this.appTheme = createMuiTheme(materialUiTheme({ appThemeMode }));
 
       this.setAppTheme();
 
@@ -67,50 +65,24 @@ class App extends Component {
   }
 
   /**
-   * Function: Toggle app theme without restart.
-   * The styles are converted to css variables and set to body tag;
-   * which will be available in the whole app
+   * Working: Toggle app theme without restart.
+   * The styles are converted to css style variables and set to body tag; which will be available to the whole app
    *
-   * How to:
-   * 1) Add the css key, value pair to APP_THEME_VARS in app/constants/theme.js
-   * 2) Add the same to styleList constant below as `[APP_THEME_VARS.<colorName>.key]: color`
+   * How to add a new one:
+   * 1) Add the css key to APP_THEME_COLOR_KEY in app/constants/theme.js; This is a dictionary of keys for easy referencing.
+   * 2) Include the style to `appBodyStylesStore` in app/containers/App/styles/index.js as `[APP_THEME_COLOR_KEY.<colorName>]: color`
+   * This will include the css styles as ---app-color-name: '#fff' to the body tag
    *
-   * Different ways to use in the app:
-   * i) add the styling variable to app/styles/js/variables.js and call it as variables().styles.colorName (recommended)
-   * ii) refer the color in css/js as APP_THEME_VARS.colorName.value
-   * iii) refer the color in css as var(--app-some-color)
+   * How to use the style variable in the app:
+   * i) Add the styling variable to the `default` method app/styles/js/variables.js and refer to the css style as `variables().styles.colorName` (recommended).
+   * ii) Refer the color in css/js as APP_THEME_COLOR_KEY.colorName
+   * iii) Refer the color in css as var(--app-some-color) (least recommended)
    * */
   setAppTheme = () => {
     try {
       const { appThemeMode } = this.state;
 
-      const appstyle = appThemeStyles({ appThemeMode });
-
-      let appTableHeaderFooterBgColor = `#fbfbfb`;
-
-      switch (appThemeMode) {
-        case 'dark':
-          appTableHeaderFooterBgColor = `#313131`;
-          break;
-
-        case 'light':
-        default:
-          break;
-      }
-
-      const styleList = {
-        [APP_THEME_VARS.appBgColor.key]: appstyle.primaryColor.main,
-        [APP_THEME_VARS.appPrimaryMainColor.key]: appstyle.primaryColor.main,
-        [APP_THEME_VARS.appSecondaryMainColor.key]:
-          appstyle.secondaryColor.main,
-        [APP_THEME_VARS.appBackgroundPaperColor.key]: appstyle.background.paper,
-        [APP_THEME_VARS.appTableHeaderFooterBgColor
-          .key]: appTableHeaderFooterBgColor,
-        [APP_THEME_VARS.appNativeSystemColor.key]: `#ececec`,
-        [APP_THEME_VARS.appBorderThinDividerColor
-          .key]: `solid 1px var(--black-transparent-12,rgba(0,0,0,.12))`,
-        [APP_THEME_VARS.appTextLightColor.key]: `rgba(0, 0, 0, 0.64)`
-      };
+      const styleList = appBodyStylesStore({ appThemeMode });
 
       setStyle(document.body, styleList);
     } catch (e) {
