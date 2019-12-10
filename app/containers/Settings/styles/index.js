@@ -57,7 +57,7 @@ export const styles = theme => ({
     left: 2
   },
   onboardingPaperBody: {
-    color: variables().styles.primaryColor.main
+    color: variables().styles.background.paper
   },
   a: {
     fontWeight: `bold`

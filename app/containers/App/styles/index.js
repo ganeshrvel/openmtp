@@ -80,14 +80,14 @@ export const appBodyStylesStore = ({ appThemeMode }) => {
   const styleList = {
     tableHeaderFooterBgColor: `#fbfbfb`,
     lightText1Color: `rgba(0, 0, 0, 0.50)`,
-    fileExplorerThinLineDividerColor: `rgba(255, 255, 255,.12)`
+    fileExplorerThinLineDividerColor: `rgba(0, 0, 0, .12)`
   };
 
   switch (appThemeMode) {
     case 'dark':
       styleList.tableHeaderFooterBgColor = `#313131`;
       styleList.lightText1Color = `rgba(255, 255, 255, 0.50)`;
-      styleList.fileExplorerThinLineDividerColor = `rgba(0, 0, 0, .12)`;
+      styleList.fileExplorerThinLineDividerColor = `rgba(255, 255, 255,.12)`;
       break;
 
     case 'light':
@@ -107,7 +107,7 @@ export const appBodyStylesStore = ({ appThemeMode }) => {
     [APP_THEME_COLOR_KEY.bgColor]: appStyle.primaryColor.main,
     [APP_THEME_COLOR_KEY.primaryMainColor]: appStyle.primaryColor.main,
     [APP_THEME_COLOR_KEY.secondaryMainColor]: appStyle.secondaryColor.main,
-    [APP_THEME_COLOR_KEY.backgroundPaperColor]: appStyle.background.paper,
+    [APP_THEME_COLOR_KEY.paperBgColor]: appStyle.background.paper,
     [APP_THEME_COLOR_KEY.nativeSystemColor]: `#ececec`,
     ...mappedStyleList
   };

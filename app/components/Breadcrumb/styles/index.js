@@ -15,7 +15,7 @@ export const styles = theme => ({
 
   breadcrumb: {
     padding: '10px 15px',
-    backgroundColor: variables().styles.primaryColor.main,
+    backgroundColor: variables().styles.background.paper,
     display: 'flex',
     alignItems: 'center',
     ...mixins().resetUl

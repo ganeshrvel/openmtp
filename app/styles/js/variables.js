@@ -19,7 +19,7 @@ export default _ => {
         main: APP_THEME_COLOR_VAR.secondaryMainColor
       },
       background: {
-        paper: APP_THEME_COLOR_VAR.backgroundPaperColor
+        paper: APP_THEME_COLOR_VAR.paperBgColor
       },
       regularFontSize: 14,
       nativeSystemColor: APP_THEME_COLOR_VAR.nativeSystemColor,
