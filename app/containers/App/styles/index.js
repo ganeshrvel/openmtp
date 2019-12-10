@@ -1,11 +1,11 @@
 'use strict';
 
+import { variables, mixins } from '../../../styles/js';
 import {
-  variables,
-  materialUiSkeletonThemeStyles,
-  mixins
-} from '../../../styles/js';
-import { APP_THEME_COLOR_KEY } from '../../../constants/theme';
+  APP_BASIC_THEME_COLORS,
+  APP_THEME_COLOR_KEY
+} from '../../../constants/theme';
+import { getAppCssColorVar } from '../../../utils/theme';
 
 // Styles for App/index.jsx component
 export const styles = _ => {
@@ -15,6 +15,23 @@ export const styles = _ => {
       textAlign: `center`,
       ...mixins().center,
       ...mixins().absoluteCenter
+    }
+  };
+};
+
+// theming used my material ui createMuiTheme
+export const materialUiSkeletonThemeStyles = ({ ...args }) => {
+  const { appThemeMode } = args;
+
+  return {
+    primaryColor: {
+      main: `${APP_BASIC_THEME_COLORS[appThemeMode].primaryMain}`
+    },
+    secondaryColor: {
+      main: `${APP_BASIC_THEME_COLORS[appThemeMode].secondaryMain}`
+    },
+    background: {
+      paper: `${APP_BASIC_THEME_COLORS[appThemeMode].primaryMain}`
     }
   };
 };
@@ -95,3 +112,7 @@ export const appBodyStylesStore = ({ appThemeMode }) => {
     ...mappedStyleList
   };
 };
+
+// app theme css style variables value.
+// outputted as {bgColor: `var(--app-bg-color)` }
+export const APP_THEME_COLOR_VAR = getAppCssColorVar();

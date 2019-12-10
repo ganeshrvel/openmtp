@@ -1,4 +1,14 @@
-import { getAppCssColorVar } from '../utils/theme';
+// App skeleton theme color constants
+export const APP_BASIC_THEME_COLORS = {
+  light: {
+    primaryMain: '#fff',
+    secondaryMain: '#007af5'
+  },
+  dark: {
+    primaryMain: '#242424',
+    secondaryMain: '#007af5'
+  }
+};
 
 // app theme css style variables key
 export const APP_THEME_COLOR_KEY = {
@@ -12,7 +22,3 @@ export const APP_THEME_COLOR_KEY = {
     '--app-file-explorer-thin-line-divider-color',
   lightText1Color: '--app-light-text-1-color'
 };
-
-// app theme css style variables value.
-// outputted as {bgColor: `var(--app-bg-color)` }
-export const APP_THEME_COLOR_VAR = getAppCssColorVar();

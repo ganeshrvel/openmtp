@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { log } from '@Log';
 import { IS_PROD } from '../../constants/env';
-import { materialUiTheme, styles, appBodyStylesStore } from './styles';
+import { appBodyStylesStore, materialUiTheme, styles } from './styles';
 import Alerts from '../Alerts';
 import Titlebar from './components/Titlebar';
 import ErrorBoundary from '../ErrorBoundary';

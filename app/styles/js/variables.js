@@ -1,6 +1,6 @@
 'use strict';
 
-import { APP_THEME_COLOR_VAR } from '../../constants/theme';
+import { APP_THEME_COLOR_VAR } from '../../containers/App/styles';
 
 // common styling variable object which can be imported by components
 export default _ => {
@@ -27,35 +27,6 @@ export default _ => {
       fileExplorerThinLineDividerColor:
         APP_THEME_COLOR_VAR.fileExplorerThinLineDividerColor,
       lightText1Color: APP_THEME_COLOR_VAR.lightText1Color
-    }
-  };
-};
-
-// App skeleton theme color constants
-export const APP_BASIC_THEME_COLORS = {
-  light: {
-    primaryMain: '#fff',
-    secondaryMain: '#007af5'
-  },
-  dark: {
-    primaryMain: '#242424',
-    secondaryMain: '#007af5'
-  }
-};
-
-// theming used my material ui createMuiTheme
-export const materialUiSkeletonThemeStyles = ({ ...args }) => {
-  const { appThemeMode } = args;
-
-  return {
-    primaryColor: {
-      main: `${APP_BASIC_THEME_COLORS[appThemeMode].primaryMain}`
-    },
-    secondaryColor: {
-      main: `${APP_BASIC_THEME_COLORS[appThemeMode].secondaryMain}`
-    },
-    background: {
-      paper: `${APP_BASIC_THEME_COLORS[appThemeMode].primaryMain}`
     }
   };
 };
