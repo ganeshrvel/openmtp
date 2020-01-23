@@ -58,31 +58,31 @@ export const initialState = {
         enabled: true,
         label: 'Folder Up',
         imgSrc: 'Toolbar/up.svg',
-        invert: false
+        invert: true
       },
       refresh: {
         enabled: true,
         label: 'Refresh',
         imgSrc: 'Toolbar/refresh.svg',
-        invert: false
+        invert: true
       },
       delete: {
         enabled: true,
         label: 'Delete',
         imgSrc: 'Toolbar/delete.svg',
-        invert: false
+        invert: true
       },
       settings: {
         enabled: true,
         label: 'Settings',
         imgSrc: 'Toolbar/settings.svg',
-        invert: false
+        invert: true
       },
       gitHub: {
         enabled: true,
         label: 'GitHub',
         imgSrc: 'Toolbar/github.svg',
-        invert: false
+        invert: true
       }
     },
     [DEVICES_TYPE_CONST.mtp]: {
@@ -90,31 +90,31 @@ export const initialState = {
         enabled: true,
         label: 'Folder Up',
         imgSrc: 'Toolbar/up.svg',
-        invert: false
+        invert: true
       },
       refresh: {
         enabled: true,
         label: 'Refresh',
         imgSrc: 'Toolbar/refresh.svg',
-        invert: false
+        invert: true
       },
       delete: {
         enabled: true,
         label: 'Delete',
         imgSrc: 'Toolbar/delete.svg',
-        invert: false
+        invert: true
       },
       storage: {
         enabled: true,
         label: 'Storage',
         imgSrc: 'Toolbar/storage.svg',
-        invert: false
+        invert: true
       },
       settings: {
         enabled: true,
         label: 'Settings',
         imgSrc: 'Toolbar/settings.svg',
-        invert: false
+        invert: true
       }
     }
   },

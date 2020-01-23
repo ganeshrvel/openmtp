@@ -45,11 +45,11 @@ export const styles = theme => {
     },
     invertedNavBtns: {
       [`&:hover`]: {
-        filter: `none`
+        filter: `invert(100)`
       },
       [`&:not(:hover)`]: {
         filter: `invert(100)`,
-        background: variables().styles.primaryColor.main
+        background: `#f9f9f952`
       }
     },
     focussedFileExplorer: {
