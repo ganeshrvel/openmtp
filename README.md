@@ -30,10 +30,13 @@ Countless searches to find an app to solve these problems and failing to find on
 - It's FREE and shall ALWAYS remain FREE!!
 
 
-### Download App
-Download the [Latest Version](https://ganeshrvel.github.io/openmtp/?downloadApp=github&release=stable&platform=mac 'Latest Version')
+### Installation
+* Download the [Latest Version](https://ganeshrvel.github.io/openmtp/?downloadApp=github&release=stable&platform=mac 'Latest Version')
 
-Find the latest *dmg* file from [GitHub Releases](https://github.com/ganeshrvel/openmtp/releases "GitHub Releases")
+* Using Homebrew Cask
+  * ```brew cask install openmtp```
+
+* Find the latest *dmg* file from [GitHub Releases](https://github.com/ganeshrvel/openmtp/releases "GitHub Releases")
 
 ### Screengrabs
 
