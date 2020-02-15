@@ -1,12 +1,12 @@
 'use strict';
 
+import { log } from '@Log';
 import prefixer from '../../utils/reducerPrefixer';
 import {
   asyncReadLocalDir,
   asyncReadMtpDir,
   fetchMtpStorageOptions
 } from '../../api/sys';
-import { log } from '@Log';
 import { throwAlert } from '../Alerts/actions';
 import { DEVICES_TYPE_CONST } from '../../constants';
 import {
