@@ -10,6 +10,7 @@ import {
 } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import Analytics from 'electron-ga';
 import { log } from '@Log';
 import { IS_PROD } from '../../constants/env';
 import { theme, styles } from './styles';
@@ -23,8 +24,9 @@ import SettingsDialog from '../Settings';
 import { withReducer } from '../../store/reducers/withReducer';
 import reducers from './reducers';
 import { copyJsonFileToSettings, freshInstall } from '../Settings/actions';
-import { analytics } from '../../utils/analyticsHelper';
 import { isConnected } from '../../utils/isOnline';
+import { TRACKING_ID } from '../../../config/google-analytics-key';
+import { APP_NAME, APP_VERSION } from '../../constants/meta';
 
 const appTheme = createMuiTheme(theme());
 
@@ -106,10 +108,16 @@ class App extends Component {
     const isAnalyticsEnabledSettings = settingsStorage.getItems([
       'enableAnalytics'
     ]);
+
     try {
       if (isAnalyticsEnabledSettings.enableAnalytics && IS_PROD) {
         isConnected()
           .then(connected => {
+            const analytics = new Analytics(TRACKING_ID, {
+              appName: APP_NAME,
+              appVersion: APP_VERSION
+            });
+
             analytics.send('screenview', { cd: '/Home' });
             analytics.send(`pageview`, { dp: '/Home' });
 
@@ -158,7 +166,9 @@ const mapStateToProps = (state, props) => {
   return {};
 };
 
-export default withReducer(
-  'App',
-  reducers
-)(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(hot(App))));
+export default withReducer('App', reducers)(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(withStyles(styles)(hot(App)))
+);

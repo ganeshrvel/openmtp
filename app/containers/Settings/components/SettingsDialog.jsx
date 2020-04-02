@@ -156,7 +156,9 @@ export default class SettingsDialog extends PureComponent {
 
                     <Typography
                       variant="subtitle2"
-                      className={`${styles.subtitle} ${styles.fmSettingsStylesFix}`}
+                      className={`${styles.subtitle} ${
+                        styles.fmSettingsStylesFix
+                      }`}
                     >
                       View As Grid
                     </Typography>
@@ -201,7 +203,9 @@ export default class SettingsDialog extends PureComponent {
 
                     <Typography
                       variant="subtitle2"
-                      className={`${styles.subtitle} ${styles.fmSettingsStylesFix}`}
+                      className={`${styles.subtitle} ${
+                        styles.fmSettingsStylesFix
+                      }`}
                     >
                       Show Status Bar
                     </Typography>
@@ -290,7 +294,9 @@ export default class SettingsDialog extends PureComponent {
                   <FormGroup>
                     <Typography
                       variant="subtitle2"
-                      className={`${styles.subtitle} ${styles.subtitleMarginFix}`}
+                      className={`${styles.subtitle} ${
+                        styles.subtitleMarginFix
+                      }`}
                     >
                       Enable beta update channel
                     </Typography>

@@ -46,7 +46,9 @@ const mapStateToProps = (state, props) => {
   };
 };
 
-export default withReducer(
-  'Alerts',
-  reducers
-)(connect(mapStateToProps, mapDispatchToProps)(Alerts));
+export default withReducer('Alerts', reducers)(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Alerts)
+);

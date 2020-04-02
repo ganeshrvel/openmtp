@@ -218,7 +218,9 @@ const mapStateToProps = (state, props) => {
   };
 };
 
-export default withReducer(
-  'Settings',
-  reducers
-)(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Settings)));
+export default withReducer('Settings', reducers)(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(withStyles(styles)(Settings))
+);
