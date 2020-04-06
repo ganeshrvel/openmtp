@@ -8,7 +8,7 @@ import { DEVICES_LABEL, DEVICES_TYPE_CONST } from '../constants';
 
 export const processMtpBuffer = async ({ error, stderr }) => {
   const errorTpl = {
-    noMtp: `No MTP device found`,
+    noMtp: ``,
     deviceLocked: `your device may be locked`,
     invalidObjectHandle: `invalid response code InvalidObjectHandle`,
     invalidStorageID: `invalid response code InvalidStorageID`,

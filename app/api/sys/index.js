@@ -548,7 +548,7 @@ export const asyncReadMtpDir = async ({
       }
 
       const fullPath = path.resolve(filePath, matchedFileName);
-      const isFolder = filePropsList[mtpCmdChopIndex.type] === '3001';
+      const isFolder = filePropsList[mtpCmdChopIndex.type] === 'Association';
       const dateTime = `${filePropsList[mtpCmdChopIndex.dateAdded]} ${
         filePropsList[mtpCmdChopIndex.timeAdded]
       }`;
