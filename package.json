@@ -158,6 +158,7 @@
     "@material-ui/icons": "^4.5.1",
     "bluebird": "^3.7.2",
     "classnames": "^2.2.6",
+    "core-js": "^3.6.4",
     "dotenv": "^8.2.0",
     "electron-debug": "^3.0.1",
     "electron-ga": "^1.0.6",
