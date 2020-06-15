@@ -90,7 +90,8 @@ const filterJunkMtpErrors = string => {
     string === '\r\n' ||
     string === '' ||
     string.toLowerCase().indexOf(`device::find failed`) !== -1 ||
-    string.toLowerCase().indexOf(`iocreateplugininterfaceforservice`) !== -1
+    string.toLowerCase().indexOf(`iocreateplugininterfaceforservice`) !== -1 ||
+    string.toLowerCase().indexOf(`Device::Find failed`) !== -1
   );
 };
 

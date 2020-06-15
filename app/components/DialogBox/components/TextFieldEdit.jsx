@@ -8,8 +8,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import TextField from '@material-ui/core/TextField';
-import { styles } from '../styles/TextFieldEdit';
+import { StyledTextField, styles } from '../styles/TextFieldEdit';
 
 class TextFieldEdit extends PureComponent {
   constructor(props) {
@@ -76,7 +75,7 @@ class TextFieldEdit extends PureComponent {
                   : ''}
               </Typography>
             </DialogContentText>
-            <TextField
+            <StyledTextField
               id={id}
               required={required}
               label={errors.toggle ? errors.message : label}
@@ -89,6 +88,7 @@ class TextFieldEdit extends PureComponent {
               onBlur={event => this._handleChange(event)}
               onChange={event => this._handleChange(event)}
               error={errors.toggle}
+              className={styles.textFieldRoot}
             />
           </DialogContent>
           <DialogActions>

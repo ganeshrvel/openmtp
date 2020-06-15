@@ -1,4 +1,5 @@
 'use strict';
 
-export const isPackaged =
-  process.mainModule.filename.indexOf('app.asar') !== -1;
+import { isPackaged as _isPackaged } from 'electron-is-packaged';
+
+export const isPackaged = _isPackaged;
