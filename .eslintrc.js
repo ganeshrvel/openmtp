@@ -80,6 +80,7 @@ module.exports = {
     'react/jsx-props-no-spreading': 'off',
     'react/prefer-stateless-function': 'off',
     strict: 'off',
-    'react/prop-types': 'off'
+    'react/prop-types': 'off',
+    'react/no-deprecate': 'off'
   }
 };
