@@ -22,7 +22,7 @@ export const fileExplorerKeymaps = {
   },
   delete: {
     label: `Delete`,
-    keys: ['backspace']
+    keys: ['backspace', 'delete']
   },
   refresh: {
     label: `Refresh`,

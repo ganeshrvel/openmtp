@@ -90,7 +90,8 @@ const filterJunkMtpErrors = string => {
     string === '\r\n' ||
     string === '' ||
     string.toLowerCase().indexOf(`device::find failed`) !== -1 ||
-    string.toLowerCase().indexOf(`iocreateplugininterfaceforservice`) !== -1
+    string.toLowerCase().indexOf(`iocreateplugininterfaceforservice`) !== -1 ||
+    string.toLowerCase().indexOf(`Device::Find failed`) !== -1
   );
 };
 
@@ -548,7 +549,7 @@ export const asyncReadMtpDir = async ({
       }
 
       const fullPath = path.resolve(filePath, matchedFileName);
-      const isFolder = filePropsList[mtpCmdChopIndex.type] === 'Association';
+      const isFolder = filePropsList[mtpCmdChopIndex.type] === '3001';
       const dateTime = `${filePropsList[mtpCmdChopIndex.dateAdded]} ${
         filePropsList[mtpCmdChopIndex.timeAdded]
       }`;

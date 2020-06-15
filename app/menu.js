@@ -84,7 +84,7 @@ export default class MenuBuilder {
         { type: 'separator' },
         {
           label: 'Quit',
-          accelerator: 'Command+Alt+Q',
+          accelerator: 'Command+Q',
           click: () => {
             app.quit();
           }
