@@ -11,6 +11,9 @@ module.exports = {
   plugins: ['import', 'promise', 'compat', 'react'],
   extends: ['airbnb', 'plugin:prettier/recommended', 'prettier/react'],
   settings: {
+    react: {
+      version: '16.7'
+    },
     'import/resolver': {
       webpack: {
         config: 'webpack/config.eslint.js'
