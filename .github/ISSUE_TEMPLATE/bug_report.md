@@ -59,8 +59,8 @@ Include as many relevant details about the environment you experienced the bug i
 **Attachments**
 Include if relevant,
 1. Open your Terminal and run the following code:
-```shell
-zip -r -X ~/Desktop/OpenMTP-log.zip ~/.io.ganeshrvel/openmtp/logs/
+```shell script
+zip -r -X ~/Desktop/OpenMTP-log.zip "$HOME/Library/Application Support/io.ganeshrvel.openmtp/logs/"
 ```
 2. Attach the file *OpenMTP-log.zip* found in your Desktop folder here.
 
