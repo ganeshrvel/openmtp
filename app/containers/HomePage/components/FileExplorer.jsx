@@ -16,7 +16,7 @@ import { styles } from '../styles/FileExplorer';
 import {
   TextFieldEdit as TextFieldEditDialog,
   ProgressBar as ProgressBarDialog,
-  Confirm as ConfirmDialog
+  Confirm as ConfirmDialog,
 } from '../../../components/DialogBox';
 import { withReducer } from '../../../store/reducers/withReducer';
 import reducers from '../reducers';
@@ -31,7 +31,7 @@ import {
   setFileTransferClipboard,
   setFilesDrag,
   clearFilesDrag,
-  setFocussedFileExplorerDeviceType
+  setFocussedFileExplorerDeviceType,
 } from '../actions';
 import {
   makeDirectoryLists,
@@ -42,17 +42,17 @@ import {
   makeFileTransferClipboard,
   makeFileTransferProgess,
   makeFilesDrag,
-  makeFocussedFileExplorerDeviceType
+  makeFocussedFileExplorerDeviceType,
 } from '../selectors';
 import {
   makeEnableStatusBar,
   makeFileExplorerListingType,
-  makeHideHiddenFiles
+  makeHideHiddenFiles,
 } from '../../Settings/selectors';
 import {
   DEVICES_LABEL,
   DEVICES_TYPE_CONST,
-  DONATE_PAYPAL_URL
+  DONATE_PAYPAL_URL,
 } from '../../../constants';
 import {
   renameLocalFiles,
@@ -60,7 +60,7 @@ import {
   newLocalFolder,
   newMtpFolder,
   pasteFiles,
-  renameMtpFiles
+  renameMtpFiles,
 } from '../../../api/sys';
 import { baseName, pathInfo, pathUp, sanitizePath } from '../../../utils/paths';
 import {
@@ -69,7 +69,7 @@ import {
   isInt,
   isNumber,
   removeArrayDuplicates,
-  undefinedOrNull
+  undefinedOrNull,
 } from '../../../utils/funcs';
 import { getMainWindowRendererProcess } from '../../../utils/windowHelper';
 import { throwAlert } from '../../Alerts/actions';
@@ -80,7 +80,7 @@ import { APP_GITHUB_URL } from '../../../constants/meta';
 import {
   fbShareUrl,
   redditShareUrl,
-  twitterShareUrl
+  twitterShareUrl,
 } from '../../../templates/socialMediaShareBtns';
 
 const { Menu, getCurrentWindow } = remote;
@@ -96,36 +96,36 @@ const socialMediaShareBtnsList = [
     label: 'Find us on GitHub',
     imgSrc: 'SocialMediaShare/github.svg',
     url: APP_GITHUB_URL,
-    invert: false
+    invert: false,
   },
   {
     enabled: true,
     label: 'Share it on Twitter',
     imgSrc: 'SocialMediaShare/twitter.svg',
     url: twitterShareUrl,
-    invert: false
+    invert: false,
   },
   {
     enabled: true,
     label: 'Share it on Facebook',
     imgSrc: 'SocialMediaShare/facebook.svg',
     url: fbShareUrl,
-    invert: false
+    invert: false,
   },
   {
     enabled: true,
     label: 'Share it on Reddit',
     imgSrc: 'SocialMediaShare/reddit.svg',
     url: redditShareUrl,
-    invert: false
+    invert: false,
   },
   {
     enabled: true,
     label: 'Buy me a Coffee',
     imgSrc: 'SocialMediaShare/paypal.svg',
     url: DONATE_PAYPAL_URL,
-    invert: false
-  }
+    invert: false,
+  },
 ];
 
 class FileExplorer extends Component {
@@ -137,30 +137,30 @@ class FileExplorer extends Component {
         rename: {
           errors: {
             toggle: false,
-            message: null
+            message: null,
           },
           toggle: false,
-          data: {}
+          data: {},
         },
         newFolder: {
           errors: {
             toggle: false,
-            message: null
+            message: null,
           },
           toggle: false,
-          data: {}
-        }
+          data: {},
+        },
       },
-      directoryGeneratedTime: Date.now()
+      directoryGeneratedTime: Date.now(),
     };
     this.state = {
-      ...this.initialState
+      ...this.initialState,
     };
 
     this.electronMenu = new Menu();
 
     this.keyedAcceleratorList = {
-      shift: false
+      shift: false,
     };
   }
 
@@ -169,21 +169,21 @@ class FileExplorer extends Component {
       currentBrowsePath,
       deviceType,
       actionCreateFetchMtpStorageOptions,
-      hideHiddenFiles
+      hideHiddenFiles,
     } = this.props;
 
     if (deviceType === DEVICES_TYPE_CONST.mtp) {
       actionCreateFetchMtpStorageOptions(
         {
           filePath: currentBrowsePath[deviceType],
-          ignoreHidden: hideHiddenFiles[deviceType]
+          ignoreHidden: hideHiddenFiles[deviceType],
         },
         deviceType
       );
     } else {
       this._handleFetchDirList({
         path: currentBrowsePath[deviceType],
-        deviceType
+        deviceType,
       });
     }
   }
@@ -256,7 +256,7 @@ class FileExplorer extends Component {
         const { toggle: isActiveFileTransferProgess } = fileTransferProgess;
 
         ipcRenderer.send('isFileTransferActiveReply', {
-          isActive: isActiveFileTransferProgess
+          isActive: isActiveFileTransferProgess,
         });
       });
     }
@@ -274,7 +274,7 @@ class FileExplorer extends Component {
       case 'meta':
         this.keyedAcceleratorList = {
           ...this.keyedAcceleratorList,
-          shift: pressed
+          shift: pressed,
         };
         break;
       default:
@@ -289,7 +289,7 @@ class FileExplorer extends Component {
     actionCreateFetchDirList(
       {
         filePath: path,
-        ignoreHidden: hideHiddenFiles[deviceType]
+        ignoreHidden: hideHiddenFiles[deviceType],
       },
       deviceType
     );
@@ -298,7 +298,7 @@ class FileExplorer extends Component {
   lastSelectedNode = (nodes, selected) => {
     let _return = {
       index: -1,
-      item: []
+      item: [],
     };
 
     nodes.filter((item, index) => {
@@ -316,7 +316,7 @@ class FileExplorer extends Component {
 
       _return = {
         index,
-        item
+        item,
       };
 
       return _return;
@@ -328,7 +328,7 @@ class FileExplorer extends Component {
   lastSelectedNodeOfTableSort = (nodes, selected, reverse = false) => {
     let _return = {
       index: -1,
-      item: []
+      item: [],
     };
 
     nodes.filter((item, index) => {
@@ -346,14 +346,14 @@ class FileExplorer extends Component {
             if (_return.index < 0) {
               _return = {
                 index,
-                item
+                item,
               };
               return _return;
             }
           } else {
             _return = {
               index,
-              item
+              item,
             };
           }
         }
@@ -374,7 +374,7 @@ class FileExplorer extends Component {
       actionCreateCopy,
       fileTransferClipboard,
       currentBrowsePath,
-      fileExplorerListingType
+      fileExplorerListingType,
     } = this.props;
     const { tableData, deviceType, event } = data;
     const { queue, nodes, order, orderBy } = directoryLists[deviceType];
@@ -416,7 +416,7 @@ class FileExplorer extends Component {
         _tableSort = this.tableSort({
           nodes,
           order,
-          orderBy
+          orderBy,
         });
 
         _lastSelectedNodeOfTableSort = this.lastSelectedNodeOfTableSort(
@@ -444,7 +444,7 @@ class FileExplorer extends Component {
 
         actionCreateCopy({
           selected,
-          deviceType
+          deviceType,
         });
         break;
 
@@ -456,7 +456,7 @@ class FileExplorer extends Component {
         actionCreateCopy({
           selected,
           deviceType,
-          toQueue: true
+          toQueue: true,
         });
         break;
 
@@ -480,7 +480,7 @@ class FileExplorer extends Component {
           'fileExplorerToolbarActionCommunication',
           {
             type,
-            deviceType: _focussedFileExplorerDeviceType
+            deviceType: _focussedFileExplorerDeviceType,
           }
         );
         break;
@@ -490,7 +490,7 @@ class FileExplorer extends Component {
           'fileExplorerToolbarActionCommunication',
           {
             type,
-            deviceType: _focussedFileExplorerDeviceType
+            deviceType: _focussedFileExplorerDeviceType,
           }
         );
         break;
@@ -504,7 +504,7 @@ class FileExplorer extends Component {
           'fileExplorerToolbarActionCommunication',
           {
             type,
-            deviceType: _focussedFileExplorerDeviceType
+            deviceType: _focussedFileExplorerDeviceType,
           }
         );
         break;
@@ -720,7 +720,7 @@ class FileExplorer extends Component {
   _handleFocussedFileExplorerDeviceType = (toggle, deviceType) => {
     const {
       actionCreateFocussedFileExplorerDeviceType,
-      focussedFileExplorerDeviceType
+      focussedFileExplorerDeviceType,
     } = this.props;
 
     if (focussedFileExplorerDeviceType.value === deviceType) {
@@ -732,17 +732,17 @@ class FileExplorer extends Component {
     if (toggle) {
       _focussedFileExplorerDeviceType = {
         accelerator: deviceType,
-        value: deviceType
+        value: deviceType,
       };
     } else {
       _focussedFileExplorerDeviceType = {
         onClick: deviceType,
-        value: deviceType
+        value: deviceType,
       };
     }
 
     actionCreateFocussedFileExplorerDeviceType({
-      ..._focussedFileExplorerDeviceType
+      ..._focussedFileExplorerDeviceType,
     });
   };
 
@@ -791,13 +791,13 @@ class FileExplorer extends Component {
     const {
       contextMenuList,
       fileTransferClipboard,
-      directoryLists
+      directoryLists,
     } = this.props;
     const { queue } = directoryLists[deviceType];
     const _contextMenuList = contextMenuList[deviceType];
     const contextMenuActiveList = [];
 
-    Object.keys(_contextMenuList).map(a => {
+    Object.keys(_contextMenuList).map((a) => {
       const item = _contextMenuList[a];
       switch (a) {
         case 'rename':
@@ -809,10 +809,10 @@ class FileExplorer extends Component {
               this._handleContextMenuListActions({
                 [a]: {
                   ...item,
-                  data: rowData
-                }
+                  data: rowData,
+                },
               });
-            }
+            },
           });
           break;
 
@@ -825,10 +825,10 @@ class FileExplorer extends Component {
               this._handleContextMenuListActions({
                 [a]: {
                   ...item,
-                  data: {}
-                }
+                  data: {},
+                },
               });
-            }
+            },
           });
           break;
 
@@ -842,10 +842,10 @@ class FileExplorer extends Component {
               this._handleContextMenuListActions({
                 [a]: {
                   ...item,
-                  data: {}
-                }
+                  data: {},
+                },
               });
-            }
+            },
           });
 
           break;
@@ -858,10 +858,10 @@ class FileExplorer extends Component {
               this._handleContextMenuListActions({
                 [a]: {
                   ...item,
-                  data: tableData
-                }
+                  data: tableData,
+                },
               });
-            }
+            },
           });
 
           break;
@@ -879,7 +879,7 @@ class FileExplorer extends Component {
   _handleContextMenuListActions = ({ ...args }) => {
     const { deviceType, directoryLists, actionCreateCopy } = this.props;
 
-    Object.keys(args).map(a => {
+    Object.keys(args).map((a) => {
       const item = args[a];
       switch (a) {
         case 'rename':
@@ -887,8 +887,8 @@ class FileExplorer extends Component {
             {
               toggle: true,
               data: {
-                ...item.data
-              }
+                ...item.data,
+              },
             },
             'rename'
           );
@@ -907,7 +907,7 @@ class FileExplorer extends Component {
           actionCreateCopy({
             selected: selectedItemsToCopyToQueue,
             deviceType,
-            toQueue: true
+            toQueue: true,
           });
           break;
 
@@ -920,8 +920,8 @@ class FileExplorer extends Component {
             {
               toggle: true,
               data: {
-                ...item.data
-              }
+                ...item.data,
+              },
             },
             'newFolder'
           );
@@ -946,9 +946,9 @@ class FileExplorer extends Component {
         ...toggleDialog,
         [targetAction]: {
           ...toggleDialog[targetAction],
-          ...args
-        }
-      }
+          ...args,
+        },
+      },
     });
   };
 
@@ -958,7 +958,7 @@ class FileExplorer extends Component {
       actionCreateRenameFile,
       hideHiddenFiles,
       currentBrowsePath,
-      mtpStoragesListSelected
+      mtpStoragesListSelected,
     } = this.props;
 
     // eslint-disable-next-line react/destructuring-assignment
@@ -975,7 +975,7 @@ class FileExplorer extends Component {
       this._handleErrorsEditDialog(
         {
           toggle: true,
-          message: `Error: Illegal characters.`
+          message: `Error: Illegal characters.`,
         },
         targetAction
       );
@@ -998,7 +998,7 @@ class FileExplorer extends Component {
       this._handleErrorsEditDialog(
         {
           toggle: true,
-          message: `Error: The name "${newFileName}" is already taken.`
+          message: `Error: The name "${newFileName}" is already taken.`,
         },
         targetAction
       );
@@ -1008,11 +1008,11 @@ class FileExplorer extends Component {
       {
         oldFilePath,
         newFilePath,
-        deviceType
+        deviceType,
       },
       {
         filePath: currentBrowsePath[deviceType],
-        ignoreHidden: hideHiddenFiles[deviceType]
+        ignoreHidden: hideHiddenFiles[deviceType],
       }
     );
 
@@ -1026,27 +1026,27 @@ class FileExplorer extends Component {
         ...toggleDialog,
         [targetAction]: {
           ...toggleDialog[targetAction],
-          errors: { ...args }
-        }
-      }
+          errors: { ...args },
+        },
+      },
     });
   };
 
-  _handleClearEditDialog = targetAction => {
+  _handleClearEditDialog = (targetAction) => {
     const { toggleDialog } = this.state;
     this.setState({
       toggleDialog: {
         ...toggleDialog,
         [targetAction]: {
-          ...this.initialState.toggleDialog[targetAction]
-        }
-      }
+          ...this.initialState.toggleDialog[targetAction],
+        },
+      },
     });
   };
 
-  _handleTogglePasteConfirmDialog = status => {
+  _handleTogglePasteConfirmDialog = (status) => {
     this.setState({
-      togglePasteConfirmDialog: status
+      togglePasteConfirmDialog: status,
     });
   };
 
@@ -1055,7 +1055,7 @@ class FileExplorer extends Component {
       sourceDeviceType,
       destinationDeviceType: null,
       enter: false,
-      lock: false
+      lock: false,
     });
 
     e.dataTransfer.setDragImage(filesDragGhostImg, 0, 0);
@@ -1077,7 +1077,7 @@ class FileExplorer extends Component {
         destinationDeviceType,
         enter: false,
         lock: false,
-        sameSourceDestinationLock: true
+        sameSourceDestinationLock: true,
       });
       return null;
     }
@@ -1092,7 +1092,7 @@ class FileExplorer extends Component {
       destinationDeviceType,
       enter: true,
       lock: true,
-      sameSourceDestinationLock: false
+      sameSourceDestinationLock: false,
     });
   };
 
@@ -1123,7 +1123,7 @@ class FileExplorer extends Component {
     }, 200);
   };
 
-  _handleOnHoverDropZoneActivate = deviceType => {
+  _handleOnHoverDropZoneActivate = (deviceType) => {
     const { filesDrag, mtpDevice } = this.props;
     const { sourceDeviceType, destinationDeviceType } = filesDrag;
 
@@ -1134,7 +1134,7 @@ class FileExplorer extends Component {
     return destinationDeviceType === deviceType;
   };
 
-  _handleIsDraggable = deviceType => {
+  _handleIsDraggable = (deviceType) => {
     const { directoryLists, mtpDevice } = this.props;
     const { queue } = directoryLists[deviceType];
     const { selected } = queue;
@@ -1160,7 +1160,7 @@ class FileExplorer extends Component {
       actionCreateNewFolder,
       hideHiddenFiles,
       currentBrowsePath,
-      mtpStoragesListSelected
+      mtpStoragesListSelected,
     } = this.props;
 
     // eslint-disable-next-line react/destructuring-assignment
@@ -1177,7 +1177,7 @@ class FileExplorer extends Component {
       this._handleErrorsEditDialog(
         {
           toggle: true,
-          message: `Error: Folder name cannot be empty.`
+          message: `Error: Folder name cannot be empty.`,
         },
         targetAction
       );
@@ -1188,7 +1188,7 @@ class FileExplorer extends Component {
       this._handleErrorsEditDialog(
         {
           toggle: true,
-          message: `Error: Illegal characters.`
+          message: `Error: Illegal characters.`,
         },
         targetAction
       );
@@ -1203,7 +1203,7 @@ class FileExplorer extends Component {
       this._handleErrorsEditDialog(
         {
           toggle: true,
-          message: `Error: The name "${newFolderName}" is already taken.`
+          message: `Error: The name "${newFolderName}" is already taken.`,
         },
         targetAction
       );
@@ -1213,11 +1213,11 @@ class FileExplorer extends Component {
     actionCreateNewFolder(
       {
         newFolderPath,
-        deviceType
+        deviceType,
       },
       {
         filePath: currentBrowsePath[deviceType],
-        ignoreHidden: hideHiddenFiles[deviceType]
+        ignoreHidden: hideHiddenFiles[deviceType],
       }
     );
 
@@ -1230,14 +1230,14 @@ class FileExplorer extends Component {
       currentBrowsePath,
       mtpStoragesListSelected,
       fileTransferClipboard,
-      actionCreateThrowError
+      actionCreateThrowError,
     } = this.props;
 
     let { queue } = fileTransferClipboard;
     const destinationFolder = currentBrowsePath[deviceType];
     let invalidFileNameFlag = false;
 
-    queue = queue.map(a => {
+    queue = queue.map((a) => {
       const _baseName = baseName(a);
       const fullPath = `${destinationFolder}/${_baseName}`;
       if (fullPath.trim() === '' || /[\\:]/g.test(fullPath)) {
@@ -1249,7 +1249,7 @@ class FileExplorer extends Component {
 
     if (invalidFileNameFlag) {
       actionCreateThrowError({
-        message: `Invalid file name in the path. \\: characters are not allowed.`
+        message: `Invalid file name in the path. \\: characters are not allowed.`,
       });
       return null;
     }
@@ -1262,14 +1262,14 @@ class FileExplorer extends Component {
     this._handlePasteConfirmDialog(true);
   };
 
-  _handlePasteConfirmDialog = confirm => {
+  _handlePasteConfirmDialog = (confirm) => {
     const {
       deviceType,
       hideHiddenFiles,
       currentBrowsePath,
       mtpStoragesListSelected,
       actionCreatePaste,
-      fileTransferClipboard
+      fileTransferClipboard,
     } = this.props;
     const destinationFolder = currentBrowsePath[deviceType];
 
@@ -1283,11 +1283,11 @@ class FileExplorer extends Component {
       {
         destinationFolder,
         mtpStoragesListSelected,
-        fileTransferClipboard
+        fileTransferClipboard,
       },
       {
         filePath: destinationFolder,
-        ignoreHidden: hideHiddenFiles[deviceType]
+        ignoreHidden: hideHiddenFiles[deviceType],
       },
       deviceType
     );
@@ -1297,14 +1297,14 @@ class FileExplorer extends Component {
     const {
       actionCreateFetchDirList,
       hideHiddenFiles,
-      deviceType
+      deviceType,
     } = this.props;
     const { path } = args;
 
     actionCreateFetchDirList(
       {
         filePath: path,
-        ignoreHidden: hideHiddenFiles[deviceType]
+        ignoreHidden: hideHiddenFiles[deviceType],
       },
       deviceType
     );
@@ -1328,7 +1328,7 @@ class FileExplorer extends Component {
   _handleSelectAllClick = (deviceType, event) => {
     const { directoryLists, actionCreateSelectAllClick } = this.props;
     const selected =
-      directoryLists[deviceType].nodes.map(item => item.path) || [];
+      directoryLists[deviceType].nodes.map((item) => item.path) || [];
     let isChecked = true;
 
     if (event) {
@@ -1389,7 +1389,7 @@ class FileExplorer extends Component {
 
     this._handleFetchDirList({
       path,
-      deviceType
+      deviceType,
     });
   };
 
@@ -1402,11 +1402,11 @@ class FileExplorer extends Component {
 
     if (order === 'asc') {
       return lodashSortBy(nodes, [
-        value => this._lodashSortConstraints({ value, orderBy })
+        (value) => this._lodashSortConstraints({ value, orderBy }),
       ]);
     }
     return lodashSortBy(nodes, [
-      value => this._lodashSortConstraints({ value, orderBy })
+      (value) => this._lodashSortConstraints({ value, orderBy }),
     ]).reverse();
   };
 
@@ -1441,7 +1441,7 @@ class FileExplorer extends Component {
 
   _handleDirectoryGeneratedTime = () => {
     this.setState({
-      directoryGeneratedTime: Date.now()
+      directoryGeneratedTime: Date.now(),
     });
   };
 
@@ -1457,12 +1457,12 @@ class FileExplorer extends Component {
       filesDrag,
       fileExplorerListingType,
       isStatusBarEnabled,
-      fileTransferClipboard
+      fileTransferClipboard,
     } = this.props;
     const {
       toggleDialog,
       togglePasteConfirmDialog,
-      directoryGeneratedTime
+      directoryGeneratedTime,
     } = this.state;
     const { rename, newFolder } = toggleDialog;
     const togglePasteDialog =
@@ -1627,7 +1627,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
           dispatch(
             setSelectedDirLists(
               {
-                selected
+                selected,
               },
               deviceType
             )
@@ -1652,7 +1652,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
             deviceType,
             {
               changeMtpStorageIdsOnlyOnDeviceChange: false,
-              mtpStoragesList: {}
+              mtpStoragesList: {},
             },
             getState
           )
@@ -1673,10 +1673,10 @@ const mapDispatchToProps = (dispatch, ownProps) =>
               const {
                 error: localError,
                 stderr: localStderr,
-                data: localData
+                data: localData,
               } = await renameLocalFiles({
                 oldFilePath,
-                newFilePath
+                newFilePath,
               });
 
               dispatch(
@@ -1693,7 +1693,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
                         getState
                       )
                     );
-                  }
+                  },
                 })
               );
               break;
@@ -1704,11 +1704,11 @@ const mapDispatchToProps = (dispatch, ownProps) =>
               const {
                 error: mtpError,
                 stderr: mtpStderr,
-                data: mtpData
+                data: mtpData,
               } = await renameMtpFiles({
                 oldFilePath,
                 newFilePath,
-                mtpStoragesListSelected
+                mtpStoragesListSelected,
               });
 
               dispatch(
@@ -1725,7 +1725,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
                         getState
                       )
                     );
-                  }
+                  },
                 })
               );
               break;
@@ -1747,9 +1747,9 @@ const mapDispatchToProps = (dispatch, ownProps) =>
               const {
                 error: localError,
                 stderr: localStderr,
-                data: localData
+                data: localData,
               } = await newLocalFolder({
-                newFolderPath
+                newFolderPath,
               });
 
               dispatch(
@@ -1766,7 +1766,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
                         getState
                       )
                     );
-                  }
+                  },
                 })
               );
               break;
@@ -1777,10 +1777,10 @@ const mapDispatchToProps = (dispatch, ownProps) =>
               const {
                 error: mtpError,
                 stderr: mtpStderr,
-                data: mtpData
+                data: mtpData,
               } = await newMtpFolder({
                 newFolderPath,
-                mtpStoragesListSelected
+                mtpStoragesListSelected,
               });
 
               dispatch(
@@ -1797,7 +1797,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
                         getState
                       )
                     );
-                  }
+                  },
                 })
               );
               break;
@@ -1830,7 +1830,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
           dispatch(
             setFileTransferClipboard({
               queue,
-              source: deviceType
+              source: deviceType,
             })
           );
 
@@ -1891,7 +1891,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         } catch (e) {
           log.error(e);
         }
-      }
+      },
     },
     dispatch
   );
@@ -1909,7 +1909,7 @@ const mapStateToProps = (state, props) => {
     fileTransferProgess: makeFileTransferProgess(state),
     filesDrag: makeFilesDrag(state),
     fileExplorerListingType: makeFileExplorerListingType(state),
-    focussedFileExplorerDeviceType: makeFocussedFileExplorerDeviceType(state)
+    focussedFileExplorerDeviceType: makeFocussedFileExplorerDeviceType(state),
   };
 };
 

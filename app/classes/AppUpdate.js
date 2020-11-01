@@ -30,8 +30,9 @@ const createChildWindow = () => {
       fullscreenable: false,
       movable: false,
       webPreferences: {
-        nodeIntegration: true
-      }
+        nodeIntegration: true,
+        enableRemoteModule: true,
+      },
     });
   } catch (e) {
     log.error(e, `AppUpdate -> createChildWindow`);
@@ -47,7 +48,7 @@ const fireProgressbar = () => {
     }
 
     mainWindow.webContents.send('isFileTransferActiveSeek', {
-      check: true
+      check: true,
     });
 
     ipcMain.once('isFileTransferActiveReply', (event, { ...args }) => {
@@ -70,7 +71,7 @@ const fireProgressbar = () => {
       progressbarWindow = null;
     });
 
-    progressbarWindow.onerror = error => {
+    progressbarWindow.onerror = (error) => {
       log.error(error, `AppUpdate -> progressbarWindow -> onerror`);
     };
   } catch (e) {
@@ -95,7 +96,7 @@ export default class AppUpdate {
     this._errorDialog = {
       timeGenerated: 0,
       title: null,
-      message: null
+      message: null,
     };
     this.updateIsActive = 0; // 0 = no, 1 = update check in progress, -1 = update in progress
     this.disableAutoUpdateCheck = false;
@@ -107,7 +108,7 @@ export default class AppUpdate {
         return;
       }
 
-      this.autoUpdater.on('error', error => {
+      this.autoUpdater.on('error', (error) => {
         const errorMsg =
           error == null ? 'unknown' : (error.stack || error).toString();
 
@@ -136,7 +137,7 @@ export default class AppUpdate {
         log.error(errorMsg, `AppUpdate -> onerror`);
       });
 
-      this.autoUpdater.on('update-available', info => {
+      this.autoUpdater.on('update-available', (info) => {
         if (progressbarWindow !== null && this.updateIsActive !== -1) {
           progressbarWindow.close();
         }
@@ -181,7 +182,7 @@ export default class AppUpdate {
         });
       });
 
-      this.autoUpdater.on('download-progress', progress => {
+      this.autoUpdater.on('download-progress', (progress) => {
         if (progressbarWindow === null) {
           return null;
         }
@@ -199,9 +200,9 @@ export default class AppUpdate {
           {
             title: 'Install Updates',
             message: 'Updates downloaded. Application will quit now...',
-            buttons: ['Install and Relaunch']
+            buttons: ['Install and Relaunch'],
           },
-          buttonIndex => {
+          (buttonIndex) => {
             switch (buttonIndex) {
               case 0:
               default:
@@ -227,7 +228,7 @@ export default class AppUpdate {
       }
 
       isConnected()
-        .then(connected => {
+        .then((connected) => {
           if (!connected) {
             return null;
           }
@@ -274,9 +275,9 @@ export default class AppUpdate {
             {
               title: 'No Updates Found',
               message: 'You have the latest version installed.',
-              buttons: ['Close']
+              buttons: ['Close'],
             },
-            buttonIndex => {
+            (buttonIndex) => {
               switch (buttonIndex) {
                 case 0:
                 default:
@@ -297,9 +298,9 @@ export default class AppUpdate {
             title: 'Update in progress',
             message:
               'Another update is in progess. Are you sure want to restart the update?',
-            buttons: ['No', 'Yes']
+            buttons: ['No', 'Yes'],
           },
-          buttonIndex => {
+          (buttonIndex) => {
             switch (buttonIndex) {
               case 0:
               default:
@@ -326,7 +327,7 @@ export default class AppUpdate {
   setCheckUpdatesProgress() {
     try {
       isConnected()
-        .then(connected => {
+        .then((connected) => {
           if (!connected) {
             this.spitMessageDialog(
               'Checking For Updates',
@@ -345,7 +346,7 @@ export default class AppUpdate {
                 progressTitle: `Checking For Updates`,
                 progressBodyText: `Please wait...`,
                 value: 0,
-                variant: `indeterminate`
+                variant: `indeterminate`,
               }
             );
           });
@@ -360,7 +361,7 @@ export default class AppUpdate {
   initDownloadUpdatesProgress() {
     try {
       isConnected()
-        .then(connected => {
+        .then((connected) => {
           if (!connected) {
             this.spitMessageDialog(
               'Downloading Updates',
@@ -386,7 +387,7 @@ export default class AppUpdate {
         progressTitle: `Downloading Updates`,
         progressBodyText: `Please wait...`,
         value,
-        variant: `determinate`
+        variant: `determinate`,
       };
 
       this.setTaskBarProgressBar(value / 100);
@@ -457,7 +458,7 @@ export default class AppUpdate {
     this._errorDialog = {
       timeGenerated: unixTimestampNow(),
       title,
-      message
+      message,
     };
 
     switch (type) {
@@ -467,9 +468,9 @@ export default class AppUpdate {
           {
             title,
             message,
-            buttons: ['Close']
+            buttons: ['Close'],
           },
-          buttonIndex => {
+          (buttonIndex) => {
             switch (buttonIndex) {
               case 0:
               default:

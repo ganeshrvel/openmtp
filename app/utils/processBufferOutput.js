@@ -19,7 +19,7 @@ export const processMtpBuffer = async ({ error, stderr }) => {
     writePipe: `WritePipe`,
     mtpStorageNotAccessible1: `MTP storage not accessible`,
     mtpStorageNotAccessible2: `error: storage`,
-    partialDeletion: `PartialDeletion`
+    partialDeletion: `PartialDeletion`,
   };
 
   const errorDictionary = {
@@ -38,7 +38,7 @@ export const processMtpBuffer = async ({ error, stderr }) => {
     partialDeletion: `The path is inaccessible.`,
     common: `Oops.. Your ${
       DEVICES_LABEL[DEVICES_TYPE_CONST.mtp]
-    } has gone crazy! Try again.`
+    } has gone crazy! Try again.`,
   };
 
   const errorStringified =
@@ -51,11 +51,11 @@ export const processMtpBuffer = async ({ error, stderr }) => {
       error: null,
       throwAlert: false,
       logError: true,
-      status: true
+      status: true,
     };
   }
 
-  const checkError = errorTplKey => {
+  const checkError = (errorTplKey) => {
     return (
       stderrStringified
         .toLowerCase()
@@ -83,7 +83,7 @@ export const processMtpBuffer = async ({ error, stderr }) => {
         error: errorDictionary.googleAndroidFileTransferIsActive,
         throwAlert: true,
         logError: true,
-        status: false
+        status: false,
       };
     }
 
@@ -91,7 +91,7 @@ export const processMtpBuffer = async ({ error, stderr }) => {
       error: errorDictionary.noMtp,
       throwAlert: false,
       logError: false,
-      status: false
+      status: false,
     };
   }
   if (
@@ -102,7 +102,7 @@ export const processMtpBuffer = async ({ error, stderr }) => {
       error: errorDictionary.deviceLocked,
       throwAlert: true,
       logError: true,
-      status: false
+      status: false,
     };
   }
   if (
@@ -113,7 +113,7 @@ export const processMtpBuffer = async ({ error, stderr }) => {
       error: errorDictionary.unResponsive,
       throwAlert: true,
       logError: true,
-      status: false
+      status: false,
     };
   }
   if (
@@ -124,7 +124,7 @@ export const processMtpBuffer = async ({ error, stderr }) => {
       error: errorDictionary.unResponsive,
       throwAlert: true,
       logError: true,
-      status: false
+      status: false,
     };
   }
   if (
@@ -135,7 +135,7 @@ export const processMtpBuffer = async ({ error, stderr }) => {
       error: errorDictionary.unResponsive,
       throwAlert: true,
       logError: true,
-      status: false
+      status: false,
     };
   }
   if (
@@ -147,7 +147,7 @@ export const processMtpBuffer = async ({ error, stderr }) => {
       error: errorDictionary.mtpStorageNotAccessible,
       throwAlert: true,
       logError: true,
-      status: false
+      status: false,
     };
   }
   if (
@@ -158,7 +158,7 @@ export const processMtpBuffer = async ({ error, stderr }) => {
       error: sanitizeErrors(stderrStringified || errorStringified),
       throwAlert: true,
       logError: true,
-      status: true
+      status: true,
     };
   }
   if (
@@ -169,7 +169,7 @@ export const processMtpBuffer = async ({ error, stderr }) => {
       error: errorDictionary.fileNotFound,
       throwAlert: true,
       logError: true,
-      status: true
+      status: true,
     };
   }
   if (
@@ -181,7 +181,7 @@ export const processMtpBuffer = async ({ error, stderr }) => {
       error: sanitizeErrors(stderrStringified || errorStringified),
       throwAlert: true,
       logError: true,
-      status: true
+      status: true,
     };
   }
   if (
@@ -192,7 +192,7 @@ export const processMtpBuffer = async ({ error, stderr }) => {
       error: errorDictionary.partialDeletion,
       throwAlert: true,
       logError: true,
-      status: true
+      status: true,
     };
   }
   /* common errors */
@@ -200,7 +200,7 @@ export const processMtpBuffer = async ({ error, stderr }) => {
     error: errorDictionary.common,
     throwAlert: true,
     logError: true,
-    status: true
+    status: true,
   };
 };
 
@@ -210,7 +210,7 @@ export const processLocalBuffer = ({ error, stderr }) => {
     noPerm2: `Permission denied`,
     commandFailed: `Command failed`,
     noSuchFiles: `No such file or directory`,
-    resourceBusy: `resource busy or locked`
+    resourceBusy: `resource busy or locked`,
   };
   const errorDictionary = {
     noPerm: `Operation not permitted.`,
@@ -218,7 +218,7 @@ export const processLocalBuffer = ({ error, stderr }) => {
     common: `Oops.. Your device has gone crazy! Try again.`,
     unResponsive: `Device is not responding! Reload`,
     invalidPath: `Invalid path`,
-    fileNotFound: `File not found! Try again.`
+    fileNotFound: `File not found! Try again.`,
   };
 
   const errorStringified =
@@ -230,11 +230,11 @@ export const processLocalBuffer = ({ error, stderr }) => {
     return {
       error: null,
       throwAlert: false,
-      logError: true
+      logError: true,
     };
   }
 
-  const checkError = errorTplKey => {
+  const checkError = (errorTplKey) => {
     return (
       stderrStringified
         .toLowerCase()
@@ -257,7 +257,7 @@ export const processLocalBuffer = ({ error, stderr }) => {
     return {
       error: errorDictionary.noPerm,
       throwAlert: true,
-      logError: true
+      logError: true,
     };
   }
   if (
@@ -267,7 +267,7 @@ export const processLocalBuffer = ({ error, stderr }) => {
     return {
       error: errorDictionary.commandFailed,
       throwAlert: true,
-      logError: true
+      logError: true,
     };
   }
   if (
@@ -278,7 +278,7 @@ export const processLocalBuffer = ({ error, stderr }) => {
       error: errorDictionary.fileNotFound,
       throwAlert: true,
       logError: true,
-      status: true
+      status: true,
     };
   }
   if (
@@ -288,18 +288,18 @@ export const processLocalBuffer = ({ error, stderr }) => {
     return {
       error: errorDictionary.commandFailed,
       throwAlert: true,
-      logError: true
+      logError: true,
     };
   }
   /* common errors */
   return {
     error: errorDictionary.common,
     throwAlert: true,
-    logError: true
+    logError: true,
   };
 };
 
-const sanitizeErrors = string => {
+const sanitizeErrors = (string) => {
   if (string === null) {
     return `Oops.. Try again`;
   }

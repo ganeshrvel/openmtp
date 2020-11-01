@@ -25,7 +25,7 @@ class FileExplorerTableBodyListRender extends PureComponent {
       hideColList,
       onContextMenuClick,
       onTableClick,
-      onTableDoubleClick
+      onTableDoubleClick,
     } = this.props;
 
     const fileName = springTruncate(
@@ -41,13 +41,13 @@ class FileExplorerTableBodyListRender extends PureComponent {
         tabIndex={-1}
         selected={isSelected}
         className={classNames({
-          [styles.tableRowSelected]: isSelected
+          [styles.tableRowSelected]: isSelected,
         })}
       >
         <TableCell
           padding="none"
           className={`${styles.tableCell} checkboxCell`}
-          onContextMenu={event =>
+          onContextMenu={(event) =>
             onContextMenuClick(
               event,
               { ...item },
@@ -58,15 +58,15 @@ class FileExplorerTableBodyListRender extends PureComponent {
         >
           <Checkbox
             checked={isSelected}
-            onClick={event => onTableClick(item.path, deviceType, event)}
+            onClick={(event) => onTableClick(item.path, deviceType, event)}
           />
         </TableCell>
         {hideColList.indexOf('name') < 0 && (
           <TableCell
             padding="default"
-            onClick={event => onTableClick(item.path, deviceType, event)}
+            onClick={(event) => onTableClick(item.path, deviceType, event)}
             className={`${styles.tableCell} nameCell`}
-            onContextMenu={event =>
+            onContextMenu={(event) =>
               onContextMenuClick(
                 event,
                 { ...item },
@@ -74,7 +74,9 @@ class FileExplorerTableBodyListRender extends PureComponent {
                 _eventTarget
               )
             }
-            onDoubleClick={event => onTableDoubleClick(item, deviceType, event)}
+            onDoubleClick={(event) =>
+              onTableDoubleClick(item, deviceType, event)
+            }
           >
             {item.isFolder ? (
               <Tooltip title="Folder">
@@ -104,9 +106,9 @@ class FileExplorerTableBodyListRender extends PureComponent {
         {hideColList.indexOf('size') < 0 && (
           <TableCell
             padding="none"
-            onClick={event => onTableClick(item.path, deviceType, event)}
+            onClick={(event) => onTableClick(item.path, deviceType, event)}
             className={`${styles.tableCell} sizeCell`}
-            onContextMenu={event =>
+            onContextMenu={(event) =>
               onContextMenuClick(
                 event,
                 { ...item },
@@ -114,7 +116,9 @@ class FileExplorerTableBodyListRender extends PureComponent {
                 _eventTarget
               )
             }
-            onDoubleClick={event => onTableDoubleClick(item, deviceType, event)}
+            onDoubleClick={(event) =>
+              onTableDoubleClick(item, deviceType, event)
+            }
           >
             {item.isFolder ? `--` : `${niceBytes(item.size)}`}
           </TableCell>
@@ -122,9 +126,9 @@ class FileExplorerTableBodyListRender extends PureComponent {
         {hideColList.indexOf('dateAdded') < 0 && (
           <TableCell
             padding="none"
-            onClick={event => onTableClick(item.path, deviceType, event)}
+            onClick={(event) => onTableClick(item.path, deviceType, event)}
             className={`${styles.tableCell} dateAddedCell`}
-            onContextMenu={event =>
+            onContextMenu={(event) =>
               onContextMenuClick(
                 event,
                 { ...item },
@@ -132,7 +136,9 @@ class FileExplorerTableBodyListRender extends PureComponent {
                 _eventTarget
               )
             }
-            onDoubleClick={event => onTableDoubleClick(item, deviceType, event)}
+            onDoubleClick={(event) =>
+              onTableDoubleClick(item, deviceType, event)
+            }
           >
             {item.dateAdded}
           </TableCell>

@@ -1,24 +1,24 @@
 'use strict';
 
 // eslint-disable-next-line no-unused-vars
-export default args => {
+export default (args) => {
   return {
     sizes: {
       toolbarHeight: 64,
       sidebarAreaPaneWidth: 300,
-      sidebarAreaPaddingTop: 40
+      sidebarAreaPaddingTop: 40,
     },
     styles: {
       primaryColor: {
-        main: '#ffffff'
+        main: '#ffffff',
       },
       secondaryColor: {
-        main: '#007af5'
+        main: '#007af5',
       },
       regularFontSize: 14,
       borderThinDividerColor:
         'solid 1px var(--black-transparent-12,rgba(0,0,0,.12))',
-      textLightColor: `rgba(0, 0, 0, 0.64)`
-    }
+      textLightColor: `rgba(0, 0, 0, 0.64)`,
+    },
   };
 };

@@ -2,15 +2,15 @@
 
 import { variables, mixins } from '../../../styles/js';
 
-export const styles = theme => ({
+export const styles = (theme) => ({
   root: {
     width: `100%`,
-    height: `100%`
+    height: `100%`,
   },
 
   rootBreadcrumbs: {
     width: `100%`,
-    height: `100%`
+    height: `100%`,
   },
 
   breadcrumb: {
@@ -18,7 +18,7 @@ export const styles = theme => ({
     backgroundColor: variables().styles.primaryColor.main,
     display: 'flex',
     alignItems: 'center',
-    ...mixins().resetUl
+    ...mixins().resetUl,
   },
 
   breadcrumbLi: {
@@ -28,7 +28,7 @@ export const styles = theme => ({
     fontSize: 14,
     maxWidth: 59,
     whiteSpace: 'nowrap',
-    textOverflow: 'ellipsis'
+    textOverflow: 'ellipsis',
   },
 
   breadcrumbLiA: {
@@ -36,10 +36,10 @@ export const styles = theme => ({
     color: variables().styles.secondaryColor.main,
     textDecoration: 'none',
     [`&.bold`]: {
-      fontWeight: `bold`
-    }
+      fontWeight: `bold`,
+    },
   },
   breadcrumbSeperator: {
-    fontSize: 18
-  }
+    fontSize: 18,
+  },
 });

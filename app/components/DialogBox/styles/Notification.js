@@ -2,13 +2,13 @@
 
 import { variables, mixins } from '../../../styles/js';
 
-export const styles = theme => ({
+export const styles = (theme) => ({
   margin: {},
   root: {},
   btnPositive: {
-    ...mixins().btnPositive
+    ...mixins().btnPositive,
   },
   btnNegative: {
-    ...mixins().btnNegative
-  }
+    ...mixins().btnNegative,
+  },
 });

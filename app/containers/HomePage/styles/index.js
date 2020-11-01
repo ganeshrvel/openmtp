@@ -2,11 +2,11 @@
 
 import { variables, mixins } from '../../../styles/js';
 
-export const styles = theme => {
+export const styles = (theme) => {
   return {
     root: {},
     grid: {
-      width: `100%`
+      width: `100%`,
     },
     splitPane: {
       width: `50%`,
@@ -14,8 +14,8 @@ export const styles = theme => {
       [`&:after`]: {
         content: '""',
         display: `table`,
-        clear: `both`
-      }
-    }
+        clear: `both`,
+      },
+    },
   };
 };

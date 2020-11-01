@@ -2,6 +2,6 @@
 
 import { variables, mixins } from '../../../styles/js';
 
-export const styles = theme => ({
-  root: {}
+export const styles = (theme) => ({
+  root: {},
 });

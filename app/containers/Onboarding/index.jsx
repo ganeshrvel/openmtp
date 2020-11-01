@@ -22,7 +22,7 @@ class Onboarding extends PureComponent {
     super(props);
 
     this.state = {
-      fireOnboarding: false
+      fireOnboarding: false,
     };
   }
 
@@ -31,14 +31,14 @@ class Onboarding extends PureComponent {
     const { lastFiredVersion } = onboarding;
 
     this.setState({
-      fireOnboarding: latestUpdatePushVersion !== lastFiredVersion
+      fireOnboarding: latestUpdatePushVersion !== lastFiredVersion,
     });
   }
 
   _handleClose = () => {
     const { actionCreateOnboarding } = this.props;
     this.setState({
-      fireOnboarding: false
+      fireOnboarding: false,
     });
 
     actionCreateOnboarding({ lastFiredVersion: latestUpdatePushVersion });
@@ -98,7 +98,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
     {
       actionCreateOnboarding: ({ ...data }) => (_, getState) => {
         dispatch(setOnboarding({ ...data }, getState));
-      }
+      },
     },
     dispatch
   );
@@ -106,7 +106,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
 const mapStateToProps = (state, props) => {
   return {
     onboarding: makeOnboarding(state),
-    freshInstall: makeFreshInstall(state)
+    freshInstall: makeFreshInstall(state),
   };
 };
 

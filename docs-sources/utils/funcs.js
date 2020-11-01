@@ -10,21 +10,21 @@ import { ALLOWED_GITHUB_FETCH_STATUSES } from './consts';
  * @param filePath
  * @returns {*}
  */
-export const imgsrc = filePath => {
+export const imgsrc = (filePath) => {
   return require('../images/' + filePath);
 };
 
-export const undefinedOrNull = _var => {
+export const undefinedOrNull = (_var) => {
   return typeof _var === 'undefined' || _var === null;
 };
 
 export const fetchUrl = ({ url }) => {
   return fetch(`${url}`)
-    .then(res => {
+    .then((res) => {
       if (ALLOWED_GITHUB_FETCH_STATUSES.indexOf(res.status) !== -1) {
         return {
           json: res.json(),
-          status: res.status
+          status: res.status,
         };
       }
 
@@ -33,8 +33,8 @@ export const fetchUrl = ({ url }) => {
     .catch(() => {});
 };
 
-export const imageLoaded = src => {
-  return new Promise(resolve => {
+export const imageLoaded = (src) => {
+  return new Promise((resolve) => {
     const img = new Image();
     img.onload = () => resolve({ src, status: 'ok' });
     img.onerror = () => resolve({ src, status: 'error' });
@@ -120,5 +120,5 @@ export const urls = {
 
   getUrlPath() {
     return window.location.pathname;
-  }
+  },
 };

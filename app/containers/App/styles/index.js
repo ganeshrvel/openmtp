@@ -3,15 +3,15 @@
 import { variables, mixins } from '../../../styles/js';
 
 // eslint-disable-next-line no-unused-vars
-export const theme = args => {
+export const theme = (args) => {
   return {
     palette: {
       primary: {
-        ...variables().styles.primaryColor
+        ...variables().styles.primaryColor,
       },
       secondary: {
-        ...variables().styles.secondaryColor
-      }
+        ...variables().styles.secondaryColor,
+      },
     },
     typography: {
       useNextVariants: true,
@@ -26,23 +26,23 @@ export const theme = args => {
         'sans-serif',
         '"Apple Color Emoji"',
         '"Segoe UI Emoji"',
-        '"Segoe UI Symbol"'
-      ].join(',')
+        '"Segoe UI Symbol"',
+      ].join(','),
     },
 
-    overrides: {}
+    overrides: {},
   };
 };
 
 // eslint-disable-next-line no-unused-vars
-export const styles = args => {
+export const styles = (args) => {
   // eslint-disable-line no-unused-vars
   return {
     root: {},
     noProfileError: {
       textAlign: `center`,
       ...mixins().center,
-      ...mixins().absoluteCenter
-    }
+      ...mixins().absoluteCenter,
+    },
   };
 };

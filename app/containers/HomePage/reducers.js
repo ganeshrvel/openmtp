@@ -6,14 +6,14 @@ import { PATHS } from '../../utils/paths';
 import {
   DEVICES_DEFAULT_PATH,
   DEVICES_TYPE_CONST,
-  FILE_EXPLORER_DEFAULT_FOCUSSED_DEVICE_TYPE
+  FILE_EXPLORER_DEFAULT_FOCUSSED_DEVICE_TYPE,
 } from '../../constants';
 
 export const initialState = {
   focussedFileExplorerDeviceType: {
     accelerator: FILE_EXPLORER_DEFAULT_FOCUSSED_DEVICE_TYPE,
     onClick: FILE_EXPLORER_DEFAULT_FOCUSSED_DEVICE_TYPE,
-    value: FILE_EXPLORER_DEFAULT_FOCUSSED_DEVICE_TYPE
+    value: FILE_EXPLORER_DEFAULT_FOCUSSED_DEVICE_TYPE,
   },
 
   sidebarFavouriteList: {
@@ -22,34 +22,34 @@ export const initialState = {
         label: 'Home',
         path: PATHS.homeDir,
         icon: 'folder',
-        enabled: true
+        enabled: true,
       },
       {
         label: 'Desktop',
         path: path.join(PATHS.homeDir, `/Desktop`),
         icon: 'folder',
-        enabled: true
+        enabled: true,
       },
       {
         label: 'Downloads',
         path: path.join(PATHS.homeDir, `/Downloads`),
         icon: 'folder',
-        enabled: true
+        enabled: true,
       },
       {
         label: 'Removable Disks',
         path: '/Volumes',
         icon: 'folder',
-        enabled: true
+        enabled: true,
       },
       {
         label: 'Root',
         path: '/',
         icon: 'folder',
-        enabled: true
-      }
+        enabled: true,
+      },
     ],
-    bottom: []
+    bottom: [],
   },
 
   toolbarList: {
@@ -58,65 +58,65 @@ export const initialState = {
         enabled: true,
         label: 'Folder Up',
         imgSrc: 'Toolbar/up.svg',
-        invert: false
+        invert: false,
       },
       refresh: {
         enabled: true,
         label: 'Refresh',
         imgSrc: 'Toolbar/refresh.svg',
-        invert: false
+        invert: false,
       },
       delete: {
         enabled: true,
         label: 'Delete',
         imgSrc: 'Toolbar/delete.svg',
-        invert: false
+        invert: false,
       },
       settings: {
         enabled: true,
         label: 'Settings',
         imgSrc: 'Toolbar/settings.svg',
-        invert: false
+        invert: false,
       },
       gitHub: {
         enabled: true,
         label: 'GitHub',
         imgSrc: 'Toolbar/github.svg',
-        invert: false
-      }
+        invert: false,
+      },
     },
     [DEVICES_TYPE_CONST.mtp]: {
       up: {
         enabled: true,
         label: 'Folder Up',
         imgSrc: 'Toolbar/up.svg',
-        invert: false
+        invert: false,
       },
       refresh: {
         enabled: true,
         label: 'Refresh',
         imgSrc: 'Toolbar/refresh.svg',
-        invert: false
+        invert: false,
       },
       delete: {
         enabled: true,
         label: 'Delete',
         imgSrc: 'Toolbar/delete.svg',
-        invert: false
+        invert: false,
       },
       storage: {
         enabled: true,
         label: 'Storage',
         imgSrc: 'Toolbar/storage.svg',
-        invert: false
+        invert: false,
       },
       settings: {
         enabled: true,
         label: 'Settings',
         imgSrc: 'Toolbar/settings.svg',
-        invert: false
-      }
-    }
+        invert: false,
+      },
+    },
   },
 
   directoryLists: {
@@ -124,85 +124,85 @@ export const initialState = {
       order: 'asc',
       orderBy: 'name',
       queue: {
-        selected: []
+        selected: [],
       },
       nodes: [],
-      isLoaded: false
+      isLoaded: false,
     },
     [DEVICES_TYPE_CONST.mtp]: {
       order: 'asc',
       orderBy: 'name',
       queue: {
-        selected: []
+        selected: [],
       },
       nodes: [],
-      isLoaded: false
-    }
+      isLoaded: false,
+    },
   },
 
   currentBrowsePath: {
     [DEVICES_TYPE_CONST.local]: DEVICES_DEFAULT_PATH.local,
-    [DEVICES_TYPE_CONST.mtp]: DEVICES_DEFAULT_PATH.mtp
+    [DEVICES_TYPE_CONST.mtp]: DEVICES_DEFAULT_PATH.mtp,
   },
 
   mtpDevice: {
-    isAvailable: false
+    isAvailable: false,
   },
   contextMenuList: {
     [DEVICES_TYPE_CONST.local]: {
       rename: {
         enabled: true,
         label: 'Rename',
-        data: {}
+        data: {},
       },
       copy: {
         enabled: true,
         label: 'Copy',
-        data: {}
+        data: {},
       },
       copyToQueue: {
         enabled: true,
         label: 'Copy to Queue',
-        data: {}
+        data: {},
       },
       paste: {
         enabled: true,
         label: 'Paste',
-        data: {}
+        data: {},
       },
       newFolder: {
         enabled: true,
         label: 'New Folder',
-        data: {}
-      }
+        data: {},
+      },
     },
     [DEVICES_TYPE_CONST.mtp]: {
       rename: {
         enabled: true,
         label: 'Rename',
-        data: {}
+        data: {},
       },
       copy: {
         enabled: true,
         label: 'Copy',
-        data: {}
+        data: {},
       },
       copyToQueue: {
         enabled: true,
         label: 'Copy to Queue',
-        data: {}
+        data: {},
       },
       paste: {
         enabled: true,
         label: 'Paste',
-        data: {}
+        data: {},
       },
       newFolder: {
         enabled: true,
         label: 'New Folder',
-        data: {}
-      }
-    }
+        data: {},
+      },
+    },
   },
 
   mtpStoragesList: {},
@@ -210,14 +210,14 @@ export const initialState = {
   fileTransfer: {
     clipboard: {
       queue: [],
-      source: null
+      source: null,
     },
     progress: {
       toggle: false,
       bodyText1: null,
       bodyText2: null,
-      percentage: 0
-    }
+      percentage: 0,
+    },
   },
 
   filesDrag: {
@@ -225,8 +225,8 @@ export const initialState = {
     destinationDeviceType: null,
     enter: false,
     lock: false,
-    sameSourceDestinationLock: false
-  }
+    sameSourceDestinationLock: false,
+  },
 };
 
 export default function Home(state = initialState, action) {
@@ -237,8 +237,8 @@ export default function Home(state = initialState, action) {
         ...state,
         focussedFileExplorerDeviceType: {
           ...state.focussedFileExplorerDeviceType,
-          ...payload
-        }
+          ...payload,
+        },
       };
 
     case actionTypes.SET_SORTING_DIR_LISTS:
@@ -248,9 +248,9 @@ export default function Home(state = initialState, action) {
           ...state.directoryLists,
           [deviceType]: {
             ...state.directoryLists[deviceType],
-            ...payload
-          }
-        }
+            ...payload,
+          },
+        },
       };
 
     case actionTypes.SET_SELECTED_DIR_LISTS:
@@ -261,10 +261,10 @@ export default function Home(state = initialState, action) {
           [deviceType]: {
             ...state.directoryLists[deviceType],
             queue: {
-              selected: payload.selected
-            }
-          }
-        }
+              selected: payload.selected,
+            },
+          },
+        },
       };
 
     case actionTypes.SET_CURRENT_BROWSE_PATH:
@@ -272,8 +272,8 @@ export default function Home(state = initialState, action) {
         ...state,
         currentBrowsePath: {
           ...state.currentBrowsePath,
-          [deviceType]: payload
-        }
+          [deviceType]: payload,
+        },
       };
 
     case actionTypes.SET_MTP_STATUS:
@@ -281,8 +281,8 @@ export default function Home(state = initialState, action) {
         ...state,
         mtpDevice: {
           ...state.mtpDevice,
-          isAvailable: payload
-        }
+          isAvailable: payload,
+        },
       };
 
     case actionTypes.FETCH_DIR_LIST:
@@ -293,9 +293,9 @@ export default function Home(state = initialState, action) {
           [deviceType]: {
             ...state.directoryLists[deviceType],
             nodes: [...payload.nodes],
-            isLoaded: payload.isLoaded
-          }
-        }
+            isLoaded: payload.isLoaded,
+          },
+        },
       };
 
     case actionTypes.CHANGE_MTP_STORAGE:
@@ -303,8 +303,8 @@ export default function Home(state = initialState, action) {
         ...state,
         mtpStoragesList: {
           ...initialState.mtpStoragesList,
-          ...payload
-        }
+          ...payload,
+        },
       };
 
     case actionTypes.SET_FILE_TRANSFER_CLIPBOARD:
@@ -313,9 +313,9 @@ export default function Home(state = initialState, action) {
         fileTransfer: {
           ...state.fileTransfer,
           clipboard: {
-            ...payload
-          }
-        }
+            ...payload,
+          },
+        },
       };
 
     case actionTypes.SET_FILE_TRANSFER_PROGRESS:
@@ -324,17 +324,17 @@ export default function Home(state = initialState, action) {
         fileTransfer: {
           ...state.fileTransfer,
           progress: {
-            ...payload
-          }
-        }
+            ...payload,
+          },
+        },
       };
 
     case actionTypes.CLEAR_FILE_TRANSFER:
       return {
         ...state,
         fileTransfer: {
-          ...initialState.fileTransfer
-        }
+          ...initialState.fileTransfer,
+        },
       };
 
     case actionTypes.SET_FILES_DRAG:
@@ -342,16 +342,16 @@ export default function Home(state = initialState, action) {
         ...state,
         filesDrag: {
           ...state.filesDrag,
-          ...payload
-        }
+          ...payload,
+        },
       };
 
     case actionTypes.CLEAR_FILES_DRAG:
       return {
         ...state,
         filesDrag: {
-          ...initialState.filesDrag
-        }
+          ...initialState.filesDrag,
+        },
       };
 
     default:

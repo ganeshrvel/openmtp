@@ -44,19 +44,19 @@ export const PATHS = {
     slashes: true,
     pathname: !isPackaged
       ? join(appPath, './app.html')
-      : join(__dirname, './app.html')
-  })
+      : join(__dirname, './app.html'),
+  }),
 };
 
-export const pathUp = filePath => {
+export const pathUp = (filePath) => {
   return filePath.replace(/\/$/, '').replace(/\/[^/]+$/, '') || '/';
 };
 
-export const sanitizePath = filePath => {
+export const sanitizePath = (filePath) => {
   return filePath.replace(/\/\/+/g, '/');
 };
 
-export const baseName = filePath => {
+export const baseName = (filePath) => {
   if (typeof filePath === 'undefined' || filePath === null) {
     return null;
   }
@@ -74,6 +74,6 @@ export const getExtension = (fileName, isFolder) => {
   return parsedPath !== null ? parsedPath.ext : null;
 };
 
-export const pathInfo = filePath => {
+export const pathInfo = (filePath) => {
   return parse(filePath);
 };

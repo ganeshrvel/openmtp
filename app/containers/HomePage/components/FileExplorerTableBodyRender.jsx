@@ -12,7 +12,7 @@ import FileExplorerTableBodyListWrapperRender from './FileExplorerTableBodyListW
 import { styles } from '../styles/FileExplorerTableBodyRender';
 
 class FileExplorerTableBodyRender extends PureComponent {
-  isSelected = path => {
+  isSelected = (path) => {
     const { directoryLists, deviceType } = this.props;
     const _directoryLists = directoryLists[deviceType].queue.selected;
 
@@ -36,7 +36,7 @@ class FileExplorerTableBodyRender extends PureComponent {
             tableSort={tableSort({
               nodes,
               order,
-              orderBy
+              orderBy,
             })}
             _eventTarget={_eventTarget}
             isSelected={this.isSelected}
@@ -50,7 +50,7 @@ class FileExplorerTableBodyRender extends PureComponent {
             tableSort={tableSort({
               nodes,
               order,
-              orderBy
+              orderBy,
             })}
             _eventTarget={_eventTarget}
             isSelected={this.isSelected}
@@ -72,7 +72,7 @@ class FileExplorerTableBodyRender extends PureComponent {
       onRequestSort,
       onContextMenuClick,
       onIsDraggable,
-      onDragStart
+      onDragStart,
     } = this.props;
     const { nodes, order, orderBy, queue } = directoryLists[deviceType];
     const { selected } = queue;
@@ -93,9 +93,9 @@ class FileExplorerTableBodyRender extends PureComponent {
           />
           <TableBody
             draggable={onIsDraggable(deviceType)}
-            onDragStart={event => {
+            onDragStart={(event) => {
               onDragStart(event, {
-                sourceDeviceType: deviceType
+                sourceDeviceType: deviceType,
               });
             }}
           >

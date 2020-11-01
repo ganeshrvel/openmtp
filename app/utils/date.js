@@ -51,7 +51,7 @@ export const unixTimestampNow = () => {
   return moment().format(`x`);
 };
 
-export const msToTime = milliseconds => {
+export const msToTime = (milliseconds) => {
   const hours = milliseconds / (1000 * 60 * 60);
   const absoluteHours = Math.floor(hours);
   const h = absoluteHours > 9 ? absoluteHours : `0${absoluteHours}`;

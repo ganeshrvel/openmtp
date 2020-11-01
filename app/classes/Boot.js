@@ -13,7 +13,7 @@ import {
   fileExistsSync,
   writeFileAsync,
   createDirSync,
-  deleteFilesSync
+  deleteFilesSync,
 } from '../api/sys/fileOps';
 import { daysDiff, yearMonthNow } from '../utils/date';
 import { LOG_FILE_ROTATION_CLEANUP_THRESHOLD } from '../constants';
@@ -130,7 +130,7 @@ export default class Boot {
       const dirFileList = readdirSync(logDir);
       const pattern = `^\\${baseName(logFile)}`;
       const _regex = new RegExp(pattern, 'gi');
-      const filesList = dirFileList.filter(elm => {
+      const filesList = dirFileList.filter((elm) => {
         return !elm.match(_regex);
       });
 
@@ -138,7 +138,7 @@ export default class Boot {
         return null;
       }
 
-      filesList.map(async a => {
+      filesList.map(async (a) => {
         const dateMatch = a.match(/\d{4}-\d{2}/g);
         if (
           dateMatch === null ||

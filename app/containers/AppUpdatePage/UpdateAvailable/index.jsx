@@ -17,7 +17,7 @@ class AppUpdatePage extends Component {
     super(props);
 
     this.state = {
-      releaseInfo: {}
+      releaseInfo: {},
     };
 
     this.sanitizeHtmlConfig = {
@@ -44,8 +44,8 @@ class AppUpdatePage extends Component {
         'br',
         'div',
         'caption',
-        'pre'
-      ]
+        'pre',
+      ],
     };
   }
 
@@ -117,7 +117,7 @@ class AppUpdatePage extends Component {
           <div
             className={`${releaseNotesStyles.releaseNotes}`}
             dangerouslySetInnerHTML={{
-              __html: sanitizedReleaseNotesHtml
+              __html: sanitizedReleaseNotesHtml,
             }}
           />
           {/* eslint-enable react/no-danger */}

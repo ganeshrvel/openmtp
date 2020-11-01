@@ -4,34 +4,34 @@ import green from '@material-ui/core/colors/green';
 import amber from '@material-ui/core/colors/amber';
 import { variables, mixins } from '../../../styles/js';
 
-export const styles = theme => ({
+export const styles = (theme) => ({
   success: {
-    backgroundColor: green[600]
+    backgroundColor: green[600],
   },
   error: {
-    backgroundColor: theme.palette.error.dark
+    backgroundColor: theme.palette.error.dark,
   },
   info: {
-    backgroundColor: theme.palette.primary.dark
+    backgroundColor: theme.palette.primary.dark,
   },
   warning: {
-    backgroundColor: amber[700]
+    backgroundColor: amber[700],
   },
   icon: {
-    fontSize: 20
+    fontSize: 20,
   },
   iconVariant: {
     opacity: 0.9,
-    marginRight: 10
+    marginRight: 10,
   },
   message: {
     display: 'flex',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   root: {
     minWidth: 288,
     maxWidth: 568,
     borderRadius: 4,
-    flexGrow: `unset`
-  }
+    flexGrow: `unset`,
+  },
 });

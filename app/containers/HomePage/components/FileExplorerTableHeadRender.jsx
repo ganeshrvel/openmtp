@@ -15,24 +15,24 @@ const rows = [
     id: 'name',
     numeric: false,
     disablePadding: false,
-    label: 'Name'
+    label: 'Name',
   },
   {
     id: 'size',
     numeric: false,
     disablePadding: true,
-    label: 'Size'
+    label: 'Size',
   },
   {
     id: 'dateAdded',
     numeric: false,
     disablePadding: true,
-    label: 'Date Added'
-  }
+    label: 'Date Added',
+  },
 ];
 
 class FileExplorerTableHeadRender extends PureComponent {
-  createSortHandler = property => event => {
+  createSortHandler = (property) => (event) => {
     const { onRequestSort } = this.props;
 
     onRequestSort(property, event);
@@ -46,7 +46,7 @@ class FileExplorerTableHeadRender extends PureComponent {
       orderBy,
       numSelected,
       rowCount,
-      hideColList
+      hideColList,
     } = this.props;
 
     return (
@@ -59,7 +59,7 @@ class FileExplorerTableHeadRender extends PureComponent {
               onChange={onSelectAllClick}
             />
           </TableCell>
-          {rows.map(row => {
+          {rows.map((row) => {
             return hideColList.indexOf(row.id) < 0 ? (
               <TableCell
                 key={row.id}

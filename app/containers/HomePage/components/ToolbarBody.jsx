@@ -14,7 +14,7 @@ import { imgsrc } from '../../../utils/imgsrc';
 import { DEVICES_LABEL, DEVICES_TYPE_CONST } from '../../../constants';
 import {
   Confirm as ConfirmDialog,
-  Selection as SelectionDialog
+  Selection as SelectionDialog,
 } from '../../../components/DialogBox';
 
 export default class ToolbarAreaPane extends PureComponent {
@@ -25,7 +25,7 @@ export default class ToolbarAreaPane extends PureComponent {
       currentBrowsePath,
       deviceType,
       mtpStoragesList,
-      mtpDevice
+      mtpDevice,
     } = args;
 
     const _directoryLists = directoryLists[deviceType];
@@ -33,26 +33,26 @@ export default class ToolbarAreaPane extends PureComponent {
     const _activeToolbarList = toolbarList[deviceType];
     const isMtp = deviceType === DEVICES_TYPE_CONST.mtp;
 
-    Object.keys(_activeToolbarList).map(a => {
+    Object.keys(_activeToolbarList).map((a) => {
       const item = _activeToolbarList[a];
       switch (a) {
         case 'up':
           _activeToolbarList[a] = {
             ...item,
-            enabled: _currentBrowsePath !== '/'
+            enabled: _currentBrowsePath !== '/',
           };
           break;
 
         case 'refresh':
           _activeToolbarList[a] = {
-            ...item
+            ...item,
           };
           break;
 
         case 'delete':
           _activeToolbarList[a] = {
             ...item,
-            enabled: _directoryLists.queue.selected.length > 0
+            enabled: _directoryLists.queue.selected.length > 0,
           };
           break;
 
@@ -62,13 +62,13 @@ export default class ToolbarAreaPane extends PureComponent {
             enabled:
               Object.keys(mtpStoragesList).length > 0 &&
               isMtp &&
-              mtpDevice.isAvailable
+              mtpDevice.isAvailable,
           };
           break;
 
         case 'settings':
           _activeToolbarList[a] = {
-            ...item
+            ...item,
           };
           break;
         default:
@@ -101,7 +101,7 @@ export default class ToolbarAreaPane extends PureComponent {
       onToggleDrawer,
       onFetchDirList,
       onDoubleClickToolBar,
-      onToolbarAction
+      onToolbarAction,
     } = this.props;
 
     const _toolbarList = this.activeToolbarList({
@@ -110,7 +110,7 @@ export default class ToolbarAreaPane extends PureComponent {
       currentBrowsePath,
       deviceType,
       mtpStoragesList,
-      mtpDevice
+      mtpDevice,
     });
 
     return (
@@ -154,7 +154,7 @@ export default class ToolbarAreaPane extends PureComponent {
           <Toolbar
             className={styles.toolbar}
             disableGutters
-            onDoubleClick={event => {
+            onDoubleClick={(event) => {
               onDoubleClickToolBar(event);
             }}
           >
@@ -165,7 +165,7 @@ export default class ToolbarAreaPane extends PureComponent {
             )}
 
             <div className={styles.toolbarInnerWrapper}>
-              {Object.keys(_toolbarList).map(a => {
+              {Object.keys(_toolbarList).map((a) => {
                 const item = _toolbarList[a];
                 return (
                   <Tooltip key={a} title={item.label}>
@@ -176,7 +176,7 @@ export default class ToolbarAreaPane extends PureComponent {
                         onClick={() => onToolbarAction(a)}
                         className={classNames({
                           [styles.disabledNavBtns]: !item.enabled,
-                          [styles.invertedNavBtns]: item.invert
+                          [styles.invertedNavBtns]: item.invert,
                         })}
                       >
                         <img

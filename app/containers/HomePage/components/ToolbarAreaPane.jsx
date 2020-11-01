@@ -18,7 +18,7 @@ import {
   processLocalOutput,
   changeMtpStorage,
   getMtpStoragesListSelected,
-  reloadDirList
+  reloadDirList,
 } from '../actions';
 import {
   makeDirectoryLists,
@@ -27,7 +27,7 @@ import {
   makeSidebarFavouriteList,
   makeToolbarList,
   makeCurrentBrowsePath,
-  makeFocussedFileExplorerDeviceType
+  makeFocussedFileExplorerDeviceType,
 } from '../selectors';
 import { makeHideHiddenFiles } from '../../Settings/selectors';
 import { delLocalFiles, delMtpFiles } from '../../../api/sys';
@@ -45,10 +45,10 @@ class ToolbarAreaPane extends PureComponent {
     this.initialState = {
       toggleDrawer: false,
       toggleDeleteConfirmDialog: false,
-      toggleMtpStorageSelectionDialog: false
+      toggleMtpStorageSelectionDialog: false,
     };
     this.state = {
-      ...this.initialState
+      ...this.initialState,
     };
   }
 
@@ -74,7 +74,7 @@ class ToolbarAreaPane extends PureComponent {
     );
   }
 
-  _handleDoubleClickToolBar = event => {
+  _handleDoubleClickToolBar = (event) => {
     if (event.target !== event.currentTarget) {
       return null;
     }
@@ -82,21 +82,21 @@ class ToolbarAreaPane extends PureComponent {
     toggleWindowSizeOnDoubleClick();
   };
 
-  _handleToggleDrawer = status => () => {
+  _handleToggleDrawer = (status) => () => {
     this.setState({
-      toggleDrawer: status
+      toggleDrawer: status,
     });
   };
 
-  _handleToggleDeleteConfirmDialog = status => {
+  _handleToggleDeleteConfirmDialog = (status) => {
     this.setState({
-      toggleDeleteConfirmDialog: status
+      toggleDeleteConfirmDialog: status,
     });
   };
 
-  _handleToggleMtpStorageSelectionDialog = status => {
+  _handleToggleMtpStorageSelectionDialog = (status) => {
     this.setState({
-      toggleMtpStorageSelectionDialog: status
+      toggleMtpStorageSelectionDialog: status,
     });
   };
 
@@ -105,7 +105,7 @@ class ToolbarAreaPane extends PureComponent {
       actionCreateSetMtpStorage,
       mtpStoragesList,
       deviceType,
-      hideHiddenFiles
+      hideHiddenFiles,
     } = this.props;
 
     const { selectedValue, triggerChange } = args;
@@ -119,13 +119,13 @@ class ToolbarAreaPane extends PureComponent {
       { selectedValue, mtpStoragesList },
       {
         filePath: DEVICES_DEFAULT_PATH.mtp,
-        ignoreHidden: hideHiddenFiles[deviceType]
+        ignoreHidden: hideHiddenFiles[deviceType],
       },
       deviceType
     );
   };
 
-  _handleDeleteConfirmDialog = confirm => {
+  _handleDeleteConfirmDialog = (confirm) => {
     const { deviceType } = this.props;
 
     this._handleToggleDeleteConfirmDialog(false);
@@ -145,13 +145,13 @@ class ToolbarAreaPane extends PureComponent {
     openExternalUrl(APP_GITHUB_URL);
   };
 
-  _handleToolbarAction = itemType => {
+  _handleToolbarAction = (itemType) => {
     const {
       currentBrowsePath,
       deviceType,
       hideHiddenFiles,
       actionCreateReloadDirList,
-      mtpStoragesList
+      mtpStoragesList,
     } = this.props;
 
     let filePath = '/';
@@ -166,7 +166,7 @@ class ToolbarAreaPane extends PureComponent {
         actionCreateReloadDirList(
           {
             filePath,
-            ignoreHidden: hideHiddenFiles[deviceType]
+            ignoreHidden: hideHiddenFiles[deviceType],
           },
           deviceType,
           mtpStoragesList
@@ -200,7 +200,7 @@ class ToolbarAreaPane extends PureComponent {
     actionCreateFetchDirList(
       {
         filePath,
-        ignoreHidden: hideHiddenFiles[deviceType]
+        ignoreHidden: hideHiddenFiles[deviceType],
       },
       deviceType
     );
@@ -214,16 +214,16 @@ class ToolbarAreaPane extends PureComponent {
       directoryLists,
       actionCreateDelFiles,
       hideHiddenFiles,
-      currentBrowsePath
+      currentBrowsePath,
     } = this.props;
     actionCreateDelFiles(
       {
         fileList: directoryLists[deviceType].queue.selected,
-        deviceType
+        deviceType,
       },
       {
         filePath: currentBrowsePath[deviceType],
-        ignoreHidden: hideHiddenFiles[deviceType]
+        ignoreHidden: hideHiddenFiles[deviceType],
       }
     );
   };
@@ -240,7 +240,7 @@ class ToolbarAreaPane extends PureComponent {
     const {
       toggleDrawer,
       toggleDeleteConfirmDialog,
-      toggleMtpStorageSelectionDialog
+      toggleMtpStorageSelectionDialog,
     } = this.state;
 
     const { isLoaded: isLoadedDirectoryLists } = directoryLists[deviceType];
@@ -266,7 +266,7 @@ class ToolbarAreaPane extends PureComponent {
         <div
           className={classNames({
             [styles.focussedFileExplorer]:
-              focussedFileExplorerDeviceType.value === deviceType
+              focussedFileExplorerDeviceType.value === deviceType,
           })}
         />
       </Fragment>
@@ -299,9 +299,9 @@ const mapDispatchToProps = (dispatch, ownProps) =>
               const {
                 error: localError,
                 stderr: localStderr,
-                data: localData
+                data: localData,
               } = await delLocalFiles({
-                fileList
+                fileList,
               });
 
               dispatch(
@@ -318,7 +318,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
                         getState
                       )
                     );
-                  }
+                  },
                 })
               );
               break;
@@ -329,10 +329,10 @@ const mapDispatchToProps = (dispatch, ownProps) =>
               const {
                 error: mtpError,
                 stderr: mtpStderr,
-                data: mtpData
+                data: mtpData,
               } = await delMtpFiles({
                 fileList,
-                mtpStoragesListSelected
+                mtpStoragesListSelected,
               });
 
               dispatch(
@@ -349,7 +349,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
                         getState
                       )
                     );
-                  }
+                  },
                 })
               );
               break;
@@ -371,7 +371,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         }
 
         let _mtpStoragesList = {};
-        Object.keys(mtpStoragesList).map(a => {
+        Object.keys(mtpStoragesList).map((a) => {
           const item = mtpStoragesList[a];
           let _selectedValue = false;
           if (selectedValue === a) {
@@ -383,8 +383,8 @@ const mapDispatchToProps = (dispatch, ownProps) =>
             ..._mtpStoragesList,
             [a]: {
               ...item,
-              selected: _selectedValue
-            }
+              selected: _selectedValue,
+            },
           };
           return null;
         });
@@ -393,9 +393,9 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         dispatch(fetchDirList({ ...fetchDirArgs }, deviceType, getState));
       },
 
-      actionCreateToggleSettings: data => (_, getState) => {
+      actionCreateToggleSettings: (data) => (_, getState) => {
         dispatch(toggleSettings(data));
-      }
+      },
     },
     dispatch
   );
@@ -409,7 +409,7 @@ const mapStateToProps = (state, props) => {
     hideHiddenFiles: makeHideHiddenFiles(state),
     directoryLists: makeDirectoryLists(state),
     mtpStoragesList: makeMtpStoragesList(state),
-    focussedFileExplorerDeviceType: makeFocussedFileExplorerDeviceType(state)
+    focussedFileExplorerDeviceType: makeFocussedFileExplorerDeviceType(state),
   };
 };
 

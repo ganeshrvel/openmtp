@@ -2,26 +2,26 @@
 
 import { variables, mixins } from '../../../styles/js';
 
-export const styles = theme => ({
+export const styles = (theme) => ({
   root: {
-    flexGrow: 1
+    flexGrow: 1,
   },
   dialogContentTextTop: {
-    marginBottom: 10
+    marginBottom: 10,
   },
   dialogContentTextBottom: {
-    marginTop: 10
+    marginTop: 10,
   },
   dialogTitleInnerWrapper: {
-    alignItems: `center`
+    alignItems: `center`,
   },
   helpText: {
-    float: `right`
+    float: `right`,
   },
   titleText: {
-    float: `left`
+    float: `left`,
   },
   childrenWrapper: {
-    padding: '0px 0 5px 0'
-  }
+    padding: '0px 0 5px 0',
+  },
 });

@@ -14,18 +14,18 @@ import TerserPlugin from 'terser-webpack-plugin';
 import baseConfig from './config.base';
 import { PATHS } from '../app/utils/paths';
 
-export default merge.smart(baseConfig, {
+export default merge(baseConfig, {
   devtool: 'source-map',
   mode: 'production',
   target: 'electron-renderer',
   entry: {
-    client: ['./app/index.js']
+    client: ['./app/index.js'],
   },
 
   output: {
     path: path.join(PATHS.app, 'dist'),
     publicPath: './dist/',
-    filename: 'renderer.prod.js'
+    filename: 'renderer.prod.js',
   },
 
   module: {
@@ -37,17 +37,17 @@ export default merge.smart(baseConfig, {
           {
             loader: MiniCssExtractPlugin.loader,
             options: {
-              publicPath: './'
-            }
+              publicPath: './',
+            },
           },
           {
             loader: 'css-loader',
             options: {
-              publicPath: './'
+              publicPath: './',
               // sourceMap: true
-            }
-          }
-        ]
+            },
+          },
+        ],
       },
       // Pipe other styles through css modules and append to style.css
       {
@@ -56,19 +56,20 @@ export default merge.smart(baseConfig, {
           {
             loader: MiniCssExtractPlugin.loader,
             options: {
-              publicPath: './'
-            }
+              publicPath: './',
+            },
           },
           {
             loader: 'css-loader',
             options: {
               publicPath: './',
-              modules: true,
-              localIdentName: '[name]__[local]__[hash:base64:5]'
+              modules: {
+                localIdentName: '[name]__[local]__[hash:base64:5]',
+              },
               // sourceMap: true
-            }
-          }
-        ]
+            },
+          },
+        ],
       },
       // Add SASS support  - compile all .global.scss files and pipe it to style.css
       {
@@ -77,25 +78,25 @@ export default merge.smart(baseConfig, {
           {
             loader: MiniCssExtractPlugin.loader,
             options: {
-              publicPath: './'
-            }
+              publicPath: './',
+            },
           },
           {
             loader: 'css-loader',
             options: {
               publicPath: './',
               // sourceMap: true,
-              importLoaders: 1
-            }
+              importLoaders: 1,
+            },
           },
           {
             loader: 'sass-loader',
             options: {
-              publicPath: './'
+              publicPath: './',
               // sourceMap: true
-            }
-          }
-        ]
+            },
+          },
+        ],
       },
       // Add SASS support  - compile all other .scss files and pipe it to style.css
       {
@@ -104,27 +105,28 @@ export default merge.smart(baseConfig, {
           {
             loader: MiniCssExtractPlugin.loader,
             options: {
-              publicPath: './'
-            }
+              publicPath: './',
+            },
           },
           {
             loader: 'css-loader',
             options: {
               publicPath: './',
-              modules: true,
+              modules: {
+                localIdentName: '[name]__[local]__[hash:base64:5]',
+              },
               importLoaders: 1,
-              localIdentName: '[name]__[local]__[hash:base64:5]'
               // sourceMap: true
-            }
+            },
           },
           {
             loader: 'sass-loader',
             options: {
-              publicPath: './'
+              publicPath: './',
               // sourceMap: true
-            }
-          }
-        ]
+            },
+          },
+        ],
       },
       // WOFF Font
       {
@@ -135,9 +137,9 @@ export default merge.smart(baseConfig, {
             publicPath: './',
             limit: 10000, // kb
             mimetype: 'application/font-woff',
-            name: 'fonts/[name].[hash].[ext]'
-          }
-        }
+            name: 'fonts/[name].[hash].[ext]',
+          },
+        },
       },
       // WOFF2 Font
       {
@@ -148,9 +150,9 @@ export default merge.smart(baseConfig, {
             publicPath: './',
             limit: 10000,
             mimetype: 'application/font-woff',
-            name: 'fonts/[name].[hash].[ext]'
-          }
-        }
+            name: 'fonts/[name].[hash].[ext]',
+          },
+        },
       },
       // TTF Font
       {
@@ -161,9 +163,9 @@ export default merge.smart(baseConfig, {
             publicPath: './',
             limit: 10000,
             mimetype: 'application/octet-stream',
-            name: 'fonts/[name].[hash].[ext]'
-          }
-        }
+            name: 'fonts/[name].[hash].[ext]',
+          },
+        },
       },
       // EOT Font
       {
@@ -172,9 +174,9 @@ export default merge.smart(baseConfig, {
           loader: 'file-loader',
           options: {
             publicPath: './',
-            name: 'fonts/[name].[hash].[ext]'
-          }
-        }
+            name: 'fonts/[name].[hash].[ext]',
+          },
+        },
       },
       // SVG Font
       {
@@ -185,9 +187,9 @@ export default merge.smart(baseConfig, {
             publicPath: './',
             limit: 10000,
             mimetype: 'image/svg+xml',
-            name: 'images/[path][name].[hash].[ext]'
-          }
-        }
+            name: 'images/[path][name].[hash].[ext]',
+          },
+        },
       },
       // Common Image Formats
       {
@@ -197,30 +199,43 @@ export default merge.smart(baseConfig, {
             loader: 'url-loader',
             options: {
               limit: 10000,
-              name: 'images/[path][name].[hash].[ext]'
-            }
-          }
-        ]
-      }
-    ]
+              name: 'images/[path][name].[hash].[ext]',
+            },
+          },
+        ],
+      },
+    ],
   },
 
   optimization: {
+    moduleIds: 'named',
     minimizer: [
       new TerserPlugin({
         parallel: true,
-        sourceMap: true,
-        cache: true
+        minify: (file, sourceMap) => {
+          const uglifyJsOptions = {
+            compress: true,
+          };
+
+          if (sourceMap) {
+            uglifyJsOptions.sourceMap = {
+              content: sourceMap,
+            };
+          }
+
+          // eslint-disable-next-line global-require
+          return require('uglify-js').minify(file, uglifyJsOptions);
+        },
       }),
       new OptimizeCSSAssetsPlugin({
         cssProcessorOptions: {
           map: {
             inline: false,
-            annotation: true
-          }
-        }
-      })
-    ]
+            annotation: true,
+          },
+        },
+      }),
+    ],
   },
 
   plugins: [
@@ -234,18 +249,18 @@ export default merge.smart(baseConfig, {
      * development checks
      */
     new webpack.EnvironmentPlugin({
-      NODE_ENV: 'production'
+      NODE_ENV: 'production',
     }),
 
     new MiniCssExtractPlugin({
-      filename: 'style.css'
+      filename: 'style.css',
     }),
 
     new BundleAnalyzerPlugin({
       analyzerMode:
         process.env.OPEN_ANALYZER === 'true' ? 'server' : 'disabled',
-      openAnalyzer: process.env.OPEN_ANALYZER === 'true'
-    })
+      openAnalyzer: process.env.OPEN_ANALYZER === 'true',
+    }),
   ],
 
   /**
@@ -255,6 +270,6 @@ export default merge.smart(baseConfig, {
    */
   node: {
     __dirname: false,
-    __filename: false
-  }
+    __filename: false,
+  },
 });

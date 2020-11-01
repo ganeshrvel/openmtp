@@ -6,7 +6,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import {
   MuiThemeProvider,
   createMuiTheme,
-  withStyles
+  withStyles,
 } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -106,16 +106,16 @@ class App extends Component {
 
   runAnalytics() {
     const isAnalyticsEnabledSettings = settingsStorage.getItems([
-      'enableAnalytics'
+      'enableAnalytics',
     ]);
 
     try {
       if (isAnalyticsEnabledSettings.enableAnalytics && IS_PROD) {
         isConnected()
-          .then(connected => {
+          .then((connected) => {
             const analytics = new Analytics(TRACKING_ID, {
               appName: APP_NAME,
-              appVersion: APP_VERSION
+              appVersion: APP_VERSION,
             });
 
             analytics.send('screenview', { cd: '/Home' });
@@ -157,7 +157,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
 
       actionCreateFreshInstall: ({ ...data }) => (_, getState) => {
         dispatch(freshInstall({ ...data }, getState));
-      }
+      },
     },
     dispatch
   );

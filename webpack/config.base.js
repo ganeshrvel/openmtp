@@ -24,17 +24,17 @@ export default {
         use: {
           loader: 'babel-loader',
           options: {
-            cacheDirectory: true
-          }
-        }
-      }
-    ]
+            cacheDirectory: true,
+          },
+        },
+      },
+    ],
   },
 
   output: {
     path: PATHS.app,
     // https://github.com/webpack/webpack/issues/1114
-    libraryTarget: 'commonjs2'
+    libraryTarget: 'commonjs2',
   },
 
   /**
@@ -45,13 +45,13 @@ export default {
     alias: {
       'react-dom': '@hot-loader/react-dom',
       '@Log': path.resolve(__dirname, '../app/utils/log.js'),
-      '@Alerts': path.resolve(__dirname, '../app/containers/Alerts/actions.js')
-    }
+      '@Alerts': path.resolve(__dirname, '../app/containers/Alerts/actions.js'),
+    },
   },
 
   plugins: [
     new webpack.EnvironmentPlugin({
-      NODE_ENV: 'production'
+      NODE_ENV: 'production',
     }),
 
     new webpack.DefinePlugin({
@@ -63,12 +63,10 @@ export default {
         version: JSON.stringify(pkg.version),
         repository: JSON.stringify(pkg.repository),
         homepage: JSON.stringify(pkg.homepage),
-        bugs: JSON.stringify(pkg.bugs)
-      }
+        bugs: JSON.stringify(pkg.bugs),
+      },
     }),
 
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-
-    new webpack.NamedModulesPlugin()
-  ]
+  ],
 };

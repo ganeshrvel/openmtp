@@ -17,11 +17,11 @@ class FileExplorerTableBodyGridWrapperRender extends PureComponent {
     this.recursiveFilesFetchTimeOut = null;
     this.filesPreFetchCount = 50;
     this.state = {
-      items: tableSort.slice(0, this.filesPreFetchCount)
+      items: tableSort.slice(0, this.filesPreFetchCount),
     };
 
     this.state = {
-      items: []
+      items: [],
     };
 
     this.prevInQueueList = [];
@@ -44,7 +44,7 @@ class FileExplorerTableBodyGridWrapperRender extends PureComponent {
       directoryGeneratedTime,
       directoryLists,
       deviceType,
-      isSelected
+      isSelected,
     } = this.props;
     const prevSelectedDirectoryLists =
       directoryLists[deviceType].queue.selected;
@@ -67,7 +67,7 @@ class FileExplorerTableBodyGridWrapperRender extends PureComponent {
         return item;
       });
 
-      [...this.prevInQueueList, ...nextInQueueList].map(index => {
+      [...this.prevInQueueList, ...nextInQueueList].map((index) => {
         this.setState(({ items }) => {
           const _items = items;
           const item = nextTableSort[index];
@@ -82,7 +82,7 @@ class FileExplorerTableBodyGridWrapperRender extends PureComponent {
           );
 
           return {
-            items: _items
+            items: _items,
           };
         });
 
@@ -97,7 +97,7 @@ class FileExplorerTableBodyGridWrapperRender extends PureComponent {
     this.clearRecursiveFilesFetchTimeOut();
   }
 
-  recursiveFilesFetch = tableSort => {
+  recursiveFilesFetch = (tableSort) => {
     const { items } = this.state;
 
     this.recursiveFilesFetchTimeOut = setTimeout(() => {
@@ -111,7 +111,7 @@ class FileExplorerTableBodyGridWrapperRender extends PureComponent {
           prevItems.length + this.filesPreFetchCount
         );
 
-        const mappedSlicedItems = slicedItems.map(item => {
+        const mappedSlicedItems = slicedItems.map((item) => {
           return (
             <FileExplorerTableGridRender
               key={quickHash(item.path)}
@@ -123,7 +123,7 @@ class FileExplorerTableBodyGridWrapperRender extends PureComponent {
         });
 
         return {
-          items: mappedSlicedItems
+          items: mappedSlicedItems,
         };
       });
 

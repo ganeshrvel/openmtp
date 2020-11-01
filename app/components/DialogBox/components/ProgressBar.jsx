@@ -22,7 +22,7 @@ class ProgressBar extends PureComponent {
       progressValue,
       variant,
       helpText,
-      children
+      children,
     } = this.props;
 
     return (

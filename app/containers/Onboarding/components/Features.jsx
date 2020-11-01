@@ -24,18 +24,18 @@ class Features extends PureComponent {
 
     this.state = {
       expansionPanel: {
-        keyboardNavigation: false
-      }
+        keyboardNavigation: false,
+      },
     };
   }
 
   _handleExpansionPanel = ({ key }) => {
-    this.setState(prevState => {
+    this.setState((prevState) => {
       return {
         expansionPanel: {
           ...prevState.expansionPanel,
-          [key]: !prevState.expansionPanel[key]
-        }
+          [key]: !prevState.expansionPanel[key],
+        },
       };
     });
   };
@@ -105,7 +105,7 @@ class Features extends PureComponent {
             button
             onClick={() =>
               this._handleExpansionPanel({
-                key: 'keyboardNavigation'
+                key: 'keyboardNavigation',
               })
             }
           >

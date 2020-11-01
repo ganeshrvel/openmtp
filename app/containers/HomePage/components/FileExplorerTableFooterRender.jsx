@@ -16,7 +16,7 @@ class FileExplorerTableFooterRender extends PureComponent {
       onBreadcrumbPathClick,
       isStatusBarEnabled,
       directoryLists,
-      fileTransferClipboard
+      fileTransferClipboard,
     } = this.props;
     return (
       <TableFooter component="div" className={styles.tableFooter}>

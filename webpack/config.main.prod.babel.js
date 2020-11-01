@@ -8,42 +8,54 @@ import webpack from 'webpack';
 import merge from 'webpack-merge';
 import TerserPlugin from 'terser-webpack-plugin';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
-import CleanWebpackPlugin from 'clean-webpack-plugin';
 import baseConfig from './config.base';
 import { PATHS } from '../app/utils/paths';
 
-export default merge.smart(baseConfig, {
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+
+export default merge(baseConfig, {
   devtool: 'source-map',
   mode: 'production',
   target: 'electron-main',
   entry: {
-    client: ['./app/main.dev']
+    client: ['./app/main.dev'],
   },
 
   output: {
     path: PATHS.root,
-    filename: './app/main.prod.js'
+    filename: './app/main.prod.js',
   },
 
   optimization: {
+    moduleIds: 'named',
     minimizer: [
       new TerserPlugin({
         parallel: true,
-        sourceMap: true,
-        cache: true
-      })
-    ]
+        minify: (file, sourceMap) => {
+          const uglifyJsOptions = {
+            compress: true,
+          };
+
+          if (sourceMap) {
+            uglifyJsOptions.sourceMap = {
+              content: sourceMap,
+            };
+          }
+
+          // eslint-disable-next-line global-require
+          return require('uglify-js').minify(file, uglifyJsOptions);
+        },
+      }),
+    ],
   },
 
   plugins: [
-    new CleanWebpackPlugin([`${PATHS.dist}/*`], {
-      root: PATHS.root
-    }),
+    new CleanWebpackPlugin(),
 
     new BundleAnalyzerPlugin({
       analyzerMode:
         process.env.OPEN_ANALYZER === 'true' ? 'server' : 'disabled',
-      openAnalyzer: process.env.OPEN_ANALYZER === 'true'
+      openAnalyzer: process.env.OPEN_ANALYZER === 'true',
     }),
 
     /**
@@ -58,8 +70,8 @@ export default merge.smart(baseConfig, {
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'production',
       DEBUG_PROD: false,
-      START_MINIMIZED: false
-    })
+      START_MINIMIZED: false,
+    }),
   ],
 
   /**
@@ -70,6 +82,5 @@ export default merge.smart(baseConfig, {
   node: {
     __dirname: false,
     __filename: false,
-    fs: 'empty'
-  }
+  },
 });
