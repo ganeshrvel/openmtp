@@ -60,7 +60,6 @@
     "appId": "io.ganeshrvel.openmtp",
     "forceCodeSigning": true,
     "copyright": "© Ganesh Rathinavel",
-    "readonly": true,
     "afterPack": "./internals/scripts/AfterPack.js",
     "afterSign": "./internals/scripts/Notarize.js",
     "publish": [

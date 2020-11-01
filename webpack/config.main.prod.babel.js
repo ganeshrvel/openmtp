@@ -31,26 +31,17 @@ export default merge(baseConfig, {
     minimizer: [
       new TerserPlugin({
         parallel: true,
-        minify: (file, sourceMap) => {
-          const uglifyJsOptions = {
-            compress: true,
-          };
-
-          if (sourceMap) {
-            uglifyJsOptions.sourceMap = {
-              content: sourceMap,
-            };
-          }
-
-          // eslint-disable-next-line global-require
-          return require('uglify-js').minify(file, uglifyJsOptions);
+        terserOptions: {
+          compress: {},
         },
       }),
     ],
   },
 
   plugins: [
-    new CleanWebpackPlugin(),
+    new CleanWebpackPlugin({
+      cleanOnceBeforeBuildPatterns: [`${PATHS.dist}/*`],
+    }),
 
     new BundleAnalyzerPlugin({
       analyzerMode:

@@ -43,7 +43,7 @@ export default merge(baseConfig, {
           {
             loader: 'css-loader',
             options: {
-              publicPath: './',
+              // publicPath: './',
               // sourceMap: true
             },
           },
@@ -62,7 +62,7 @@ export default merge(baseConfig, {
           {
             loader: 'css-loader',
             options: {
-              publicPath: './',
+              // publicPath: './',
               modules: {
                 localIdentName: '[name]__[local]__[hash:base64:5]',
               },
@@ -84,7 +84,7 @@ export default merge(baseConfig, {
           {
             loader: 'css-loader',
             options: {
-              publicPath: './',
+              // publicPath: './',
               // sourceMap: true,
               importLoaders: 1,
             },
@@ -92,7 +92,7 @@ export default merge(baseConfig, {
           {
             loader: 'sass-loader',
             options: {
-              publicPath: './',
+              // publicPath: './',
               // sourceMap: true
             },
           },
@@ -111,7 +111,7 @@ export default merge(baseConfig, {
           {
             loader: 'css-loader',
             options: {
-              publicPath: './',
+              // publicPath: './',
               modules: {
                 localIdentName: '[name]__[local]__[hash:base64:5]',
               },
@@ -122,7 +122,7 @@ export default merge(baseConfig, {
           {
             loader: 'sass-loader',
             options: {
-              publicPath: './',
+              // publicPath: './',
               // sourceMap: true
             },
           },
@@ -212,19 +212,8 @@ export default merge(baseConfig, {
     minimizer: [
       new TerserPlugin({
         parallel: true,
-        minify: (file, sourceMap) => {
-          const uglifyJsOptions = {
-            compress: true,
-          };
-
-          if (sourceMap) {
-            uglifyJsOptions.sourceMap = {
-              content: sourceMap,
-            };
-          }
-
-          // eslint-disable-next-line global-require
-          return require('uglify-js').minify(file, uglifyJsOptions);
+        terserOptions: {
+          compress: {},
         },
       }),
       new OptimizeCSSAssetsPlugin({
