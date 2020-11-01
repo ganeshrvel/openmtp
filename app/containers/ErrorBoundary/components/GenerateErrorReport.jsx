@@ -8,7 +8,7 @@ import { bindActionCreators } from 'redux';
 import { withStyles } from '@material-ui/core/styles';
 import { log } from '@Log';
 import { styles } from '../styles/GenerateErrorReport';
-import { baseName, PATHS } from '../../../utils/paths';
+import { PATHS } from '../../../utils/paths';
 import { promisifiedRimraf, mtpVerboseReport } from '../../../api/sys';
 import { fileExistsSync } from '../../../api/sys/fileOps';
 import { AUTHOR_EMAIL } from '../../../constants/meta';
@@ -20,6 +20,7 @@ import {
 } from '../../../templates/generateErrorReport';
 import { compressFile } from '../../../utils/gzip';
 import GenerateErrorReportBody from './GenerateErrorReportBody';
+import { baseName } from '../../../utils/files';
 
 const { logFile } = PATHS;
 const { getPath } = remote.app;

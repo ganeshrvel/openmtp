@@ -5,7 +5,7 @@
  * Note: Don't import log helper file from utils here
  */
 
-import { join, parse, resolve } from 'path';
+import { join, resolve } from 'path';
 import { homedir as homedirOs } from 'os';
 import url from 'url';
 import { rootPath as root } from 'electron-root-path';
@@ -13,11 +13,16 @@ import { isPackaged } from './isPackaged';
 import { IS_DEV } from '../constants/env';
 import { yearMonthNow } from './date';
 import { APP_IDENTIFIER, APP_NAME } from '../constants/meta';
+import { getAppDataPath } from './files';
 
 const appPath = join(root, `./app`);
 const configDir = join(root, `./config`);
 const homeDir = homedirOs();
-const profileDir = join(homeDir, `./.io.ganeshrvel`, `${APP_IDENTIFIER}`);
+const profileDir = getAppDataPath();
+
+// old generation [profileDir] path. Used until OpenMTP < v3.0.0
+const prevProfileDir = join(homeDir, `./.io.ganeshrvel`, `${APP_IDENTIFIER}`);
+
 const rotateFile = yearMonthNow({});
 const logFileName = IS_DEV
   ? `error-${rotateFile}.dev.log`
@@ -39,6 +44,7 @@ export const PATHS = {
   logFile: resolve(logFile),
   settingsFile: resolve(settingsFile),
   appUpdateFile: resolve(appUpdateFile),
+  prevProfileDir: resolve(prevProfileDir),
   loadUrlPath: url.format({
     protocol: 'file',
     slashes: true,
@@ -46,34 +52,4 @@ export const PATHS = {
       ? join(appPath, './app.html')
       : join(__dirname, './app.html'),
   }),
-};
-
-export const pathUp = (filePath) => {
-  return filePath.replace(/\/$/, '').replace(/\/[^/]+$/, '') || '/';
-};
-
-export const sanitizePath = (filePath) => {
-  return filePath.replace(/\/\/+/g, '/');
-};
-
-export const baseName = (filePath) => {
-  if (typeof filePath === 'undefined' || filePath === null) {
-    return null;
-  }
-  const parsedPath = pathInfo(filePath);
-
-  return parsedPath !== null ? parsedPath.base : null;
-};
-
-export const getExtension = (fileName, isFolder) => {
-  if (isFolder) {
-    return null;
-  }
-  const parsedPath = pathInfo(fileName);
-
-  return parsedPath !== null ? parsedPath.ext : null;
-};
-
-export const pathInfo = (filePath) => {
-  return parse(filePath);
 };

@@ -8,7 +8,7 @@
  */
 
 import { readdirSync } from 'fs';
-import { baseName, PATHS } from '../utils/paths';
+import { PATHS } from '../utils/paths';
 import {
   fileExistsSync,
   writeFileAsync,
@@ -17,8 +17,9 @@ import {
 } from '../api/sys/fileOps';
 import { daysDiff, yearMonthNow } from '../utils/date';
 import { LOG_FILE_ROTATION_CLEANUP_THRESHOLD } from '../constants';
+import { baseName } from '../utils/files';
 
-const { logFile, settingsFile, logDir } = PATHS;
+const { logFile, settingsFile, logDir, prevProfileDir } = PATHS;
 const logFileRotationCleanUpThreshold = LOG_FILE_ROTATION_CLEANUP_THRESHOLD;
 
 export default class Boot {
@@ -48,6 +49,12 @@ export default class Boot {
         if (!this.verifyFile(item)) {
           await this.createFile(item);
         }
+      }
+
+      // if the previous version of the profile directory exists then remove it
+      // issue: https://github.com/ganeshrvel/openmtp/issues/143
+      if (await this.verifyDir(prevProfileDir)) {
+        await deleteFilesSync(prevProfileDir);
       }
 
       return true;

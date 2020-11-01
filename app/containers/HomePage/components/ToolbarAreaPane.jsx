@@ -32,12 +32,12 @@ import {
 import { makeHideHiddenFiles } from '../../Settings/selectors';
 import { delLocalFiles, delMtpFiles } from '../../../api/sys';
 import { DEVICES_DEFAULT_PATH, DEVICES_TYPE_CONST } from '../../../constants';
-import { pathUp } from '../../../utils/paths';
 import { toggleSettings } from '../../Settings/actions';
 import { toggleWindowSizeOnDoubleClick } from '../../../utils/titlebarDoubleClick';
 import ToolbarBody from './ToolbarBody';
 import { openExternalUrl } from '../../../utils/url';
 import { APP_GITHUB_URL } from '../../../constants/meta';
+import { pathUp } from '../../../utils/files';
 
 class ToolbarAreaPane extends PureComponent {
   constructor(props) {

@@ -21,7 +21,6 @@ import { log } from '../../utils/log';
 import { mtp as _mtpCli } from '../../utils/binaries';
 
 import { DEVICES_LABEL, DEVICES_TYPE_CONST } from '../../constants';
-import { baseName, getExtension } from '../../utils/paths';
 import {
   clearFileTransfer,
   fetchDirList,
@@ -37,6 +36,7 @@ import {
   undefinedOrNull,
 } from '../../utils/funcs';
 import { msToTime, unixTimestampNow } from '../../utils/date';
+import { baseName, getExtension } from '../../utils/files';
 
 const readdir = Promise.promisify(fsReaddir);
 const execPromise = Promise.promisify(exec);
