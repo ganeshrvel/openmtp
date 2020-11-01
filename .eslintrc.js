@@ -2,23 +2,23 @@ module.exports = {
   parser: 'babel-eslint',
   parserOptions: {
     sourceType: 'module',
-    allowImportExportEverywhere: true
+    allowImportExportEverywhere: true,
   },
   env: {
     browser: true,
-    node: true
+    node: true,
   },
   plugins: ['import', 'promise', 'compat', 'react'],
   extends: ['airbnb', 'plugin:prettier/recommended', 'prettier/react'],
   settings: {
     react: {
-      version: '16.7'
+      version: '16.7',
     },
     'import/resolver': {
       webpack: {
-        config: 'webpack/config.eslint.js'
-      }
-    }
+        config: 'webpack/config.eslint.js',
+      },
+    },
   },
   rules: {
     'arrow-body-style': 'off',
@@ -42,8 +42,8 @@ module.exports = {
     'no-console': [
       'error',
       {
-        allow: ['info', 'error', 'warn']
-      }
+        allow: ['info', 'error', 'warn'],
+      },
     ],
     'no-use-before-define': 'off',
     'no-multi-assign': 'off',
@@ -54,8 +54,8 @@ module.exports = {
       {
         args: 'after-used',
         argsIgnorePattern: '^(theme|props|state|ownProps|dispatch|getState)|_',
-        varsIgnorePattern: '^(variables|mixins|args|log)'
-      }
+        varsIgnorePattern: '^(variables|mixins|args|log)',
+      },
     ],
     'prettier/prettier': ['error', { singleQuote: true }],
     'promise/param-names': 'error',
@@ -70,9 +70,9 @@ module.exports = {
           'static-methods',
           'lifecycle',
           'everything-else',
-          'render'
-        ]
-      }
+          'render',
+        ],
+      },
     ],
     'react/jsx-filename-extension': ['error', { extensions: ['.js', '.jsx'] }],
     'react/jsx-fragments': 'off',
@@ -81,6 +81,6 @@ module.exports = {
     'react/prefer-stateless-function': 'off',
     strict: 'off',
     'react/prop-types': 'off',
-    'react/no-deprecate': 'off'
-  }
+    'react/no-deprecate': 'off',
+  },
 };

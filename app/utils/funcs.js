@@ -22,25 +22,25 @@ export const isArraysEqual = (a, b) => {
   return true;
 };
 
-export const isInt = n => {
+export const isInt = (n) => {
   if (typeof n !== 'number') {
     return false;
   }
   return Number(n) === n && n % 1 === 0;
 };
 
-export const isFloat = n => {
+export const isFloat = (n) => {
   if (typeof n !== 'number') {
     return false;
   }
   return Number(n) === n && n % 1 !== 0;
 };
 
-export const isNumber = n => {
+export const isNumber = (n) => {
   return typeof n === 'number';
 };
 
-export const isArray = n => {
+export const isArray = (n) => {
   return Array.isArray(n);
 };
 
@@ -64,19 +64,19 @@ export const replaceBulk = (str, findArray, replaceArray) => {
     map[findArray[i]] = replaceArray[i];
   }
   regex = regex.join('|');
-  return str.replace(new RegExp(regex, 'g'), matched => {
+  return str.replace(new RegExp(regex, 'g'), (matched) => {
     return map[matched];
   });
 };
 
-export const splitIntoLines = str => {
+export const splitIntoLines = (str) => {
   if (undefinedOrNull(str)) {
     return null;
   }
   return str.toString().split(/(\r?\n)/g);
 };
 
-export const quickHash = str => {
+export const quickHash = (str) => {
   let hash = 0;
   let i;
   let chr;
@@ -101,7 +101,7 @@ export const truncate = (str, length) => {
   return str.substring(0, length) + dots;
 };
 
-export const stripRootSlash = str => {
+export const stripRootSlash = (str) => {
   return str.replace(/^\//g, '');
 };
 
@@ -115,7 +115,7 @@ export const springTruncate = (str, minChars = 10, ellipsis = '...') => {
       return {
         text: _str,
         truncatedText: str.substr(strLength - minChars),
-        isTruncated: true
+        isTruncated: true,
       };
     }
 
@@ -127,18 +127,18 @@ export const springTruncate = (str, minChars = 10, ellipsis = '...') => {
       truncatedText: `${str.substr(0, center - count)}${ellipsis}${str.substr(
         strLength - center + count
       )}`,
-      isTruncated: true
+      isTruncated: true,
     };
   }
 
   return {
     text: _str,
     truncatedText: str,
-    isTruncated: false
+    isTruncated: false,
   };
 };
 
-export const undefinedOrNull = _var => {
+export const undefinedOrNull = (_var) => {
   return typeof _var === 'undefined' || _var === null;
 };
 
@@ -171,7 +171,7 @@ export const undefinedOrNullChained = (mainObj, key = null) => {
   }
   let temp = mainObj;
 
-  keyArray.map(a => {
+  keyArray.map((a) => {
     if (typeof temp !== 'undefined') {
       const _matches = a.match(/[^[\]]+(?=])/g);
 
@@ -179,7 +179,7 @@ export const undefinedOrNullChained = (mainObj, key = null) => {
         const aSplits = a.split('[')[0];
         let lTemp = temp[aSplits];
 
-        _matches.map(e => {
+        _matches.map((e) => {
           if (typeof lTemp !== 'undefined' && typeof lTemp[e] !== 'undefined') {
             lTemp = lTemp[e];
             return lTemp;
@@ -237,12 +237,12 @@ export const arrayEquality = (array1, array2) => {
 };
 
 export const arrayIntersection = (array1, array2) => {
-  return array1.filter(element => array2.includes(element));
+  return array1.filter((element) => array2.includes(element));
 };
 
 export const keymapSearch = (keymap, keyedList) => {
   let matchedWith = null;
-  Object.keys(keymap).map(a => {
+  Object.keys(keymap).map((a) => {
     const item = keymap[a];
     if (matchedWith !== null) {
       return null;
@@ -271,11 +271,11 @@ export const isFileExplorerOnFocus = () => {
   return document.elementFromPoint(3, 2).id === APP_TITLEBAR_DOM_ID;
 };
 
-export const isString = variable => {
+export const isString = (variable) => {
   return typeof variable === 'string' || variable instanceof String;
 };
 
-export const removeArrayDuplicates = array => {
+export const removeArrayDuplicates = (array) => {
   return array.filter((v, i) => array.indexOf(v) === i);
 };
 

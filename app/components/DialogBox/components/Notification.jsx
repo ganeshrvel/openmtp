@@ -16,7 +16,7 @@ class Notification extends PureComponent {
     onClickHandler(confirm);
   };
 
-  _handleKeyPress = event => {
+  _handleKeyPress = (event) => {
     if (event.key === 'Enter') {
       this._handleBtnClick({ confirm: true });
     }
@@ -29,7 +29,7 @@ class Notification extends PureComponent {
       bodyText,
       trigger,
       fullWidthDialog,
-      maxWidthDialog
+      maxWidthDialog,
     } = this.props;
     return (
       <Dialog

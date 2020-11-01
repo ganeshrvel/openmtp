@@ -2,28 +2,28 @@
 
 import { variables, mixins } from '../../../styles/js';
 
-export const styles = theme => ({
+export const styles = (theme) => ({
   root: {
     textAlign: `center`,
     ...mixins().center,
-    ...mixins().absoluteCenter
+    ...mixins().absoluteCenter,
   },
   bugImg: {
     ...mixins().noDrag,
     height: `auto`,
-    width: 150
+    width: 150,
   },
   headings: {
     ...mixins().noDrag,
     ...mixins().noselect,
-    marginTop: 15
+    marginTop: 15,
   },
   subHeading: {
     ...mixins().noDrag,
     ...mixins().noselect,
-    marginTop: 15
+    marginTop: 15,
   },
   goBackBtn: {
-    marginTop: 5
-  }
+    marginTop: 5,
+  },
 });

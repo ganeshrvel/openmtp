@@ -9,12 +9,12 @@ export const actionTypes = prefixer(prefix, actionTypesList);
 
 export function reqLoadApp() {
   return {
-    type: actionTypes.REQ_LOAD
+    type: actionTypes.REQ_LOAD,
   };
 }
 export function resLoadApp() {
   return {
-    type: actionTypes.RES_LOAD
+    type: actionTypes.RES_LOAD,
   };
 }
 
@@ -22,7 +22,7 @@ export function failLoadApp(e) {
   return {
     type: actionTypes.FAIL_LOAD,
     payload: {
-      error: e
-    }
+      error: e,
+    },
   };
 }

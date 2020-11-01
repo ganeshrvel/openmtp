@@ -6,9 +6,9 @@ import Promise from 'bluebird';
 import { log } from './log';
 
 export const isGoogleAndroidFileTransferActive = () => {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     psList()
-      .then(list => {
+      .then((list) => {
         if (
           findLodash(list, { name: 'Android File Transfer' }) &&
           findLodash(list, { name: 'Android File Transfer Agent' })
@@ -18,10 +18,10 @@ export const isGoogleAndroidFileTransferActive = () => {
 
         return resolve(false);
       })
-      .catch(e => {
+      .catch((e) => {
         log.error(e, 'isGoogleAndroidFileTransferActive');
       });
-  }).catch(e => {
+  }).catch((e) => {
     log.error(e, 'isGoogleAndroidFileTransferActive -> Promise');
   });
 };

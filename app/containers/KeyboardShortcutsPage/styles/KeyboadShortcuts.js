@@ -2,21 +2,21 @@
 
 import { variables, mixins } from '../../../styles/js';
 
-export const styles = theme => ({
+export const styles = (theme) => ({
   root: {},
   title: {
-    fontWeight: `bold`
+    fontWeight: `bold`,
   },
   kbdWrapper: {
-    paddingBottom: 14
+    paddingBottom: 14,
   },
   kbdInnerWrapper: {
-    display: `inline-block`
+    display: `inline-block`,
   },
   kbdTitle: {
     display: 'block',
     color: 'rgba(0, 0, 0, 0.54)',
     padding: '1px 0 6px 0',
-    fontSize: 14
-  }
+    fontSize: 14,
+  },
 });

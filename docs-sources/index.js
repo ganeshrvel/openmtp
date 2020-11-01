@@ -6,7 +6,7 @@ import {
   undefinedOrNull,
   fetchUrl,
   imageLoaded,
-  urls
+  urls,
 } from './utils/funcs';
 import { APP_GITHUB_API_URL, APP_GITHUB_URL } from './utils/consts';
 
@@ -20,7 +20,7 @@ class Docs {
       appScreenshotFileTransferId: `app-screenshot-file-transfer`,
       downloadBtnGitHub: `#download-btn-github`,
       navigateToGitHub: `#navigate-to-github`,
-      gitHubLatestVersionWrapper: `.github-latest-version-wrapper`
+      gitHubLatestVersionWrapper: `.github-latest-version-wrapper`,
     };
 
     this.$el = {
@@ -36,7 +36,7 @@ class Docs {
       navigateToGitHub: document.querySelector(this.selectors.navigateToGitHub),
       gitHubLatestVersionWrapper: document.querySelectorAll(
         this.selectors.gitHubLatestVersionWrapper
-      )
+      ),
     };
 
     this.gitHubLatestReleaseData = null;
@@ -45,14 +45,14 @@ class Docs {
         imgSrc: 'file-explorer.jpg',
         parentSelector: this.$el.appScreenshotFileExplorerImageWrapper,
         id: this.selectors.appScreenshotFileExplorerId,
-        loader: this.selectors.spinner
+        loader: this.selectors.spinner,
       },
       fileTransfer: {
         imgSrc: 'file-transfer.jpg',
         parentSelector: this.$el.appScreenshotFileTransferImageWrapper,
         id: this.selectors.appScreenshotFileTransferId,
-        loader: this.selectors.spinner
-      }
+        loader: this.selectors.spinner,
+      },
     };
   }
 
@@ -66,15 +66,15 @@ class Docs {
 
   _checkLatestGitHubRelease = () => {
     return fetchUrl({
-      url: APP_GITHUB_API_URL
-    }).then(res => {
+      url: APP_GITHUB_API_URL,
+    }).then((res) => {
       if (undefinedOrNull(res)) {
         return null;
       }
 
       const { json, status } = res;
 
-      return json.then(data => {
+      return json.then((data) => {
         this.gitHubLatestReleaseData = this._generateDownloadLatestGitHubReleaseUrl(
           data,
           status
@@ -90,8 +90,8 @@ class Docs {
       return {
         latest: data.name,
         url: {
-          mac: `https://github.com/ganeshrvel/openmtp/releases/download/${data.tag_name}/${data.name}.dmg`
-        }
+          mac: `https://github.com/ganeshrvel/openmtp/releases/download/${data.tag_name}/${data.name}.dmg`,
+        },
       };
     }
 
@@ -99,12 +99,12 @@ class Docs {
     return {
       latest: `OpenMTP`,
       url: {
-        mac: `https://github.com/ganeshrvel/openmtp/releases/`
-      }
+        mac: `https://github.com/ganeshrvel/openmtp/releases/`,
+      },
     };
   };
 
-  _forceDownloadLatestGitHubRelease = platform => {
+  _forceDownloadLatestGitHubRelease = (platform) => {
     if (!undefinedOrNull(this.gitHubLatestReleaseData)) {
       return this.gitHubLatestReleaseData;
     }
@@ -147,12 +147,12 @@ class Docs {
   };
 
   _appScreenshotsLazyLoad = () => {
-    Object.keys(this.lazyLoadImages).map(a => {
+    Object.keys(this.lazyLoadImages).map((a) => {
       const item = this.lazyLoadImages[a];
       const imgLoad = imgsrc(item.imgSrc);
 
       return imageLoaded(imgLoad)
-        .then(res => {
+        .then((res) => {
           if (!res.status) {
             return null;
           }
@@ -177,7 +177,7 @@ class Docs {
   };
 
   _downloadBtnEvents = () => {
-    this.$el.downloadBtnGitHub.addEventListener('click', e => {
+    this.$el.downloadBtnGitHub.addEventListener('click', (e) => {
       e.preventDefault();
       const platform = 'mac';
 
@@ -190,7 +190,7 @@ class Docs {
   };
 
   _navigateToGithuBtnEvents = () => {
-    this.$el.navigateToGitHub.addEventListener('click', events => {
+    this.$el.navigateToGitHub.addEventListener('click', (events) => {
       events.preventDefault();
 
       window.location.href = APP_GITHUB_URL;

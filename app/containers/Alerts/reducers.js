@@ -5,7 +5,7 @@ import { actionTypes } from './actions';
 export const initialState = {
   message: null,
   autoHideDuration: 6000,
-  variant: `error`
+  variant: `error`,
 };
 
 export default function Alerts(state = initialState, action) {
@@ -14,12 +14,12 @@ export default function Alerts(state = initialState, action) {
     case actionTypes.THROW_ALERT:
       return {
         ...state,
-        ...payload
+        ...payload,
       };
     case actionTypes.CLEAR_ALERT:
       return {
         ...state,
-        ...initialState
+        ...initialState,
       };
     default:
       return state;

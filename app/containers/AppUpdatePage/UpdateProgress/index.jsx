@@ -15,11 +15,11 @@ class ProgressbarPage extends Component {
       progressTitle: `Progress...`,
       progressBodyText: `Progress...`,
       value: 0,
-      variant: `indeterminate`
+      variant: `indeterminate`,
     };
 
     this.state = {
-      ...this.initialState
+      ...this.initialState,
     };
   }
 

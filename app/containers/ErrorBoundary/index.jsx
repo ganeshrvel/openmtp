@@ -15,13 +15,13 @@ class ErrorBoundary extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      errorInfo: null
+      errorInfo: null,
     };
   }
 
   componentDidCatch(error, errorInfo) {
     this.setState({
-      errorInfo
+      errorInfo,
     });
     const _errorInfo = JSON.stringify(errorInfo);
     log.doLog(

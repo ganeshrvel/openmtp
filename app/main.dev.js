@@ -68,11 +68,11 @@ if (!isDeviceBootable) {
   });
 } else {
   if (IS_PROD) {
-    process.on('uncaughtException', error => {
+    process.on('uncaughtException', (error) => {
       log.error(error, `main.dev -> process -> uncaughtException`);
     });
 
-    appEvents.on('error', error => {
+    appEvents.on('error', (error) => {
       log.error(error, `main.dev -> appEvents -> error`);
     });
 
@@ -94,7 +94,7 @@ if (!isDeviceBootable) {
       const extensions = ['REACT_DEVELOPER_TOOLS', 'REDUX_DEVTOOLS'];
 
       return Promise.all(
-        extensions.map(name =>
+        extensions.map((name) =>
           installer.default(installer[name], forceDownload)
         )
       ).catch(console.error);
@@ -136,8 +136,9 @@ if (!isDeviceBootable) {
         minHeight: 640,
         titleBarStyle: 'hidden',
         webPreferences: {
-          nodeIntegration: true
-        }
+          nodeIntegration: true,
+          enableRemoteModule: true,
+        },
       });
 
       mainWindow.loadURL(`${PATHS.loadUrlPath}`);
@@ -155,7 +156,7 @@ if (!isDeviceBootable) {
         }
       });
 
-      mainWindow.onerror = error => {
+      mainWindow.onerror = (error) => {
         log.error(error, `main.dev -> mainWindow -> onerror`);
       };
 
@@ -191,7 +192,7 @@ if (!isDeviceBootable) {
       const autoUpdateCheckSettings = settingsStorage.getItems([
         'enableBackgroundAutoUpdate',
         'enableAutoUpdateCheck',
-        'enablePrereleaseUpdates'
+        'enablePrereleaseUpdates',
       ]);
 
       const autoUpdateCheck =
@@ -202,14 +203,14 @@ if (!isDeviceBootable) {
         autoDownload:
           autoUpdateCheckSettings.enableBackgroundAutoUpdate !== false,
         allowPrerelease:
-          autoUpdateCheckSettings.enablePrereleaseUpdates === true
+          autoUpdateCheckSettings.enablePrereleaseUpdates === true,
       });
       autoAppUpdate.init();
 
       const menuBuilder = new MenuBuilder({
         mainWindow,
         autoAppUpdate,
-        appUpdaterEnable
+        appUpdaterEnable,
       });
       menuBuilder.buildMenu();
 

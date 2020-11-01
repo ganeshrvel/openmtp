@@ -32,8 +32,9 @@ const nonBootableDeviceCreateWindow = () => {
     height: 320,
     resizable: false,
     webPreferences: {
-      nodeIntegration: true
-    }
+      nodeIntegration: true,
+      enableRemoteModule: true,
+    },
   });
 };
 
@@ -76,8 +77,9 @@ const reportBugsCreateWindow = () => {
     minimizable: false,
     fullscreenable: false,
     webPreferences: {
-      nodeIntegration: true
-    }
+      nodeIntegration: true,
+      enableRemoteModule: true,
+    },
   });
 };
 
@@ -97,7 +99,7 @@ export const reportBugsWindow = () => {
       _reportBugsWindow.focus();
     });
 
-    _reportBugsWindow.onerror = error => {
+    _reportBugsWindow.onerror = (error) => {
       log.error(error, `createWindows -> reportBugsWindow -> onerror`);
     };
 
@@ -115,7 +117,7 @@ export const reportBugsWindow = () => {
  * Privacy Policy Window
  */
 
-const privacyPolicyCreateWindow = isRenderedPage => {
+const privacyPolicyCreateWindow = (isRenderedPage) => {
   const config = {
     width: 800,
     height: 600,
@@ -127,8 +129,9 @@ const privacyPolicyCreateWindow = isRenderedPage => {
     minimizable: true,
     fullscreenable: true,
     webPreferences: {
-      nodeIntegration: true
-    }
+      nodeIntegration: true,
+      enableRemoteModule: true,
+    },
   };
 
   // incoming call from a rendered page
@@ -169,7 +172,7 @@ export const privacyPolicyWindow = (isRenderedPage = false) => {
       _privacyPolicyWindow.focus();
     });
 
-    _privacyPolicyWindow.onerror = error => {
+    _privacyPolicyWindow.onerror = (error) => {
       log.error(error, `createWindows -> privacyPolicyWindow -> onerror`);
     };
 
@@ -197,8 +200,9 @@ const appUpdateAvailableCreateWindow = () => {
     minimizable: true,
     fullscreenable: false,
     webPreferences: {
-      nodeIntegration: true
-    }
+      nodeIntegration: true,
+      enableRemoteModule: true,
+    },
   });
 };
 
@@ -225,7 +229,7 @@ export const appUpdateAvailableWindow = () => {
       _appUpdateAvailableWindow.focus();
     });
 
-    _appUpdateAvailableWindow.onerror = error => {
+    _appUpdateAvailableWindow.onerror = (error) => {
       log.error(error, `createWindows -> appUpdateAvailableWindow -> onerror`);
     };
 
@@ -243,7 +247,7 @@ export const appUpdateAvailableWindow = () => {
  * App Features Window
  */
 
-const appFeaturesCreateWindow = isRenderedPage => {
+const appFeaturesCreateWindow = (isRenderedPage) => {
   const config = {
     width: 800,
     height: 630,
@@ -253,8 +257,9 @@ const appFeaturesCreateWindow = isRenderedPage => {
     minimizable: true,
     fullscreenable: false,
     webPreferences: {
-      nodeIntegration: true
-    }
+      nodeIntegration: true,
+      enableRemoteModule: true,
+    },
   };
 
   // incoming call from a rendered page
@@ -295,7 +300,7 @@ export const appFeaturesWindow = (isRenderedPage = false) => {
       _appFeaturesWindow.focus();
     });
 
-    _appFeaturesWindow.onerror = error => {
+    _appFeaturesWindow.onerror = (error) => {
       log.error(error, `createWindows -> appFeaturesWindow -> onerror`);
     };
 
@@ -313,7 +318,7 @@ export const appFeaturesWindow = (isRenderedPage = false) => {
  * Keyboard Shortcuts Window
  */
 
-const keyboardShortcutsCreateWindow = isRenderedPage => {
+const keyboardShortcutsCreateWindow = (isRenderedPage) => {
   const config = {
     width: 800,
     height: 600,
@@ -325,8 +330,9 @@ const keyboardShortcutsCreateWindow = isRenderedPage => {
     minimizable: true,
     fullscreenable: true,
     webPreferences: {
-      nodeIntegration: true
-    }
+      nodeIntegration: true,
+      enableRemoteModule: true,
+    },
   };
 
   // incoming call from a rendered page
@@ -371,7 +377,7 @@ export const keyboardShortcutsWindow = (isRenderedPage = false) => {
       _keyboardShortcutsWindow.focus();
     });
 
-    _keyboardShortcutsWindow.onerror = error => {
+    _keyboardShortcutsWindow.onerror = (error) => {
       log.error(error, `createWindows -> keyboardShortcutsWindow -> onerror`);
     };
 

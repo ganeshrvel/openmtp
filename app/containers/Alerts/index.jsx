@@ -35,14 +35,14 @@ const mapDispatchToProps = (dispatch, ownProps) =>
     {
       actionCreateClearAlert: () => (_, getState) => {
         dispatch(clearAlert());
-      }
+      },
     },
     dispatch
   );
 
 const mapStateToProps = (state, props) => {
   return {
-    Alerts: state.Alerts
+    Alerts: state.Alerts,
   };
 };
 

@@ -4,26 +4,26 @@ import styled from 'styled-components';
 import TextField from '@material-ui/core/TextField';
 import { variables, mixins } from '../../../styles/js';
 
-export const styles = theme => ({
+export const styles = (theme) => ({
   root: {},
   dialogContentText: {
     marginBottom: 10,
-    wordBreak: `break-all`
+    wordBreak: `break-all`,
   },
   btnPositive: {
-    ...mixins().btnPositive
+    ...mixins().btnPositive,
   },
   btnNegative: {
-    ...mixins().btnNegative
+    ...mixins().btnNegative,
   },
   textFieldRoot: {
     '& .MuiFormLabel-root.Mui-error.Mui-focused': {
-      color: '#f44336'
+      color: '#f44336',
     },
     '& .MuiFormLabel-root.Mui-focused': {
-      color: 'unset'
-    }
-  }
+      color: 'unset',
+    },
+  },
 });
 
 export const StyledTextField = styled(TextField)`

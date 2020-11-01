@@ -22,7 +22,7 @@ export default class GenerateErrorReportBody extends PureComponent {
       mailTo,
       mailToInstructions,
       AUTHOR_EMAIL,
-      onGenerateErrorLogs
+      onGenerateErrorLogs,
     } = this.props;
     return (
       <Fragment>

@@ -39,24 +39,24 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
       expansionPanel: {
         noMtpInstructions: true,
         keyboardNavigation: false,
-        features: false
+        features: false,
       },
-      showHelpPhoneNotRecognizedDialog: false
+      showHelpPhoneNotRecognizedDialog: false,
     };
   }
 
   _handleExpansionPanel = ({ key }) => {
-    this.setState(prevState => {
+    this.setState((prevState) => {
       return {
         expansionPanel: {
           ...prevState.expansionPanel,
-          [key]: !prevState.expansionPanel[key]
-        }
+          [key]: !prevState.expansionPanel[key],
+        },
       };
     });
   };
 
-  _handleHelpPhoneNotRecognizedBtn = value => {
+  _handleHelpPhoneNotRecognizedBtn = (value) => {
     this.setState({ showHelpPhoneNotRecognizedDialog: value });
   };
 
@@ -72,7 +72,7 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
       currentBrowsePath,
       deviceType,
       directoryLists,
-      onContextMenuClick
+      onContextMenuClick,
     } = this.props;
 
     const { expansionPanel, showHelpPhoneNotRecognizedDialog } = this.state;
@@ -81,7 +81,7 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
 
     const tableData = {
       path: currentBrowsePath[deviceType],
-      directoryLists: directoryLists[deviceType]
+      directoryLists: directoryLists[deviceType],
     };
 
     if (isMtp && !mtpDevice.isAvailable) {
@@ -102,7 +102,7 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
                   button
                   onClick={() =>
                     this._handleExpansionPanel({
-                      key: 'noMtpInstructions'
+                      key: 'noMtpInstructions',
                     })
                   }
                 >
@@ -192,7 +192,7 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
                   button
                   onClick={() =>
                     this._handleExpansionPanel({
-                      key: 'keyboardNavigation'
+                      key: 'keyboardNavigation',
                     })
                   }
                 >
@@ -233,7 +233,7 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
                   button
                   onClick={() =>
                     this._handleExpansionPanel({
-                      key: 'features'
+                      key: 'features',
                     })
                   }
                 >
@@ -285,7 +285,7 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
         <TableCell
           colSpan={6}
           className={styles.tableCell}
-          onContextMenu={event =>
+          onContextMenu={(event) =>
             onContextMenuClick(event, {}, { ...tableData }, _eventTarget)
           }
         />

@@ -16,10 +16,10 @@ const variantIcon = {
   success: CheckCircleIcon,
   warning: WarningIcon,
   error: ErrorIcon,
-  info: InfoIcon
+  info: InfoIcon,
 };
 
-const SnackbarThemeWrapper = props => {
+const SnackbarThemeWrapper = (props) => {
   const { classes: styles, message, onClose, variant, ...other } = props;
   const Icon = variantIcon[variant];
 
@@ -42,7 +42,7 @@ const SnackbarThemeWrapper = props => {
           onClick={onClose}
         >
           <CloseIcon className={styles.icon} />
-        </IconButton>
+        </IconButton>,
       ]}
       {...other}
     />

@@ -11,7 +11,7 @@ import {
   APP_NAME,
   APP_TITLE,
   AUTHOR_EMAIL,
-  AUTHOR_NAME
+  AUTHOR_NAME,
 } from '../../constants/meta';
 import { openExternalUrl } from '../../utils/url';
 import { resetOverFlowY } from '../../utils/styleResets';
@@ -337,7 +337,7 @@ class PrivacyPolicyPage extends Component {
               For more information on the privacy practices of Google, please
               visit the Google Privacy &amp; Terms web page:&nbsp;
               <a
-                onClick={events => {
+                onClick={(events) => {
                   openExternalUrl(
                     'https://policies.google.com/privacy?hl=en',
                     events
@@ -391,7 +391,7 @@ class PrivacyPolicyPage extends Component {
             <span>
               Please refer to&nbsp;
               <a
-                onClick={events => {
+                onClick={(events) => {
                   openExternalUrl(
                     'https://help.github.com/articles/github-privacy-statement/',
                     events
@@ -486,7 +486,7 @@ class PrivacyPolicyPage extends Component {
             <span>
               By email:&nbsp;
               <a
-                onClick={events => {
+                onClick={(events) => {
                   openExternalUrl(`mailto:${AUTHOR_EMAIL}`, events);
                 }}
               >
@@ -498,7 +498,7 @@ class PrivacyPolicyPage extends Component {
             <span>
               By visiting this page on the website:&nbsp;
               <a
-                onClick={events => {
+                onClick={(events) => {
                   openExternalUrl(`${APP_GITHUB_URL}`, events);
                 }}
               >

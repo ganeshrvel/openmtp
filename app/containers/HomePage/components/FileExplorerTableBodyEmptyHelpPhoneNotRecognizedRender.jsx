@@ -10,7 +10,7 @@ import {
   APP_GITHUB_ISSUES_URL,
   APP_NAME,
   APP_VERSION,
-  AUTHOR_EMAIL
+  AUTHOR_EMAIL,
 } from '../../../constants/meta';
 import { DONATE_PAYPAL_URL } from '../../../constants';
 import { helpPhoneNotConnecting } from '../../../templates/fileExplorer';
@@ -67,7 +67,7 @@ class FileExplorerTableBodyEmptyHelpPhoneNotRecognizedRender extends PureCompone
             </a>
             &nbsp;or check out this&nbsp;
             <a
-              onClick={events => {
+              onClick={(events) => {
                 openExternalUrl(`${APP_GITHUB_ISSUES_URL}8`, events);
               }}
             >
@@ -81,7 +81,7 @@ class FileExplorerTableBodyEmptyHelpPhoneNotRecognizedRender extends PureCompone
             If you&apos;d like to support my work or buy me up a cup of coffee,
             donate via&nbsp;
             <a
-              onClick={events => {
+              onClick={(events) => {
                 openExternalUrl(DONATE_PAYPAL_URL, events);
               }}
             >

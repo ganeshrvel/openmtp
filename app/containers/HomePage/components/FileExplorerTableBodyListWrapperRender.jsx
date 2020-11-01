@@ -13,11 +13,11 @@ export default class FileExplorerTableBodyListWrapperRender extends PureComponen
     this.recursiveFilesFetchTimeOut = null;
     this.filesPreFetchCount = 50;
     this.state = {
-      items: tableSort.slice(0, this.filesPreFetchCount)
+      items: tableSort.slice(0, this.filesPreFetchCount),
     };
 
     this.state = {
-      items: []
+      items: [],
     };
 
     this.prevInQueueList = [];
@@ -39,7 +39,7 @@ export default class FileExplorerTableBodyListWrapperRender extends PureComponen
       directoryGeneratedTime,
       directoryLists,
       deviceType,
-      isSelected
+      isSelected,
     } = this.props;
     const prevSelectedDirectoryLists =
       directoryLists[deviceType].queue.selected;
@@ -62,7 +62,7 @@ export default class FileExplorerTableBodyListWrapperRender extends PureComponen
         return item;
       });
 
-      [...this.prevInQueueList, ...nextInQueueList].map(index => {
+      [...this.prevInQueueList, ...nextInQueueList].map((index) => {
         this.setState(({ items }) => {
           const _items = items;
           const item = nextTableSort[index];
@@ -77,7 +77,7 @@ export default class FileExplorerTableBodyListWrapperRender extends PureComponen
           );
 
           return {
-            items: _items
+            items: _items,
           };
         });
 
@@ -92,7 +92,7 @@ export default class FileExplorerTableBodyListWrapperRender extends PureComponen
     this.clearRecursiveFilesFetchTimeOut();
   }
 
-  recursiveFilesFetch = tableSort => {
+  recursiveFilesFetch = (tableSort) => {
     const { items } = this.state;
 
     this.recursiveFilesFetchTimeOut = setTimeout(() => {
@@ -105,7 +105,7 @@ export default class FileExplorerTableBodyListWrapperRender extends PureComponen
           prevItems.length + this.filesPreFetchCount
         );
 
-        const mappedSlicedItems = slicedItems.map(item => {
+        const mappedSlicedItems = slicedItems.map((item) => {
           return (
             <FileExplorerTableRowsRender
               {...parentProps}
@@ -117,7 +117,7 @@ export default class FileExplorerTableBodyListWrapperRender extends PureComponen
         });
 
         return {
-          items: mappedSlicedItems
+          items: mappedSlicedItems,
         };
       });
 
