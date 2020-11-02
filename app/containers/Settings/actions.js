@@ -17,6 +17,7 @@ const actionTypesList = [
   'ENABLE_PRERELEASE_UPDATES',
   'ENABLE_ANALYTICS',
   'ENABLE_STATUS_BAR',
+  'APP_THEME_MODE',
   'COPY_JSON_FILE_TO_SETTINGS',
 ];
 
@@ -134,6 +135,18 @@ export function enableStatusBar({ ...data }, getState) {
     dispatch({
       type: actionTypes.ENABLE_STATUS_BAR,
       payload: toggle,
+    });
+    dispatch(copySettingsToJsonFile(getState));
+  };
+}
+
+export function setAppThemeMode({ ...data }, getState) {
+  const { mode } = data;
+
+  return (dispatch) => {
+    dispatch({
+      type: actionTypes.APP_THEME_MODE,
+      payload: mode,
     });
     dispatch(copySettingsToJsonFile(getState));
   };

@@ -1,7 +1,11 @@
 'use strict';
 
 import { actionTypes } from './actions';
-import { DEVICES_TYPE_CONST } from '../../constants';
+import {
+  DEVICE_TYPE,
+  FILE_EXPLORER_VIEW_TYPE,
+  THEME_MODE_TYPE,
+} from '../../enums';
 
 export const initialState = {
   freshInstall: 0,
@@ -15,14 +19,15 @@ export const initialState = {
   enableAnalytics: true,
   enableStatusBar: true,
   hideHiddenFiles: {
-    [DEVICES_TYPE_CONST.local]: true,
-    [DEVICES_TYPE_CONST.mtp]: true,
+    [DEVICE_TYPE.local]: true,
+    [DEVICE_TYPE.mtp]: true,
   },
 
   fileExplorerListingType: {
-    [DEVICES_TYPE_CONST.local]: 'grid',
-    [DEVICES_TYPE_CONST.mtp]: 'grid',
+    [DEVICE_TYPE.local]: FILE_EXPLORER_VIEW_TYPE.grid,
+    [DEVICE_TYPE.mtp]: FILE_EXPLORER_VIEW_TYPE.grid,
   },
+  appThemeMode: THEME_MODE_TYPE.auto,
 };
 
 export default function Settings(state = initialState, action) {
@@ -72,6 +77,12 @@ export default function Settings(state = initialState, action) {
 
     case actionTypes.ENABLE_STATUS_BAR:
       return { ...state, enableStatusBar: payload };
+
+    case actionTypes.APP_THEME_MODE:
+      return {
+        ...state,
+        appThemeMode: payload,
+      };
 
     case actionTypes.COPY_JSON_FILE_TO_SETTINGS:
       return { ...state, ...payload };

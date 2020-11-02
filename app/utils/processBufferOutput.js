@@ -4,7 +4,8 @@ import { EOL } from 'os';
 import { replaceBulk } from './funcs';
 import { log } from './log';
 import { isGoogleAndroidFileTransferActive } from './isGoogleAndroidFileTransferActive';
-import { DEVICES_LABEL, DEVICES_TYPE_CONST } from '../constants';
+import { DEVICES_LABEL} from '../constants';
+import { DEVICE_TYPE } from "../enums";
 
 export const processMtpBuffer = async ({ error, stderr }) => {
   const errorTpl = {
@@ -23,21 +24,21 @@ export const processMtpBuffer = async ({ error, stderr }) => {
   };
 
   const errorDictionary = {
-    noMtp: `No ${DEVICES_LABEL[DEVICES_TYPE_CONST.mtp]} or MTP device found.`,
+    noMtp: `No ${DEVICES_LABEL[DEVICE_TYPE.mtp]} or MTP device found.`,
     googleAndroidFileTransferIsActive: `Quit 'Android File Transfer' app (by Google) and reload.`,
     deviceLocked: `Your ${
-      DEVICES_LABEL[DEVICES_TYPE_CONST.mtp]
+      DEVICES_LABEL[DEVICE_TYPE.mtp]
     } may be locked. Unlock it and reload.`,
     unResponsive: `Your ${
-      DEVICES_LABEL[DEVICES_TYPE_CONST.mtp]
+      DEVICES_LABEL[DEVICE_TYPE.mtp]
     } is not responding. Reload or reconnect the device.`,
     mtpStorageNotAccessible: `Your ${
-      DEVICES_LABEL[DEVICES_TYPE_CONST.mtp]
+      DEVICES_LABEL[DEVICE_TYPE.mtp]
     } storage is not accessible.`,
     fileNotFound: `File not found! Try again.`,
     partialDeletion: `The path is inaccessible.`,
     common: `Oops.. Your ${
-      DEVICES_LABEL[DEVICES_TYPE_CONST.mtp]
+      DEVICES_LABEL[DEVICE_TYPE.mtp]
     } has gone crazy! Try again.`,
   };
 

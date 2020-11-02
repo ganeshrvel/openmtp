@@ -49,11 +49,7 @@ import {
   makeFileExplorerListingType,
   makeHideHiddenFiles,
 } from '../../Settings/selectors';
-import {
-  DEVICES_LABEL,
-  DEVICES_TYPE_CONST,
-  DONATE_PAYPAL_URL,
-} from '../../../constants';
+import { DEVICES_LABEL, DONATE_PAYPAL_URL } from '../../../constants';
 import {
   renameLocalFiles,
   checkFileExists,
@@ -82,6 +78,7 @@ import {
   twitterShareUrl,
 } from '../../../templates/socialMediaShareBtns';
 import { baseName, pathInfo, pathUp, sanitizePath } from '../../../utils/files';
+import { DEVICE_TYPE, FILE_EXPLORER_VIEW_TYPE } from '../../../enums';
 
 const { Menu, getCurrentWindow } = remote;
 const _mainWindowRendererProcess = getMainWindowRendererProcess();
@@ -172,7 +169,7 @@ class FileExplorer extends Component {
       hideHiddenFiles,
     } = this.props;
 
-    if (deviceType === DEVICES_TYPE_CONST.mtp) {
+    if (deviceType === DEVICE_TYPE.mtp) {
       actionCreateFetchMtpStorageOptions(
         {
           filePath: currentBrowsePath[deviceType],
@@ -245,7 +242,7 @@ class FileExplorer extends Component {
      * This is to prevent race between file transfer and app update taskbar progressbar access
      */
 
-    if (deviceType === DEVICES_TYPE_CONST.local) {
+    if (deviceType === DEVICE_TYPE.local) {
       ipcRenderer.on('isFileTransferActiveSeek', (event, { ...args }) => {
         const { check: checkIsFileTransferActiveSeek } = args;
         if (!checkIsFileTransferActiveSeek) {
@@ -397,7 +394,7 @@ class FileExplorer extends Component {
     }
 
     if (
-      _focussedFileExplorerDeviceType === DEVICES_TYPE_CONST.mtp &&
+      _focussedFileExplorerDeviceType === DEVICE_TYPE.mtp &&
       !mtpDevice.isAvailable &&
       type !== 'refresh'
     ) {
@@ -539,12 +536,12 @@ class FileExplorer extends Component {
 
         if (
           type === 'navigationLeft' &&
-          fileExplorerListingType[deviceType] === 'list'
+          fileExplorerListingType[deviceType] === FILE_EXPLORER_VIEW_TYPE.list
         ) {
           break;
         } else if (
           type === 'navigationUp' &&
-          fileExplorerListingType[deviceType] === 'grid'
+          fileExplorerListingType[deviceType] === FILE_EXPLORER_VIEW_TYPE.grid
         ) {
           break;
         }
@@ -575,12 +572,12 @@ class FileExplorer extends Component {
 
         if (
           type === 'navigationRight' &&
-          fileExplorerListingType[deviceType] === 'list'
+          fileExplorerListingType[deviceType] === FILE_EXPLORER_VIEW_TYPE.list
         ) {
           break;
         } else if (
           type === 'navigationDown' &&
-          fileExplorerListingType[deviceType] === 'grid'
+          fileExplorerListingType[deviceType] === FILE_EXPLORER_VIEW_TYPE.grid
         ) {
           break;
         }
@@ -606,12 +603,12 @@ class FileExplorer extends Component {
 
         if (
           type === 'multipleSelectLeft' &&
-          fileExplorerListingType[deviceType] === 'list'
+          fileExplorerListingType[deviceType] === FILE_EXPLORER_VIEW_TYPE.list
         ) {
           break;
         } else if (
           type === 'multipleSelectUp' &&
-          fileExplorerListingType[deviceType] === 'grid'
+          fileExplorerListingType[deviceType] === FILE_EXPLORER_VIEW_TYPE.grid
         ) {
           break;
         }
@@ -669,12 +666,12 @@ class FileExplorer extends Component {
 
         if (
           type === 'multipleSelectRight' &&
-          fileExplorerListingType[deviceType] === 'list'
+          fileExplorerListingType[deviceType] === FILE_EXPLORER_VIEW_TYPE.list
         ) {
           break;
         } else if (
           type === 'multipleSelectDown' &&
-          fileExplorerListingType[deviceType] === 'grid'
+          fileExplorerListingType[deviceType] === FILE_EXPLORER_VIEW_TYPE.grid
         ) {
           break;
         }
@@ -759,11 +756,11 @@ class FileExplorer extends Component {
   ) => {
     const { deviceType, mtpDevice, fileExplorerListingType } = this.props;
     const allowContextMenuClickThrough =
-      fileExplorerListingType[deviceType] === 'grid' &&
+      fileExplorerListingType[deviceType] === FILE_EXPLORER_VIEW_TYPE.grid &&
       !undefinedOrNull(rowData) &&
       Object.keys(rowData).length < 1;
 
-    if (deviceType === DEVICES_TYPE_CONST.mtp && !mtpDevice.isAvailable) {
+    if (deviceType === DEVICE_TYPE.mtp && !mtpDevice.isAvailable) {
       return null;
     }
 
@@ -1381,7 +1378,7 @@ class FileExplorer extends Component {
     const { isFolder, path } = item;
 
     if (!isFolder) {
-      if (deviceType === DEVICES_TYPE_CONST.local) {
+      if (deviceType === DEVICE_TYPE.local) {
         shell.openPath(path);
       }
       return null;
@@ -1466,11 +1463,11 @@ class FileExplorer extends Component {
     } = this.state;
     const { rename, newFolder } = toggleDialog;
     const togglePasteDialog =
-      deviceType === DEVICES_TYPE_CONST.mtp && fileTransferProgess.toggle;
+      deviceType === DEVICE_TYPE.mtp && fileTransferProgess.toggle;
     const renameSecondaryText =
-      deviceType === DEVICES_TYPE_CONST.mtp
+      deviceType === DEVICE_TYPE.mtp
         ? `Not all ${
-            DEVICES_LABEL[DEVICES_TYPE_CONST.mtp]
+            DEVICES_LABEL[DEVICE_TYPE.mtp]
           } support the rename feature.`
         : ``;
 
@@ -1669,7 +1666,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
       ) => async (_, getState) => {
         try {
           switch (deviceType) {
-            case DEVICES_TYPE_CONST.local:
+            case DEVICE_TYPE.local:
               const {
                 error: localError,
                 stderr: localStderr,
@@ -1697,7 +1694,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
                 })
               );
               break;
-            case DEVICES_TYPE_CONST.mtp:
+            case DEVICE_TYPE.mtp:
               const mtpStoragesListSelected = getMtpStoragesListSelected(
                 getState().Home
               );
@@ -1743,7 +1740,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
       ) => async (_, getState) => {
         try {
           switch (deviceType) {
-            case DEVICES_TYPE_CONST.local:
+            case DEVICE_TYPE.local:
               const {
                 error: localError,
                 stderr: localStderr,
@@ -1770,7 +1767,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
                 })
               );
               break;
-            case DEVICES_TYPE_CONST.mtp:
+            case DEVICE_TYPE.mtp:
               const mtpStoragesListSelected = getMtpStoragesListSelected(
                 getState().Home
               );
@@ -1847,7 +1844,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
       ) => (_, getState) => {
         try {
           switch (deviceType) {
-            case DEVICES_TYPE_CONST.local:
+            case DEVICE_TYPE.local:
               pasteFiles(
                 { ...pasteArgs },
                 { ...fetchDirListArgs },
@@ -1858,7 +1855,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
                 getCurrentWindow
               );
               break;
-            case DEVICES_TYPE_CONST.mtp:
+            case DEVICE_TYPE.mtp:
               pasteFiles(
                 { ...pasteArgs },
                 { ...fetchDirListArgs },

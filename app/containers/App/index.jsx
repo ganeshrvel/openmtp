@@ -28,30 +28,28 @@ import { isConnected } from '../../utils/isOnline';
 import { setStyle } from '../../utils/styles';
 import { TRACKING_ID } from '../../../config/google-analytics-key';
 import { APP_NAME, APP_VERSION } from '../../constants/meta';
+import {
+  makeAppThemeMode,
+  makeAppThemeModeSettings,
+} from '../Settings/selectors';
+import { getAppThemeMode } from '../../utils/theme';
 
 class App extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      appThemeMode: 'light'//'dark', //
-    };
     this.allowWritingJsonToSettings = false;
   }
 
   componentWillMount() {
-    const { appThemeMode } = this.state;
-
     try {
-      this.appTheme = createMuiTheme(materialUiTheme({ appThemeMode }));
-
-      this.setAppTheme();
-
       this.setFreshInstall();
+
       if (this.allowWritingJsonToSettings) {
         this.writeJsonToSettings();
       }
 
+      this.setAppTheme();
       this.runAnalytics();
     } catch (e) {
       log.error(e, `App -> componentWillMount`);
@@ -65,6 +63,16 @@ class App extends Component {
       log.error(e, `App -> componentDidMount`);
     }
   }
+
+  componentWillReceiveProps = ({
+    appThemeModeSettings: nextAppThemeModeSettings,
+  }) => {
+    const { appThemeModeSettings } = this.props;
+
+    if (nextAppThemeModeSettings !== appThemeModeSettings) {
+      this.setAppTheme();
+    }
+  };
 
   /**
    * Working: Toggle app theme without restart.
@@ -82,9 +90,12 @@ class App extends Component {
    * */
   setAppTheme = () => {
     try {
-      const { appThemeMode } = this.state;
+      const setting = settingsStorage.getItems(['appThemeMode']);
+      const appThemeMode = getAppThemeMode(setting.appThemeMode);
 
-      const styleList = appBodyStylesStore({ appThemeMode });
+      const styleList = appBodyStylesStore({
+        appThemeMode,
+      });
 
       setStyle(document.body, styleList);
     } catch (e) {
@@ -92,13 +103,17 @@ class App extends Component {
     }
   };
 
+  getMuiTheme = (appThemeMode) => {
+    return createMuiTheme(materialUiTheme({ appThemeMode }));
+  };
+
   setFreshInstall() {
     try {
       const { actionCreateFreshInstall } = this.props;
-      const isFreshInstallSettings = settingsStorage.getItems(['freshInstall']);
+      const setting = settingsStorage.getItems(['freshInstall']);
       let isFreshInstall = 0;
 
-      switch (isFreshInstallSettings.freshInstall) {
+      switch (setting.freshInstall) {
         case undefined:
         case null:
           // app was just installed
@@ -164,11 +179,13 @@ class App extends Component {
   }
 
   render() {
-    const { classes: styles } = this.props;
+    const { classes: styles, appThemeMode } = this.props;
+    const muiTheme = this.getMuiTheme(appThemeMode);
+
     return (
       <div className={styles.root}>
         <CssBaseline>
-          <MuiThemeProvider theme={this.appTheme}>
+          <MuiThemeProvider theme={muiTheme}>
             <Titlebar />
             <Alerts />
             <ErrorBoundary>
@@ -181,7 +198,8 @@ class App extends Component {
     );
   }
 }
-const mapDispatchToProps = (dispatch, ownProps) =>
+
+const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
       actionCreateCopyJsonFileToSettings: ({ ...data }) => (_, getState) => {
@@ -195,8 +213,11 @@ const mapDispatchToProps = (dispatch, ownProps) =>
     dispatch
   );
 
-const mapStateToProps = (state, props) => {
-  return {};
+const mapStateToProps = (state) => {
+  return {
+    appThemeModeSettings: makeAppThemeModeSettings(state),
+    appThemeMode: makeAppThemeMode(state),
+  };
 };
 
 export default withReducer(

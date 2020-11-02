@@ -16,6 +16,7 @@ import { bootLoader } from './utils/bootHelper';
 import { nonBootableDeviceWindow } from './utils/createWindows';
 import { APP_TITLE } from './constants/meta';
 import { isPackaged } from './utils/isPackaged';
+import { getWindowBackgroundColor } from './utils/windowHelper';
 
 const isSingleInstance = app.requestSingleInstanceLock();
 const isDeviceBootable = bootTheDevice();
@@ -139,6 +140,7 @@ if (!isDeviceBootable) {
           nodeIntegration: true,
           enableRemoteModule: true,
         },
+        backgroundColor: getWindowBackgroundColor(),
       });
 
       mainWindow.loadURL(`${PATHS.loadUrlPath}`);

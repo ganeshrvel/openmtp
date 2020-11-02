@@ -11,6 +11,9 @@ export const styles = (theme) => ({
   tabHeadingWrapper: {
     borderBottom: `1px solid rgba(0, 123, 255, 0.2)`,
   },
+  tab: {
+    minWidth: 100,
+  },
   tabContainer: {
     paddingTop: 20,
     paddingLeft: 15,

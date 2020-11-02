@@ -7,6 +7,8 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import Radio from '@material-ui/core/Radio';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -16,8 +18,13 @@ import FormControl from '@material-ui/core/FormControl';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { privacyPolicyWindow } from '../../../utils/createWindows';
-import { DEVICES_LABEL, DEVICES_TYPE_CONST } from '../../../constants';
+import { DEVICES_LABEL } from '../../../constants';
 import SettingsDialogTabContainer from './SettingsDialogTabContainer';
+import {
+  DEVICE_TYPE,
+  FILE_EXPLORER_VIEW_TYPE,
+  THEME_MODE_TYPE,
+} from '../../../enums';
 
 const isMas = electronIs.mas();
 
@@ -60,6 +67,7 @@ export default class SettingsDialog extends PureComponent {
       freshInstall,
       hideHiddenFiles,
       fileExplorerListingType,
+      appThemeMode,
       styles,
       enableAutoUpdateCheck,
       enableBackgroundAutoUpdate,
@@ -74,17 +82,19 @@ export default class SettingsDialog extends PureComponent {
       onEnableBackgroundAutoUpdateChange,
       onPrereleaseUpdatesChange,
       onStatusBarChange,
+      onAppThemeModeChange,
     } = this.props;
 
     const { tabIndex } = this.state;
 
-    const hideHiddenFilesLocal = hideHiddenFiles[DEVICES_TYPE_CONST.local];
-    const hideHiddenFilesMtp = hideHiddenFiles[DEVICES_TYPE_CONST.mtp];
+    const hideHiddenFilesLocal = hideHiddenFiles[DEVICE_TYPE.local];
+    const hideHiddenFilesMtp = hideHiddenFiles[DEVICE_TYPE.mtp];
 
     const fileExplorerListingTypeLocalGrid =
-      fileExplorerListingType[DEVICES_TYPE_CONST.local] === 'grid';
+      fileExplorerListingType[DEVICE_TYPE.local] ===
+      FILE_EXPLORER_VIEW_TYPE.grid;
     const fileExplorerListingTypeMtpGrid =
-      fileExplorerListingType[DEVICES_TYPE_CONST.mtp] === 'grid';
+      fileExplorerListingType[DEVICE_TYPE.mtp] === FILE_EXPLORER_VIEW_TYPE.grid;
 
     return (
       <Dialog
@@ -109,14 +119,76 @@ export default class SettingsDialog extends PureComponent {
             onChange={this._handleTabChange}
             indicatorColor="secondary"
             textColor="secondary"
-            variant="fullWidth"
+            variant="scrollable"
+            scrollButtons="auto"
           >
-            {this.shoudThisTabHeadRender(0) && <Tab label="File Manager" />}
-            {this.shoudThisTabHeadRender(1) && <Tab label="Software Updates" />}
-            {this.shoudThisTabHeadRender(2) && <Tab label="Privacy" />}
+            {this.shoudThisTabHeadRender(0) && (
+              <Tab label="General" className={styles.tab} />
+            )}
+            {this.shoudThisTabHeadRender(1) && (
+              <Tab label="File Manager" className={styles.tab} />
+            )}
+            {this.shoudThisTabHeadRender(2) && (
+              <Tab label="Updates" className={styles.tab} />
+            )}
+            {this.shoudThisTabHeadRender(3) && (
+              <Tab label="Privacy" className={styles.tab} />
+            )}
           </Tabs>
+
+          {/* ----- General Tab ----- */}
           <FormControl component="fieldset" className={styles.fieldset}>
             {tabIndex === this.tabBodyRenderTabIndex(0) && (
+              <SettingsDialogTabContainer>
+                <div className={styles.tabContainer}>
+                  <FormGroup>
+                    <Typography variant="subtitle2" className={styles.subtitle}>
+                      Theme
+                    </Typography>
+                    <RadioGroup
+                      aria-label="app-theme-mode"
+                      name="app-theme-mode"
+                      value={appThemeMode}
+                      onChange={onAppThemeModeChange}
+                    >
+                      <FormControlLabel
+                        value={THEME_MODE_TYPE.light}
+                        control={<Radio />}
+                        label="Light"
+                      />
+                      <FormControlLabel
+                        value={THEME_MODE_TYPE.dark}
+                        control={<Radio />}
+                        label="Dark"
+                      />
+                      <FormControlLabel
+                        value={THEME_MODE_TYPE.auto}
+                        control={<Radio />}
+                        label="Auto"
+                      />
+                    </RadioGroup>
+
+                    {freshInstall ? (
+                      <Paper
+                        className={`${styles.onboardingPaper}`}
+                        elevation={0}
+                      >
+                        <div className={styles.onboardingPaperArrow} />
+                        <Typography
+                          component="p"
+                          className={`${styles.onboardingPaperBody}`}
+                        >
+                          Use the toggles to enable or disable the item.
+                        </Typography>
+                      </Paper>
+                    ) : null}
+                  </FormGroup>
+                </div>
+              </SettingsDialogTabContainer>
+            )}
+
+            {/* ----- File Manager Tab ----- */}
+            {tabIndex === this.tabBodyRenderTabIndex(1) && (
               <SettingsDialogTabContainer>
                 <div className={styles.tabContainer}>
                   <FormGroup>
@@ -131,12 +203,12 @@ export default class SettingsDialog extends PureComponent {
                           onChange={() =>
                             onHiddenFilesChange(
                               { toggle: !hideHiddenFilesLocal },
-                              DEVICES_TYPE_CONST.local
+                              DEVICE_TYPE.local
                             )
                           }
                         />
                       }
-                      label={DEVICES_LABEL[DEVICES_TYPE_CONST.local]}
+                      label={DEVICES_LABEL[DEVICE_TYPE.local]}
                     />
                     <FormControlLabel
                       className={styles.switch}
@@ -146,12 +218,12 @@ export default class SettingsDialog extends PureComponent {
                           onChange={() =>
                             onHiddenFilesChange(
                               { toggle: !hideHiddenFilesMtp },
-                              DEVICES_TYPE_CONST.mtp
+                              DEVICE_TYPE.mtp
                             )
                           }
                         />
                       }
-                      label={DEVICES_LABEL[DEVICES_TYPE_CONST.mtp]}
+                      label={DEVICES_LABEL[DEVICE_TYPE.mtp]}
                     />
 
                     <Typography
@@ -169,15 +241,15 @@ export default class SettingsDialog extends PureComponent {
                             onFileExplorerListingType(
                               {
                                 type: fileExplorerListingTypeLocalGrid
-                                  ? 'list'
-                                  : 'grid',
+                                  ? FILE_EXPLORER_VIEW_TYPE.list
+                                  : FILE_EXPLORER_VIEW_TYPE.grid,
                               },
-                              DEVICES_TYPE_CONST.local
+                              DEVICE_TYPE.local
                             )
                           }
                         />
                       }
-                      label={DEVICES_LABEL[DEVICES_TYPE_CONST.local]}
+                      label={DEVICES_LABEL[DEVICE_TYPE.local]}
                     />
                     <FormControlLabel
                       className={styles.switch}
@@ -188,15 +260,15 @@ export default class SettingsDialog extends PureComponent {
                             onFileExplorerListingType(
                               {
                                 type: fileExplorerListingTypeMtpGrid
-                                  ? 'list'
-                                  : 'grid',
+                                  ? FILE_EXPLORER_VIEW_TYPE.list
+                                  : FILE_EXPLORER_VIEW_TYPE.grid,
                               },
-                              DEVICES_TYPE_CONST.mtp
+                              DEVICE_TYPE.mtp
                             )
                           }
                         />
                       }
-                      label={DEVICES_LABEL[DEVICES_TYPE_CONST.mtp]}
+                      label={DEVICES_LABEL[DEVICE_TYPE.mtp]}
                     />
 
                     <Typography
@@ -230,7 +302,7 @@ export default class SettingsDialog extends PureComponent {
                           component="p"
                           className={`${styles.onboardingPaperBody}`}
                         >
-                          Use the toggles to enable or disable them.
+                          Use the toggles to enable or disable the item.
                         </Typography>
                       </Paper>
                     ) : null}
@@ -238,7 +310,10 @@ export default class SettingsDialog extends PureComponent {
                 </div>
               </SettingsDialogTabContainer>
             )}
-            {tabIndex === this.tabBodyRenderTabIndex(1) && (
+
+            {/* ----- Updates Tab ----- */}
+
+            {tabIndex === this.tabBodyRenderTabIndex(2) && (
               <SettingsDialogTabContainer>
                 <div className={styles.tabContainer}>
                   <FormGroup>
@@ -317,7 +392,10 @@ export default class SettingsDialog extends PureComponent {
                 </div>
               </SettingsDialogTabContainer>
             )}
-            {tabIndex === this.tabBodyRenderTabIndex(2) && (
+
+            {/* ----- Privacy Tab ----- */}
+
+            {tabIndex === this.tabBodyRenderTabIndex(3) && (
               <SettingsDialogTabContainer>
                 <div className={styles.tabContainer}>
                   <FormGroup>

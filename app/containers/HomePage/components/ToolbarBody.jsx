@@ -11,11 +11,12 @@ import Tooltip from '@material-ui/core/Tooltip';
 import classNames from 'classnames';
 import SidebarAreaPaneLists from './SidebarAreaPaneLists';
 import { LazyLoaderOverLay } from '../styles/ToolbarAreaPane';
-import { DEVICES_LABEL, DEVICES_TYPE_CONST } from '../../../constants';
+import { DEVICES_LABEL} from '../../../constants';
 import {
   Confirm as ConfirmDialog,
   Selection as SelectionDialog,
 } from '../../../components/DialogBox';
+import { DEVICE_TYPE } from "../../../enums";
 
 export default class ToolbarAreaPane extends PureComponent {
   activeToolbarList = ({ ...args }) => {
@@ -31,7 +32,7 @@ export default class ToolbarAreaPane extends PureComponent {
     const _directoryLists = directoryLists[deviceType];
     const _currentBrowsePath = currentBrowsePath[deviceType];
     const _activeToolbarList = toolbarList[deviceType];
-    const isMtp = deviceType === DEVICES_TYPE_CONST.mtp;
+    const isMtp = deviceType === DEVICE_TYPE.mtp;
 
     Object.keys(_activeToolbarList).map((a) => {
       const item = _activeToolbarList[a];
@@ -128,7 +129,7 @@ export default class ToolbarAreaPane extends PureComponent {
           id="selectionDialog"
           showDiskAvatars
           open={
-            deviceType === DEVICES_TYPE_CONST.mtp &&
+            deviceType === DEVICE_TYPE.mtp &&
             toggleMtpStorageSelectionDialog
           }
           onClose={onMtpStoragesListClick}

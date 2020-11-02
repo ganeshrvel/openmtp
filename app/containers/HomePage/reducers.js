@@ -13,9 +13,9 @@ import { actionTypes } from './actions';
 import { PATHS } from '../../utils/paths';
 import {
   DEVICES_DEFAULT_PATH,
-  DEVICES_TYPE_CONST,
   FILE_EXPLORER_DEFAULT_FOCUSSED_DEVICE_TYPE,
 } from '../../constants';
+import { DEVICE_TYPE } from "../../enums";
 
 export const initialState = {
   focussedFileExplorerDeviceType: {
@@ -61,7 +61,7 @@ export const initialState = {
   },
 
   toolbarList: {
-    [DEVICES_TYPE_CONST.local]: {
+    [DEVICE_TYPE.local]: {
       up: {
         enabled: true,
         label: 'Folder Up',
@@ -88,7 +88,7 @@ export const initialState = {
         icon: faCog,
       },
     },
-    [DEVICES_TYPE_CONST.mtp]: {
+    [DEVICE_TYPE.mtp]: {
       up: {
         enabled: true,
         label: 'Folder Up',
@@ -118,7 +118,7 @@ export const initialState = {
   },
 
   directoryLists: {
-    [DEVICES_TYPE_CONST.local]: {
+    [DEVICE_TYPE.local]: {
       order: 'asc',
       orderBy: 'name',
       queue: {
@@ -127,7 +127,7 @@ export const initialState = {
       nodes: [],
       isLoaded: false,
     },
-    [DEVICES_TYPE_CONST.mtp]: {
+    [DEVICE_TYPE.mtp]: {
       order: 'asc',
       orderBy: 'name',
       queue: {
@@ -139,15 +139,15 @@ export const initialState = {
   },
 
   currentBrowsePath: {
-    [DEVICES_TYPE_CONST.local]: DEVICES_DEFAULT_PATH.local,
-    [DEVICES_TYPE_CONST.mtp]: DEVICES_DEFAULT_PATH.mtp,
+    [DEVICE_TYPE.local]: DEVICES_DEFAULT_PATH.local,
+    [DEVICE_TYPE.mtp]: DEVICES_DEFAULT_PATH.mtp,
   },
 
   mtpDevice: {
     isAvailable: false,
   },
   contextMenuList: {
-    [DEVICES_TYPE_CONST.local]: {
+    [DEVICE_TYPE.local]: {
       rename: {
         enabled: true,
         label: 'Rename',
@@ -174,7 +174,7 @@ export const initialState = {
         data: {},
       },
     },
-    [DEVICES_TYPE_CONST.mtp]: {
+    [DEVICE_TYPE.mtp]: {
       rename: {
         enabled: true,
         label: 'Rename',

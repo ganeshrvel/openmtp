@@ -15,6 +15,7 @@ import {
   makeEnablePrereleaseUpdates,
   makeEnableBackgroundAutoUpdate,
   makeEnableStatusBar,
+  makeAppThemeModeSettings,
 } from './selectors';
 import {
   enableAnalytics,
@@ -25,6 +26,7 @@ import {
   fileExplorerListingType,
   freshInstall,
   hideHiddenFiles,
+  setAppThemeMode,
   toggleSettings,
 } from './actions';
 import { reloadDirList } from '../HomePage/actions';
@@ -111,10 +113,21 @@ class Settings extends Component {
     actionCreateEnableStatusBar({ ...args });
   };
 
+  _handleSetAppThemeModeChange = (event, mode) => {
+    const { actionSetAppThemeMode } = this.props;
+
+    const args = {
+      mode,
+    };
+
+    actionSetAppThemeMode({ ...args });
+  };
+
   render() {
     const {
       freshInstall,
       toggleSettings,
+      appThemeMode,
       classes: styles,
       ...parentProps
     } = this.props;
@@ -125,6 +138,7 @@ class Settings extends Component {
         open={showSettings}
         freshInstall={freshInstall}
         toggleSettings={toggleSettings}
+        appThemeMode={appThemeMode}
         styles={styles}
         onAnalyticsChange={this._handleAnalyticsChange}
         onHiddenFilesChange={this._handleHiddenFilesChange}
@@ -136,6 +150,7 @@ class Settings extends Component {
         }
         onPrereleaseUpdatesChange={this._handlePrereleaseUpdatesChange}
         onStatusBarChange={this._handleStatusBarChange}
+        onAppThemeModeChange={this._handleSetAppThemeModeChange}
         {...parentProps}
       />
     );
@@ -190,6 +205,10 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         dispatch(enableStatusBar({ ...data }, getState));
       },
 
+      actionSetAppThemeMode: ({ ...data }) => (_, getState) => {
+        dispatch(setAppThemeMode({ ...data }, getState));
+      },
+
       actionCreateReloadDirList: ({ ...args }, deviceType, mtpStoragesList) => (
         _,
         getState
@@ -215,6 +234,7 @@ const mapStateToProps = (state, props) => {
     enableStatusBar: makeEnableStatusBar(state),
     currentBrowsePath: makeCurrentBrowsePath(state),
     mtpStoragesList: makeMtpStoragesList(state),
+    appThemeMode: makeAppThemeModeSettings(state),
   };
 };
 

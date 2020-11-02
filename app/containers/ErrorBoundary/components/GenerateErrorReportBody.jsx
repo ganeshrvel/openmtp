@@ -12,7 +12,8 @@ import SendIcon from '@material-ui/icons/Send';
 import UsbIcon from '@material-ui/icons/Usb';
 import EmailIcon from '@material-ui/icons/Email';
 import Button from '@material-ui/core/Button';
-import { DEVICES_LABEL, DEVICES_TYPE_CONST } from '../../../constants';
+import { DEVICES_LABEL} from '../../../constants';
+import { DEVICE_TYPE } from "../../../enums";
 
 export default class GenerateErrorReportBody extends PureComponent {
   render() {
@@ -33,9 +34,9 @@ export default class GenerateErrorReportBody extends PureComponent {
             </ListItemIcon>
             <ListItemText
               primary={`Unlock your ${
-                DEVICES_LABEL[DEVICES_TYPE_CONST.mtp]
+                DEVICES_LABEL[DEVICE_TYPE.mtp]
               } and connect it to your ${
-                DEVICES_LABEL[DEVICES_TYPE_CONST.local]
+                DEVICES_LABEL[DEVICE_TYPE.local]
               } via USB`}
             />
           </ListItem>

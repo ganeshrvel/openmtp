@@ -5,8 +5,8 @@ import { withStyles } from '@material-ui/core/styles';
 import FileExplorer from './components/FileExplorer';
 import ToolbarAreaPane from './components/ToolbarAreaPane';
 import { styles } from './styles';
-import { DEVICES_TYPE_CONST } from '../../constants';
 import Onboarding from '../Onboarding';
+import { DEVICE_TYPE } from "../../enums";
 
 class Home extends Component {
   render() {
@@ -18,20 +18,20 @@ class Home extends Component {
         <div className={styles.root}>
           <div className={styles.grid}>
             <div className={styles.splitPane}>
-              <ToolbarAreaPane showMenu deviceType={DEVICES_TYPE_CONST.local} />
+              <ToolbarAreaPane showMenu deviceType={DEVICE_TYPE.local} />
               <FileExplorer
                 hideColList={[]}
-                deviceType={DEVICES_TYPE_CONST.local}
+                deviceType={DEVICE_TYPE.local}
               />
             </div>
             <div className={styles.splitPane}>
               <ToolbarAreaPane
                 showMenu={false}
-                deviceType={DEVICES_TYPE_CONST.mtp}
+                deviceType={DEVICE_TYPE.mtp}
               />
               <FileExplorer
                 hideColList={['size']}
-                deviceType={DEVICES_TYPE_CONST.mtp}
+                deviceType={DEVICE_TYPE.mtp}
               />
             </div>
           </div>
