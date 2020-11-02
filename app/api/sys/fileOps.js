@@ -5,7 +5,7 @@ import {
   writeFile as _writeFileAsync,
   appendFile as _appendFileAsync,
   readFileSync as _readFileSync,
-  writeFileSync as _writeFileSync
+  writeFileSync as _writeFileSync,
 } from 'fs';
 import { EOL } from 'os';
 import mkdirp from 'mkdirp';
@@ -13,7 +13,7 @@ import rimraf from 'rimraf';
 
 export const writeFileAsync = (filePath, text) => {
   const options = { mode: 0o755 };
-  _writeFileAsync(filePath, text, options, err => {
+  _writeFileAsync(filePath, text, options, (err) => {
     if (err) {
       console.error(err, `writeFileAsync`);
       return null;
@@ -32,7 +32,7 @@ export const writeFileSync = (filePath, text) => {
 
 export const appendFileAsync = (filePath, text) => {
   const options = { mode: 0o755 };
-  _appendFileAsync(filePath, text + EOL, options, err => {
+  _appendFileAsync(filePath, text + EOL, options, (err) => {
     if (err) {
       console.error(err, `appendFileAsync`);
       return null;
@@ -40,17 +40,17 @@ export const appendFileAsync = (filePath, text) => {
   });
 };
 
-export const readFileSync = filePath => {
+export const readFileSync = (filePath) => {
   const options = { encoding: 'utf8' };
   return _readFileSync(filePath, options);
 };
 
-export const fileExistsSync = filePath => _existsSync(filePath);
+export const fileExistsSync = (filePath) => _existsSync(filePath);
 
-export const createDirSync = newFolderPath => {
+export const createDirSync = (newFolderPath) => {
   mkdirp.sync(newFolderPath);
 };
 
-export const deleteFilesSync = filePath => {
+export const deleteFilesSync = (filePath) => {
   rimraf.sync(filePath);
 };

@@ -26,7 +26,7 @@ export default class SettingsDialog extends PureComponent {
     super(props);
 
     this.state = {
-      tabIndex: 0
+      tabIndex: 0,
     };
 
     this.isMasHidePosition = 1;
@@ -34,15 +34,15 @@ export default class SettingsDialog extends PureComponent {
 
   _handleTabChange = (event, index) => {
     this.setState({
-      tabIndex: index
+      tabIndex: index,
     });
   };
 
-  shoudThisTabHeadRender = position => {
+  shoudThisTabHeadRender = (position) => {
     return !(isMas && this.isMasHidePosition === position);
   };
 
-  tabBodyRenderTabIndex = position => {
+  tabBodyRenderTabIndex = (position) => {
     if (isMas && this.isMasHidePosition === position) {
       return null;
     }
@@ -73,7 +73,7 @@ export default class SettingsDialog extends PureComponent {
       onAutoUpdateCheckChange,
       onEnableBackgroundAutoUpdateChange,
       onPrereleaseUpdatesChange,
-      onStatusBarChange
+      onStatusBarChange,
     } = this.props;
 
     const { tabIndex } = this.state;
@@ -95,7 +95,7 @@ export default class SettingsDialog extends PureComponent {
         disableEscapeKeyDown={false}
         onEscapeKeyDown={() =>
           onDialogBoxCloseBtnClick({
-            confirm: false
+            confirm: false,
           })
         }
       >
@@ -170,7 +170,7 @@ export default class SettingsDialog extends PureComponent {
                               {
                                 type: fileExplorerListingTypeLocalGrid
                                   ? 'list'
-                                  : 'grid'
+                                  : 'grid',
                               },
                               DEVICES_TYPE_CONST.local
                             )
@@ -189,7 +189,7 @@ export default class SettingsDialog extends PureComponent {
                               {
                                 type: fileExplorerListingTypeMtpGrid
                                   ? 'list'
-                                  : 'grid'
+                                  : 'grid',
                               },
                               DEVICES_TYPE_CONST.mtp
                             )
@@ -212,7 +212,7 @@ export default class SettingsDialog extends PureComponent {
                           checked={enableStatusBar}
                           onChange={() =>
                             onStatusBarChange({
-                              toggle: !enableStatusBar
+                              toggle: !enableStatusBar,
                             })
                           }
                         />
@@ -253,7 +253,7 @@ export default class SettingsDialog extends PureComponent {
                           checked={enableAutoUpdateCheck}
                           onChange={() =>
                             onAutoUpdateCheckChange({
-                              toggle: !enableAutoUpdateCheck
+                              toggle: !enableAutoUpdateCheck,
                             })
                           }
                         />
@@ -276,7 +276,7 @@ export default class SettingsDialog extends PureComponent {
                           disabled={!enableAutoUpdateCheck}
                           onChange={() =>
                             onEnableBackgroundAutoUpdateChange({
-                              toggle: !enableBackgroundAutoUpdate
+                              toggle: !enableBackgroundAutoUpdate,
                             })
                           }
                         />
@@ -302,7 +302,7 @@ export default class SettingsDialog extends PureComponent {
                           checked={enablePrereleaseUpdates}
                           onChange={() =>
                             onPrereleaseUpdatesChange({
-                              toggle: !enablePrereleaseUpdates
+                              toggle: !enablePrereleaseUpdates,
                             })
                           }
                         />
@@ -332,7 +332,7 @@ export default class SettingsDialog extends PureComponent {
                           checked={enableAnalytics}
                           onChange={() =>
                             onAnalyticsChange({
-                              toggle: !enableAnalytics
+                              toggle: !enableAnalytics,
                             })
                           }
                         />
@@ -364,7 +364,7 @@ export default class SettingsDialog extends PureComponent {
           <Button
             onClick={() =>
               onDialogBoxCloseBtnClick({
-                confirm: false
+                confirm: false,
               })
             }
             color="primary"

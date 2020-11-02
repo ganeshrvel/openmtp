@@ -3,30 +3,30 @@
 import { APP_THEME_COLOR_VAR } from '../../containers/App/styles';
 
 // common styling variable object which can be imported by components
-export default _ => {
+export default (_) => {
   return {
     sizes: {
       toolbarHeight: 64,
       sidebarAreaPaneWidth: 300,
-      sidebarAreaPaddingTop: 40
+      sidebarAreaPaddingTop: 40,
     },
     styles: {
       bgColor: APP_THEME_COLOR_VAR.bgColor,
       primaryColor: {
-        main: APP_THEME_COLOR_VAR.primaryMainColor
+        main: APP_THEME_COLOR_VAR.primaryMainColor,
       },
       secondaryColor: {
-        main: APP_THEME_COLOR_VAR.secondaryMainColor
+        main: APP_THEME_COLOR_VAR.secondaryMainColor,
       },
       background: {
-        paper: APP_THEME_COLOR_VAR.paperBgColor
+        paper: APP_THEME_COLOR_VAR.paperBgColor,
       },
       regularFontSize: 14,
       nativeSystemColor: APP_THEME_COLOR_VAR.nativeSystemColor,
       tableHeaderFooterBgColor: APP_THEME_COLOR_VAR.tableHeaderFooterBgColor,
       fileExplorerThinLineDividerColor:
         APP_THEME_COLOR_VAR.fileExplorerThinLineDividerColor,
-      lightText1Color: APP_THEME_COLOR_VAR.lightText1Color
-    }
+      lightText1Color: APP_THEME_COLOR_VAR.lightText1Color,
+    },
   };
 };

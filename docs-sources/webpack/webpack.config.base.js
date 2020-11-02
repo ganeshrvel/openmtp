@@ -12,11 +12,11 @@ const buildPath = path.join(__dirname, '..', '..', 'docs');
 const baseConfig = {
   mode: process.env.NODE_ENV,
   entry: {
-    index: './docs-sources/index.js'
+    index: './docs-sources/index.js',
   },
   output: {
     filename: 'bundle/[name].[hash:20].js',
-    path: buildPath
+    path: buildPath,
   },
 
   plugins: [
@@ -29,8 +29,8 @@ const baseConfig = {
         collapseWhitespace: true,
         removeComments: true,
         minifyJS: true,
-        minifyCSS: true
-      }
+        minifyCSS: true,
+      },
     }),
 
     new HtmlWebpackPlugin({
@@ -42,9 +42,9 @@ const baseConfig = {
         collapseWhitespace: true,
         removeComments: true,
         minifyJS: true,
-        minifyCSS: true
-      }
-    })
+        minifyCSS: true,
+      },
+    }),
   ],
   module: {
     rules: [
@@ -58,13 +58,13 @@ const baseConfig = {
               '@babel/preset-env',
               {
                 targets: {
-                  edge: '12'
-                }
-              }
-            ]
+                  edge: '12',
+                },
+              },
+            ],
           ],
-          cacheDirectory: true
-        }
+          cacheDirectory: true,
+        },
       },
       {
         test: /\.(?:ico|jpe?g|png|gif|webp)$/i,
@@ -73,13 +73,13 @@ const baseConfig = {
             loader: 'url-loader',
             options: {
               limit: 10000,
-              name: 'bundle/[name].[hash:20].[ext]'
-            }
-          }
-        ]
-      }
-    ]
-  }
+              name: 'bundle/[name].[hash:20].[ext]',
+            },
+          },
+        ],
+      },
+    ],
+  },
 };
 
 module.exports = merge.smart(baseConfig, IS_PROD ? prodConfig : devConfig);

@@ -63,13 +63,13 @@ export const log = {
       logFile,
       `${sectionSeperator}${EOL}${EOL}App Name: ${APP_NAME}${EOL}App Version: ${APP_VERSION}${EOL}Date Time: ${dateTimeUnixTimestampNow(
         {
-          monthInletters: true
+          monthInletters: true,
         }
       )}${EOL}OS type: ${os.type()} / OS Platform: ${os.platform()} / OS Release: ${os.release()}${EOL}${_consoleError.toString()}${EOL}${_consoleError}${EOL}${sectionSeperator}${EOL}`
     );
-  }
+  },
 };
 
-const isConsoleError = e => {
+const isConsoleError = (e) => {
   return e && e.stack;
 };

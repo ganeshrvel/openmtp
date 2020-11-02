@@ -15,7 +15,7 @@ export const setStyle = (selector, styles) => {
 
   let styleString = '';
 
-  Object.keys(styles).map(a => {
+  Object.keys(styles).map((a) => {
     const item = styles[a];
     styleString += `${a}:${item};`;
 

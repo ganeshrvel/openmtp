@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [ master, development ]
+  pull_request:
+    branches: [ master, development ]
+
+jobs:
+  build:
+    runs-on: macOS-10.15
+    steps:
+      - name: Setup build environment
+        uses: actions/setup-node@v1
+        with:
+          node-version: '10.x'
+      - run: npm install -g cross-env create-dmg
+      - name: Cloning Git repository
+        uses: actions/checkout@v1
+      - name: Attempt to build OpenMTP
+        run: |
+          yarn
+          yarn build
+      - name: Attempt to generate unsigned macOS app
+        run: |
+          export CSC_IDENTITY_AUTO_DISCOVERY=false
+          yarn package-mac 2>&1 || true
+      - name: Check if macOS app was generated
+        run: test -e dist/mac/OpenMTP.app
+      - name: Attempt to create disk image for generated macOS app
+        run: |
+          mkdir dist/dmg
+          create-dmg dist/mac/OpenMTP.app dist/dmg 2>&1 || true
+          shasum dist/dmg/* >> dist/dmg/CHECKSUM_SHA256.txt
+      - name: Upload disk image and checksum as artifact
+        uses: actions/upload-artifact@v1.0.0
+        with:
+          name: 'Disk Image'
+          path: dist/dmg/

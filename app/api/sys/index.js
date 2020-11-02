@@ -7,7 +7,7 @@ import {
   rename as fsRename,
   existsSync,
   statSync,
-  lstatSync
+  lstatSync,
 } from 'fs';
 import Promise from 'bluebird';
 import junk from 'junk';
@@ -26,7 +26,7 @@ import {
   clearFileTransfer,
   fetchDirList,
   processMtpOutput,
-  setFileTransferProgress
+  setFileTransferProgress,
 } from '../../containers/HomePage/actions';
 import {
   niceBytes,
@@ -34,7 +34,7 @@ import {
   splitIntoLines,
   truncate,
   isArray,
-  undefinedOrNull
+  undefinedOrNull,
 } from '../../utils/funcs';
 import { msToTime, unixTimestampNow } from '../../utils/date';
 
@@ -44,7 +44,7 @@ const execPromise = Promise.promisify(exec);
 /**
  * This hack is to support flex quotes parser for mtp cli.
  */
-export const escapeShellMtp = cmd => {
+export const escapeShellMtp = (cmd) => {
   if (cmd.indexOf(`\\"`) !== -1 && cmd.indexOf(`"\\`) !== -1) {
     return cmd
       .replace(/`/g, '\\`')
@@ -84,42 +84,43 @@ const filterOutMtpLines = (string, index) => {
   );
 };
 
-const filterJunkMtpErrors = string => {
+const filterJunkMtpErrors = (string) => {
   return (
     string === '\n' ||
     string === '\r\n' ||
     string === '' ||
     string.toLowerCase().indexOf(`device::find failed`) !== -1 ||
-    string.toLowerCase().indexOf(`iocreateplugininterfaceforservice`) !== -1
+    string.toLowerCase().indexOf(`iocreateplugininterfaceforservice`) !== -1 ||
+    string.toLowerCase().indexOf(`Device::Find failed`) !== -1
   );
 };
 
 const cleanJunkMtpError = ({ error = null, stdout = null, stderr = null }) => {
   const splittedError = splitIntoLines(error);
   const filteredError = splittedError
-    ? splittedError.filter(a => !filterJunkMtpErrors(a))
+    ? splittedError.filter((a) => !filterJunkMtpErrors(a))
     : [];
 
   const splittedStderr = splitIntoLines(stderr);
   const filteredStderr = splittedStderr
-    ? splittedStderr.filter(a => !filterJunkMtpErrors(a))
+    ? splittedStderr.filter((a) => !filterJunkMtpErrors(a))
     : [];
 
   return {
     filteredError,
     filteredStderr,
-    filteredStdout: stdout
+    filteredStdout: stdout,
   };
 };
 
-const promisifiedExec = command => {
+const promisifiedExec = (command) => {
   try {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       execPromise(command, (error, stdout, stderr) => {
         const {
           filteredStderr,
           filteredError,
-          filteredStdout
+          filteredStdout,
         } = cleanJunkMtpError({ error, stdout, stderr });
 
         if (
@@ -129,14 +130,14 @@ const promisifiedExec = command => {
           return resolve({
             data: filteredStdout,
             stderr: null,
-            error: null
+            error: null,
           });
         }
 
         return resolve({
           data: filteredStdout,
           stderr: filteredStderr.join('\n'),
-          error: filteredError.join('\n')
+          error: filteredError.join('\n'),
         });
       });
     });
@@ -145,13 +146,13 @@ const promisifiedExec = command => {
   }
 };
 
-const promisifiedExecNoCatch = command => {
-  return new Promise(resolve => {
+const promisifiedExecNoCatch = (command) => {
+  return new Promise((resolve) => {
     execPromise(command, (error, stdout, stderr) => {
       const {
         filteredStderr,
         filteredError,
-        filteredStdout
+        filteredStdout,
       } = cleanJunkMtpError({ error, stdout, stderr });
 
       if (
@@ -161,14 +162,14 @@ const promisifiedExecNoCatch = command => {
         return resolve({
           data: filteredStdout,
           stderr: null,
-          error: null
+          error: null,
         });
       }
 
       return resolve({
         data: stdout,
         stderr,
-        error
+        error,
       });
     });
   });
@@ -249,16 +250,16 @@ export const asyncReadLocalDir = async ({ filePath, ignoreHidden }) => {
   try {
     const response = [];
     const { error, data } = await readdir(filePath, 'utf8')
-      .then(res => {
+      .then((res) => {
         return {
           data: res,
-          error: null
+          error: null,
         };
       })
-      .catch(e => {
+      .catch((e) => {
         return {
           data: null,
-          error: e
+          error: e,
         };
       });
 
@@ -272,7 +273,7 @@ export const asyncReadLocalDir = async ({ filePath, ignoreHidden }) => {
     files = data.filter(junk.not);
     if (ignoreHidden) {
       // eslint-disable-next-line no-useless-escape
-      files = data.filter(item => !/(^|\/)\.[^\/\.]/g.test(item));
+      files = data.filter((item) => !/(^|\/)\.[^\/\.]/g.test(item));
     }
 
     for (let i = 0; i < files.length; i += 1) {
@@ -297,7 +298,7 @@ export const asyncReadLocalDir = async ({ filePath, ignoreHidden }) => {
         extension,
         size,
         isFolder,
-        dateAdded: moment(dateTime).format('YYYY-MM-DD HH:mm:ss')
+        dateAdded: moment(dateTime).format('YYYY-MM-DD HH:mm:ss'),
       });
     }
     return { error, data: response };
@@ -306,14 +307,14 @@ export const asyncReadLocalDir = async ({ filePath, ignoreHidden }) => {
   }
 };
 
-export const promisifiedRimraf = item => {
+export const promisifiedRimraf = (item) => {
   try {
-    return new Promise(resolve => {
-      rimraf(item, {}, error => {
+    return new Promise((resolve) => {
+      rimraf(item, {}, (error) => {
         resolve({
           data: null,
           stderr: error,
-          error
+          error,
         });
       });
     });
@@ -345,12 +346,12 @@ export const delLocalFiles = async ({ fileList }) => {
 
 const promisifiedRename = ({ oldFilePath, newFilePath }) => {
   try {
-    return new Promise(resolve => {
-      fsRename(oldFilePath, newFilePath, error => {
+    return new Promise((resolve) => {
+      fsRename(oldFilePath, newFilePath, (error) => {
         resolve({
           data: null,
           stderr: error,
-          error
+          error,
         });
       });
     });
@@ -384,8 +385,8 @@ export const renameLocalFiles = async ({ oldFilePath, newFilePath }) => {
 
 const promisifiedMkdir = ({ newFolderPath }) => {
   try {
-    return new Promise(resolve => {
-      mkdirp(newFolderPath, error => {
+    return new Promise((resolve) => {
+      mkdirp(newFolderPath, (error) => {
         resolve({ data: null, stderr: error, error });
       });
     });
@@ -462,8 +463,8 @@ export const fetchMtpStorageOptions = async () => {
           ...storageList,
           [matchedStorageId]: {
             name: matchDesc,
-            selected: index === 0
-          }
+            selected: index === 0,
+          },
         };
 
         return storageList;
@@ -479,7 +480,7 @@ export const fetchMtpStorageOptions = async () => {
           DEVICES_LABEL[DEVICES_TYPE_CONST.mtp]
         } storage not accessible`,
         stderr: null,
-        data: null
+        data: null,
       };
     }
 
@@ -492,13 +493,13 @@ export const fetchMtpStorageOptions = async () => {
 export const asyncReadMtpDir = async ({
   filePath,
   ignoreHidden,
-  mtpStoragesListSelected
+  mtpStoragesListSelected,
 }) => {
   try {
     const mtpCmdChopIndex = {
       type: 2,
       dateAdded: 4,
-      timeAdded: 5
+      timeAdded: 5,
     };
     const response = [];
     const storageSelectCmd = `"storage ${mtpStoragesListSelected}"`;
@@ -506,7 +507,7 @@ export const asyncReadMtpDir = async ({
     const {
       data: filePropsData,
       error: filePropsError,
-      stderr: filePropsStderr
+      stderr: filePropsStderr,
     } = await promisifiedExec(
       `${mtpCli} ${storageSelectCmd} "lsext \\"${escapeShellMtp(filePath)}\\""`
     );
@@ -564,7 +565,7 @@ export const asyncReadMtpDir = async ({
         extension,
         size: null,
         isFolder,
-        dateAdded: moment(dateTime).format('YYYY-MM-DD HH:mm:ss')
+        dateAdded: moment(dateTime).format('YYYY-MM-DD HH:mm:ss'),
       });
     }
 
@@ -577,7 +578,7 @@ export const asyncReadMtpDir = async ({
 export const renameMtpFiles = async ({
   oldFilePath,
   newFilePath,
-  mtpStoragesListSelected
+  mtpStoragesListSelected,
 }) => {
   try {
     if (
@@ -636,7 +637,7 @@ export const delMtpFiles = async ({ fileList, mtpStoragesListSelected }) => {
 
 export const newMtpFolder = async ({
   newFolderPath,
-  mtpStoragesListSelected
+  mtpStoragesListSelected,
 }) => {
   try {
     if (typeof newFolderPath === 'undefined' || newFolderPath === null) {
@@ -673,7 +674,7 @@ export const pasteFiles = (
     const {
       destinationFolder,
       mtpStoragesListSelected,
-      fileTransferClipboard
+      fileTransferClipboard,
     } = pasteArgs;
 
     if (
@@ -690,7 +691,7 @@ export const pasteFiles = (
             dispatch(
               fetchDirList({ ...fetchDirListArgs }, deviceType, getState)
             );
-          }
+          },
         })
       );
     }
@@ -709,7 +710,7 @@ export const pasteFiles = (
             dispatch(
               fetchDirList({ ...fetchDirListArgs }, deviceType, getState)
             );
-          }
+          },
         })
       );
     }
@@ -718,7 +719,7 @@ export const pasteFiles = (
     let cmdArgs = {};
     switch (direction) {
       case 'mtpToLocal':
-        _queue = (queue || []).map(sourcePath => {
+        _queue = (queue || []).map((sourcePath) => {
           const destinationPath = path.resolve(destinationFolder);
           const escapedDestinationPath = escapeShellMtp(
             `${destinationPath}/${baseName(sourcePath)}`
@@ -729,7 +730,7 @@ export const pasteFiles = (
         });
 
         cmdArgs = {
-          _queue
+          _queue,
         };
         return _pasteFiles(
           { ...pasteArgs },
@@ -742,7 +743,7 @@ export const pasteFiles = (
         );
 
       case 'localtoMtp':
-        _queue = (queue || []).map(sourcePath => {
+        _queue = (queue || []).map((sourcePath) => {
           const destinationPath = path.resolve(destinationFolder);
           const escapedDestinationPath = `${escapeShellMtp(destinationPath)}`;
           const escapedSourcePath = `${escapeShellMtp(sourcePath)}`;
@@ -751,7 +752,7 @@ export const pasteFiles = (
         });
 
         cmdArgs = {
-          _queue
+          _queue,
         };
 
         return _pasteFiles(
@@ -821,16 +822,16 @@ const _pasteFiles = (
           toggle: true,
           bodyText1,
           bodyText2: `Elapsed: ${elapsedTime} | Progress: ${bodyText2} @ ${_speed}/sec`,
-          percentage: _percentage
+          percentage: _percentage,
         })
       );
     }, handletransferListTimeInterval);
 
     const cmd = spawn(mtpCli, [..._queue], {
-      shell: true
+      shell: true,
     });
 
-    cmd.stdout.on('data', data => {
+    cmd.stdout.on('data', (data) => {
       bufferedOutput = data.toString();
 
       if (startTime === 0) {
@@ -910,12 +911,12 @@ const _pasteFiles = (
           )}`,
           percentage: perc,
           currentCopiedBlockSize,
-          currentCopiedTime
+          currentCopiedTime,
         };
       }
     });
 
-    cmd.stderr.on('data', error => {
+    cmd.stderr.on('data', (error) => {
       const { filteredError } = cleanJunkMtpError({ error });
 
       if (undefinedOrNull(filteredError) || filteredError.length < 1) {
@@ -935,7 +936,7 @@ const _pasteFiles = (
             dispatch(
               fetchDirList({ ...fetchDirListArgs }, deviceType, getState)
             );
-          }
+          },
         })
       );
     });

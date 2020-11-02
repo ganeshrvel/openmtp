@@ -13,7 +13,7 @@ class FileExplorerTableFooterStatusBarRender extends PureComponent {
     let directories = 0;
     let files = 0;
 
-    (directoryLists.nodes || []).map(a => {
+    (directoryLists.nodes || []).map((a) => {
       if (a.isFolder) {
         directories += 1;
       } else {

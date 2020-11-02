@@ -14,7 +14,7 @@ import {
   makeFileExplorerListingType,
   makeEnablePrereleaseUpdates,
   makeEnableBackgroundAutoUpdate,
-  makeEnableStatusBar
+  makeEnableStatusBar,
 } from './selectors';
 import {
   enableAnalytics,
@@ -25,12 +25,12 @@ import {
   fileExplorerListingType,
   freshInstall,
   hideHiddenFiles,
-  toggleSettings
+  toggleSettings,
 } from './actions';
 import { reloadDirList } from '../HomePage/actions';
 import {
   makeCurrentBrowsePath,
-  makeMtpStoragesList
+  makeMtpStoragesList,
 } from '../HomePage/selectors';
 import SettingsDialog from './components/SettingsDialog';
 
@@ -44,7 +44,7 @@ class Settings extends Component {
     }
   };
 
-  _handleToggleSettings = confirm => {
+  _handleToggleSettings = (confirm) => {
     const { actionCreateToggleSettings } = this.props;
     actionCreateToggleSettings(confirm);
   };
@@ -60,7 +60,7 @@ class Settings extends Component {
       actionCreateHideHiddenFiles,
       actionCreateReloadDirList,
       mtpStoragesList,
-      currentBrowsePath
+      currentBrowsePath,
     } = this.props;
     const { toggle } = args;
 
@@ -68,7 +68,7 @@ class Settings extends Component {
     actionCreateReloadDirList(
       {
         filePath: currentBrowsePath[deviceType],
-        ignoreHidden: toggle
+        ignoreHidden: toggle,
       },
       deviceType,
       mtpStoragesList
@@ -145,11 +145,11 @@ class Settings extends Component {
 const mapDispatchToProps = (dispatch, ownProps) =>
   bindActionCreators(
     {
-      actionCreateToggleSettings: data => (_, getState) => {
+      actionCreateToggleSettings: (data) => (_, getState) => {
         dispatch(toggleSettings(data));
       },
 
-      actionCreateFreshInstall: data => (_, getState) => {
+      actionCreateFreshInstall: (data) => (_, getState) => {
         dispatch(freshInstall({ ...data }, getState));
       },
 
@@ -197,7 +197,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         dispatch(
           reloadDirList({ ...args }, deviceType, mtpStoragesList, getState)
         );
-      }
+      },
     },
     dispatch
   );
@@ -214,7 +214,7 @@ const mapStateToProps = (state, props) => {
     enableAnalytics: makeEnableAnalytics(state),
     enableStatusBar: makeEnableStatusBar(state),
     currentBrowsePath: makeCurrentBrowsePath(state),
-    mtpStoragesList: makeMtpStoragesList(state)
+    mtpStoragesList: makeMtpStoragesList(state),
   };
 };
 

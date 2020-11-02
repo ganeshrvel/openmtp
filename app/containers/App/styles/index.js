@@ -3,19 +3,19 @@
 import { variables, mixins } from '../../../styles/js';
 import {
   APP_BASIC_THEME_COLORS,
-  APP_THEME_COLOR_KEY
+  APP_THEME_COLOR_KEY,
 } from '../../../constants/theme';
 import { getAppCssColorVar } from '../../../utils/theme';
 
 // Styles for App/index.jsx component
-export const styles = _ => {
+export const styles = (_) => {
   return {
     root: {},
     noProfileError: {
       textAlign: `center`,
       ...mixins().center,
-      ...mixins().absoluteCenter
-    }
+      ...mixins().absoluteCenter,
+    },
   };
 };
 
@@ -25,14 +25,14 @@ export const materialUiSkeletonThemeStyles = ({ ...args }) => {
 
   return {
     primaryColor: {
-      main: `${APP_BASIC_THEME_COLORS[appThemeMode].primaryMain}`
+      main: `${APP_BASIC_THEME_COLORS[appThemeMode].primaryMain}`,
     },
     secondaryColor: {
-      main: `${APP_BASIC_THEME_COLORS[appThemeMode].secondaryMain}`
+      main: `${APP_BASIC_THEME_COLORS[appThemeMode].secondaryMain}`,
     },
     background: {
-      paper: `${APP_BASIC_THEME_COLORS[appThemeMode].primaryMain}`
-    }
+      paper: `${APP_BASIC_THEME_COLORS[appThemeMode].primaryMain}`,
+    },
   };
 };
 
@@ -43,14 +43,14 @@ export const materialUiTheme = ({ ...args }) => {
     palette: {
       type: appThemeMode,
       primary: {
-        ...materialUiSkeletonThemeStyles({ appThemeMode }).primaryColor
+        ...materialUiSkeletonThemeStyles({ appThemeMode }).primaryColor,
       },
       secondary: {
-        ...materialUiSkeletonThemeStyles({ appThemeMode }).secondaryColor
+        ...materialUiSkeletonThemeStyles({ appThemeMode }).secondaryColor,
       },
       background: {
-        ...materialUiSkeletonThemeStyles({ appThemeMode }).background
-      }
+        ...materialUiSkeletonThemeStyles({ appThemeMode }).background,
+      },
     },
     typography: {
       useNextVariants: true,
@@ -65,11 +65,11 @@ export const materialUiTheme = ({ ...args }) => {
         'sans-serif',
         '"Apple Color Emoji"',
         '"Segoe UI Emoji"',
-        '"Segoe UI Symbol"'
-      ].join(',')
+        '"Segoe UI Symbol"',
+      ].join(','),
     },
 
-    overrides: {}
+    overrides: {},
   };
 };
 
@@ -80,7 +80,7 @@ export const appBodyStylesStore = ({ appThemeMode }) => {
   const styleList = {
     tableHeaderFooterBgColor: `#fbfbfb`,
     lightText1Color: `rgba(0, 0, 0, 0.50)`,
-    fileExplorerThinLineDividerColor: `rgba(0, 0, 0, .12)`
+    fileExplorerThinLineDividerColor: `rgba(0, 0, 0, .12)`,
   };
 
   switch (appThemeMode) {
@@ -97,7 +97,7 @@ export const appBodyStylesStore = ({ appThemeMode }) => {
 
   const mappedStyleList = {};
 
-  Object.keys(styleList).map(a => {
+  Object.keys(styleList).map((a) => {
     mappedStyleList[APP_THEME_COLOR_KEY[a]] = styleList[a];
 
     return a;
@@ -109,7 +109,7 @@ export const appBodyStylesStore = ({ appThemeMode }) => {
     [APP_THEME_COLOR_KEY.secondaryMainColor]: appStyle.secondaryColor.main,
     [APP_THEME_COLOR_KEY.paperBgColor]: appStyle.background.paper,
     [APP_THEME_COLOR_KEY.nativeSystemColor]: `#ececec`,
-    ...mappedStyleList
+    ...mappedStyleList,
   };
 };
 

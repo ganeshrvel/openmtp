@@ -49,7 +49,7 @@ class Breadcrumb extends PureComponent {
           path: '/',
           isCompressed: _isCompressed,
           enabled: _enabled,
-          bold: _bold
+          bold: _bold,
         });
         return null;
       }
@@ -67,7 +67,7 @@ class Breadcrumb extends PureComponent {
         path: `${currentBrowsePathBroken.slice(0, index + 1).join('/')}`,
         isCompressed: _isCompressed,
         enabled: _enabled,
-        bold: _bold
+        bold: _bold,
       });
     });
 
@@ -88,7 +88,7 @@ class Breadcrumb extends PureComponent {
           {isCompressed ? (
             this.CompressedBreadcrumbCellRender({
               isCompressed,
-              compressedCounter
+              compressedCounter,
             })
           ) : (
             <Fragment>
@@ -103,9 +103,9 @@ class Breadcrumb extends PureComponent {
                 <Tooltip title={label}>
                   <a
                     className={classNames(styles.breadcrumbLiA, {
-                      [`& bold`]: bold
+                      [`& bold`]: bold,
                     })}
-                    onClick={event => {
+                    onClick={(event) => {
                       this._handleClickPath(enabled, path, event);
                     }}
                   >

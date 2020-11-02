@@ -50,7 +50,6 @@ main.js.map
 
 .idea
 npm-debug.log.*
-yarn.lock
 package-lock.json
 .env*
 

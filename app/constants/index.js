@@ -11,12 +11,12 @@ export const DEVICES_TYPE_CONST = { mtp: 'mtp', local: 'local' };
 
 export const DEVICES_DEFAULT_PATH = {
   [DEVICES_TYPE_CONST.mtp]: '/',
-  [DEVICES_TYPE_CONST.local]: PATHS.homeDir
+  [DEVICES_TYPE_CONST.local]: PATHS.homeDir,
 };
 
 export const DEVICES_LABEL = {
   [DEVICES_TYPE_CONST.mtp]: 'Phone',
-  [DEVICES_TYPE_CONST.local]: `Computer`
+  [DEVICES_TYPE_CONST.local]: `Computer`,
 };
 
 export const FILE_EXPLORER_DEFAULT_FOCUSSED_DEVICE_TYPE =

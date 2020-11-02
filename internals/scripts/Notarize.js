@@ -6,7 +6,7 @@ const { notarize: electronNotarize } = require('electron-notarize');
 
 const { ELECTRON_NOTARIZE } = process.env;
 
-exports.default = async context => {
+exports.default = async (context) => {
   const { electronPlatformName, appOutDir } = context;
 
   if (ELECTRON_NOTARIZE === 'NO') {
@@ -34,6 +34,6 @@ exports.default = async context => {
     appBundleId,
     appPath,
     appleId,
-    appleIdPassword
+    appleIdPassword,
   });
 };

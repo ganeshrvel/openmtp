@@ -6,9 +6,9 @@ import path from 'path';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withStyles } from '@material-ui/core/styles';
+import { log } from '@Log';
 import { styles } from '../styles/GenerateErrorReport';
 import { baseName, PATHS } from '../../../utils/paths';
-import { log } from '@Log';
 import { promisifiedRimraf, mtpVerboseReport } from '../../../api/sys';
 import { fileExistsSync } from '../../../api/sys/fileOps';
 import { AUTHOR_EMAIL } from '../../../constants/meta';
@@ -16,7 +16,7 @@ import { throwAlert } from '../../Alerts/actions';
 import {
   mailToInstructions as _mailToInstructions,
   reportGenerateError,
-  mailTo
+  mailTo,
 } from '../../../templates/generateErrorReport';
 import { compressFile } from '../../../utils/gzip';
 import GenerateErrorReportBody from './GenerateErrorReportBody';
@@ -49,7 +49,7 @@ class GenerateErrorReport extends Component {
 
       if (error) {
         actionCreateThrowError({
-          message: reportGenerateError
+          message: reportGenerateError,
         });
         return null;
       }
@@ -58,7 +58,7 @@ class GenerateErrorReport extends Component {
 
       if (!fileExistsSync(logFileZippedPath)) {
         actionCreateThrowError({
-          message: reportGenerateError
+          message: reportGenerateError,
         });
         return null;
       }
@@ -93,7 +93,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
     {
       actionCreateThrowError: ({ ...args }) => (_, getState) => {
         dispatch(throwAlert({ ...args }));
-      }
+      },
     },
     dispatch
   );

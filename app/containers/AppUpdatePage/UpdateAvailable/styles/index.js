@@ -2,20 +2,20 @@
 
 import { variables, mixins } from '../../../../styles/js';
 
-export const styles = theme => ({
+export const styles = (theme) => ({
   root: {
-    padding: `0 25px 10px 25px`
+    padding: `0 25px 10px 25px`,
   },
 
   loadingText: { padding: 15 },
 
   title: {
-    fontWeight: `bold`
+    fontWeight: `bold`,
   },
 
   releaseNotes: {
     fontWeight: `bold`,
-    marginTop: 10
+    marginTop: 10,
   },
 
   scrollContainer: {
@@ -27,21 +27,21 @@ export const styles = theme => ({
     width: '100%',
     padding: 15,
     overflowX: 'auto',
-    overflowY: 'auto'
+    overflowY: 'auto',
   },
 
   btnWrapper: {
     position: `absolute`,
     bottom: 15,
-    right: 24
+    right: 24,
   },
 
   btnPositive: {
     ...mixins().btnPositive,
-    margin: `0 10px 0 0`
+    margin: `0 10px 0 0`,
   },
 
   btnNegative: {
-    ...mixins().btnNegativeWhite
-  }
+    ...mixins().btnNegativeWhite,
+  },
 });

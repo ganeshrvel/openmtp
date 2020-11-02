@@ -1,17 +1,17 @@
 'use strict';
 
+import { log } from '@Log';
 import prefixer from '../../utils/reducerPrefixer';
 import {
   asyncReadLocalDir,
   asyncReadMtpDir,
-  fetchMtpStorageOptions
+  fetchMtpStorageOptions,
 } from '../../api/sys';
-import { log } from '@Log';
 import { throwAlert } from '../Alerts/actions';
 import { DEVICES_TYPE_CONST } from '../../constants';
 import {
   processMtpBuffer,
-  processLocalBuffer
+  processLocalBuffer,
 } from '../../utils/processBufferOutput';
 import { isArraysEqual } from '../../utils/funcs';
 
@@ -29,7 +29,7 @@ const actionTypesList = [
   'SET_FILE_TRANSFER_PROGRESS',
   'CLEAR_FILE_TRANSFER',
   'SET_FILES_DRAG',
-  'CLEAR_FILES_DRAG'
+  'CLEAR_FILES_DRAG',
 ];
 
 export const actionTypes = prefixer(prefix, actionTypesList);
@@ -38,8 +38,8 @@ export function setFocussedFileExplorerDeviceType(data) {
   return {
     type: actionTypes.SET_FOCUSSED_FILE_EXPLORER_DEVICE_TYPE,
     payload: {
-      ...data
-    }
+      ...data,
+    },
   };
 }
 
@@ -48,8 +48,8 @@ export function setSortingDirLists(data, deviceType) {
     type: actionTypes.SET_SORTING_DIR_LISTS,
     deviceType,
     payload: {
-      ...data
-    }
+      ...data,
+    },
   };
 }
 
@@ -58,8 +58,8 @@ export function setSelectedDirLists(data, deviceType) {
     type: actionTypes.SET_SELECTED_DIR_LISTS,
     deviceType,
     payload: {
-      ...data
-    }
+      ...data,
+    },
   };
 }
 
@@ -67,7 +67,7 @@ export function setCurrentBrowsePath(path, deviceType) {
   return {
     type: actionTypes.SET_CURRENT_BROWSE_PATH,
     deviceType,
-    payload: path
+    payload: path,
   };
 }
 
@@ -77,8 +77,8 @@ function _fetchDirList(data, deviceType) {
     deviceType,
     payload: {
       nodes: data || [],
-      isLoaded: true
-    }
+      isLoaded: true,
+    },
   };
 }
 
@@ -109,7 +109,7 @@ export function setMtpStorageOptions(
   { ...deviceChangeCheck },
   getState
 ) {
-  return async dispatch => {
+  return async (dispatch) => {
     try {
       const { error, stderr, data } = await fetchMtpStorageOptions();
       dispatch(
@@ -136,7 +136,7 @@ export function setMtpStorageOptions(
               dispatch(changeMtpStorage({ ...data }));
             }
             dispatch(fetchDirList({ ...fetchDirArgs }, deviceType, getState));
-          }
+          },
         })
       );
     } catch (e) {
@@ -148,14 +148,14 @@ export function setMtpStorageOptions(
 export function changeMtpStorage({ ...data }) {
   return {
     type: actionTypes.CHANGE_MTP_STORAGE,
-    payload: data
+    payload: data,
   };
 }
 
 export function setMtpStatus(data) {
   return {
     type: actionTypes.SET_MTP_STATUS,
-    payload: data
+    payload: data,
   };
 }
 
@@ -164,15 +164,15 @@ export function processMtpOutput({
   error,
   stderr,
   data, // eslint-disable-line no-unused-vars
-  callback
+  callback,
 }) {
-  return async dispatch => {
+  return async (dispatch) => {
     try {
       const {
         status: mtpStatus,
         error: mtpError,
         throwAlert: mtpThrowAlert,
-        logError: mtpLogError
+        logError: mtpLogError,
       } = await processMtpBuffer({ error, stderr });
 
       dispatch(setMtpStatus(mtpStatus));
@@ -202,14 +202,14 @@ export function processLocalOutput({
   error,
   stderr,
   data, // eslint-disable-line no-unused-vars
-  callback
+  callback,
 }) {
-  return dispatch => {
+  return (dispatch) => {
     try {
       const {
         error: localError,
         throwAlert: localThrowAlert,
-        logError: localLogError
+        logError: localLogError,
       } = processLocalBuffer({ error, stderr });
 
       if (localError) {
@@ -232,7 +232,7 @@ export function fetchDirList({ ...args }, deviceType, getState) {
   try {
     switch (deviceType) {
       case DEVICES_TYPE_CONST.local:
-        return async dispatch => {
+        return async (dispatch) => {
           const { error, data } = await asyncReadLocalDir({ ...args });
 
           if (error) {
@@ -249,14 +249,14 @@ export function fetchDirList({ ...args }, deviceType, getState) {
         };
 
       case DEVICES_TYPE_CONST.mtp:
-        return async dispatch => {
+        return async (dispatch) => {
           const mtpStoragesListSelected = getMtpStoragesListSelected(
             getState().Home
           );
 
           const { error, stderr, data } = await asyncReadMtpDir({
             ...args,
-            mtpStoragesListSelected
+            mtpStoragesListSelected,
           });
 
           dispatch(
@@ -269,7 +269,7 @@ export function fetchDirList({ ...args }, deviceType, getState) {
                 dispatch(_fetchDirList(data, deviceType));
                 dispatch(setSelectedDirLists({ selected: [] }, deviceType));
                 dispatch(setCurrentBrowsePath(args.filePath, deviceType));
-              }
+              },
             })
           );
         };
@@ -288,7 +288,7 @@ export function reloadDirList(
   mtpStoragesList,
   getState
 ) {
-  return dispatch => {
+  return (dispatch) => {
     switch (deviceType) {
       case DEVICES_TYPE_CONST.local:
         dispatch(fetchDirList({ ...args }, deviceType, getState));
@@ -315,8 +315,8 @@ export function setFileTransferClipboard({ ...data }) {
   return {
     type: actionTypes.SET_FILE_TRANSFER_CLIPBOARD,
     payload: {
-      ...data
-    }
+      ...data,
+    },
   };
 }
 
@@ -324,14 +324,14 @@ export function setFileTransferProgress({ ...data }) {
   return {
     type: actionTypes.SET_FILE_TRANSFER_PROGRESS,
     payload: {
-      ...data
-    }
+      ...data,
+    },
   };
 }
 
 export function clearFileTransfer() {
   return {
-    type: actionTypes.CLEAR_FILE_TRANSFER
+    type: actionTypes.CLEAR_FILE_TRANSFER,
   };
 }
 
@@ -339,13 +339,13 @@ export function setFilesDrag({ ...data }) {
   return {
     type: actionTypes.SET_FILES_DRAG,
     payload: {
-      ...data
-    }
+      ...data,
+    },
   };
 }
 
 export function clearFilesDrag() {
   return {
-    type: actionTypes.CLEAR_FILES_DRAG
+    type: actionTypes.CLEAR_FILES_DRAG,
   };
 }

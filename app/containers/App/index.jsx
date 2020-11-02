@@ -6,10 +6,11 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import {
   MuiThemeProvider,
   createMuiTheme,
-  withStyles
+  withStyles,
 } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import Analytics from 'electron-ga';
 import { log } from '@Log';
 import { IS_PROD } from '../../constants/env';
 import { appBodyStylesStore, materialUiTheme, styles } from './styles';
@@ -23,16 +24,17 @@ import SettingsDialog from '../Settings';
 import { withReducer } from '../../store/reducers/withReducer';
 import reducers from './reducers';
 import { copyJsonFileToSettings, freshInstall } from '../Settings/actions';
-import { analytics } from '../../utils/analyticsHelper';
 import { isConnected } from '../../utils/isOnline';
 import { setStyle } from '../../utils/styles';
+import { TRACKING_ID } from '../../../config/google-analytics-key';
+import { APP_NAME, APP_VERSION } from '../../constants/meta';
 
 class App extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      appThemeMode: 'dark' //'light'
+      appThemeMode: 'dark', // 'light'
     };
     this.allowWritingJsonToSettings = false;
   }
@@ -137,12 +139,18 @@ class App extends Component {
 
   runAnalytics() {
     const isAnalyticsEnabledSettings = settingsStorage.getItems([
-      'enableAnalytics'
+      'enableAnalytics',
     ]);
+
     try {
       if (isAnalyticsEnabledSettings.enableAnalytics && IS_PROD) {
         isConnected()
-          .then(connected => {
+          .then((connected) => {
+            const analytics = new Analytics(TRACKING_ID, {
+              appName: APP_NAME,
+              appVersion: APP_VERSION,
+            });
+
             analytics.send('screenview', { cd: '/Home' });
             analytics.send(`pageview`, { dp: '/Home' });
 
@@ -182,7 +190,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
 
       actionCreateFreshInstall: ({ ...data }) => (_, getState) => {
         dispatch(freshInstall({ ...data }, getState));
-      }
+      },
     },
     dispatch
   );

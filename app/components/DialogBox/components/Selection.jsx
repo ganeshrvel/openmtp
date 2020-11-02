@@ -28,7 +28,7 @@ class Selection extends PureComponent {
         onClose={() =>
           this._handleListItemClick({
             selectedValue: null,
-            triggerChange: false
+            triggerChange: false,
           })
         }
         open={open}
@@ -36,7 +36,7 @@ class Selection extends PureComponent {
         <DialogTitle>{titleText}</DialogTitle>
         <div>
           <List>
-            {Object.keys(list).map(a => {
+            {Object.keys(list).map((a) => {
               const item = list[a];
               return (
                 <Fragment key={a}>
@@ -45,7 +45,7 @@ class Selection extends PureComponent {
                     onClick={() =>
                       this._handleListItemClick({
                         selectedValue: a,
-                        triggerChange: true
+                        triggerChange: true,
                       })
                     }
                   >

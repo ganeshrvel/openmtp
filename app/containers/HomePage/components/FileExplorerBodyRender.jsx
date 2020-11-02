@@ -12,11 +12,11 @@ import { fileExplorerKeymaps } from '../../../constants/keymaps';
 import {
   isFileExplorerOnFocus,
   toggleFileExplorerDeviceType,
-  undefinedOrNull
+  undefinedOrNull,
 } from '../../../utils/funcs';
 import {
   DEVICES_TYPE_CONST,
-  FILE_EXPLORER_DEFAULT_FOCUSSED_DEVICE_TYPE
+  FILE_EXPLORER_DEFAULT_FOCUSSED_DEVICE_TYPE,
 } from '../../../constants';
 import { FILE_EXPLORER_BODY_WRAPPER_ID } from '../../../constants/dom';
 
@@ -68,7 +68,7 @@ class FileExplorerBodyRender extends PureComponent {
       multipleSelectLeft: this.acceleratorCreateAction,
       multipleSelectRight: this.acceleratorCreateAction,
       multipleSelectUp: this.acceleratorCreateAction,
-      multipleSelectDown: this.acceleratorCreateAction
+      multipleSelectDown: this.acceleratorCreateAction,
     };
 
     this.fileExplorerKeymapString = Object.keys(fileExplorerKeymaps).reduce(
@@ -87,7 +87,7 @@ class FileExplorerBodyRender extends PureComponent {
     );
 
     hotkeys(this.fileExplorerKeymapString, (event, handler) => {
-      Object.keys(fileExplorerKeymaps).map(a => {
+      Object.keys(fileExplorerKeymaps).map((a) => {
         const item = fileExplorerKeymaps[a].keys;
         if (
           undefinedOrNull(keymapActionsList[a]) ||
@@ -111,7 +111,7 @@ class FileExplorerBodyRender extends PureComponent {
     });
   };
 
-  acceleratorNewFolder = event => {
+  acceleratorNewFolder = (event) => {
     const { onAcceleratorActivation, deviceType } = this.props;
 
     onAcceleratorActivation({
@@ -119,12 +119,12 @@ class FileExplorerBodyRender extends PureComponent {
       data: {
         event,
         tableData: this.tableData(),
-        deviceType
-      }
+        deviceType,
+      },
     });
   };
 
-  acceleratorRename = event => {
+  acceleratorRename = (event) => {
     const { onAcceleratorActivation, deviceType } = this.props;
 
     onAcceleratorActivation({
@@ -132,8 +132,8 @@ class FileExplorerBodyRender extends PureComponent {
       data: {
         event,
         tableData: this.tableData(),
-        deviceType
-      }
+        deviceType,
+      },
     });
   };
 
@@ -170,8 +170,8 @@ class FileExplorerBodyRender extends PureComponent {
       type,
       data: {
         event,
-        deviceType
-      }
+        deviceType,
+      },
     });
   };
 
@@ -179,7 +179,7 @@ class FileExplorerBodyRender extends PureComponent {
     const { deviceType, currentBrowsePath, directoryLists } = this.props;
     return {
       path: currentBrowsePath[deviceType],
-      directoryLists: directoryLists[deviceType]
+      directoryLists: directoryLists[deviceType],
     };
   };
 
@@ -205,7 +205,7 @@ class FileExplorerBodyRender extends PureComponent {
 
     return (
       <Paper
-        onClick={event =>
+        onClick={(event) =>
           this.acceleratorFileExplorerTabSwitch(
             event,
             'fileExplorerTabSwitch',
@@ -221,20 +221,20 @@ class FileExplorerBodyRender extends PureComponent {
           id={this.fileExplorerBodyWrapperId}
           className={classNames(styles.tableWrapper, {
             [`onHoverDropZone`]: OnHoverDropZoneActivate(deviceType),
-            [`statusBarActive`]: isStatusBarEnabled
+            [`statusBarActive`]: isStatusBarEnabled,
           })}
-          onContextMenu={event =>
+          onContextMenu={(event) =>
             onContextMenuClick(event, {}, { ...this.tableData() }, _eventTarget)
           }
-          onDragOver={event => {
+          onDragOver={(event) => {
             onFilesDragOver(event, {
-              destinationDeviceType: deviceType
+              destinationDeviceType: deviceType,
             });
           }}
-          onDragEnd={event => {
+          onDragEnd={(event) => {
             onFilesDragEnd(event);
           }}
-          onDrop={event => {
+          onDrop={(event) => {
             onTableDrop(event);
           }}
         >

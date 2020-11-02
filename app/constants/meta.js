@@ -16,7 +16,7 @@ const {
   version,
   repository,
   homepage,
-  bugs
+  bugs,
 } = pkginfo;
 
 export const APP_NAME = `${productName}`;

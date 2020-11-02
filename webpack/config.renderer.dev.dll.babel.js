@@ -16,7 +16,7 @@ const pkg = require('../package.json');
 
 const dll = path.join(PATHS.root, 'dll');
 
-export default merge.smart(baseConfig, {
+export default merge(baseConfig, {
   context: PATHS.root,
   devtool: 'eval',
   mode: 'development',
@@ -29,20 +29,20 @@ export default merge.smart(baseConfig, {
   module: require('./config.renderer.dev.babel').default.module,
 
   entry: {
-    renderer: Object.keys(pkg.dependencies || {})
+    renderer: Object.keys(pkg.dependencies || {}),
   },
 
   output: {
     library: 'renderer',
     path: dll,
     filename: '[name].dev.dll.js',
-    libraryTarget: 'var'
+    libraryTarget: 'var',
   },
 
   plugins: [
     new webpack.DllPlugin({
       path: path.join(dll, '[name].json'),
-      name: '[name]'
+      name: '[name]',
     }),
 
     /**
@@ -55,7 +55,7 @@ export default merge.smart(baseConfig, {
      * development checks
      */
     new webpack.EnvironmentPlugin({
-      NODE_ENV: 'development'
+      NODE_ENV: 'development',
     }),
 
     new webpack.LoaderOptionsPlugin({
@@ -63,9 +63,9 @@ export default merge.smart(baseConfig, {
       options: {
         context: PATHS.app,
         output: {
-          path: dll
-        }
-      }
-    })
-  ]
+          path: dll,
+        },
+      },
+    }),
+  ],
 });

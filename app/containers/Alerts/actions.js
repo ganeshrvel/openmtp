@@ -11,12 +11,12 @@ export function throwAlert(data) {
   return {
     type: actionTypes.THROW_ALERT,
     payload: {
-      ...data
-    }
+      ...data,
+    },
   };
 }
 export function clearAlert() {
   return {
-    type: actionTypes.CLEAR_ALERT
+    type: actionTypes.CLEAR_ALERT,
   };
 }

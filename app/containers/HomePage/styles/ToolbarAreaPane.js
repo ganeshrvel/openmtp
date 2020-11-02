@@ -3,20 +3,20 @@
 import styled, { keyframes } from 'styled-components';
 import { variables, mixins } from '../../../styles/js';
 
-export const styles = theme => {
+export const styles = (theme) => {
   return {
     root: {
-      ...mixins().appDragEnable
+      ...mixins().appDragEnable,
     },
     grow: {
-      flexGrow: 1
+      flexGrow: 1,
     },
     toolbarInnerWrapper: {
-      display: 'flex'
+      display: 'flex',
     },
     toolbar: {
       width: `auto`,
-      height: variables().sizes.toolbarHeight
+      height: variables().sizes.toolbarHeight,
     },
     lazyLoaderOverLay: {
       position: `absolute`,
@@ -25,40 +25,40 @@ export const styles = theme => {
       right: 0,
       bottom: 0,
       backgroundColor: variables().styles.bgColor,
-      zIndex: 9999
+      zIndex: 9999,
     },
     appBar: {},
     navBtns: {
-      paddingLeft: 5
+      paddingLeft: 5,
     },
     noAppDrag: {
-      ...mixins().appDragDisable
+      ...mixins().appDragDisable,
     },
     navBtnImgs: {
       height: 25,
       width: `auto`,
       ...mixins().noDrag,
-      ...mixins().noselect
+      ...mixins().noselect,
     },
     disabledNavBtns: {
-      backgroundColor: `#f9f9f9 !important`
+      backgroundColor: `#f9f9f9 !important`,
     },
     invertedNavBtns: {
       [`&:hover`]: {
-        filter: `invert(100)`
+        filter: `invert(100)`,
       },
       [`&:not(:hover)`]: {
         filter: `invert(100)`,
-        background: `#f9f9f952`
-      }
+        background: `#f9f9f952`,
+      },
     },
     focussedFileExplorer: {
       width: '100%',
       height: 5,
       marginTop: -5,
       overflow: 'hidden',
-      background: 'rgba(0, 176, 255, 0.22)'
-    }
+      background: 'rgba(0, 176, 255, 0.22)',
+    },
   };
 };
 

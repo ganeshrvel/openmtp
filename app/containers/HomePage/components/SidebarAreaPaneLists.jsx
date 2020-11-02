@@ -18,11 +18,11 @@ class SidebarAreaPaneLists extends PureComponent {
     onClickHandler({ ...args });
   }
 
-  ListsRender = listData => {
+  ListsRender = (listData) => {
     const { classes: styles, deviceType, currentBrowsePath } = this.props;
     return (
       <List component="nav" dense className={styles.listsBottom}>
-        {listData.map(item => {
+        {listData.map((item) => {
           return (
             <ListItem
               key={quickHash(item.path)}
@@ -33,7 +33,7 @@ class SidebarAreaPaneLists extends PureComponent {
                 this._handleFetchDirList({
                   filePath: item.path,
                   deviceType,
-                  isSidemenu: true
+                  isSidemenu: true,
                 })
               }
             >

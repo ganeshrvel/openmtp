@@ -17,12 +17,12 @@ export default merge.smart(baseConfig, {
   mode: 'production',
   target: 'electron-main',
   entry: {
-    client: ['./app/main.dev']
+    client: ['./app/main.dev'],
   },
 
   output: {
     path: PATHS.root,
-    filename: './app/main.prod.js'
+    filename: './app/main.prod.js',
   },
 
   optimization: {
@@ -30,20 +30,20 @@ export default merge.smart(baseConfig, {
       new TerserPlugin({
         parallel: true,
         sourceMap: true,
-        cache: true
-      })
-    ]
+        cache: true,
+      }),
+    ],
   },
 
   plugins: [
     new CleanWebpackPlugin([`${PATHS.dist}/*`], {
-      root: PATHS.root
+      root: PATHS.root,
     }),
 
     new BundleAnalyzerPlugin({
       analyzerMode:
         process.env.OPEN_ANALYZER === 'true' ? 'server' : 'disabled',
-      openAnalyzer: process.env.OPEN_ANALYZER === 'true'
+      openAnalyzer: process.env.OPEN_ANALYZER === 'true',
     }),
 
     /**
@@ -58,8 +58,8 @@ export default merge.smart(baseConfig, {
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'production',
       DEBUG_PROD: false,
-      START_MINIMIZED: false
-    })
+      START_MINIMIZED: false,
+    }),
   ],
 
   /**
@@ -70,6 +70,6 @@ export default merge.smart(baseConfig, {
   node: {
     __dirname: false,
     __filename: false,
-    fs: 'empty'
-  }
+    fs: 'empty',
+  },
 });

@@ -6,7 +6,7 @@ import { DEVICES_TYPE_CONST } from '../../constants';
 export const initialState = {
   freshInstall: 0,
   onboarding: {
-    lastFiredVersion: null
+    lastFiredVersion: null,
   },
   toggleSettings: false,
   enableAutoUpdateCheck: true,
@@ -16,13 +16,13 @@ export const initialState = {
   enableStatusBar: true,
   hideHiddenFiles: {
     [DEVICES_TYPE_CONST.local]: true,
-    [DEVICES_TYPE_CONST.mtp]: true
+    [DEVICES_TYPE_CONST.mtp]: true,
   },
 
   fileExplorerListingType: {
     [DEVICES_TYPE_CONST.local]: 'grid',
-    [DEVICES_TYPE_CONST.mtp]: 'grid'
-  }
+    [DEVICES_TYPE_CONST.mtp]: 'grid',
+  },
 };
 
 export default function Settings(state = initialState, action) {
@@ -36,8 +36,8 @@ export default function Settings(state = initialState, action) {
         ...state,
         onboarding: {
           ...state.onboarding,
-          ...payload
-        }
+          ...payload,
+        },
       };
 
     case actionTypes.TOGGLE_SETTINGS:
@@ -46,7 +46,7 @@ export default function Settings(state = initialState, action) {
     case actionTypes.HIDE_HIDDEN_FILES:
       return {
         ...state,
-        hideHiddenFiles: { ...state.hideHiddenFiles, [deviceType]: payload }
+        hideHiddenFiles: { ...state.hideHiddenFiles, [deviceType]: payload },
       };
 
     case actionTypes.FILE_EXPLORER_LISTING_TYPE:
@@ -54,8 +54,8 @@ export default function Settings(state = initialState, action) {
         ...state,
         fileExplorerListingType: {
           ...state.fileExplorerListingType,
-          [deviceType]: payload
-        }
+          [deviceType]: payload,
+        },
       };
 
     case actionTypes.ENABLE_AUTO_UPDATE_CHECK:

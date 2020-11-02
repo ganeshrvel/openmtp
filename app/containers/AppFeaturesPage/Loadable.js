@@ -5,7 +5,7 @@ import LoadingIndicator from '../../components/LoadingIndicator';
 
 const Component = lazy(() => import('.'));
 
-export default function() {
+export default function () {
   return (
     <Suspense fallback={<LoadingIndicator />}>
       <Component />

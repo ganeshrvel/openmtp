@@ -8,7 +8,7 @@ export default class KbdRender extends PureComponent {
   render() {
     const { styles } = this.props;
 
-    return Object.keys(fileExplorerKeymaps).map(a => {
+    return Object.keys(fileExplorerKeymaps).map((a) => {
       const item = fileExplorerKeymaps[a];
 
       return (

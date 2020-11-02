@@ -23,7 +23,7 @@ class FileExplorerTableBodyGridRender extends PureComponent {
       tableData,
       onContextMenuClick,
       onTableClick,
-      onTableDoubleClick
+      onTableDoubleClick,
     } = this.props;
 
     const fileName = springTruncate(
@@ -34,10 +34,10 @@ class FileExplorerTableBodyGridRender extends PureComponent {
     return (
       <div
         className={classNames(styles.itemWrapper, {
-          [styles.itemSelected]: isSelected
+          [styles.itemSelected]: isSelected,
         })}
-        onDoubleClick={event => onTableDoubleClick(item, deviceType, event)}
-        onContextMenu={event =>
+        onDoubleClick={(event) => onTableDoubleClick(item, deviceType, event)}
+        onContextMenu={(event) =>
           onContextMenuClick(event, { ...item }, { ...tableData }, _eventTarget)
         }
       >
@@ -45,7 +45,7 @@ class FileExplorerTableBodyGridRender extends PureComponent {
           <Checkbox
             className={styles.itemCheckBox}
             checked={isSelected}
-            onClick={event =>
+            onClick={(event) =>
               onTableClick(item.path, deviceType, event, true, true)
             }
           />
@@ -54,7 +54,7 @@ class FileExplorerTableBodyGridRender extends PureComponent {
               color="secondary"
               className={classNames(styles.itemIcon, `isFolder`)}
               fontSize="small"
-              onContextMenu={event =>
+              onContextMenu={(event) =>
                 onContextMenuClick(
                   event,
                   { ...item },
@@ -67,7 +67,7 @@ class FileExplorerTableBodyGridRender extends PureComponent {
             <InsertDriveFileIcon
               className={classNames(styles.itemIcon, `isFile`)}
               fontSize="small"
-              onContextMenu={event =>
+              onContextMenu={(event) =>
                 onContextMenuClick(
                   event,
                   { ...item },
@@ -81,7 +81,7 @@ class FileExplorerTableBodyGridRender extends PureComponent {
             <Typography
               variant="caption"
               className={styles.itemFileName}
-              onContextMenu={event =>
+              onContextMenu={(event) =>
                 onContextMenuClick(
                   event,
                   { ...item },

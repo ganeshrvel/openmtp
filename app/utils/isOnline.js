@@ -6,8 +6,8 @@ import { log } from './log';
 
 export const isConnected = () => {
   try {
-    return new Promise(resolve => {
-      dns.lookup('github.com', err => {
+    return new Promise((resolve) => {
+      dns.lookup('github.com', (err) => {
         if (err && err.code === 'ENOTFOUND') {
           resolve(false);
           return null;

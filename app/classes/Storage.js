@@ -33,7 +33,7 @@ export default class Storage {
       const allItem = this.getAll();
       const _return = {};
 
-      keys.map(a => {
+      keys.map((a) => {
         if (typeof allItem[a] === 'undefined' || allItem[a] === null) {
           return null;
         }

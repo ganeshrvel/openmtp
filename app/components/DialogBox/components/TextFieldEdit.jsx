@@ -8,8 +8,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import TextField from '@material-ui/core/TextField';
-import { styles } from '../styles/TextFieldEdit';
+import { StyledTextField, styles } from '../styles/TextFieldEdit';
 
 class TextFieldEdit extends PureComponent {
   constructor(props) {
@@ -25,7 +24,7 @@ class TextFieldEdit extends PureComponent {
     onClickHandler({ confirm, textFieldValue: this.textFieldValue });
   };
 
-  _handleChange = event => {
+  _handleChange = (event) => {
     this.textFieldValue = event.target.value;
   };
 
@@ -47,7 +46,7 @@ class TextFieldEdit extends PureComponent {
       id,
       btnPositiveText,
       btnNegativeText,
-      errors
+      errors,
     } = this.props;
 
     return (
@@ -57,13 +56,13 @@ class TextFieldEdit extends PureComponent {
         fullWidth={fullWidthDialog}
         maxWidth={maxWidthDialog}
         disableEscapeKeyDown={false}
-        onEscapeKeyDown={event =>
+        onEscapeKeyDown={(event) =>
           this._handleBtnClick({ confirm: false }, event)
         }
       >
         <DialogTitle>{titleText}</DialogTitle>
         <form
-          onSubmit={event => this._handleBtnClick({ confirm: true }, event)}
+          onSubmit={(event) => this._handleBtnClick({ confirm: true }, event)}
           noValidate
           autoComplete="off"
         >
@@ -76,7 +75,7 @@ class TextFieldEdit extends PureComponent {
                   : ''}
               </Typography>
             </DialogContentText>
-            <TextField
+            <StyledTextField
               id={id}
               required={required}
               label={errors.toggle ? errors.message : label}
@@ -85,22 +84,27 @@ class TextFieldEdit extends PureComponent {
               autoComplete="off"
               defaultValue={defaultValue}
               multiline={multiline}
-              onFocus={event => this._handleChange(event)}
-              onBlur={event => this._handleChange(event)}
-              onChange={event => this._handleChange(event)}
+              onFocus={(event) => this._handleChange(event)}
+              onBlur={(event) => this._handleChange(event)}
+              onChange={(event) => this._handleChange(event)}
               error={errors.toggle}
+              className={styles.textFieldRoot}
             />
           </DialogContent>
           <DialogActions>
             <Button
-              onClick={event => this._handleBtnClick({ confirm: false }, event)}
+              onClick={(event) =>
+                this._handleBtnClick({ confirm: false }, event)
+              }
               color="secondary"
               className={classNames(styles.btnNegative)}
             >
               {btnNegativeText}
             </Button>
             <Button
-              onClick={event => this._handleBtnClick({ confirm: true }, event)}
+              onClick={(event) =>
+                this._handleBtnClick({ confirm: true }, event)
+              }
               color="primary"
               className={classNames(styles.btnPositive)}
             >
