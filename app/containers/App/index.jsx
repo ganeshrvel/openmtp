@@ -60,10 +60,7 @@ class App extends Component {
 
   componentDidMount() {
     try {
-      ipcRenderer.on('nativeThemeUpdated', () => {
-        this.setAppTheme();
-        this.setState({});
-      });
+      ipcRenderer.on('nativeThemeUpdated', this.nativeThemeUpdatedEvent);
 
       bootLoader.cleanRotationFiles();
     } catch (e) {
@@ -83,12 +80,23 @@ class App extends Component {
 
   componentWillUnmount() {
     this.deregisterAccelerators();
+    ipcRenderer.removeListener(
+      'nativeThemeUpdated',
+      this.nativeThemeUpdatedEvent
+    );
 
     this.mainWindowRendererProcess.webContents.removeListener(
       'nativeThemeUpdated',
       () => {}
     );
   }
+
+  nativeThemeUpdatedEvent = () => {
+    this.setAppTheme();
+
+    // force update the component
+    this.setState({});
+  };
 
   /**
    * Working: Toggle app theme without restart.
