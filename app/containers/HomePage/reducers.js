@@ -1,6 +1,14 @@
 'use strict';
 
 import path from 'path';
+import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
+import {
+  faSync,
+  faSdCard,
+  faCog,
+  faArrowLeft,
+} from '@fortawesome/free-solid-svg-icons';
+import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import { actionTypes } from './actions';
 import { PATHS } from '../../utils/paths';
 import {
@@ -57,64 +65,54 @@ export const initialState = {
       up: {
         enabled: true,
         label: 'Folder Up',
-        imgSrc: 'Toolbar/up.svg',
-        invert: true,
+        icon: faArrowLeft,
       },
       refresh: {
         enabled: true,
         label: 'Refresh',
-        imgSrc: 'Toolbar/refresh.svg',
-        invert: true,
+        icon: faSync,
       },
       delete: {
         enabled: true,
         label: 'Delete',
-        imgSrc: 'Toolbar/delete.svg',
-        invert: true,
-      },
-      settings: {
-        enabled: true,
-        label: 'Settings',
-        imgSrc: 'Toolbar/settings.svg',
-        invert: true,
+        icon: faTrashAlt,
       },
       gitHub: {
         enabled: true,
         label: 'GitHub',
-        imgSrc: 'Toolbar/github.svg',
-        invert: true,
+        icon: faGithub,
+      },
+      settings: {
+        enabled: true,
+        label: 'Settings',
+        icon: faCog,
       },
     },
     [DEVICES_TYPE_CONST.mtp]: {
       up: {
         enabled: true,
         label: 'Folder Up',
-        imgSrc: 'Toolbar/up.svg',
-        invert: true,
+        icon: faArrowLeft,
       },
       refresh: {
         enabled: true,
         label: 'Refresh',
-        imgSrc: 'Toolbar/refresh.svg',
-        invert: true,
+        icon: faSync,
       },
       delete: {
         enabled: true,
         label: 'Delete',
-        imgSrc: 'Toolbar/delete.svg',
-        invert: true,
+        icon: faTrashAlt,
       },
       storage: {
         enabled: true,
         label: 'Storage',
-        imgSrc: 'Toolbar/storage.svg',
-        invert: true,
+        icon: faSdCard,
       },
       settings: {
         enabled: true,
         label: 'Settings',
-        imgSrc: 'Toolbar/settings.svg',
-        invert: true,
+        icon: faCog,
       },
     },
   },

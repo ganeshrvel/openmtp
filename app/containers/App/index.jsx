@@ -34,7 +34,7 @@ class App extends Component {
     super(props);
 
     this.state = {
-      appThemeMode: 'dark', // 'light'
+      appThemeMode: 'light'//'dark', //
     };
     this.allowWritingJsonToSettings = false;
   }
@@ -68,7 +68,7 @@ class App extends Component {
 
   /**
    * Working: Toggle app theme without restart.
-   * The styles are converted to css style variables and set to body tag; which will be available to the whole app
+   * The styles are converted into css style variables and set to body tag; which will be available to the whole app
    *
    * How to add a new one:
    * 1) Add the css key to APP_THEME_COLOR_KEY in app/constants/theme.js; This is a dictionary of keys for easy referencing.

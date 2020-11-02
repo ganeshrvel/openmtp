@@ -1,6 +1,7 @@
 'use strict';
 
 import React, { PureComponent } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import MenuIcon from '@material-ui/icons/Menu';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -10,7 +11,6 @@ import Tooltip from '@material-ui/core/Tooltip';
 import classNames from 'classnames';
 import SidebarAreaPaneLists from './SidebarAreaPaneLists';
 import { LazyLoaderOverLay } from '../styles/ToolbarAreaPane';
-import { imgsrc } from '../../../utils/imgsrc';
 import { DEVICES_LABEL, DEVICES_TYPE_CONST } from '../../../constants';
 import {
   Confirm as ConfirmDialog,
@@ -179,10 +179,11 @@ export default class ToolbarAreaPane extends PureComponent {
                           [styles.invertedNavBtns]: item.invert,
                         })}
                       >
-                        <img
-                          alt={item.label}
-                          src={imgsrc(item.imgSrc, false)}
-                          className={classNames(styles.navBtnImgs)}
+                        <FontAwesomeIcon
+                          icon={item.icon}
+                          color="#242424"
+                          className={styles.navBtnImgs}
+                          title={item.label}
                         />
                       </IconButton>
                     </div>

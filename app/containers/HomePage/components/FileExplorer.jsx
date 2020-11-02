@@ -1382,7 +1382,7 @@ class FileExplorer extends Component {
 
     if (!isFolder) {
       if (deviceType === DEVICES_TYPE_CONST.local) {
-        shell.openItem(path);
+        shell.openPath(path);
       }
       return null;
     }

@@ -35,8 +35,8 @@ export const styles = (theme) => {
       ...mixins().appDragDisable,
     },
     navBtnImgs: {
-      height: 25,
-      width: `auto`,
+      height: 28,
+      width: `28px !important`,
       ...mixins().noDrag,
       ...mixins().noselect,
     },
