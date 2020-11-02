@@ -1,4 +1,4 @@
-'use strict';
+
 
 import React, { PureComponent } from 'react';
 import FileExplorerTableRowsRender from './FileExplorerTableBodyListRender';

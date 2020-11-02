@@ -1,4 +1,4 @@
-'use strict';
+
 
 import { EOL } from 'os';
 import { replaceBulk } from './funcs';

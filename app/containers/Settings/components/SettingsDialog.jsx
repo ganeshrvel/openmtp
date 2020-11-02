@@ -1,4 +1,4 @@
-'use strict';
+
 
 import React, { PureComponent } from 'react';
 import electronIs from 'electron-is';
@@ -23,7 +23,7 @@ import SettingsDialogTabContainer from './SettingsDialogTabContainer';
 import {
   DEVICE_TYPE,
   FILE_EXPLORER_VIEW_TYPE,
-  THEME_MODE_TYPE,
+  APP_THEME_MODE_TYPE,
 } from '../../../enums';
 
 const isMas = electronIs.mas();
@@ -152,17 +152,17 @@ export default class SettingsDialog extends PureComponent {
                       onChange={onAppThemeModeChange}
                     >
                       <FormControlLabel
-                        value={THEME_MODE_TYPE.light}
+                        value={APP_THEME_MODE_TYPE.light}
                         control={<Radio />}
                         label="Light"
                       />
                       <FormControlLabel
-                        value={THEME_MODE_TYPE.dark}
+                        value={APP_THEME_MODE_TYPE.dark}
                         control={<Radio />}
                         label="Dark"
                       />
                       <FormControlLabel
-                        value={THEME_MODE_TYPE.auto}
+                        value={APP_THEME_MODE_TYPE.auto}
                         control={<Radio />}
                         label="Auto"
                       />

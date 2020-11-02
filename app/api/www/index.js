@@ -1,4 +1,4 @@
-'use strict';
+
 
 export function fetchUrl({ url }) {
   return fetch(`${url}`).then((res) => {

@@ -1,4 +1,4 @@
-'use strict';
+
 
 import { log } from '@Log';
 import prefixer from '../../utils/reducerPrefixer';

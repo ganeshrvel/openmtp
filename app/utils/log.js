@@ -1,4 +1,4 @@
-'use strict';
+
 
 import os, { EOL } from 'os';
 import { IS_DEV } from '../constants/env';

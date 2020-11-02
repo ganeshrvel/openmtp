@@ -1,4 +1,4 @@
-'use strict';
+
 
 /* eslint global-require: off,  */
 

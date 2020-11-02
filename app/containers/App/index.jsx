@@ -1,5 +1,4 @@
-'use strict';
-
+import { remote } from 'electron';
 import { hot } from 'react-hot-loader/root';
 import React, { Component } from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -33,6 +32,7 @@ import {
   makeAppThemeModeSettings,
 } from '../Settings/selectors';
 import { getAppThemeMode } from '../../utils/theme';
+import { APP_THEME_MODE_TYPE } from '../../enums';
 
 class App extends Component {
   constructor(props) {
@@ -59,6 +59,8 @@ class App extends Component {
   componentDidMount() {
     try {
       bootLoader.cleanRotationFiles();
+
+      this.registerEvents();
     } catch (e) {
       log.error(e, `App -> componentDidMount`);
     }
@@ -72,6 +74,23 @@ class App extends Component {
     if (nextAppThemeModeSettings !== appThemeModeSettings) {
       this.setAppTheme();
     }
+  };
+
+  registerEvents = () => {
+    const { appThemeModeSettings } = this.props;
+    const { nativeTheme } = remote;
+
+    nativeTheme.on('updated', () => {
+      // if the app theme was set as auto and the os theme has changed
+      // then refresh the app theme
+      if (appThemeModeSettings !== APP_THEME_MODE_TYPE.auto) {
+        return;
+      }
+
+      // [setState] is used here to force the rerender of the components on OS theme change
+      this.setState({});
+      this.setAppTheme();
+    });
   };
 
   /**
@@ -103,7 +122,10 @@ class App extends Component {
     }
   };
 
-  getMuiTheme = (appThemeMode) => {
+  getMuiTheme = () => {
+    const { appThemeModeSettings } = this.props;
+    const appThemeMode = getAppThemeMode(appThemeModeSettings);
+
     return createMuiTheme(materialUiTheme({ appThemeMode }));
   };
 
@@ -179,8 +201,8 @@ class App extends Component {
   }
 
   render() {
-    const { classes: styles, appThemeMode } = this.props;
-    const muiTheme = this.getMuiTheme(appThemeMode);
+    const { classes: styles } = this.props;
+    const muiTheme = this.getMuiTheme();
 
     return (
       <div className={styles.root}>

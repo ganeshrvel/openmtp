@@ -1,10 +1,10 @@
-'use strict';
+
 
 import { actionTypes } from './actions';
 import {
   DEVICE_TYPE,
   FILE_EXPLORER_VIEW_TYPE,
-  THEME_MODE_TYPE,
+  APP_THEME_MODE_TYPE,
 } from '../../enums';
 
 export const initialState = {
@@ -27,7 +27,7 @@ export const initialState = {
     [DEVICE_TYPE.local]: FILE_EXPLORER_VIEW_TYPE.grid,
     [DEVICE_TYPE.mtp]: FILE_EXPLORER_VIEW_TYPE.grid,
   },
-  appThemeMode: THEME_MODE_TYPE.auto,
+  appThemeMode: APP_THEME_MODE_TYPE.auto,
 };
 
 export default function Settings(state = initialState, action) {

@@ -1,4 +1,4 @@
-'use strict';
+
 
 import omitLodash from 'lodash/omit';
 import { log } from '@Log';

@@ -1,4 +1,4 @@
-'use strict';
+
 
 import path from 'path';
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';

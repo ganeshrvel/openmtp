@@ -1,4 +1,4 @@
-'use strict';
+
 
 import { BrowserWindow, remote } from 'electron';
 import { PATHS } from './paths';

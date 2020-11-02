@@ -1,4 +1,4 @@
-'use strict';
+
 
 import { APP_THEME_COLOR_VAR } from '../../containers/App/styles';
 

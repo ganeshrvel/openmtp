@@ -1,5 +1,3 @@
-'use strict';
-
 /* eslint global-require: off */
 
 import { app, BrowserWindow, ipcMain } from 'electron';

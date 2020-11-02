@@ -1,4 +1,4 @@
-'use strict';
+
 
 import React, { Component, Fragment } from 'react';
 import { withStyles } from '@material-ui/core/styles';
