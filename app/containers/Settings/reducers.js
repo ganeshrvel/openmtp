@@ -1,5 +1,3 @@
-
-
 import { actionTypes } from './actions';
 import {
   DEVICE_TYPE,

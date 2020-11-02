@@ -1,5 +1,3 @@
-
-
 /* eslint no-case-declarations: off */
 
 import React, { PureComponent, Fragment } from 'react';
@@ -31,14 +29,14 @@ import {
 } from '../selectors';
 import { makeHideHiddenFiles } from '../../Settings/selectors';
 import { delLocalFiles, delMtpFiles } from '../../../api/sys';
-import { DEVICES_DEFAULT_PATH} from '../../../constants';
+import { DEVICES_DEFAULT_PATH } from '../../../constants';
 import { toggleSettings } from '../../Settings/actions';
 import { toggleWindowSizeOnDoubleClick } from '../../../utils/titlebarDoubleClick';
 import ToolbarBody from './ToolbarBody';
 import { openExternalUrl } from '../../../utils/url';
 import { APP_GITHUB_URL } from '../../../constants/meta';
 import { pathUp } from '../../../utils/files';
-import { DEVICE_TYPE } from "../../../enums";
+import { DEVICE_TYPE } from '../../../enums';
 
 class ToolbarAreaPane extends PureComponent {
   constructor(props) {

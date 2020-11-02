@@ -1,5 +1,3 @@
-
-
 import zlib from 'zlib';
 import { createReadStream, createWriteStream } from 'fs';
 import { log } from './log';

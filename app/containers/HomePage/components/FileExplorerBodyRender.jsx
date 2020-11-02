@@ -1,5 +1,3 @@
-
-
 import React, { PureComponent } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
@@ -14,11 +12,9 @@ import {
   toggleFileExplorerDeviceType,
   undefinedOrNull,
 } from '../../../utils/funcs';
-import {
-  FILE_EXPLORER_DEFAULT_FOCUSSED_DEVICE_TYPE,
-} from '../../../constants';
+import { FILE_EXPLORER_DEFAULT_FOCUSSED_DEVICE_TYPE } from '../../../constants';
 import { FILE_EXPLORER_BODY_WRAPPER_ID } from '../../../constants/dom';
-import { DEVICE_TYPE } from "../../../enums";
+import { DEVICE_TYPE } from '../../../enums';
 
 class FileExplorerBodyRender extends PureComponent {
   constructor(props) {

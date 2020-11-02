@@ -1,5 +1,3 @@
-
-
 import React, { PureComponent } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -11,12 +9,12 @@ import Tooltip from '@material-ui/core/Tooltip';
 import classNames from 'classnames';
 import SidebarAreaPaneLists from './SidebarAreaPaneLists';
 import { LazyLoaderOverLay } from '../styles/ToolbarAreaPane';
-import { DEVICES_LABEL} from '../../../constants';
+import { DEVICES_LABEL } from '../../../constants';
 import {
   Confirm as ConfirmDialog,
   Selection as SelectionDialog,
 } from '../../../components/DialogBox';
-import { DEVICE_TYPE } from "../../../enums";
+import { DEVICE_TYPE } from '../../../enums';
 
 export default class ToolbarAreaPane extends PureComponent {
   activeToolbarList = ({ ...args }) => {
@@ -129,8 +127,7 @@ export default class ToolbarAreaPane extends PureComponent {
           id="selectionDialog"
           showDiskAvatars
           open={
-            deviceType === DEVICE_TYPE.mtp &&
-            toggleMtpStorageSelectionDialog
+            deviceType === DEVICE_TYPE.mtp && toggleMtpStorageSelectionDialog
           }
           onClose={onMtpStoragesListClick}
         />

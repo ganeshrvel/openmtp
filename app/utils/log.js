@@ -1,5 +1,3 @@
-
-
 import os, { EOL } from 'os';
 import { IS_DEV } from '../constants/env';
 import { APP_NAME, APP_VERSION } from '../constants/meta';

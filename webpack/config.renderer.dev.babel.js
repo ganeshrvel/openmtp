@@ -1,5 +1,3 @@
-
-
 /**
  * Build config for development electron renderer process that uses
  * Hot-Module-Replacement

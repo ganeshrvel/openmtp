@@ -1,5 +1,3 @@
-
-
 import React, { PureComponent } from 'react';
 import { quickHash } from '../../../utils/funcs';
 import { fileExplorerKeymaps } from '../../../constants/keymaps';

@@ -1,5 +1,3 @@
-
-
 /* eslint no-case-declarations: off */
 
 import React, { Component, Fragment } from 'react';

@@ -1,5 +1,3 @@
-
-
 import { variables } from './index';
 
 // eslint-disable-next-line no-unused-vars

@@ -1,5 +1,3 @@
-
-
 import { BrowserWindow, remote } from 'electron';
 import { settingsStorage } from './storageHelper';
 import { materialUiSkeletonThemeStyles } from '../containers/App/styles';
@@ -29,5 +27,5 @@ export const getWindowBackgroundColor = () => {
 
   const { background } = materialUiSkeletonThemeStyles({ appThemeMode });
 
-  return background;
+  return background.paper;
 };

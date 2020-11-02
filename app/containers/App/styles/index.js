@@ -1,5 +1,3 @@
-
-
 import { variables, mixins } from '../../../styles/js';
 import {
   APP_BASIC_THEME_COLORS,

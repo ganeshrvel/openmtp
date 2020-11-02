@@ -1,5 +1,3 @@
-
-
 import { app, Menu } from 'electron';
 import {
   appFeaturesWindow,

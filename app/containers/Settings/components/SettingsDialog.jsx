@@ -1,5 +1,3 @@
-
-
 import React, { PureComponent } from 'react';
 import electronIs from 'electron-is';
 import classNames from 'classnames';

@@ -1,5 +1,3 @@
-
-
 import { APP_NAME, APP_WEBSITE } from '../constants/meta';
 
 const inviteViaEmailSubject = `Android File Transfer for macOS - OpenMTP`;

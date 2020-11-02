@@ -1,5 +1,3 @@
-
-
 import { variables, mixins } from '../../../styles/js';
 import { tableCellFileExplorerTableRowsRender } from './FileExplorerTableBodyListRender';
 

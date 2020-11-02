@@ -1,5 +1,3 @@
-
-
 import { APP_DESC, APP_NAME, APP_WEBSITE } from '../constants/meta';
 
 const twitterShareText = `Tired of using expensive, outdated, bug heavy, Android File Transfer apps for macOS?

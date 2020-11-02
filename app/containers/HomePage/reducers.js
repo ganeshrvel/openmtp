@@ -1,5 +1,3 @@
-
-
 import path from 'path';
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import {
@@ -15,7 +13,7 @@ import {
   DEVICES_DEFAULT_PATH,
   FILE_EXPLORER_DEFAULT_FOCUSSED_DEVICE_TYPE,
 } from '../../constants';
-import { DEVICE_TYPE } from "../../enums";
+import { DEVICE_TYPE } from '../../enums';
 
 export const initialState = {
   focussedFileExplorerDeviceType: {

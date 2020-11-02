@@ -1,5 +1,3 @@
-
-
 import React, { PureComponent, Fragment } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -9,10 +7,7 @@ import FileExplorerTableEmptyRowRender from './FileExplorerTableBodyEmptyRender'
 import FileExplorerTableBodyGridWrapperRender from './FileExplorerTableBodyGridWrapperRender';
 import FileExplorerTableBodyListWrapperRender from './FileExplorerTableBodyListWrapperRender';
 import { styles } from '../styles/FileExplorerTableBodyRender';
-import {
-  DEVICE_TYPE,
-  FILE_EXPLORER_VIEW_TYPE,
-} from '../../../enums';
+import { DEVICE_TYPE, FILE_EXPLORER_VIEW_TYPE } from '../../../enums';
 
 class FileExplorerTableBodyRender extends PureComponent {
   isSelected = (path) => {

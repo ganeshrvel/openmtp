@@ -1,5 +1,3 @@
-
-
 import { APP_THEME_COLOR_VAR } from '../../containers/App/styles';
 
 // common styling variable object which can be imported by components

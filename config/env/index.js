@@ -1,5 +1,3 @@
-
-
 /* eslint prefer-destructuring: ["error", {AssignmentExpression: {array: true}}] */
 const IS_PROD = require('../../app/constants/env').IS_PROD;
 

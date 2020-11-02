@@ -1,11 +1,9 @@
-
-
 import { EOL } from 'os';
 import { replaceBulk } from './funcs';
 import { log } from './log';
 import { isGoogleAndroidFileTransferActive } from './isGoogleAndroidFileTransferActive';
-import { DEVICES_LABEL} from '../constants';
-import { DEVICE_TYPE } from "../enums";
+import { DEVICES_LABEL } from '../constants';
+import { DEVICE_TYPE } from '../enums';
 
 export const processMtpBuffer = async ({ error, stderr }) => {
   const errorTpl = {

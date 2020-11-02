@@ -1,5 +1,3 @@
-
-
 import { log } from '@Log';
 import prefixer from '../../utils/reducerPrefixer';
 import {
@@ -13,7 +11,7 @@ import {
   processLocalBuffer,
 } from '../../utils/processBufferOutput';
 import { isArraysEqual } from '../../utils/funcs';
-import { DEVICE_TYPE } from "../../enums";
+import { DEVICE_TYPE } from '../../enums';
 
 const prefix = '@@Home';
 const actionTypesList = [

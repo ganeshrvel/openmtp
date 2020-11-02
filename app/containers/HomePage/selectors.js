@@ -1,5 +1,3 @@
-
-
 import { createSelector } from 'reselect';
 import { getMtpStoragesListSelected } from './actions';
 import { initialState } from './reducers';
