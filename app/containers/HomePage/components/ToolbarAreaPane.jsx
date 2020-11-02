@@ -52,26 +52,29 @@ class ToolbarAreaPane extends PureComponent {
   }
 
   componentWillMount() {
-    const { deviceType } = this.props;
     ipcRenderer.on(
       'fileExplorerToolbarActionCommunication',
-      (event, { ...args }) => {
-        const { type, deviceType: _focussedFileExplorerDeviceType } = args;
-        if (deviceType !== _focussedFileExplorerDeviceType) {
-          return null;
-        }
-
-        this._handleToolbarAction(type);
-      }
+      this.fileExplorerToolbarActionCommunicationEvent
     );
   }
 
   componentWillUnmount() {
     ipcRenderer.removeListener(
       'fileExplorerToolbarActionCommunication',
-      () => {}
+      this.fileExplorerToolbarActionCommunicationEvent
     );
   }
+
+  fileExplorerToolbarActionCommunicationEvent = (event, { ...args }) => {
+    const { deviceType } = this.props;
+
+    const { type, deviceType: _focussedFileExplorerDeviceType } = args;
+    if (deviceType !== _focussedFileExplorerDeviceType) {
+      return null;
+    }
+
+    this._handleToolbarAction(type);
+  };
 
   _handleDoubleClickToolBar = (event) => {
     if (event.target !== event.currentTarget) {
@@ -272,6 +275,7 @@ class ToolbarAreaPane extends PureComponent {
     );
   }
 }
+
 const mapDispatchToProps = (dispatch, ownProps) =>
   bindActionCreators(
     {

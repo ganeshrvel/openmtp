@@ -1,5 +1,5 @@
-import { remote } from 'electron';
 import { hot } from 'react-hot-loader/root';
+import { ipcRenderer } from 'electron';
 import React, { Component } from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import {
@@ -32,11 +32,13 @@ import {
   makeAppThemeModeSettings,
 } from '../Settings/selectors';
 import { getAppThemeMode } from '../../utils/theme';
-import { APP_THEME_MODE_TYPE } from '../../enums';
+import { getMainWindowRendererProcess } from '../../utils/windowHelper';
 
 class App extends Component {
   constructor(props) {
     super(props);
+
+    this.mainWindowRendererProcess = getMainWindowRendererProcess();
 
     this.allowWritingJsonToSettings = false;
   }
@@ -58,9 +60,12 @@ class App extends Component {
 
   componentDidMount() {
     try {
-      bootLoader.cleanRotationFiles();
+      ipcRenderer.on('nativeThemeUpdated', () => {
+        this.setAppTheme();
+        this.setState({});
+      });
 
-      this.registerEvents();
+      bootLoader.cleanRotationFiles();
     } catch (e) {
       log.error(e, `App -> componentDidMount`);
     }
@@ -76,22 +81,14 @@ class App extends Component {
     }
   };
 
-  registerEvents = () => {
-    const { appThemeModeSettings } = this.props;
-    const { nativeTheme } = remote;
+  componentWillUnmount() {
+    this.deregisterAccelerators();
 
-    nativeTheme.on('updated', () => {
-      // if the app theme was set as auto and the os theme has changed
-      // then refresh the app theme
-      if (appThemeModeSettings !== APP_THEME_MODE_TYPE.auto) {
-        return;
-      }
-
-      // [setState] is used here to force the rerender of the components on OS theme change
-      this.setState({});
-      this.setAppTheme();
-    });
-  };
+    this.mainWindowRendererProcess.webContents.removeListener(
+      'nativeThemeUpdated',
+      () => {}
+    );
+  }
 
   /**
    * Working: Toggle app theme without restart.

@@ -1,4 +1,4 @@
-import { remote } from 'electron';
+import { remote, nativeTheme } from 'electron';
 import { APP_THEME_COLOR_KEY } from '../constants/theme';
 import { APP_THEME_MODE_TYPE } from '../enums';
 
@@ -18,8 +18,7 @@ export const getAppCssColorVar = () => {
 
 export const getAppThemeMode = (appThemeMode) => {
   // compatible with both renderer and main process
-  const { shouldUseDarkColors } =
-    remote?.nativeTheme ?? remote?.BrowserWindow.nativeTheme ?? {};
+  const { shouldUseDarkColors } = remote?.nativeTheme ?? nativeTheme ?? {};
 
   switch (appThemeMode) {
     case APP_THEME_MODE_TYPE.dark:

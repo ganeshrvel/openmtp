@@ -1,6 +1,6 @@
 /* eslint global-require: off */
 
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, ipcMain, nativeTheme } from 'electron';
 import electronIs from 'electron-is';
 import MenuBuilder from './menu';
 import { log } from './utils/log';
@@ -15,6 +15,7 @@ import { nonBootableDeviceWindow } from './utils/createWindows';
 import { APP_TITLE } from './constants/meta';
 import { isPackaged } from './utils/isPackaged';
 import { getWindowBackgroundColor } from './utils/windowHelper';
+import { APP_THEME_MODE_TYPE } from './enums';
 
 const isSingleInstance = app.requestSingleInstanceLock();
 const isDeviceBootable = bootTheDevice();
@@ -235,4 +236,22 @@ if (!isDeviceBootable) {
   });
 
   app.on('before-quit', () => (app.quitting = true)); // eslint-disable-line no-return-assign
+
+  nativeTheme.on('updated', () => {
+    const setting = settingsStorage.getItems(['appThemeMode']);
+
+    // if the app theme is 'auto' and if the os theme has changed
+    // then refresh the app theme
+    if (setting.appThemeMode !== APP_THEME_MODE_TYPE.auto) {
+      return;
+    }
+
+    if (!mainWindow) {
+      return;
+    }
+
+    mainWindow.webContents.send('nativeThemeUpdated', {
+      shouldUseDarkColors: nativeTheme.shouldUseDarkColors,
+    });
+  });
 }

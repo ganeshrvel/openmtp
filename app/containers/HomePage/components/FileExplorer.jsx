@@ -79,7 +79,6 @@ import { baseName, pathInfo, pathUp, sanitizePath } from '../../../utils/files';
 import { DEVICE_TYPE, FILE_EXPLORER_VIEW_TYPE } from '../../../enums';
 
 const { Menu, getCurrentWindow } = remote;
-const _mainWindowRendererProcess = getMainWindowRendererProcess();
 const filesDragGhostImg = new Image(0, 0);
 filesDragGhostImg.src = imgsrc('FileExplorer/copy.svg');
 let allowFileDropFlag = false;
@@ -126,6 +125,9 @@ const socialMediaShareBtnsList = [
 class FileExplorer extends Component {
   constructor(props) {
     super(props);
+
+    this.mainWindowRendererProcess = getMainWindowRendererProcess();
+
     this.initialState = {
       togglePasteConfirmDialog: false,
       toggleDialog: {
@@ -202,7 +204,7 @@ class FileExplorer extends Component {
   componentWillUnmount() {
     this.deregisterAccelerators();
 
-    _mainWindowRendererProcess.webContents.removeListener(
+    this.mainWindowRendererProcess.webContents.removeListener(
       'fileExplorerToolbarActionCommunication',
       () => {}
     );
@@ -471,7 +473,7 @@ class FileExplorer extends Component {
           break;
         }
 
-        _mainWindowRendererProcess.webContents.send(
+        this.mainWindowRendererProcess.webContents.send(
           'fileExplorerToolbarActionCommunication',
           {
             type,
@@ -481,7 +483,7 @@ class FileExplorer extends Component {
         break;
 
       case 'refresh':
-        _mainWindowRendererProcess.webContents.send(
+        this.mainWindowRendererProcess.webContents.send(
           'fileExplorerToolbarActionCommunication',
           {
             type,
@@ -495,7 +497,7 @@ class FileExplorer extends Component {
           break;
         }
 
-        _mainWindowRendererProcess.webContents.send(
+        this.mainWindowRendererProcess.webContents.send(
           'fileExplorerToolbarActionCommunication',
           {
             type,
