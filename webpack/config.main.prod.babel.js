@@ -8,11 +8,12 @@ import webpack from 'webpack';
 import merge from 'webpack-merge';
 import TerserPlugin from 'terser-webpack-plugin';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
-import CleanWebpackPlugin from 'clean-webpack-plugin';
 import baseConfig from './config.base';
 import { PATHS } from '../app/utils/paths';
 
-export default merge.smart(baseConfig, {
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+
+export default merge(baseConfig, {
   devtool: 'source-map',
   mode: 'production',
   target: 'electron-main',
@@ -26,18 +27,20 @@ export default merge.smart(baseConfig, {
   },
 
   optimization: {
+    moduleIds: 'named',
     minimizer: [
       new TerserPlugin({
         parallel: true,
-        sourceMap: true,
-        cache: true,
+        terserOptions: {
+          compress: {},
+        },
       }),
     ],
   },
 
   plugins: [
-    new CleanWebpackPlugin([`${PATHS.dist}/*`], {
-      root: PATHS.root,
+    new CleanWebpackPlugin({
+      cleanOnceBeforeBuildPatterns: [`${PATHS.dist}/*`],
     }),
 
     new BundleAnalyzerPlugin({
@@ -70,6 +73,5 @@ export default merge.smart(baseConfig, {
   node: {
     __dirname: false,
     __filename: false,
-    fs: 'empty',
   },
 });

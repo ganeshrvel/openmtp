@@ -31,6 +31,7 @@ const createChildWindow = () => {
       movable: false,
       webPreferences: {
         nodeIntegration: true,
+        enableRemoteModule: true,
       },
     });
   } catch (e) {

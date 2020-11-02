@@ -14,7 +14,7 @@ import TerserPlugin from 'terser-webpack-plugin';
 import baseConfig from './config.base';
 import { PATHS } from '../app/utils/paths';
 
-export default merge.smart(baseConfig, {
+export default merge(baseConfig, {
   devtool: 'source-map',
   mode: 'production',
   target: 'electron-renderer',
@@ -43,7 +43,7 @@ export default merge.smart(baseConfig, {
           {
             loader: 'css-loader',
             options: {
-              publicPath: './',
+              // publicPath: './',
               // sourceMap: true
             },
           },
@@ -62,9 +62,10 @@ export default merge.smart(baseConfig, {
           {
             loader: 'css-loader',
             options: {
-              publicPath: './',
-              modules: true,
-              localIdentName: '[name]__[local]__[hash:base64:5]',
+              // publicPath: './',
+              modules: {
+                localIdentName: '[name]__[local]__[hash:base64:5]',
+              },
               // sourceMap: true
             },
           },
@@ -83,7 +84,7 @@ export default merge.smart(baseConfig, {
           {
             loader: 'css-loader',
             options: {
-              publicPath: './',
+              // publicPath: './',
               // sourceMap: true,
               importLoaders: 1,
             },
@@ -91,7 +92,7 @@ export default merge.smart(baseConfig, {
           {
             loader: 'sass-loader',
             options: {
-              publicPath: './',
+              // publicPath: './',
               // sourceMap: true
             },
           },
@@ -110,17 +111,18 @@ export default merge.smart(baseConfig, {
           {
             loader: 'css-loader',
             options: {
-              publicPath: './',
-              modules: true,
+              // publicPath: './',
+              modules: {
+                localIdentName: '[name]__[local]__[hash:base64:5]',
+              },
               importLoaders: 1,
-              localIdentName: '[name]__[local]__[hash:base64:5]',
               // sourceMap: true
             },
           },
           {
             loader: 'sass-loader',
             options: {
-              publicPath: './',
+              // publicPath: './',
               // sourceMap: true
             },
           },
@@ -206,11 +208,13 @@ export default merge.smart(baseConfig, {
   },
 
   optimization: {
+    moduleIds: 'named',
     minimizer: [
       new TerserPlugin({
         parallel: true,
-        sourceMap: true,
-        cache: true,
+        terserOptions: {
+          compress: {},
+        },
       }),
       new OptimizeCSSAssetsPlugin({
         cssProcessorOptions: {

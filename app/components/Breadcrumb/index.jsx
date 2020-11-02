@@ -7,9 +7,9 @@ import Paper from '@material-ui/core/Paper';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import Tooltip from '@material-ui/core/Tooltip';
-import { sanitizePath } from '../../utils/paths';
 import { quickHash } from '../../utils/funcs';
 import { styles } from './styles';
+import { sanitizePath } from '../../utils/files';
 
 class Breadcrumb extends PureComponent {
   _handleClickPath = (enabled, value, event) => {

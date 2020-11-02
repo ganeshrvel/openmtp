@@ -137,6 +137,7 @@ if (!isDeviceBootable) {
         titleBarStyle: 'hidden',
         webPreferences: {
           nodeIntegration: true,
+          enableRemoteModule: true,
         },
       });
 

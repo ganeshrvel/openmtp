@@ -33,6 +33,7 @@ const nonBootableDeviceCreateWindow = () => {
     resizable: false,
     webPreferences: {
       nodeIntegration: true,
+      enableRemoteModule: true,
     },
   });
 };
@@ -77,6 +78,7 @@ const reportBugsCreateWindow = () => {
     fullscreenable: false,
     webPreferences: {
       nodeIntegration: true,
+      enableRemoteModule: true,
     },
   });
 };
@@ -128,6 +130,7 @@ const privacyPolicyCreateWindow = (isRenderedPage) => {
     fullscreenable: true,
     webPreferences: {
       nodeIntegration: true,
+      enableRemoteModule: true,
     },
   };
 
@@ -198,6 +201,7 @@ const appUpdateAvailableCreateWindow = () => {
     fullscreenable: false,
     webPreferences: {
       nodeIntegration: true,
+      enableRemoteModule: true,
     },
   });
 };
@@ -254,6 +258,7 @@ const appFeaturesCreateWindow = (isRenderedPage) => {
     fullscreenable: false,
     webPreferences: {
       nodeIntegration: true,
+      enableRemoteModule: true,
     },
   };
 
@@ -326,6 +331,7 @@ const keyboardShortcutsCreateWindow = (isRenderedPage) => {
     fullscreenable: true,
     webPreferences: {
       nodeIntegration: true,
+      enableRemoteModule: true,
     },
   };
 

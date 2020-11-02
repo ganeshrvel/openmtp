@@ -89,10 +89,11 @@ export default merge(baseConfig, {
           {
             loader: 'css-loader',
             options: {
-              modules: true,
+              modules: {
+                localIdentName: '[path][name]__[local]__[hash:base64:5]',
+              },
               sourceMap: true,
               importLoaders: 1,
-              localIdentName: '[path][name]__[local]__[hash:base64:5]',
             },
           },
         ],
@@ -125,10 +126,11 @@ export default merge(baseConfig, {
           {
             loader: 'css-loader',
             options: {
-              modules: true,
+              modules: {
+                localIdentName: '[path][name]__[local]__[hash:base64:5]',
+              },
               sourceMap: true,
               importLoaders: 1,
-              localIdentName: '[path][name]__[local]__[hash:base64:5]',
             },
           },
           {
@@ -240,7 +242,6 @@ export default merge(baseConfig, {
   node: {
     __dirname: false,
     __filename: false,
-    fs: 'empty',
   },
 
   devServer: {

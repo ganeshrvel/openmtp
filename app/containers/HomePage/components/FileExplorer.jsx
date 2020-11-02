@@ -62,7 +62,6 @@ import {
   pasteFiles,
   renameMtpFiles,
 } from '../../../api/sys';
-import { baseName, pathInfo, pathUp, sanitizePath } from '../../../utils/paths';
 import {
   isArray,
   isFloat,
@@ -82,6 +81,7 @@ import {
   redditShareUrl,
   twitterShareUrl,
 } from '../../../templates/socialMediaShareBtns';
+import { baseName, pathInfo, pathUp, sanitizePath } from '../../../utils/files';
 
 const { Menu, getCurrentWindow } = remote;
 const _mainWindowRendererProcess = getMainWindowRendererProcess();

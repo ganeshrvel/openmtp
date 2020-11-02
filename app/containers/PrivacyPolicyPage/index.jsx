@@ -17,6 +17,7 @@ import { openExternalUrl } from '../../utils/url';
 import { resetOverFlowY } from '../../utils/styleResets';
 import { PRIVACY_POLICY_PAGE_TITLE } from '../../templates/privacyPolicyPage';
 import { styles } from './styles';
+import { PATHS } from '../../utils/paths';
 
 class PrivacyPolicyPage extends Component {
   componentWillMount() {
@@ -424,11 +425,11 @@ class PrivacyPolicyPage extends Component {
               We have implemented a very powerful diagnostic tool to capture and
               report the Crash Reports and bug encountered by the application.
               The Crash Reports are stored inside your device as log files.
-              These log files can be accessed by navigating to
-              &quot;~/.io.ganeshrvel/{APP_NAME}/logs/&quot; folder. You may
-              choose to send us these log files by selecting the
-              &quot;Help&quot; menu &gt; &quot;Report Bugs&quot; and clicking on
-              the &quot;EMAIL ERROR LOGS&quot; buttons.
+              These log files can be accessed by navigating to &quot;
+              {PATHS.profileDir}/logs/&quot; folder. You may choose to send us
+              these log files by selecting the &quot;Help&quot; menu &gt;
+              &quot;Report Bugs&quot; and clicking on the &quot;EMAIL ERROR
+              LOGS&quot; buttons.
             </span>
           </p>
           <p>
