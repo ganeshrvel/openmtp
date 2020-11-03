@@ -1,58 +1,105 @@
 import { variables, mixins } from '../../../styles/js';
-import {
-  APP_BASIC_THEME_COLORS,
-  APP_THEME_COLOR_KEY,
-} from '../../../constants/theme';
-import { getAppCssColorVar, getContrastingTheme } from '../../../utils/theme';
 
 // Styles for App/index.jsx component
-export const styles = (_) => {
+export const styles = (theme) => {
   return {
     root: {},
     noProfileError: {
       textAlign: `center`,
-      ...mixins().center,
-      ...mixins().absoluteCenter,
+      ...mixins({ theme }).center,
+      ...mixins({ theme }).absoluteCenter,
     },
   };
 };
 
-// theming used my material ui createMuiTheme
-export const materialUiSkeletonThemeStyles = ({ ...args }) => {
-  const { appThemeMode } = args;
+export const getColorPalette = () => {
+  const lightPrimaryColor = '#fff';
+  const lightSecondaryColor = '#007af5';
+
+  const darkPrimaryColor = '#242424';
+  const darkSecondaryColor = '#007af5';
 
   return {
-    primaryColor: {
-      main: `${APP_BASIC_THEME_COLORS[appThemeMode].primaryMain}`,
+    get light() {
+      return {
+        primary: {
+          main: lightPrimaryColor,
+          contrastText: '#000',
+        },
+        secondary: {
+          main: lightSecondaryColor,
+          contrastText: '#fff',
+        },
+        background: {
+          default: darkPrimaryColor,
+          paper: lightPrimaryColor,
+        },
+        btnTextColor: '#fff',
+        fileColor: '#000',
+        tableHeaderFooterBgColor: `#fbfbfb`,
+        lightText1Color: `rgba(0, 0, 0, 0.50)`,
+        fileExplorerThinLineDividerColor: `rgba(0, 0, 0, 0.12)`,
+        disabledBgColor: `#f3f3f3`,
+        nativeSystemColor: `#ececec`,
+        contrastPrimaryMainColor: darkPrimaryColor,
+      };
     },
-    secondaryColor: {
-      main: `${APP_BASIC_THEME_COLORS[appThemeMode].secondaryMain}`,
-    },
-    background: {
-      paper: `${APP_BASIC_THEME_COLORS[appThemeMode].primaryMain}`,
+    get dark() {
+      return {
+        primary: {
+          main: darkPrimaryColor,
+          contrastText: '#fff',
+        },
+        secondary: {
+          main: darkSecondaryColor,
+          contrastText: '#fff',
+        },
+        background: {
+          default: darkPrimaryColor,
+          paper: darkPrimaryColor,
+        },
+        text: {
+          primary: '#fff',
+          secondary: 'rgba(255, 255, 255, 0.65)',
+          disabled: 'rgba(255, 255, 255, 0.4)',
+        },
+        action: {
+          active: 'rgba(255, 255, 255, 0.65)',
+          hover: 'rgba(255, 255, 255, 0.2)',
+          selected: 'rgba(255, 255, 255, 0.16)',
+          disabled: 'rgba(255, 255, 255, 0.3)',
+          disabledBackground: 'rgba(255, 255, 255, 0.12)',
+        },
+        divider: `rgba(255, 255, 255, 0.12)`,
+        btnTextColor: '#fff',
+        fileColor: '#d5d5d5',
+        tableHeaderFooterBgColor: `#313131`,
+        lightText1Color: `rgba(255, 255, 255, 0.50)`,
+        fileExplorerThinLineDividerColor: `rgba(255, 255, 255, .12)`,
+        disabledBgColor: `rgba(255, 255, 255, 0.15)`,
+        nativeSystemColor: `#ececec`,
+        contrastPrimaryMainColor: lightPrimaryColor,
+      };
     },
   };
+};
+
+export const getCurrentThemePalette = (appThemeMode) => {
+  return getColorPalette()[appThemeMode];
 };
 
 export const materialUiTheme = ({ ...args }) => {
   const { appThemeMode } = args;
 
+  const palette = getCurrentThemePalette(appThemeMode);
+
   return {
     palette: {
-      type: appThemeMode,
-      primary: {
-        ...materialUiSkeletonThemeStyles({ appThemeMode }).primaryColor,
-      },
-      secondary: {
-        ...materialUiSkeletonThemeStyles({ appThemeMode }).secondaryColor,
-      },
-      background: {
-        ...materialUiSkeletonThemeStyles({ appThemeMode }).background,
-      },
+      ...palette,
     },
     typography: {
       useNextVariants: true,
-      fontSize: variables().regularFontSize,
+      fontSize: variables().sizes.regularFontSize,
       fontFamily: [
         'Roboto',
         '-apple-system',
@@ -67,57 +114,16 @@ export const materialUiTheme = ({ ...args }) => {
       ].join(','),
     },
 
-    overrides: {},
+    overrides: {
+      MuiCssBaseline: {
+        '@global': {
+          html: {
+            '--app-bg-color': palette.background.paper,
+            '--app-secondary-main-color': palette.secondary.main,
+            '--app-native-system-color': palette.nativeSystemColor,
+          },
+        },
+      },
+    },
   };
 };
-
-export const appBodyStylesStore = ({ appThemeMode }) => {
-  const appStyle = materialUiSkeletonThemeStyles({ appThemeMode });
-
-  const contrastingThemeMode = getContrastingTheme(appThemeMode);
-  const contrastingAppStyle = materialUiSkeletonThemeStyles({
-    appThemeMode: contrastingThemeMode,
-  });
-
-  const styleList = {};
-  switch (appThemeMode) {
-    case 'dark':
-      styleList.tableHeaderFooterBgColor = `#313131`;
-      styleList.lightText1Color = `rgba(255, 255, 255, 0.50)`;
-      styleList.fileExplorerThinLineDividerColor = `rgba(255, 255, 255, .12)`;
-      styleList.disabledBgColor = `rgba(255, 255, 255, 0.3)`;
-
-      break;
-
-    case 'light':
-    default:
-      styleList.tableHeaderFooterBgColor = `#fbfbfb`;
-      styleList.lightText1Color = `rgba(0, 0, 0, 0.50)`;
-      styleList.fileExplorerThinLineDividerColor = `rgba(0, 0, 0, 0.12)`;
-      styleList.disabledBgColor = `#f3f3f3`;
-      break;
-  }
-
-  const mappedStyleList = {};
-
-  Object.keys(styleList).map((a) => {
-    mappedStyleList[APP_THEME_COLOR_KEY[a]] = styleList[a];
-
-    return a;
-  });
-
-  return {
-    [APP_THEME_COLOR_KEY.bgColor]: appStyle.primaryColor.main,
-    [APP_THEME_COLOR_KEY.primaryMainColor]: appStyle.primaryColor.main,
-    [APP_THEME_COLOR_KEY.secondaryMainColor]: appStyle.secondaryColor.main,
-    [APP_THEME_COLOR_KEY.paperBgColor]: appStyle.background.paper,
-    [APP_THEME_COLOR_KEY.nativeSystemColor]: `#ececec`,
-    [APP_THEME_COLOR_KEY.contrastPrimaryMainColor]:
-      contrastingAppStyle.primaryColor.main,
-    ...mappedStyleList,
-  };
-};
-
-// app theme css style variables value.
-// outputted as {bgColor: `var(--app-bg-color)` }
-export const APP_THEME_COLOR_VAR = getAppCssColorVar();

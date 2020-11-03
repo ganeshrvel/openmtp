@@ -35,7 +35,7 @@ class SidebarAreaPaneLists extends PureComponent {
                 })
               }
             >
-              <ListItemIcon>
+              <ListItemIcon className={styles.listIcon}>
                 {item.icon === 'folder' && <FolderIcon />}
               </ListItemIcon>
               <ListItemText primary={item.label} />

@@ -8,14 +8,13 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import classNames from 'classnames';
 import SidebarAreaPaneLists from './SidebarAreaPaneLists';
-import { LazyLoaderOverLay } from '../styles/ToolbarAreaPane';
+import { LazyLoaderOverlay } from '../styles/ToolbarAreaPane';
 import { DEVICES_LABEL } from '../../../constants';
 import {
   Confirm as ConfirmDialog,
   Selection as SelectionDialog,
 } from '../../../components/DialogBox';
 import { DEVICE_TYPE } from '../../../enums';
-import { materialUiSkeletonThemeStyles } from '../../App/styles';
 
 export default class ToolbarAreaPane extends PureComponent {
   activeToolbarList = ({ ...args }) => {
@@ -114,6 +113,8 @@ export default class ToolbarAreaPane extends PureComponent {
       mtpDevice,
     });
 
+    const RenderLazyLoaderOverlay = LazyLoaderOverlay({ appThemeMode });
+
     return (
       <div className={styles.root}>
         <ConfirmDialog
@@ -148,7 +149,7 @@ export default class ToolbarAreaPane extends PureComponent {
           />
         </Drawer>
 
-        {!isLoadedDirectoryLists && <LazyLoaderOverLay />}
+        {!isLoadedDirectoryLists && <RenderLazyLoaderOverlay />}
 
         <AppBar position="static" elevation={0} className={styles.appBar}>
           <Toolbar

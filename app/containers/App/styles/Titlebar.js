@@ -1,11 +1,11 @@
 import { variables, mixins } from '../../../styles/js';
 
-export const styles = (themes) => {
+export const styles = (theme) => {
   return {
     root: {
       width: `100%`,
       height: 14,
-      ...mixins().appDragEnable,
+      ...mixins({ theme }).appDragEnable,
     },
   };
 };

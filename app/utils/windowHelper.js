@@ -1,7 +1,6 @@
 import { BrowserWindow, remote } from 'electron';
-import { settingsStorage } from './storageHelper';
-import { materialUiSkeletonThemeStyles } from '../containers/App/styles';
-import { getAppThemeMode } from './theme';
+import { getAppThemeModeSettings } from './theme';
+import { getColorPalette } from '../containers/App/styles';
 
 export const getMainWindowMainProcess = () => {
   const _mainWindow = BrowserWindow.getAllWindows();
@@ -22,10 +21,8 @@ export const getMainWindowRendererProcess = () => {
 };
 
 export const getWindowBackgroundColor = () => {
-  const setting = settingsStorage.getItems(['appThemeMode']);
-  const appThemeMode = getAppThemeMode(setting.appThemeMode);
-
-  const { background } = materialUiSkeletonThemeStyles({ appThemeMode });
+  const appThemeMode = getAppThemeModeSettings();
+  const { background } = getColorPalette({ appThemeMode });
 
   return background.paper;
 };

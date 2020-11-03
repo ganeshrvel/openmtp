@@ -2,6 +2,14 @@
 
 import React, { Component, Fragment } from 'react';
 import Typography from '@material-ui/core/Typography';
+import {
+  faGithub,
+  faTwitter,
+  faFacebook,
+  faReddit,
+  faPaypal,
+} from '@fortawesome/free-brands-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { withStyles } from '@material-ui/core/styles';
 import { remote, ipcRenderer, shell } from 'electron';
 import lodashSortBy from 'lodash/sortBy';
@@ -88,35 +96,35 @@ const socialMediaShareBtnsList = [
   {
     enabled: true,
     label: 'Find us on GitHub',
-    imgSrc: 'SocialMediaShare/github.svg',
+    icon: faGithub,
     url: APP_GITHUB_URL,
     invert: false,
   },
   {
     enabled: true,
     label: 'Share it on Twitter',
-    imgSrc: 'SocialMediaShare/twitter.svg',
+    icon: faTwitter,
     url: twitterShareUrl,
     invert: false,
   },
   {
     enabled: true,
     label: 'Share it on Facebook',
-    imgSrc: 'SocialMediaShare/facebook.svg',
+    icon: faFacebook,
     url: fbShareUrl,
     invert: false,
   },
   {
     enabled: true,
     label: 'Share it on Reddit',
-    imgSrc: 'SocialMediaShare/reddit.svg',
+    icon: faReddit,
     url: redditShareUrl,
     invert: false,
   },
   {
     enabled: true,
     label: 'Buy me a Coffee',
-    imgSrc: 'SocialMediaShare/paypal.svg',
+    icon: faPaypal,
     url: DONATE_PAYPAL_URL,
     invert: false,
   },
@@ -1104,7 +1112,6 @@ class FileExplorer extends Component {
     if (
       !allowFileDropFlag ||
       destinationDeviceType === null ||
-      destinationDeviceType === null ||
       sourceDeviceType === destinationDeviceType
     ) {
       return null;
@@ -1543,10 +1550,10 @@ class FileExplorer extends Component {
                       disabled={!a.enabled}
                       onClick={() => openExternalUrl(a.url)}
                     >
-                      <img
+                      <FontAwesomeIcon
+                        icon={a.icon}
                         className={styles.socialMediaShareBtn}
-                        src={imgsrc(a.imgSrc)}
-                        alt={a.label}
+                        title={a.label}
                       />
                     </IconButton>
                   </div>

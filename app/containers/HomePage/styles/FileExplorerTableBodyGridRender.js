@@ -1,5 +1,3 @@
-import { variables, mixins } from '../../../styles/js';
-
 export const styles = (theme) => ({
   wrapper: {},
   itemWrapper: {
@@ -13,6 +11,13 @@ export const styles = (theme) => ({
   itemIcon: {
     width: 'auto',
     height: `auto`,
+
+    [`&.isFolder`]: {
+      color: theme.palette.secondary.main,
+    },
+    [`&.isFile`]: {
+      color: theme.palette.fileColor,
+    },
   },
   itemSelected: {
     backgroundColor: 'rgba(41, 121, 255, 0.15) !important',

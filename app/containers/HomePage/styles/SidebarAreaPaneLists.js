@@ -9,6 +9,9 @@ export const styles = (theme) => {
     listsBottom: {
       paddingTop: 5,
     },
+    listIcon: {
+      minWidth: 35,
+    },
     listsCaption: {
       padding: `14px 0 0px 20px`,
     },

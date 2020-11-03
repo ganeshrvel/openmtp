@@ -9,10 +9,10 @@ export const styles = (theme) => ({
     wordBreak: `break-all`,
   },
   btnPositive: {
-    ...mixins().btnPositive,
+    ...mixins({ theme }).btnPositive,
   },
   btnNegative: {
-    ...mixins().btnNegative,
+    ...mixins({ theme }).btnNegative,
   },
   textFieldRoot: {
     '& .MuiFormLabel-root.Mui-error.Mui-focused': {

@@ -1,10 +1,11 @@
 import styled, { keyframes } from 'styled-components';
 import { variables, mixins } from '../../../styles/js';
+import { getCurrentThemePalette } from '../../App/styles';
 
 export const styles = (theme) => {
   return {
     root: {
-      ...mixins().appDragEnable,
+      ...mixins({ theme }).appDragEnable,
     },
     grow: {
       flexGrow: 1,
@@ -22,7 +23,7 @@ export const styles = (theme) => {
       left: 0,
       right: 0,
       bottom: 0,
-      backgroundColor: variables().styles.bgColor,
+      backgroundColor: theme.palette.background.paper,
       zIndex: 9999,
     },
     appBar: {},
@@ -30,17 +31,17 @@ export const styles = (theme) => {
       paddingLeft: 5,
     },
     noAppDrag: {
-      ...mixins().appDragDisable,
+      ...mixins({ theme }).appDragDisable,
     },
     navBtnImgs: {
       height: 25,
       width: `25px !important`,
-      color: variables().styles.icons.navbarRegular,
-      ...mixins().noDrag,
-      ...mixins().noselect,
+      color: theme.palette.contrastPrimaryMainColor,
+      ...mixins({ theme }).noDrag,
+      ...mixins({ theme }).noselect,
     },
     disabledNavBtns: {
-      backgroundColor: `${variables().styles.icons.disabled} !important`,
+      backgroundColor: `${theme.palette.disabledBgColor} !important`,
     },
     invertedNavBtns: {
       [`&:hover`]: {
@@ -76,14 +77,17 @@ const animateLazyLoaderOverLay = keyframes`
   }
 `;
 
-export const LazyLoaderOverLay = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: ${variables().styles.bgColor};
-  z-index: 9999;
+export const LazyLoaderOverlay = ({ appThemeMode }) => {
+  const { background } = getCurrentThemePalette(appThemeMode);
 
-  animation: ${animateLazyLoaderOverLay} 0s 3s forwards;
-`;
+  return styled.div`
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9999;
+    background-color: ${background.paper};
+    animation: ${animateLazyLoaderOverLay} 0s 3s forwards;
+  `;
+};

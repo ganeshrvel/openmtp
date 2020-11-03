@@ -6,7 +6,7 @@ export const styles = (theme) => ({
   tableCell: tableCellFileExplorerTableRowsRender,
   helpPhoneNotRecognized: {
     width: '100%',
-    ...mixins().center,
+    ...mixins({ theme }).center,
   },
   noMtp: {
     marginTop: 10,

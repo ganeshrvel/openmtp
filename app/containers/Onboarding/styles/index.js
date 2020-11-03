@@ -3,7 +3,7 @@ import { variables, mixins } from '../../../styles/js';
 export const styles = (theme) => ({
   root: {},
   btnPositive: {
-    ...mixins().btnPositive,
+    ...mixins({ theme }).btnPositive,
   },
   divider: {
     marginBottom: 20,

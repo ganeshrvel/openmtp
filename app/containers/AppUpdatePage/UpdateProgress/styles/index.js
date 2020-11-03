@@ -3,7 +3,7 @@ import { variables, mixins } from '../../../../styles/js';
 export const styles = (theme) => ({
   root: {
     textAlign: `left`,
-    ...mixins().center,
+    ...mixins({ theme }).center,
     width: 500,
     marginTop: 10,
   },

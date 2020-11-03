@@ -13,7 +13,7 @@ export const styles = (theme) => ({
   },
   kbdTitle: {
     display: 'block',
-    color: variables().styles.lightText1Color,
+    color: theme.palette.lightText1Color,
     padding: '1px 0 6px 0',
     fontSize: 14,
   },
