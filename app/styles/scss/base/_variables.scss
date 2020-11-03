@@ -11,8 +11,9 @@ $roboto: 'Roboto', sans-serif;
 // ----------------------------------------------------------------------
 // styles
 // ----------------------------------------------------------------------
-$appBgColor: #fff !default;
 
-$appSecondaryColor: #007af5 !default;
+$appBgColor: var(--app-bg-color) !default;
 
-$nativeSystemColor: #ececec !default;
+$appSecondaryColor: var(--app-secondary-main-color) !default;
+
+$nativeSystemColor: var(--app-native-system-color) !default;

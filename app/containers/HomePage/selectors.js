@@ -1,10 +1,8 @@
-'use strict';
-
 import { createSelector } from 'reselect';
 import { getMtpStoragesListSelected } from './actions';
 import { initialState } from './reducers';
 
-const make = (state, props) => (state ? state.Home : {});
+const make = (state, __) => (state ? state.Home : {});
 
 export const makeFocussedFileExplorerDeviceType = createSelector(
   make,

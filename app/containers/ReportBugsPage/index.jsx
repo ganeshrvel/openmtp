@@ -1,5 +1,3 @@
-'use strict';
-
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import { Helmet } from 'react-helmet';
@@ -23,10 +21,9 @@ class ReportBugsPage extends Component {
   }
 }
 
-const mapDispatchToProps = (dispatch, ownProps) =>
-  bindActionCreators({}, dispatch);
+const mapDispatchToProps = (dispatch, __) => bindActionCreators({}, dispatch);
 
-const mapStateToProps = (state, props) => {
+const mapStateToProps = (_, __) => {
   return {};
 };
 

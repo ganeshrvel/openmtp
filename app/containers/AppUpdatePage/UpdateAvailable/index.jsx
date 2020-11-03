@@ -1,5 +1,3 @@
-'use strict';
-
 import { ipcRenderer } from 'electron';
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
@@ -11,6 +9,9 @@ import { styles } from './styles';
 import releaseNotesStyles from './styles/release-notes.scss';
 import { undefinedOrNull } from '../../../utils/funcs';
 import { APP_NAME, APP_VERSION } from '../../../constants/meta';
+import { setStyle } from '../../../utils/styles';
+import { getAppThemeMode } from '../../../utils/theme';
+import { getCurrentThemePalette } from '../../App/styles';
 
 class AppUpdatePage extends Component {
   constructor(props) {
@@ -56,7 +57,12 @@ class AppUpdatePage extends Component {
   }
 
   componentDidMount() {
-    document.body.setAttribute('style', 'background:#ececec !important');
+    const appThemeMode = getAppThemeMode();
+    const { nativeSystemColor } = getCurrentThemePalette(appThemeMode);
+
+    setStyle(document.body, {
+      background: `${nativeSystemColor} !important`,
+    });
   }
 
   componentWillUnmount() {

@@ -1,6 +1,4 @@
-'use strict';
-
-import { variables, mixins } from '../../../styles/js';
+import { mixins } from '../../../styles/js';
 import { tableCellFileExplorerTableRowsRender } from './FileExplorerTableBodyListRender';
 
 export const styles = (theme) => ({
@@ -8,7 +6,7 @@ export const styles = (theme) => ({
   tableCell: tableCellFileExplorerTableRowsRender,
   helpPhoneNotRecognized: {
     width: '100%',
-    ...mixins().center,
+    ...mixins({ theme }).center,
   },
   noMtp: {
     marginTop: 10,

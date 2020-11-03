@@ -1,5 +1,3 @@
-'use strict';
-
 import React, { lazy, Suspense } from 'react';
 import LoadingIndicator from '../../components/LoadingIndicator';
 

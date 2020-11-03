@@ -1,5 +1,3 @@
-'use strict';
-
 import { join } from 'path';
 import { readFileSync } from 'fs';
 import { rootPath } from 'electron-root-path';

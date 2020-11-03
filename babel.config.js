@@ -1,5 +1,3 @@
-'use strict';
-
 /* eslint global-require: off */
 
 const developmentEnvironments = ['development', 'test'];

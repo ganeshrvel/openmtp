@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import classNames from 'classnames';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
@@ -37,7 +35,6 @@ const SnackbarThemeWrapper = (props) => {
         <IconButton
           key="close"
           aria-label="Close"
-          color="inherit"
           className={styles.close}
           onClick={onClose}
         >

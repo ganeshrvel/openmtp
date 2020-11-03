@@ -1,5 +1,3 @@
-'use strict';
-
 import { BrowserWindow, remote } from 'electron';
 import { PATHS } from './paths';
 import { log } from './log';
@@ -9,6 +7,7 @@ import { undefinedOrNull } from './funcs';
 import { PRIVACY_POLICY_PAGE_TITLE } from '../templates/privacyPolicyPage';
 import { APP_FEATURES_PAGE_TITLE } from '../templates/appFeaturesPage';
 import { KEYBOARD_SHORTCUTS_PAGE_TITLE } from '../templates/keyboardShortcutsPage';
+import { getWindowBackgroundColor } from './windowHelper';
 
 let _nonBootableDeviceWindow = null;
 let _reportBugsWindow = null;
@@ -35,6 +34,7 @@ const nonBootableDeviceCreateWindow = () => {
       nodeIntegration: true,
       enableRemoteModule: true,
     },
+    backgroundColor: getWindowBackgroundColor(),
   });
 };
 
@@ -80,6 +80,7 @@ const reportBugsCreateWindow = () => {
       nodeIntegration: true,
       enableRemoteModule: true,
     },
+    backgroundColor: getWindowBackgroundColor(),
   });
 };
 
@@ -132,6 +133,7 @@ const privacyPolicyCreateWindow = (isRenderedPage) => {
       nodeIntegration: true,
       enableRemoteModule: true,
     },
+    backgroundColor: getWindowBackgroundColor(),
   };
 
   // incoming call from a rendered page
@@ -203,6 +205,7 @@ const appUpdateAvailableCreateWindow = () => {
       nodeIntegration: true,
       enableRemoteModule: true,
     },
+    backgroundColor: getWindowBackgroundColor(),
   });
 };
 
@@ -260,6 +263,7 @@ const appFeaturesCreateWindow = (isRenderedPage) => {
       nodeIntegration: true,
       enableRemoteModule: true,
     },
+    backgroundColor: getWindowBackgroundColor(),
   };
 
   // incoming call from a rendered page
@@ -333,6 +337,7 @@ const keyboardShortcutsCreateWindow = (isRenderedPage) => {
       nodeIntegration: true,
       enableRemoteModule: true,
     },
+    backgroundColor: getWindowBackgroundColor(),
   };
 
   // incoming call from a rendered page

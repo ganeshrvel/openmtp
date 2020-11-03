@@ -1,5 +1,3 @@
-'use strict';
-
 import React, { PureComponent, Fragment } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -37,7 +35,7 @@ class SidebarAreaPaneLists extends PureComponent {
                 })
               }
             >
-              <ListItemIcon>
+              <ListItemIcon className={styles.listIcon}>
                 {item.icon === 'folder' && <FolderIcon />}
               </ListItemIcon>
               <ListItemText primary={item.label} />

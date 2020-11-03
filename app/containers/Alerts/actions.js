@@ -1,5 +1,3 @@
-'use strict';
-
 import prefixer from '../../utils/reducerPrefixer';
 
 const prefix = '@@Alerts';

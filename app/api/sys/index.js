@@ -1,5 +1,3 @@
-'use strict';
-
 /* eslint no-await-in-loop: off */
 
 import {
@@ -20,7 +18,7 @@ import findLodash from 'lodash/find';
 import { log } from '../../utils/log';
 import { mtp as _mtpCli } from '../../utils/binaries';
 
-import { DEVICES_LABEL, DEVICES_TYPE_CONST } from '../../constants';
+import { DEVICES_LABEL } from '../../constants';
 import {
   clearFileTransfer,
   fetchDirList,
@@ -37,6 +35,7 @@ import {
 } from '../../utils/funcs';
 import { msToTime, unixTimestampNow } from '../../utils/date';
 import { baseName, getExtension } from '../../utils/files';
+import { DEVICE_TYPE } from '../../enums';
 
 const readdir = Promise.promisify(fsReaddir);
 const execPromise = Promise.promisify(exec);
@@ -203,7 +202,7 @@ export const checkFileExists = async (
 
     let fullPath = null;
     switch (deviceType) {
-      case DEVICES_TYPE_CONST.local:
+      case DEVICE_TYPE.local:
         if (_isArray) {
           for (let i = 0; i < filePath.length; i += 1) {
             const item = filePath[i];
@@ -218,7 +217,7 @@ export const checkFileExists = async (
         fullPath = path.resolve(filePath);
         return await existsSync(fullPath);
 
-      case DEVICES_TYPE_CONST.mtp:
+      case DEVICE_TYPE.mtp:
         if (_isArray) {
           for (let i = 0; i < filePath.length; i += 1) {
             const item = filePath[i];
@@ -476,9 +475,7 @@ export const fetchMtpStorageOptions = async () => {
       storageList.length < 1
     ) {
       return {
-        error: `${
-          DEVICES_LABEL[DEVICES_TYPE_CONST.mtp]
-        } storage not accessible`,
+        error: `${DEVICES_LABEL[DEVICE_TYPE.mtp]} storage not accessible`,
         stderr: null,
         data: null,
       };

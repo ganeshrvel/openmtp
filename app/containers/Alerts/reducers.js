@@ -1,5 +1,3 @@
-'use strict';
-
 import { actionTypes } from './actions';
 
 export const initialState = {

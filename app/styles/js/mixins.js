@@ -1,9 +1,5 @@
-'use strict';
-
-import { variables } from './index';
-
 // eslint-disable-next-line no-unused-vars
-export default (args) => {
+export default ({ theme }) => {
   return {
     resetUl: {
       'margin-block-start': 'unset',
@@ -48,11 +44,12 @@ export default (args) => {
     },
     a: {
       cursor: `pointer`,
-      color: variables().styles.secondaryColor.main,
+      color: theme.palette.secondary.main,
     },
     btnPositive: {
-      backgroundColor: variables().styles.secondaryColor.main,
-      borderColor: variables().styles.secondaryColor.main,
+      backgroundColor: theme.palette.secondary.main,
+      borderColor: theme.palette.secondary.main,
+      color: theme.palette.btnTextColor,
       '&:hover': {
         backgroundColor: '#0069d9',
         borderColor: '#0062cc',

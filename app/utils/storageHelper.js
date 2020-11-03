@@ -1,5 +1,3 @@
-'use strict';
-
 import { PATHS } from './paths';
 import Storage from '../classes/Storage';
 

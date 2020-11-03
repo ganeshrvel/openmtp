@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Paths
  * Note: Don't import log helper file from utils here
@@ -12,7 +10,7 @@ import { rootPath as root } from 'electron-root-path';
 import { isPackaged } from './isPackaged';
 import { IS_DEV } from '../constants/env';
 import { yearMonthNow } from './date';
-import { APP_IDENTIFIER, APP_NAME } from '../constants/meta';
+import { APP_NAME } from '../constants/meta';
 import { getAppDataPath } from './files';
 
 const appPath = join(root, `./app`);
@@ -21,7 +19,7 @@ const homeDir = homedirOs();
 const profileDir = getAppDataPath();
 
 // old generation [profileDir] path. Used until OpenMTP < v3.0.0
-const prevProfileDir = join(homeDir, `./.io.ganeshrvel`, `${APP_IDENTIFIER}`);
+const prevProfileDir = join(homeDir, `./.io.ganeshrvel`);
 
 const rotateFile = yearMonthNow({});
 const logFileName = IS_DEV

@@ -1,5 +1,3 @@
-'use strict';
-
 import configureStoreDev from './dev';
 import configureStoreProd from './prod';
 import { IS_PROD } from '../../constants/env';

@@ -1,5 +1,3 @@
-'use strict';
-
 export const initialState = {};
 
 export default function App(state = initialState, action) {

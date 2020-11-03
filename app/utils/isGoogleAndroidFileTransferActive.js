@@ -1,5 +1,3 @@
-'use strict';
-
 import psList from 'ps-list';
 import findLodash from 'lodash/find';
 import Promise from 'bluebird';

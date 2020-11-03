@@ -1,15 +1,13 @@
-'use strict';
-
 import React, { PureComponent, Fragment } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import FileExplorerTableHeadRender from './FileExplorerTableHeadRender';
 import FileExplorerTableEmptyRowRender from './FileExplorerTableBodyEmptyRender';
-import { DEVICES_TYPE_CONST } from '../../../constants';
 import FileExplorerTableBodyGridWrapperRender from './FileExplorerTableBodyGridWrapperRender';
 import FileExplorerTableBodyListWrapperRender from './FileExplorerTableBodyListWrapperRender';
 import { styles } from '../styles/FileExplorerTableBodyRender';
+import { DEVICE_TYPE, FILE_EXPLORER_VIEW_TYPE } from '../../../enums';
 
 class FileExplorerTableBodyRender extends PureComponent {
   isSelected = (path) => {
@@ -19,7 +17,7 @@ class FileExplorerTableBodyRender extends PureComponent {
     return _directoryLists.indexOf(path) !== -1;
   };
 
-  ListingSwitcher = (type = 'grid') => {
+  ListingSwitcher = (type = FILE_EXPLORER_VIEW_TYPE.grid) => {
     const { deviceType, directoryLists, tableSort } = this.props;
     const { nodes, order, orderBy } = directoryLists[deviceType];
     const _eventTarget = 'tableCellTarget';
@@ -28,7 +26,7 @@ class FileExplorerTableBodyRender extends PureComponent {
     const { classes, ...parentProps } = this.props;
 
     switch (type) {
-      case 'grid':
+      case FILE_EXPLORER_VIEW_TYPE.grid:
       default:
         return (
           <FileExplorerTableBodyGridWrapperRender
@@ -43,7 +41,7 @@ class FileExplorerTableBodyRender extends PureComponent {
           />
         );
 
-      case 'list':
+      case FILE_EXPLORER_VIEW_TYPE.list:
         return (
           <FileExplorerTableBodyListWrapperRender
             {...parentProps}
@@ -77,7 +75,7 @@ class FileExplorerTableBodyRender extends PureComponent {
     const { nodes, order, orderBy, queue } = directoryLists[deviceType];
     const { selected } = queue;
     const emptyRows = nodes.length < 1;
-    const isMtp = deviceType === DEVICES_TYPE_CONST.mtp;
+    const isMtp = deviceType === DEVICE_TYPE.mtp;
 
     return (
       <Fragment>

@@ -1,13 +1,19 @@
-'use strict';
-
 import path from 'path';
+import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
+import {
+  faSync,
+  faSdCard,
+  faCog,
+  faArrowLeft,
+} from '@fortawesome/free-solid-svg-icons';
+import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import { actionTypes } from './actions';
 import { PATHS } from '../../utils/paths';
 import {
   DEVICES_DEFAULT_PATH,
-  DEVICES_TYPE_CONST,
   FILE_EXPLORER_DEFAULT_FOCUSSED_DEVICE_TYPE,
 } from '../../constants';
+import { DEVICE_TYPE } from '../../enums';
 
 export const initialState = {
   focussedFileExplorerDeviceType: {
@@ -53,74 +59,64 @@ export const initialState = {
   },
 
   toolbarList: {
-    [DEVICES_TYPE_CONST.local]: {
+    [DEVICE_TYPE.local]: {
       up: {
         enabled: true,
         label: 'Folder Up',
-        imgSrc: 'Toolbar/up.svg',
-        invert: false,
+        icon: faArrowLeft,
       },
       refresh: {
         enabled: true,
         label: 'Refresh',
-        imgSrc: 'Toolbar/refresh.svg',
-        invert: false,
+        icon: faSync,
       },
       delete: {
         enabled: true,
         label: 'Delete',
-        imgSrc: 'Toolbar/delete.svg',
-        invert: false,
-      },
-      settings: {
-        enabled: true,
-        label: 'Settings',
-        imgSrc: 'Toolbar/settings.svg',
-        invert: false,
+        icon: faTrashAlt,
       },
       gitHub: {
         enabled: true,
         label: 'GitHub',
-        imgSrc: 'Toolbar/github.svg',
-        invert: false,
-      },
-    },
-    [DEVICES_TYPE_CONST.mtp]: {
-      up: {
-        enabled: true,
-        label: 'Folder Up',
-        imgSrc: 'Toolbar/up.svg',
-        invert: false,
-      },
-      refresh: {
-        enabled: true,
-        label: 'Refresh',
-        imgSrc: 'Toolbar/refresh.svg',
-        invert: false,
-      },
-      delete: {
-        enabled: true,
-        label: 'Delete',
-        imgSrc: 'Toolbar/delete.svg',
-        invert: false,
-      },
-      storage: {
-        enabled: true,
-        label: 'Storage',
-        imgSrc: 'Toolbar/storage.svg',
-        invert: false,
+        icon: faGithub,
       },
       settings: {
         enabled: true,
         label: 'Settings',
-        imgSrc: 'Toolbar/settings.svg',
-        invert: false,
+        icon: faCog,
+      },
+    },
+    [DEVICE_TYPE.mtp]: {
+      up: {
+        enabled: true,
+        label: 'Folder Up',
+        icon: faArrowLeft,
+      },
+      refresh: {
+        enabled: true,
+        label: 'Refresh',
+        icon: faSync,
+      },
+      delete: {
+        enabled: true,
+        label: 'Delete',
+        icon: faTrashAlt,
+      },
+      storage: {
+        enabled: true,
+        label: 'Storage',
+        icon: faSdCard,
+      },
+      settings: {
+        enabled: true,
+        label: 'Settings',
+        icon: faCog,
       },
     },
   },
 
   directoryLists: {
-    [DEVICES_TYPE_CONST.local]: {
+    [DEVICE_TYPE.local]: {
       order: 'asc',
       orderBy: 'name',
       queue: {
@@ -129,7 +125,7 @@ export const initialState = {
       nodes: [],
       isLoaded: false,
     },
-    [DEVICES_TYPE_CONST.mtp]: {
+    [DEVICE_TYPE.mtp]: {
       order: 'asc',
       orderBy: 'name',
       queue: {
@@ -141,15 +137,15 @@ export const initialState = {
   },
 
   currentBrowsePath: {
-    [DEVICES_TYPE_CONST.local]: DEVICES_DEFAULT_PATH.local,
-    [DEVICES_TYPE_CONST.mtp]: DEVICES_DEFAULT_PATH.mtp,
+    [DEVICE_TYPE.local]: DEVICES_DEFAULT_PATH.local,
+    [DEVICE_TYPE.mtp]: DEVICES_DEFAULT_PATH.mtp,
   },
 
   mtpDevice: {
     isAvailable: false,
   },
   contextMenuList: {
-    [DEVICES_TYPE_CONST.local]: {
+    [DEVICE_TYPE.local]: {
       rename: {
         enabled: true,
         label: 'Rename',
@@ -176,7 +172,7 @@ export const initialState = {
         data: {},
       },
     },
-    [DEVICES_TYPE_CONST.mtp]: {
+    [DEVICE_TYPE.mtp]: {
       rename: {
         enabled: true,
         label: 'Rename',

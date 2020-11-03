@@ -1,5 +1,3 @@
-'use strict';
-
 import React, { Component } from 'react';
 import { shell, remote } from 'electron';
 import path from 'path';
@@ -89,17 +87,17 @@ class GenerateErrorReport extends Component {
   }
 }
 
-const mapDispatchToProps = (dispatch, ownProps) =>
+const mapDispatchToProps = (dispatch, __) =>
   bindActionCreators(
     {
-      actionCreateThrowError: ({ ...args }) => (_, getState) => {
+      actionCreateThrowError: ({ ...args }) => (_, __) => {
         dispatch(throwAlert({ ...args }));
       },
     },
     dispatch
   );
 
-const mapStateToProps = (state, props) => {
+const mapStateToProps = (_, __) => {
   return {};
 };
 

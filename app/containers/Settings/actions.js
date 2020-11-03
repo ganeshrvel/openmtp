@@ -1,7 +1,4 @@
-'use strict';
-
 import omitLodash from 'lodash/omit';
-import { log } from '@Log';
 import prefixer from '../../utils/reducerPrefixer';
 import { settingsStorage } from '../../utils/storageHelper';
 
@@ -17,6 +14,7 @@ const actionTypesList = [
   'ENABLE_PRERELEASE_UPDATES',
   'ENABLE_ANALYTICS',
   'ENABLE_STATUS_BAR',
+  'APP_THEME_MODE',
   'COPY_JSON_FILE_TO_SETTINGS',
 ];
 
@@ -139,8 +137,20 @@ export function enableStatusBar({ ...data }, getState) {
   };
 }
 
-export function copySettingsToJsonFile(getState) {
+export function setAppThemeMode({ ...data }, getState) {
+  const { mode } = data;
+
   return (dispatch) => {
+    dispatch({
+      type: actionTypes.APP_THEME_MODE,
+      payload: mode,
+    });
+    dispatch(copySettingsToJsonFile(getState));
+  };
+}
+
+export function copySettingsToJsonFile(getState) {
+  return (_) => {
     const settingsState = getState().Settings ? getState().Settings : {};
     const filteredSettings = omitLodash(
       settingsState,

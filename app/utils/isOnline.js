@@ -1,5 +1,3 @@
-'use strict';
-
 import Promise from 'bluebird';
 import dns from 'dns';
 import { log } from './log';

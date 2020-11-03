@@ -1,5 +1,3 @@
-'use strict';
-
 /* keymaps must be in lowercase */
 import { IS_DEV } from './env';
 

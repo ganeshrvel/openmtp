@@ -1,5 +1,3 @@
-'use strict';
-
 import React, { Component, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';

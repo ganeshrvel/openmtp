@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Constants
  * Note: Don't import log helper file from utils here

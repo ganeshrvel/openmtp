@@ -1,12 +1,11 @@
-'use strict';
-
 import styled, { keyframes } from 'styled-components';
 import { variables, mixins } from '../../../styles/js';
+import { getCurrentThemePalette } from '../../App/styles';
 
 export const styles = (theme) => {
   return {
     root: {
-      ...mixins().appDragEnable,
+      ...mixins({ theme }).appDragEnable,
     },
     grow: {
       flexGrow: 1,
@@ -24,7 +23,7 @@ export const styles = (theme) => {
       left: 0,
       right: 0,
       bottom: 0,
-      backgroundColor: `#ffffff`,
+      backgroundColor: theme.palette.background.paper,
       zIndex: 9999,
     },
     appBar: {},
@@ -32,24 +31,25 @@ export const styles = (theme) => {
       paddingLeft: 5,
     },
     noAppDrag: {
-      ...mixins().appDragDisable,
+      ...mixins({ theme }).appDragDisable,
     },
     navBtnImgs: {
       height: 25,
-      width: `auto`,
-      ...mixins().noDrag,
-      ...mixins().noselect,
+      width: `25px !important`,
+      color: theme.palette.contrastPrimaryMainColor,
+      ...mixins({ theme }).noDrag,
+      ...mixins({ theme }).noselect,
     },
     disabledNavBtns: {
-      backgroundColor: `#f9f9f9 !important`,
+      backgroundColor: `${theme.palette.disabledBgColor} !important`,
     },
     invertedNavBtns: {
       [`&:hover`]: {
-        filter: `none`,
+        filter: `invert(100)`,
       },
       [`&:not(:hover)`]: {
         filter: `invert(100)`,
-        background: variables().styles.primaryColor.main,
+        background: `#f9f9f952`,
       },
     },
     focussedFileExplorer: {
@@ -77,14 +77,17 @@ const animateLazyLoaderOverLay = keyframes`
   }
 `;
 
-export const LazyLoaderOverLay = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ffffff;
-  z-index: 9999;
+export const LazyLoaderOverlay = ({ appThemeMode }) => {
+  const { background } = getCurrentThemePalette(appThemeMode);
 
-  animation: ${animateLazyLoaderOverLay} 0s 3s forwards;
-`;
+  return styled.div`
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9999;
+    background-color: ${background.paper};
+    animation: ${animateLazyLoaderOverLay} 0s 3s forwards;
+  `;
+};

@@ -1,5 +1,3 @@
-'use strict';
-
 import React, { PureComponent } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
@@ -14,11 +12,9 @@ import {
   toggleFileExplorerDeviceType,
   undefinedOrNull,
 } from '../../../utils/funcs';
-import {
-  DEVICES_TYPE_CONST,
-  FILE_EXPLORER_DEFAULT_FOCUSSED_DEVICE_TYPE,
-} from '../../../constants';
+import { FILE_EXPLORER_DEFAULT_FOCUSSED_DEVICE_TYPE } from '../../../constants';
 import { FILE_EXPLORER_BODY_WRAPPER_ID } from '../../../constants/dom';
+import { DEVICE_TYPE } from '../../../enums';
 
 class FileExplorerBodyRender extends PureComponent {
   constructor(props) {
@@ -144,7 +140,7 @@ class FileExplorerBodyRender extends PureComponent {
     if (toggle) {
       this.focussedFileExplorerDeviceTypeCached = toggleFileExplorerDeviceType(
         this.focussedFileExplorerDeviceTypeCached,
-        DEVICES_TYPE_CONST
+        DEVICE_TYPE
       );
 
       _focussedFileExplorerDeviceType = this

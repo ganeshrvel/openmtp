@@ -1,7 +1,3 @@
-'use strict';
-
-import { variables, mixins } from '../../../styles/js';
-
 export const tableCellFileExplorerTableRowsRender = {
   borderBottom: `unset`,
   [`&.checkboxCell`]: {
@@ -31,24 +27,26 @@ export const tableCellFileExplorerTableRowsRender = {
   },
 };
 
-export const styles = (theme) => ({
-  tableRowSelected: {
-    backgroundColor: 'rgba(41, 121, 255, 0.15) !important',
-  },
-  tableCell: tableCellFileExplorerTableRowsRender,
-  tableCellIcon: {
-    verticalAlign: `middle`,
-    [`&.isFolder`]: {
-      color: `#1564b3`,
+export const styles = (theme) => {
+  return {
+    tableRowSelected: {
+      backgroundColor: 'rgba(41, 121, 255, 0.15) !important',
     },
-    [`&.isFile`]: {
-      color: `#000000`,
+    tableCell: tableCellFileExplorerTableRowsRender,
+    tableCellIcon: {
+      verticalAlign: `middle`,
+      [`&.isFolder`]: {
+        color: theme.palette.secondary.main,
+      },
+      [`&.isFile`]: {
+        color: theme.palette.fileColor,
+      },
     },
-  },
-  truncate: {
-    textOverflow: 'ellipsis',
-    overflow: 'hidden',
-    maxWidth: 310,
-    whiteSpace: 'nowrap',
-  },
-});
+    truncate: {
+      textOverflow: 'ellipsis',
+      overflow: 'hidden',
+      maxWidth: 310,
+      whiteSpace: 'nowrap',
+    },
+  };
+};

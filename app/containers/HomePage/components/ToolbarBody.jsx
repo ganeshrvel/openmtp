@@ -1,6 +1,5 @@
-'use strict';
-
 import React, { PureComponent } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import MenuIcon from '@material-ui/icons/Menu';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -9,13 +8,13 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import classNames from 'classnames';
 import SidebarAreaPaneLists from './SidebarAreaPaneLists';
-import { LazyLoaderOverLay } from '../styles/ToolbarAreaPane';
-import { imgsrc } from '../../../utils/imgsrc';
-import { DEVICES_LABEL, DEVICES_TYPE_CONST } from '../../../constants';
+import { LazyLoaderOverlay } from '../styles/ToolbarAreaPane';
+import { DEVICES_LABEL } from '../../../constants';
 import {
   Confirm as ConfirmDialog,
   Selection as SelectionDialog,
 } from '../../../components/DialogBox';
+import { DEVICE_TYPE } from '../../../enums';
 
 export default class ToolbarAreaPane extends PureComponent {
   activeToolbarList = ({ ...args }) => {
@@ -31,7 +30,7 @@ export default class ToolbarAreaPane extends PureComponent {
     const _directoryLists = directoryLists[deviceType];
     const _currentBrowsePath = currentBrowsePath[deviceType];
     const _activeToolbarList = toolbarList[deviceType];
-    const isMtp = deviceType === DEVICES_TYPE_CONST.mtp;
+    const isMtp = deviceType === DEVICE_TYPE.mtp;
 
     Object.keys(_activeToolbarList).map((a) => {
       const item = _activeToolbarList[a];
@@ -96,6 +95,7 @@ export default class ToolbarAreaPane extends PureComponent {
       toolbarList,
       isLoadedDirectoryLists,
       toggleDrawer,
+      appThemeMode,
       onDeleteConfirmDialog,
       onMtpStoragesListClick,
       onToggleDrawer,
@@ -113,6 +113,8 @@ export default class ToolbarAreaPane extends PureComponent {
       mtpDevice,
     });
 
+    const RenderLazyLoaderOverlay = LazyLoaderOverlay({ appThemeMode });
+
     return (
       <div className={styles.root}>
         <ConfirmDialog
@@ -128,8 +130,7 @@ export default class ToolbarAreaPane extends PureComponent {
           id="selectionDialog"
           showDiskAvatars
           open={
-            deviceType === DEVICES_TYPE_CONST.mtp &&
-            toggleMtpStorageSelectionDialog
+            deviceType === DEVICE_TYPE.mtp && toggleMtpStorageSelectionDialog
           }
           onClose={onMtpStoragesListClick}
         />
@@ -148,7 +149,7 @@ export default class ToolbarAreaPane extends PureComponent {
           />
         </Drawer>
 
-        {!isLoadedDirectoryLists && <LazyLoaderOverLay />}
+        {!isLoadedDirectoryLists && <RenderLazyLoaderOverlay />}
 
         <AppBar position="static" elevation={0} className={styles.appBar}>
           <Toolbar
@@ -179,10 +180,10 @@ export default class ToolbarAreaPane extends PureComponent {
                           [styles.invertedNavBtns]: item.invert,
                         })}
                       >
-                        <img
-                          alt={item.label}
-                          src={imgsrc(item.imgSrc, false)}
-                          className={classNames(styles.navBtnImgs)}
+                        <FontAwesomeIcon
+                          icon={item.icon}
+                          className={styles.navBtnImgs}
+                          title={item.label}
                         />
                       </IconButton>
                     </div>

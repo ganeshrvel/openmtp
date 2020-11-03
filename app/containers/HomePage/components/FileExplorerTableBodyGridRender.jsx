@@ -1,5 +1,3 @@
-'use strict';
-
 import React, { PureComponent } from 'react';
 import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';

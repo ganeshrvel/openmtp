@@ -1,6 +1,4 @@
-'use strict';
-
-import { variables, mixins } from '../../../styles/js';
+import { mixins } from '../../../styles/js';
 
 export const styles = (theme) => ({
   margin: {},
@@ -10,6 +8,9 @@ export const styles = (theme) => ({
   },
   tabHeadingWrapper: {
     borderBottom: `1px solid rgba(0, 123, 255, 0.2)`,
+  },
+  tab: {
+    minWidth: 100,
   },
   tabContainer: {
     paddingTop: 20,
@@ -44,12 +45,12 @@ export const styles = (theme) => ({
     position: `relative`,
     padding: 10,
     marginTop: 4,
-    backgroundColor: variables().styles.secondaryColor.main,
+    backgroundColor: theme.palette.secondary.main,
   },
   onboardingPaperArrow: {
     fontWeight: `bold`,
     content: ' ',
-    borderBottom: `11px solid ${variables().styles.secondaryColor.main}`,
+    borderBottom: `11px solid ${theme.palette.secondary.main}`,
     borderLeft: '8px solid transparent',
     borderRight: '8px solid transparent',
     position: 'absolute',
@@ -57,12 +58,12 @@ export const styles = (theme) => ({
     left: 2,
   },
   onboardingPaperBody: {
-    color: variables().styles.primaryColor.main,
+    color: theme.palette.background.paper,
   },
   a: {
     fontWeight: `bold`,
   },
   btnPositive: {
-    ...mixins().btnPositive,
+    ...mixins({ theme }).btnPositive,
   },
 });

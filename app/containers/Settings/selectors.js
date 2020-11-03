@@ -1,7 +1,8 @@
 import { createSelector } from 'reselect';
 import { initialState } from './reducers';
+import { getAppThemeMode } from '../../utils/theme';
 
-const make = (state, props) => (state ? state.Settings : {});
+const make = (state, _) => (state ? state.Settings : {});
 
 export const makeFreshInstall = createSelector(make, (state) =>
   state ? state.freshInstall : initialState.freshInstall
@@ -44,3 +45,15 @@ export const makeEnableAnalytics = createSelector(make, (state) =>
 export const makeEnableStatusBar = createSelector(make, (state) =>
   state ? state.enableStatusBar : initialState.enableStatusBar
 );
+
+// returns the app theme mode setting value (light, dark, auto)
+export const makeAppThemeModeSettings = createSelector(make, (state) =>
+  state ? state.appThemeMode : initialState.appThemeMode
+);
+
+// returns the app theme mode (light, dark)
+export const makeAppThemeMode = createSelector(make, (state) => {
+  const theme = state ? state.appThemeMode : initialState.appThemeMode;
+
+  return getAppThemeMode(theme);
+});

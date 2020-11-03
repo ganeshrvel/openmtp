@@ -1,8 +1,4 @@
-'use strict';
-
-import { variables, mixins } from '../../../styles/js';
-
-export const styles = (theme) => ({
+export const styles = (_) => ({
   root: {
     textAlign: `left`,
     padding: '0 30px 30px 30px',

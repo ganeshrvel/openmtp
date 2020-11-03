@@ -1,5 +1,3 @@
-'use strict';
-
 import { remote } from 'electron';
 
 export const toggleWindowSizeOnDoubleClick = () => {

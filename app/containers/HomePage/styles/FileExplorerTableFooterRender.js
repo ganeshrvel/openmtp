@@ -1,8 +1,4 @@
-'use strict';
-
-import { variables, mixins } from '../../../styles/js';
-
-export const styles = (theme) => ({
+export const styles = (_) => ({
   tableFooter: {
     display: 'unset !important',
   },

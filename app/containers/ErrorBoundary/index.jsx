@@ -1,5 +1,3 @@
-'use strict';
-
 import React, { Component } from 'react';
 import { remote } from 'electron';
 import { withStyles } from '@material-ui/core/styles';

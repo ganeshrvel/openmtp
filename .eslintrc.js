@@ -53,8 +53,8 @@ module.exports = {
       'error',
       {
         args: 'after-used',
-        argsIgnorePattern: '^(theme|props|state|ownProps|dispatch|getState)|_',
-        varsIgnorePattern: '^(variables|mixins|args|log)',
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
       },
     ],
     'prettier/prettier': ['error', { singleQuote: true }],

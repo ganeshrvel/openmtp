@@ -1,5 +1,3 @@
-'use strict';
-
 /* eslint-disable no-unused-vars */
 
 import { createSelector } from 'reselect';

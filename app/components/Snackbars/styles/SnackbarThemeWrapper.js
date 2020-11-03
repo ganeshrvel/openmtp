@@ -1,8 +1,5 @@
-'use strict';
-
 import green from '@material-ui/core/colors/green';
 import amber from '@material-ui/core/colors/amber';
-import { variables, mixins } from '../../../styles/js';
 
 export const styles = (theme) => ({
   success: {
@@ -19,6 +16,7 @@ export const styles = (theme) => ({
   },
   icon: {
     fontSize: 20,
+    color: '#fff',
   },
   iconVariant: {
     opacity: 0.9,
@@ -27,6 +25,7 @@ export const styles = (theme) => ({
   message: {
     display: 'flex',
     alignItems: 'center',
+    color: '#fff',
   },
   root: {
     minWidth: 288,

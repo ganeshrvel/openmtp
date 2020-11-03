@@ -1,7 +1,3 @@
-'use strict';
-
-import { variables, mixins } from '../../../styles/js';
-
 export const styles = (theme) => ({
   socialMediaShareContainer: {
     paddingTop: 5,
@@ -9,7 +5,6 @@ export const styles = (theme) => ({
   socialMediaShareTitle: {
     fontSize: 11,
     fontWeight: 500,
-    color: `rgba(0, 0, 0, 0.7)`,
   },
   socialMediaShareBtnsWrapper: {
     width: '100%',
@@ -17,6 +12,7 @@ export const styles = (theme) => ({
   },
   socialMediaShareBtn: {
     height: 22,
-    width: `auto`,
+    width: `22px`,
+    color: theme.palette.contrastPrimaryMainColor,
   },
 });

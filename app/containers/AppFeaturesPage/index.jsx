@@ -1,5 +1,3 @@
-'use strict';
-
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import { Helmet } from 'react-helmet';

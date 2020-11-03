@@ -1,9 +1,15 @@
-'use strict';
-
 /* eslint no-case-declarations: off */
 
 import React, { Component, Fragment } from 'react';
 import Typography from '@material-ui/core/Typography';
+import {
+  faGithub,
+  faTwitter,
+  faFacebook,
+  faReddit,
+  faPaypal,
+} from '@fortawesome/free-brands-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { withStyles } from '@material-ui/core/styles';
 import { remote, ipcRenderer, shell } from 'electron';
 import lodashSortBy from 'lodash/sortBy';
@@ -45,15 +51,12 @@ import {
   makeFocussedFileExplorerDeviceType,
 } from '../selectors';
 import {
+  makeAppThemeMode,
   makeEnableStatusBar,
   makeFileExplorerListingType,
   makeHideHiddenFiles,
 } from '../../Settings/selectors';
-import {
-  DEVICES_LABEL,
-  DEVICES_TYPE_CONST,
-  DONATE_PAYPAL_URL,
-} from '../../../constants';
+import { DEVICES_LABEL, DONATE_PAYPAL_URL } from '../../../constants';
 import {
   renameLocalFiles,
   checkFileExists,
@@ -82,11 +85,10 @@ import {
   twitterShareUrl,
 } from '../../../templates/socialMediaShareBtns';
 import { baseName, pathInfo, pathUp, sanitizePath } from '../../../utils/files';
+import { DEVICE_TYPE, FILE_EXPLORER_VIEW_TYPE } from '../../../enums';
 
 const { Menu, getCurrentWindow } = remote;
-const _mainWindowRendererProcess = getMainWindowRendererProcess();
-const filesDragGhostImg = new Image(0, 0);
-filesDragGhostImg.src = imgsrc('FileExplorer/copy.svg');
+
 let allowFileDropFlag = false;
 let multipleSelectDirection = null;
 
@@ -94,35 +96,35 @@ const socialMediaShareBtnsList = [
   {
     enabled: true,
     label: 'Find us on GitHub',
-    imgSrc: 'SocialMediaShare/github.svg',
+    icon: faGithub,
     url: APP_GITHUB_URL,
     invert: false,
   },
   {
     enabled: true,
     label: 'Share it on Twitter',
-    imgSrc: 'SocialMediaShare/twitter.svg',
+    icon: faTwitter,
     url: twitterShareUrl,
     invert: false,
   },
   {
     enabled: true,
     label: 'Share it on Facebook',
-    imgSrc: 'SocialMediaShare/facebook.svg',
+    icon: faFacebook,
     url: fbShareUrl,
     invert: false,
   },
   {
     enabled: true,
     label: 'Share it on Reddit',
-    imgSrc: 'SocialMediaShare/reddit.svg',
+    icon: faReddit,
     url: redditShareUrl,
     invert: false,
   },
   {
     enabled: true,
     label: 'Buy me a Coffee',
-    imgSrc: 'SocialMediaShare/paypal.svg',
+    icon: faPaypal,
     url: DONATE_PAYPAL_URL,
     invert: false,
   },
@@ -131,6 +133,10 @@ const socialMediaShareBtnsList = [
 class FileExplorer extends Component {
   constructor(props) {
     super(props);
+
+    this.mainWindowRendererProcess = getMainWindowRendererProcess();
+    this.filesDragGhostImg = this._createDragIcon();
+
     this.initialState = {
       togglePasteConfirmDialog: false,
       toggleDialog: {
@@ -153,6 +159,7 @@ class FileExplorer extends Component {
       },
       directoryGeneratedTime: Date.now(),
     };
+
     this.state = {
       ...this.initialState,
     };
@@ -172,7 +179,7 @@ class FileExplorer extends Component {
       hideHiddenFiles,
     } = this.props;
 
-    if (deviceType === DEVICES_TYPE_CONST.mtp) {
+    if (deviceType === DEVICE_TYPE.mtp) {
       actionCreateFetchMtpStorageOptions(
         {
           filePath: currentBrowsePath[deviceType],
@@ -207,7 +214,7 @@ class FileExplorer extends Component {
   componentWillUnmount() {
     this.deregisterAccelerators();
 
-    _mainWindowRendererProcess.webContents.removeListener(
+    this.mainWindowRendererProcess.webContents.removeListener(
       'fileExplorerToolbarActionCommunication',
       () => {}
     );
@@ -245,7 +252,7 @@ class FileExplorer extends Component {
      * This is to prevent race between file transfer and app update taskbar progressbar access
      */
 
-    if (deviceType === DEVICES_TYPE_CONST.local) {
+    if (deviceType === DEVICE_TYPE.local) {
       ipcRenderer.on('isFileTransferActiveSeek', (event, { ...args }) => {
         const { check: checkIsFileTransferActiveSeek } = args;
         if (!checkIsFileTransferActiveSeek) {
@@ -397,7 +404,7 @@ class FileExplorer extends Component {
     }
 
     if (
-      _focussedFileExplorerDeviceType === DEVICES_TYPE_CONST.mtp &&
+      _focussedFileExplorerDeviceType === DEVICE_TYPE.mtp &&
       !mtpDevice.isAvailable &&
       type !== 'refresh'
     ) {
@@ -476,7 +483,7 @@ class FileExplorer extends Component {
           break;
         }
 
-        _mainWindowRendererProcess.webContents.send(
+        this.mainWindowRendererProcess.webContents.send(
           'fileExplorerToolbarActionCommunication',
           {
             type,
@@ -486,7 +493,7 @@ class FileExplorer extends Component {
         break;
 
       case 'refresh':
-        _mainWindowRendererProcess.webContents.send(
+        this.mainWindowRendererProcess.webContents.send(
           'fileExplorerToolbarActionCommunication',
           {
             type,
@@ -500,7 +507,7 @@ class FileExplorer extends Component {
           break;
         }
 
-        _mainWindowRendererProcess.webContents.send(
+        this.mainWindowRendererProcess.webContents.send(
           'fileExplorerToolbarActionCommunication',
           {
             type,
@@ -539,12 +546,12 @@ class FileExplorer extends Component {
 
         if (
           type === 'navigationLeft' &&
-          fileExplorerListingType[deviceType] === 'list'
+          fileExplorerListingType[deviceType] === FILE_EXPLORER_VIEW_TYPE.list
         ) {
           break;
         } else if (
           type === 'navigationUp' &&
-          fileExplorerListingType[deviceType] === 'grid'
+          fileExplorerListingType[deviceType] === FILE_EXPLORER_VIEW_TYPE.grid
         ) {
           break;
         }
@@ -575,12 +582,12 @@ class FileExplorer extends Component {
 
         if (
           type === 'navigationRight' &&
-          fileExplorerListingType[deviceType] === 'list'
+          fileExplorerListingType[deviceType] === FILE_EXPLORER_VIEW_TYPE.list
         ) {
           break;
         } else if (
           type === 'navigationDown' &&
-          fileExplorerListingType[deviceType] === 'grid'
+          fileExplorerListingType[deviceType] === FILE_EXPLORER_VIEW_TYPE.grid
         ) {
           break;
         }
@@ -606,12 +613,12 @@ class FileExplorer extends Component {
 
         if (
           type === 'multipleSelectLeft' &&
-          fileExplorerListingType[deviceType] === 'list'
+          fileExplorerListingType[deviceType] === FILE_EXPLORER_VIEW_TYPE.list
         ) {
           break;
         } else if (
           type === 'multipleSelectUp' &&
-          fileExplorerListingType[deviceType] === 'grid'
+          fileExplorerListingType[deviceType] === FILE_EXPLORER_VIEW_TYPE.grid
         ) {
           break;
         }
@@ -669,12 +676,12 @@ class FileExplorer extends Component {
 
         if (
           type === 'multipleSelectRight' &&
-          fileExplorerListingType[deviceType] === 'list'
+          fileExplorerListingType[deviceType] === FILE_EXPLORER_VIEW_TYPE.list
         ) {
           break;
         } else if (
           type === 'multipleSelectDown' &&
-          fileExplorerListingType[deviceType] === 'grid'
+          fileExplorerListingType[deviceType] === FILE_EXPLORER_VIEW_TYPE.grid
         ) {
           break;
         }
@@ -759,11 +766,11 @@ class FileExplorer extends Component {
   ) => {
     const { deviceType, mtpDevice, fileExplorerListingType } = this.props;
     const allowContextMenuClickThrough =
-      fileExplorerListingType[deviceType] === 'grid' &&
+      fileExplorerListingType[deviceType] === FILE_EXPLORER_VIEW_TYPE.grid &&
       !undefinedOrNull(rowData) &&
       Object.keys(rowData).length < 1;
 
-    if (deviceType === DEVICES_TYPE_CONST.mtp && !mtpDevice.isAvailable) {
+    if (deviceType === DEVICE_TYPE.mtp && !mtpDevice.isAvailable) {
       return null;
     }
 
@@ -1050,6 +1057,21 @@ class FileExplorer extends Component {
     });
   };
 
+  _createDragIcon() {
+    const dragIcon = document.createElement('img');
+    dragIcon.src = imgsrc(`FileExplorer/folder-light.svg`);
+    dragIcon.style.width = '100px';
+
+    const div = document.createElement('div');
+    div.appendChild(dragIcon);
+    div.style.position = 'absolute';
+    div.style.top = '0px';
+    div.style.left = '-500px';
+    document.querySelector('body').appendChild(div);
+
+    return div;
+  }
+
   _handleFilesDragStart = (e, { sourceDeviceType }) => {
     this._handleSetFilesDrag({
       sourceDeviceType,
@@ -1058,7 +1080,7 @@ class FileExplorer extends Component {
       lock: false,
     });
 
-    e.dataTransfer.setDragImage(filesDragGhostImg, 0, 0);
+    e.dataTransfer.setDragImage(this.filesDragGhostImg, 0, 0);
   };
 
   _handleFilesDragOver = (e, { destinationDeviceType }) => {
@@ -1106,7 +1128,6 @@ class FileExplorer extends Component {
 
     if (
       !allowFileDropFlag ||
-      destinationDeviceType === null ||
       destinationDeviceType === null ||
       sourceDeviceType === destinationDeviceType
     ) {
@@ -1381,8 +1402,8 @@ class FileExplorer extends Component {
     const { isFolder, path } = item;
 
     if (!isFolder) {
-      if (deviceType === DEVICES_TYPE_CONST.local) {
-        shell.openItem(path);
+      if (deviceType === DEVICE_TYPE.local) {
+        shell.openPath(path);
       }
       return null;
     }
@@ -1466,12 +1487,12 @@ class FileExplorer extends Component {
     } = this.state;
     const { rename, newFolder } = toggleDialog;
     const togglePasteDialog =
-      deviceType === DEVICES_TYPE_CONST.mtp && fileTransferProgess.toggle;
+      deviceType === DEVICE_TYPE.mtp && fileTransferProgess.toggle;
     const renameSecondaryText =
-      deviceType === DEVICES_TYPE_CONST.mtp
-        ? `Not all ${
-            DEVICES_LABEL[DEVICES_TYPE_CONST.mtp]
-          } support the rename feature.`
+      deviceType === DEVICE_TYPE.mtp
+        ? `Not all ${DEVICES_LABEL[
+            DEVICE_TYPE.mtp
+          ].toLowerCase()}s will support the rename feature.`
         : ``;
 
     return (
@@ -1546,10 +1567,10 @@ class FileExplorer extends Component {
                       disabled={!a.enabled}
                       onClick={() => openExternalUrl(a.url)}
                     >
-                      <img
+                      <FontAwesomeIcon
+                        icon={a.icon}
                         className={styles.socialMediaShareBtn}
-                        src={imgsrc(a.imgSrc)}
-                        alt={a.label}
+                        title={a.label}
                       />
                     </IconButton>
                   </div>
@@ -1601,27 +1622,24 @@ class FileExplorer extends Component {
   }
 }
 
-const mapDispatchToProps = (dispatch, ownProps) =>
+const mapDispatchToProps = (dispatch, _) =>
   bindActionCreators(
     {
-      actionCreateThrowError: ({ ...args }) => (_, getState) => {
+      actionCreateThrowError: ({ ...args }) => (_, __) => {
         dispatch(throwAlert({ ...args }));
       },
 
-      actionCreateFocussedFileExplorerDeviceType: ({ ...args }) => (
-        _,
-        getState
-      ) => {
+      actionCreateFocussedFileExplorerDeviceType: ({ ...args }) => (_, __) => {
         dispatch(setFocussedFileExplorerDeviceType({ ...args }));
       },
 
-      actionCreateRequestSort: ({ ...args }, deviceType) => (_, getState) => {
+      actionCreateRequestSort: ({ ...args }, deviceType) => (_, __) => {
         dispatch(setSortingDirLists({ ...args }, deviceType));
       },
 
       actionCreateSelectAllClick: ({ selected }, isChecked, deviceType) => (
         _,
-        getState
+        __
       ) => {
         if (isChecked) {
           dispatch(
@@ -1638,7 +1656,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         dispatch(setSelectedDirLists({ selected: [] }, deviceType));
       },
 
-      actionCreateTableClick: ({ selected }, deviceType) => (_, getState) => {
+      actionCreateTableClick: ({ selected }, deviceType) => (_, __) => {
         dispatch(setSelectedDirLists({ selected }, deviceType));
       },
 
@@ -1669,7 +1687,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
       ) => async (_, getState) => {
         try {
           switch (deviceType) {
-            case DEVICES_TYPE_CONST.local:
+            case DEVICE_TYPE.local:
               const {
                 error: localError,
                 stderr: localStderr,
@@ -1697,7 +1715,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
                 })
               );
               break;
-            case DEVICES_TYPE_CONST.mtp:
+            case DEVICE_TYPE.mtp:
               const mtpStoragesListSelected = getMtpStoragesListSelected(
                 getState().Home
               );
@@ -1743,7 +1761,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
       ) => async (_, getState) => {
         try {
           switch (deviceType) {
-            case DEVICES_TYPE_CONST.local:
+            case DEVICE_TYPE.local:
               const {
                 error: localError,
                 stderr: localStderr,
@@ -1770,7 +1788,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
                 })
               );
               break;
-            case DEVICES_TYPE_CONST.mtp:
+            case DEVICE_TYPE.mtp:
               const mtpStoragesListSelected = getMtpStoragesListSelected(
                 getState().Home
               );
@@ -1847,7 +1865,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
       ) => (_, getState) => {
         try {
           switch (deviceType) {
-            case DEVICES_TYPE_CONST.local:
+            case DEVICE_TYPE.local:
               pasteFiles(
                 { ...pasteArgs },
                 { ...fetchDirListArgs },
@@ -1858,7 +1876,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
                 getCurrentWindow
               );
               break;
-            case DEVICES_TYPE_CONST.mtp:
+            case DEVICE_TYPE.mtp:
               pasteFiles(
                 { ...pasteArgs },
                 { ...fetchDirListArgs },
@@ -1877,7 +1895,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         }
       },
 
-      actionCreateSetFilesDrag: ({ ...args }) => (_, getState) => {
+      actionCreateSetFilesDrag: ({ ...args }) => (_, __) => {
         try {
           dispatch(setFilesDrag({ ...args }));
         } catch (e) {
@@ -1885,7 +1903,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         }
       },
 
-      actionCreateClearFilesDrag: () => (_, getState) => {
+      actionCreateClearFilesDrag: () => (_, __) => {
         try {
           dispatch(clearFilesDrag());
         } catch (e) {
@@ -1896,7 +1914,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
     dispatch
   );
 
-const mapStateToProps = (state, props) => {
+const mapStateToProps = (state, _) => {
   return {
     currentBrowsePath: makeCurrentBrowsePath(state),
     mtpDevice: makeMtpDevice(state),
@@ -1910,6 +1928,7 @@ const mapStateToProps = (state, props) => {
     filesDrag: makeFilesDrag(state),
     fileExplorerListingType: makeFileExplorerListingType(state),
     focussedFileExplorerDeviceType: makeFocussedFileExplorerDeviceType(state),
+    appThemeMode: makeAppThemeMode(state),
   };
 };
 

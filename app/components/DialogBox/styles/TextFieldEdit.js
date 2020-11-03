@@ -1,8 +1,6 @@
-'use strict';
-
 import styled from 'styled-components';
 import TextField from '@material-ui/core/TextField';
-import { variables, mixins } from '../../../styles/js';
+import { mixins } from '../../../styles/js';
 
 export const styles = (theme) => ({
   root: {},
@@ -10,11 +8,16 @@ export const styles = (theme) => ({
     marginBottom: 10,
     wordBreak: `break-all`,
   },
+  bodyText: {},
+  secondaryText: {
+    marginBottom: 20,
+    display: 'block',
+  },
   btnPositive: {
-    ...mixins().btnPositive,
+    ...mixins({ theme }).btnPositive,
   },
   btnNegative: {
-    ...mixins().btnNegative,
+    ...mixins({ theme }).btnNegative,
   },
   textFieldRoot: {
     '& .MuiFormLabel-root.Mui-error.Mui-focused': {

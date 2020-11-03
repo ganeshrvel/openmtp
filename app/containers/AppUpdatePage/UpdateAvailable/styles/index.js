@@ -1,6 +1,4 @@
-'use strict';
-
-import { variables, mixins } from '../../../../styles/js';
+import { mixins } from '../../../../styles/js';
 
 export const styles = (theme) => ({
   root: {
@@ -19,10 +17,10 @@ export const styles = (theme) => ({
   },
 
   scrollContainer: {
-    ...mixins().center,
+    ...mixins({ theme }).center,
     marginTop: 5,
     border: `1px solid #000`,
-    background: `#fff`,
+    background: theme.palette.background.paper,
     height: 350,
     width: '100%',
     padding: 15,
@@ -37,11 +35,11 @@ export const styles = (theme) => ({
   },
 
   btnPositive: {
-    ...mixins().btnPositive,
-    margin: `0 10px 0 0`,
+    ...mixins({ theme }).btnPositive,
+    margin: `0 0 0 10px`,
   },
 
   btnNegative: {
-    ...mixins().btnNegativeWhite,
+    ...mixins({ theme }).btnNegativeWhite,
   },
 });

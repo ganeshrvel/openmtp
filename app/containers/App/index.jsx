@@ -1,6 +1,5 @@
-'use strict';
-
 import { hot } from 'react-hot-loader/root';
+import { ipcRenderer } from 'electron';
 import React, { Component } from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import {
@@ -13,7 +12,7 @@ import { bindActionCreators } from 'redux';
 import Analytics from 'electron-ga';
 import { log } from '@Log';
 import { IS_PROD } from '../../constants/env';
-import { theme, styles } from './styles';
+import { materialUiTheme, styles } from './styles';
 import Alerts from '../Alerts';
 import Titlebar from './components/Titlebar';
 import ErrorBoundary from '../ErrorBoundary';
@@ -27,20 +26,26 @@ import { copyJsonFileToSettings, freshInstall } from '../Settings/actions';
 import { isConnected } from '../../utils/isOnline';
 import { TRACKING_ID } from '../../../config/google-analytics-key';
 import { APP_NAME, APP_VERSION } from '../../constants/meta';
-
-const appTheme = createMuiTheme(theme());
+import {
+  makeAppThemeMode,
+  makeAppThemeModeSettings,
+} from '../Settings/selectors';
+import { getAppThemeMode } from '../../utils/theme';
+import { getMainWindowRendererProcess } from '../../utils/windowHelper';
 
 class App extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.mainWindowRendererProcess = getMainWindowRendererProcess();
+
     this.allowWritingJsonToSettings = false;
   }
 
   componentWillMount() {
     try {
       this.setFreshInstall();
+
       if (this.allowWritingJsonToSettings) {
         this.writeJsonToSettings();
       }
@@ -53,19 +58,46 @@ class App extends Component {
 
   componentDidMount() {
     try {
+      ipcRenderer.on('nativeThemeUpdated', this.nativeThemeUpdatedEvent);
+
       bootLoader.cleanRotationFiles();
     } catch (e) {
       log.error(e, `App -> componentDidMount`);
     }
   }
 
+  componentWillUnmount() {
+    this.deregisterAccelerators();
+    ipcRenderer.removeListener(
+      'nativeThemeUpdated',
+      this.nativeThemeUpdatedEvent
+    );
+
+    this.mainWindowRendererProcess.webContents.removeListener(
+      'nativeThemeUpdated',
+      () => {}
+    );
+  }
+
+  nativeThemeUpdatedEvent = () => {
+    // force update the component
+    this.setState({});
+  };
+
+  getMuiTheme = () => {
+    const { appThemeModeSettings } = this.props;
+    const appThemeMode = getAppThemeMode(appThemeModeSettings);
+
+    return createMuiTheme(materialUiTheme({ appThemeMode }));
+  };
+
   setFreshInstall() {
     try {
       const { actionCreateFreshInstall } = this.props;
-      const isFreshInstallSettings = settingsStorage.getItems(['freshInstall']);
+      const setting = settingsStorage.getItems(['freshInstall']);
       let isFreshInstall = 0;
 
-      switch (isFreshInstallSettings.freshInstall) {
+      switch (setting.freshInstall) {
         case undefined:
         case null:
           // app was just installed
@@ -132,26 +164,28 @@ class App extends Component {
 
   render() {
     const { classes: styles } = this.props;
+    const muiTheme = this.getMuiTheme();
+
     return (
       <div className={styles.root}>
-        <CssBaseline>
-          <MuiThemeProvider theme={appTheme}>
-            <Titlebar />
-            <Alerts />
-            <ErrorBoundary>
-              <SettingsDialog />
-              <Routes />
-            </ErrorBoundary>
-          </MuiThemeProvider>
-        </CssBaseline>
+        <MuiThemeProvider theme={muiTheme}>
+          <CssBaseline />
+          <Titlebar />
+          <Alerts />
+          <ErrorBoundary>
+            <SettingsDialog />
+            <Routes />
+          </ErrorBoundary>
+        </MuiThemeProvider>
       </div>
     );
   }
 }
-const mapDispatchToProps = (dispatch, ownProps) =>
+
+const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
-      actionCreateCopyJsonFileToSettings: ({ ...data }) => (_, getState) => {
+      actionCreateCopyJsonFileToSettings: ({ ...data }) => (_, __) => {
         dispatch(copyJsonFileToSettings({ ...data }));
       },
 
@@ -162,8 +196,11 @@ const mapDispatchToProps = (dispatch, ownProps) =>
     dispatch
   );
 
-const mapStateToProps = (state, props) => {
-  return {};
+const mapStateToProps = (state) => {
+  return {
+    appThemeModeSettings: makeAppThemeModeSettings(state),
+    appThemeMode: makeAppThemeMode(state),
+  };
 };
 
 export default withReducer(

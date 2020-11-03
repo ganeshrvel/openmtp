@@ -1,5 +1,3 @@
-'use strict';
-
 import { dialog, BrowserWindow, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import { isConnected } from '../utils/isOnline';
@@ -8,7 +6,10 @@ import { isPackaged } from '../utils/isPackaged';
 import { PATHS } from '../utils/paths';
 import { unixTimestampNow } from '../utils/date';
 import { undefinedOrNull } from '../utils/funcs';
-import { getMainWindowMainProcess } from '../utils/windowHelper';
+import {
+  getMainWindowMainProcess,
+  getWindowBackgroundColor,
+} from '../utils/windowHelper';
 import { appUpdateAvailableWindow } from '../utils/createWindows';
 
 let progressbarWindow = null;
@@ -33,6 +34,7 @@ const createChildWindow = () => {
         nodeIntegration: true,
         enableRemoteModule: true,
       },
+      backgroundColor: getWindowBackgroundColor(),
     });
   } catch (e) {
     log.error(e, `AppUpdate -> createChildWindow`);

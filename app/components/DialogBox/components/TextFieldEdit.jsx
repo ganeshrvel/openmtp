@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import classNames from 'classnames';
+import TextField from '@material-ui/core/TextField';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
@@ -8,7 +9,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { StyledTextField, styles } from '../styles/TextFieldEdit';
+import { styles } from '../styles/TextFieldEdit';
 
 class TextFieldEdit extends PureComponent {
   constructor(props) {
@@ -68,14 +69,17 @@ class TextFieldEdit extends PureComponent {
         >
           <DialogContent>
             <DialogContentText className={styles.dialogContentText}>
-              {bodyText}
+              <div className={styles.bodyText}>{bodyText}</div>
               <Typography variant="caption">
-                {typeof secondaryText !== 'undefined' && secondaryText !== null
-                  ? secondaryText
-                  : ''}
+                {typeof secondaryText !== 'undefined' &&
+                secondaryText !== null ? (
+                  <span className={styles.secondaryText}>{secondaryText}</span>
+                ) : (
+                  ''
+                )}
               </Typography>
             </DialogContentText>
-            <StyledTextField
+            <TextField
               id={id}
               required={required}
               label={errors.toggle ? errors.message : label}
@@ -89,6 +93,7 @@ class TextFieldEdit extends PureComponent {
               onChange={(event) => this._handleChange(event)}
               error={errors.toggle}
               className={styles.textFieldRoot}
+              color="secondary"
             />
           </DialogContent>
           <DialogActions>

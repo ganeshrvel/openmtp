@@ -1,5 +1,3 @@
-'use strict';
-
 /* eslint no-case-declarations: off */
 
 import React, { PureComponent, Fragment } from 'react';
@@ -29,15 +27,19 @@ import {
   makeCurrentBrowsePath,
   makeFocussedFileExplorerDeviceType,
 } from '../selectors';
-import { makeHideHiddenFiles } from '../../Settings/selectors';
+import {
+  makeAppThemeMode,
+  makeHideHiddenFiles,
+} from '../../Settings/selectors';
 import { delLocalFiles, delMtpFiles } from '../../../api/sys';
-import { DEVICES_DEFAULT_PATH, DEVICES_TYPE_CONST } from '../../../constants';
+import { DEVICES_DEFAULT_PATH } from '../../../constants';
 import { toggleSettings } from '../../Settings/actions';
 import { toggleWindowSizeOnDoubleClick } from '../../../utils/titlebarDoubleClick';
 import ToolbarBody from './ToolbarBody';
 import { openExternalUrl } from '../../../utils/url';
 import { APP_GITHUB_URL } from '../../../constants/meta';
 import { pathUp } from '../../../utils/files';
+import { DEVICE_TYPE } from '../../../enums';
 
 class ToolbarAreaPane extends PureComponent {
   constructor(props) {
@@ -53,26 +55,29 @@ class ToolbarAreaPane extends PureComponent {
   }
 
   componentWillMount() {
-    const { deviceType } = this.props;
     ipcRenderer.on(
       'fileExplorerToolbarActionCommunication',
-      (event, { ...args }) => {
-        const { type, deviceType: _focussedFileExplorerDeviceType } = args;
-        if (deviceType !== _focussedFileExplorerDeviceType) {
-          return null;
-        }
-
-        this._handleToolbarAction(type);
-      }
+      this.fileExplorerToolbarActionCommunicationEvent
     );
   }
 
   componentWillUnmount() {
     ipcRenderer.removeListener(
       'fileExplorerToolbarActionCommunication',
-      () => {}
+      this.fileExplorerToolbarActionCommunicationEvent
     );
   }
+
+  fileExplorerToolbarActionCommunicationEvent = (event, { ...args }) => {
+    const { deviceType } = this.props;
+
+    const { type, deviceType: _focussedFileExplorerDeviceType } = args;
+    if (deviceType !== _focussedFileExplorerDeviceType) {
+      return null;
+    }
+
+    this._handleToolbarAction(type);
+  };
 
   _handleDoubleClickToolBar = (event) => {
     if (event.target !== event.currentTarget) {
@@ -234,6 +239,7 @@ class ToolbarAreaPane extends PureComponent {
       deviceType,
       directoryLists,
       focussedFileExplorerDeviceType,
+      appThemeMode,
       ...parentProps
     } = this.props;
 
@@ -255,6 +261,7 @@ class ToolbarAreaPane extends PureComponent {
           toggleDeleteConfirmDialog={toggleDeleteConfirmDialog}
           toggleMtpStorageSelectionDialog={toggleMtpStorageSelectionDialog}
           toggleDrawer={toggleDrawer}
+          appThemeMode={appThemeMode}
           onDeleteConfirmDialog={this._handleDeleteConfirmDialog}
           onMtpStoragesListClick={this._handleMtpStoragesListClick}
           onToggleDrawer={this._handleToggleDrawer}
@@ -273,7 +280,8 @@ class ToolbarAreaPane extends PureComponent {
     );
   }
 }
-const mapDispatchToProps = (dispatch, ownProps) =>
+
+const mapDispatchToProps = (dispatch, _) =>
   bindActionCreators(
     {
       actionCreateFetchDirList: ({ ...args }, deviceType) => (_, getState) => {
@@ -295,7 +303,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
       ) => async (_, getState) => {
         try {
           switch (deviceType) {
-            case DEVICES_TYPE_CONST.local:
+            case DEVICE_TYPE.local:
               const {
                 error: localError,
                 stderr: localStderr,
@@ -322,7 +330,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
                 })
               );
               break;
-            case DEVICES_TYPE_CONST.mtp:
+            case DEVICE_TYPE.mtp:
               const mtpStoragesListSelected = getMtpStoragesListSelected(
                 getState().Home
               );
@@ -393,14 +401,14 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         dispatch(fetchDirList({ ...fetchDirArgs }, deviceType, getState));
       },
 
-      actionCreateToggleSettings: (data) => (_, getState) => {
+      actionCreateToggleSettings: (data) => (_, __) => {
         dispatch(toggleSettings(data));
       },
     },
     dispatch
   );
 
-const mapStateToProps = (state, props) => {
+const mapStateToProps = (state, __) => {
   return {
     sidebarFavouriteList: makeSidebarFavouriteList(state),
     mtpDevice: makeMtpDevice(state),
@@ -410,6 +418,7 @@ const mapStateToProps = (state, props) => {
     directoryLists: makeDirectoryLists(state),
     mtpStoragesList: makeMtpStoragesList(state),
     focussedFileExplorerDeviceType: makeFocussedFileExplorerDeviceType(state),
+    appThemeMode: makeAppThemeMode(state),
   };
 };
 

@@ -1,5 +1,3 @@
-'use strict';
-
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -30,17 +28,17 @@ class Alerts extends Component {
   }
 }
 
-const mapDispatchToProps = (dispatch, ownProps) =>
+const mapDispatchToProps = (dispatch, __) =>
   bindActionCreators(
     {
-      actionCreateClearAlert: () => (_, getState) => {
+      actionCreateClearAlert: () => (_, __) => {
         dispatch(clearAlert());
       },
     },
     dispatch
   );
 
-const mapStateToProps = (state, props) => {
+const mapStateToProps = (state, __) => {
   return {
     Alerts: state.Alerts,
   };
