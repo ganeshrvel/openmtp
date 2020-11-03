@@ -1,6 +1,4 @@
-import { variables, mixins } from '../../../styles/js';
-
-export const styles = (theme) => ({
+export const styles = (_) => ({
   wrapper: {},
   gridTableCell: {
     paddingLeft: `5px !important`,

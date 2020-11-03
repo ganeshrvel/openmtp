@@ -21,10 +21,9 @@ class ReportBugsPage extends Component {
   }
 }
 
-const mapDispatchToProps = (dispatch, ownProps) =>
-  bindActionCreators({}, dispatch);
+const mapDispatchToProps = (dispatch, __) => bindActionCreators({}, dispatch);
 
-const mapStateToProps = (state, props) => {
+const mapStateToProps = (_, __) => {
   return {};
 };
 

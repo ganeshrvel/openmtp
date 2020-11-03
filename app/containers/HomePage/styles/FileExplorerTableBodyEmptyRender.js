@@ -1,4 +1,4 @@
-import { variables, mixins } from '../../../styles/js';
+import { mixins } from '../../../styles/js';
 import { tableCellFileExplorerTableRowsRender } from './FileExplorerTableBodyListRender';
 
 export const styles = (theme) => ({

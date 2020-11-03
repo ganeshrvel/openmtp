@@ -1,6 +1,6 @@
-import { variables, mixins } from '../../../styles/js';
+import { variables } from '../../../styles/js';
 
-export const styles = (theme) => {
+export const styles = (_) => {
   return {
     listsWrapper: {
       paddingTop: variables().sizes.sidebarAreaPaddingTop,

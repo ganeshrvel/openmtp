@@ -1622,27 +1622,24 @@ class FileExplorer extends Component {
   }
 }
 
-const mapDispatchToProps = (dispatch, ownProps) =>
+const mapDispatchToProps = (dispatch, _) =>
   bindActionCreators(
     {
-      actionCreateThrowError: ({ ...args }) => (_, getState) => {
+      actionCreateThrowError: ({ ...args }) => (_, __) => {
         dispatch(throwAlert({ ...args }));
       },
 
-      actionCreateFocussedFileExplorerDeviceType: ({ ...args }) => (
-        _,
-        getState
-      ) => {
+      actionCreateFocussedFileExplorerDeviceType: ({ ...args }) => (_, __) => {
         dispatch(setFocussedFileExplorerDeviceType({ ...args }));
       },
 
-      actionCreateRequestSort: ({ ...args }, deviceType) => (_, getState) => {
+      actionCreateRequestSort: ({ ...args }, deviceType) => (_, __) => {
         dispatch(setSortingDirLists({ ...args }, deviceType));
       },
 
       actionCreateSelectAllClick: ({ selected }, isChecked, deviceType) => (
         _,
-        getState
+        __
       ) => {
         if (isChecked) {
           dispatch(
@@ -1659,7 +1656,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         dispatch(setSelectedDirLists({ selected: [] }, deviceType));
       },
 
-      actionCreateTableClick: ({ selected }, deviceType) => (_, getState) => {
+      actionCreateTableClick: ({ selected }, deviceType) => (_, __) => {
         dispatch(setSelectedDirLists({ selected }, deviceType));
       },
 
@@ -1898,7 +1895,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         }
       },
 
-      actionCreateSetFilesDrag: ({ ...args }) => (_, getState) => {
+      actionCreateSetFilesDrag: ({ ...args }) => (_, __) => {
         try {
           dispatch(setFilesDrag({ ...args }));
         } catch (e) {
@@ -1906,7 +1903,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         }
       },
 
-      actionCreateClearFilesDrag: () => (_, getState) => {
+      actionCreateClearFilesDrag: () => (_, __) => {
         try {
           dispatch(clearFilesDrag());
         } catch (e) {
@@ -1917,7 +1914,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
     dispatch
   );
 
-const mapStateToProps = (state, props) => {
+const mapStateToProps = (state, _) => {
   return {
     currentBrowsePath: makeCurrentBrowsePath(state),
     mtpDevice: makeMtpDevice(state),

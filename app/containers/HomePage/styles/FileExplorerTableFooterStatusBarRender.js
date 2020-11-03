@@ -1,5 +1,3 @@
-import { variables, mixins } from '../../../styles/js';
-
 export const styles = (theme) => ({
   root: {
     padding: '5px 15px 0 15px',

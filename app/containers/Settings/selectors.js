@@ -2,7 +2,7 @@ import { createSelector } from 'reselect';
 import { initialState } from './reducers';
 import { getAppThemeMode } from '../../utils/theme';
 
-const make = (state, props) => (state ? state.Settings : {});
+const make = (state, _) => (state ? state.Settings : {});
 
 export const makeFreshInstall = createSelector(make, (state) =>
   state ? state.freshInstall : initialState.freshInstall

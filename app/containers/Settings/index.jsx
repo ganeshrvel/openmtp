@@ -157,10 +157,10 @@ class Settings extends Component {
   }
 }
 
-const mapDispatchToProps = (dispatch, ownProps) =>
+const mapDispatchToProps = (dispatch, _) =>
   bindActionCreators(
     {
-      actionCreateToggleSettings: (data) => (_, getState) => {
+      actionCreateToggleSettings: (data) => (_, __) => {
         dispatch(toggleSettings(data));
       },
 
@@ -221,7 +221,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
     dispatch
   );
 
-const mapStateToProps = (state, props) => {
+const mapStateToProps = (state, _) => {
   return {
     freshInstall: makeFreshInstall(state),
     toggleSettings: makeToggleSettings(state),

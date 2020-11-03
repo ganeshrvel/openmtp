@@ -93,7 +93,7 @@ class Onboarding extends PureComponent {
   }
 }
 
-const mapDispatchToProps = (dispatch, ownProps) =>
+const mapDispatchToProps = (dispatch, __) =>
   bindActionCreators(
     {
       actionCreateOnboarding: ({ ...data }) => (_, getState) => {
@@ -103,7 +103,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
     dispatch
   );
 
-const mapStateToProps = (state, props) => {
+const mapStateToProps = (state, __) => {
   return {
     onboarding: makeOnboarding(state),
     freshInstall: makeFreshInstall(state),

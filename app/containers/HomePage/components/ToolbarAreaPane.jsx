@@ -281,7 +281,7 @@ class ToolbarAreaPane extends PureComponent {
   }
 }
 
-const mapDispatchToProps = (dispatch, ownProps) =>
+const mapDispatchToProps = (dispatch, _) =>
   bindActionCreators(
     {
       actionCreateFetchDirList: ({ ...args }, deviceType) => (_, getState) => {
@@ -401,14 +401,14 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         dispatch(fetchDirList({ ...fetchDirArgs }, deviceType, getState));
       },
 
-      actionCreateToggleSettings: (data) => (_, getState) => {
+      actionCreateToggleSettings: (data) => (_, __) => {
         dispatch(toggleSettings(data));
       },
     },
     dispatch
   );
 
-const mapStateToProps = (state, props) => {
+const mapStateToProps = (state, __) => {
   return {
     sidebarFavouriteList: makeSidebarFavouriteList(state),
     mtpDevice: makeMtpDevice(state),

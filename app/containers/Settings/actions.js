@@ -1,5 +1,4 @@
 import omitLodash from 'lodash/omit';
-import { log } from '@Log';
 import prefixer from '../../utils/reducerPrefixer';
 import { settingsStorage } from '../../utils/storageHelper';
 
@@ -151,7 +150,7 @@ export function setAppThemeMode({ ...data }, getState) {
 }
 
 export function copySettingsToJsonFile(getState) {
-  return (dispatch) => {
+  return (_) => {
     const settingsState = getState().Settings ? getState().Settings : {};
     const filteredSettings = omitLodash(
       settingsState,
