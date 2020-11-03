@@ -15,6 +15,7 @@ import {
   Selection as SelectionDialog,
 } from '../../../components/DialogBox';
 import { DEVICE_TYPE } from '../../../enums';
+import { materialUiSkeletonThemeStyles } from '../../App/styles';
 
 export default class ToolbarAreaPane extends PureComponent {
   activeToolbarList = ({ ...args }) => {
@@ -95,6 +96,7 @@ export default class ToolbarAreaPane extends PureComponent {
       toolbarList,
       isLoadedDirectoryLists,
       toggleDrawer,
+      appThemeMode,
       onDeleteConfirmDialog,
       onMtpStoragesListClick,
       onToggleDrawer,
@@ -179,7 +181,6 @@ export default class ToolbarAreaPane extends PureComponent {
                       >
                         <FontAwesomeIcon
                           icon={item.icon}
-                          color="#242424"
                           className={styles.navBtnImgs}
                           title={item.label}
                         />

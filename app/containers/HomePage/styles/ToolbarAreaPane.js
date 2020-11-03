@@ -33,13 +33,14 @@ export const styles = (theme) => {
       ...mixins().appDragDisable,
     },
     navBtnImgs: {
-      height: 28,
-      width: `28px !important`,
+      height: 25,
+      width: `25px !important`,
+      color: variables().styles.icons.navbarRegular,
       ...mixins().noDrag,
       ...mixins().noselect,
     },
     disabledNavBtns: {
-      backgroundColor: `#f9f9f9 !important`,
+      backgroundColor: `${variables().styles.icons.disabled} !important`,
     },
     invertedNavBtns: {
       [`&:hover`]: {

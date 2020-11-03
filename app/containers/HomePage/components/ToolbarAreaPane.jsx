@@ -27,7 +27,10 @@ import {
   makeCurrentBrowsePath,
   makeFocussedFileExplorerDeviceType,
 } from '../selectors';
-import { makeHideHiddenFiles } from '../../Settings/selectors';
+import {
+  makeAppThemeMode,
+  makeHideHiddenFiles,
+} from '../../Settings/selectors';
 import { delLocalFiles, delMtpFiles } from '../../../api/sys';
 import { DEVICES_DEFAULT_PATH } from '../../../constants';
 import { toggleSettings } from '../../Settings/actions';
@@ -236,6 +239,7 @@ class ToolbarAreaPane extends PureComponent {
       deviceType,
       directoryLists,
       focussedFileExplorerDeviceType,
+      appThemeMode,
       ...parentProps
     } = this.props;
 
@@ -257,6 +261,7 @@ class ToolbarAreaPane extends PureComponent {
           toggleDeleteConfirmDialog={toggleDeleteConfirmDialog}
           toggleMtpStorageSelectionDialog={toggleMtpStorageSelectionDialog}
           toggleDrawer={toggleDrawer}
+          appThemeMode={appThemeMode}
           onDeleteConfirmDialog={this._handleDeleteConfirmDialog}
           onMtpStoragesListClick={this._handleMtpStoragesListClick}
           onToggleDrawer={this._handleToggleDrawer}
@@ -413,6 +418,7 @@ const mapStateToProps = (state, props) => {
     directoryLists: makeDirectoryLists(state),
     mtpStoragesList: makeMtpStoragesList(state),
     focussedFileExplorerDeviceType: makeFocussedFileExplorerDeviceType(state),
+    appThemeMode: makeAppThemeMode(state),
   };
 };
 

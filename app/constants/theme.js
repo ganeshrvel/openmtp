@@ -15,6 +15,8 @@ export const APP_THEME_COLOR_KEY = {
   bgColor: '--app-bg-color',
   primaryMainColor: '--app-primary-main-color',
   secondaryMainColor: '--app-secondary-main-color',
+  contrastPrimaryMainColor: '--app-contrast-primary-main-color',
+  disabledBgColor: '--app-disabled-bg-color',
   paperBgColor: '--app-paper-bg-color',
   nativeSystemColor: '--app-native-system-color',
   tableHeaderFooterBgColor: '--app-table-header-footer-bg-color',

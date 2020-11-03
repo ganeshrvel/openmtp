@@ -19,6 +19,10 @@ export default (_) => {
       background: {
         paper: APP_THEME_COLOR_VAR.paperBgColor,
       },
+      icons: {
+        navbarRegular: APP_THEME_COLOR_VAR.contrastPrimaryMainColor,
+        disabled: APP_THEME_COLOR_VAR.disabledBgColor,
+      },
       regularFontSize: 14,
       nativeSystemColor: APP_THEME_COLOR_VAR.nativeSystemColor,
       tableHeaderFooterBgColor: APP_THEME_COLOR_VAR.tableHeaderFooterBgColor,

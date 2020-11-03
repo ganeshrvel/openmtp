@@ -3,7 +3,7 @@ import {
   APP_BASIC_THEME_COLORS,
   APP_THEME_COLOR_KEY,
 } from '../../../constants/theme';
-import { getAppCssColorVar } from '../../../utils/theme';
+import { getAppCssColorVar, getContrastingTheme } from '../../../utils/theme';
 
 // Styles for App/index.jsx component
 export const styles = (_) => {
@@ -74,22 +74,27 @@ export const materialUiTheme = ({ ...args }) => {
 export const appBodyStylesStore = ({ appThemeMode }) => {
   const appStyle = materialUiSkeletonThemeStyles({ appThemeMode });
 
-  // light color themes
-  const styleList = {
-    tableHeaderFooterBgColor: `#fbfbfb`,
-    lightText1Color: `rgba(0, 0, 0, 0.50)`,
-    fileExplorerThinLineDividerColor: `rgba(0, 0, 0, .12)`,
-  };
+  const contrastingThemeMode = getContrastingTheme(appThemeMode);
+  const contrastingAppStyle = materialUiSkeletonThemeStyles({
+    appThemeMode: contrastingThemeMode,
+  });
 
+  const styleList = {};
   switch (appThemeMode) {
     case 'dark':
       styleList.tableHeaderFooterBgColor = `#313131`;
       styleList.lightText1Color = `rgba(255, 255, 255, 0.50)`;
-      styleList.fileExplorerThinLineDividerColor = `rgba(255, 255, 255,.12)`;
+      styleList.fileExplorerThinLineDividerColor = `rgba(255, 255, 255, .12)`;
+      styleList.disabledBgColor = `rgba(255, 255, 255, 0.3)`;
+
       break;
 
     case 'light':
     default:
+      styleList.tableHeaderFooterBgColor = `#fbfbfb`;
+      styleList.lightText1Color = `rgba(0, 0, 0, 0.50)`;
+      styleList.fileExplorerThinLineDividerColor = `rgba(0, 0, 0, 0.12)`;
+      styleList.disabledBgColor = `#f3f3f3`;
       break;
   }
 
@@ -107,6 +112,8 @@ export const appBodyStylesStore = ({ appThemeMode }) => {
     [APP_THEME_COLOR_KEY.secondaryMainColor]: appStyle.secondaryColor.main,
     [APP_THEME_COLOR_KEY.paperBgColor]: appStyle.background.paper,
     [APP_THEME_COLOR_KEY.nativeSystemColor]: `#ececec`,
+    [APP_THEME_COLOR_KEY.contrastPrimaryMainColor]:
+      contrastingAppStyle.primaryColor.main,
     ...mappedStyleList,
   };
 };

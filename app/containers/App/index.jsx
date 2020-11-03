@@ -103,12 +103,12 @@ class App extends Component {
    * The styles are converted into css style variables and set to body tag; which will be available to the whole app
    *
    * How to add a new one:
-   * 1) Add the css key to APP_THEME_COLOR_KEY in app/constants/theme.js; This is a dictionary of keys for easy referencing.
+   * 1) Add the css key to [APP_THEME_COLOR_KEY] in app/constants/theme.js; This is a dictionary of keys for easy referencing.
    * 2) Include the style to `appBodyStylesStore` in app/containers/App/styles/index.js as `[APP_THEME_COLOR_KEY.<colorName>]: color`
    * This will include the css styles as ---app-color-name: '#fff' to the body tag
    *
    * How to use the style variable in the app:
-   * i) Add the styling variable to the `default` method app/styles/js/variables.js and refer to the css style as `variables().styles.colorName` (recommended).
+   * i) Add the styling variable to the `default` method of app/styles/js/variables.js and refer to the css style as `variables().styles.colorName` (recommended).
    * ii) Refer the color in css/js as APP_THEME_COLOR_KEY.colorName
    * iii) Refer the color in css as var(--app-some-color) (least recommended)
    * */
