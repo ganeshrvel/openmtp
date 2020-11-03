@@ -1,7 +1,7 @@
 {
   "name": "openmtp",
   "productName": "OpenMTP",
-  "version": "2.0.0-beta.0",
+  "version": "3.0.0-beta.0",
   "description": "OpenMTP | Android File Transfer for macOS",
   "scripts": {
     "build": "yarn lint && concurrently \"yarn build-main\" \"yarn build-renderer\"",
@@ -151,7 +151,7 @@
     "macOS",
     "mtp"
   ],
-  "homepage": "https://ganeshrvel.github.io/openmtp/",
+  "homepage": "https://openmtp.ganeshrvel.com/",
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.32",
     "@fortawesome/free-regular-svg-icons": "^5.15.1",

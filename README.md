@@ -3,7 +3,7 @@
 - Author: [Ganesh Rathinavel](https://www.linkedin.com/in/ganeshrvel "Ganesh Rathinavel")
 - License: [MIT](https://github.com/ganeshrvel/openmtp/blob/master/LICENSE "MIT")
 - System Requirements: macOS 10.10 or higher
-- Website URL: [https://ganeshrvel.github.io/openmtp](https://ganeshrvel.github.io/openmtp/ "https://ganeshrvel.github.io/openmtp")
+- Website URL: [https://openmtp.ganeshrvel.com](https://openmtp.ganeshrvel.com/ "https://openmtp.ganeshrvel.com")
 - Repo URL: [https://github.com/ganeshrvel/openmtp](https://github.com/ganeshrvel/openmtp/ "https://github.com/ganeshrvel/openmtp")
 - Contacts: ganeshrvel@outlook.com
 
@@ -30,7 +30,7 @@ Countless searches to find an app to solve these problems and failing to find on
 
 
 ### Installation
-* Download the [Latest Version](https://ganeshrvel.github.io/openmtp/?downloadApp=github&release=stable&platform=mac 'Latest Version')
+* Download the [Latest Version](https://openmtp.ganeshrvel.com/?downloadApp=github&release=stable&platform=mac 'Latest Version')
 
 * Using Homebrew Cask
   * ```brew cask install openmtp```
