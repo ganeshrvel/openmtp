@@ -51,6 +51,7 @@ import {
   makeFocussedFileExplorerDeviceType,
 } from '../selectors';
 import {
+  makeAppThemeMode,
   makeEnableStatusBar,
   makeFileExplorerListingType,
   makeHideHiddenFiles,
@@ -87,8 +88,7 @@ import { baseName, pathInfo, pathUp, sanitizePath } from '../../../utils/files';
 import { DEVICE_TYPE, FILE_EXPLORER_VIEW_TYPE } from '../../../enums';
 
 const { Menu, getCurrentWindow } = remote;
-const filesDragGhostImg = new Image(0, 0);
-filesDragGhostImg.src = imgsrc('FileExplorer/copy.svg');
+
 let allowFileDropFlag = false;
 let multipleSelectDirection = null;
 
@@ -135,6 +135,7 @@ class FileExplorer extends Component {
     super(props);
 
     this.mainWindowRendererProcess = getMainWindowRendererProcess();
+    this.filesDragGhostImg = this._createDragIcon();
 
     this.initialState = {
       togglePasteConfirmDialog: false,
@@ -158,6 +159,7 @@ class FileExplorer extends Component {
       },
       directoryGeneratedTime: Date.now(),
     };
+
     this.state = {
       ...this.initialState,
     };
@@ -1055,6 +1057,21 @@ class FileExplorer extends Component {
     });
   };
 
+  _createDragIcon() {
+    const dragIcon = document.createElement('img');
+    dragIcon.src = imgsrc(`FileExplorer/folder-light.svg`);
+    dragIcon.style.width = '100px';
+
+    const div = document.createElement('div');
+    div.appendChild(dragIcon);
+    div.style.position = 'absolute';
+    div.style.top = '0px';
+    div.style.left = '-500px';
+    document.querySelector('body').appendChild(div);
+
+    return div;
+  }
+
   _handleFilesDragStart = (e, { sourceDeviceType }) => {
     this._handleSetFilesDrag({
       sourceDeviceType,
@@ -1063,7 +1080,7 @@ class FileExplorer extends Component {
       lock: false,
     });
 
-    e.dataTransfer.setDragImage(filesDragGhostImg, 0, 0);
+    e.dataTransfer.setDragImage(this.filesDragGhostImg, 0, 0);
   };
 
   _handleFilesDragOver = (e, { destinationDeviceType }) => {
@@ -1914,6 +1931,7 @@ const mapStateToProps = (state, props) => {
     filesDrag: makeFilesDrag(state),
     fileExplorerListingType: makeFileExplorerListingType(state),
     focussedFileExplorerDeviceType: makeFocussedFileExplorerDeviceType(state),
+    appThemeMode: makeAppThemeMode(state),
   };
 };
 

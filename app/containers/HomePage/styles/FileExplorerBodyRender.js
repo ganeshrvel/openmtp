@@ -13,7 +13,7 @@ export const styles = (theme) => ({
     borderBottom: `solid 1px ${theme.palette.fileExplorerThinLineDividerColor}`,
     borderLeft: `solid 1px ${theme.palette.fileExplorerThinLineDividerColor}`,
     [`&.onHoverDropZone`]: {
-      backgroundColor: `#e0e0e0`,
+      backgroundColor: theme.palette.fileDrop,
     },
     [`&.statusBarActive`]: {
       height: `calc(100vh - 150px) !important`,

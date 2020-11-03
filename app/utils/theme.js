@@ -1,17 +1,25 @@
 import { remote, nativeTheme } from 'electron';
 import { APP_THEME_MODE_TYPE } from '../enums';
 import { settingsStorage } from './storageHelper';
+import { undefinedOrNull } from './funcs';
 
-export const getAppThemeMode = (appThemeMode) => {
+// [appThemeModeSettings] is optional
+// if [appThemeModeSettings] is not provided then fetch the theme value from the settings
+export const getAppThemeMode = (appThemeModeSettings) => {
   // compatible with both renderer and main process
   const { shouldUseDarkColors } = remote?.nativeTheme ?? nativeTheme ?? {};
 
-  switch (appThemeMode) {
+  let _appThemeModeSettings = appThemeModeSettings;
+  if (undefinedOrNull(_appThemeModeSettings)) {
+    _appThemeModeSettings = getAppThemeModeSettings();
+  }
+
+  switch (_appThemeModeSettings) {
     case APP_THEME_MODE_TYPE.dark:
-      return appThemeMode;
+      return _appThemeModeSettings;
 
     case APP_THEME_MODE_TYPE.light:
-      return appThemeMode;
+      return _appThemeModeSettings;
 
     default:
       if (shouldUseDarkColors) {
