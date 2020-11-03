@@ -77,7 +77,7 @@ export const getColorPalette = () => {
         tableHeaderFooterBgColor: `#313131`,
         lightText1Color: `rgba(255, 255, 255, 0.50)`,
         fileExplorerThinLineDividerColor: `rgba(255, 255, 255, .12)`,
-        fileDrop: `rgba(255, 255, 255, 0.15)`,
+        fileDrop: `rgba(0, 122, 245, 0.08)`,
         disabledBgColor: `rgba(255, 255, 255, 0.15)`,
         nativeSystemColor: `#ececec`,
         contrastPrimaryMainColor: lightPrimaryColor,
