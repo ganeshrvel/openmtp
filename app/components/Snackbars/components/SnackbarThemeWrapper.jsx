@@ -35,7 +35,6 @@ const SnackbarThemeWrapper = (props) => {
         <IconButton
           key="close"
           aria-label="Close"
-          color="inherit"
           className={styles.close}
           onClick={onClose}
         >
