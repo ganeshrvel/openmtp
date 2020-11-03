@@ -36,7 +36,7 @@ export const styles = (theme) => ({
 
   btnPositive: {
     ...mixins({ theme }).btnPositive,
-    margin: `0 10px 0 0`,
+    margin: `0 0 0 10px`,
   },
 
   btnNegative: {

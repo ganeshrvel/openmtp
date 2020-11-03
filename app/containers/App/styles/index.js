@@ -79,7 +79,7 @@ export const getColorPalette = () => {
         fileExplorerThinLineDividerColor: `rgba(255, 255, 255, .12)`,
         fileDrop: `rgba(0, 122, 245, 0.08)`,
         disabledBgColor: `rgba(255, 255, 255, 0.15)`,
-        nativeSystemColor: `#ececec`,
+        nativeSystemColor: `#323232`,
         contrastPrimaryMainColor: lightPrimaryColor,
       };
     },
