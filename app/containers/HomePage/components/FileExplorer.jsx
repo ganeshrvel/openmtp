@@ -1490,9 +1490,9 @@ class FileExplorer extends Component {
       deviceType === DEVICE_TYPE.mtp && fileTransferProgess.toggle;
     const renameSecondaryText =
       deviceType === DEVICE_TYPE.mtp
-        ? `Not all ${
-            DEVICES_LABEL[DEVICE_TYPE.mtp]
-          } support the rename feature.`
+        ? `Not all ${DEVICES_LABEL[
+            DEVICE_TYPE.mtp
+          ].toLowerCase()}s will support the rename feature.`
         : ``;
 
     return (

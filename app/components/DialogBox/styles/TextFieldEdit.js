@@ -8,6 +8,11 @@ export const styles = (theme) => ({
     marginBottom: 10,
     wordBreak: `break-all`,
   },
+  bodyText: {},
+  secondaryText: {
+    marginBottom: 20,
+    display: 'block',
+  },
   btnPositive: {
     ...mixins({ theme }).btnPositive,
   },
