@@ -26,6 +26,8 @@ export const initialState = {
     [DEVICE_TYPE.mtp]: FILE_EXPLORER_VIEW_TYPE.grid,
   },
   appThemeMode: APP_THEME_MODE_TYPE.auto,
+  showLocalPane: true,
+  showLocalPaneOnLeftSide: true,
 };
 
 export default function Settings(state = initialState, action) {
@@ -62,27 +64,6 @@ export default function Settings(state = initialState, action) {
           ...state.fileExplorerListingType,
           [deviceType]: payload,
         },
-      };
-
-    case actionTypes.ENABLE_AUTO_UPDATE_CHECK:
-      return { ...state, enableAutoUpdateCheck: payload };
-
-    case actionTypes.ENABLE_BACKGROUND_AUTO_UPDATE:
-      return { ...state, enableBackgroundAutoUpdate: payload };
-
-    case actionTypes.ENABLE_PRERELEASE_UPDATES:
-      return { ...state, enablePrereleaseUpdates: payload };
-
-    case actionTypes.ENABLE_ANALYTICS:
-      return { ...state, enableAnalytics: payload };
-
-    case actionTypes.ENABLE_STATUS_BAR:
-      return { ...state, enableStatusBar: payload };
-
-    case actionTypes.APP_THEME_MODE:
-      return {
-        ...state,
-        appThemeMode: payload,
       };
 
     case actionTypes.COMMON_SETTINGS:

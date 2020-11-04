@@ -15,9 +15,10 @@ export const styles = (theme) => ({
   tabContainer: {
     paddingTop: 20,
     paddingLeft: 15,
-    height: 290,
+    height: 350,
     overflowX: `auto`,
     overflowY: `auto`,
+    borderBottom: `rgba(0, 122, 245, 0.15) 1px solid`,
   },
   subtitleMarginFix: {
     marginTop: 10,

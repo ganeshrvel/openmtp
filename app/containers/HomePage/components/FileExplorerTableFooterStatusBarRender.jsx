@@ -1,8 +1,11 @@
 import React, { PureComponent, Fragment } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMobile, faLaptop } from '@fortawesome/free-solid-svg-icons';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import { styles } from '../styles/FileExplorerTableFooterStatusBarRender';
 import { getPluralText } from '../../../utils/funcs';
+import { DEVICE_TYPE } from '../../../enums';
 
 class FileExplorerTableFooterStatusBarRender extends PureComponent {
   getDirectoryListStats = () => {
@@ -34,16 +37,45 @@ class FileExplorerTableFooterStatusBarRender extends PureComponent {
     return { total };
   };
 
+  RenderDeviceName = () => {
+    const { classes: styles, deviceType } = this.props;
+
+    if (deviceType === DEVICE_TYPE.local) {
+      return (
+        <Fragment>
+          <FontAwesomeIcon icon={faLaptop} title={deviceType} />
+          <span className={styles.deviceTypeWrapper}>
+            Local Disk
+            <span> - </span>
+          </span>
+        </Fragment>
+      );
+    }
+
+    return (
+      <Fragment>
+        <FontAwesomeIcon icon={faMobile} title={deviceType} />
+        <span className={styles.deviceTypeWrapper}>
+          Mobile
+          <span> - </span>
+        </span>
+      </Fragment>
+    );
+  };
+
   render() {
     const { classes: styles, fileTransferClipboard } = this.props;
 
     const { directories, files, total } = this.getDirectoryListStats();
     const { total: selectedTotal } = this.getSelectedDirectoryStats();
     const fileTransferClipboardLength = fileTransferClipboard.queue.length;
+    const { RenderDeviceName } = this;
 
     return (
       <div className={styles.root}>
         <Typography variant="caption" className={styles.bodyWrapper}>
+          <RenderDeviceName />
+
           {selectedTotal > 0 ? (
             <Fragment>{`${selectedTotal} of ${total} selected`}</Fragment>
           ) : (

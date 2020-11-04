@@ -72,6 +72,8 @@ export default class SettingsDialog extends PureComponent {
       enablePrereleaseUpdates,
       enableAnalytics,
       enableStatusBar,
+      showLocalPane,
+      showLocalPaneOnLeftSide,
       onAnalyticsChange,
       onHiddenFilesChange,
       onFileExplorerListingType,
@@ -81,6 +83,8 @@ export default class SettingsDialog extends PureComponent {
       onPrereleaseUpdatesChange,
       onStatusBarChange,
       onAppThemeModeChange,
+      onShowLocalPaneChange,
+      onShowLocalPaneOnLeftSideChange,
     } = this.props;
 
     const { tabIndex } = this.state;
@@ -230,7 +234,7 @@ export default class SettingsDialog extends PureComponent {
                       variant="subtitle2"
                       className={`${styles.subtitle} ${styles.fmSettingsStylesFix}`}
                     >
-                      View As Grid
+                      View as grid
                     </Typography>
                     <FormControlLabel
                       className={styles.switch}
@@ -273,7 +277,7 @@ export default class SettingsDialog extends PureComponent {
                       variant="subtitle2"
                       className={`${styles.subtitle} ${styles.fmSettingsStylesFix}`}
                     >
-                      Show Status Bar
+                      Show status bar
                     </Typography>
                     <FormControlLabel
                       className={styles.switch}
@@ -302,6 +306,51 @@ export default class SettingsDialog extends PureComponent {
                         </Typography>
                       </Paper>
                     ) : null}
+
+                    <Typography
+                      variant="subtitle2"
+                      className={`${styles.subtitle} ${styles.fmSettingsStylesFix}`}
+                    >
+                      Show Local Disk pane
+                    </Typography>
+                    <FormControlLabel
+                      className={styles.switch}
+                      control={
+                        <Switch
+                          checked={showLocalPane}
+                          onChange={(e) =>
+                            onShowLocalPaneChange(e, !showLocalPane)
+                          }
+                        />
+                      }
+                      label={showLocalPane ? `Enabled` : `Disabled`}
+                    />
+                    <Typography variant="caption">
+                      Note: You can drag files from the Finder into the Mobile
+                      pane but not the other way around.
+                    </Typography>
+
+                    <Typography
+                      variant="subtitle2"
+                      className={`${styles.subtitle} ${styles.fmSettingsStylesFix}`}
+                    >
+                      Show Local Disk pane on the left side
+                    </Typography>
+                    <FormControlLabel
+                      className={styles.switch}
+                      control={
+                        <Switch
+                          checked={showLocalPaneOnLeftSide}
+                          onChange={(e) =>
+                            onShowLocalPaneOnLeftSideChange(
+                              e,
+                              !showLocalPaneOnLeftSide
+                            )
+                          }
+                        />
+                      }
+                      label={showLocalPaneOnLeftSide ? `Enabled` : `Disabled`}
+                    />
                   </FormGroup>
                 </div>
               </SettingsDialogTabContainer>

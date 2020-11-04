@@ -13,5 +13,8 @@ export const styles = (_) => {
         clear: `both`,
       },
     },
+    singlePane: {
+      width: `100% !important`,
+    },
   };
 };

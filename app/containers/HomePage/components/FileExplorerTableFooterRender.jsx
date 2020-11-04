@@ -22,6 +22,7 @@ class FileExplorerTableFooterRender extends PureComponent {
           <FileExplorerTableFooterStatusBarRender
             directoryLists={directoryLists}
             fileTransferClipboard={fileTransferClipboard}
+            deviceType={deviceType}
           />
         )}
         <Breadcrumb
