@@ -198,9 +198,10 @@ export default class SettingsDialog extends PureComponent {
                       control={
                         <Switch
                           checked={!hideHiddenFilesLocal}
-                          onChange={() =>
+                          onChange={(e) =>
                             onHiddenFilesChange(
-                              { toggle: !hideHiddenFilesLocal },
+                              e,
+                              !hideHiddenFilesLocal,
                               DEVICE_TYPE.local
                             )
                           }
@@ -213,9 +214,10 @@ export default class SettingsDialog extends PureComponent {
                       control={
                         <Switch
                           checked={!hideHiddenFilesMtp}
-                          onChange={() =>
+                          onChange={(e) =>
                             onHiddenFilesChange(
-                              { toggle: !hideHiddenFilesMtp },
+                              e,
+                              !hideHiddenFilesMtp,
                               DEVICE_TYPE.mtp
                             )
                           }
@@ -235,13 +237,12 @@ export default class SettingsDialog extends PureComponent {
                       control={
                         <Switch
                           checked={fileExplorerListingTypeLocalGrid}
-                          onChange={() =>
+                          onChange={(e) =>
                             onFileExplorerListingType(
-                              {
-                                type: fileExplorerListingTypeLocalGrid
-                                  ? FILE_EXPLORER_VIEW_TYPE.list
-                                  : FILE_EXPLORER_VIEW_TYPE.grid,
-                              },
+                              e,
+                              fileExplorerListingTypeLocalGrid
+                                ? FILE_EXPLORER_VIEW_TYPE.list
+                                : FILE_EXPLORER_VIEW_TYPE.grid,
                               DEVICE_TYPE.local
                             )
                           }
@@ -254,13 +255,12 @@ export default class SettingsDialog extends PureComponent {
                       control={
                         <Switch
                           checked={fileExplorerListingTypeMtpGrid}
-                          onChange={() =>
+                          onChange={(e) =>
                             onFileExplorerListingType(
-                              {
-                                type: fileExplorerListingTypeMtpGrid
-                                  ? FILE_EXPLORER_VIEW_TYPE.list
-                                  : FILE_EXPLORER_VIEW_TYPE.grid,
-                              },
+                              e,
+                              fileExplorerListingTypeMtpGrid
+                                ? FILE_EXPLORER_VIEW_TYPE.list
+                                : FILE_EXPLORER_VIEW_TYPE.grid,
                               DEVICE_TYPE.mtp
                             )
                           }
@@ -280,10 +280,8 @@ export default class SettingsDialog extends PureComponent {
                       control={
                         <Switch
                           checked={enableStatusBar}
-                          onChange={() =>
-                            onStatusBarChange({
-                              toggle: !enableStatusBar,
-                            })
+                          onChange={(e) =>
+                            onStatusBarChange(e, !enableStatusBar)
                           }
                         />
                       }
@@ -324,10 +322,8 @@ export default class SettingsDialog extends PureComponent {
                       control={
                         <Switch
                           checked={enableAutoUpdateCheck}
-                          onChange={() =>
-                            onAutoUpdateCheckChange({
-                              toggle: !enableAutoUpdateCheck,
-                            })
+                          onChange={(e) =>
+                            onAutoUpdateCheckChange(e, !enableAutoUpdateCheck)
                           }
                         />
                       }
@@ -347,10 +343,11 @@ export default class SettingsDialog extends PureComponent {
                         <Switch
                           checked={enableBackgroundAutoUpdate}
                           disabled={!enableAutoUpdateCheck}
-                          onChange={() =>
-                            onEnableBackgroundAutoUpdateChange({
-                              toggle: !enableBackgroundAutoUpdate,
-                            })
+                          onChange={(e) =>
+                            onEnableBackgroundAutoUpdateChange(
+                              e,
+                              !enableBackgroundAutoUpdate
+                            )
                           }
                         />
                       }
@@ -373,10 +370,11 @@ export default class SettingsDialog extends PureComponent {
                       control={
                         <Switch
                           checked={enablePrereleaseUpdates}
-                          onChange={() =>
-                            onPrereleaseUpdatesChange({
-                              toggle: !enablePrereleaseUpdates,
-                            })
+                          onChange={(e) =>
+                            onPrereleaseUpdatesChange(
+                              e,
+                              !enablePrereleaseUpdates
+                            )
                           }
                         />
                       }
@@ -406,10 +404,8 @@ export default class SettingsDialog extends PureComponent {
                       control={
                         <Switch
                           checked={enableAnalytics}
-                          onChange={() =>
-                            onAnalyticsChange({
-                              toggle: !enableAnalytics,
-                            })
+                          onChange={(e) =>
+                            onAnalyticsChange(e, !enableAnalytics)
                           }
                         />
                       }

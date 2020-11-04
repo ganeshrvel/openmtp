@@ -5,28 +5,12 @@ import { bindActionCreators } from 'redux';
 import { styles } from './styles';
 import { withReducer } from '../../store/reducers/withReducer';
 import reducers from './reducers';
+import { makeCommonSettings } from './selectors';
 import {
-  makeToggleSettings,
-  makeHideHiddenFiles,
-  makeEnableAutoUpdateCheck,
-  makeEnableAnalytics,
-  makeFreshInstall,
-  makeFileExplorerListingType,
-  makeEnablePrereleaseUpdates,
-  makeEnableBackgroundAutoUpdate,
-  makeEnableStatusBar,
-  makeAppThemeModeSettings,
-} from './selectors';
-import {
-  enableAnalytics,
-  enableAutoUpdateCheck,
-  enableBackgroundAutoUpdate,
-  enablePrereleaseUpdates,
-  enableStatusBar,
   fileExplorerListingType,
   freshInstall,
   hideHiddenFiles,
-  setAppThemeMode,
+  setCommonSettings,
   toggleSettings,
 } from './actions';
 import { reloadDirList } from '../HomePage/actions';
@@ -46,81 +30,106 @@ class Settings extends Component {
     }
   };
 
-  _handleToggleSettings = (confirm) => {
-    const { actionCreateToggleSettings } = this.props;
-    actionCreateToggleSettings(confirm);
-  };
-
   _handleFreshInstall = () => {
     const { actionCreateFreshInstall } = this.props;
 
     actionCreateFreshInstall({ isFreshInstall: 0 });
   };
 
-  _handleHiddenFilesChange = ({ ...args }, deviceType) => {
+  _handleToggleSettings = (confirm) => {
+    const { actionCreateToggleSettings } = this.props;
+    actionCreateToggleSettings(confirm);
+  };
+
+  _handleHiddenFilesChange = (event, value, deviceType) => {
     const {
       actionCreateHideHiddenFiles,
       actionCreateReloadDirList,
       mtpStoragesList,
       currentBrowsePath,
     } = this.props;
-    const { toggle } = args;
 
-    actionCreateHideHiddenFiles({ ...args }, deviceType);
+    actionCreateHideHiddenFiles({ value }, deviceType);
     actionCreateReloadDirList(
       {
         filePath: currentBrowsePath[deviceType],
-        ignoreHidden: toggle,
+        ignoreHidden: value,
       },
       deviceType,
       mtpStoragesList
     );
   };
 
-  _handleFileExplorerListingType = ({ ...args }, deviceType) => {
+  _handleFileExplorerListingType = (event, value, deviceType) => {
     const { actionCreateFileExplorerListingType } = this.props;
 
-    actionCreateFileExplorerListingType({ ...args }, deviceType);
+    actionCreateFileExplorerListingType({ value }, deviceType);
   };
 
-  _handleAutoUpdateCheckChange = ({ ...args }) => {
-    const { actionCreateEnableAutoUpdateCheck } = this.props;
-
-    actionCreateEnableAutoUpdateCheck({ ...args });
+  _handleEnableBackgroundAutoUpdateChange = (event, value, deviceType) => {
+    this._handleSetCommonSettingsChange(
+      {
+        key: 'enableBackgroundAutoUpdate',
+        value,
+      },
+      deviceType
+    );
   };
 
-  _handleEnableBackgroundAutoUpdateChange = ({ ...args }) => {
-    const { actionCreateEnableBackgroundAutoUpdate } = this.props;
-
-    actionCreateEnableBackgroundAutoUpdate({ ...args });
+  _handleAutoUpdateCheckChange = (event, value, deviceType) => {
+    this._handleSetCommonSettingsChange(
+      {
+        key: 'enableAutoUpdateCheck',
+        value,
+      },
+      deviceType
+    );
   };
 
-  _handlePrereleaseUpdatesChange = ({ ...args }) => {
-    const { actionCreateEnablePrereleaseUpdates } = this.props;
-
-    actionCreateEnablePrereleaseUpdates({ ...args });
+  _handlePrereleaseUpdatesChange = (event, value, deviceType) => {
+    this._handleSetCommonSettingsChange(
+      {
+        key: 'enablePrereleaseUpdates',
+        value,
+      },
+      deviceType
+    );
   };
 
-  _handleAnalyticsChange = ({ ...args }) => {
-    const { actionCreateEnableAnalytics } = this.props;
-
-    actionCreateEnableAnalytics({ ...args });
+  _handleAnalyticsChange = (event, value, deviceType) => {
+    this._handleSetCommonSettingsChange(
+      {
+        key: 'enableAnalytics',
+        value,
+      },
+      deviceType
+    );
   };
 
-  _handleStatusBarChange = ({ ...args }) => {
-    const { actionCreateEnableStatusBar } = this.props;
-
-    actionCreateEnableStatusBar({ ...args });
+  _handleStatusBarChange = (event, value, deviceType) => {
+    this._handleSetCommonSettingsChange(
+      {
+        key: 'enableStatusBar',
+        value,
+      },
+      deviceType
+    );
   };
 
-  _handleSetAppThemeModeChange = (event, mode) => {
-    const { actionSetAppThemeMode } = this.props;
+  _handleSetAppThemeModeChange = (event, value, deviceType) => {
+    this._handleSetCommonSettingsChange(
+      {
+        key: 'appThemeMode',
+        value,
+      },
+      deviceType
+    );
+  };
 
-    const args = {
-      mode,
-    };
+  _handleSetCommonSettingsChange = ({ key, value }, deviceType) => {
+    const { actionSetCommonSettings } = this.props;
 
-    actionSetAppThemeMode({ ...args });
+    actionSetCommonSettings({ key, value }, deviceType);
   };
 
   render() {
@@ -182,31 +191,11 @@ const mapDispatchToProps = (dispatch, _) =>
         dispatch(fileExplorerListingType({ ...data }, deviceType, getState));
       },
 
-      actionCreateEnableAutoUpdateCheck: ({ ...data }) => (_, getState) => {
-        dispatch(enableAutoUpdateCheck({ ...data }, getState));
-      },
-
-      actionCreateEnableBackgroundAutoUpdate: ({ ...data }) => (
+      actionSetCommonSettings: ({ key, value }, deviceType) => (
         _,
         getState
       ) => {
-        dispatch(enableBackgroundAutoUpdate({ ...data }, getState));
-      },
-
-      actionCreateEnablePrereleaseUpdates: ({ ...data }) => (_, getState) => {
-        dispatch(enablePrereleaseUpdates({ ...data }, getState));
-      },
-
-      actionCreateEnableAnalytics: ({ ...data }) => (_, getState) => {
-        dispatch(enableAnalytics({ ...data }, getState));
-      },
-
-      actionCreateEnableStatusBar: ({ ...data }) => (_, getState) => {
-        dispatch(enableStatusBar({ ...data }, getState));
-      },
-
-      actionSetAppThemeMode: ({ ...data }) => (_, getState) => {
-        dispatch(setAppThemeMode({ ...data }, getState));
+        dispatch(setCommonSettings({ key, value }, deviceType, getState));
       },
 
       actionCreateReloadDirList: ({ ...args }, deviceType, mtpStoragesList) => (
@@ -222,19 +211,12 @@ const mapDispatchToProps = (dispatch, _) =>
   );
 
 const mapStateToProps = (state, _) => {
+  const commonSettings = makeCommonSettings(state);
+
   return {
-    freshInstall: makeFreshInstall(state),
-    toggleSettings: makeToggleSettings(state),
-    hideHiddenFiles: makeHideHiddenFiles(state),
-    fileExplorerListingType: makeFileExplorerListingType(state),
-    enableAutoUpdateCheck: makeEnableAutoUpdateCheck(state),
-    enableBackgroundAutoUpdate: makeEnableBackgroundAutoUpdate(state),
-    enablePrereleaseUpdates: makeEnablePrereleaseUpdates(state),
-    enableAnalytics: makeEnableAnalytics(state),
-    enableStatusBar: makeEnableStatusBar(state),
     currentBrowsePath: makeCurrentBrowsePath(state),
     mtpStoragesList: makeMtpStoragesList(state),
-    appThemeMode: makeAppThemeModeSettings(state),
+    ...commonSettings,
   };
 };
 

@@ -1,6 +1,8 @@
 import omitLodash from 'lodash/omit';
 import prefixer from '../../utils/reducerPrefixer';
 import { settingsStorage } from '../../utils/storageHelper';
+import { undefinedOrNull } from '../../utils/funcs';
+import { initialState } from './reducers';
 
 const prefix = '@@Settings';
 const actionTypesList = [
@@ -15,6 +17,7 @@ const actionTypesList = [
   'ENABLE_ANALYTICS',
   'ENABLE_STATUS_BAR',
   'APP_THEME_MODE',
+  'COMMON_SETTINGS',
   'COPY_JSON_FILE_TO_SETTINGS',
 ];
 
@@ -52,99 +55,49 @@ export function setOnboarding({ ...data }, getState) {
 }
 
 export function hideHiddenFiles({ ...data }, deviceType, getState) {
-  const { toggle } = data;
+  const { value } = data;
 
   return (dispatch) => {
     dispatch({
       type: actionTypes.HIDE_HIDDEN_FILES,
       deviceType,
-      payload: toggle,
+      payload: value,
     });
     dispatch(copySettingsToJsonFile(getState));
   };
 }
 
 export function fileExplorerListingType({ ...data }, deviceType, getState) {
-  const { type } = data;
+  const { value } = data;
 
   return (dispatch) => {
     dispatch({
       type: actionTypes.FILE_EXPLORER_LISTING_TYPE,
       deviceType,
-      payload: type,
+      payload: value,
     });
     dispatch(copySettingsToJsonFile(getState));
   };
 }
 
-export function enableAutoUpdateCheck({ ...data }, getState) {
-  const { toggle } = data;
+// @param [key]: settings key name
+// @param [value]: settings value
+export function setCommonSettings({ key, value }, deviceType, getState) {
+  if (typeof initialState[key] === 'undefined') {
+    // eslint-disable-next-line no-throw-literal
+    throw `invalid settings key: ${key}`;
+  }
 
   return (dispatch) => {
     dispatch({
-      type: actionTypes.ENABLE_AUTO_UPDATE_CHECK,
-      payload: toggle,
+      type: actionTypes.COMMON_SETTINGS,
+      deviceType,
+      payload: {
+        key,
+        value,
+      },
     });
-    dispatch(copySettingsToJsonFile(getState));
-  };
-}
 
-export function enableBackgroundAutoUpdate({ ...data }, getState) {
-  const { toggle } = data;
-
-  return (dispatch) => {
-    dispatch({
-      type: actionTypes.ENABLE_BACKGROUND_AUTO_UPDATE,
-      payload: toggle,
-    });
-    dispatch(copySettingsToJsonFile(getState));
-  };
-}
-
-export function enablePrereleaseUpdates({ ...data }, getState) {
-  const { toggle } = data;
-
-  return (dispatch) => {
-    dispatch({
-      type: actionTypes.ENABLE_PRERELEASE_UPDATES,
-      payload: toggle,
-    });
-    dispatch(copySettingsToJsonFile(getState));
-  };
-}
-
-export function enableAnalytics({ ...data }, getState) {
-  const { toggle } = data;
-
-  return (dispatch) => {
-    dispatch({
-      type: actionTypes.ENABLE_ANALYTICS,
-      payload: toggle,
-    });
-    dispatch(copySettingsToJsonFile(getState));
-  };
-}
-
-export function enableStatusBar({ ...data }, getState) {
-  const { toggle } = data;
-
-  return (dispatch) => {
-    dispatch({
-      type: actionTypes.ENABLE_STATUS_BAR,
-      payload: toggle,
-    });
-    dispatch(copySettingsToJsonFile(getState));
-  };
-}
-
-export function setAppThemeMode({ ...data }, getState) {
-  const { mode } = data;
-
-  return (dispatch) => {
-    dispatch({
-      type: actionTypes.APP_THEME_MODE,
-      payload: mode,
-    });
     dispatch(copySettingsToJsonFile(getState));
   };
 }

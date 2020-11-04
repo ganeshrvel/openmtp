@@ -49,7 +49,10 @@ export default function Settings(state = initialState, action) {
     case actionTypes.HIDE_HIDDEN_FILES:
       return {
         ...state,
-        hideHiddenFiles: { ...state.hideHiddenFiles, [deviceType]: payload },
+        hideHiddenFiles: {
+          ...state.hideHiddenFiles,
+          [deviceType]: payload,
+        },
       };
 
     case actionTypes.FILE_EXPLORER_LISTING_TYPE:
@@ -80,6 +83,12 @@ export default function Settings(state = initialState, action) {
       return {
         ...state,
         appThemeMode: payload,
+      };
+
+    case actionTypes.COMMON_SETTINGS:
+      return {
+        ...state,
+        [payload.key]: payload.value,
       };
 
     case actionTypes.COPY_JSON_FILE_TO_SETTINGS:
