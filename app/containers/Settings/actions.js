@@ -55,26 +55,26 @@ export function setOnboarding({ ...data }, getState) {
 }
 
 export function hideHiddenFiles({ ...data }, deviceType, getState) {
-  const { toggle } = data;
+  const { value } = data;
 
   return (dispatch) => {
     dispatch({
       type: actionTypes.HIDE_HIDDEN_FILES,
       deviceType,
-      payload: toggle,
+      payload: value,
     });
     dispatch(copySettingsToJsonFile(getState));
   };
 }
 
 export function fileExplorerListingType({ ...data }, deviceType, getState) {
-  const { type } = data;
+  const { value } = data;
 
   return (dispatch) => {
     dispatch({
       type: actionTypes.FILE_EXPLORER_LISTING_TYPE,
       deviceType,
-      payload: type,
+      payload: value,
     });
     dispatch(copySettingsToJsonFile(getState));
   };
@@ -154,7 +154,7 @@ export function setAppThemeMode({ ...data }, getState) {
 
 // @param [key]: settings key name
 // @param [value]: settings value
-export function setCommonSettings({ key, value }, getState) {
+export function setCommonSettings({ key, value }, deviceType, getState) {
   if (typeof initialState[key] === 'undefined') {
     // eslint-disable-next-line no-throw-literal
     throw `invalid settings key: ${key}`;
@@ -163,6 +163,7 @@ export function setCommonSettings({ key, value }, getState) {
   return (dispatch) => {
     dispatch({
       type: actionTypes.COMMON_SETTINGS,
+      deviceType,
       payload: {
         key,
         value,
