@@ -1,5 +1,3 @@
-import { mixins } from '../../../styles/js';
-
 export const tableCellFileExplorerTableRowsRender = {
   borderBottom: `unset`,
   [`&.checkboxCell`]: {
