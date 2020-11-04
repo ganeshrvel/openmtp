@@ -31,6 +31,7 @@ class FileExplorerTableBodyGridRender extends PureComponent {
 
     return (
       <div
+        draggable="true"
         className={classNames(styles.itemWrapper, {
           [styles.itemSelected]: isSelected,
         })}
@@ -38,6 +39,11 @@ class FileExplorerTableBodyGridRender extends PureComponent {
         onContextMenu={(event) =>
           onContextMenuClick(event, { ...item }, { ...tableData }, _eventTarget)
         }
+        onDragStart={(event) => {
+          if (!isSelected) {
+            onTableClick(item.path, deviceType, event, true, true);
+          }
+        }}
       >
         <label>
           <Checkbox

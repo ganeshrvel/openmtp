@@ -69,7 +69,7 @@ class TextFieldEdit extends PureComponent {
         >
           <DialogContent>
             <DialogContentText className={styles.dialogContentText}>
-              <div className={styles.bodyText}>{bodyText}</div>
+              <span className={styles.bodyText}>{bodyText}</span>
               <Typography variant="caption">
                 {typeof secondaryText !== 'undefined' &&
                 secondaryText !== null ? (

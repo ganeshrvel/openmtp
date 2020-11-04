@@ -8,7 +8,9 @@ export const styles = (theme) => ({
     marginBottom: 10,
     wordBreak: `break-all`,
   },
-  bodyText: {},
+  bodyText: {
+    display: 'block',
+  },
   secondaryText: {
     marginBottom: 20,
     display: 'block',
