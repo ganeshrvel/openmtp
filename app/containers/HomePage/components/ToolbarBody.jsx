@@ -102,6 +102,7 @@ export default class ToolbarAreaPane extends PureComponent {
       onFetchDirList,
       onDoubleClickToolBar,
       onToolbarAction,
+      showLocalPaneOnLeftSide,
     } = this.props;
 
     const _toolbarList = this.activeToolbarList({
@@ -134,7 +135,11 @@ export default class ToolbarAreaPane extends PureComponent {
           }
           onClose={onMtpStoragesListClick}
         />
-        <Drawer open={toggleDrawer} onClose={onToggleDrawer(false)}>
+        <Drawer
+          open={toggleDrawer}
+          onClose={onToggleDrawer(false)}
+          anchor={!showLocalPaneOnLeftSide ? 'right' : 'left'}
+        >
           <div
             tabIndex={0}
             role="button"
