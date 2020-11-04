@@ -1621,7 +1621,7 @@ class FileExplorer extends Component {
           onHoverDropZoneActivate={this._handleonHoverDropZoneActivate}
           onFilesDragOver={this._handleFilesDragOver}
           onFilesDragEnd={this._handleFilesDragEnd}
-          onTableDrop={this._handleTableDrop}
+          onFilesDrop={this._handleTableDrop}
           onBreadcrumbPathClick={this._handleBreadcrumbPathClick}
           onSelectAllClick={this._handleSelectAllClick}
           onRequestSort={this._handleRequestSort}

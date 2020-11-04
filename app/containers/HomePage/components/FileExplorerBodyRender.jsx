@@ -231,9 +231,9 @@ class FileExplorerBodyRender extends PureComponent {
   _handleOnDrop = (event) => {
     event.preventDefault();
 
-    const { deviceType, onTableDrop } = this.props;
+    const { deviceType, onFilesDrop } = this.props;
 
-    onTableDrop(event, {
+    onFilesDrop(event, {
       destinationDeviceType: deviceType,
       externalFiles: event?.dataTransfer?.files ?? [],
     });
