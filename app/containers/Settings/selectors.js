@@ -57,3 +57,28 @@ export const makeAppThemeMode = createSelector(make, (state) => {
 
   return getAppThemeMode(theme);
 });
+
+// returns the settings key-value pair
+export const makeCommonSettings = createSelector(make, (state) => {
+  const _state = state ?? {};
+
+  // sanitize settings data
+  const _cleanedState = {};
+
+  Object.keys(_state).map((a) => {
+    const item = _state[a];
+
+    if (typeof initialState[a] === 'undefined') {
+      return;
+    }
+
+    _cleanedState[a] = item;
+
+    return _cleanedState;
+  });
+
+  return {
+    ...initialState,
+    ..._cleanedState,
+  };
+});

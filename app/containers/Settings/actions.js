@@ -1,6 +1,8 @@
 import omitLodash from 'lodash/omit';
 import prefixer from '../../utils/reducerPrefixer';
 import { settingsStorage } from '../../utils/storageHelper';
+import { undefinedOrNull } from '../../utils/funcs';
+import { initialState } from './reducers';
 
 const prefix = '@@Settings';
 const actionTypesList = [
@@ -15,6 +17,7 @@ const actionTypesList = [
   'ENABLE_ANALYTICS',
   'ENABLE_STATUS_BAR',
   'APP_THEME_MODE',
+  'COMMON_SETTINGS',
   'COPY_JSON_FILE_TO_SETTINGS',
 ];
 
@@ -145,6 +148,27 @@ export function setAppThemeMode({ ...data }, getState) {
       type: actionTypes.APP_THEME_MODE,
       payload: mode,
     });
+    dispatch(copySettingsToJsonFile(getState));
+  };
+}
+
+// @param [key]: settings key name
+// @param [value]: settings value
+export function setCommonSettings({ key, value }, getState) {
+  if (typeof initialState[key] === 'undefined') {
+    // eslint-disable-next-line no-throw-literal
+    throw `invalid settings key: ${key}`;
+  }
+
+  return (dispatch) => {
+    dispatch({
+      type: actionTypes.COMMON_SETTINGS,
+      payload: {
+        key,
+        value,
+      },
+    });
+
     dispatch(copySettingsToJsonFile(getState));
   };
 }

@@ -5,18 +5,7 @@ import { bindActionCreators } from 'redux';
 import { styles } from './styles';
 import { withReducer } from '../../store/reducers/withReducer';
 import reducers from './reducers';
-import {
-  makeToggleSettings,
-  makeHideHiddenFiles,
-  makeEnableAutoUpdateCheck,
-  makeEnableAnalytics,
-  makeFreshInstall,
-  makeFileExplorerListingType,
-  makeEnablePrereleaseUpdates,
-  makeEnableBackgroundAutoUpdate,
-  makeEnableStatusBar,
-  makeAppThemeModeSettings,
-} from './selectors';
+import { makeCommonSettings } from './selectors';
 import {
   enableAnalytics,
   enableAutoUpdateCheck,
@@ -27,6 +16,7 @@ import {
   freshInstall,
   hideHiddenFiles,
   setAppThemeMode,
+  setCommonSettings,
   toggleSettings,
 } from './actions';
 import { reloadDirList } from '../HomePage/actions';
@@ -114,13 +104,16 @@ class Settings extends Component {
   };
 
   _handleSetAppThemeModeChange = (event, mode) => {
-    const { actionSetAppThemeMode } = this.props;
+    this._handleSetCommonSettingsChange({
+      key: 'appThemeMode',
+      value: mode,
+    });
+  };
 
-    const args = {
-      mode,
-    };
+  _handleSetCommonSettingsChange = ({ key, value }) => {
+    const { actionSetCommonSettings } = this.props;
 
-    actionSetAppThemeMode({ ...args });
+    actionSetCommonSettings({ key, value });
   };
 
   render() {
@@ -209,6 +202,10 @@ const mapDispatchToProps = (dispatch, _) =>
         dispatch(setAppThemeMode({ ...data }, getState));
       },
 
+      actionSetCommonSettings: ({ key, value }) => (_, getState) => {
+        dispatch(setCommonSettings({ key, value }, getState));
+      },
+
       actionCreateReloadDirList: ({ ...args }, deviceType, mtpStoragesList) => (
         _,
         getState
@@ -222,19 +219,12 @@ const mapDispatchToProps = (dispatch, _) =>
   );
 
 const mapStateToProps = (state, _) => {
+  const commonSettings = makeCommonSettings(state);
+
   return {
-    freshInstall: makeFreshInstall(state),
-    toggleSettings: makeToggleSettings(state),
-    hideHiddenFiles: makeHideHiddenFiles(state),
-    fileExplorerListingType: makeFileExplorerListingType(state),
-    enableAutoUpdateCheck: makeEnableAutoUpdateCheck(state),
-    enableBackgroundAutoUpdate: makeEnableBackgroundAutoUpdate(state),
-    enablePrereleaseUpdates: makeEnablePrereleaseUpdates(state),
-    enableAnalytics: makeEnableAnalytics(state),
-    enableStatusBar: makeEnableStatusBar(state),
     currentBrowsePath: makeCurrentBrowsePath(state),
     mtpStoragesList: makeMtpStoragesList(state),
-    appThemeMode: makeAppThemeModeSettings(state),
+    ...commonSettings,
   };
 };
 

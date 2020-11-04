@@ -82,6 +82,12 @@ export default function Settings(state = initialState, action) {
         appThemeMode: payload,
       };
 
+    case actionTypes.COMMON_SETTINGS:
+      return {
+        ...state,
+        [payload.key]: payload.value,
+      };
+
     case actionTypes.COPY_JSON_FILE_TO_SETTINGS:
       return { ...state, ...payload };
 
