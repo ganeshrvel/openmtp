@@ -1085,8 +1085,6 @@ class FileExplorer extends Component {
   };
 
   _handleExternalFileDragLeave = (_) => {
-    const { filesDrag } = this.props;
-
     this._handleClearFilesDrag();
   };
 

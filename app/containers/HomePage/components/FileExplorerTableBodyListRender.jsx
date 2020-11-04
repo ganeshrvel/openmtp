@@ -33,6 +33,7 @@ class FileExplorerTableBodyListRender extends PureComponent {
 
     return (
       <TableRow
+        draggable
         hover
         role="checkbox"
         aria-checked={isSelected}
@@ -41,6 +42,11 @@ class FileExplorerTableBodyListRender extends PureComponent {
         className={classNames({
           [styles.tableRowSelected]: isSelected,
         })}
+        onDragStart={(event) => {
+          if (!isSelected) {
+            onTableClick(item.path, deviceType, event);
+          }
+        }}
       >
         <TableCell
           padding="none"
