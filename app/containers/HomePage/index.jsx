@@ -7,35 +7,64 @@ import ToolbarAreaPane from './components/ToolbarAreaPane';
 import { styles } from './styles';
 import Onboarding from '../Onboarding';
 import { DEVICE_TYPE } from '../../enums';
-import { makeShowLocalPane } from '../Settings/selectors';
+import {
+  makeShowLocalPane,
+  makeShowLocalPaneOnLeftSide,
+} from '../Settings/selectors';
 
 class Home extends PureComponent {
-  render() {
+  RenderLocalPane = () => {
+    const { classes: styles } = this.props;
+
+    return (
+      <div className={styles.splitPane}>
+        <ToolbarAreaPane showMenu deviceType={DEVICE_TYPE.local} />
+        <FileExplorer hideColList={[]} deviceType={DEVICE_TYPE.local} />
+      </div>
+    );
+  };
+
+  RenderMtpPane = () => {
     const { classes: styles, showLocalPane } = this.props;
+
+    return (
+      <div
+        className={classnames(styles.splitPane, {
+          [styles.singlePane]: !showLocalPane,
+        })}
+      >
+        <ToolbarAreaPane showMenu={false} deviceType={DEVICE_TYPE.mtp} />
+        <FileExplorer hideColList={['size']} deviceType={DEVICE_TYPE.mtp} />
+      </div>
+    );
+  };
+
+  render() {
+    const {
+      classes: styles,
+      showLocalPane,
+      showLocalPaneOnLeftSide,
+    } = this.props;
+
+    const { RenderLocalPane, RenderMtpPane } = this;
+
+    let panes = [];
+
+    if (showLocalPane) {
+      panes.push(<RenderLocalPane key={DEVICE_TYPE.local} />);
+    }
+
+    panes.push(<RenderMtpPane key={DEVICE_TYPE.mtp} />);
+
+    if (!showLocalPaneOnLeftSide) {
+      panes = panes.reverse();
+    }
+
     return (
       <Fragment>
         <Onboarding />
         <div className={styles.root}>
-          <div className={styles.grid}>
-            {showLocalPane && (
-              <div className={styles.splitPane}>
-                <ToolbarAreaPane showMenu deviceType={DEVICE_TYPE.local} />
-                <FileExplorer hideColList={[]} deviceType={DEVICE_TYPE.local} />
-              </div>
-            )}
-
-            <div
-              className={classnames(styles.splitPane, {
-                [styles.singlePane]: !showLocalPane,
-              })}
-            >
-              <ToolbarAreaPane showMenu={false} deviceType={DEVICE_TYPE.mtp} />
-              <FileExplorer
-                hideColList={['size']}
-                deviceType={DEVICE_TYPE.mtp}
-              />
-            </div>
-          </div>
+          <div className={styles.grid}>{panes}</div>
         </div>
       </Fragment>
     );
@@ -45,6 +74,7 @@ class Home extends PureComponent {
 const mapStateToProps = (state) => {
   return {
     showLocalPane: makeShowLocalPane(state),
+    showLocalPaneOnLeftSide: makeShowLocalPaneOnLeftSide(state),
   };
 };
 

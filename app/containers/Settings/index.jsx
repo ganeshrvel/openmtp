@@ -136,6 +136,16 @@ class Settings extends Component {
     );
   };
 
+  _handleShowLocalPaneOnLeftSideChange = (event, value, deviceType) => {
+    this._handleSetCommonSettingsChange(
+      {
+        key: 'showLocalPaneOnLeftSide',
+        value,
+      },
+      deviceType
+    );
+  };
+
   _handleSetCommonSettingsChange = ({ key, value }, deviceType) => {
     const { actionSetCommonSettings } = this.props;
 
@@ -171,6 +181,9 @@ class Settings extends Component {
         onStatusBarChange={this._handleStatusBarChange}
         onAppThemeModeChange={this._handleSetAppThemeModeChange}
         onShowLocalPaneChange={this._handleShowLocalPaneChange}
+        onShowLocalPaneOnLeftSideChange={
+          this._handleShowLocalPaneOnLeftSideChange
+        }
         {...parentProps}
       />
     );
