@@ -7,6 +7,21 @@ export const styles = (theme) => ({
     textAlign: 'center',
   },
 
+  deviceTypeWrapper: {
+    fontWeight: '500',
+    color: theme.palette.secondary.main,
+    marginRight: 2,
+    marginLeft: 5,
+    fontSize: 12,
+    textTransform: 'capitalize',
+
+    [`& span`]: {
+      color: theme.palette.contrastPrimaryMainColor,
+      fontWeight: '600',
+      fontSize: 13,
+    },
+  },
+
   bodyWrapper: {
     fontWeight: '500',
     color: theme.palette.lightText1Color,
