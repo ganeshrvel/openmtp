@@ -146,6 +146,16 @@ class Settings extends Component {
     );
   };
 
+  _handleShowDirectoriesFirstChange = (event, value, deviceType) => {
+    this._handleSetCommonSettingsChange(
+      {
+        key: 'showDirectoriesFirst',
+        value,
+      },
+      deviceType
+    );
+  };
+
   _handleSetCommonSettingsChange = ({ key, value }, deviceType) => {
     const { actionSetCommonSettings } = this.props;
 
@@ -184,6 +194,7 @@ class Settings extends Component {
         onShowLocalPaneOnLeftSideChange={
           this._handleShowLocalPaneOnLeftSideChange
         }
+        onShowDirectoriesFirstChange={this._handleShowDirectoriesFirstChange}
         {...parentProps}
       />
     );

@@ -28,6 +28,7 @@ export const initialState = {
   appThemeMode: APP_THEME_MODE_TYPE.auto,
   showLocalPane: true,
   showLocalPaneOnLeftSide: true,
+  showDirectoriesFirst: true,
 };
 
 export default function Settings(state = initialState, action) {

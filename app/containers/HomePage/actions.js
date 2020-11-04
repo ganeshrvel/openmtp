@@ -10,7 +10,7 @@ import {
   processMtpBuffer,
   processLocalBuffer,
 } from '../../utils/processBufferOutput';
-import { isArraysEqual } from '../../utils/funcs';
+import { asserts, isArraysEqual, undefinedOrNull } from '../../utils/funcs';
 import { DEVICE_TYPE } from '../../enums';
 
 const prefix = '@@Home';
@@ -69,12 +69,12 @@ export function setCurrentBrowsePath(path, deviceType) {
   };
 }
 
-function _fetchDirList(data, deviceType) {
+function _fetchDirList(data, deviceType, _) {
   return {
     type: actionTypes.FETCH_DIR_LIST,
     deviceType,
     payload: {
-      nodes: data || [],
+      nodes: data ?? [],
       isLoaded: true,
     },
   };
@@ -157,13 +157,7 @@ export function setMtpStatus(data) {
   };
 }
 
-export function processMtpOutput({
-  deviceType,
-  error,
-  stderr,
-  data, // eslint-disable-line no-unused-vars
-  callback,
-}) {
+export function processMtpOutput({ deviceType, error, stderr, _, callback }) {
   return async (dispatch) => {
     try {
       const {
@@ -195,13 +189,7 @@ export function processMtpOutput({
   };
 }
 
-export function processLocalOutput({
-  deviceType, // eslint-disable-line no-unused-vars
-  error,
-  stderr,
-  data, // eslint-disable-line no-unused-vars
-  callback,
-}) {
+export function processLocalOutput({ _, error, stderr, __, callback }) {
   return (dispatch) => {
     try {
       const {
@@ -227,6 +215,11 @@ export function processLocalOutput({
 }
 
 export function fetchDirList({ ...args }, deviceType, getState) {
+  asserts(
+    !undefinedOrNull(getState),
+    'fetchDirList.getState should not be null or undefined'
+  );
+
   try {
     switch (deviceType) {
       case DEVICE_TYPE.local:
@@ -241,7 +234,7 @@ export function fetchDirList({ ...args }, deviceType, getState) {
             return;
           }
 
-          dispatch(_fetchDirList(data, deviceType));
+          dispatch(_fetchDirList(data, deviceType), getState);
           dispatch(setCurrentBrowsePath(args.filePath, deviceType));
           dispatch(setSelectedDirLists({ selected: [] }, deviceType));
         };
@@ -264,7 +257,7 @@ export function fetchDirList({ ...args }, deviceType, getState) {
               stderr,
               data,
               callback: () => {
-                dispatch(_fetchDirList(data, deviceType));
+                dispatch(_fetchDirList(data, deviceType), getState);
                 dispatch(setSelectedDirLists({ selected: [] }, deviceType));
                 dispatch(setCurrentBrowsePath(args.filePath, deviceType));
               },

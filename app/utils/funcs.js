@@ -291,3 +291,11 @@ export const getPluralText = (string, count, customPluralString = null) => {
 
   return string;
 };
+
+export const asserts = (condition, message) => {
+  if (condition) {
+    return;
+  }
+
+  throw message || 'Assertion failed';
+};

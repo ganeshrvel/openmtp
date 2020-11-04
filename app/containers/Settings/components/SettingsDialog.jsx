@@ -74,6 +74,7 @@ export default class SettingsDialog extends PureComponent {
       enableStatusBar,
       showLocalPane,
       showLocalPaneOnLeftSide,
+      showDirectoriesFirst,
       onAnalyticsChange,
       onHiddenFilesChange,
       onFileExplorerListingType,
@@ -85,6 +86,7 @@ export default class SettingsDialog extends PureComponent {
       onAppThemeModeChange,
       onShowLocalPaneChange,
       onShowLocalPaneOnLeftSideChange,
+      onShowDirectoriesFirstChange,
     } = this.props;
 
     const { tabIndex } = this.state;
@@ -277,19 +279,22 @@ export default class SettingsDialog extends PureComponent {
                       variant="subtitle2"
                       className={`${styles.subtitle} ${styles.fmSettingsStylesFix}`}
                     >
-                      Show status bar
+                      Show directories first
                     </Typography>
                     <FormControlLabel
                       className={styles.switch}
                       control={
                         <Switch
-                          checked={enableStatusBar}
+                          checked={showDirectoriesFirst}
                           onChange={(e) =>
-                            onStatusBarChange(e, !enableStatusBar)
+                            onShowDirectoriesFirstChange(
+                              e,
+                              !showDirectoriesFirst
+                            )
                           }
                         />
                       }
-                      label={enableStatusBar ? `Enabled` : `Disabled`}
+                      label={showDirectoriesFirst ? `Enabled` : `Disabled`}
                     />
 
                     {freshInstall ? (
@@ -306,6 +311,25 @@ export default class SettingsDialog extends PureComponent {
                         </Typography>
                       </Paper>
                     ) : null}
+
+                    <Typography
+                      variant="subtitle2"
+                      className={`${styles.subtitle} ${styles.fmSettingsStylesFix}`}
+                    >
+                      Show status bar
+                    </Typography>
+                    <FormControlLabel
+                      className={styles.switch}
+                      control={
+                        <Switch
+                          checked={enableStatusBar}
+                          onChange={(e) =>
+                            onStatusBarChange(e, !enableStatusBar)
+                          }
+                        />
+                      }
+                      label={enableStatusBar ? `Enabled` : `Disabled`}
+                    />
 
                     <Typography
                       variant="subtitle2"

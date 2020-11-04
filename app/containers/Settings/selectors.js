@@ -66,6 +66,10 @@ export const makeShowLocalPaneOnLeftSide = createSelector(make, (state) =>
   state ? state.showLocalPaneOnLeftSide : initialState.showLocalPaneOnLeftSide
 );
 
+export const makeShowDirectoriesFirst = createSelector(make, (state) =>
+  state ? state.showDirectoriesFirst : initialState.showDirectoriesFirst
+);
+
 // returns the settings key-value pair
 export const makeCommonSettings = createSelector(make, (state) => {
   const _state = state ?? {};

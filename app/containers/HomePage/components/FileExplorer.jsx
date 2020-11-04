@@ -55,6 +55,7 @@ import {
   makeEnableStatusBar,
   makeFileExplorerListingType,
   makeHideHiddenFiles,
+  makeShowDirectoriesFirst,
 } from '../../Settings/selectors';
 import { DEVICES_LABEL, DONATE_PAYPAL_URL } from '../../../constants';
 import {
@@ -201,13 +202,20 @@ class FileExplorer extends Component {
     this.registerAppUpdate();
   }
 
-  componentWillReceiveProps({ directoryLists: nextDirectoryLists }) {
-    const { deviceType, directoryLists } = this.props;
+  componentWillReceiveProps({
+    directoryLists: nextDirectoryLists,
+    showDirectoriesFirst: nextShowDirectoriesFirst,
+  }) {
+    const { deviceType, directoryLists, showDirectoriesFirst } = this.props;
 
     const { nodes: prevDirectoryNodes } = directoryLists[deviceType];
     const { nodes: nextDirectoryNodes } = nextDirectoryLists[deviceType];
 
     if (nextDirectoryNodes !== prevDirectoryNodes) {
+      this._handleDirectoryGeneratedTime();
+    }
+
+    if (nextShowDirectoriesFirst !== showDirectoriesFirst) {
       this._handleDirectoryGeneratedTime();
     }
   }
@@ -1433,20 +1441,42 @@ class FileExplorer extends Component {
   };
 
   tableSort = ({ ...args }) => {
+    const { showDirectoriesFirst } = this.props;
     const { nodes, order, orderBy } = args;
 
     if (typeof nodes === 'undefined' || !nodes.length < 0) {
       return [];
     }
 
+    let _sortedNode = [];
+
     if (order === 'asc') {
-      return lodashSortBy(nodes, [
+      _sortedNode = lodashSortBy(nodes, [
         (value) => this._lodashSortConstraints({ value, orderBy }),
       ]);
+    } else {
+      _sortedNode = lodashSortBy(nodes, [
+        (value) => this._lodashSortConstraints({ value, orderBy }),
+      ]).reverse();
     }
-    return lodashSortBy(nodes, [
-      (value) => this._lodashSortConstraints({ value, orderBy }),
-    ]).reverse();
+
+    const _folders = [];
+    const _files = [];
+    if (showDirectoriesFirst) {
+      _sortedNode.forEach((a) => {
+        if (a.isFolder) {
+          _folders.push(a);
+
+          return a;
+        }
+
+        _files.push(a);
+      });
+
+      _sortedNode = [..._folders, ..._files];
+    }
+
+    return _sortedNode;
   };
 
   _lodashSortConstraints = ({ value, orderBy }) => {
@@ -1948,6 +1978,7 @@ const mapStateToProps = (state, _) => {
     fileExplorerListingType: makeFileExplorerListingType(state),
     focussedFileExplorerDeviceType: makeFocussedFileExplorerDeviceType(state),
     appThemeMode: makeAppThemeMode(state),
+    showDirectoriesFirst: makeShowDirectoriesFirst(state),
   };
 };
 
