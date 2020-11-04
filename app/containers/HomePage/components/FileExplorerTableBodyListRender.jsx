@@ -4,14 +4,44 @@ import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import Checkbox from '@material-ui/core/Checkbox';
 import Tooltip from '@material-ui/core/Tooltip';
-import FolderIcon from '@material-ui/icons/Folder';
-import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 import classNames from 'classnames';
 import { niceBytes, springTruncate } from '../../../utils/funcs';
 import { FILE_EXPLORER_TABLE_TRUNCATE_MAX_CHARS } from '../../../constants';
 import { styles } from '../styles/FileExplorerTableBodyListRender';
+import prettyFileIcons from '../../../vendors/pretty-file-icons';
+import { imgsrc } from '../../../utils/imgsrc';
 
 class FileExplorerTableBodyListRender extends PureComponent {
+  RenderFileIcon = () => {
+    const { classes: styles, item } = this.props;
+
+    const fileIcon = prettyFileIcons.getIcon(item.name, 'svg');
+
+    return (
+      <div className={styles.fileTypeIconWrapper}>
+        <img
+          src={imgsrc(`file-types/${fileIcon}`)}
+          alt={item.name}
+          className={classNames(styles.fileTypeIcon)}
+        />
+      </div>
+    );
+  };
+
+  RenderFolderIcon = () => {
+    const { classes: styles, item } = this.props;
+
+    return (
+      <div className={styles.fileTypeIconWrapper}>
+        <img
+          src={imgsrc(`FileExplorer/folder-blue.svg`)}
+          alt={item.name}
+          className={classNames(styles.fileTypeIcon)}
+        />
+      </div>
+    );
+  };
+
   render() {
     const {
       classes: styles,
@@ -25,6 +55,8 @@ class FileExplorerTableBodyListRender extends PureComponent {
       onTableClick,
       onTableDoubleClick,
     } = this.props;
+
+    const { RenderFileIcon, RenderFolderIcon } = this;
 
     const fileName = springTruncate(
       item.name,
@@ -82,21 +114,7 @@ class FileExplorerTableBodyListRender extends PureComponent {
               onTableDoubleClick(item, deviceType, event)
             }
           >
-            {item.isFolder ? (
-              <Tooltip title="Folder">
-                <FolderIcon
-                  className={classNames(styles.tableCellIcon, `isFolder`)}
-                  fontSize="small"
-                />
-              </Tooltip>
-            ) : (
-              <Tooltip title="File">
-                <InsertDriveFileIcon
-                  className={classNames(styles.tableCellIcon, `isFile`)}
-                  fontSize="small"
-                />
-              </Tooltip>
-            )}
+            {item.isFolder ? <RenderFolderIcon /> : <RenderFileIcon />}
             &nbsp;&nbsp;
             {fileName.isTruncated ? (
               <Tooltip title={fileName.text}>

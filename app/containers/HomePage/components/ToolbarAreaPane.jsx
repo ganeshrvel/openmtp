@@ -30,6 +30,7 @@ import {
 import {
   makeAppThemeMode,
   makeHideHiddenFiles,
+  makeShowLocalPaneOnLeftSide,
 } from '../../Settings/selectors';
 import { delLocalFiles, delMtpFiles } from '../../../api/sys';
 import { DEVICES_DEFAULT_PATH } from '../../../constants';
@@ -240,6 +241,7 @@ class ToolbarAreaPane extends PureComponent {
       directoryLists,
       focussedFileExplorerDeviceType,
       appThemeMode,
+      showLocalPaneOnLeftSide,
       ...parentProps
     } = this.props;
 
@@ -262,6 +264,7 @@ class ToolbarAreaPane extends PureComponent {
           toggleMtpStorageSelectionDialog={toggleMtpStorageSelectionDialog}
           toggleDrawer={toggleDrawer}
           appThemeMode={appThemeMode}
+          showLocalPaneOnLeftSide={showLocalPaneOnLeftSide}
           onDeleteConfirmDialog={this._handleDeleteConfirmDialog}
           onMtpStoragesListClick={this._handleMtpStoragesListClick}
           onToggleDrawer={this._handleToggleDrawer}
@@ -419,6 +422,7 @@ const mapStateToProps = (state, __) => {
     mtpStoragesList: makeMtpStoragesList(state),
     focussedFileExplorerDeviceType: makeFocussedFileExplorerDeviceType(state),
     appThemeMode: makeAppThemeMode(state),
+    showLocalPaneOnLeftSide: makeShowLocalPaneOnLeftSide(state),
   };
 };
 

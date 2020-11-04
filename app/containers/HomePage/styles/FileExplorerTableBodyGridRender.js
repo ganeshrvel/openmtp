@@ -10,17 +10,6 @@ export const styles = (theme) => ({
   itemCheckBox: {
     display: `none`,
   },
-  itemIcon: {
-    width: 'auto',
-    height: `auto`,
-
-    [`&.isFolder`]: {
-      color: theme.palette.secondary.main,
-    },
-    [`&.isFile`]: {
-      color: theme.palette.fileColor,
-    },
-  },
   fileTypeIcon: {
     width: 'auto',
     height: 80,

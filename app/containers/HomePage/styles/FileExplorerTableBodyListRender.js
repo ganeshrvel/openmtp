@@ -27,20 +27,22 @@ export const tableCellFileExplorerTableRowsRender = {
   },
 };
 
-export const styles = (theme) => {
+export const styles = (_) => {
   return {
     tableRowSelected: {
       backgroundColor: 'rgba(41, 121, 255, 0.15) !important',
     },
     tableCell: tableCellFileExplorerTableRowsRender,
-    tableCellIcon: {
+    fileTypeIconWrapper: {
+      paddingTop: 5,
+      paddingBottom: 5,
+      paddingLeft: 2,
+      textAlign: 'center',
+    },
+    fileTypeIcon: {
       verticalAlign: `middle`,
-      [`&.isFolder`]: {
-        color: theme.palette.secondary.main,
-      },
-      [`&.isFile`]: {
-        color: theme.palette.fileColor,
-      },
+      height: 20,
+      width: 'auto',
     },
     truncate: {
       textOverflow: 'ellipsis',
