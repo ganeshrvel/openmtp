@@ -1060,7 +1060,7 @@ class FileExplorer extends Component {
 
   _createDragIcon() {
     const dragIcon = document.createElement('img');
-    dragIcon.src = imgsrc(`FileExplorer/folder-light.svg`);
+    dragIcon.src = imgsrc(`FileExplorer/files-archive.svg`);
     dragIcon.style.width = '100px';
 
     const div = document.createElement('div');

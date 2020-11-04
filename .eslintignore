@@ -67,3 +67,4 @@ app/dll
 .prettierrc
 .stylelintrc
 .eslintrc.json
+app/vendors

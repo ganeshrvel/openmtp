@@ -1,3 +1,5 @@
+import { mixins } from '../../../styles/js';
+
 export const styles = (theme) => ({
   wrapper: {},
   itemWrapper: {
@@ -18,6 +20,16 @@ export const styles = (theme) => ({
     [`&.isFile`]: {
       color: theme.palette.fileColor,
     },
+  },
+  fileTypeIcon: {
+    width: 'auto',
+    height: 80,
+  },
+  fileTypeIconWrapper: {
+    ...mixins({ theme }).center,
+    paddingTop: 10,
+    paddingBottom: 10,
+    textAlign: 'center',
   },
   itemSelected: {
     backgroundColor: 'rgba(41, 121, 255, 0.15) !important',
