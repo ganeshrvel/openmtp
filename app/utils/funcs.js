@@ -140,6 +140,10 @@ export const undefinedOrNull = (_var) => {
   return typeof _var === 'undefined' || _var === null;
 };
 
+export const isEmpty = (_var) => {
+  return undefinedOrNull(_var) || _var.length < 1;
+};
+
 /**
  * Chained object validator
  * Validates the chained object values

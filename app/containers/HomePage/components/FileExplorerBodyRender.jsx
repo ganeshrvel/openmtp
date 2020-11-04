@@ -30,6 +30,10 @@ class FileExplorerBodyRender extends PureComponent {
   componentDidMount() {
     this.accelerators();
     this.focusItem();
+
+    this.fileExplorerBodyWrapper = document.getElementById(
+      this.fileExplorerBodyWrapperId
+    );
   }
 
   componentWillUnmount() {
@@ -179,17 +183,95 @@ class FileExplorerBodyRender extends PureComponent {
     };
   };
 
+  isExternalFileDragged = (event) => {
+    const dt = event.dataTransfer;
+
+    return (
+      dt.types &&
+      (dt.types.indexOf
+        ? dt.types.indexOf('Files') !== -1
+        : dt.types.contains('Files'))
+    );
+  };
+
+  _handleOnDragOver = (event) => {
+    const { deviceType, onFilesDragOver } = this.props;
+
+    // if an extenal file is being dragged into the screen
+    // then do not activate the local pane
+    // because local files can only to be transferred to a mtp device
+    if (this.isExternalFileDragged(event)) {
+      if (deviceType === DEVICE_TYPE.local) {
+        return false;
+      }
+    }
+
+    onFilesDragOver(event, {
+      destinationDeviceType: deviceType,
+    });
+  };
+
+  _handleOnDragEnd = (event) => {
+    const { deviceType, onFilesDragEnd } = this.props;
+
+    // if an extenal file is being dragged into the screen
+    // then do not activate the local pane
+    // because local files can only to be transferred to a mtp device
+    if (this.isExternalFileDragged(event)) {
+      if (deviceType === DEVICE_TYPE.local) {
+        return false;
+      }
+    }
+
+    onFilesDragEnd(event, {
+      destinationDeviceType: deviceType,
+    });
+  };
+
+  _handleOnDrop = (event) => {
+    event.preventDefault();
+
+    const { deviceType, onTableDrop } = this.props;
+
+    onTableDrop(event, {
+      destinationDeviceType: deviceType,
+      externalFiles: event?.dataTransfer?.files ?? [],
+    });
+  };
+
+  _handleExternalFileDragLeave = (event) => {
+    event.preventDefault();
+    const { deviceType, onExternalFileDragLeave } = this.props;
+
+    if (this.isExternalFileDragged(event)) {
+      if (deviceType === DEVICE_TYPE.local) {
+        return false;
+      }
+
+      // prevent dragleave being fired when hovering a child element
+      const rect = this.fileExplorerBodyWrapper.getBoundingClientRect();
+
+      if (
+        event.clientY < rect.top ||
+        event.clientY >= rect.bottom ||
+        event.clientX < rect.left ||
+        event.clientX >= rect.right
+      ) {
+        onExternalFileDragLeave(event, { deviceType });
+      }
+    }
+
+    return false;
+  };
+
   render() {
     const {
       classes: styles,
       deviceType,
       currentBrowsePath,
-      OnHoverDropZoneActivate,
+      onHoverDropZoneActivate,
       filesDrag, // eslint-disable-line no-unused-vars
       onContextMenuClick,
-      onFilesDragOver,
-      onFilesDragEnd,
-      onTableDrop,
       onBreadcrumbPathClick,
       isStatusBarEnabled,
       fileTransferClipboard,
@@ -216,23 +298,16 @@ class FileExplorerBodyRender extends PureComponent {
           tabIndex={-1}
           id={this.fileExplorerBodyWrapperId}
           className={classNames(styles.tableWrapper, {
-            [`onHoverDropZone`]: OnHoverDropZoneActivate(deviceType),
+            [`onHoverDropZone`]: onHoverDropZoneActivate(deviceType),
             [`statusBarActive`]: isStatusBarEnabled,
           })}
           onContextMenu={(event) =>
             onContextMenuClick(event, {}, { ...this.tableData() }, _eventTarget)
           }
-          onDragOver={(event) => {
-            onFilesDragOver(event, {
-              destinationDeviceType: deviceType,
-            });
-          }}
-          onDragEnd={(event) => {
-            onFilesDragEnd(event);
-          }}
-          onDrop={(event) => {
-            onTableDrop(event);
-          }}
+          onDragOver={this._handleOnDragOver}
+          onDragEnd={this._handleOnDragEnd}
+          onDrop={this._handleOnDrop}
+          onDragLeave={this._handleExternalFileDragLeave}
         >
           <FileExplorerTableBodyRender
             tableData={this.tableData()}

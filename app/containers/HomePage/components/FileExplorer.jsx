@@ -67,6 +67,7 @@ import {
 } from '../../../api/sys';
 import {
   isArray,
+  isEmpty,
   isFloat,
   isInt,
   isNumber,
@@ -1083,6 +1084,12 @@ class FileExplorer extends Component {
     e.dataTransfer.setDragImage(this.filesDragGhostImg, 0, 0);
   };
 
+  _handleExternalFileDragLeave = (_) => {
+    const { filesDrag } = this.props;
+
+    this._handleClearFilesDrag();
+  };
+
   _handleFilesDragOver = (e, { destinationDeviceType }) => {
     const { filesDrag } = this.props;
     e.preventDefault();
@@ -1122,8 +1129,19 @@ class FileExplorer extends Component {
     this._handleClearFilesDrag();
   };
 
-  _handleTableDrop = () => {
-    const { directoryLists, actionCreateCopy, filesDrag } = this.props;
+  _handleFilesDrop = ({ externalFiles }) => {
+    const { directoryLists, filesDrag } = this.props;
+    const { sourceDeviceType } = filesDrag;
+
+    if (isEmpty(externalFiles)) {
+      return directoryLists[sourceDeviceType]?.queue?.selected ?? [];
+    }
+
+    return [...externalFiles].map((f) => f.path);
+  };
+
+  _handleTableDrop = async (_, { __, externalFiles }) => {
+    const { actionCreateCopy, filesDrag } = this.props;
     const { sourceDeviceType, destinationDeviceType } = filesDrag;
 
     if (
@@ -1134,8 +1152,10 @@ class FileExplorer extends Component {
       return null;
     }
 
-    // eslint-disable-next-line prefer-destructuring
-    const selected = directoryLists[sourceDeviceType].queue.selected;
+    const selected = this._handleFilesDrop({
+      externalFiles,
+    });
+
     actionCreateCopy({ selected, deviceType: sourceDeviceType });
 
     setTimeout(() => {
@@ -1144,7 +1164,7 @@ class FileExplorer extends Component {
     }, 200);
   };
 
-  _handleOnHoverDropZoneActivate = (deviceType) => {
+  _handleonHoverDropZoneActivate = (deviceType) => {
     const { filesDrag, mtpDevice } = this.props;
     const { sourceDeviceType, destinationDeviceType } = filesDrag;
 
@@ -1163,17 +1183,17 @@ class FileExplorer extends Component {
     return selected.length > 0 && mtpDevice.isAvailable;
   };
 
-  _handleSetFilesDrag({ ...args }) {
+  _handleSetFilesDrag = ({ ...args }) => {
     const { actionCreateSetFilesDrag } = this.props;
 
     actionCreateSetFilesDrag({ ...args });
-  }
+  };
 
-  _handleClearFilesDrag() {
+  _handleClearFilesDrag = () => {
     const { actionCreateClearFilesDrag } = this.props;
 
     actionCreateClearFilesDrag();
-  }
+  };
 
   _handleNewFolderEditDialog = async ({ ...args }) => {
     const {
@@ -1600,7 +1620,7 @@ class FileExplorer extends Component {
           tableSort={this.tableSort}
           isStatusBarEnabled={isStatusBarEnabled}
           directoryGeneratedTime={directoryGeneratedTime}
-          OnHoverDropZoneActivate={this._handleOnHoverDropZoneActivate}
+          onHoverDropZoneActivate={this._handleonHoverDropZoneActivate}
           onFilesDragOver={this._handleFilesDragOver}
           onFilesDragEnd={this._handleFilesDragEnd}
           onTableDrop={this._handleTableDrop}
@@ -1612,6 +1632,7 @@ class FileExplorer extends Component {
           onTableClick={this._handleTableClick}
           onIsDraggable={this._handleIsDraggable}
           onDragStart={this._handleFilesDragStart}
+          onExternalFileDragLeave={this._handleExternalFileDragLeave}
           onFocussedFileExplorerDeviceType={
             this._handleFocussedFileExplorerDeviceType
           }

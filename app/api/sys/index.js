@@ -243,7 +243,7 @@ export const checkFileExists = async (
 };
 
 /**
-  Local device ->
+ Local device ->
  */
 export const asyncReadLocalDir = async ({ filePath, ignoreHidden }) => {
   try {
@@ -385,9 +385,15 @@ export const renameLocalFiles = async ({ oldFilePath, newFilePath }) => {
 const promisifiedMkdir = ({ newFolderPath }) => {
   try {
     return new Promise((resolve) => {
-      mkdirp(newFolderPath, (error) => {
-        resolve({ data: null, stderr: error, error });
-      });
+      mkdirp(newFolderPath)
+        .then((data) => {
+          resolve({ data, stderr: null, error: null });
+
+          return data;
+        })
+        .catch((error) => {
+          resolve({ data: null, stderr: error, error });
+        });
     });
   } catch (e) {
     log.error(e);
