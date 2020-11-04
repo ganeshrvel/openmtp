@@ -7,15 +7,9 @@ import { withReducer } from '../../store/reducers/withReducer';
 import reducers from './reducers';
 import { makeCommonSettings } from './selectors';
 import {
-  enableAnalytics,
-  enableAutoUpdateCheck,
-  enableBackgroundAutoUpdate,
-  enablePrereleaseUpdates,
-  enableStatusBar,
   fileExplorerListingType,
   freshInstall,
   hideHiddenFiles,
-  setAppThemeMode,
   setCommonSettings,
   toggleSettings,
 } from './actions';
@@ -195,33 +189,6 @@ const mapDispatchToProps = (dispatch, _) =>
         getState
       ) => {
         dispatch(fileExplorerListingType({ ...data }, deviceType, getState));
-      },
-
-      actionCreateEnableAutoUpdateCheck: ({ ...data }) => (_, getState) => {
-        dispatch(enableAutoUpdateCheck({ ...data }, getState));
-      },
-
-      actionCreateEnableBackgroundAutoUpdate: ({ ...data }) => (
-        _,
-        getState
-      ) => {
-        dispatch(enableBackgroundAutoUpdate({ ...data }, getState));
-      },
-
-      actionCreateEnablePrereleaseUpdates: ({ ...data }) => (_, getState) => {
-        dispatch(enablePrereleaseUpdates({ ...data }, getState));
-      },
-
-      actionCreateEnableAnalytics: ({ ...data }) => (_, getState) => {
-        dispatch(enableAnalytics({ ...data }, getState));
-      },
-
-      actionCreateEnableStatusBar: ({ ...data }) => (_, getState) => {
-        dispatch(enableStatusBar({ ...data }, getState));
-      },
-
-      actionSetAppThemeMode: ({ ...data }) => (_, getState) => {
-        dispatch(setAppThemeMode({ ...data }, getState));
       },
 
       actionSetCommonSettings: ({ key, value }, deviceType) => (
