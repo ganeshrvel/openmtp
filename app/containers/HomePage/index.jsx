@@ -1,25 +1,34 @@
-import React, { Component, Fragment } from 'react';
+import React, { PureComponent, Fragment } from 'react';
+import classnames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
+import { connect } from 'react-redux';
 import FileExplorer from './components/FileExplorer';
 import ToolbarAreaPane from './components/ToolbarAreaPane';
 import { styles } from './styles';
 import Onboarding from '../Onboarding';
 import { DEVICE_TYPE } from '../../enums';
+import { makeShowLocalPane } from '../Settings/selectors';
 
-class Home extends Component {
+class Home extends PureComponent {
   render() {
-    const { classes: styles } = this.props;
-
+    const { classes: styles, showLocalPane } = this.props;
     return (
       <Fragment>
         <Onboarding />
         <div className={styles.root}>
           <div className={styles.grid}>
-            <div className={styles.splitPane}>
-              <ToolbarAreaPane showMenu deviceType={DEVICE_TYPE.local} />
-              <FileExplorer hideColList={[]} deviceType={DEVICE_TYPE.local} />
-            </div>
-            <div className={styles.splitPane}>
+            {showLocalPane && (
+              <div className={styles.splitPane}>
+                <ToolbarAreaPane showMenu deviceType={DEVICE_TYPE.local} />
+                <FileExplorer hideColList={[]} deviceType={DEVICE_TYPE.local} />
+              </div>
+            )}
+
+            <div
+              className={classnames(styles.splitPane, {
+                [styles.singlePane]: !showLocalPane,
+              })}
+            >
               <ToolbarAreaPane showMenu={false} deviceType={DEVICE_TYPE.mtp} />
               <FileExplorer
                 hideColList={['size']}
@@ -33,4 +42,10 @@ class Home extends Component {
   }
 }
 
-export default withStyles(styles)(Home);
+const mapStateToProps = (state) => {
+  return {
+    showLocalPane: makeShowLocalPane(state),
+  };
+};
+
+export default connect(mapStateToProps, null)(withStyles(styles)(Home));

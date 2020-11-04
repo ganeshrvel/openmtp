@@ -72,6 +72,7 @@ export default class SettingsDialog extends PureComponent {
       enablePrereleaseUpdates,
       enableAnalytics,
       enableStatusBar,
+      showLocalPane,
       onAnalyticsChange,
       onHiddenFilesChange,
       onFileExplorerListingType,
@@ -81,6 +82,7 @@ export default class SettingsDialog extends PureComponent {
       onPrereleaseUpdatesChange,
       onStatusBarChange,
       onAppThemeModeChange,
+      onShowLocalPaneChange,
     } = this.props;
 
     const { tabIndex } = this.state;
@@ -286,6 +288,25 @@ export default class SettingsDialog extends PureComponent {
                         />
                       }
                       label={enableStatusBar ? `Enabled` : `Disabled`}
+                    />
+
+                    <Typography
+                      variant="subtitle2"
+                      className={`${styles.subtitle} ${styles.fmSettingsStylesFix}`}
+                    >
+                      Show Local Pane
+                    </Typography>
+                    <FormControlLabel
+                      className={styles.switch}
+                      control={
+                        <Switch
+                          checked={showLocalPane}
+                          onChange={(e) =>
+                            onShowLocalPaneChange(e, !showLocalPane)
+                          }
+                        />
+                      }
+                      label={showLocalPane ? `Enabled` : `Disabled`}
                     />
 
                     {freshInstall ? (
