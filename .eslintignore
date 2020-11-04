@@ -46,6 +46,7 @@ dist
 dll
 main.js
 main.js.map
+app/vendors
 
 
 .idea
@@ -67,4 +68,3 @@ app/dll
 .prettierrc
 .stylelintrc
 .eslintrc.json
-app/vendors
