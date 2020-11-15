@@ -10,7 +10,6 @@ import {
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Analytics from 'electron-ga';
-import { log } from '@Log';
 import { IS_PROD } from '../../constants/env';
 import { materialUiTheme, styles } from './styles';
 import Alerts from '../Alerts';
@@ -32,6 +31,7 @@ import {
 } from '../Settings/selectors';
 import { getAppThemeMode } from '../../utils/theme';
 import { getMainWindowRendererProcess } from '../../utils/windowHelper';
+import { log } from '../../utils/log';
 
 class App extends Component {
   constructor(props) {

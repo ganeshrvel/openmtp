@@ -12,7 +12,7 @@ import {
   writeFileAsync,
   createDirSync,
   deleteFilesSync,
-} from '../api/sys/fileOps';
+} from '../data/sys/fileOps';
 import { daysDiff, yearMonthNow } from '../utils/date';
 import { LOG_FILE_ROTATION_CLEANUP_THRESHOLD } from '../constants';
 import { baseName } from '../utils/files';

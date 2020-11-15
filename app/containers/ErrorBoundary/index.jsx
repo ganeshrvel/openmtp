@@ -4,10 +4,10 @@ import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import { EOL } from 'os';
-import { log } from '@Log';
 import { styles } from './styles';
 import { imgsrc } from '../../utils/imgsrc';
 import GenerateErrorReport from './components/GenerateErrorReport';
+import { log } from '../../utils/log';
 
 class ErrorBoundary extends Component {
   constructor(props) {

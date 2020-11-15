@@ -1,10 +1,9 @@
-import { log } from '@Log';
 import prefixer from '../../utils/reducerPrefixer';
 import {
   asyncReadLocalDir,
   asyncReadMtpDir,
   fetchMtpStorageOptions,
-} from '../../api/sys';
+} from '../../data/sys';
 import { throwAlert } from '../Alerts/actions';
 import {
   processMtpBuffer,
@@ -12,6 +11,7 @@ import {
 } from '../../utils/processBufferOutput';
 import { asserts, isArraysEqual, undefinedOrNull } from '../../utils/funcs';
 import { DEVICE_TYPE } from '../../enums';
+import { log } from '../../utils/log';
 
 const prefix = '@@Home';
 const actionTypesList = [

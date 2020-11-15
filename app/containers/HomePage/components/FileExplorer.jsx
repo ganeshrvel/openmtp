@@ -17,7 +17,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
-import { log } from '@Log';
 import { styles } from '../styles/FileExplorer';
 import {
   TextFieldEdit as TextFieldEditDialog,
@@ -65,7 +64,7 @@ import {
   newMtpFolder,
   pasteFiles,
   renameMtpFiles,
-} from '../../../api/sys';
+} from '../../../data/sys';
 import {
   isArray,
   isEmpty,
@@ -88,6 +87,7 @@ import {
 } from '../../../templates/socialMediaShareBtns';
 import { baseName, pathInfo, pathUp, sanitizePath } from '../../../utils/files';
 import { DEVICE_TYPE, FILE_EXPLORER_VIEW_TYPE } from '../../../enums';
+import { log } from '../../../utils/log';
 
 const { Menu, getCurrentWindow } = remote;
 

@@ -4,11 +4,10 @@ import path from 'path';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withStyles } from '@material-ui/core/styles';
-import { log } from '@Log';
 import { styles } from '../styles/GenerateErrorReport';
 import { PATHS } from '../../../utils/paths';
-import { promisifiedRimraf, mtpVerboseReport } from '../../../api/sys';
-import { fileExistsSync } from '../../../api/sys/fileOps';
+import { promisifiedRimraf, mtpVerboseReport } from '../../../data/sys';
+import { fileExistsSync } from '../../../data/sys/fileOps';
 import { AUTHOR_EMAIL } from '../../../constants/meta';
 import { throwAlert } from '../../Alerts/actions';
 import {
@@ -19,6 +18,7 @@ import {
 import { compressFile } from '../../../utils/gzip';
 import GenerateErrorReportBody from './GenerateErrorReportBody';
 import { baseName } from '../../../utils/files';
+import { log } from '../../../utils/log';
 
 const { logFile } = PATHS;
 const { getPath } = remote.app;

@@ -6,7 +6,6 @@ import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { log } from '@Log';
 import { styles } from '../styles/ToolbarAreaPane';
 import { withReducer } from '../../../store/reducers/withReducer';
 import reducers from '../reducers';
@@ -32,7 +31,7 @@ import {
   makeHideHiddenFiles,
   makeShowLocalPaneOnLeftSide,
 } from '../../Settings/selectors';
-import { delLocalFiles, delMtpFiles } from '../../../api/sys';
+import { delLocalFiles, delMtpFiles } from '../../../data/sys';
 import { DEVICES_DEFAULT_PATH } from '../../../constants';
 import { toggleSettings } from '../../Settings/actions';
 import { toggleWindowSizeOnDoubleClick } from '../../../utils/titlebarDoubleClick';
@@ -41,6 +40,7 @@ import { openExternalUrl } from '../../../utils/url';
 import { APP_GITHUB_URL } from '../../../constants/meta';
 import { pathUp } from '../../../utils/files';
 import { DEVICE_TYPE } from '../../../enums';
+import { log } from '../../../utils/log';
 
 class ToolbarAreaPane extends PureComponent {
   constructor(props) {
