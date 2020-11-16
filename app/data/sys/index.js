@@ -421,7 +421,7 @@ export const newLocalFolder = async ({ newFolderPath }) => {
 /**
  MTP device ->
  */
-export const fetchMtpStorageOptions = async () => {
+/*export const fetchMtpStorageOptions = async () => {
   try {
     const { data, error, stderr } = await promisifiedExec(
       `${mtpCli} "storage-list"`
@@ -491,7 +491,7 @@ export const fetchMtpStorageOptions = async () => {
   } catch (e) {
     log.error(e);
   }
-};
+};*/
 
 export const asyncReadMtpDir = async ({
   filePath,

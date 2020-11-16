@@ -8,13 +8,8 @@ module.exports = {
     browser: true,
     node: true,
   },
-  plugins: ['import', 'promise', 'compat', 'react', 'jsdoc'],
-  extends: [
-    'airbnb',
-    'plugin:prettier/recommended',
-    'prettier/react',
-    'plugin:jsdoc/recommended',
-  ],
+  plugins: ['import', 'promise', 'compat', 'react'],
+  extends: ['airbnb', 'plugin:prettier/recommended', 'prettier/react'],
   settings: {
     react: {
       version: '16.7',

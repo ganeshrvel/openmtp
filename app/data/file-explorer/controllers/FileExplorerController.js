@@ -1,6 +1,6 @@
 import { FileExplorerRepository } from '../repositories/FileExplorerRepository';
 
-export class FileExplorerController {
+class FileExplorerController {
   constructor() {
     this.repository = new FileExplorerRepository();
   }
@@ -8,7 +8,12 @@ export class FileExplorerController {
   /**
    * description - Fetch storages
    *
-   * @param {{deviceType: (DEVICE_TYPE.mtp|DEVICE_TYPE.local)}} args - Arguments
    */
-  getStorages({ deviceType }) {}
+  getStorages({ deviceType }) {
+    return this.repository.getStorages({ deviceType });
+  }
 }
+
+const fileExplorerController = new FileExplorerController();
+
+export default fileExplorerController;

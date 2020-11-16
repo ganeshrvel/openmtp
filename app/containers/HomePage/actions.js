@@ -1,9 +1,5 @@
 import prefixer from '../../utils/reducerPrefixer';
-import {
-  asyncReadLocalDir,
-  asyncReadMtpDir,
-  fetchMtpStorageOptions,
-} from '../../data/sys';
+import { asyncReadLocalDir, asyncReadMtpDir } from '../../data/sys';
 import { throwAlert } from '../Alerts/actions';
 import {
   processMtpBuffer,
@@ -12,6 +8,7 @@ import {
 import { asserts, isArraysEqual, undefinedOrNull } from '../../utils/funcs';
 import { DEVICE_TYPE } from '../../enums';
 import { log } from '../../utils/log';
+import fileExplorerController from '../../data/file-explorer/controllers/FileExplorerController';
 
 const prefix = '@@Home';
 const actionTypesList = [
@@ -109,7 +106,9 @@ export function setMtpStorageOptions(
 ) {
   return async (dispatch) => {
     try {
-      const { error, stderr, data } = await fetchMtpStorageOptions();
+      const { error, stderr, data } = await fileExplorerController.getStorages({
+        deviceType,
+      });
       dispatch(
         processMtpOutput({
           deviceType,

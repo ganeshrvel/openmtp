@@ -1,3 +1,4 @@
+import { Promise } from 'bluebird';
 import { exec } from 'child_process';
 import { mtp as _mtpCli } from './binaries';
 import { splitIntoLines, undefinedOrNull } from './funcs';
