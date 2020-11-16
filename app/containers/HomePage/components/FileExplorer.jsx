@@ -32,7 +32,7 @@ import {
   processMtpOutput,
   processLocalOutput,
   setMtpStorageOptions,
-  getMtpStoragesListSelected,
+  getStorageId,
   setFileTransferClipboard,
   setFilesDrag,
   clearFilesDrag,
@@ -43,7 +43,7 @@ import {
   makeCurrentBrowsePath,
   makeMtpDevice,
   makeContextMenuList,
-  makeMtpStoragesListSelected,
+  makeStorageId,
   makeFileTransferClipboard,
   makeFileTransferProgess,
   makeFilesDrag,
@@ -974,7 +974,7 @@ class FileExplorer extends Component {
       actionCreateRenameFile,
       hideHiddenFiles,
       currentBrowsePath,
-      mtpStoragesListSelected,
+      storageId,
     } = this.props;
 
     // eslint-disable-next-line react/destructuring-assignment
@@ -1009,7 +1009,7 @@ class FileExplorer extends Component {
     }
 
     if (
-      await checkFileExists(newFilePath, deviceType, mtpStoragesListSelected)
+      await checkFileExists(newFilePath, deviceType, storageId)
     ) {
       this._handleErrorsEditDialog(
         {
@@ -1207,7 +1207,7 @@ class FileExplorer extends Component {
       actionCreateNewFolder,
       hideHiddenFiles,
       currentBrowsePath,
-      mtpStoragesListSelected,
+      storageId,
     } = this.props;
 
     // eslint-disable-next-line react/destructuring-assignment
@@ -1245,7 +1245,7 @@ class FileExplorer extends Component {
     const newFolderPath = sanitizePath(`${data.path}/${newFolderName}`);
 
     if (
-      await checkFileExists(newFolderPath, deviceType, mtpStoragesListSelected)
+      await checkFileExists(newFolderPath, deviceType, storageId)
     ) {
       this._handleErrorsEditDialog(
         {
@@ -1275,7 +1275,7 @@ class FileExplorer extends Component {
     const {
       deviceType,
       currentBrowsePath,
-      mtpStoragesListSelected,
+      storageId,
       fileTransferClipboard,
       actionCreateThrowError,
     } = this.props;
@@ -1301,7 +1301,7 @@ class FileExplorer extends Component {
       return null;
     }
 
-    if (await checkFileExists(queue, deviceType, mtpStoragesListSelected)) {
+    if (await checkFileExists(queue, deviceType, storageId)) {
       this._handleTogglePasteConfirmDialog(true);
       return null;
     }
@@ -1314,7 +1314,7 @@ class FileExplorer extends Component {
       deviceType,
       hideHiddenFiles,
       currentBrowsePath,
-      mtpStoragesListSelected,
+      storageId,
       actionCreatePaste,
       fileTransferClipboard,
     } = this.props;
@@ -1329,7 +1329,7 @@ class FileExplorer extends Component {
     actionCreatePaste(
       {
         destinationFolder,
-        mtpStoragesListSelected,
+        storageId,
         fileTransferClipboard,
       },
       {
@@ -1765,7 +1765,7 @@ const mapDispatchToProps = (dispatch, _) =>
               );
               break;
             case DEVICE_TYPE.mtp:
-              const mtpStoragesListSelected = getMtpStoragesListSelected(
+              const storageId = getStorageId(
                 getState().Home
               );
               const {
@@ -1775,7 +1775,7 @@ const mapDispatchToProps = (dispatch, _) =>
               } = await renameMtpFiles({
                 oldFilePath,
                 newFilePath,
-                mtpStoragesListSelected,
+                storageId,
               });
 
               dispatch(
@@ -1838,7 +1838,7 @@ const mapDispatchToProps = (dispatch, _) =>
               );
               break;
             case DEVICE_TYPE.mtp:
-              const mtpStoragesListSelected = getMtpStoragesListSelected(
+              const storageId = getStorageId(
                 getState().Home
               );
               const {
@@ -1847,7 +1847,7 @@ const mapDispatchToProps = (dispatch, _) =>
                 data: mtpData,
               } = await newMtpFolder({
                 newFolderPath,
-                mtpStoragesListSelected,
+                storageId,
               });
 
               dispatch(
@@ -1971,7 +1971,7 @@ const mapStateToProps = (state, _) => {
     hideHiddenFiles: makeHideHiddenFiles(state),
     isStatusBarEnabled: makeEnableStatusBar(state),
     contextMenuList: makeContextMenuList(state),
-    mtpStoragesListSelected: makeMtpStoragesListSelected(state),
+    storageId: makeStorageId(state),
     fileTransferClipboard: makeFileTransferClipboard(state),
     fileTransferProgess: makeFileTransferProgess(state),
     filesDrag: makeFilesDrag(state),

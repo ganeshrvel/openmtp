@@ -9,8 +9,21 @@ class FileExplorerController {
    * description - Fetch storages
    *
    */
-  getStorages({ deviceType }) {
-    return this.repository.getStorages({ deviceType });
+  async listStorages({ deviceType }) {
+    return this.repository.listStorages({ deviceType });
+  }
+
+  /**
+   * description - Fetch files in the path
+   *
+   */
+  async listFiles({ deviceType, filePath, ignoreHidden, storageId }) {
+    return this.repository.listFiles({
+      deviceType,
+      filePath,
+      ignoreHidden,
+      storageId,
+    });
   }
 }
 

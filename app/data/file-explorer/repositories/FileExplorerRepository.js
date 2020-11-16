@@ -1,7 +1,9 @@
 import { FileExplorerLegacyDataSource } from '../data-sources/FileExplorerLegacyDataSource';
 import { FileExplorerLocalDataSource } from '../data-sources/FileExplorerLocalDataSource';
 import { FileExplorerKalamDataSource } from '../data-sources/FileExplorerKalamDataSource';
-import { DEVICE_TYPE } from '../../../enums';
+import { DEVICE_TYPE, MTP_MODE } from '../../../enums';
+
+const selectedMtpMode = MTP_MODE.legacy;
 
 export class FileExplorerRepository {
   constructor() {
@@ -14,9 +16,42 @@ export class FileExplorerRepository {
    * description - Fetch storages
    *
    */
-  getStorages({ deviceType }) {
+  async listStorages({ deviceType }) {
     if (deviceType === DEVICE_TYPE.mtp) {
-      return this.legacyMtpDataSource.getStorages();
+      switch (selectedMtpMode) {
+        case MTP_MODE.legacy:
+          return this.legacyMtpDataSource.listStorages();
+
+        case MTP_MODE.kalam:
+        default:
+          break;
+      }
     }
+  }
+
+  /**
+   * description - Fetch files in the path
+   *
+   */
+  async listFiles({ deviceType, filePath, ignoreHidden, storageId }) {
+    if (deviceType === DEVICE_TYPE.mtp) {
+      switch (selectedMtpMode) {
+        case MTP_MODE.legacy:
+          return this.legacyMtpDataSource.listFiles({
+            filePath,
+            ignoreHidden,
+            storageId,
+          });
+
+        case MTP_MODE.kalam:
+        default:
+          break;
+      }
+    }
+
+    return this.localDataSource.listFiles({
+      filePath,
+      ignoreHidden,
+    });
   }
 }

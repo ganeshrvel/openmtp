@@ -174,8 +174,8 @@ const promisifiedExecNoCatch = (command) => {
   });
 };
 
-const checkMtpFileExists = async (filePath, mtpStoragesListSelected) => {
-  const storageSelectCmd = `"storage ${mtpStoragesListSelected}"`;
+const checkMtpFileExists = async (filePath, storageId) => {
+  const storageSelectCmd = `"storage ${storageId}"`;
   const escapedFilePath = `${escapeShellMtp(filePath)}`;
 
   const { stderr } = await promisifiedExecNoCatch(
@@ -188,7 +188,7 @@ const checkMtpFileExists = async (filePath, mtpStoragesListSelected) => {
 export const checkFileExists = async (
   filePath,
   deviceType,
-  mtpStoragesListSelected
+  storageId
 ) => {
   try {
     if (typeof filePath === 'undefined' || filePath === null) {
@@ -222,7 +222,7 @@ export const checkFileExists = async (
           for (let i = 0; i < filePath.length; i += 1) {
             const item = filePath[i];
             fullPath = path.resolve(item);
-            if (await checkMtpFileExists(fullPath, mtpStoragesListSelected)) {
+            if (await checkMtpFileExists(fullPath, storageId)) {
               return true;
             }
           }
@@ -230,7 +230,7 @@ export const checkFileExists = async (
         }
 
         fullPath = path.resolve(filePath);
-        return await checkMtpFileExists(fullPath, mtpStoragesListSelected);
+        return await checkMtpFileExists(fullPath, storageId);
 
       default:
         break;
@@ -245,66 +245,66 @@ export const checkFileExists = async (
 /**
  Local device ->
  */
-export const asyncReadLocalDir = async ({ filePath, ignoreHidden }) => {
-  try {
-    const response = [];
-    const { error, data } = await readdir(filePath, 'utf8')
-      .then((res) => {
-        return {
-          data: res,
-          error: null,
-        };
-      })
-      .catch((e) => {
-        return {
-          data: null,
-          error: e,
-        };
-      });
-
-    if (error) {
-      log.error(error, `asyncReadLocalDir`);
-      return { error: true, data: null };
-    }
-
-    let files = data;
-
-    files = data.filter(junk.not);
-    if (ignoreHidden) {
-      // eslint-disable-next-line no-useless-escape
-      files = data.filter((item) => !/(^|\/)\.[^\/\.]/g.test(item));
-    }
-
-    for (let i = 0; i < files.length; i += 1) {
-      const file = files[i];
-      const fullPath = path.resolve(filePath, file);
-
-      if (!existsSync(fullPath)) {
-        continue; // eslint-disable-line no-continue
-      }
-      const stat = statSync(fullPath);
-      const isFolder = lstatSync(fullPath).isDirectory();
-      const extension = path.extname(fullPath);
-      const { size, atime: dateTime } = stat;
-
-      if (findLodash(response, { path: fullPath })) {
-        continue; // eslint-disable-line no-continue
-      }
-
-      response.push({
-        name: file,
-        path: fullPath,
-        extension,
-        size,
-        isFolder,
-        dateAdded: moment(dateTime).format('YYYY-MM-DD HH:mm:ss'),
-      });
-    }
-    return { error, data: response };
-  } catch (e) {
-    log.error(e);
-  }
-};
+// export const asyncReadLocalDir = async ({ filePath, ignoreHidden }) => {
+//   try {
+//     const response = [];
+//     const { error, data } = await readdir(filePath, 'utf8')
+//       .then((res) => {
+//         return {
+//           data: res,
+//           error: null,
+//         };
+//       })
+//       .catch((e) => {
+//         return {
+//           data: null,
+//           error: e,
+//         };
+//       });
+//
+//     if (error) {
+//       log.error(error, `asyncReadLocalDir`);
+//       return { error: true, data: null };
+//     }
+//
+//     let files = data;
+//
+//     files = data.filter(junk.not);
+//     if (ignoreHidden) {
+//       // eslint-disable-next-line no-useless-escape
+//       files = data.filter((item) => !/(^|\/)\.[^\/\.]/g.test(item));
+//     }
+//
+//     for (let i = 0; i < files.length; i += 1) {
+//       const file = files[i];
+//       const fullPath = path.resolve(filePath, file);
+//
+//       if (!existsSync(fullPath)) {
+//         continue; // eslint-disable-line no-continue
+//       }
+//       const stat = statSync(fullPath);
+//       const isFolder = lstatSync(fullPath).isDirectory();
+//       const extension = path.extname(fullPath);
+//       const { size, atime: dateTime } = stat;
+//
+//       if (findLodash(response, { path: fullPath })) {
+//         continue; // eslint-disable-line no-continue
+//       }
+//
+//       response.push({
+//         name: file,
+//         path: fullPath,
+//         extension,
+//         size,
+//         isFolder,
+//         dateAdded: moment(dateTime).format('YYYY-MM-DD HH:mm:ss'),
+//       });
+//     }
+//     return { error, data: response };
+//   } catch (e) {
+//     log.error(e);
+//   }
+// };
 
 export const promisifiedRimraf = (item) => {
   try {
@@ -493,10 +493,10 @@ export const newLocalFolder = async ({ newFolderPath }) => {
   }
 };*/
 
-export const asyncReadMtpDir = async ({
+/*export const asyncReadMtpDir = async ({
   filePath,
   ignoreHidden,
-  mtpStoragesListSelected,
+  storageId,
 }) => {
   try {
     const mtpCmdChopIndex = {
@@ -505,7 +505,7 @@ export const asyncReadMtpDir = async ({
       timeAdded: 5,
     };
     const response = [];
-    const storageSelectCmd = `"storage ${mtpStoragesListSelected}"`;
+    const storageSelectCmd = `"storage ${storageId}"`;
 
     const {
       data: filePropsData,
@@ -576,12 +576,12 @@ export const asyncReadMtpDir = async ({
   } catch (e) {
     log.error(e);
   }
-};
+};*/
 
 export const renameMtpFiles = async ({
   oldFilePath,
   newFilePath,
-  mtpStoragesListSelected,
+  storageId,
 }) => {
   try {
     if (
@@ -593,7 +593,7 @@ export const renameMtpFiles = async ({
       return { error: `No files selected.`, stderr: null, data: null };
     }
 
-    const storageSelectCmd = `"storage ${mtpStoragesListSelected}"`;
+    const storageSelectCmd = `"storage ${storageId}"`;
     const escapedOldFilePath = `${escapeShellMtp(oldFilePath)}`;
     const escapedNewFilePath = `${escapeShellMtp(baseName(newFilePath))}`;
 
@@ -612,13 +612,13 @@ export const renameMtpFiles = async ({
   }
 };
 
-export const delMtpFiles = async ({ fileList, mtpStoragesListSelected }) => {
+export const delMtpFiles = async ({ fileList, storageId }) => {
   try {
     if (!fileList || fileList.length < 1) {
       return { error: `No files selected.`, stderr: null, data: null };
     }
 
-    const storageSelectCmd = `"storage ${mtpStoragesListSelected}"`;
+    const storageSelectCmd = `"storage ${storageId}"`;
     for (let i = 0; i < fileList.length; i += 1) {
       const { error, stderr } = await promisifiedExec(
         `${mtpCli} ${storageSelectCmd} "rm \\"${escapeShellMtp(
@@ -640,14 +640,14 @@ export const delMtpFiles = async ({ fileList, mtpStoragesListSelected }) => {
 
 export const newMtpFolder = async ({
   newFolderPath,
-  mtpStoragesListSelected,
+  storageId,
 }) => {
   try {
     if (typeof newFolderPath === 'undefined' || newFolderPath === null) {
       return { error: `Invalid path.`, stderr: null, data: null };
     }
 
-    const storageSelectCmd = `"storage ${mtpStoragesListSelected}"`;
+    const storageSelectCmd = `"storage ${storageId}"`;
     const escapedNewFolderPath = `${escapeShellMtp(newFolderPath)}`;
     const { error, stderr } = await promisifiedExec(
       `${mtpCli} ${storageSelectCmd} "mkpath \\"${escapedNewFolderPath}\\""`
@@ -676,7 +676,7 @@ export const pasteFiles = (
   try {
     const {
       destinationFolder,
-      mtpStoragesListSelected,
+      storageId,
       fileTransferClipboard,
     } = pasteArgs;
 
@@ -699,7 +699,7 @@ export const pasteFiles = (
       );
     }
 
-    const storageSelectCmd = `"storage ${mtpStoragesListSelected}"`;
+    const storageSelectCmd = `"storage ${storageId}"`;
     const { queue } = fileTransferClipboard;
 
     if (typeof queue === 'undefined' || queue === null || queue.length < 1) {

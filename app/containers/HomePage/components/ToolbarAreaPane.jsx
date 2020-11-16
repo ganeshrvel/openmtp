@@ -14,7 +14,7 @@ import {
   processMtpOutput,
   processLocalOutput,
   changeMtpStorage,
-  getMtpStoragesListSelected,
+  getStorageId,
   reloadDirList,
 } from '../actions';
 import {
@@ -334,7 +334,7 @@ const mapDispatchToProps = (dispatch, _) =>
               );
               break;
             case DEVICE_TYPE.mtp:
-              const mtpStoragesListSelected = getMtpStoragesListSelected(
+              const storageId = getStorageId(
                 getState().Home
               );
               const {
@@ -343,7 +343,7 @@ const mapDispatchToProps = (dispatch, _) =>
                 data: mtpData,
               } = await delMtpFiles({
                 fileList,
-                mtpStoragesListSelected,
+                storageId,
               });
 
               dispatch(

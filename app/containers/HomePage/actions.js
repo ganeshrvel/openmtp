@@ -1,5 +1,4 @@
 import prefixer from '../../utils/reducerPrefixer';
-import { asyncReadLocalDir, asyncReadMtpDir } from '../../data/sys';
 import { throwAlert } from '../Alerts/actions';
 import {
   processMtpBuffer,
@@ -77,7 +76,7 @@ function _fetchDirList(data, deviceType, _) {
   };
 }
 
-export function getMtpStoragesListSelected(state) {
+export function getStorageId(state) {
   if (
     typeof Object.keys(state.mtpStoragesList).length === 'undefined' ||
     Object.keys(state.mtpStoragesList).length < 1
@@ -106,9 +105,11 @@ export function setMtpStorageOptions(
 ) {
   return async (dispatch) => {
     try {
-      const { error, stderr, data } = await fileExplorerController.getStorages({
-        deviceType,
-      });
+      const { error, stderr, data } = await fileExplorerController.listStorages(
+        {
+          deviceType,
+        }
+      );
       dispatch(
         processMtpOutput({
           deviceType,
@@ -223,10 +224,15 @@ export function fetchDirList({ ...args }, deviceType, getState) {
     switch (deviceType) {
       case DEVICE_TYPE.local:
         return async (dispatch) => {
-          const { error, data } = await asyncReadLocalDir({ ...args });
+          const { error, data } = await fileExplorerController.listFiles({
+            deviceType,
+            filePath: args.filePath,
+            ignoreHidden: args.ignoreHidden,
+            storageId: null,
+          });
 
           if (error) {
-            log.error(error, 'fetchDirList -> asyncReadLocalDir');
+            log.error(error, 'fetchDirList -> listFiles');
             dispatch(
               throwAlert({ message: `Unable fetch data from the Local disk.` })
             );
@@ -240,13 +246,17 @@ export function fetchDirList({ ...args }, deviceType, getState) {
 
       case DEVICE_TYPE.mtp:
         return async (dispatch) => {
-          const mtpStoragesListSelected = getMtpStoragesListSelected(
-            getState().Home
-          );
+          const storageId = getStorageId(getState().Home);
 
-          const { error, stderr, data } = await asyncReadMtpDir({
-            ...args,
-            mtpStoragesListSelected,
+          const {
+            error,
+            stderr,
+            data,
+          } = await fileExplorerController.listFiles({
+            deviceType,
+            filePath: args.filePath,
+            ignoreHidden: args.ignoreHidden,
+            storageId,
           });
 
           dispatch(
