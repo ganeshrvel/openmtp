@@ -21,7 +21,7 @@ import { mtp as _mtpCli } from '../../utils/binaries';
 import { DEVICES_LABEL } from '../../constants';
 import {
   clearFileTransfer,
-  fetchDirList,
+  listDirectory,
   processMtpOutput,
   setFileTransferProgress,
 } from '../../containers/HomePage/actions';
@@ -185,11 +185,7 @@ const checkMtpFileExists = async (filePath, storageId) => {
   return !stderr;
 };
 
-export const checkFileExists = async (
-  filePath,
-  deviceType,
-  storageId
-) => {
+export const checkFileExists = async (filePath, deviceType, storageId) => {
   try {
     if (typeof filePath === 'undefined' || filePath === null) {
       return null;
@@ -638,10 +634,7 @@ export const delMtpFiles = async ({ fileList, storageId }) => {
   }
 };
 
-export const newMtpFolder = async ({
-  newFolderPath,
-  storageId,
-}) => {
+export const newMtpFolder = async ({ newFolderPath, storageId }) => {
   try {
     if (typeof newFolderPath === 'undefined' || newFolderPath === null) {
       return { error: `Invalid path.`, stderr: null, data: null };
@@ -666,7 +659,7 @@ export const newMtpFolder = async ({
 
 export const pasteFiles = (
   { ...pasteArgs },
-  { ...fetchDirListArgs },
+  { ...listDirectoryArgs },
   direction,
   deviceType,
   dispatch,
@@ -674,11 +667,7 @@ export const pasteFiles = (
   getCurrentWindow
 ) => {
   try {
-    const {
-      destinationFolder,
-      storageId,
-      fileTransferClipboard,
-    } = pasteArgs;
+    const { destinationFolder, storageId, fileTransferClipboard } = pasteArgs;
 
     if (
       typeof destinationFolder === 'undefined' ||
@@ -692,7 +681,7 @@ export const pasteFiles = (
           data: null,
           callback: () => {
             dispatch(
-              fetchDirList({ ...fetchDirListArgs }, deviceType, getState)
+              listDirectory({ ...listDirectoryArgs }, deviceType, getState)
             );
           },
         })
@@ -711,7 +700,7 @@ export const pasteFiles = (
           data: null,
           callback: () => {
             dispatch(
-              fetchDirList({ ...fetchDirListArgs }, deviceType, getState)
+              listDirectory({ ...listDirectoryArgs }, deviceType, getState)
             );
           },
         })
@@ -737,7 +726,7 @@ export const pasteFiles = (
         };
         return _pasteFiles(
           { ...pasteArgs },
-          { ...fetchDirListArgs },
+          { ...listDirectoryArgs },
           { ...cmdArgs },
           deviceType,
           dispatch,
@@ -760,7 +749,7 @@ export const pasteFiles = (
 
         return _pasteFiles(
           { ...pasteArgs },
-          { ...fetchDirListArgs },
+          { ...listDirectoryArgs },
           { ...cmdArgs },
           deviceType,
           dispatch,
@@ -778,7 +767,7 @@ export const pasteFiles = (
 
 const _pasteFiles = (
   { ...pasteArgs }, // eslint-disable-line no-unused-vars
-  { ...fetchDirListArgs }, // eslint-disable-line no-unused-vars
+  { ...listDirectoryArgs }, // eslint-disable-line no-unused-vars
   { ...cmdArgs },
   deviceType,
   dispatch,
@@ -937,7 +926,7 @@ const _pasteFiles = (
             getCurrentWindow().setProgressBar(-1);
             dispatch(clearFileTransfer());
             dispatch(
-              fetchDirList({ ...fetchDirListArgs }, deviceType, getState)
+              listDirectory({ ...listDirectoryArgs }, deviceType, getState)
             );
           },
         })
@@ -948,7 +937,7 @@ const _pasteFiles = (
       transferList = null;
       getCurrentWindow().setProgressBar(-1);
       dispatch(clearFileTransfer());
-      dispatch(fetchDirList({ ...fetchDirListArgs }, deviceType, getState));
+      dispatch(listDirectory({ ...listDirectoryArgs }, deviceType, getState));
     });
 
     return { error: null, stderr: null, data: true };

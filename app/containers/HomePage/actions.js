@@ -15,7 +15,7 @@ const actionTypesList = [
   'SET_CURRENT_BROWSE_PATH',
   'SET_SORTING_DIR_LISTS',
   'SET_SELECTED_DIR_LISTS',
-  'FETCH_DIR_LIST',
+  'LIST_DIRECTORY',
   'SET_MTP_ERRORS',
   'SET_MTP_STATUS',
   'CHANGE_MTP_STORAGE',
@@ -65,9 +65,9 @@ export function setCurrentBrowsePath(path, deviceType) {
   };
 }
 
-function _fetchDirList(data, deviceType, _) {
+function _listDirectory(data, deviceType, _) {
   return {
-    type: actionTypes.FETCH_DIR_LIST,
+    type: actionTypes.LIST_DIRECTORY,
     deviceType,
     payload: {
       nodes: data ?? [],
@@ -98,7 +98,7 @@ export function getStorageId(state) {
 }
 
 export function setMtpStorageOptions(
-  { ...fetchDirArgs },
+  { ...listDirArgs },
   deviceType,
   { ...deviceChangeCheck },
   getState
@@ -133,7 +133,7 @@ export function setMtpStorageOptions(
             if (changeMtpIdsFlag) {
               dispatch(changeMtpStorage({ ...data }));
             }
-            dispatch(fetchDirList({ ...fetchDirArgs }, deviceType, getState));
+            dispatch(listDirectory({ ...listDirArgs }, deviceType, getState));
           },
         })
       );
@@ -170,7 +170,7 @@ export function processMtpOutput({ deviceType, error, stderr, _, callback }) {
       dispatch(setMtpStatus(mtpStatus));
 
       if (!mtpStatus) {
-        dispatch(_fetchDirList([], deviceType));
+        dispatch(_listDirectory([], deviceType));
         dispatch(setSelectedDirLists({ selected: [] }, deviceType));
       }
 
@@ -214,10 +214,10 @@ export function processLocalOutput({ _, error, stderr, __, callback }) {
   };
 }
 
-export function fetchDirList({ ...args }, deviceType, getState) {
+export function listDirectory({ ...args }, deviceType, getState) {
   asserts(
     !undefinedOrNull(getState),
-    'fetchDirList.getState should not be null or undefined'
+    'listDirectory.getState should not be null or undefined'
   );
 
   try {
@@ -232,14 +232,14 @@ export function fetchDirList({ ...args }, deviceType, getState) {
           });
 
           if (error) {
-            log.error(error, 'fetchDirList -> listFiles');
+            log.error(error, 'listDirectory -> listFiles');
             dispatch(
               throwAlert({ message: `Unable fetch data from the Local disk.` })
             );
             return;
           }
 
-          dispatch(_fetchDirList(data, deviceType), getState);
+          dispatch(_listDirectory(data, deviceType), getState);
           dispatch(setCurrentBrowsePath(args.filePath, deviceType));
           dispatch(setSelectedDirLists({ selected: [] }, deviceType));
         };
@@ -266,7 +266,7 @@ export function fetchDirList({ ...args }, deviceType, getState) {
               stderr,
               data,
               callback: () => {
-                dispatch(_fetchDirList(data, deviceType), getState);
+                dispatch(_listDirectory(data, deviceType), getState);
                 dispatch(setSelectedDirLists({ selected: [] }, deviceType));
                 dispatch(setCurrentBrowsePath(args.filePath, deviceType));
               },
@@ -291,7 +291,7 @@ export function reloadDirList(
   return (dispatch) => {
     switch (deviceType) {
       case DEVICE_TYPE.local:
-        dispatch(fetchDirList({ ...args }, deviceType, getState));
+        dispatch(listDirectory({ ...args }, deviceType, getState));
         break;
 
       case DEVICE_TYPE.mtp:

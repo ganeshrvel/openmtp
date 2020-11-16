@@ -11,7 +11,7 @@ import { styles } from '../styles/SidebarAreaPaneLists';
 import { quickHash } from '../../../utils/funcs';
 
 class SidebarAreaPaneLists extends PureComponent {
-  _handleFetchDirList({ ...args }) {
+  _handleListDirectory({ ...args }) {
     const { onClickHandler } = this.props;
     onClickHandler({ ...args });
   }
@@ -28,7 +28,7 @@ class SidebarAreaPaneLists extends PureComponent {
               selected={currentBrowsePath === item.path}
               disabled={!item.enabled}
               onClick={() =>
-                this._handleFetchDirList({
+                this._handleListDirectory({
                   filePath: item.path,
                   deviceType,
                   isSidemenu: true,

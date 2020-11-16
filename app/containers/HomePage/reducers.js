@@ -281,7 +281,7 @@ export default function Home(state = initialState, action) {
         },
       };
 
-    case actionTypes.FETCH_DIR_LIST:
+    case actionTypes.LIST_DIRECTORY:
       return {
         ...state,
         directoryLists: {

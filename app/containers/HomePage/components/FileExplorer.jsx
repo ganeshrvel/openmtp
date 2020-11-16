@@ -28,7 +28,7 @@ import reducers from '../reducers';
 import {
   setSortingDirLists,
   setSelectedDirLists,
-  fetchDirList,
+  listDirectory,
   processMtpOutput,
   processLocalOutput,
   setMtpStorageOptions,
@@ -190,7 +190,7 @@ class FileExplorer extends Component {
         deviceType
       );
     } else {
-      this._handleFetchDirList({
+      this._handleListDirectory({
         path: currentBrowsePath[deviceType],
         deviceType,
       });
@@ -298,11 +298,11 @@ class FileExplorer extends Component {
     }
   };
 
-  _handleFetchDirList({ ...args }) {
-    const { actionCreateFetchDirList, hideHiddenFiles } = this.props;
+  _handleListDirectory({ ...args }) {
+    const { actionCreateListDirectory, hideHiddenFiles } = this.props;
     const { path, deviceType } = args;
 
-    actionCreateFetchDirList(
+    actionCreateListDirectory(
       {
         filePath: path,
         ignoreHidden: hideHiddenFiles[deviceType],
@@ -1342,13 +1342,13 @@ class FileExplorer extends Component {
 
   _handleBreadcrumbPathClick = ({ ...args }) => {
     const {
-      actionCreateFetchDirList,
+      actionCreateListDirectory,
       hideHiddenFiles,
       deviceType,
     } = this.props;
     const { path } = args;
 
-    actionCreateFetchDirList(
+    actionCreateListDirectory(
       {
         filePath: path,
         ignoreHidden: hideHiddenFiles[deviceType],
@@ -1434,7 +1434,7 @@ class FileExplorer extends Component {
       return null;
     }
 
-    this._handleFetchDirList({
+    this._handleListDirectory({
       path,
       deviceType,
     });
@@ -1726,13 +1726,13 @@ const mapDispatchToProps = (dispatch, _) =>
         );
       },
 
-      actionCreateFetchDirList: ({ ...args }, deviceType) => (_, getState) => {
-        dispatch(fetchDirList({ ...args }, deviceType, getState));
+      actionCreateListDirectory: ({ ...args }, deviceType) => (_, getState) => {
+        dispatch(listDirectory({ ...args }, deviceType, getState));
       },
 
       actionCreateRenameFile: (
         { oldFilePath, newFilePath, deviceType },
-        { ...fetchDirListArgs }
+        { ...listDirectoryArgs }
       ) => async (_, getState) => {
         try {
           switch (deviceType) {
@@ -1754,8 +1754,8 @@ const mapDispatchToProps = (dispatch, _) =>
                   data: localData,
                   callback: () => {
                     dispatch(
-                      fetchDirList(
-                        { ...fetchDirListArgs },
+                      listDirectory(
+                        { ...listDirectoryArgs },
                         deviceType,
                         getState
                       )
@@ -1786,8 +1786,8 @@ const mapDispatchToProps = (dispatch, _) =>
                   data: mtpData,
                   callback: () => {
                     dispatch(
-                      fetchDirList(
-                        { ...fetchDirListArgs },
+                      listDirectory(
+                        { ...listDirectoryArgs },
                         deviceType,
                         getState
                       )
@@ -1806,7 +1806,7 @@ const mapDispatchToProps = (dispatch, _) =>
 
       actionCreateNewFolder: (
         { newFolderPath, deviceType },
-        { ...fetchDirListArgs }
+        { ...listDirectoryArgs }
       ) => async (_, getState) => {
         try {
           switch (deviceType) {
@@ -1827,8 +1827,8 @@ const mapDispatchToProps = (dispatch, _) =>
                   data: localData,
                   callback: () => {
                     dispatch(
-                      fetchDirList(
-                        { ...fetchDirListArgs },
+                      listDirectory(
+                        { ...listDirectoryArgs },
                         deviceType,
                         getState
                       )
@@ -1858,8 +1858,8 @@ const mapDispatchToProps = (dispatch, _) =>
                   data: mtpData,
                   callback: () => {
                     dispatch(
-                      fetchDirList(
-                        { ...fetchDirListArgs },
+                      listDirectory(
+                        { ...listDirectoryArgs },
                         deviceType,
                         getState
                       )
@@ -1909,7 +1909,7 @@ const mapDispatchToProps = (dispatch, _) =>
 
       actionCreatePaste: (
         { ...pasteArgs },
-        { ...fetchDirListArgs },
+        { ...listDirectoryArgs },
         deviceType
       ) => (_, getState) => {
         try {
@@ -1917,7 +1917,7 @@ const mapDispatchToProps = (dispatch, _) =>
             case DEVICE_TYPE.local:
               pasteFiles(
                 { ...pasteArgs },
-                { ...fetchDirListArgs },
+                { ...listDirectoryArgs },
                 'mtpToLocal',
                 deviceType,
                 dispatch,
@@ -1928,7 +1928,7 @@ const mapDispatchToProps = (dispatch, _) =>
             case DEVICE_TYPE.mtp:
               pasteFiles(
                 { ...pasteArgs },
-                { ...fetchDirListArgs },
+                { ...listDirectoryArgs },
                 'localtoMtp',
                 deviceType,
                 dispatch,

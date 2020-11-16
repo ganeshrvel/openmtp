@@ -99,7 +99,7 @@ export default class ToolbarAreaPane extends PureComponent {
       onDeleteConfirmDialog,
       onMtpStoragesListClick,
       onToggleDrawer,
-      onFetchDirList,
+      onListDirectory,
       onDoubleClickToolBar,
       onToolbarAction,
       showLocalPaneOnLeftSide,
@@ -147,7 +147,7 @@ export default class ToolbarAreaPane extends PureComponent {
             onKeyDown={onToggleDrawer(false)}
           />
           <SidebarAreaPaneLists
-            onClickHandler={onFetchDirList}
+            onClickHandler={onListDirectory}
             sidebarFavouriteList={sidebarFavouriteList}
             deviceType={deviceType}
             currentBrowsePath={currentBrowsePath[deviceType]}
