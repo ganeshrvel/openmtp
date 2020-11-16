@@ -1,5 +1,5 @@
 import { log } from '../../../utils/log';
-import { splitIntoLines } from '../../../utils/funcs';
+import { splitIntoLines, undefinedOrNull } from '../../../utils/funcs';
 import { DEVICES_LABEL } from '../../../constants';
 import { DEVICE_TYPE } from '../../../enums';
 import { filterOutMtpLines, mtpCli, promisifiedExec } from '../../../utils/mtp';
@@ -33,21 +33,19 @@ export class FileExplorerLegacyDataSource {
             return null;
           }
           const _matchDesc = descMatchPattern.exec(a);
-          const _matchedStorageId = storageIdMatchPattern.exec(a);
+          const _matchedStorageIds = storageIdMatchPattern.exec(a);
 
           if (
-            typeof _matchDesc === 'undefined' ||
-            _matchDesc === null ||
-            typeof _matchDesc[1] === 'undefined' ||
-            typeof _matchedStorageId === 'undefined' ||
-            _matchedStorageId === null ||
-            typeof _matchedStorageId[1] === 'undefined'
+            undefinedOrNull(_matchDesc) ||
+            undefinedOrNull(_matchDesc[1]) ||
+            undefinedOrNull(_matchedStorageIds) ||
+            undefinedOrNull(_matchedStorageIds[1])
           ) {
             return null;
           }
 
           const matchDesc = _matchDesc[1].trim();
-          const matchedStorageId = _matchedStorageId[1].trim();
+          const matchedStorageId = _matchedStorageIds[1].trim();
           storageList = {
             ...storageList,
             [matchedStorageId]: {
@@ -59,11 +57,7 @@ export class FileExplorerLegacyDataSource {
           return storageList;
         });
 
-      if (
-        typeof storageList === 'undefined' ||
-        storageList === null ||
-        storageList.length < 1
-      ) {
+      if (undefinedOrNull(storageList) || storageList.length < 1) {
         return {
           error: `${DEVICES_LABEL[DEVICE_TYPE.mtp]} storage not accessible`,
           stderr: null,
