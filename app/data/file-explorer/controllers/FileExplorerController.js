@@ -1,4 +1,6 @@
 import { FileExplorerRepository } from '../repositories/FileExplorerRepository';
+import { DEVICE_TYPE, MTP_MODE } from '../../../enums';
+import { isArray } from '../../../utils/funcs';
 
 class FileExplorerController {
   constructor() {
@@ -35,6 +37,23 @@ class FileExplorerController {
       deviceType,
       filePath,
       newFilename,
+      storageId,
+    });
+  }
+
+  /**
+   * description - Delete files
+   *
+   */
+  async deleteFiles({ deviceType, fileList, storageId }) {
+    if (!isArray(fileList)) {
+      // eslint-disable-next-line no-throw-literal
+      throw `'fileList' must be an array`;
+    }
+
+    return this.repository.deleteFiles({
+      deviceType,
+      fileList,
       storageId,
     });
   }

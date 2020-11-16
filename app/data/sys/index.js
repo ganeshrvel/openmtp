@@ -302,42 +302,42 @@ export const checkFileExists = async (filePath, deviceType, storageId) => {
 //   }
 // };
 
-export const promisifiedRimraf = (item) => {
-  try {
-    return new Promise((resolve) => {
-      rimraf(item, {}, (error) => {
-        resolve({
-          data: null,
-          stderr: error,
-          error,
-        });
-      });
-    });
-  } catch (e) {
-    log.error(e);
-  }
-};
-
-export const delLocalFiles = async ({ fileList }) => {
-  try {
-    if (!fileList || fileList.length < 1) {
-      return { error: `No files selected.`, stderr: null, data: null };
-    }
-
-    for (let i = 0; i < fileList.length; i += 1) {
-      const item = fileList[i];
-      const { error } = await promisifiedRimraf(item);
-      if (error) {
-        log.error(`${error}`, `delLocalFiles -> rm error`);
-        return { error, stderr: null, data: false };
-      }
-    }
-
-    return { error: null, stderr: null, data: true };
-  } catch (e) {
-    log.error(e);
-  }
-};
+// export const promisifiedRimraf = (item) => {
+//   try {
+//     return new Promise((resolve) => {
+//       rimraf(item, {}, (error) => {
+//         resolve({
+//           data: null,
+//           stderr: error,
+//           error,
+//         });
+//       });
+//     });
+//   } catch (e) {
+//     log.error(e);
+//   }
+// };
+//
+// export const delLocalFiles = async ({ fileList }) => {
+//   try {
+//     if (!fileList || fileList.length < 1) {
+//       return { error: `No files selected.`, stderr: null, data: null };
+//     }
+//
+//     for (let i = 0; i < fileList.length; i += 1) {
+//       const item = fileList[i];
+//       const { error } = await promisifiedRimraf(item);
+//       if (error) {
+//         log.error(`${error}`, `delLocalFiles -> rm error`);
+//         return { error, stderr: null, data: false };
+//       }
+//     }
+//
+//     return { error: null, stderr: null, data: true };
+//   } catch (e) {
+//     log.error(e);
+//   }
+// };
 
 // const promisifiedRename = ({ oldFilePath, newFilePath }) => {
 //   try {
@@ -608,31 +608,33 @@ export const newLocalFolder = async ({ newFolderPath }) => {
 //   }
 // };
 
-export const delMtpFiles = async ({ fileList, storageId }) => {
-  try {
-    if (!fileList || fileList.length < 1) {
-      return { error: `No files selected.`, stderr: null, data: null };
-    }
-
-    const storageSelectCmd = `"storage ${storageId}"`;
-    for (let i = 0; i < fileList.length; i += 1) {
-      const { error, stderr } = await promisifiedExec(
-        `${mtpCli} ${storageSelectCmd} "rm \\"${escapeShellMtp(
-          fileList[i]
-        )}\\""`
-      );
-
-      if (error || stderr) {
-        log.error(`${error} : ${stderr}`, `delMtpDir -> rm error`);
-        return { error, stderr, data: false };
-      }
-    }
-
-    return { error: null, stderr: null, data: true };
-  } catch (e) {
-    log.error(e);
-  }
-};
+// export const delMtpFiles = async ({ fileList, storageId }) => {
+//   try {
+//     if (!fileList || fileList.length < 1) {
+//       return { error: `No files selected.`, stderr: null, data: null };
+//     }
+//
+//     const storageSelectCmd = `"storage ${storageId}"`;
+//     for (let i = 0; i < fileList.length; i += 1) {
+//       const { error, stderr } = await promisifiedExec(
+//         `${mtpCli} ${storageSelectCmd} "rm \\"${escapeShellMtp(
+//           fileList[i]
+//         )}\\""`
+//       );
+//
+//       if (error || stderr) {
+//         log.error(`${error} : ${stderr}`, `delMtpDir -> rm error`);
+//         return { error, stderr, data: false };
+//       }
+//     }
+//
+//     return { error: null, stderr: null, data: true };
+//   } catch (e) {
+//     log.error(e);
+//
+//     return { error: e, stderr: null, data: false };
+//   }
+// };
 
 export const newMtpFolder = async ({ newFolderPath, storageId }) => {
   try {
@@ -654,6 +656,8 @@ export const newMtpFolder = async ({ newFolderPath, storageId }) => {
     return { error: null, stderr: null, data: true };
   } catch (e) {
     log.error(e);
+
+    return { error: e, stderr: null, data: false };
   }
 };
 

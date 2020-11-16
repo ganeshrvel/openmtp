@@ -209,4 +209,40 @@ export class FileExplorerLegacyDataSource {
       return { error: e, stderr: null, data: false };
     }
   }
+
+  /**
+   * description - Delete device files
+   *
+   */
+  async deleteFiles({ fileList, storageId }) {
+    try {
+      if (!fileList || fileList.length < 1) {
+        return { error: `No files selected.`, stderr: null, data: null };
+      }
+
+      const storageSelectCmd = `"storage ${storageId}"`;
+      for (let i = 0; i < fileList.length; i += 1) {
+        // eslint-disable-next-line no-await-in-loop
+        const { error, stderr } = await promisifiedExec(
+          `${mtpCli} ${storageSelectCmd} "rm \\"${escapeShellMtp(
+            fileList[i]
+          )}\\""`
+        );
+
+        if (error || stderr) {
+          log.error(
+            `${error} : ${stderr}`,
+            `FileExplorerLegacyDataSource.deleteFiles -> rm error`
+          );
+          return { error, stderr, data: false };
+        }
+      }
+
+      return { error: null, stderr: null, data: true };
+    } catch (e) {
+      log.error(e);
+
+      return { error: e, stderr: null, data: false };
+    }
+  }
 }

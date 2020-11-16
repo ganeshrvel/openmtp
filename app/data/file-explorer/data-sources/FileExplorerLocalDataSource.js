@@ -1,6 +1,7 @@
 import path from 'path';
 import junk from 'junk';
 import Promise from 'bluebird';
+import rimraf from 'rimraf';
 import {
   readdir as fsReaddir,
   existsSync,
@@ -20,7 +21,7 @@ export class FileExplorerLocalDataSource {
   }
 
   /**
-   * description - Rename file helper method
+   * description - Rename file helper
    *
    */
   _rename({ filePath, newFilename }) {
@@ -47,6 +48,28 @@ export class FileExplorerLocalDataSource {
       };
     }
   }
+
+  /**
+   * description - Delete file helper
+   *
+   */
+  _delete = (file) => {
+    try {
+      return new Promise((resolve) => {
+        rimraf(file, {}, (error) => {
+          resolve({
+            data: null,
+            stderr: error,
+            error,
+          });
+        });
+      });
+    } catch (e) {
+      log.error(e);
+
+      return { error: e, stderr: null, data: false };
+    }
+  };
 
   /**
    * description - list local files
@@ -111,7 +134,7 @@ export class FileExplorerLocalDataSource {
     } catch (e) {
       log.error(e);
 
-      return { error: true, data: null };
+      return { error: e, data: null };
     }
   }
 
@@ -132,6 +155,37 @@ export class FileExplorerLocalDataSource {
           `FileExplorerLocalDataSource.renameFile -> mv error`
         );
         return { error, stderr: null, data: false };
+      }
+
+      return { error: null, stderr: null, data: true };
+    } catch (e) {
+      log.error(e);
+
+      return { error: e, stderr: null, data: false };
+    }
+  }
+
+  /**
+   * description - Delete a local file
+   *
+   */
+  async deleteFiles({ fileList }) {
+    try {
+      if (!fileList || fileList.length < 1) {
+        return { error: `No files selected.`, stderr: null, data: null };
+      }
+
+      for (let i = 0; i < fileList.length; i += 1) {
+        const item = fileList[i];
+        // eslint-disable-next-line no-await-in-loop
+        const { error } = await this._delete(item);
+        if (error) {
+          log.error(
+            `${error}`,
+            `FileExplorerLocalDataSource.deleteFiles -> rm error`
+          );
+          return { error, stderr: null, data: false };
+        }
       }
 
       return { error: null, stderr: null, data: true };

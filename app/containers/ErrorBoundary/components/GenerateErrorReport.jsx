@@ -6,7 +6,7 @@ import { bindActionCreators } from 'redux';
 import { withStyles } from '@material-ui/core/styles';
 import { styles } from '../styles/GenerateErrorReport';
 import { PATHS } from '../../../utils/paths';
-import { promisifiedRimraf, mtpVerboseReport } from '../../../data/sys';
+import { mtpVerboseReport } from '../../../data/sys';
 import { fileExistsSync } from '../../../data/sys/fileOps';
 import { AUTHOR_EMAIL } from '../../../constants/meta';
 import { throwAlert } from '../../Alerts/actions';
@@ -19,6 +19,8 @@ import { compressFile } from '../../../utils/gzip';
 import GenerateErrorReportBody from './GenerateErrorReportBody';
 import { baseName } from '../../../utils/files';
 import { log } from '../../../utils/log';
+import fileExplorerController from '../../../data/file-explorer/controllers/FileExplorerController';
+import { DEVICE_TYPE } from '../../../enums';
 
 const { logFile } = PATHS;
 const { getPath } = remote.app;
@@ -44,7 +46,11 @@ class GenerateErrorReport extends Component {
 
       await mtpVerboseReport();
 
-      const { error } = await promisifiedRimraf(logFileZippedPath);
+      const { error } = await fileExplorerController.deleteFiles({
+        deviceType: DEVICE_TYPE.local,
+        fileList: [logFileZippedPath],
+        storageId: null,
+      });
 
       if (error) {
         actionCreateThrowError({

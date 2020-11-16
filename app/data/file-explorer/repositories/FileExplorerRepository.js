@@ -80,4 +80,28 @@ export class FileExplorerRepository {
       newFilename,
     });
   }
+
+  /**
+   * description - Delete files
+   *
+   */
+  async deleteFiles({ deviceType, fileList, storageId }) {
+    if (deviceType === DEVICE_TYPE.mtp) {
+      switch (selectedMtpMode) {
+        case MTP_MODE.legacy:
+          return this.legacyMtpDataSource.deleteFiles({
+            fileList,
+            storageId,
+          });
+
+        case MTP_MODE.kalam:
+        default:
+          break;
+      }
+    }
+
+    return this.localDataSource.deleteFiles({
+      fileList,
+    });
+  }
 }

@@ -31,7 +31,6 @@ import {
   makeHideHiddenFiles,
   makeShowLocalPaneOnLeftSide,
 } from '../../Settings/selectors';
-import { delLocalFiles, delMtpFiles } from '../../../data/sys';
 import { DEVICES_DEFAULT_PATH } from '../../../constants';
 import { toggleSettings } from '../../Settings/actions';
 import { toggleWindowSizeOnDoubleClick } from '../../../utils/titlebarDoubleClick';
@@ -41,6 +40,7 @@ import { APP_GITHUB_URL } from '../../../constants/meta';
 import { pathUp } from '../../../utils/files';
 import { DEVICE_TYPE } from '../../../enums';
 import { log } from '../../../utils/log';
+import fileExplorerController from '../../../data/file-explorer/controllers/FileExplorerController';
 
 class ToolbarAreaPane extends PureComponent {
   constructor(props) {
@@ -311,8 +311,10 @@ const mapDispatchToProps = (dispatch, _) =>
                 error: localError,
                 stderr: localStderr,
                 data: localData,
-              } = await delLocalFiles({
+              } = await fileExplorerController.deleteFiles({
+                deviceType,
                 fileList,
+                storageId: null,
               });
 
               dispatch(
@@ -334,14 +336,13 @@ const mapDispatchToProps = (dispatch, _) =>
               );
               break;
             case DEVICE_TYPE.mtp:
-              const storageId = getStorageId(
-                getState().Home
-              );
+              const storageId = getStorageId(getState().Home);
               const {
                 error: mtpError,
                 stderr: mtpStderr,
                 data: mtpData,
-              } = await delMtpFiles({
+              } = await fileExplorerController.deleteFiles({
+                deviceType,
                 fileList,
                 storageId,
               });
