@@ -25,6 +25,19 @@ class FileExplorerController {
       storageId,
     });
   }
+
+  /**
+   * description - Rename file
+   *
+   */
+  async renameFile({ deviceType, filePath, newFilename, storageId }) {
+    return this.repository.renameFile({
+      deviceType,
+      filePath,
+      newFilename,
+      storageId,
+    });
+  }
 }
 
 const fileExplorerController = new FileExplorerController();

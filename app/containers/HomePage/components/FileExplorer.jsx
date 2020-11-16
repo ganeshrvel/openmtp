@@ -58,12 +58,10 @@ import {
 } from '../../Settings/selectors';
 import { DEVICES_LABEL, DONATE_PAYPAL_URL } from '../../../constants';
 import {
-  renameLocalFiles,
   checkFileExists,
   newLocalFolder,
   newMtpFolder,
   pasteFiles,
-  renameMtpFiles,
 } from '../../../data/sys';
 import {
   isArray,
@@ -85,9 +83,10 @@ import {
   redditShareUrl,
   twitterShareUrl,
 } from '../../../templates/socialMediaShareBtns';
-import { baseName, pathInfo, pathUp, sanitizePath } from '../../../utils/files';
+import { baseName, pathInfo, sanitizePath } from '../../../utils/files';
 import { DEVICE_TYPE, FILE_EXPLORER_VIEW_TYPE } from '../../../enums';
 import { log } from '../../../utils/log';
+import fileExplorerController from '../../../data/file-explorer/controllers/FileExplorerController';
 
 const { Menu, getCurrentWindow } = remote;
 
@@ -979,15 +978,15 @@ class FileExplorer extends Component {
 
     // eslint-disable-next-line react/destructuring-assignment
     const { data } = this.state.toggleDialog.rename;
-    const { confirm, textFieldValue: newFileName } = args;
+    const { confirm, textFieldValue: newFilename } = args;
     const targetAction = 'rename';
 
-    if (!confirm || newFileName === null) {
+    if (!confirm || newFilename === null) {
       this._handleClearEditDialog(targetAction);
       return null;
     }
 
-    if (newFileName.trim() === '' || /[/\\?%*:|"<>]/g.test(newFileName)) {
+    if (newFilename.trim() === '' || /[/\\?%*:|"<>]/g.test(newFilename)) {
       this._handleErrorsEditDialog(
         {
           toggle: true,
@@ -998,23 +997,19 @@ class FileExplorer extends Component {
       return null;
     }
 
-    // same file name; no change
-    const _pathUp = pathUp(data.path);
-    const newFilePath = sanitizePath(`${_pathUp}/${newFileName}`);
-    const oldFilePath = data.path;
+    const _newFilename = sanitizePath(newFilename);
+    const filePath = data.path;
 
-    if (newFilePath === data.path) {
+    if (_newFilename === data.path) {
       this._handleClearEditDialog(targetAction);
       return null;
     }
 
-    if (
-      await checkFileExists(newFilePath, deviceType, storageId)
-    ) {
+    if (await checkFileExists(_newFilename, deviceType, storageId)) {
       this._handleErrorsEditDialog(
         {
           toggle: true,
-          message: `Error: The name "${newFileName}" is already taken.`,
+          message: `Error: The name "${_newFilename}" is already taken.`,
         },
         targetAction
       );
@@ -1022,8 +1017,8 @@ class FileExplorer extends Component {
     }
     actionCreateRenameFile(
       {
-        oldFilePath,
-        newFilePath,
+        filePath,
+        newFilename: _newFilename,
         deviceType,
       },
       {
@@ -1244,9 +1239,7 @@ class FileExplorer extends Component {
 
     const newFolderPath = sanitizePath(`${data.path}/${newFolderName}`);
 
-    if (
-      await checkFileExists(newFolderPath, deviceType, storageId)
-    ) {
+    if (await checkFileExists(newFolderPath, deviceType, storageId)) {
       this._handleErrorsEditDialog(
         {
           toggle: true,
@@ -1731,7 +1724,7 @@ const mapDispatchToProps = (dispatch, _) =>
       },
 
       actionCreateRenameFile: (
-        { oldFilePath, newFilePath, deviceType },
+        { filePath, newFilename, deviceType },
         { ...listDirectoryArgs }
       ) => async (_, getState) => {
         try {
@@ -1741,9 +1734,11 @@ const mapDispatchToProps = (dispatch, _) =>
                 error: localError,
                 stderr: localStderr,
                 data: localData,
-              } = await renameLocalFiles({
-                oldFilePath,
-                newFilePath,
+              } = await fileExplorerController.renameFile({
+                deviceType,
+                filePath,
+                newFilename,
+                storageId: null,
               });
 
               dispatch(
@@ -1765,16 +1760,15 @@ const mapDispatchToProps = (dispatch, _) =>
               );
               break;
             case DEVICE_TYPE.mtp:
-              const storageId = getStorageId(
-                getState().Home
-              );
+              const storageId = getStorageId(getState().Home);
               const {
                 error: mtpError,
                 stderr: mtpStderr,
                 data: mtpData,
-              } = await renameMtpFiles({
-                oldFilePath,
-                newFilePath,
+              } = await fileExplorerController.renameFile({
+                deviceType,
+                filePath,
+                newFilename,
                 storageId,
               });
 
@@ -1838,9 +1832,7 @@ const mapDispatchToProps = (dispatch, _) =>
               );
               break;
             case DEVICE_TYPE.mtp:
-              const storageId = getStorageId(
-                getState().Home
-              );
+              const storageId = getStorageId(getState().Home);
               const {
                 error: mtpError,
                 stderr: mtpStderr,

@@ -339,44 +339,44 @@ export const delLocalFiles = async ({ fileList }) => {
   }
 };
 
-const promisifiedRename = ({ oldFilePath, newFilePath }) => {
-  try {
-    return new Promise((resolve) => {
-      fsRename(oldFilePath, newFilePath, (error) => {
-        resolve({
-          data: null,
-          stderr: error,
-          error,
-        });
-      });
-    });
-  } catch (e) {
-    log.error(e);
-  }
-};
+// const promisifiedRename = ({ oldFilePath, newFilePath }) => {
+//   try {
+//     return new Promise((resolve) => {
+//       fsRename(oldFilePath, newFilePath, (error) => {
+//         resolve({
+//           data: null,
+//           stderr: error,
+//           error,
+//         });
+//       });
+//     });
+//   } catch (e) {
+//     log.error(e);
+//   }
+// };
 
-export const renameLocalFiles = async ({ oldFilePath, newFilePath }) => {
-  try {
-    if (
-      typeof oldFilePath === 'undefined' ||
-      oldFilePath === null ||
-      typeof newFilePath === 'undefined' ||
-      newFilePath === null
-    ) {
-      return { error: `No files selected.`, stderr: null, data: null };
-    }
-
-    const { error } = await promisifiedRename({ oldFilePath, newFilePath });
-    if (error) {
-      log.error(`${error}`, `renameLocalFiles -> mv error`);
-      return { error, stderr: null, data: false };
-    }
-
-    return { error: null, stderr: null, data: true };
-  } catch (e) {
-    log.error(e);
-  }
-};
+// export const renameLocalFiles = async ({ oldFilePath, newFilePath }) => {
+//   try {
+//     if (
+//       typeof oldFilePath === 'undefined' ||
+//       oldFilePath === null ||
+//       typeof newFilePath === 'undefined' ||
+//       newFilePath === null
+//     ) {
+//       return { error: `No files selected.`, stderr: null, data: null };
+//     }
+//
+//     const { error } = await promisifiedRename({ oldFilePath, newFilePath });
+//     if (error) {
+//       log.error(`${error}`, `renameLocalFiles -> mv error`);
+//       return { error, stderr: null, data: false };
+//     }
+//
+//     return { error: null, stderr: null, data: true };
+//   } catch (e) {
+//     log.error(e);
+//   }
+// };
 
 const promisifiedMkdir = ({ newFolderPath }) => {
   try {
@@ -574,39 +574,39 @@ export const newLocalFolder = async ({ newFolderPath }) => {
   }
 };*/
 
-export const renameMtpFiles = async ({
-  oldFilePath,
-  newFilePath,
-  storageId,
-}) => {
-  try {
-    if (
-      typeof oldFilePath === 'undefined' ||
-      oldFilePath === null ||
-      typeof newFilePath === 'undefined' ||
-      newFilePath === null
-    ) {
-      return { error: `No files selected.`, stderr: null, data: null };
-    }
-
-    const storageSelectCmd = `"storage ${storageId}"`;
-    const escapedOldFilePath = `${escapeShellMtp(oldFilePath)}`;
-    const escapedNewFilePath = `${escapeShellMtp(baseName(newFilePath))}`;
-
-    const { error, stderr } = await promisifiedExec(
-      `${mtpCli} ${storageSelectCmd} "rename \\"${escapedOldFilePath}\\" \\"${escapedNewFilePath}\\""`
-    );
-
-    if (error || stderr) {
-      log.error(`${error} : ${stderr}`, `renameMtpFiles -> rename error`);
-      return { error, stderr, data: false };
-    }
-
-    return { error: null, stderr: null, data: true };
-  } catch (e) {
-    log.error(e);
-  }
-};
+// export const renameMtpFiles = async ({
+//   oldFilePath,
+//   newFilePath,
+//   storageId,
+// }) => {
+//   try {
+//     if (
+//       typeof oldFilePath === 'undefined' ||
+//       oldFilePath === null ||
+//       typeof newFilePath === 'undefined' ||
+//       newFilePath === null
+//     ) {
+//       return { error: `No files selected.`, stderr: null, data: null };
+//     }
+//
+//     const storageSelectCmd = `"storage ${storageId}"`;
+//     const escapedOldFilePath = `${escapeShellMtp(oldFilePath)}`;
+//     const escapedNewFilePath = `${escapeShellMtp(baseName(newFilePath))}`;
+//
+//     const { error, stderr } = await promisifiedExec(
+//       `${mtpCli} ${storageSelectCmd} "rename \\"${escapedOldFilePath}\\" \\"${escapedNewFilePath}\\""`
+//     );
+//
+//     if (error || stderr) {
+//       log.error(`${error} : ${stderr}`, `renameMtpFiles -> rename error`);
+//       return { error, stderr, data: false };
+//     }
+//
+//     return { error: null, stderr: null, data: true };
+//   } catch (e) {
+//     log.error(e);
+//   }
+// };
 
 export const delMtpFiles = async ({ fileList, storageId }) => {
   try {

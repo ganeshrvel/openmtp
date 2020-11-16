@@ -22,7 +22,7 @@ export class FileExplorerLegacyDataSource {
       if (error || stderr) {
         log.error(
           `${error} : ${stderr}`,
-          `fetchMtpStorageOptions -> storage-list error`,
+          `FileExplorerLegacyDataSource.listStorages -> storage-list error`,
           false
         );
         return { error, stderr, data: null };
@@ -76,11 +76,17 @@ export class FileExplorerLegacyDataSource {
       return { error: null, stderr: null, data: storageList };
     } catch (e) {
       log.error(e);
+
+      return {
+        error: e,
+        stderr: null,
+        data: null,
+      };
     }
   }
 
   /**
-   * description - Fetch files in the path
+   * description - Fetch device files in the path
    *
    */
   async listFiles({ filePath, ignoreHidden, storageId }) {
@@ -108,6 +114,7 @@ export class FileExplorerLegacyDataSource {
           `${filePropsError} : ${filePropsStderr}`,
           `listFiles -> lsext error`
         );
+
         return { error: filePropsError, stderr: filePropsStderr, data: null };
       }
 
@@ -163,6 +170,43 @@ export class FileExplorerLegacyDataSource {
       return { error: null, stderr: null, data: response };
     } catch (e) {
       log.error(e);
+
+      return { error: e, stderr: null, data: null };
+    }
+  }
+
+  /**
+   * description - Rename a device file
+   *
+   */
+  async renameFile({ filePath, newFilename, storageId }) {
+    try {
+      if (undefinedOrNull(filePath) || undefinedOrNull(newFilename)) {
+        return { error: `No files selected.`, stderr: null, data: null };
+      }
+
+      const storageSelectCmd = `"storage ${storageId}"`;
+      const escapedFilePath = `${escapeShellMtp(filePath)}`;
+      const escapedNewFilename = `${escapeShellMtp(newFilename)}`;
+
+      const { error, stderr } = await promisifiedExec(
+        `${mtpCli} ${storageSelectCmd} "rename \\"${escapedFilePath}\\" \\"${escapedNewFilename}\\""`
+      );
+
+      if (error || stderr) {
+        log.error(
+          `${error} : ${stderr}`,
+          `FileExplorerLegacyDataSource.renameFile -> rename error`
+        );
+
+        return { error, stderr, data: false };
+      }
+
+      return { error: null, stderr: null, data: true };
+    } catch (e) {
+      log.error(e);
+
+      return { error: e, stderr: null, data: false };
     }
   }
 }

@@ -54,4 +54,30 @@ export class FileExplorerRepository {
       ignoreHidden,
     });
   }
+
+  /**
+   * description - Rename file
+   *
+   */
+  async renameFile({ deviceType, filePath, newFilename, storageId }) {
+    if (deviceType === DEVICE_TYPE.mtp) {
+      switch (selectedMtpMode) {
+        case MTP_MODE.legacy:
+          return this.legacyMtpDataSource.renameFile({
+            filePath,
+            newFilename,
+            storageId,
+          });
+
+        case MTP_MODE.kalam:
+        default:
+          break;
+      }
+    }
+
+    return this.localDataSource.renameFile({
+      filePath,
+      newFilename,
+    });
+  }
 }
