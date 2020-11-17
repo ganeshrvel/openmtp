@@ -6,8 +6,10 @@ import { DEVICES_LABEL } from '../constants';
 import { DEVICE_TYPE } from '../enums';
 
 export const processMtpBuffer = async ({ error, stderr }) => {
+  // Partial error string used for matching the error
+  // this will be later used to pick the appropriate error out from the [errorDictionary]
   const errorTpl = {
-    noMtp: ``,
+    noMtp: `no mtp`,
     deviceLocked: `your device may be locked`,
     invalidObjectHandle: `invalid response code InvalidObjectHandle`,
     invalidStorageID: `invalid response code InvalidStorageID`,
@@ -19,9 +21,12 @@ export const processMtpBuffer = async ({ error, stderr }) => {
     mtpStorageNotAccessible1: `MTP storage not accessible`,
     mtpStorageNotAccessible2: `error: storage`,
     partialDeletion: `PartialDeletion`,
+    noPerm1: `cannot open file`,
   };
 
+  // Error output shown to the user as a snackbar.
   const errorDictionary = {
+    noPerm: `Operation not permitted.`,
     noMtp: `No ${DEVICES_LABEL[DEVICE_TYPE.mtp]} or MTP device found.`,
     googleAndroidFileTransferIsActive: `Quit 'Android File Transfer' app (by Google) and reload.`,
     deviceLocked: `Your ${
@@ -93,6 +98,7 @@ export const processMtpBuffer = async ({ error, stderr }) => {
       status: false,
     };
   }
+
   if (
     /* MTP device may be locked */
     checkError('deviceLocked')
@@ -104,6 +110,7 @@ export const processMtpBuffer = async ({ error, stderr }) => {
       status: false,
     };
   }
+
   if (
     /* error: Get: invalid response code InvalidObjectHandle (0x2009) */
     checkError('invalidObjectHandle')
@@ -115,6 +122,7 @@ export const processMtpBuffer = async ({ error, stderr }) => {
       status: false,
     };
   }
+
   if (
     /* error: Get: invalid response code InvalidStorageID */
     checkError('invalidStorageID')
@@ -126,6 +134,7 @@ export const processMtpBuffer = async ({ error, stderr }) => {
       status: false,
     };
   }
+
   if (
     /* error: (*interface)->WritePipe(interface, ep->GetRefIndex(), buffer.data(), r): error 0xe00002eb */
     checkError('writePipe')
@@ -137,6 +146,7 @@ export const processMtpBuffer = async ({ error, stderr }) => {
       status: false,
     };
   }
+
   if (
     /* MTP storage not accessible */
     checkError('mtpStorageNotAccessible1') ||
@@ -149,6 +159,7 @@ export const processMtpBuffer = async ({ error, stderr }) => {
       status: false,
     };
   }
+
   if (
     /* Path not found */
     checkError('fileNotFound')
@@ -160,6 +171,19 @@ export const processMtpBuffer = async ({ error, stderr }) => {
       status: true,
     };
   }
+
+  if (
+    /* No Permission */
+    checkError('noPerm1')
+  ) {
+    return {
+      error: errorDictionary.noPerm,
+      throwAlert: true,
+      logError: true,
+      status: true,
+    };
+  }
+
   if (
     /* No such file or directory */
     checkError('noSuchFiles')
@@ -171,6 +195,7 @@ export const processMtpBuffer = async ({ error, stderr }) => {
       status: true,
     };
   }
+
   if (
     /* No files selected */
     checkError('noFilesSelected') ||
@@ -194,6 +219,7 @@ export const processMtpBuffer = async ({ error, stderr }) => {
       status: true,
     };
   }
+
   /* common errors */
   return {
     error: errorDictionary.common,
@@ -204,6 +230,8 @@ export const processMtpBuffer = async ({ error, stderr }) => {
 };
 
 export const processLocalBuffer = ({ error, stderr }) => {
+  // Partial error string used for matching the error
+  // this will be later used to pick the appropriate error out from the [errorDictionary]
   const errorTpl = {
     noPerm1: `Operation not permitted`,
     noPerm2: `Permission denied`,
@@ -211,6 +239,8 @@ export const processLocalBuffer = ({ error, stderr }) => {
     noSuchFiles: `No such file or directory`,
     resourceBusy: `resource busy or locked`,
   };
+
+  // Error output shown to the user as a snackbar.
   const errorDictionary = {
     noPerm: `Operation not permitted.`,
     commandFailed: `Could not complete! Try again.`,
@@ -259,6 +289,7 @@ export const processLocalBuffer = ({ error, stderr }) => {
       logError: true,
     };
   }
+
   if (
     /* Command failed */
     checkError('commandFailed')

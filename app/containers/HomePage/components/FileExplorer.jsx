@@ -37,6 +37,8 @@ import {
   setFilesDrag,
   clearFilesDrag,
   setFocussedFileExplorerDeviceType,
+  clearFileTransfer,
+  setFileTransferProgress,
 } from '../actions';
 import {
   makeDirectoryLists,
@@ -57,14 +59,15 @@ import {
   makeShowDirectoriesFirst,
 } from '../../Settings/selectors';
 import { DEVICES_LABEL, DONATE_PAYPAL_URL } from '../../../constants';
-import { pasteFiles } from '../../../data/sys';
 import {
   isArray,
   isEmpty,
   isFloat,
   isInt,
   isNumber,
+  niceBytes,
   removeArrayDuplicates,
+  truncate,
   undefinedOrNull,
 } from '../../../utils/funcs';
 import { getMainWindowRendererProcess } from '../../../utils/windowHelper';
@@ -1921,28 +1924,98 @@ const mapDispatchToProps = (dispatch, _) =>
         deviceType
       ) => (_, getState) => {
         try {
+          const {
+            destinationFolder,
+            storageId,
+            fileTransferClipboard,
+          } = pasteArgs;
+
+          // on error callback for file transfer
+          const onError = ({ error, stderr, data }) => {
+            dispatch(
+              processMtpOutput({
+                deviceType: DEVICE_TYPE.mtp,
+                error,
+                stderr,
+                data,
+                callback: () => {
+                  getCurrentWindow().setProgressBar(-1);
+                  dispatch(clearFileTransfer());
+                  dispatch(
+                    listDirectory(
+                      { ...listDirectoryArgs },
+                      deviceType,
+                      getState
+                    )
+                  );
+                },
+              })
+            );
+          };
+
+          // on progress callback for file transfer
+          const onProgress = ({
+            elapsedTime,
+            speed,
+            percentage,
+            currentFile,
+            activeFileSize,
+            activeFileSent,
+          }) => {
+            const bodyText1 = `${percentage}% complete of ${truncate(
+              baseName(currentFile),
+              45
+            )}`;
+            const bodyText2 = `${niceBytes(activeFileSent)} / ${niceBytes(
+              activeFileSize
+            )}`;
+
+            getCurrentWindow().setProgressBar(percentage / 100);
+            dispatch(
+              setFileTransferProgress({
+                toggle: true,
+                bodyText1,
+                bodyText2: `Elapsed: ${elapsedTime} | Progress: ${bodyText2} @ ${speed}/sec`,
+                percentage,
+              })
+            );
+          };
+
+          // on completed callback for file transfer
+          const onCompleted = () => {
+            getCurrentWindow().setProgressBar(-1);
+            dispatch(clearFileTransfer());
+            dispatch(
+              listDirectory({ ...listDirectoryArgs }, deviceType, getState)
+            );
+          };
+
           switch (deviceType) {
             case DEVICE_TYPE.local:
-              pasteFiles(
-                { ...pasteArgs },
-                { ...listDirectoryArgs },
-                'mtpToLocal',
-                deviceType,
-                dispatch,
-                getState,
-                getCurrentWindow
-              );
+              fileExplorerController.transferFiles({
+                deviceType: DEVICE_TYPE.mtp,
+                destination: destinationFolder,
+                storageId,
+                fileList: fileTransferClipboard?.queue ?? [],
+                direction: 'download',
+                onCompleted,
+                onError,
+                onProgress,
+              });
+
               break;
             case DEVICE_TYPE.mtp:
-              pasteFiles(
-                { ...pasteArgs },
-                { ...listDirectoryArgs },
-                'localtoMtp',
-                deviceType,
-                dispatch,
-                getState,
-                getCurrentWindow
-              );
+              fileExplorerController.transferFiles({
+                deviceType: DEVICE_TYPE.mtp,
+                destination: destinationFolder,
+                storageId,
+                fileList: fileTransferClipboard?.queue ?? [],
+                direction: 'upload',
+                onCompleted,
+                onError,
+                onProgress,
+              });
+
               break;
             default:
               break;

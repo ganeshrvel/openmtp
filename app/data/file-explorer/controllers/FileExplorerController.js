@@ -1,6 +1,5 @@
 import { FileExplorerRepository } from '../repositories/FileExplorerRepository';
 import { checkIf } from '../../../utils/checkIf';
-import { DEVICE_TYPE, MTP_MODE } from '../../../enums';
 
 class FileExplorerController {
   constructor() {
@@ -118,6 +117,50 @@ class FileExplorerController {
       storageId,
     });
   }
+
+  /**
+   * description - Upload or download files from MTP device to local or vice versa
+   *
+   * @param {string} deviceType
+   * @param {string} destination
+   * @param {'upload'|'download'} direction
+   * @param {[string]} fileList
+   * @param {string} storageId
+   * @param {errorCallback} onError
+   * @param {progressCallback} onProgress
+   * @param {completedCallback} onCompleted
+   *
+   * @return
+   */
+  transferFiles = ({
+    deviceType,
+    destination,
+    fileList,
+    direction,
+    storageId,
+    onError,
+    onProgress,
+    onCompleted,
+  }) => {
+    checkIf(deviceType, 'string');
+    checkIf(destination, 'string');
+    checkIf(direction, 'string');
+    checkIf(fileList, 'array');
+    checkIf(onError, 'function');
+    checkIf(onProgress, 'function');
+    checkIf(onCompleted, 'function');
+
+    return this.repository.transferFiles({
+      deviceType,
+      destination,
+      fileList,
+      direction,
+      storageId,
+      onError,
+      onProgress,
+      onCompleted,
+    });
+  };
 }
 
 const fileExplorerController = new FileExplorerController();

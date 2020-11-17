@@ -3,9 +3,6 @@ import { FileExplorerLocalDataSource } from '../data-sources/FileExplorerLocalDa
 import { FileExplorerKalamDataSource } from '../data-sources/FileExplorerKalamDataSource';
 import { DEVICE_TYPE, MTP_MODE } from '../../../enums';
 import { checkIf } from '../../../utils/checkIf';
-import { isArray, isEmpty } from '../../../utils/funcs';
-import path from 'path';
-import { log } from '../../../utils/log';
 
 const selectedMtpMode = MTP_MODE.legacy;
 
@@ -189,4 +186,50 @@ export class FileExplorerRepository {
       fileList,
     });
   }
+
+  /**
+   * description - Upload or download files from MTP device to local or vice versa
+   *
+   * @param {string} deviceType
+   * @param {string} destination
+   * @param {'upload'|'download'} direction
+   * @param {[string]} fileList
+   * @param {string} storageId
+   * @param {errorCallback} onError
+   * @param {progressCallback} onProgress
+   * @param {completedCallback} onCompleted
+   *
+   * @return
+   */
+  transferFiles = ({
+    deviceType,
+    destination,
+    fileList,
+    direction,
+    storageId,
+    onError,
+    onProgress,
+    onCompleted,
+  }) => {
+    if (deviceType === DEVICE_TYPE.mtp) {
+      checkIf(storageId, 'numericString');
+
+      switch (selectedMtpMode) {
+        case MTP_MODE.legacy:
+          return this.legacyMtpDataSource.transferFiles({
+            destination,
+            fileList,
+            direction,
+            storageId,
+            onError,
+            onProgress,
+            onCompleted,
+          });
+
+        case MTP_MODE.kalam:
+        default:
+          break;
+      }
+    }
+  };
 }
