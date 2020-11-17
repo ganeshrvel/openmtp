@@ -57,12 +57,7 @@ import {
   makeShowDirectoriesFirst,
 } from '../../Settings/selectors';
 import { DEVICES_LABEL, DONATE_PAYPAL_URL } from '../../../constants';
-import {
-  checkFileExists,
-  newLocalFolder,
-  newMtpFolder,
-  pasteFiles,
-} from '../../../data/sys';
+import { checkFileExists, pasteFiles } from '../../../data/sys';
 import {
   isArray,
   isEmpty,
@@ -1809,8 +1804,10 @@ const mapDispatchToProps = (dispatch, _) =>
                 error: localError,
                 stderr: localStderr,
                 data: localData,
-              } = await newLocalFolder({
-                newFolderPath,
+              } = await fileExplorerController.makeDirectory({
+                deviceType,
+                filePath: newFolderPath,
+                storageId: null,
               });
 
               dispatch(
@@ -1837,8 +1834,9 @@ const mapDispatchToProps = (dispatch, _) =>
                 error: mtpError,
                 stderr: mtpStderr,
                 data: mtpData,
-              } = await newMtpFolder({
-                newFolderPath,
+              } = await fileExplorerController.makeDirectory({
+                deviceType,
+                filePath: newFolderPath,
                 storageId,
               });
 

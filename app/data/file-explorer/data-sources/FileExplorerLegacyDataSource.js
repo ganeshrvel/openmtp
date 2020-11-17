@@ -1,22 +1,160 @@
 import path from 'path';
+import { Promise } from 'bluebird';
 import moment from 'moment';
 import findLodash from 'lodash/find';
+import { exec } from 'child_process';
 import { log } from '../../../utils/log';
 import { splitIntoLines, undefinedOrNull } from '../../../utils/funcs';
 import { DEVICES_LABEL } from '../../../constants';
 import { DEVICE_TYPE } from '../../../enums';
-import { filterOutMtpLines, mtpCli, promisifiedExec } from '../../../utils/mtp';
 import { getExtension } from '../../../utils/files';
-import { escapeShellMtp } from '../../sys';
+import { mtp as _mtpCli } from '../../../utils/binaries';
 
 export class FileExplorerLegacyDataSource {
+  constructor() {
+    this.mtpCli = `"${this._escapeShellMtp(_mtpCli)}"`;
+    this.execPromise = Promise.promisify(exec);
+  }
+
+  _escapeShellMtp(cmd) {
+    if (cmd.indexOf(`\\"`) !== -1 && cmd.indexOf(`"\\`) !== -1) {
+      return cmd
+        .replace(/`/g, '\\`')
+        .replace(/\\/g, `\\\\\\\\`)
+        .replace(/"/g, `\\\\\\"`);
+    }
+    if (cmd.indexOf(`"\\"`) !== -1) {
+      return cmd
+        .replace(/`/g, '\\`')
+        .replace(/\\/g, `\\\\\\\\`)
+        .replace(/"/g, `\\\\\\"`);
+    }
+    if (cmd.indexOf(`\\"`) !== -1) {
+      return cmd
+        .replace(/`/g, '\\`')
+        .replace(/\\/g, `\\\\\\`)
+        .replace(/"/g, `\\\\\\\\"`);
+    }
+    if (cmd.indexOf(`"\\`) !== -1) {
+      return cmd
+        .replace(/`/g, '\\`')
+        .replace(/\\/g, `\\\\\\\\`)
+        .replace(/"/g, `\\\\\\"`);
+    }
+    return cmd
+      .replace(/`/g, '\\`')
+      .replace(/\\/g, `\\\\\\`)
+      .replace(/"/g, `\\\\\\"`);
+  }
+
+  _filterOutMtpLines(string, index) {
+    return (
+      this._filterJunkMtpErrors(string) ||
+      (index < 2 && string.toLowerCase().indexOf(`selected storage`) !== -1)
+    );
+  }
+
+  _filterJunkMtpErrors(string) {
+    return (
+      string === '\n' ||
+      string === '\r\n' ||
+      string === '' ||
+      string.toLowerCase().indexOf(`device::find failed`) !== -1 ||
+      string.toLowerCase().indexOf(`iocreateplugininterfaceforservice`) !==
+        -1 ||
+      string.toLowerCase().indexOf(`Device::Find failed`) !== -1
+    );
+  }
+
+  _cleanJunkMtpError({ error = null, stdout = null, stderr = null }) {
+    const splittedError = splitIntoLines(error);
+    const filteredError = splittedError
+      ? splittedError.filter((a) => !this._filterJunkMtpErrors(a))
+      : [];
+
+    const splittedStderr = splitIntoLines(stderr);
+    const filteredStderr = splittedStderr
+      ? splittedStderr.filter((a) => !this._filterJunkMtpErrors(a))
+      : [];
+
+    return {
+      filteredError,
+      filteredStderr,
+      filteredStdout: stdout,
+    };
+  }
+
+  async _exec(command) {
+    try {
+      return new Promise((resolve) => {
+        this.execPromise(command, (error, stdout, stderr) => {
+          const {
+            filteredStderr,
+            filteredError,
+            filteredStdout,
+          } = this._cleanJunkMtpError({ error, stdout, stderr });
+
+          if (
+            (undefinedOrNull(filteredStderr) || filteredStderr.length < 1) &&
+            (undefinedOrNull(filteredError) || filteredError.length < 1)
+          ) {
+            return resolve({
+              data: filteredStdout,
+              stderr: null,
+              error: null,
+            });
+          }
+
+          return resolve({
+            data: filteredStdout,
+            stderr: filteredStderr.join('\n'),
+            error: filteredError.join('\n'),
+          });
+        });
+      });
+    } catch (e) {
+      log.error(e);
+    }
+  }
+
+  async _execNoCatch(command) {
+    return new Promise((resolve) => {
+      this.execPromise(command, (error, stdout, stderr) => {
+        const {
+          filteredStderr,
+          filteredError,
+          filteredStdout,
+        } = this._cleanJunkMtpError({ error, stdout, stderr });
+
+        if (
+          (undefinedOrNull(filteredStderr) || filteredStderr.length < 1) &&
+          (undefinedOrNull(filteredError) || filteredError.length < 1)
+        ) {
+          return resolve({
+            data: filteredStdout,
+            stderr: null,
+            error: null,
+          });
+        }
+
+        return resolve({
+          data: stdout,
+          stderr,
+          error,
+        });
+      });
+    });
+  }
+
   /**
    * description - Fetch MTP storages
    *
-   */ async listStorages() {
+   * @return {Promise<{data: object|boolean, error: string|null, stderr: string|null}>}
+   */
+  async listStorages() {
     try {
-      const { data, error, stderr } = await promisifiedExec(
-        `${mtpCli} "storage-list"`
+      const { data, error, stderr } = await this._exec(
+        `${this.mtpCli} "storage-list"`
       );
 
       if (error || stderr) {
@@ -35,7 +173,7 @@ export class FileExplorerLegacyDataSource {
 
       let storageList = {};
       _storageList
-        .filter((a, index) => !filterOutMtpLines(a, index))
+        .filter((a, index) => !this._filterOutMtpLines(a, index))
         .map((a, index) => {
           if (!a) {
             return null;
@@ -88,6 +226,10 @@ export class FileExplorerLegacyDataSource {
   /**
    * description - Fetch device files in the path
    *
+   * @param filePath
+   * @param ignoreHidden
+   * @param storageId
+   * @return {Promise<{data: array|null, error: string|null, stderr: string|null}>}
    */
   async listFiles({ filePath, ignoreHidden, storageId }) {
     try {
@@ -103,8 +245,8 @@ export class FileExplorerLegacyDataSource {
         data: filePropsData,
         error: filePropsError,
         stderr: filePropsStderr,
-      } = await promisifiedExec(
-        `${mtpCli} ${storageSelectCmd} "lsext \\"${escapeShellMtp(
+      } = await this._exec(
+        `${this.mtpCli} ${storageSelectCmd} "lsext \\"${this._escapeShellMtp(
           filePath
         )}\\""`
       );
@@ -120,7 +262,9 @@ export class FileExplorerLegacyDataSource {
 
       let fileProps = splitIntoLines(filePropsData);
 
-      fileProps = fileProps.filter((a, index) => !filterOutMtpLines(a, index));
+      fileProps = fileProps.filter(
+        (a, index) => !this._filterOutMtpLines(a, index)
+      );
 
       for (let i = 0; i < fileProps.length; i += 1) {
         const item = fileProps[i];
@@ -178,6 +322,10 @@ export class FileExplorerLegacyDataSource {
   /**
    * description - Rename a device file
    *
+   * @param filePath
+   * @param newFilename
+   * @param storageId
+   * @return {Promise<{data: null|boolean, error: string|null, stderr: string|null}>}
    */
   async renameFile({ filePath, newFilename, storageId }) {
     try {
@@ -186,11 +334,11 @@ export class FileExplorerLegacyDataSource {
       }
 
       const storageSelectCmd = `"storage ${storageId}"`;
-      const escapedFilePath = `${escapeShellMtp(filePath)}`;
-      const escapedNewFilename = `${escapeShellMtp(newFilename)}`;
+      const escapedFilePath = `${this._escapeShellMtp(filePath)}`;
+      const escapedNewFilename = `${this._escapeShellMtp(newFilename)}`;
 
-      const { error, stderr } = await promisifiedExec(
-        `${mtpCli} ${storageSelectCmd} "rename \\"${escapedFilePath}\\" \\"${escapedNewFilename}\\""`
+      const { error, stderr } = await this._exec(
+        `${this.mtpCli} ${storageSelectCmd} "rename \\"${escapedFilePath}\\" \\"${escapedNewFilename}\\""`
       );
 
       if (error || stderr) {
@@ -213,6 +361,9 @@ export class FileExplorerLegacyDataSource {
   /**
    * description - Delete device files
    *
+   * @param fileList
+   * @param storageId
+   * @return {Promise<{data: null|boolean, error: string|null, stderr: string|null}>}
    */
   async deleteFiles({ fileList, storageId }) {
     try {
@@ -223,8 +374,8 @@ export class FileExplorerLegacyDataSource {
       const storageSelectCmd = `"storage ${storageId}"`;
       for (let i = 0; i < fileList.length; i += 1) {
         // eslint-disable-next-line no-await-in-loop
-        const { error, stderr } = await promisifiedExec(
-          `${mtpCli} ${storageSelectCmd} "rm \\"${escapeShellMtp(
+        const { error, stderr } = await this._exec(
+          `${this.mtpCli} ${storageSelectCmd} "rm \\"${this._escapeShellMtp(
             fileList[i]
           )}\\""`
         );
@@ -236,6 +387,41 @@ export class FileExplorerLegacyDataSource {
           );
           return { error, stderr, data: false };
         }
+      }
+
+      return { error: null, stderr: null, data: true };
+    } catch (e) {
+      log.error(e);
+
+      return { error: e, stderr: null, data: false };
+    }
+  }
+
+  /**
+   * description - Create a device directory
+   *
+   * @param filePath
+   * @param storageId
+   * @return {Promise<{data: null|boolean, error: string|null, stderr: string|null}>}
+   */
+  async makeDirectory({ filePath, storageId }) {
+    try {
+      if (undefinedOrNull(filePath)) {
+        return { error: `Invalid path.`, stderr: null, data: null };
+      }
+
+      const storageSelectCmd = `"storage ${storageId}"`;
+      const escapedFilePath = `${this._escapeShellMtp(filePath)}`;
+      const { error, stderr } = await this._exec(
+        `${this.mtpCli} ${storageSelectCmd} "mkpath \\"${escapedFilePath}\\""`
+      );
+
+      if (error || stderr) {
+        log.error(
+          `${error} : ${stderr}`,
+          `FileExplorerLegacyDataSource.makeDirectory -> mkpath error`
+        );
+        return { error, stderr, data: false };
       }
 
       return { error: null, stderr: null, data: true };

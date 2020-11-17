@@ -2,6 +2,7 @@ import path from 'path';
 import junk from 'junk';
 import Promise from 'bluebird';
 import rimraf from 'rimraf';
+import mkdirp from 'mkdirp';
 import {
   readdir as fsReaddir,
   existsSync,
@@ -18,6 +19,24 @@ import { pathUp } from '../../../utils/files';
 export class FileExplorerLocalDataSource {
   constructor() {
     this.readdir = Promise.promisify(fsReaddir);
+  }
+
+  async _mkdir({ filePath }) {
+    try {
+      return new Promise((resolve) => {
+        mkdirp(filePath)
+          .then((data) => {
+            resolve({ data, stderr: null, error: null });
+
+            return data;
+          })
+          .catch((error) => {
+            resolve({ data: null, stderr: error, error });
+          });
+      });
+    } catch (e) {
+      log.error(e);
+    }
   }
 
   /**
@@ -72,8 +91,11 @@ export class FileExplorerLocalDataSource {
   };
 
   /**
-   * description - list local files
+   * description - Fetch local files in the path
    *
+   * @param filePath
+   * @param ignoreHidden
+   * @return {Promise<{data: array|null, error: string|null, stderr: string|null}>}
    */
   async listFiles({ filePath, ignoreHidden }) {
     try {
@@ -141,6 +163,9 @@ export class FileExplorerLocalDataSource {
   /**
    * description - Rename a local file
    *
+   * @param filePath
+   * @param newFilename
+   * @return {Promise<{data: null|boolean, error: string|null, stderr: string|null}>}
    */
   async renameFile({ filePath, newFilename }) {
     try {
@@ -168,6 +193,8 @@ export class FileExplorerLocalDataSource {
   /**
    * description - Delete a local file
    *
+   * @param fileList
+   * @return {Promise<{data: null|boolean, error: string|null, stderr: string|null}>}
    */
   async deleteFiles({ fileList }) {
     try {
@@ -186,6 +213,35 @@ export class FileExplorerLocalDataSource {
           );
           return { error, stderr: null, data: false };
         }
+      }
+
+      return { error: null, stderr: null, data: true };
+    } catch (e) {
+      log.error(e);
+
+      return { error: e, stderr: null, data: false };
+    }
+  }
+
+  /**
+   * description - Create a local directory
+   *
+   * @param {string} filePath
+   * @return {Promise<{data: null|boolean, error: string|null, stderr: string|null}>}
+   */
+  async makeDirectory({ filePath }) {
+    try {
+      if (undefinedOrNull(filePath)) {
+        return { error: `Invalid path.`, stderr: null, data: null };
+      }
+
+      const { error } = await this._mkdir({ filePath });
+      if (error) {
+        log.error(
+          `${error}`,
+          `FileExplorerLocalDataSource.makeDirectory -> mkdir error`
+        );
+        return { error, stderr: null, data: false };
       }
 
       return { error: null, stderr: null, data: true };
