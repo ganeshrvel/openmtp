@@ -719,7 +719,7 @@ export class FileExplorerLegacyDataSource {
    *
    * @return
    */
-  transferFiles = ({
+  async transferFiles({
     destination,
     fileList,
     direction,
@@ -727,7 +727,7 @@ export class FileExplorerLegacyDataSource {
     onError,
     onProgress,
     onCompleted,
-  }) => {
+  }) {
     checkIf(onError, 'function');
     checkIf(onProgress, 'function');
     checkIf(onCompleted, 'function');
@@ -799,5 +799,33 @@ export class FileExplorerLegacyDataSource {
     } catch (e) {
       log.error(e);
     }
-  };
+  }
+
+  /**
+   * description: fetch the data for generating bug/error reports
+   *
+   * @return {Promise<{data: string|null, error: string|null, stderr: string|null}>}
+   */
+  async fetchDebugReport() {
+    try {
+      const { data, error, stderr } = await this._exec(
+        `${this.mtpCli} "pwd" -v`
+      );
+
+      if (error) {
+        log.doLog(`${error}`);
+        return { error, stderr, data: null };
+      }
+      if (stderr) {
+        log.doLog(`${stderr}`);
+        return { error, stderr, data: null };
+      }
+
+      return { error: null, stderr: null, data };
+    } catch (e) {
+      log.error(e);
+
+      return { error: null, stderr: null, data: null };
+    }
+  }
 }

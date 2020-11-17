@@ -49,6 +49,7 @@ module.exports = {
     'no-multi-assign': 'off',
     'no-shadow': 'off',
     'no-underscore-dangle': 'off',
+    'no-throw-literal': 'off',
     'no-unused-vars': [
       'error',
       {

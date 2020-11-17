@@ -161,6 +161,18 @@ class FileExplorerController {
       onCompleted,
     });
   };
+
+  /**
+   * description: fetch the data for generating bug/error reports
+   *
+   * @param {string} deviceType
+   * @return {Promise<{data: string|null, error: string|null, stderr: string|null}>}
+   */
+  async fetchDebugReport({ deviceType }) {
+    checkIf(deviceType, 'string');
+
+    return this.repository.fetchDebugReport({ deviceType });
+  }
 }
 
 const fileExplorerController = new FileExplorerController();

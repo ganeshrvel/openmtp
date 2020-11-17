@@ -29,6 +29,9 @@ export class FileExplorerRepository {
           break;
       }
     }
+
+    // eslint-disable-next-line no-throw-literal
+    throw `listStorages for deviceType=DEVICE_TYPE.local is unimplemented`;
   }
 
   /**
@@ -201,7 +204,7 @@ export class FileExplorerRepository {
    *
    * @return
    */
-  transferFiles = ({
+  transferFiles({
     deviceType,
     destination,
     fileList,
@@ -210,7 +213,7 @@ export class FileExplorerRepository {
     onError,
     onProgress,
     onCompleted,
-  }) => {
+  }) {
     if (deviceType === DEVICE_TYPE.mtp) {
       checkIf(storageId, 'numericString');
 
@@ -231,5 +234,30 @@ export class FileExplorerRepository {
           break;
       }
     }
-  };
+
+    // eslint-disable-next-line no-throw-literal
+    throw `transferFiles for deviceType=DEVICE_TYPE.local is unimplemented`;
+  }
+
+  /**
+   * description: fetch the data for generating bug/error reports
+   *
+   * @param {string} deviceType
+   * @return {Promise<{data: string|null, error: string|null, stderr: string|null}>}
+   */
+  async fetchDebugReport({ deviceType }) {
+    if (deviceType === DEVICE_TYPE.mtp) {
+      switch (selectedMtpMode) {
+        case MTP_MODE.legacy:
+          return this.legacyMtpDataSource.fetchDebugReport();
+
+        case MTP_MODE.kalam:
+        default:
+          break;
+      }
+    }
+
+    // eslint-disable-next-line no-throw-literal
+    throw `fetchDebugReport for deviceType=DEVICE_TYPE.local is unimplemented`;
+  }
 }

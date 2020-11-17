@@ -6,7 +6,6 @@ import { bindActionCreators } from 'redux';
 import { withStyles } from '@material-ui/core/styles';
 import { styles } from '../styles/GenerateErrorReport';
 import { PATHS } from '../../../utils/paths';
-import { mtpVerboseReport } from '../../../data/sys';
 import { fileExistsSync } from '../../../data/sys/fileOps';
 import { AUTHOR_EMAIL } from '../../../constants/meta';
 import { throwAlert } from '../../Alerts/actions';
@@ -44,7 +43,9 @@ class GenerateErrorReport extends Component {
     try {
       const { actionCreateThrowError } = this.props;
 
-      await mtpVerboseReport();
+      await fileExplorerController.fetchDebugReport({
+        deviceType: DEVICE_TYPE.mtp,
+      });
 
       const { error } = await fileExplorerController.deleteFiles({
         deviceType: DEVICE_TYPE.local,
