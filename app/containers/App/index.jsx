@@ -116,6 +116,7 @@ class App extends Component {
           // more than 2 boot ups have occured
           isFreshInstall = 0;
           this.allowWritingJsonToSettings = true;
+
           return null;
       }
 

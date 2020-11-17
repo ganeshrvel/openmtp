@@ -22,6 +22,7 @@ class ErrorBoundary extends Component {
       errorInfo,
     });
     const _errorInfo = JSON.stringify(errorInfo);
+
     log.doLog(
       `Error boundary log capture:${EOL}${error.toString()}${EOL}${_errorInfo}`,
       true,
@@ -40,6 +41,7 @@ class ErrorBoundary extends Component {
   render() {
     const { classes: styles, children } = this.props;
     const { errorInfo } = this.state;
+
     if (errorInfo) {
       return (
         <div className={styles.root}>

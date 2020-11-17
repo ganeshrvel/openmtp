@@ -13,11 +13,13 @@ import { quickHash } from '../../../utils/funcs';
 class SidebarAreaPaneLists extends PureComponent {
   _handleListDirectory({ ...args }) {
     const { onClickHandler } = this.props;
+
     onClickHandler({ ...args });
   }
 
   ListsRender = (listData) => {
     const { classes: styles, deviceType, currentBrowsePath } = this.props;
+
     return (
       <List component="nav" dense className={styles.listsBottom}>
         {listData.map((item) => {

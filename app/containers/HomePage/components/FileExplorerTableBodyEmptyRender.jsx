@@ -278,6 +278,7 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
         </TableRow>
       );
     }
+
     return (
       <TableRow className={styles.emptyTableRowWrapper}>
         <TableCell

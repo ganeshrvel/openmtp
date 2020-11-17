@@ -24,6 +24,7 @@ let mainWindow = null;
 
 if (IS_PROD) {
   const sourceMapSupport = require('source-map-support');
+
   sourceMapSupport.install();
 }
 
@@ -40,6 +41,7 @@ async function bootTheDevice() {
 
     // For a fresh installation
     await bootLoader.init();
+
     return await bootLoader.verify();
   } catch (e) {
     throw new Error(e);
@@ -112,6 +114,7 @@ if (!isDeviceBootable) {
           if (mainWindow.isMinimized()) {
             mainWindow.restore();
           }
+
           mainWindow.focus();
         }
       });
@@ -148,6 +151,7 @@ if (!isDeviceBootable) {
         if (!mainWindow) {
           throw new Error(`"mainWindow" is not defined`);
         }
+
         if (process.env.START_MINIMIZED) {
           mainWindow.minimize();
         } else {
@@ -186,6 +190,7 @@ if (!isDeviceBootable) {
       await createWindow();
 
       let appUpdaterEnable = true;
+
       if (isPackaged && process.platform === 'darwin') {
         appUpdaterEnable = !isMas && app.isInApplicationsFolder();
       }
@@ -206,6 +211,7 @@ if (!isDeviceBootable) {
         allowPrerelease:
           autoUpdateCheckSettings.enablePrereleaseUpdates === true,
       });
+
       autoAppUpdate.init();
 
       const menuBuilder = new MenuBuilder({
@@ -213,6 +219,7 @@ if (!isDeviceBootable) {
         autoAppUpdate,
         appUpdaterEnable,
       });
+
       menuBuilder.buildMenu();
 
       if (autoUpdateCheck && appUpdaterEnable) {

@@ -32,24 +32,28 @@ export class FileExplorerLegacyDataSource {
         .replace(/\\/g, `\\\\\\\\`)
         .replace(/"/g, `\\\\\\"`);
     }
+
     if (cmd.indexOf(`"\\"`) !== -1) {
       return cmd
         .replace(/`/g, '\\`')
         .replace(/\\/g, `\\\\\\\\`)
         .replace(/"/g, `\\\\\\"`);
     }
+
     if (cmd.indexOf(`\\"`) !== -1) {
       return cmd
         .replace(/`/g, '\\`')
         .replace(/\\/g, `\\\\\\`)
         .replace(/"/g, `\\\\\\\\"`);
     }
+
     if (cmd.indexOf(`"\\`) !== -1) {
       return cmd
         .replace(/`/g, '\\`')
         .replace(/\\/g, `\\\\\\\\`)
         .replace(/"/g, `\\\\\\"`);
     }
+
     return cmd
       .replace(/`/g, '\\`')
       .replace(/\\/g, `\\\\\\`)
@@ -196,6 +200,7 @@ export class FileExplorerLegacyDataSource {
         if (transferList === null) {
           clearInterval(handleTransferListInterval);
           handleTransferListInterval = 0;
+
           return null;
         }
 
@@ -219,6 +224,7 @@ export class FileExplorerLegacyDataSource {
             : 0;
         const _speed = speed ? `${niceBytes(speed)}` : `--`;
         const elapsedTime = msToTime(currentCopiedTime - startTime);
+
         prevCopiedTime = currentCopiedTime;
         prevCopiedBlockSize = currentCopiedBlockSize;
 
@@ -276,6 +282,7 @@ export class FileExplorerLegacyDataSource {
 
           const event = bufferedOutputSplit[eventIndex];
           const matchedItem = item.match(/(\d+?\d*)\s(\d+?\d*)$/);
+
           if (matchedItem === null) {
             return null;
           }
@@ -289,6 +296,7 @@ export class FileExplorerLegacyDataSource {
             currentCopiedBlockSize = 0;
             prevCopiedTime = 0;
             currentCopiedTime = 0;
+
             return null;
           }
 
@@ -306,6 +314,7 @@ export class FileExplorerLegacyDataSource {
             .join(' ');
 
           const perc = percentage(currentProgressSize, totalFileSize);
+
           currentCopiedBlockSize = totalFileSize - currentProgressSize;
           currentCopiedTime = unixTimestampNow();
 
@@ -368,6 +377,7 @@ export class FileExplorerLegacyDataSource {
           `FileExplorerLegacyDataSource.listStorages -> storage-list error`,
           false
         );
+
         return { error, stderr, data: null };
       }
 
@@ -377,12 +387,14 @@ export class FileExplorerLegacyDataSource {
       const storageIdMatchPattern = /([^\D]+)/;
 
       let storageList = {};
+
       _storageList
         .filter((a, index) => !this._filterOutMtpLines(a, index))
         .map((a, index) => {
           if (!a) {
             return null;
           }
+
           const _matchDesc = descMatchPattern.exec(a);
           const _matchedStorageIds = storageIdMatchPattern.exec(a);
 
@@ -397,6 +409,7 @@ export class FileExplorerLegacyDataSource {
 
           const matchDesc = _matchDesc[1].trim();
           const matchedStorageId = _matchedStorageIds[1].trim();
+
           storageList = {
             ...storageList,
             [matchedStorageId]: {
@@ -487,6 +500,7 @@ export class FileExplorerLegacyDataSource {
         if (itemSplit === null || itemSplit.length < 2 || itemSplit[1] === '') {
           continue; // eslint-disable-line no-continue
         }
+
         const matchedFileName = itemSplit[1].replace(/^\s{2}|\s$/g, '');
         const filePropsList = _matchedProps.replace(/\s\s+/g, ' ').split(' ');
 
@@ -506,6 +520,7 @@ export class FileExplorerLegacyDataSource {
         if (findLodash(response, { path: fullPath })) {
           continue; // eslint-disable-line no-continue
         }
+
         response.push({
           name: matchedFileName,
           path: fullPath,
@@ -577,6 +592,7 @@ export class FileExplorerLegacyDataSource {
       }
 
       const storageSelectCmd = `"storage ${storageId}"`;
+
       for (let i = 0; i < fileList.length; i += 1) {
         // eslint-disable-next-line no-await-in-loop
         const { error, stderr } = await this._exec(
@@ -590,6 +606,7 @@ export class FileExplorerLegacyDataSource {
             `${error} : ${stderr}`,
             `FileExplorerLegacyDataSource.deleteFiles -> rm error`
           );
+
           return { error, stderr, data: false };
         }
       }
@@ -626,6 +643,7 @@ export class FileExplorerLegacyDataSource {
           `${error} : ${stderr}`,
           `FileExplorerLegacyDataSource.makeDirectory -> mkpath error`
         );
+
         return { error, stderr, data: false };
       }
 
@@ -756,6 +774,7 @@ export class FileExplorerLegacyDataSource {
       }
 
       let cmdArgs = [];
+
       switch (direction) {
         case 'download':
           cmdArgs = (fileList ?? []).map((sourcePath) => {
@@ -814,10 +833,13 @@ export class FileExplorerLegacyDataSource {
 
       if (error) {
         log.doLog(`${error}`);
+
         return { error, stderr, data: null };
       }
+
       if (stderr) {
         log.doLog(`${stderr}`);
+
         return { error, stderr, data: null };
       }
 

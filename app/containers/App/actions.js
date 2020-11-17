@@ -10,6 +10,7 @@ export function reqLoadApp() {
     type: actionTypes.REQ_LOAD,
   };
 }
+
 export function resLoadApp() {
   return {
     type: actionTypes.RES_LOAD,

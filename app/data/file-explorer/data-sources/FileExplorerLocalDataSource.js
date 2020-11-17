@@ -120,6 +120,7 @@ export class FileExplorerLocalDataSource {
 
       if (error) {
         log.error(error, `FileExplorerLocalDataSource.listFiles`);
+
         return { error: true, data: null };
       }
 
@@ -138,6 +139,7 @@ export class FileExplorerLocalDataSource {
         if (!existsSync(fullPath)) {
           continue; // eslint-disable-line no-continue
         }
+
         const stat = statSync(fullPath);
         const isFolder = lstatSync(fullPath).isDirectory();
         const extension = path.extname(fullPath);
@@ -156,6 +158,7 @@ export class FileExplorerLocalDataSource {
           dateAdded: moment(dateTime).format('YYYY-MM-DD HH:mm:ss'),
         });
       }
+
       return { error, data: response };
     } catch (e) {
       log.error(e);
@@ -178,11 +181,13 @@ export class FileExplorerLocalDataSource {
       }
 
       const { error } = await this._rename({ filePath, newFilename });
+
       if (error) {
         log.error(
           `${error}`,
           `FileExplorerLocalDataSource.renameFile -> mv error`
         );
+
         return { error, stderr: null, data: false };
       }
 
@@ -210,11 +215,13 @@ export class FileExplorerLocalDataSource {
         const item = fileList[i];
         // eslint-disable-next-line no-await-in-loop
         const { error } = await this._delete(item);
+
         if (error) {
           log.error(
             `${error}`,
             `FileExplorerLocalDataSource.deleteFiles -> rm error`
           );
+
           return { error, stderr: null, data: false };
         }
       }
@@ -240,11 +247,13 @@ export class FileExplorerLocalDataSource {
       }
 
       const { error } = await this._mkdir({ filePath });
+
       if (error) {
         log.error(
           `${error}`,
           `FileExplorerLocalDataSource.makeDirectory -> mkdir error`
         );
+
         return { error, stderr: null, data: false };
       }
 

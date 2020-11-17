@@ -16,6 +16,7 @@ class FileExplorerTableFooterRender extends PureComponent {
       directoryLists,
       fileTransferClipboard,
     } = this.props;
+
     return (
       <TableFooter component="div" className={styles.tableFooter}>
         {isStatusBarEnabled && (

@@ -70,6 +70,7 @@ export default class Boot {
           return false;
         }
       }
+
       for (let i = 0; i < this.verifyFileList.length; i += 1) {
         const item = this.verifyFileList[i];
 
@@ -145,6 +146,7 @@ export default class Boot {
 
       filesList.map(async (a) => {
         const dateMatch = a.match(/\d{4}-\d{2}/g);
+
         if (
           dateMatch === null ||
           dateMatch.length < 1 ||
@@ -155,6 +157,7 @@ export default class Boot {
         }
 
         const _diff = daysDiff(yearMonthNow({}), dateMatch[0]);
+
         if (_diff >= logFileRotationCleanUpThreshold) {
           deleteFilesSync(`${logDir}/${a}`);
         }

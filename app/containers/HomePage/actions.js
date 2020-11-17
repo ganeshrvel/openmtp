@@ -89,6 +89,7 @@ export function getStorageId(state) {
 
   for (let i = 0; i < mtpStoragesListKeys.length; i += 1) {
     const itemKey = mtpStoragesListKeys[i];
+
     if (mtpStoragesList[itemKey].selected) {
       return itemKey;
     }
@@ -110,6 +111,7 @@ export function setMtpStorageOptions(
           deviceType,
         }
       );
+
       dispatch(
         processMtpOutput({
           deviceType,
@@ -118,6 +120,7 @@ export function setMtpStorageOptions(
           data,
           callback: () => {
             let changeMtpIdsFlag = true;
+
             if (
               Object.keys(deviceChangeCheck).length > 0 &&
               deviceChangeCheck.changeMtpStorageIdsOnlyOnDeviceChange &&
@@ -133,6 +136,7 @@ export function setMtpStorageOptions(
             if (changeMtpIdsFlag) {
               dispatch(changeMtpStorage({ ...data }));
             }
+
             dispatch(listDirectory({ ...listDirArgs }, deviceType, getState));
           },
         })
@@ -179,6 +183,7 @@ export function processMtpOutput({ deviceType, error, stderr, _, callback }) {
         if (mtpThrowAlert) {
           dispatch(throwAlert({ message: mtpError.toString() }));
         }
+
         return false;
       }
 
@@ -204,6 +209,7 @@ export function processLocalOutput({ _, error, stderr, __, callback }) {
         if (localThrowAlert) {
           dispatch(throwAlert({ message: localError.toString() }));
         }
+
         return false;
       }
 
@@ -236,6 +242,7 @@ export function listDirectory({ ...args }, deviceType, getState) {
             dispatch(
               throwAlert({ message: `Unable fetch data from the Local disk.` })
             );
+
             return;
           }
 

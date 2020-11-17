@@ -34,6 +34,7 @@ export default class ToolbarAreaPane extends PureComponent {
 
     Object.keys(_activeToolbarList).map((a) => {
       const item = _activeToolbarList[a];
+
       switch (a) {
         case 'up':
           _activeToolbarList[a] = {
@@ -173,6 +174,7 @@ export default class ToolbarAreaPane extends PureComponent {
             <div className={styles.toolbarInnerWrapper}>
               {Object.keys(_toolbarList).map((a) => {
                 const item = _toolbarList[a];
+
                 return (
                   <Tooltip key={a} title={item.label}>
                     <div className={`${styles.navBtns} ${styles.noAppDrag}`}>

@@ -57,6 +57,7 @@ class GenerateErrorReport extends Component {
         actionCreateThrowError({
           message: reportGenerateError,
         });
+
         return null;
       }
 
@@ -66,6 +67,7 @@ class GenerateErrorReport extends Component {
         actionCreateThrowError({
           message: reportGenerateError,
         });
+
         return null;
       }
 
@@ -81,6 +83,7 @@ class GenerateErrorReport extends Component {
 
   render() {
     const { classes: styles } = this.props;
+
     return (
       <GenerateErrorReportBody
         styles={styles}

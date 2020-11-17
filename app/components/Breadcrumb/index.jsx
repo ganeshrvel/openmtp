@@ -12,11 +12,13 @@ import { sanitizePath } from '../../utils/files';
 class Breadcrumb extends PureComponent {
   _handleClickPath = (enabled, value, event) => {
     const { onBreadcrumbPathClick } = this.props;
+
     event.preventDefault();
 
     if (!enabled) {
       return null;
     }
+
     onBreadcrumbPathClick({ path: value });
   };
 
@@ -37,10 +39,12 @@ class Breadcrumb extends PureComponent {
     currentBrowsePathBroken.map((a, index) => {
       const label = a;
       let _isCompressed = false;
+
       if (index === currentBrowsePathBrokenLength - 1) {
         _bold = true;
         _enabled = false;
       }
+
       if (a === '' && index === 0) {
         _currentBrowsePath.push({
           label: 'Root',
@@ -49,6 +53,7 @@ class Breadcrumb extends PureComponent {
           enabled: _enabled,
           bold: _bold,
         });
+
         return null;
       }
 
@@ -78,9 +83,11 @@ class Breadcrumb extends PureComponent {
 
     return tokenizeCurrentBrowsePath.map((item, index) => {
       const { label, path, isCompressed, enabled, bold } = item;
+
       if (isCompressed) {
         compressedCounter += 1;
       }
+
       return (
         <Fragment key={quickHash(path)}>
           {isCompressed ? (
@@ -120,6 +127,7 @@ class Breadcrumb extends PureComponent {
 
   CompressedBreadcrumbCellRender({ compressedCounter }) {
     const { classes: styles } = this.props;
+
     return compressedCounter < 2 ? (
       <span>
         <KeyboardArrowRightIcon className={styles.breadcrumbSeperator} />

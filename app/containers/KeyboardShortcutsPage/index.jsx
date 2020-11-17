@@ -15,6 +15,7 @@ class KeyboardShortcutsPage extends Component {
 
   render() {
     const { classes: styles } = this.props;
+
     return (
       <div className={styles.root}>
         <Helmet titleTemplate={`%s - ${APP_TITLE}`}>

@@ -9,6 +9,7 @@ export default class Storage {
   getAll() {
     try {
       const _stream = readFileSync(this.filePath);
+
       if (
         typeof _stream === 'undefined' ||
         _stream === null ||
@@ -16,6 +17,7 @@ export default class Storage {
       ) {
         return {};
       }
+
       return JSON.parse(_stream);
     } catch (e) {
       log.error(e, `Storage -> getAll`);

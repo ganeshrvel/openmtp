@@ -2,6 +2,7 @@ import moment from 'moment';
 
 export const dateNow = ({ monthInletters = false }) => {
   let monthFormat = `MM`;
+
   if (monthInletters) {
     monthFormat = `MMM`;
   }
@@ -11,6 +12,7 @@ export const dateNow = ({ monthInletters = false }) => {
 
 export const yearMonthNow = ({ monthInletters = false }) => {
   let monthFormat = `MM`;
+
   if (monthInletters) {
     monthFormat = `MMM`;
   }
@@ -20,6 +22,7 @@ export const yearMonthNow = ({ monthInletters = false }) => {
 
 export const dateTimeNow = ({ monthInletters = false }) => {
   let monthFormat = `MM`;
+
   if (monthInletters) {
     monthFormat = `MMM`;
   }
@@ -29,6 +32,7 @@ export const dateTimeNow = ({ monthInletters = false }) => {
 
 export const dateConvertUkStyle = ({ date, monthInletters = false }) => {
   let monthFormat = `MM`;
+
   if (monthInletters) {
     monthFormat = `MMM`;
   }
@@ -38,6 +42,7 @@ export const dateConvertUkStyle = ({ date, monthInletters = false }) => {
 
 export const dateTimeUnixTimestampNow = ({ monthInletters = false }) => {
   let monthFormat = `MM`;
+
   if (monthInletters) {
     monthFormat = `MMM`;
   }

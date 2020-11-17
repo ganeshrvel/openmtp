@@ -20,6 +20,7 @@ class Snackbars extends PureComponent {
 
   _handleClose = (event, reason) => {
     const { OnSnackBarsCloseAlerts } = this.props;
+
     if (reason === 'clickaway') {
       return;
     }

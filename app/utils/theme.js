@@ -10,6 +10,7 @@ export const getAppThemeMode = (appThemeModeSettings) => {
   const { shouldUseDarkColors } = remote?.nativeTheme ?? nativeTheme ?? {};
 
   let _appThemeModeSettings = appThemeModeSettings;
+
   if (undefinedOrNull(_appThemeModeSettings)) {
     _appThemeModeSettings = getAppThemeModeSettings();
   }

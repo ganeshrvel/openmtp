@@ -48,6 +48,7 @@ export const nonBootableDeviceWindow = () => {
     if (!_nonBootableDeviceWindow) {
       throw new Error(`"nonBootableDeviceWindow" is not defined`);
     }
+
     if (process.env.START_MINIMIZED) {
       _nonBootableDeviceWindow.minimize();
     } else {
@@ -89,6 +90,7 @@ export const reportBugsWindow = () => {
     if (_reportBugsWindow) {
       _reportBugsWindow.focus();
       _reportBugsWindow.show();
+
       return _reportBugsWindow;
     }
 
@@ -158,11 +160,13 @@ export const privacyPolicyWindow = (isRenderedPage = false) => {
     if (_privacyPolicyWindow) {
       _privacyPolicyWindow.focus();
       _privacyPolicyWindow.show();
+
       return _privacyPolicyWindow;
     }
 
     // show the existing _privacyPolicyWindow
     const _privacyPolicyWindowTemp = privacyPolicyCreateWindow(isRenderedPage);
+
     if (!_privacyPolicyWindowTemp) {
       return _privacyPolicyWindow;
     }
@@ -214,11 +218,13 @@ export const appUpdateAvailableWindow = () => {
     if (_appUpdateAvailableWindow) {
       _appUpdateAvailableWindow.focus();
       _appUpdateAvailableWindow.show();
+
       return _appUpdateAvailableWindow;
     }
 
     // show the existing _appUpdateAvailableWindow
     const _appUpdateAvailableWindowTemp = appUpdateAvailableCreateWindow();
+
     if (!_appUpdateAvailableWindowTemp) {
       return _appUpdateAvailableWindow;
     }
@@ -288,11 +294,13 @@ export const appFeaturesWindow = (isRenderedPage = false) => {
     if (_appFeaturesWindow) {
       _appFeaturesWindow.focus();
       _appFeaturesWindow.show();
+
       return _appFeaturesWindow;
     }
 
     // show the existing _appFeaturesWindow
     const _appFeaturesWindowTemp = appFeaturesCreateWindow(isRenderedPage);
+
     if (!_appFeaturesWindowTemp) {
       return _appFeaturesWindow;
     }
@@ -362,6 +370,7 @@ export const keyboardShortcutsWindow = (isRenderedPage = false) => {
     if (_keyboardShortcutsWindow) {
       _keyboardShortcutsWindow.focus();
       _keyboardShortcutsWindow.show();
+
       return _keyboardShortcutsWindow;
     }
 
@@ -369,6 +378,7 @@ export const keyboardShortcutsWindow = (isRenderedPage = false) => {
     const _keyboardShortcutsWindowTemp = keyboardShortcutsCreateWindow(
       isRenderedPage
     );
+
     if (!_keyboardShortcutsWindowTemp) {
       return _keyboardShortcutsWindow;
     }
@@ -402,6 +412,7 @@ export const loadExistingWindow = (allWindows, title) => {
   if (!undefinedOrNull(allWindows)) {
     for (let i = 0; i < allWindows.length; i += 1) {
       const item = allWindows[i];
+
       if (item.getTitle().indexOf(title) !== -1) {
         item.focus();
         item.show();

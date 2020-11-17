@@ -71,6 +71,7 @@ export const processMtpBuffer = async ({ error, stderr }) => {
   };
 
   const noMtpError = checkError('noMtp');
+
   log.doLog(
     `MTP buffer o/p logging;${EOL}error: ${errorStringified.trim()}${EOL}stderr: ${stderrStringified.trim()}`,
     !noMtpError
@@ -208,6 +209,7 @@ export const processMtpBuffer = async ({ error, stderr }) => {
       status: true,
     };
   }
+
   if (
     /* No files selected */
     checkError('partialDeletion')
@@ -300,6 +302,7 @@ export const processLocalBuffer = ({ error, stderr }) => {
       logError: true,
     };
   }
+
   if (
     /* No such file or directory */
     checkError('noSuchFiles')
@@ -311,6 +314,7 @@ export const processLocalBuffer = ({ error, stderr }) => {
       status: true,
     };
   }
+
   if (
     /* Resource busy or locked */
     checkError('resourceBusy')
@@ -321,6 +325,7 @@ export const processLocalBuffer = ({ error, stderr }) => {
       logError: true,
     };
   }
+
   /* common errors */
   return {
     error: errorDictionary.common,
@@ -333,6 +338,7 @@ const sanitizeErrors = (string) => {
   if (string === null) {
     return `Oops.. Try again`;
   }
+
   string = string.replace(/^(error: )/, '').trim(); // eslint-disable-line no-param-reassign
   string = replaceBulk(string, ['error:', 'stat failed:'], ['', '']).trim(); // eslint-disable-line no-param-reassign
 
