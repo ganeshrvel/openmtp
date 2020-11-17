@@ -57,7 +57,7 @@ import {
   makeShowDirectoriesFirst,
 } from '../../Settings/selectors';
 import { DEVICES_LABEL, DONATE_PAYPAL_URL } from '../../../constants';
-import { checkFileExists, pasteFiles } from '../../../data/sys';
+import { pasteFiles } from '../../../data/sys';
 import {
   isArray,
   isEmpty,
@@ -1000,7 +1000,13 @@ class FileExplorer extends Component {
       return null;
     }
 
-    if (await checkFileExists(_newFilename, deviceType, storageId)) {
+    if (
+      await fileExplorerController.filesExist({
+        deviceType,
+        fileList: [_newFilename],
+        storageId,
+      })
+    ) {
       this._handleErrorsEditDialog(
         {
           toggle: true,
@@ -1234,7 +1240,13 @@ class FileExplorer extends Component {
 
     const newFolderPath = sanitizePath(`${data.path}/${newFolderName}`);
 
-    if (await checkFileExists(newFolderPath, deviceType, storageId)) {
+    if (
+      await fileExplorerController.filesExist({
+        deviceType,
+        fileList: [newFolderPath],
+        storageId,
+      })
+    ) {
       this._handleErrorsEditDialog(
         {
           toggle: true,
@@ -1289,7 +1301,13 @@ class FileExplorer extends Component {
       return null;
     }
 
-    if (await checkFileExists(queue, deviceType, storageId)) {
+    if (
+      await fileExplorerController.filesExist({
+        deviceType,
+        fileList: queue,
+        storageId,
+      })
+    ) {
       this._handleTogglePasteConfirmDialog(true);
       return null;
     }

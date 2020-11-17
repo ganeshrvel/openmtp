@@ -3,6 +3,9 @@ import { FileExplorerLocalDataSource } from '../data-sources/FileExplorerLocalDa
 import { FileExplorerKalamDataSource } from '../data-sources/FileExplorerKalamDataSource';
 import { DEVICE_TYPE, MTP_MODE } from '../../../enums';
 import { checkIf } from '../../../utils/checkIf';
+import { isArray, isEmpty } from '../../../utils/funcs';
+import path from 'path';
+import { log } from '../../../utils/log';
 
 const selectedMtpMode = MTP_MODE.legacy;
 
@@ -154,6 +157,36 @@ export class FileExplorerRepository {
 
     return this.localDataSource.makeDirectory({
       filePath,
+    });
+  }
+
+  /**
+   * description - Check if files exist
+   *
+   * @param {string} deviceType
+   * @param {[string]} fileList
+   * @param {string} storageId
+   * @return {Promise<boolean>}
+   */
+  async filesExist({ deviceType, fileList, storageId }) {
+    if (deviceType === DEVICE_TYPE.mtp) {
+      checkIf(storageId, 'numericString');
+
+      switch (selectedMtpMode) {
+        case MTP_MODE.legacy:
+          return this.legacyMtpDataSource.filesExist({
+            fileList,
+            storageId,
+          });
+
+        case MTP_MODE.kalam:
+        default:
+          break;
+      }
+    }
+
+    return this.localDataSource.filesExist({
+      fileList,
     });
   }
 }

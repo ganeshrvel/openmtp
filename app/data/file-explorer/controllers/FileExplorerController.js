@@ -1,5 +1,6 @@
 import { FileExplorerRepository } from '../repositories/FileExplorerRepository';
 import { checkIf } from '../../../utils/checkIf';
+import { DEVICE_TYPE, MTP_MODE } from '../../../enums';
 
 class FileExplorerController {
   constructor() {
@@ -95,6 +96,25 @@ class FileExplorerController {
     return this.repository.makeDirectory({
       deviceType,
       filePath,
+      storageId,
+    });
+  }
+
+  /**
+   * description - Check if files exist
+   *
+   * @param {string} deviceType
+   * @param {[string]} fileList
+   * @param {string} storageId
+   * @return {Promise<boolean>}
+   */
+  async filesExist({ deviceType, fileList, storageId }) {
+    checkIf(deviceType, 'string');
+    checkIf(fileList, 'array');
+
+    return this.repository.filesExist({
+      deviceType,
+      fileList,
       storageId,
     });
   }

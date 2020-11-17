@@ -4,7 +4,12 @@ import moment from 'moment';
 import findLodash from 'lodash/find';
 import { exec } from 'child_process';
 import { log } from '../../../utils/log';
-import { splitIntoLines, undefinedOrNull } from '../../../utils/funcs';
+import {
+  isArray,
+  isEmpty,
+  splitIntoLines,
+  undefinedOrNull,
+} from '../../../utils/funcs';
 import { DEVICES_LABEL } from '../../../constants';
 import { DEVICE_TYPE } from '../../../enums';
 import { getExtension } from '../../../utils/files';
@@ -144,6 +149,17 @@ export class FileExplorerLegacyDataSource {
         });
       });
     });
+  }
+
+  async _checkMtpFileExists(filePath, storageId) {
+    const storageSelectCmd = `"storage ${storageId}"`;
+    const escapedFilePath = `${this._escapeShellMtp(filePath)}`;
+
+    const { stderr } = await this._execNoCatch(
+      `${this.mtpCli} ${storageSelectCmd} "properties \\"${escapedFilePath}\\""`
+    );
+
+    return !stderr;
   }
 
   /**
@@ -429,6 +445,41 @@ export class FileExplorerLegacyDataSource {
       log.error(e);
 
       return { error: e, stderr: null, data: false };
+    }
+  }
+
+  /**
+   * description - Check if files exist in the device
+   *
+   * @param {[string]} fileList
+   * @param {string} storageId
+   * @return {Promise<boolean>}
+   */
+  async filesExist({ fileList, storageId }) {
+    try {
+      if (!isArray(fileList)) {
+        return false;
+      }
+
+      if (isEmpty(fileList)) {
+        return false;
+      }
+
+      for (let i = 0; i < fileList.length; i += 1) {
+        const item = fileList[i];
+        const fullPath = path.resolve(item);
+
+        // eslint-disable-next-line no-await-in-loop
+        if (await this._checkMtpFileExists(fullPath, storageId)) {
+          return true;
+        }
+      }
+
+      return false;
+    } catch (e) {
+      log.error(e);
+
+      return false;
     }
   }
 }

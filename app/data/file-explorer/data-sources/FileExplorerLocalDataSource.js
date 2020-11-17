@@ -13,7 +13,7 @@ import {
 import moment from 'moment';
 import findLodash from 'lodash/find';
 import { log } from '../../../utils/log';
-import { undefinedOrNull } from '../../../utils/funcs';
+import { isArray, isEmpty, undefinedOrNull } from '../../../utils/funcs';
 import { pathUp } from '../../../utils/files';
 
 export class FileExplorerLocalDataSource {
@@ -21,6 +21,10 @@ export class FileExplorerLocalDataSource {
     this.readdir = Promise.promisify(fsReaddir);
   }
 
+  /**
+   * description - make directory helper
+   *
+   */
   async _mkdir({ filePath }) {
     try {
       return new Promise((resolve) => {
@@ -249,6 +253,40 @@ export class FileExplorerLocalDataSource {
       log.error(e);
 
       return { error: e, stderr: null, data: false };
+    }
+  }
+
+  /**
+   * description - Check if files exist in the local disk
+   *
+   * @param {[string]} fileList
+   * @return {Promise<boolean>}
+   */
+  async filesExist({ fileList }) {
+    try {
+      if (!isArray(fileList)) {
+        return false;
+      }
+
+      if (isEmpty(fileList)) {
+        return false;
+      }
+
+      for (let i = 0; i < fileList.length; i += 1) {
+        const item = fileList[i];
+        const fullPath = path.resolve(item);
+
+        // eslint-disable-next-line no-await-in-loop
+        if (await existsSync(fullPath)) {
+          return true;
+        }
+      }
+
+      return false;
+    } catch (e) {
+      log.error(e);
+
+      return false;
     }
   }
 }
