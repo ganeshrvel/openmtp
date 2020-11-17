@@ -40,6 +40,7 @@ export const appendFileAsync = (filePath, text) => {
 
 export const readFileSync = (filePath) => {
   const options = { encoding: 'utf8' };
+
   return _readFileSync(filePath, options);
 };
 

@@ -6,7 +6,7 @@ import { bindActionCreators } from 'redux';
 import { withStyles } from '@material-ui/core/styles';
 import { styles } from '../styles/GenerateErrorReport';
 import { PATHS } from '../../../utils/paths';
-import { fileExistsSync } from '../../../data/sys/fileOps';
+import { fileExistsSync } from '../../../utils/fileOps';
 import { AUTHOR_EMAIL } from '../../../constants/meta';
 import { throwAlert } from '../../Alerts/actions';
 import {
