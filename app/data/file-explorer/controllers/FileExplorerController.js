@@ -1,6 +1,5 @@
 import { FileExplorerRepository } from '../repositories/FileExplorerRepository';
-import { DEVICE_TYPE, MTP_MODE } from '../../../enums';
-import { isArray } from '../../../utils/funcs';
+import { checkIf } from '../../../utils/checkIf';
 
 class FileExplorerController {
   constructor() {
@@ -12,6 +11,8 @@ class FileExplorerController {
    *
    */
   async listStorages({ deviceType }) {
+    checkIf(deviceType, 'string');
+
     return this.repository.listStorages({ deviceType });
   }
 
@@ -20,6 +21,10 @@ class FileExplorerController {
    *
    */
   async listFiles({ deviceType, filePath, ignoreHidden, storageId }) {
+    checkIf(deviceType, 'string');
+    checkIf(filePath, 'string');
+    checkIf(ignoreHidden, 'boolean');
+
     return this.repository.listFiles({
       deviceType,
       filePath,
@@ -33,6 +38,10 @@ class FileExplorerController {
    *
    */
   async renameFile({ deviceType, filePath, newFilename, storageId }) {
+    checkIf(deviceType, 'string');
+    checkIf(filePath, 'string');
+    checkIf(newFilename, 'string');
+
     return this.repository.renameFile({
       deviceType,
       filePath,
@@ -46,10 +55,8 @@ class FileExplorerController {
    *
    */
   async deleteFiles({ deviceType, fileList, storageId }) {
-    if (!isArray(fileList)) {
-      // eslint-disable-next-line no-throw-literal
-      throw `'fileList' must be an array`;
-    }
+    checkIf(deviceType, 'string');
+    checkIf(fileList, 'array');
 
     return this.repository.deleteFiles({
       deviceType,

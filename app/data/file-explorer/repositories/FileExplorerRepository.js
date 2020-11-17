@@ -2,6 +2,7 @@ import { FileExplorerLegacyDataSource } from '../data-sources/FileExplorerLegacy
 import { FileExplorerLocalDataSource } from '../data-sources/FileExplorerLocalDataSource';
 import { FileExplorerKalamDataSource } from '../data-sources/FileExplorerKalamDataSource';
 import { DEVICE_TYPE, MTP_MODE } from '../../../enums';
+import { checkIf } from '../../../utils/checkIf';
 
 const selectedMtpMode = MTP_MODE.legacy;
 
@@ -35,6 +36,8 @@ export class FileExplorerRepository {
    */
   async listFiles({ deviceType, filePath, ignoreHidden, storageId }) {
     if (deviceType === DEVICE_TYPE.mtp) {
+      checkIf(storageId, 'numericString');
+
       switch (selectedMtpMode) {
         case MTP_MODE.legacy:
           return this.legacyMtpDataSource.listFiles({
@@ -61,6 +64,8 @@ export class FileExplorerRepository {
    */
   async renameFile({ deviceType, filePath, newFilename, storageId }) {
     if (deviceType === DEVICE_TYPE.mtp) {
+      checkIf(storageId, 'numericString');
+
       switch (selectedMtpMode) {
         case MTP_MODE.legacy:
           return this.legacyMtpDataSource.renameFile({
@@ -87,6 +92,8 @@ export class FileExplorerRepository {
    */
   async deleteFiles({ deviceType, fileList, storageId }) {
     if (deviceType === DEVICE_TYPE.mtp) {
+      checkIf(storageId, 'numericString');
+
       switch (selectedMtpMode) {
         case MTP_MODE.legacy:
           return this.legacyMtpDataSource.deleteFiles({
