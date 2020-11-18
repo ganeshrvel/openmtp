@@ -64,7 +64,5 @@ export default {
         bugs: JSON.stringify(pkg.bugs),
       },
     }),
-
-    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
   ],
 };

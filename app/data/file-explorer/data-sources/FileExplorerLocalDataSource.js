@@ -10,11 +10,11 @@ import {
   lstatSync,
   rename as fsRename,
 } from 'fs';
-import moment from 'moment';
 import findLodash from 'lodash/find';
 import { log } from '../../../utils/log';
 import { isArray, isEmpty, undefinedOrNull } from '../../../utils/funcs';
 import { pathUp } from '../../../utils/files';
+import { appDateFormat } from '../../../utils/date';
 
 export class FileExplorerLocalDataSource {
   constructor() {
@@ -155,7 +155,7 @@ export class FileExplorerLocalDataSource {
           extension,
           size,
           isFolder,
-          dateAdded: moment(dateTime).format('YYYY-MM-DD HH:mm:ss'),
+          dateAdded: appDateFormat(dateTime),
         });
       }
 

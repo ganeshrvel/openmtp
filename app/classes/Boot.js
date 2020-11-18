@@ -13,7 +13,7 @@ import {
   createDirSync,
   deleteFilesSync,
 } from '../utils/fileOps';
-import { daysDiff, yearMonthNow } from '../utils/date';
+import { dateNow, daysDiff } from '../utils/date';
 import { LOG_FILE_ROTATION_CLEANUP_THRESHOLD } from '../constants';
 import { baseName } from '../utils/files';
 
@@ -156,7 +156,7 @@ export default class Boot {
           return null;
         }
 
-        const _diff = daysDiff(yearMonthNow({}), dateMatch[0]);
+        const _diff = daysDiff(dateNow({}), dateMatch[0]);
 
         if (_diff >= logFileRotationCleanUpThreshold) {
           deleteFilesSync(`${logDir}/${a}`);
