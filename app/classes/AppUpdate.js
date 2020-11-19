@@ -46,6 +46,7 @@ const fireProgressbar = () => {
     if (progressbarWindow) {
       progressbarWindow.show();
       progressbarWindow.focus();
+
       return null;
     }
 
@@ -117,6 +118,7 @@ export default class AppUpdate {
         if (progressbarWindow !== null) {
           progressbarWindow.close();
         }
+
         this.closeActiveUpdates();
 
         if (this.isNetworkError(error)) {
@@ -168,16 +170,19 @@ export default class AppUpdate {
 
         ipcMain.once('appUpdatesUpdateAvailableReply', (event, { ...args }) => {
           const { confirm } = args;
+
           if (!confirm) {
             if (this.updateIsActive !== -1) {
               this.closeActiveUpdates();
             }
+
             return null;
           }
 
           if (progressbarWindow !== null) {
             progressbarWindow.close();
           }
+
           this.closeActiveUpdates(-1);
           this.initDownloadUpdatesProgress();
           this.autoUpdater.downloadUpdate();
@@ -245,6 +250,7 @@ export default class AppUpdate {
 
           this.autoUpdater.checkForUpdates();
           this.updateIsActive = 1;
+
           return true;
         })
         .catch(() => {});
@@ -273,6 +279,7 @@ export default class AppUpdate {
           if (progressbarWindow !== null) {
             progressbarWindow.close();
           }
+
           dialog.showMessageBox(
             {
               title: 'No Updates Found',
@@ -314,6 +321,7 @@ export default class AppUpdate {
             }
           }
         );
+
         return null;
       }
 
@@ -335,6 +343,7 @@ export default class AppUpdate {
               'Checking For Updates',
               'Internet connection is unavailable.'
             );
+
             return null;
           }
 
@@ -352,6 +361,7 @@ export default class AppUpdate {
               }
             );
           });
+
           return true;
         })
         .catch(() => {});
@@ -369,12 +379,14 @@ export default class AppUpdate {
               'Downloading Updates',
               'Internet connection is unavailable.'
             );
+
             return null;
           }
 
           fireProgressbar();
           this.progressbarWindowDomReadyFlag = false;
           this.setUpdateProgressWindow({ value: 0 });
+
           return true;
         })
         .catch(() => {});
@@ -398,6 +410,7 @@ export default class AppUpdate {
           'appUpdatesProgressBarCommunication',
           data
         );
+
         return null;
       }
 
@@ -416,6 +429,7 @@ export default class AppUpdate {
 
   setMainWindow() {
     const _mainWindow = getMainWindowMainProcess();
+
     if (undefinedOrNull(_mainWindow)) {
       return null;
     }

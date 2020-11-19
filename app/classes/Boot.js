@@ -12,8 +12,8 @@ import {
   writeFileAsync,
   createDirSync,
   deleteFilesSync,
-} from '../api/sys/fileOps';
-import { daysDiff, yearMonthNow } from '../utils/date';
+} from '../utils/fileOps';
+import { dateNow, daysDiff } from '../utils/date';
 import { LOG_FILE_ROTATION_CLEANUP_THRESHOLD } from '../constants';
 import { baseName } from '../utils/files';
 
@@ -70,6 +70,7 @@ export default class Boot {
           return false;
         }
       }
+
       for (let i = 0; i < this.verifyFileList.length; i += 1) {
         const item = this.verifyFileList[i];
 
@@ -145,6 +146,7 @@ export default class Boot {
 
       filesList.map(async (a) => {
         const dateMatch = a.match(/\d{4}-\d{2}/g);
+
         if (
           dateMatch === null ||
           dateMatch.length < 1 ||
@@ -154,7 +156,8 @@ export default class Boot {
           return null;
         }
 
-        const _diff = daysDiff(yearMonthNow({}), dateMatch[0]);
+        const _diff = daysDiff(dateNow({}), dateMatch[0]);
+
         if (_diff >= logFileRotationCleanUpThreshold) {
           deleteFilesSync(`${logDir}/${a}`);
         }

@@ -23,6 +23,7 @@ import SettingsDialog from './components/SettingsDialog';
 class Settings extends Component {
   _handleDialogBoxCloseBtnClick = ({ confirm = false }) => {
     const { freshInstall } = this.props;
+
     this._handleToggleSettings(confirm);
 
     if (freshInstall !== 0) {
@@ -38,6 +39,7 @@ class Settings extends Component {
 
   _handleToggleSettings = (confirm) => {
     const { actionCreateToggleSettings } = this.props;
+
     actionCreateToggleSettings(confirm);
   };
 

@@ -1,5 +1,5 @@
 module.exports = {
-  parser: 'babel-eslint',
+  parser: '@babel/eslint-parser',
   parserOptions: {
     sourceType: 'module',
     allowImportExportEverywhere: true,
@@ -49,12 +49,24 @@ module.exports = {
     'no-multi-assign': 'off',
     'no-shadow': 'off',
     'no-underscore-dangle': 'off',
+    'no-throw-literal': 'off',
     'no-unused-vars': [
       'error',
       {
         args: 'after-used',
         argsIgnorePattern: '^_',
         varsIgnorePattern: '^_',
+      },
+    ],
+    'padding-line-between-statements': [
+      'error',
+      { blankLine: 'always', prev: '*', next: 'return' },
+      { blankLine: 'always', prev: ['block-like'], next: '*' },
+      { blankLine: 'always', prev: ['const', 'let', 'var'], next: '*' },
+      {
+        blankLine: 'any',
+        prev: ['const', 'let', 'var'],
+        next: ['const', 'let', 'var'],
       },
     ],
     'prettier/prettier': ['error', { singleQuote: true }],
@@ -79,7 +91,6 @@ module.exports = {
     'react/jsx-no-bind': 'off',
     'react/jsx-props-no-spreading': 'off',
     'react/prefer-stateless-function': 'off',
-    strict: 'off',
     'react/prop-types': 'off',
     'react/no-deprecate': 'off',
   },

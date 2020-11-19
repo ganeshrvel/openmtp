@@ -17,7 +17,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
-import { log } from '@Log';
 import { styles } from '../styles/FileExplorer';
 import {
   TextFieldEdit as TextFieldEditDialog,
@@ -29,22 +28,24 @@ import reducers from '../reducers';
 import {
   setSortingDirLists,
   setSelectedDirLists,
-  fetchDirList,
+  listDirectory,
   processMtpOutput,
   processLocalOutput,
   setMtpStorageOptions,
-  getMtpStoragesListSelected,
+  getStorageId,
   setFileTransferClipboard,
   setFilesDrag,
   clearFilesDrag,
   setFocussedFileExplorerDeviceType,
+  clearFileTransfer,
+  setFileTransferProgress,
 } from '../actions';
 import {
   makeDirectoryLists,
   makeCurrentBrowsePath,
   makeMtpDevice,
   makeContextMenuList,
-  makeMtpStoragesListSelected,
+  makeStorageId,
   makeFileTransferClipboard,
   makeFileTransferProgess,
   makeFilesDrag,
@@ -59,20 +60,14 @@ import {
 } from '../../Settings/selectors';
 import { DEVICES_LABEL, DONATE_PAYPAL_URL } from '../../../constants';
 import {
-  renameLocalFiles,
-  checkFileExists,
-  newLocalFolder,
-  newMtpFolder,
-  pasteFiles,
-  renameMtpFiles,
-} from '../../../api/sys';
-import {
   isArray,
   isEmpty,
   isFloat,
   isInt,
   isNumber,
+  niceBytes,
   removeArrayDuplicates,
+  truncate,
   undefinedOrNull,
 } from '../../../utils/funcs';
 import { getMainWindowRendererProcess } from '../../../utils/windowHelper';
@@ -86,8 +81,10 @@ import {
   redditShareUrl,
   twitterShareUrl,
 } from '../../../templates/socialMediaShareBtns';
-import { baseName, pathInfo, pathUp, sanitizePath } from '../../../utils/files';
+import { baseName, pathInfo, sanitizePath } from '../../../utils/files';
 import { DEVICE_TYPE, FILE_EXPLORER_VIEW_TYPE } from '../../../enums';
+import { log } from '../../../utils/log';
+import fileExplorerController from '../../../data/file-explorer/controllers/FileExplorerController';
 
 const { Menu, getCurrentWindow } = remote;
 
@@ -190,7 +187,7 @@ class FileExplorer extends Component {
         deviceType
       );
     } else {
-      this._handleFetchDirList({
+      this._handleListDirectory({
         path: currentBrowsePath[deviceType],
         deviceType,
       });
@@ -264,6 +261,7 @@ class FileExplorer extends Component {
     if (deviceType === DEVICE_TYPE.local) {
       ipcRenderer.on('isFileTransferActiveSeek', (event, { ...args }) => {
         const { check: checkIsFileTransferActiveSeek } = args;
+
         if (!checkIsFileTransferActiveSeek) {
           return null;
         }
@@ -298,11 +296,11 @@ class FileExplorer extends Component {
     }
   };
 
-  _handleFetchDirList({ ...args }) {
-    const { actionCreateFetchDirList, hideHiddenFiles } = this.props;
+  _handleListDirectory({ ...args }) {
+    const { actionCreateListDirectory, hideHiddenFiles } = this.props;
     const { path, deviceType } = args;
 
-    actionCreateFetchDirList(
+    actionCreateListDirectory(
       {
         filePath: path,
         ignoreHidden: hideHiddenFiles[deviceType],
@@ -364,6 +362,7 @@ class FileExplorer extends Component {
                 index,
                 item,
               };
+
               return _return;
             }
           } else {
@@ -544,6 +543,7 @@ class FileExplorer extends Component {
         if (selected.length !== 1) {
           break;
         }
+
         this._handleTableDoubleClick(_lastSelectedNode.item, deviceType);
         break;
 
@@ -799,6 +799,7 @@ class FileExplorer extends Component {
       );
 
       this.fireElectronMenu(contextMenuActiveList);
+
       return null;
     }
   };
@@ -815,6 +816,7 @@ class FileExplorer extends Component {
 
     Object.keys(_contextMenuList).map((a) => {
       const item = _contextMenuList[a];
+
       switch (a) {
         case 'rename':
           contextMenuActiveList.push({
@@ -897,6 +899,7 @@ class FileExplorer extends Component {
 
     Object.keys(args).map((a) => {
       const item = args[a];
+
       switch (a) {
         case 'rename':
           this._handleToggleDialogBox(
@@ -913,6 +916,7 @@ class FileExplorer extends Component {
         case 'copy':
           // eslint-disable-next-line prefer-destructuring
           const selectedItemsToCopy = directoryLists[deviceType].queue.selected;
+
           actionCreateCopy({ selected: selectedItemsToCopy, deviceType });
           break;
 
@@ -920,6 +924,7 @@ class FileExplorer extends Component {
           // eslint-disable-next-line prefer-destructuring
           const selectedItemsToCopyToQueue =
             directoryLists[deviceType].queue.selected;
+
           actionCreateCopy({
             selected: selectedItemsToCopyToQueue,
             deviceType,
@@ -974,20 +979,21 @@ class FileExplorer extends Component {
       actionCreateRenameFile,
       hideHiddenFiles,
       currentBrowsePath,
-      mtpStoragesListSelected,
+      storageId,
     } = this.props;
 
     // eslint-disable-next-line react/destructuring-assignment
     const { data } = this.state.toggleDialog.rename;
-    const { confirm, textFieldValue: newFileName } = args;
+    const { confirm, textFieldValue: newFilename } = args;
     const targetAction = 'rename';
 
-    if (!confirm || newFileName === null) {
+    if (!confirm || newFilename === null) {
       this._handleClearEditDialog(targetAction);
+
       return null;
     }
 
-    if (newFileName.trim() === '' || /[/\\?%*:|"<>]/g.test(newFileName)) {
+    if (newFilename.trim() === '' || /[/\\?%*:|"<>]/g.test(newFilename)) {
       this._handleErrorsEditDialog(
         {
           toggle: true,
@@ -995,35 +1001,41 @@ class FileExplorer extends Component {
         },
         targetAction
       );
+
       return null;
     }
 
-    // same file name; no change
-    const _pathUp = pathUp(data.path);
-    const newFilePath = sanitizePath(`${_pathUp}/${newFileName}`);
-    const oldFilePath = data.path;
+    const _newFilename = sanitizePath(newFilename);
+    const filePath = data.path;
 
-    if (newFilePath === data.path) {
+    if (_newFilename === data.path) {
       this._handleClearEditDialog(targetAction);
+
       return null;
     }
 
     if (
-      await checkFileExists(newFilePath, deviceType, mtpStoragesListSelected)
+      await fileExplorerController.filesExist({
+        deviceType,
+        fileList: [_newFilename],
+        storageId,
+      })
     ) {
       this._handleErrorsEditDialog(
         {
           toggle: true,
-          message: `Error: The name "${newFileName}" is already taken.`,
+          message: `Error: The name "${_newFilename}" is already taken.`,
         },
         targetAction
       );
+
       return null;
     }
+
     actionCreateRenameFile(
       {
-        oldFilePath,
-        newFilePath,
+        filePath,
+        newFilename: _newFilename,
         deviceType,
       },
       {
@@ -1037,6 +1049,7 @@ class FileExplorer extends Component {
 
   _handleErrorsEditDialog = ({ ...args }, targetAction) => {
     const { toggleDialog } = this.state;
+
     this.setState({
       toggleDialog: {
         ...toggleDialog,
@@ -1050,6 +1063,7 @@ class FileExplorer extends Component {
 
   _handleClearEditDialog = (targetAction) => {
     const { toggleDialog } = this.state;
+
     this.setState({
       toggleDialog: {
         ...toggleDialog,
@@ -1068,10 +1082,12 @@ class FileExplorer extends Component {
 
   _createDragIcon() {
     const dragIcon = document.createElement('img');
+
     dragIcon.src = imgsrc(`FileExplorer/files-archive.svg`);
     dragIcon.style.width = '100px';
 
     const div = document.createElement('div');
+
     div.appendChild(dragIcon);
     div.style.position = 'absolute';
     div.style.top = '0px';
@@ -1098,6 +1114,7 @@ class FileExplorer extends Component {
 
   _handleFilesDragOver = (e, { destinationDeviceType }) => {
     const { filesDrag } = this.props;
+
     e.preventDefault();
     e.stopPropagation();
 
@@ -1114,6 +1131,7 @@ class FileExplorer extends Component {
         lock: false,
         sameSourceDestinationLock: true,
       });
+
       return null;
     }
 
@@ -1207,7 +1225,7 @@ class FileExplorer extends Component {
       actionCreateNewFolder,
       hideHiddenFiles,
       currentBrowsePath,
-      mtpStoragesListSelected,
+      storageId,
     } = this.props;
 
     // eslint-disable-next-line react/destructuring-assignment
@@ -1217,6 +1235,7 @@ class FileExplorer extends Component {
 
     if (!confirm) {
       this._handleClearEditDialog(targetAction);
+
       return null;
     }
 
@@ -1228,6 +1247,7 @@ class FileExplorer extends Component {
         },
         targetAction
       );
+
       return null;
     }
 
@@ -1239,13 +1259,18 @@ class FileExplorer extends Component {
         },
         targetAction
       );
+
       return null;
     }
 
     const newFolderPath = sanitizePath(`${data.path}/${newFolderName}`);
 
     if (
-      await checkFileExists(newFolderPath, deviceType, mtpStoragesListSelected)
+      await fileExplorerController.filesExist({
+        deviceType,
+        fileList: [newFolderPath],
+        storageId,
+      })
     ) {
       this._handleErrorsEditDialog(
         {
@@ -1254,6 +1279,7 @@ class FileExplorer extends Component {
         },
         targetAction
       );
+
       return null;
     }
 
@@ -1275,7 +1301,7 @@ class FileExplorer extends Component {
     const {
       deviceType,
       currentBrowsePath,
-      mtpStoragesListSelected,
+      storageId,
       fileTransferClipboard,
       actionCreateThrowError,
     } = this.props;
@@ -1287,6 +1313,7 @@ class FileExplorer extends Component {
     queue = queue.map((a) => {
       const _baseName = baseName(a);
       const fullPath = `${destinationFolder}/${_baseName}`;
+
       if (fullPath.trim() === '' || /[\\:]/g.test(fullPath)) {
         invalidFileNameFlag = true;
       }
@@ -1298,11 +1325,19 @@ class FileExplorer extends Component {
       actionCreateThrowError({
         message: `Invalid file name in the path. \\: characters are not allowed.`,
       });
+
       return null;
     }
 
-    if (await checkFileExists(queue, deviceType, mtpStoragesListSelected)) {
+    if (
+      await fileExplorerController.filesExist({
+        deviceType,
+        fileList: queue,
+        storageId,
+      })
+    ) {
       this._handleTogglePasteConfirmDialog(true);
+
       return null;
     }
 
@@ -1314,7 +1349,7 @@ class FileExplorer extends Component {
       deviceType,
       hideHiddenFiles,
       currentBrowsePath,
-      mtpStoragesListSelected,
+      storageId,
       actionCreatePaste,
       fileTransferClipboard,
     } = this.props;
@@ -1329,7 +1364,7 @@ class FileExplorer extends Component {
     actionCreatePaste(
       {
         destinationFolder,
-        mtpStoragesListSelected,
+        storageId,
         fileTransferClipboard,
       },
       {
@@ -1342,13 +1377,13 @@ class FileExplorer extends Component {
 
   _handleBreadcrumbPathClick = ({ ...args }) => {
     const {
-      actionCreateFetchDirList,
+      actionCreateListDirectory,
       hideHiddenFiles,
       deviceType,
     } = this.props;
     const { path } = args;
 
-    actionCreateFetchDirList(
+    actionCreateListDirectory(
       {
         filePath: path,
         ignoreHidden: hideHiddenFiles[deviceType],
@@ -1431,10 +1466,11 @@ class FileExplorer extends Component {
       if (deviceType === DEVICE_TYPE.local) {
         shell.openPath(path);
       }
+
       return null;
     }
 
-    this._handleFetchDirList({
+    this._handleListDirectory({
       path,
       deviceType,
     });
@@ -1462,6 +1498,7 @@ class FileExplorer extends Component {
 
     const _folders = [];
     const _files = [];
+
     if (showDirectoriesFirst) {
       _sortedNode.forEach((a) => {
         if (a.isFolder) {
@@ -1699,6 +1736,7 @@ const mapDispatchToProps = (dispatch, _) =>
               deviceType
             )
           );
+
           return;
         }
 
@@ -1726,13 +1764,13 @@ const mapDispatchToProps = (dispatch, _) =>
         );
       },
 
-      actionCreateFetchDirList: ({ ...args }, deviceType) => (_, getState) => {
-        dispatch(fetchDirList({ ...args }, deviceType, getState));
+      actionCreateListDirectory: ({ ...args }, deviceType) => (_, getState) => {
+        dispatch(listDirectory({ ...args }, deviceType, getState));
       },
 
       actionCreateRenameFile: (
-        { oldFilePath, newFilePath, deviceType },
-        { ...fetchDirListArgs }
+        { filePath, newFilename, deviceType },
+        { ...listDirectoryArgs }
       ) => async (_, getState) => {
         try {
           switch (deviceType) {
@@ -1741,9 +1779,11 @@ const mapDispatchToProps = (dispatch, _) =>
                 error: localError,
                 stderr: localStderr,
                 data: localData,
-              } = await renameLocalFiles({
-                oldFilePath,
-                newFilePath,
+              } = await fileExplorerController.renameFile({
+                deviceType,
+                filePath,
+                newFilename,
+                storageId: null,
               });
 
               dispatch(
@@ -1754,8 +1794,8 @@ const mapDispatchToProps = (dispatch, _) =>
                   data: localData,
                   callback: () => {
                     dispatch(
-                      fetchDirList(
-                        { ...fetchDirListArgs },
+                      listDirectory(
+                        { ...listDirectoryArgs },
                         deviceType,
                         getState
                       )
@@ -1765,17 +1805,16 @@ const mapDispatchToProps = (dispatch, _) =>
               );
               break;
             case DEVICE_TYPE.mtp:
-              const mtpStoragesListSelected = getMtpStoragesListSelected(
-                getState().Home
-              );
+              const storageId = getStorageId(getState().Home);
               const {
                 error: mtpError,
                 stderr: mtpStderr,
                 data: mtpData,
-              } = await renameMtpFiles({
-                oldFilePath,
-                newFilePath,
-                mtpStoragesListSelected,
+              } = await fileExplorerController.renameFile({
+                deviceType,
+                filePath,
+                newFilename,
+                storageId,
               });
 
               dispatch(
@@ -1786,8 +1825,8 @@ const mapDispatchToProps = (dispatch, _) =>
                   data: mtpData,
                   callback: () => {
                     dispatch(
-                      fetchDirList(
-                        { ...fetchDirListArgs },
+                      listDirectory(
+                        { ...listDirectoryArgs },
                         deviceType,
                         getState
                       )
@@ -1806,7 +1845,7 @@ const mapDispatchToProps = (dispatch, _) =>
 
       actionCreateNewFolder: (
         { newFolderPath, deviceType },
-        { ...fetchDirListArgs }
+        { ...listDirectoryArgs }
       ) => async (_, getState) => {
         try {
           switch (deviceType) {
@@ -1815,8 +1854,10 @@ const mapDispatchToProps = (dispatch, _) =>
                 error: localError,
                 stderr: localStderr,
                 data: localData,
-              } = await newLocalFolder({
-                newFolderPath,
+              } = await fileExplorerController.makeDirectory({
+                deviceType,
+                filePath: newFolderPath,
+                storageId: null,
               });
 
               dispatch(
@@ -1827,8 +1868,8 @@ const mapDispatchToProps = (dispatch, _) =>
                   data: localData,
                   callback: () => {
                     dispatch(
-                      fetchDirList(
-                        { ...fetchDirListArgs },
+                      listDirectory(
+                        { ...listDirectoryArgs },
                         deviceType,
                         getState
                       )
@@ -1838,16 +1879,15 @@ const mapDispatchToProps = (dispatch, _) =>
               );
               break;
             case DEVICE_TYPE.mtp:
-              const mtpStoragesListSelected = getMtpStoragesListSelected(
-                getState().Home
-              );
+              const storageId = getStorageId(getState().Home);
               const {
                 error: mtpError,
                 stderr: mtpStderr,
                 data: mtpData,
-              } = await newMtpFolder({
-                newFolderPath,
-                mtpStoragesListSelected,
+              } = await fileExplorerController.makeDirectory({
+                deviceType,
+                filePath: newFolderPath,
+                storageId,
               });
 
               dispatch(
@@ -1858,8 +1898,8 @@ const mapDispatchToProps = (dispatch, _) =>
                   data: mtpData,
                   callback: () => {
                     dispatch(
-                      fetchDirList(
-                        { ...fetchDirListArgs },
+                      listDirectory(
+                        { ...listDirectoryArgs },
                         deviceType,
                         getState
                       )
@@ -1909,32 +1949,102 @@ const mapDispatchToProps = (dispatch, _) =>
 
       actionCreatePaste: (
         { ...pasteArgs },
-        { ...fetchDirListArgs },
+        { ...listDirectoryArgs },
         deviceType
       ) => (_, getState) => {
         try {
+          const {
+            destinationFolder,
+            storageId,
+            fileTransferClipboard,
+          } = pasteArgs;
+
+          // on error callback for file transfer
+          const onError = ({ error, stderr, data }) => {
+            dispatch(
+              processMtpOutput({
+                deviceType: DEVICE_TYPE.mtp,
+                error,
+                stderr,
+                data,
+                callback: () => {
+                  getCurrentWindow().setProgressBar(-1);
+                  dispatch(clearFileTransfer());
+                  dispatch(
+                    listDirectory(
+                      { ...listDirectoryArgs },
+                      deviceType,
+                      getState
+                    )
+                  );
+                },
+              })
+            );
+          };
+
+          // on progress callback for file transfer
+          const onProgress = ({
+            elapsedTime,
+            speed,
+            percentage,
+            currentFile,
+            activeFileSize,
+            activeFileSent,
+          }) => {
+            const bodyText1 = `${percentage}% complete of ${truncate(
+              baseName(currentFile),
+              45
+            )}`;
+            const bodyText2 = `${niceBytes(activeFileSent)} / ${niceBytes(
+              activeFileSize
+            )}`;
+
+            getCurrentWindow().setProgressBar(percentage / 100);
+            dispatch(
+              setFileTransferProgress({
+                toggle: true,
+                bodyText1,
+                bodyText2: `Elapsed: ${elapsedTime} | Progress: ${bodyText2} @ ${speed}/sec`,
+                percentage,
+              })
+            );
+          };
+
+          // on completed callback for file transfer
+          const onCompleted = () => {
+            getCurrentWindow().setProgressBar(-1);
+            dispatch(clearFileTransfer());
+            dispatch(
+              listDirectory({ ...listDirectoryArgs }, deviceType, getState)
+            );
+          };
+
           switch (deviceType) {
             case DEVICE_TYPE.local:
-              pasteFiles(
-                { ...pasteArgs },
-                { ...fetchDirListArgs },
-                'mtpToLocal',
-                deviceType,
-                dispatch,
-                getState,
-                getCurrentWindow
-              );
+              fileExplorerController.transferFiles({
+                deviceType: DEVICE_TYPE.mtp,
+                destination: destinationFolder,
+                storageId,
+                fileList: fileTransferClipboard?.queue ?? [],
+                direction: 'download',
+                onCompleted,
+                onError,
+                onProgress,
+              });
+
               break;
             case DEVICE_TYPE.mtp:
-              pasteFiles(
-                { ...pasteArgs },
-                { ...fetchDirListArgs },
-                'localtoMtp',
-                deviceType,
-                dispatch,
-                getState,
-                getCurrentWindow
-              );
+              fileExplorerController.transferFiles({
+                deviceType: DEVICE_TYPE.mtp,
+                destination: destinationFolder,
+                storageId,
+                fileList: fileTransferClipboard?.queue ?? [],
+                direction: 'upload',
+                onCompleted,
+                onError,
+                onProgress,
+              });
+
               break;
             default:
               break;
@@ -1971,7 +2081,7 @@ const mapStateToProps = (state, _) => {
     hideHiddenFiles: makeHideHiddenFiles(state),
     isStatusBarEnabled: makeEnableStatusBar(state),
     contextMenuList: makeContextMenuList(state),
-    mtpStoragesListSelected: makeMtpStoragesListSelected(state),
+    storageId: makeStorageId(state),
     fileTransferClipboard: makeFileTransferClipboard(state),
     fileTransferProgess: makeFileTransferProgess(state),
     filesDrag: makeFilesDrag(state),

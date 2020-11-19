@@ -20,6 +20,7 @@ class TextFieldEdit extends PureComponent {
 
   _handleBtnClick = ({ confirm = false }, event) => {
     const { onClickHandler } = this.props;
+
     event.preventDefault();
 
     onClickHandler({ confirm, textFieldValue: this.textFieldValue });

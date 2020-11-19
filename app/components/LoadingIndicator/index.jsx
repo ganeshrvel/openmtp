@@ -5,6 +5,7 @@ import { styles } from './styles';
 
 function LoadingIndicator(props) {
   const { classes: styles } = props;
+
   return (
     <div>
       <CircularProgress

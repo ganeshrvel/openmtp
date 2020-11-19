@@ -4,10 +4,10 @@ import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import { EOL } from 'os';
-import { log } from '@Log';
 import { styles } from './styles';
 import { imgsrc } from '../../utils/imgsrc';
 import GenerateErrorReport from './components/GenerateErrorReport';
+import { log } from '../../utils/log';
 
 class ErrorBoundary extends Component {
   constructor(props) {
@@ -22,6 +22,7 @@ class ErrorBoundary extends Component {
       errorInfo,
     });
     const _errorInfo = JSON.stringify(errorInfo);
+
     log.doLog(
       `Error boundary log capture:${EOL}${error.toString()}${EOL}${_errorInfo}`,
       true,
@@ -40,6 +41,7 @@ class ErrorBoundary extends Component {
   render() {
     const { classes: styles, children } = this.props;
     const { errorInfo } = this.state;
+
     if (errorInfo) {
       return (
         <div className={styles.root}>

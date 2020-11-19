@@ -4,11 +4,9 @@ import path from 'path';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withStyles } from '@material-ui/core/styles';
-import { log } from '@Log';
 import { styles } from '../styles/GenerateErrorReport';
 import { PATHS } from '../../../utils/paths';
-import { promisifiedRimraf, mtpVerboseReport } from '../../../api/sys';
-import { fileExistsSync } from '../../../api/sys/fileOps';
+import { fileExistsSync } from '../../../utils/fileOps';
 import { AUTHOR_EMAIL } from '../../../constants/meta';
 import { throwAlert } from '../../Alerts/actions';
 import {
@@ -19,6 +17,9 @@ import {
 import { compressFile } from '../../../utils/gzip';
 import GenerateErrorReportBody from './GenerateErrorReportBody';
 import { baseName } from '../../../utils/files';
+import { log } from '../../../utils/log';
+import fileExplorerController from '../../../data/file-explorer/controllers/FileExplorerController';
+import { DEVICE_TYPE } from '../../../enums';
 
 const { logFile } = PATHS;
 const { getPath } = remote.app;
@@ -42,14 +43,21 @@ class GenerateErrorReport extends Component {
     try {
       const { actionCreateThrowError } = this.props;
 
-      await mtpVerboseReport();
+      await fileExplorerController.fetchDebugReport({
+        deviceType: DEVICE_TYPE.mtp,
+      });
 
-      const { error } = await promisifiedRimraf(logFileZippedPath);
+      const { error } = await fileExplorerController.deleteFiles({
+        deviceType: DEVICE_TYPE.local,
+        fileList: [logFileZippedPath],
+        storageId: null,
+      });
 
       if (error) {
         actionCreateThrowError({
           message: reportGenerateError,
         });
+
         return null;
       }
 
@@ -59,6 +67,7 @@ class GenerateErrorReport extends Component {
         actionCreateThrowError({
           message: reportGenerateError,
         });
+
         return null;
       }
 
@@ -74,6 +83,7 @@ class GenerateErrorReport extends Component {
 
   render() {
     const { classes: styles } = this.props;
+
     return (
       <GenerateErrorReportBody
         styles={styles}

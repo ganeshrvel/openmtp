@@ -2,7 +2,7 @@ import os, { EOL } from 'os';
 import { IS_DEV } from '../constants/env';
 import { APP_NAME, APP_VERSION } from '../constants/meta';
 import { PATHS } from './paths';
-import { appendFileAsync } from '../api/sys/fileOps';
+import { appendFileAsync } from './fileOps';
 import { dateTimeUnixTimestampNow } from './date';
 
 const { logFile } = PATHS;
@@ -13,8 +13,10 @@ export const log = {
 
     if (allowInProd) {
       console.info(`${title} => `, e);
+
       return;
     }
+
     if (IS_DEV) {
       console.info(`${title} => `, e);
     }
@@ -22,6 +24,7 @@ export const log = {
 
   error(e, title = `Log`, logError = true, allowInProd = false) {
     let _consoleError = e;
+
     if (isConsoleError(e)) {
       _consoleError = `Error Stack:${EOL}${JSON.stringify(e.stack)}${EOL}`;
     }
@@ -33,8 +36,10 @@ export const log = {
 
     if (allowInProd) {
       console.error(`${title} => `, e);
+
       return;
     }
+
     if (IS_DEV) {
       console.error(`${title} => `, e);
     }
@@ -47,6 +52,7 @@ export const log = {
 
     const sectionSeperator = `=============================================================`;
     let _consoleError = e;
+
     if (isConsoleError(e)) {
       _consoleError = `Error Stack:${EOL}${JSON.stringify(e.stack)}${EOL}`;
     }

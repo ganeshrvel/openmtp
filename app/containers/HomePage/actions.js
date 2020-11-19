@@ -1,10 +1,4 @@
-import { log } from '@Log';
 import prefixer from '../../utils/reducerPrefixer';
-import {
-  asyncReadLocalDir,
-  asyncReadMtpDir,
-  fetchMtpStorageOptions,
-} from '../../api/sys';
 import { throwAlert } from '../Alerts/actions';
 import {
   processMtpBuffer,
@@ -12,6 +6,8 @@ import {
 } from '../../utils/processBufferOutput';
 import { asserts, isArraysEqual, undefinedOrNull } from '../../utils/funcs';
 import { DEVICE_TYPE } from '../../enums';
+import { log } from '../../utils/log';
+import fileExplorerController from '../../data/file-explorer/controllers/FileExplorerController';
 
 const prefix = '@@Home';
 const actionTypesList = [
@@ -19,7 +15,7 @@ const actionTypesList = [
   'SET_CURRENT_BROWSE_PATH',
   'SET_SORTING_DIR_LISTS',
   'SET_SELECTED_DIR_LISTS',
-  'FETCH_DIR_LIST',
+  'LIST_DIRECTORY',
   'SET_MTP_ERRORS',
   'SET_MTP_STATUS',
   'CHANGE_MTP_STORAGE',
@@ -69,9 +65,9 @@ export function setCurrentBrowsePath(path, deviceType) {
   };
 }
 
-function _fetchDirList(data, deviceType, _) {
+function _listDirectory(data, deviceType, _) {
   return {
-    type: actionTypes.FETCH_DIR_LIST,
+    type: actionTypes.LIST_DIRECTORY,
     deviceType,
     payload: {
       nodes: data ?? [],
@@ -80,7 +76,7 @@ function _fetchDirList(data, deviceType, _) {
   };
 }
 
-export function getMtpStoragesListSelected(state) {
+export function getStorageId(state) {
   if (
     typeof Object.keys(state.mtpStoragesList).length === 'undefined' ||
     Object.keys(state.mtpStoragesList).length < 1
@@ -93,6 +89,7 @@ export function getMtpStoragesListSelected(state) {
 
   for (let i = 0; i < mtpStoragesListKeys.length; i += 1) {
     const itemKey = mtpStoragesListKeys[i];
+
     if (mtpStoragesList[itemKey].selected) {
       return itemKey;
     }
@@ -102,14 +99,19 @@ export function getMtpStoragesListSelected(state) {
 }
 
 export function setMtpStorageOptions(
-  { ...fetchDirArgs },
+  { ...listDirArgs },
   deviceType,
   { ...deviceChangeCheck },
   getState
 ) {
   return async (dispatch) => {
     try {
-      const { error, stderr, data } = await fetchMtpStorageOptions();
+      const { error, stderr, data } = await fileExplorerController.listStorages(
+        {
+          deviceType,
+        }
+      );
+
       dispatch(
         processMtpOutput({
           deviceType,
@@ -118,6 +120,7 @@ export function setMtpStorageOptions(
           data,
           callback: () => {
             let changeMtpIdsFlag = true;
+
             if (
               Object.keys(deviceChangeCheck).length > 0 &&
               deviceChangeCheck.changeMtpStorageIdsOnlyOnDeviceChange &&
@@ -133,7 +136,8 @@ export function setMtpStorageOptions(
             if (changeMtpIdsFlag) {
               dispatch(changeMtpStorage({ ...data }));
             }
-            dispatch(fetchDirList({ ...fetchDirArgs }, deviceType, getState));
+
+            dispatch(listDirectory({ ...listDirArgs }, deviceType, getState));
           },
         })
       );
@@ -170,7 +174,7 @@ export function processMtpOutput({ deviceType, error, stderr, _, callback }) {
       dispatch(setMtpStatus(mtpStatus));
 
       if (!mtpStatus) {
-        dispatch(_fetchDirList([], deviceType));
+        dispatch(_listDirectory([], deviceType));
         dispatch(setSelectedDirLists({ selected: [] }, deviceType));
       }
 
@@ -179,6 +183,7 @@ export function processMtpOutput({ deviceType, error, stderr, _, callback }) {
         if (mtpThrowAlert) {
           dispatch(throwAlert({ message: mtpError.toString() }));
         }
+
         return false;
       }
 
@@ -204,6 +209,7 @@ export function processLocalOutput({ _, error, stderr, __, callback }) {
         if (localThrowAlert) {
           dispatch(throwAlert({ message: localError.toString() }));
         }
+
         return false;
       }
 
@@ -214,40 +220,50 @@ export function processLocalOutput({ _, error, stderr, __, callback }) {
   };
 }
 
-export function fetchDirList({ ...args }, deviceType, getState) {
+export function listDirectory({ ...args }, deviceType, getState) {
   asserts(
     !undefinedOrNull(getState),
-    'fetchDirList.getState should not be null or undefined'
+    'listDirectory.getState should not be null or undefined'
   );
 
   try {
     switch (deviceType) {
       case DEVICE_TYPE.local:
         return async (dispatch) => {
-          const { error, data } = await asyncReadLocalDir({ ...args });
+          const { error, data } = await fileExplorerController.listFiles({
+            deviceType,
+            filePath: args.filePath,
+            ignoreHidden: args.ignoreHidden,
+            storageId: null,
+          });
 
           if (error) {
-            log.error(error, 'fetchDirList -> asyncReadLocalDir');
+            log.error(error, 'listDirectory -> listFiles');
             dispatch(
               throwAlert({ message: `Unable fetch data from the Local disk.` })
             );
+
             return;
           }
 
-          dispatch(_fetchDirList(data, deviceType), getState);
+          dispatch(_listDirectory(data, deviceType), getState);
           dispatch(setCurrentBrowsePath(args.filePath, deviceType));
           dispatch(setSelectedDirLists({ selected: [] }, deviceType));
         };
 
       case DEVICE_TYPE.mtp:
         return async (dispatch) => {
-          const mtpStoragesListSelected = getMtpStoragesListSelected(
-            getState().Home
-          );
+          const storageId = getStorageId(getState().Home);
 
-          const { error, stderr, data } = await asyncReadMtpDir({
-            ...args,
-            mtpStoragesListSelected,
+          const {
+            error,
+            stderr,
+            data,
+          } = await fileExplorerController.listFiles({
+            deviceType,
+            filePath: args.filePath,
+            ignoreHidden: args.ignoreHidden,
+            storageId,
           });
 
           dispatch(
@@ -257,7 +273,7 @@ export function fetchDirList({ ...args }, deviceType, getState) {
               stderr,
               data,
               callback: () => {
-                dispatch(_fetchDirList(data, deviceType), getState);
+                dispatch(_listDirectory(data, deviceType), getState);
                 dispatch(setSelectedDirLists({ selected: [] }, deviceType));
                 dispatch(setCurrentBrowsePath(args.filePath, deviceType));
               },
@@ -282,7 +298,7 @@ export function reloadDirList(
   return (dispatch) => {
     switch (deviceType) {
       case DEVICE_TYPE.local:
-        dispatch(fetchDirList({ ...args }, deviceType, getState));
+        dispatch(listDirectory({ ...args }, deviceType, getState));
         break;
 
       case DEVICE_TYPE.mtp:

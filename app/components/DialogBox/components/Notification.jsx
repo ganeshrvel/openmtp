@@ -13,6 +13,7 @@ import { isString } from '../../../utils/funcs';
 class Notification extends PureComponent {
   _handleBtnClick = ({ confirm = false }) => {
     const { onClickHandler } = this.props;
+
     onClickHandler(confirm);
   };
 
@@ -31,6 +32,7 @@ class Notification extends PureComponent {
       fullWidthDialog,
       maxWidthDialog,
     } = this.props;
+
     return (
       <Dialog
         onKeyPress={this._handleKeyPress}

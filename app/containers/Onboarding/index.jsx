@@ -37,6 +37,7 @@ class Onboarding extends PureComponent {
 
   _handleClose = () => {
     const { actionCreateOnboarding } = this.props;
+
     this.setState({
       fireOnboarding: false,
     });

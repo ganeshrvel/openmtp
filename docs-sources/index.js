@@ -1,5 +1,3 @@
-'use strict';
-
 import './styles/global.scss';
 import {
   imgsrc,
@@ -116,6 +114,7 @@ class Docs {
         }
 
         window.location.href = this.gitHubLatestReleaseData.url[platform];
+
         return true;
       })
       .catch(() => {});
@@ -159,10 +158,12 @@ class Docs {
 
           if (!undefinedOrNull(item.loader)) {
             const loader = item.parentSelector.querySelector(item.loader);
+
             item.parentSelector.removeChild(loader);
           }
 
           this._createImg(res.src, item.parentSelector, item.id);
+
           return true;
         })
         .catch(() => {});
@@ -171,6 +172,7 @@ class Docs {
 
   _createImg = (src, parentSelector, id) => {
     const img = document.createElement('img');
+
     img.src = src;
     img.id = id;
     parentSelector.appendChild(img);
@@ -207,4 +209,5 @@ class Docs {
 }
 
 const docsObj = new Docs();
+
 docsObj.init();
