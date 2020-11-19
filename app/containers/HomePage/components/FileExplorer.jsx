@@ -85,6 +85,7 @@ import { baseName, pathInfo, sanitizePath } from '../../../utils/files';
 import { DEVICE_TYPE, FILE_EXPLORER_VIEW_TYPE } from '../../../enums';
 import { log } from '../../../utils/log';
 import fileExplorerController from '../../../data/file-explorer/controllers/FileExplorerController';
+import kalamFfi from '../../../../ffi/kalam/src/Kalam';
 
 const { Menu, getCurrentWindow } = remote;
 
@@ -1552,6 +1553,15 @@ class FileExplorer extends Component {
   };
 
   render() {
+    //todo
+    setTimeout(() => {
+      try {
+        kalamFfi.InitializeMtp();
+      } catch (e) {
+        console.error(e);
+      }
+    }, 5000);
+
     const {
       classes: styles,
       deviceType,
