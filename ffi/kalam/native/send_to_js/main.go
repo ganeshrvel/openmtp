@@ -22,6 +22,7 @@ package send_to_js
 import "C"
 import (
 	"github.com/ganeshrvel/go-mtpfs/mtp"
+	"github.com/ganeshrvel/go-mtpx"
 )
 
 func SendError(ptr int64, err error) {
@@ -55,6 +56,30 @@ func SendDeviceInfo(ptr int64, deviceInfo *mtp.DeviceInfo) {
 		Error:    "",
 		ErrorMsg: "",
 		Data:     *deviceInfo,
+	}
+
+	json := toJson(o)
+
+	C.send_result(C.int64_t(ptr), C.CString(json))
+}
+
+func SendStorages(ptr int64, storages []mtpx.StorageData) {
+	o := StoragesResult{
+		Error:    "",
+		ErrorMsg: "",
+		Data:     storages,
+	}
+
+	json := toJson(o)
+
+	C.send_result(C.int64_t(ptr), C.CString(json))
+}
+
+func SendDispose(ptr int64) {
+	o := DisposeResult{
+		Error:    "",
+		ErrorMsg: "",
+		Data:     true,
 	}
 
 	json := toJson(o)

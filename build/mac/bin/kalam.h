@@ -19,7 +19,7 @@ typedef struct { const char *p; ptrdiff_t n; } _GoString_;
 /* Start of preamble from import "C" comments.  */
 
 
-#line 10 "kalam.go"
+#line 9 "kalam.go"
 	#include "stdint.h"
 
 #line 1 "cgo-generated-wrapper"
@@ -74,8 +74,8 @@ extern "C" {
 
 extern void Initialize(GoInt64 ptr);
 extern void FetchDeviceInfo(GoInt64 ptr);
-extern void FetchStorages();
-extern void Dispose();
+extern void FetchStorages(GoInt64 ptr);
+extern void Dispose(GoInt64 ptr);
 
 #ifdef __cplusplus
 }

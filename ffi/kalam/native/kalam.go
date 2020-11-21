@@ -3,7 +3,6 @@ package main
 import (
 	"./send_to_js"
 	"github.com/ganeshrvel/go-mtpx"
-	"github.com/kr/pretty"
 )
 //todo remove mtpx.main()
 
@@ -44,26 +43,29 @@ func FetchDeviceInfo(ptr int64) {
 }
 
 //export FetchStorages
-func FetchStorages() () {
+func FetchStorages(ptr int64) {
 	storages, err := _fetchStorages()
 	if err != nil {
-		//throw storage error
-		// reset the storage in the app
+		send_to_js.SendError(ptr, err)
 
-		return //err
+		return
 	}
 
-	pretty.Println("storages: ", storages)
+	send_to_js.SendStorages(ptr, storages)
 }
 
 //export Dispose
-func Dispose() {
+func Dispose(ptr int64) {
 	if err := _dispose(); err != nil {
-		return //err
+		send_to_js.SendError(ptr, err)
+
+		return
 	}
 
 	container.dev = nil
 	container.deviceInfo = nil
+
+	send_to_js.SendDispose(ptr)
 }
 
 ////export Walk

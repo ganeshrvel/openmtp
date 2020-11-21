@@ -110,6 +110,7 @@ export function setMtpStorageOptions(
       await kalamFfi.InitializeMtp();
       await kalamFfi.FetchDeviceInfo();
       await kalamFfi.FetchStorages();
+      await kalamFfi.Dispose();
 
       return;
 

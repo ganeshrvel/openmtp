@@ -1,8 +1,17 @@
 package send_to_js
 
-import "github.com/ganeshrvel/go-mtpfs/mtp"
+import (
+	"github.com/ganeshrvel/go-mtpfs/mtp"
+	"github.com/ganeshrvel/go-mtpx"
+)
 
 type ErrorType string
+
+type ErrorResult struct {
+	Error    ErrorType   `json:"error"`
+	ErrorMsg string      `json:"errorMsg"`
+	Data     interface{} `json:"data"`
+}
 
 type InitializeResult struct {
 	Error    ErrorType      `json:"error"`
@@ -16,10 +25,16 @@ type DeviceInfoResult struct {
 	Data     mtp.DeviceInfo `json:"data"`
 }
 
-type ErrorResult struct {
-	Error    ErrorType   `json:"error"`
-	ErrorMsg string      `json:"errorMsg"`
-	Data     interface{} `json:"data"`
+type StoragesResult struct {
+	Error    ErrorType          `json:"error"`
+	ErrorMsg string             `json:"errorMsg"`
+	Data     []mtpx.StorageData `json:"data"`
+}
+
+type DisposeResult struct {
+	Error    ErrorType `json:"error"`
+	ErrorMsg string    `json:"errorMsg"`
+	Data     bool      `json:"data"`
 }
 
 type FileInfo struct {

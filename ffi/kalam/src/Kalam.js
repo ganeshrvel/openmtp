@@ -12,6 +12,7 @@ export class Kalam {
       Initialize: ['void', ['pointer']],
       FetchDeviceInfo: ['void', ['pointer']],
       FetchStorages: ['void', ['pointer']],
+      Dispose: ['void', ['pointer']],
       // UploadFiles: ['void', ['pointer']],
       // Walk: ['void', ['string', 'int', 'pointer']],
       // DownloadFiles: ['void', ['string', 'string', 'pointer']],
@@ -111,6 +112,32 @@ export class Kalam {
         });
       } catch (err) {
         log.error(err, 'Kalam.FetchStorages.catch');
+
+        return resolve(this._getError(err));
+      }
+    });
+  }
+
+  async Dispose() {
+    await new Promise((resolve) => {
+      try {
+        const cb = ffi.Callback('void', ['string'], (result) => {
+          const json = JSON.parse(result);
+
+          console.log('Dispose: ', json);
+
+          return resolve(this._getData(json));
+        });
+
+        this.lib.Dispose.async(cb, (err, _) => {
+          if (!undefinedOrNull(err)) {
+            log.error(err, 'Kalam.Dispose.async');
+
+            return resolve(this._getError(err));
+          }
+        });
+      } catch (err) {
+        log.error(err, 'Kalam.Dispose.catch');
 
         return resolve(this._getError(err));
       }
