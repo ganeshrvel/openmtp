@@ -4,18 +4,32 @@ import (
 	"fmt"
 	"github.com/ganeshrvel/go-mtpx"
 	jsoniter "github.com/json-iterator/go"
+	"strings"
 )
 
-func processError(e error) (err Error, errorMsg string) {
+// process errors
+func processError(e error) (errorType ErrorType, errorMsg string) {
 	switch v := e.(type) {
 	case mtpx.MtpDetectFailedError:
-		err = ErrorMtpDetectFailed
+		errorType = ErrorMtpDetectFailed
 		errorMsg = v.Error()
 	}
 
-	return err, errorMsg
+	// this is a fallthrough case while processing errors
+	if errorType == "" {
+		if strings.Contains(e.Error(), "no mtp device found") {
+			errorType = ErrorMtpDetectFailed
+			errorMsg = e.Error()
+		} else if strings.Contains(e.Error(), "mtp device was removed") {
+			errorType = ErrorMtpChanged
+			errorMsg = e.Error()
+		}
+	}
+
+	return errorType, errorMsg
 }
 
+// convert struct to json which will be sent to JS function
 func toJson(o interface{}) string {
 	var json = jsoniter.ConfigFastest
 	w, err := json.Marshal(&o)

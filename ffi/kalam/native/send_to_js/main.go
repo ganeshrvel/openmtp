@@ -1,6 +1,7 @@
 package send_to_js
 
 /*
+	#include "stdio.h"
 	#include "stdlib.h"
 	#include "stdbool.h"
 
@@ -19,12 +20,14 @@ package send_to_js
 	}
 */
 import "C"
-import "github.com/ganeshrvel/go-mtpfs/mtp"
+import (
+	"github.com/ganeshrvel/go-mtpfs/mtp"
+)
 
 func SendInitialize(ptr int64, deviceInfo *mtp.DeviceInfo) {
 	o := InitializeResult{
-		Error:    nil,
-		ErrorMsg: nil,
+		Error:    "",
+		ErrorMsg: "",
 		Data:     *deviceInfo,
 	}
 

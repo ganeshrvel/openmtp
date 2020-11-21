@@ -2,16 +2,16 @@ package send_to_js
 
 import "github.com/ganeshrvel/go-mtpfs/mtp"
 
-type Error string
+type ErrorType string
 
 type InitializeResult struct {
-	Error    Error          `json:"error"`
+	Error    ErrorType      `json:"error"`
 	ErrorMsg string         `json:"errorMsg"`
 	Data     mtp.DeviceInfo `json:"data"`
 }
 
 type ErrorResult struct {
-	Error    Error       `json:"error"`
+	Error    ErrorType   `json:"error"`
 	ErrorMsg string      `json:"errorMsg"`
 	Data     interface{} `json:"data"`
 }

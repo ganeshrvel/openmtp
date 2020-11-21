@@ -1,5 +1,3 @@
-'use strict';
-
 module.exports.MTP_ERROR_FLAGS = {
   NO_MTP: `No MTP device found`,
   NO_STORAGE: `MTP storage not accessible`,

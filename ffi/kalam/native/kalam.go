@@ -1,8 +1,8 @@
 package main
 
 import (
+	"./send_to_js"
 	"github.com/ganeshrvel/go-mtpx"
-	"github.com/ganeshrvel/kalam-mtp-kernel/send_to_js"
 	"github.com/kr/pretty"
 )
 //todo remove mtpx.main()
@@ -17,11 +17,15 @@ func Initialize(ptr int64) {
 	_, err := _initialize(mtpx.Init{DebugMode: false})
 	if err != nil {
 		send_to_js.SendError(ptr, err)
+
+		return
 	}
 
 	dInfo, err := _fetchDeviceInfo()
 	if err != nil {
 		send_to_js.SendError(ptr, err)
+
+		return
 	}
 
 	send_to_js.SendInitialize(ptr, dInfo)
