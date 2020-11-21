@@ -1,48 +1,55 @@
 package main
 
 import (
-	"github.com/ganeshrvel/go-mtpfs/mtp"
 	"github.com/ganeshrvel/go-mtpx"
+	"github.com/kr/pretty"
 )
 //todo remove mtpx.main()
 
 //	#include "stdint.h"
 import "C"
 
-var d *mtp.Device
-
-//todo remove
-var Sid uint32
+var container deviceContainer
 
 //export Initialize
-func Initialize() {
-	dev, err := mtpx.Initialize(mtpx.Init{DebugMode: true})
-
+func Initialize() () {
+	_, err := _initialize(mtpx.Init{DebugMode: false})
 	if err != nil {
-		return
+		return //err
 	}
-
-	d = dev
 }
 
 //export FetchDeviceInfo
-func FetchDeviceInfo() {
-	_, err := mtpx.FetchDeviceInfo(d)
+func FetchDeviceInfo() () {
+	_, err := _fetchDeviceInfo()
 	if err != nil {
-		return
+		return //err
 	}
+
+	pretty.Println("deviceInfo: ", container.deviceInfo)
 }
 
 //export FetchStorages
-func FetchStorages() uint32 {
-	storages, err := mtpx.FetchStorages(d)
+func FetchStorages() () {
+	storages, err := _fetchStorages()
 	if err != nil {
-		return 0
+		//throw storage error
+		// reset the storage in the app
+
+		return //err
 	}
 
-	Sid = storages[0].Sid
+	pretty.Println("storages: ", storages)
+}
 
-	return storages[0].Sid
+//export Dispose
+func Dispose() {
+	if err := _dispose(); err != nil {
+		return //err
+	}
+
+	container.dev = nil
+	container.deviceInfo = nil
 }
 
 ////export Walk

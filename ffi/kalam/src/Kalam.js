@@ -29,6 +29,18 @@ export class Kalam {
       }
     });
   }
+
+  async FetchStorages() {
+    await new Promise((resolve) => {
+      try {
+        this.lib.FetchStorages.async((err, res) => {
+          resolve(res);
+        });
+      } catch (e) {
+        resolve(null);
+      }
+    });
+  }
 }
 
 const kalamFfi = new Kalam();

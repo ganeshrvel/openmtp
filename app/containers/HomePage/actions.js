@@ -8,6 +8,7 @@ import { asserts, isArraysEqual, undefinedOrNull } from '../../utils/funcs';
 import { DEVICE_TYPE } from '../../enums';
 import { log } from '../../utils/log';
 import fileExplorerController from '../../data/file-explorer/controllers/FileExplorerController';
+import kalamFfi from '../../../ffi/kalam/src/Kalam';
 
 const prefix = '@@Home';
 const actionTypesList = [
@@ -106,6 +107,15 @@ export function setMtpStorageOptions(
 ) {
   return async (dispatch) => {
     try {
+      await kalamFfi.InitializeMtp();
+      await kalamFfi.FetchStorages();
+
+      setTimeout(() => {
+        kalamFfi.FetchStorages();
+      }, 10000);
+
+      return;
+
       const { error, stderr, data } = await fileExplorerController.listStorages(
         {
           deviceType,
