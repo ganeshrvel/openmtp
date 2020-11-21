@@ -112,8 +112,8 @@ export function setMtpStorageOptions(
       const { data: storagesData } = await kalamFfi.FetchStorages();
 
       const { data: mkDirData } = await kalamFfi.MakeDirectory({
-        storageId: storagesData[0].Sid,
-        fullPath: '/test',
+        storageId: storagesData[0].Sid.toString(),
+        fullPath: '/test1',
       });
 
       await kalamFfi.Dispose();

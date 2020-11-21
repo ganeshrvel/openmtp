@@ -1,6 +1,7 @@
 import { kalamLibPath } from '../../../app/utils/binaries';
 import { log } from '../../../app/utils/log';
 import { undefinedOrNull } from '../../../app/utils/funcs';
+import { checkIf } from '../../../app/utils/checkIf';
 
 const ffi = require('ffi-napi');
 
@@ -116,6 +117,9 @@ export class Kalam {
   }
 
   async MakeDirectory({ storageId, fullPath }) {
+    checkIf(storageId, 'numericString');
+    checkIf(fullPath, 'string');
+
     return new Promise((resolve) => {
       try {
         const cb = ffi.Callback('void', ['string'], (result) => {
@@ -126,7 +130,9 @@ export class Kalam {
           return resolve(this._getData(json));
         });
 
-        const args = { storageId, fullPath };
+        const _storageId = parseInt(storageId, 10);
+
+        const args = { storageId: _storageId, fullPath };
         const json = JSON.stringify(args);
 
         this.lib.MakeDirectory.async(cb, json, (err, _) => {
