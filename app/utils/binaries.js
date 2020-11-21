@@ -13,4 +13,8 @@ const binariesPath =
     ? path.join(path.dirname(getAppPath()), '..', './Resources', './bin')
     : path.join(root, './build', getPlatform(), './bin');
 
-export const mtp = path.resolve(path.join(binariesPath, './mtp-cli'));
+export const mtpCliPath = path.resolve(path.join(binariesPath, './mtp-cli'));
+
+export const kalamLibPath = path.resolve(
+  path.join(binariesPath, './kalam.dylib')
+);

@@ -24,6 +24,20 @@ import (
 	"github.com/ganeshrvel/go-mtpfs/mtp"
 )
 
+func SendError(ptr int64, err error) {
+	pErr, pErrorMsg := processError(err)
+
+	o := ErrorResult{
+		Error:    pErr,
+		ErrorMsg: pErrorMsg,
+		Data:     nil,
+	}
+
+	json := toJson(o)
+
+	C.send_result(C.int64_t(ptr), C.CString(json))
+}
+
 func SendInitialize(ptr int64, deviceInfo *mtp.DeviceInfo) {
 	o := InitializeResult{
 		Error:    "",
@@ -36,13 +50,11 @@ func SendInitialize(ptr int64, deviceInfo *mtp.DeviceInfo) {
 	C.send_result(C.int64_t(ptr), C.CString(json))
 }
 
-func SendError(ptr int64, err error) {
-	pErr, pErrorMsg := processError(err)
-
-	o := ErrorResult{
-		Error:    pErr,
-		ErrorMsg: pErrorMsg,
-		Data:     nil,
+func SendDeviceInfo(ptr int64, deviceInfo *mtp.DeviceInfo) {
+	o := DeviceInfoResult{
+		Error:    "",
+		ErrorMsg: "",
+		Data:     *deviceInfo,
 	}
 
 	json := toJson(o)

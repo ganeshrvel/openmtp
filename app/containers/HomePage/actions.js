@@ -108,11 +108,8 @@ export function setMtpStorageOptions(
   return async (dispatch) => {
     try {
       await kalamFfi.InitializeMtp();
+      await kalamFfi.FetchDeviceInfo();
       await kalamFfi.FetchStorages();
-
-      setTimeout(() => {
-        kalamFfi.FetchStorages();
-      }, 10000);
 
       return;
 

@@ -1,8 +1,12 @@
+import { kalamLibPath } from '../../../app/utils/binaries';
+import { log } from '../../../app/utils/log';
+import { undefinedOrNull } from '../../../app/utils/funcs';
+
 const ffi = require('ffi-napi');
 
 export class Kalam {
   constructor() {
-    this.libPath = 'build/mac/bin/kalam.dylib';
+    this.libPath = kalamLibPath;
 
     this.lib = ffi.Library(this.libPath, {
       Initialize: ['void', ['pointer']],
@@ -18,50 +22,97 @@ export class Kalam {
     });
   }
 
+  _getError(error) {
+    return {
+      error,
+      stderr: null,
+      data: null,
+    };
+  }
+
+  _getData(data) {
+    //todo fix the return value
+    return {
+      error: null,
+      stderr: null,
+      data,
+    };
+  }
+
   async InitializeMtp() {
-    console.time('Function #1');
-
-    const cb = ffi.Callback('void', ['string'], (result) => {
-      const json = JSON.parse(result);
-
-      console.timeEnd('Function #1');
-
-      console.log('result: ', json);
-    });
-
     await new Promise((resolve) => {
       try {
-        this.lib.Initialize.async(cb, (err, res) => {
-          console.error(err);
-          console.error(res);
+        const cb = ffi.Callback('void', ['string'], (result) => {
+          const json = JSON.parse(result);
 
-          resolve(res);
+          console.log('InitializeMtp: ', json);
+
+          return resolve(this._getData(json));
         });
-      } catch (e) {
-        console.error(e);
-        resolve(null);
+
+        this.lib.Initialize.async(cb, (err, _) => {
+          if (!undefinedOrNull(err)) {
+            log.error(err, 'Kalam.Initialize.async');
+
+            return resolve(this._getError(err));
+          }
+        });
+      } catch (err) {
+        log.error(err, 'Kalam.Initialize.catch');
+
+        return resolve(this._getError(err));
+      }
+    });
+  }
+
+  async FetchDeviceInfo() {
+    await new Promise((resolve) => {
+      try {
+        const cb = ffi.Callback('void', ['string'], (result) => {
+          const json = JSON.parse(result);
+
+          console.log('FetchDeviceInfo: ', json);
+
+          return resolve(this._getData(json));
+        });
+
+        this.lib.FetchDeviceInfo.async(cb, (err, _) => {
+          if (!undefinedOrNull(err)) {
+            log.error(err, 'Kalam.FetchDeviceInfo.async');
+
+            return resolve(this._getError(err));
+          }
+        });
+      } catch (err) {
+        log.error(err, 'Kalam.FetchDeviceInfo.catch');
+
+        return resolve(this._getError(err));
       }
     });
   }
 
   async FetchStorages() {
-    const cb = ffi.Callback('void', ['string'], (result) => {
-      console.time('Function #1');
-      const json = JSON.parse(result);
-
-      console.timeEnd('Function #1');
-
-      console.log('result: ', json);
-    });
-
     await new Promise((resolve) => {
       try {
-        this.lib.FetchStorages.async(cb, (err, res) => {
-          resolve(res);
+        const cb = ffi.Callback('void', ['string'], (result) => {
+          const json = JSON.parse(result);
+
+          console.log('FetchStorages: ', json);
+
+          return resolve(this._getData(json));
         });
-      } catch (e) {
-        console.error(e);
-        resolve(null);
+
+        this.lib.FetchStorages.async(cb, (err, _) => {
+          if (!undefinedOrNull(err)) {
+            log.error(err, 'Kalam.FetchStorages.async');
+
+            return resolve(this._getError(err));
+          }
+        });
+      } catch (err) {
+        log.error(err, 'Kalam.FetchStorages.catch');
+
+        return resolve(this._getError(err));
       }
     });
   }

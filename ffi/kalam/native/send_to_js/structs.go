@@ -10,6 +10,12 @@ type InitializeResult struct {
 	Data     mtp.DeviceInfo `json:"data"`
 }
 
+type DeviceInfoResult struct {
+	Error    ErrorType      `json:"error"`
+	ErrorMsg string         `json:"errorMsg"`
+	Data     mtp.DeviceInfo `json:"data"`
+}
+
 type ErrorResult struct {
 	Error    ErrorType   `json:"error"`
 	ErrorMsg string      `json:"errorMsg"`

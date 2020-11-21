@@ -33,12 +33,14 @@ func Initialize(ptr int64) {
 
 //export FetchDeviceInfo
 func FetchDeviceInfo(ptr int64) {
-	_, err := _fetchDeviceInfo()
+	dInfo, err := _fetchDeviceInfo()
 	if err != nil {
-		return //err
+		send_to_js.SendError(ptr, err)
+
+		return
 	}
 
-	pretty.Println("deviceInfo: ", container.deviceInfo)
+	send_to_js.SendDeviceInfo(ptr, dInfo)
 }
 
 //export FetchStorages

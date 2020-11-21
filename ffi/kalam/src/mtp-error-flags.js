@@ -13,5 +13,5 @@ module.exports.MTP_ERROR_FLAGS = {
   INVALID_PATH_RESOLVE: `Illegal path, could not resolve the path`,
   INVALID_NOT_FOUND: `Path not found`,
   NO_FILES_SELECTED: `No files selected`,
-  INVALID_PATH: `Invalid path`
+  INVALID_PATH: `Invalid path`,
 };

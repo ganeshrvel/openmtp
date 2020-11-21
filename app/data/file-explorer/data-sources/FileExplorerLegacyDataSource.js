@@ -14,13 +14,13 @@ import {
 import { DEVICES_LABEL } from '../../../constants';
 import { DEVICE_TYPE } from '../../../enums';
 import { baseName, getExtension } from '../../../utils/files';
-import { mtp as _mtpCli } from '../../../utils/binaries';
+import { mtpCliPath } from '../../../utils/binaries';
 import { appDateFormat, msToTime, unixTimestampNow } from '../../../utils/date';
 import { checkIf } from '../../../utils/checkIf';
 
 export class FileExplorerLegacyDataSource {
   constructor() {
-    this.mtpCli = `"${this._escapeShellMtp(_mtpCli)}"`;
+    this.mtpCli = `"${this._escapeShellMtp(mtpCliPath)}"`;
     this.execPromise = Promise.promisify(exec);
   }
 
