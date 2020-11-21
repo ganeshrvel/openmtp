@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/ganeshrvel/go-mtpx"
+	"github.com/ganeshrvel/kalam-mtp-kernel/send_to_js"
 	"github.com/kr/pretty"
 )
 //todo remove mtpx.main()
@@ -12,15 +13,22 @@ import "C"
 var container deviceContainer
 
 //export Initialize
-func Initialize() () {
+func Initialize(ptr int64) {
 	_, err := _initialize(mtpx.Init{DebugMode: false})
 	if err != nil {
-		return //err
+		send_to_js.SendError(ptr, err)
 	}
+
+	dInfo, err := _fetchDeviceInfo()
+	if err != nil {
+		send_to_js.SendError(ptr, err)
+	}
+
+	send_to_js.SendInitialize(ptr, dInfo)
 }
 
 //export FetchDeviceInfo
-func FetchDeviceInfo() () {
+func FetchDeviceInfo(ptr int64) {
 	_, err := _fetchDeviceInfo()
 	if err != nil {
 		return //err
@@ -121,6 +129,4 @@ func Dispose() {
 //	//pretty.Println("time elapsed: ", time.Since(start).Seconds())
 //}
 
-func main() {
-	Initialize()
-}
+func main() {}

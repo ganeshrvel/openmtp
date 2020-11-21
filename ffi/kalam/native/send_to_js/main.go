@@ -1,8 +1,15 @@
-package decode_native
+package send_to_js
 
 /*
 	#include "stdlib.h"
 	#include "stdbool.h"
+
+ 	typedef void (* cb_result_t)(char*);
+	void send_result(int64_t ptr, char* json) {
+		cb_result_t cb = (cb_result_t) ptr;
+
+		cb(json);
+	}
 
  	typedef void (* cb_upload_files_t)(char*, double);
 	void send_upload_files_result(int64_t ptr, char* name, double speed) {
@@ -10,35 +17,39 @@ package decode_native
 
 		cb(name, speed);
 	}
-
- 	typedef void (* cb_walk_result_t)(char*);
-	void send_file_info_result(int64_t ptr, char* json) {
-		cb_walk_result_t cb = (cb_walk_result_t) ptr;
-
-		cb(json);
-	}
-
 */
 import "C"
-import (
-	"github.com/ganeshrvel/go-mtpx"
-)
+import "github.com/ganeshrvel/go-mtpfs/mtp"
 
-func UploadFilesCb(ptr int64, fi *mtpx.ProgressInfo) {
-	C.send_upload_files_result(C.int64_t(ptr), C.CString(fi.FileInfo.Name), C.double(fi.Speed))
+func SendInitialize(ptr int64, deviceInfo *mtp.DeviceInfo) {
+	o := InitializeResult{
+		Error:    nil,
+		ErrorMsg: nil,
+		Data:     *deviceInfo,
+	}
+
+	json := toJson(o)
+
+	C.send_result(C.int64_t(ptr), C.CString(json))
 }
 
-type FileInfo struct {
-	Size       int64  `json:"Size"`
-	IsDir      bool   `json:"IsDir"`
-	ModTime    string `json:"ModTime"`
-	Name       string `json:"Name"`
-	FullPath   string `json:"FullPath"`
-	ParentPath string `json:"ParentPath"`
-	Extension  string `json:"Extension"`
-	ParentId   uint32 `json:"ParentId"`
-	ObjectId   uint32 `json:"ObjectId"`
+func SendError(ptr int64, err error) {
+	pErr, pErrorMsg := processError(err)
+
+	o := ErrorResult{
+		Error:    pErr,
+		ErrorMsg: pErrorMsg,
+		Data:     nil,
+	}
+
+	json := toJson(o)
+
+	C.send_result(C.int64_t(ptr), C.CString(json))
 }
+
+//func UploadFilesCb(ptr int64, fi *mtpx.ProgressInfo) {
+//	C.send_upload_files_result(C.int64_t(ptr), C.CString(fi.FileInfo.Name), C.double(fi.Speed))
+//}
 
 //// List the file list
 //func SendWalkResult(ptr int64, device *mtp.Device, storageId uint32, fullPath string) {

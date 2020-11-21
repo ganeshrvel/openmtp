@@ -4,12 +4,13 @@ import (
 	"fmt"
 	"github.com/ganeshrvel/go-mtpfs/mtp"
 	"github.com/ganeshrvel/go-mtpx"
+	"github.com/ganeshrvel/kalam-mtp-kernel/send_to_js"
 	"log"
 )
 
 func verifyMtpSession(c verifyMtpSessionMode) error {
 	if container.dev == nil {
-		return MtpDetectFailedError{error: fmt.Errorf("no mtp found")}
+		return send_to_js.MtpDetectFailedError{Error: fmt.Errorf("no mtp found")}
 	}
 
 	if !c.skipDeviceChangeCheck && container.deviceInfo != nil {
@@ -23,7 +24,7 @@ func verifyMtpSession(c verifyMtpSessionMode) error {
 		if container.deviceInfo != dInfo {
 			container.deviceInfo = dInfo
 
-			return MtpChangedError{error: fmt.Errorf("mtp device was changed")}
+			return send_to_js.MtpChangedError{Error: fmt.Errorf("mtp device was changed")}
 		}
 	}
 
