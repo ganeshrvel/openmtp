@@ -79,6 +79,26 @@ func SendMakeDirectory(ptr int64) {
 	C.send_result(C.int64_t(ptr), C.CString(json))
 }
 
+func FileExists(ptr int64, fc []mtpx.FileExistsContainer, inputFiles []string) {
+	var fdSlice []FileExistsData
+	for i, f := range fc {
+		fd := FileExistsData{
+			Fullpath: inputFiles[i],
+			Exists:   f.Exists,
+		}
+
+		fdSlice = append(fdSlice, fd)
+	}
+
+	o := FileExistsResult{
+		Data: fdSlice,
+	}
+
+	json := toJson(o)
+
+	C.send_result(C.int64_t(ptr), C.CString(json))
+}
+
 func SendDispose(ptr int64) {
 	o := DisposeResult{
 		Data: true,

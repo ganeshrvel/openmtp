@@ -13,11 +13,12 @@ export class Kalam {
       Initialize: ['void', ['pointer']],
       FetchDeviceInfo: ['void', ['pointer']],
       FetchStorages: ['void', ['pointer']],
-      Dispose: ['void', ['pointer']],
       MakeDirectory: ['void', ['pointer', 'string']],
+      FileExists: ['void', ['pointer', 'string']],
       // UploadFiles: ['void', ['pointer']],
       // Walk: ['void', ['string', 'int', 'pointer']],
       // DownloadFiles: ['void', ['string', 'string', 'pointer']],
+      Dispose: ['void', ['pointer']],
     });
   }
 
@@ -144,6 +145,40 @@ export class Kalam {
         });
       } catch (err) {
         log.error(err, 'Kalam.MakeDirectory.catch');
+
+        return resolve(this._getError(err));
+      }
+    });
+  }
+
+  async FileExists({ storageId, files }) {
+    checkIf(storageId, 'numericString');
+    checkIf(files, 'array');
+
+    return new Promise((resolve) => {
+      try {
+        const cb = ffi.Callback('void', ['string'], (result) => {
+          const json = JSON.parse(result);
+
+          console.log('FileExists: ', json);
+
+          return resolve(this._getData(json));
+        });
+
+        const _storageId = parseInt(storageId, 10);
+
+        const args = { storageId: _storageId, files };
+        const json = JSON.stringify(args);
+
+        this.lib.FileExists.async(cb, json, (err, _) => {
+          if (!undefinedOrNull(err)) {
+            log.error(err, 'Kalam.FileExists.async');
+
+            return resolve(this._getError(err));
+          }
+        });
+      } catch (err) {
+        log.error(err, 'Kalam.FileExists.catch');
 
         return resolve(this._getError(err));
       }

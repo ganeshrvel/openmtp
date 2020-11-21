@@ -37,6 +37,12 @@ type MakeDirectoryResult struct {
 	Data      bool      `json:"data"`
 }
 
+type FileExistsResult struct {
+	ErrorType ErrorType        `json:"errorType"`
+	Error     string           `json:"error"`
+	Data      []FileExistsData `json:"data"`
+}
+
 type DisposeResult struct {
 	ErrorType ErrorType `json:"errorType"`
 	Error     string    `json:"error"`
@@ -53,4 +59,9 @@ type FileInfo struct {
 	Extension  string `json:"extension"`
 	ParentId   uint32 `json:"parentId"`
 	ObjectId   uint32 `json:"objectId"`
+}
+
+type FileExistsData struct {
+	Fullpath string `json:"fullpath"`
+	Exists   bool   `json:"exists"`
 }

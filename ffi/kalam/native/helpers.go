@@ -90,6 +90,19 @@ func _makeDirectory(storageId uint32, fullPath string) error {
 	return nil
 }
 
+func _fileExists(storageId uint32, fileProps []mtpx.FileProp) (exists []mtpx.FileExistsContainer, error error) {
+	if err := verifyMtpSession(verifyMtpSessionMode{}); err != nil {
+		return []mtpx.FileExistsContainer{}, err
+	}
+
+	exists, err := mtpx.FileExists(container.dev, storageId, fileProps)
+	if err != nil {
+		return exists, err
+	}
+
+	return exists, nil
+}
+
 func _dispose() error {
 	v := verifyMtpSessionMode{skipDeviceChangeCheck: true}
 

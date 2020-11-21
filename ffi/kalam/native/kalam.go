@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/ganeshrvel/go-mtpx"
 	jsoniter "github.com/json-iterator/go"
-	"github.com/kr/pretty"
 )
 
 //	#include "stdint.h"
@@ -68,8 +67,6 @@ func MakeDirectory(ptr int64, json *C.char) {
 		return
 	}
 
-	pretty.Println(i)
-
 	if err := _makeDirectory(i.StorageId, i.FullPath); err != nil {
 		send_to_js.SendError(ptr, err)
 
@@ -77,6 +74,36 @@ func MakeDirectory(ptr int64, json *C.char) {
 	}
 
 	send_to_js.SendMakeDirectory(ptr)
+}
+
+//export FileExists
+func FileExists(ptr int64, json *C.char) {
+	i := FileExistsInput{}
+
+	var j = jsoniter.ConfigFastest
+	err := j.UnmarshalFromString(C.GoString(json), &i)
+	if err != nil {
+		send_to_js.SendError(ptr, fmt.Errorf("error occured while Unmarshalling FileExists input data %+v: ", err))
+
+		return
+	}
+
+	var fProps []mtpx.FileProp
+	for _, f := range i.Files {
+		fProp := mtpx.FileProp{FullPath: f}
+
+		fProps = append(fProps, fProp)
+	}
+
+	fc, err := _fileExists(i.StorageId, fProps)
+
+	if err != nil {
+		send_to_js.SendError(ptr, err)
+
+		return
+	}
+
+	send_to_js.FileExists(ptr, fc, i.Files)
 }
 
 //export Dispose

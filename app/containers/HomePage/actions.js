@@ -116,6 +116,11 @@ export function setMtpStorageOptions(
         fullPath: '/test1',
       });
 
+      const { data: fileExistsData } = await kalamFfi.FileExists({
+        storageId: storagesData[0].Sid.toString(),
+        files: ['/test2'],
+      });
+
       await kalamFfi.Dispose();
 
       const { error, stderr, data } = await fileExplorerController.listStorages(

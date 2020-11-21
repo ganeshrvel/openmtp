@@ -15,3 +15,8 @@ type MakeDirectoryInput struct {
 	StorageId uint32 `json:"storageId"`
 	FullPath  string `json:"fullPath"`
 }
+
+type FileExistsInput struct {
+	StorageId uint32   `json:"storageId"`
+	Files     []string `json:"Files"`
+}
