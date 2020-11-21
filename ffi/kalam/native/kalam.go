@@ -2,9 +2,11 @@ package main
 
 import (
 	"./send_to_js"
+	"fmt"
 	"github.com/ganeshrvel/go-mtpx"
+	jsoniter "github.com/json-iterator/go"
+	"github.com/kr/pretty"
 )
-//todo remove mtpx.main()
 
 //	#include "stdint.h"
 import "C"
@@ -52,6 +54,29 @@ func FetchStorages(ptr int64) {
 	}
 
 	send_to_js.SendStorages(ptr, storages)
+}
+
+//export MakeDirectory
+func MakeDirectory(ptr int64, json *C.char) {
+	i := MakeDirectoryInput{}
+
+	var j = jsoniter.ConfigFastest
+	err := j.UnmarshalFromString(C.GoString(json), &i)
+	if err != nil {
+		send_to_js.SendError(ptr, fmt.Errorf("error occured while Unmarshalling MakeDirectory input data %+v: ", err))
+
+		return
+	}
+
+	pretty.Println(i)
+
+	if err := _makeDirectory(i.StorageId, i.FullPath); err != nil {
+		send_to_js.SendError(ptr, err)
+
+		return
+	}
+
+	send_to_js.SendMakeDirectory(ptr)
 }
 
 //export Dispose

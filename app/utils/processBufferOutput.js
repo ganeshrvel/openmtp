@@ -6,7 +6,7 @@ import { DEVICES_LABEL } from '../constants';
 import { DEVICE_TYPE } from '../enums';
 
 export const processMtpBuffer = async ({ error, stderr }) => {
-  // Partial error string used for matching the error
+  // Error string are used for partial error string matching
   // this will be later used to pick the appropriate error out from the [errorDictionary]
   const errorTpl = {
     noMtp: `no mtp`,

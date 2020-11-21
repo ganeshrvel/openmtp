@@ -77,6 +77,19 @@ func _fetchStorages() ([]mtpx.StorageData, error) {
 	return storages, nil
 }
 
+func _makeDirectory(storageId uint32, fullPath string) error {
+	if err := verifyMtpSession(verifyMtpSessionMode{}); err != nil {
+		return err
+	}
+
+	_, err := mtpx.MakeDirectory(container.dev, storageId, fullPath)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func _dispose() error {
 	v := verifyMtpSessionMode{skipDeviceChangeCheck: true}
 

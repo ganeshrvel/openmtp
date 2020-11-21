@@ -109,10 +109,14 @@ export function setMtpStorageOptions(
     try {
       await kalamFfi.InitializeMtp();
       await kalamFfi.FetchDeviceInfo();
-      await kalamFfi.FetchStorages();
-      await kalamFfi.Dispose();
+      const { data: storagesData } = await kalamFfi.FetchStorages();
 
-      return;
+      const { data: mkDirData } = await kalamFfi.MakeDirectory({
+        storageId: storagesData[0].Sid,
+        fullPath: '/test',
+      });
+
+      await kalamFfi.Dispose();
 
       const { error, stderr, data } = await fileExplorerController.listStorages(
         {

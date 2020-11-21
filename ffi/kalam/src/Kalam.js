@@ -13,13 +13,10 @@ export class Kalam {
       FetchDeviceInfo: ['void', ['pointer']],
       FetchStorages: ['void', ['pointer']],
       Dispose: ['void', ['pointer']],
+      MakeDirectory: ['void', ['pointer', 'string']],
       // UploadFiles: ['void', ['pointer']],
       // Walk: ['void', ['string', 'int', 'pointer']],
       // DownloadFiles: ['void', ['string', 'string', 'pointer']],
-      // Add: ['longlong', ['longlong', 'longlong']],
-      // Cosine: ['double', ['double']],
-      // Sort: ['void', [GoSlice]],
-      // Log: ['longlong', [GoString]]
     });
   }
 
@@ -31,17 +28,17 @@ export class Kalam {
     };
   }
 
-  _getData(data) {
+  _getData(value) {
     //todo fix the return value
     return {
-      error: null,
-      stderr: null,
-      data,
+      error: value.error === '' ? null : value.error,
+      stderr: value.errorType === '' ? null : value.errorType,
+      data: value.data,
     };
   }
 
   async InitializeMtp() {
-    await new Promise((resolve) => {
+    return new Promise((resolve) => {
       try {
         const cb = ffi.Callback('void', ['string'], (result) => {
           const json = JSON.parse(result);
@@ -67,7 +64,7 @@ export class Kalam {
   }
 
   async FetchDeviceInfo() {
-    await new Promise((resolve) => {
+    return new Promise((resolve) => {
       try {
         const cb = ffi.Callback('void', ['string'], (result) => {
           const json = JSON.parse(result);
@@ -93,7 +90,7 @@ export class Kalam {
   }
 
   async FetchStorages() {
-    await new Promise((resolve) => {
+    return new Promise((resolve) => {
       try {
         const cb = ffi.Callback('void', ['string'], (result) => {
           const json = JSON.parse(result);
@@ -118,8 +115,37 @@ export class Kalam {
     });
   }
 
+  async MakeDirectory({ storageId, fullPath }) {
+    return new Promise((resolve) => {
+      try {
+        const cb = ffi.Callback('void', ['string'], (result) => {
+          const json = JSON.parse(result);
+
+          console.log('MakeDirectory: ', json);
+
+          return resolve(this._getData(json));
+        });
+
+        const args = { storageId, fullPath };
+        const json = JSON.stringify(args);
+
+        this.lib.MakeDirectory.async(cb, json, (err, _) => {
+          if (!undefinedOrNull(err)) {
+            log.error(err, 'Kalam.MakeDirectory.async');
+
+            return resolve(this._getError(err));
+          }
+        });
+      } catch (err) {
+        log.error(err, 'Kalam.MakeDirectory.catch');
+
+        return resolve(this._getError(err));
+      }
+    });
+  }
+
   async Dispose() {
-    await new Promise((resolve) => {
+    return new Promise((resolve) => {
       try {
         const cb = ffi.Callback('void', ['string'], (result) => {
           const json = JSON.parse(result);

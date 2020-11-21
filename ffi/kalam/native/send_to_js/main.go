@@ -26,12 +26,12 @@ import (
 )
 
 func SendError(ptr int64, err error) {
-	pErr, pErrorMsg := processError(err)
+	errorType, errorMsg := processError(err)
 
 	o := ErrorResult{
-		Error:    pErr,
-		ErrorMsg: pErrorMsg,
-		Data:     nil,
+		ErrorType: errorType,
+		Error:     errorMsg,
+		Data:      nil,
 	}
 
 	json := toJson(o)
@@ -41,9 +41,7 @@ func SendError(ptr int64, err error) {
 
 func SendInitialize(ptr int64, deviceInfo *mtp.DeviceInfo) {
 	o := InitializeResult{
-		Error:    "",
-		ErrorMsg: "",
-		Data:     *deviceInfo,
+		Data: *deviceInfo,
 	}
 
 	json := toJson(o)
@@ -53,9 +51,7 @@ func SendInitialize(ptr int64, deviceInfo *mtp.DeviceInfo) {
 
 func SendDeviceInfo(ptr int64, deviceInfo *mtp.DeviceInfo) {
 	o := DeviceInfoResult{
-		Error:    "",
-		ErrorMsg: "",
-		Data:     *deviceInfo,
+		Data: *deviceInfo,
 	}
 
 	json := toJson(o)
@@ -65,9 +61,17 @@ func SendDeviceInfo(ptr int64, deviceInfo *mtp.DeviceInfo) {
 
 func SendStorages(ptr int64, storages []mtpx.StorageData) {
 	o := StoragesResult{
-		Error:    "",
-		ErrorMsg: "",
-		Data:     storages,
+		Data: storages,
+	}
+
+	json := toJson(o)
+
+	C.send_result(C.int64_t(ptr), C.CString(json))
+}
+
+func SendMakeDirectory(ptr int64) {
+	o := MakeDirectoryResult{
+		Data: true,
 	}
 
 	json := toJson(o)
@@ -77,9 +81,7 @@ func SendStorages(ptr int64, storages []mtpx.StorageData) {
 
 func SendDispose(ptr int64) {
 	o := DisposeResult{
-		Error:    "",
-		ErrorMsg: "",
-		Data:     true,
+		Data: true,
 	}
 
 	json := toJson(o)

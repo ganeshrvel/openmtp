@@ -8,33 +8,39 @@ import (
 type ErrorType string
 
 type ErrorResult struct {
-	Error    ErrorType   `json:"error"`
-	ErrorMsg string      `json:"errorMsg"`
-	Data     interface{} `json:"data"`
+	ErrorType ErrorType   `json:"errorType"`
+	Error     string      `json:"error"`
+	Data      interface{} `json:"data"`
 }
 
 type InitializeResult struct {
-	Error    ErrorType      `json:"error"`
-	ErrorMsg string         `json:"errorMsg"`
-	Data     mtp.DeviceInfo `json:"data"`
+	ErrorType ErrorType      `json:"errorType"`
+	Error     string         `json:"error"`
+	Data      mtp.DeviceInfo `json:"data"`
 }
 
 type DeviceInfoResult struct {
-	Error    ErrorType      `json:"error"`
-	ErrorMsg string         `json:"errorMsg"`
-	Data     mtp.DeviceInfo `json:"data"`
+	ErrorType ErrorType      `json:"errorType"`
+	Error     string         `json:"error"`
+	Data      mtp.DeviceInfo `json:"data"`
 }
 
 type StoragesResult struct {
-	Error    ErrorType          `json:"error"`
-	ErrorMsg string             `json:"errorMsg"`
-	Data     []mtpx.StorageData `json:"data"`
+	ErrorType ErrorType          `json:"errorType"`
+	Error     string             `json:"error"`
+	Data      []mtpx.StorageData `json:"data"`
+}
+
+type MakeDirectoryResult struct {
+	ErrorType ErrorType `json:"errorType"`
+	Error     string    `json:"error"`
+	Data      bool      `json:"data"`
 }
 
 type DisposeResult struct {
-	Error    ErrorType `json:"error"`
-	ErrorMsg string    `json:"errorMsg"`
-	Data     bool      `json:"data"`
+	ErrorType ErrorType `json:"errorType"`
+	Error     string    `json:"error"`
+	Data      bool      `json:"data"`
 }
 
 type FileInfo struct {
