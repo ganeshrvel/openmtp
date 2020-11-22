@@ -63,3 +63,4 @@ eslint-common-rules.txt
 build/entitlements.mas.plist
 *embedded.provisionprofile
 extras/*
+mtp-mock-files/*

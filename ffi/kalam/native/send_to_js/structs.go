@@ -24,6 +24,57 @@ type FileExistsData struct {
 	Exists   bool   `json:"exists"`
 }
 
+type TransferPreProcessData struct {
+	FullPath string `json:"fullPath"`
+	Name     string `json:"name"`
+	Size     int64  `json:"size"`
+}
+
+type TransferSizeInfo struct {
+	// total size to transfer
+	// note: the value will be 0 if pre-processing was not allowed
+	Total int64 `json:"total"`
+
+	// total size transferred
+	Sent int64 `json:"sent"`
+
+	// progress in percentage
+	Progress float32 `json:"progress"`
+}
+
+type TransferProgressInfo struct {
+	FullPath string `json:"fullPath"`
+
+	Name string `json:"name"`
+
+	ElapsedTime int64 `json:"elapsedTime"`
+
+	// transfer rate (in MB/s)
+	Speed float64 `json:"speed"`
+
+	// total files to transfer
+	// note: the value will be 0 if pre-processing was not allowed
+	TotalFiles int64 `json:"totalFiles"`
+
+	// total directories to transfer
+	// note: the value will be 0 if pre-processing was not allowed
+	TotalDirectories int64 `json:"totalDirectories"`
+
+	// total files transferred
+	FilesSent int64 `json:"filesSent"`
+
+	// total file transfer progress in percentage
+	FilesSentProgress float32 `json:"filesSentProgress"`
+
+	// size information of the current file which is being transferred
+	ActiveFileSize TransferSizeInfo `json:"activeFileSize"`
+
+	// total size information of the files for the transfer session
+	BulkFileSize TransferSizeInfo `json:"bulkFileSize"`
+
+	Status mtpx.TransferStatus `json:"status"`
+}
+
 type ErrorResult struct {
 	ErrorType ErrorType   `json:"errorType"`
 	Error     string      `json:"error"`
@@ -73,9 +124,27 @@ type RenameFileResult struct {
 }
 
 type WalkResult struct {
+	ErrorType ErrorType  `json:"errorType"`
+	Error     string     `json:"error"`
+	Data      []FileInfo `json:"fileInfo"`
+}
+
+type UploadFilesPreProcessResult struct {
+	ErrorType ErrorType              `json:"errorType"`
+	Error     string                 `json:"error"`
+	Data      TransferPreProcessData `json:"data"`
+}
+
+type UploadFilesProgressResult struct {
+	ErrorType ErrorType            `json:"errorType"`
+	Error     string               `json:"error"`
+	Data      TransferProgressInfo `json:"data"`
+}
+
+type UploadFilesDoneResult struct {
 	ErrorType ErrorType `json:"errorType"`
 	Error     string    `json:"error"`
-	Data      []FileInfo  `json:"fileInfo"`
+	Data      bool      `json:"data"`
 }
 
 type DisposeResult struct {

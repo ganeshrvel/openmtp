@@ -18,13 +18,13 @@ export class Kalam {
       DeleteFile: ['void', ['pointer', 'string']],
       RenameFile: ['void', ['pointer', 'string']],
       Walk: ['void', ['pointer', 'string']],
-      // UploadFiles: ['void', ['pointer']],
+      UploadFiles: ['void', ['pointer', 'pointer', 'pointer', 'string']],
       // DownloadFiles: ['void', ['string', 'string', 'pointer']],
       Dispose: ['void', ['pointer']],
     });
   }
 
-  _getError(error) {
+  _getNapiError(error) {
     return {
       error,
       stderr: null,
@@ -34,16 +34,16 @@ export class Kalam {
 
   _getData(value) {
     return {
-      error: value.error === '' ? null : value.error,
-      stderr: value.errorType === '' ? null : value.errorType,
-      data: value.data,
+      error: value?.error === '' ? null : value?.error,
+      stderr: value?.errorType === '' ? null : value?.errorType,
+      data: value?.data,
     };
   }
 
   async InitializeMtp() {
     return new Promise((resolve) => {
       try {
-        const cb = ffi.Callback('void', ['string'], (result) => {
+        const onDone = ffi.Callback('void', ['string'], (result) => {
           const json = JSON.parse(result);
 
           console.log('InitializeMtp: ', json);
@@ -51,17 +51,17 @@ export class Kalam {
           return resolve(this._getData(json));
         });
 
-        this.lib.Initialize.async(cb, (err, _) => {
+        this.lib.Initialize.async(onDone, (err, _) => {
           if (!undefinedOrNull(err)) {
             log.error(err, 'Kalam.Initialize.async');
 
-            return resolve(this._getError(err));
+            return resolve(this._getNapiError(err));
           }
         });
       } catch (err) {
         log.error(err, 'Kalam.Initialize.catch');
 
-        return resolve(this._getError(err));
+        return resolve(this._getNapiError(err));
       }
     });
   }
@@ -69,7 +69,7 @@ export class Kalam {
   async FetchDeviceInfo() {
     return new Promise((resolve) => {
       try {
-        const cb = ffi.Callback('void', ['string'], (result) => {
+        const onDone = ffi.Callback('void', ['string'], (result) => {
           const json = JSON.parse(result);
 
           console.log('FetchDeviceInfo: ', json);
@@ -77,17 +77,17 @@ export class Kalam {
           return resolve(this._getData(json));
         });
 
-        this.lib.FetchDeviceInfo.async(cb, (err, _) => {
+        this.lib.FetchDeviceInfo.async(onDone, (err, _) => {
           if (!undefinedOrNull(err)) {
             log.error(err, 'Kalam.FetchDeviceInfo.async');
 
-            return resolve(this._getError(err));
+            return resolve(this._getNapiError(err));
           }
         });
       } catch (err) {
         log.error(err, 'Kalam.FetchDeviceInfo.catch');
 
-        return resolve(this._getError(err));
+        return resolve(this._getNapiError(err));
       }
     });
   }
@@ -95,7 +95,7 @@ export class Kalam {
   async FetchStorages() {
     return new Promise((resolve) => {
       try {
-        const cb = ffi.Callback('void', ['string'], (result) => {
+        const onDone = ffi.Callback('void', ['string'], (result) => {
           const json = JSON.parse(result);
 
           console.log('FetchStorages: ', json);
@@ -103,17 +103,17 @@ export class Kalam {
           return resolve(this._getData(json));
         });
 
-        this.lib.FetchStorages.async(cb, (err, _) => {
+        this.lib.FetchStorages.async(onDone, (err, _) => {
           if (!undefinedOrNull(err)) {
             log.error(err, 'Kalam.FetchStorages.async');
 
-            return resolve(this._getError(err));
+            return resolve(this._getNapiError(err));
           }
         });
       } catch (err) {
         log.error(err, 'Kalam.FetchStorages.catch');
 
-        return resolve(this._getError(err));
+        return resolve(this._getNapiError(err));
       }
     });
   }
@@ -124,7 +124,7 @@ export class Kalam {
 
     return new Promise((resolve) => {
       try {
-        const cb = ffi.Callback('void', ['string'], (result) => {
+        const onDone = ffi.Callback('void', ['string'], (result) => {
           const json = JSON.parse(result);
 
           console.log('MakeDirectory: ', json);
@@ -137,17 +137,17 @@ export class Kalam {
         const args = { storageId: _storageId, fullPath };
         const json = JSON.stringify(args);
 
-        this.lib.MakeDirectory.async(cb, json, (err, _) => {
+        this.lib.MakeDirectory.async(onDone, json, (err, _) => {
           if (!undefinedOrNull(err)) {
             log.error(err, 'Kalam.MakeDirectory.async');
 
-            return resolve(this._getError(err));
+            return resolve(this._getNapiError(err));
           }
         });
       } catch (err) {
         log.error(err, 'Kalam.MakeDirectory.catch');
 
-        return resolve(this._getError(err));
+        return resolve(this._getNapiError(err));
       }
     });
   }
@@ -158,7 +158,7 @@ export class Kalam {
 
     return new Promise((resolve) => {
       try {
-        const cb = ffi.Callback('void', ['string'], (result) => {
+        const onDone = ffi.Callback('void', ['string'], (result) => {
           const json = JSON.parse(result);
 
           console.log('FileExists: ', json);
@@ -171,17 +171,17 @@ export class Kalam {
         const args = { storageId: _storageId, files };
         const json = JSON.stringify(args);
 
-        this.lib.FileExists.async(cb, json, (err, _) => {
+        this.lib.FileExists.async(onDone, json, (err, _) => {
           if (!undefinedOrNull(err)) {
             log.error(err, 'Kalam.FileExists.async');
 
-            return resolve(this._getError(err));
+            return resolve(this._getNapiError(err));
           }
         });
       } catch (err) {
         log.error(err, 'Kalam.FileExists.catch');
 
-        return resolve(this._getError(err));
+        return resolve(this._getNapiError(err));
       }
     });
   }
@@ -192,7 +192,7 @@ export class Kalam {
 
     return new Promise((resolve) => {
       try {
-        const cb = ffi.Callback('void', ['string'], (result) => {
+        const onDone = ffi.Callback('void', ['string'], (result) => {
           const json = JSON.parse(result);
 
           console.log('DeleteFile: ', json);
@@ -205,17 +205,17 @@ export class Kalam {
         const args = { storageId: _storageId, files };
         const json = JSON.stringify(args);
 
-        this.lib.DeleteFile.async(cb, json, (err, _) => {
+        this.lib.DeleteFile.async(onDone, json, (err, _) => {
           if (!undefinedOrNull(err)) {
             log.error(err, 'Kalam.DeleteFile.async');
 
-            return resolve(this._getError(err));
+            return resolve(this._getNapiError(err));
           }
         });
       } catch (err) {
         log.error(err, 'Kalam.DeleteFile.catch');
 
-        return resolve(this._getError(err));
+        return resolve(this._getNapiError(err));
       }
     });
   }
@@ -227,7 +227,7 @@ export class Kalam {
 
     return new Promise((resolve) => {
       try {
-        const cb = ffi.Callback('void', ['string'], (result) => {
+        const onDone = ffi.Callback('void', ['string'], (result) => {
           const json = JSON.parse(result);
 
           console.log('RenameFile: ', json);
@@ -240,17 +240,17 @@ export class Kalam {
         const args = { storageId: _storageId, fullPath, newFileName };
         const json = JSON.stringify(args);
 
-        this.lib.RenameFile.async(cb, json, (err, _) => {
+        this.lib.RenameFile.async(onDone, json, (err, _) => {
           if (!undefinedOrNull(err)) {
             log.error(err, 'Kalam.RenameFile.async');
 
-            return resolve(this._getError(err));
+            return resolve(this._getNapiError(err));
           }
         });
       } catch (err) {
         log.error(err, 'Kalam.RenameFile.catch');
 
-        return resolve(this._getError(err));
+        return resolve(this._getNapiError(err));
       }
     });
   }
@@ -260,7 +260,7 @@ export class Kalam {
 
     return new Promise((resolve) => {
       try {
-        const cb = ffi.Callback('void', ['string'], (result) => {
+        const onDone = ffi.Callback('void', ['string'], (result) => {
           const json = JSON.parse(result);
 
           console.log('Walk: ', json);
@@ -278,17 +278,86 @@ export class Kalam {
         };
         const json = JSON.stringify(args);
 
-        this.lib.Walk.async(cb, json, (err, _) => {
+        this.lib.Walk.async(onDone, json, (err, _) => {
           if (!undefinedOrNull(err)) {
             log.error(err, 'Kalam.Walk.async');
 
-            return resolve(this._getError(err));
+            return resolve(this._getNapiError(err));
           }
         });
       } catch (err) {
         log.error(err, 'Kalam.Walk.catch');
 
-        return resolve(this._getError(err));
+        return resolve(this._getNapiError(err));
+      }
+    });
+  }
+
+  async UploadFiles({ storageId, sources, destination, preprocessFiles }) {
+    checkIf(storageId, 'numericString');
+    checkIf(sources, 'array');
+    checkIf(destination, 'string');
+    checkIf(preprocessFiles, 'boolean');
+
+    return new Promise((resolve) => {
+      try {
+        const onPreProcess = ffi.Callback('void', ['string'], (result) => {
+          const json = JSON.parse(result);
+          const err = this._getData(json);
+
+          if (!undefinedOrNull(err.error)) {
+            return resolve(err);
+          }
+
+          console.log('UploadFiles onPreProcess: ', json);
+        });
+
+        const onProgress = ffi.Callback('void', ['string'], (result) => {
+          const json = JSON.parse(result);
+          const err = this._getData(json);
+
+          if (!undefinedOrNull(err.error)) {
+            return resolve(err);
+          }
+
+          console.log('UploadFiles onProgress: ', json);
+        });
+
+        const onDone = ffi.Callback('void', ['string'], (result) => {
+          const json = JSON.parse(result);
+
+          console.log('UploadFiles onDone: ', json);
+
+          return resolve(this._getData(json));
+        });
+
+        const _storageId = parseInt(storageId, 10);
+
+        const args = {
+          storageId: _storageId,
+          sources,
+          destination,
+          preprocessFiles,
+        };
+        const json = JSON.stringify(args);
+
+        this.lib.UploadFiles.async(
+          onPreProcess,
+          onProgress,
+          onDone,
+          json,
+          (err, _) => {
+            if (!undefinedOrNull(err)) {
+              log.error(err, 'Kalam.UploadFiles.async');
+
+              return resolve(this._getNapiError(err));
+            }
+          }
+        );
+      } catch (err) {
+        log.error(err, 'Kalam.UploadFiles.catch');
+
+        return resolve(this._getNapiError(err));
       }
     });
   }
@@ -296,7 +365,7 @@ export class Kalam {
   async Dispose() {
     return new Promise((resolve) => {
       try {
-        const cb = ffi.Callback('void', ['string'], (result) => {
+        const onDone = ffi.Callback('void', ['string'], (result) => {
           const json = JSON.parse(result);
 
           console.log('Dispose: ', json);
@@ -304,17 +373,17 @@ export class Kalam {
           return resolve(this._getData(json));
         });
 
-        this.lib.Dispose.async(cb, (err, _) => {
+        this.lib.Dispose.async(onDone, (err, _) => {
           if (!undefinedOrNull(err)) {
             log.error(err, 'Kalam.Dispose.async');
 
-            return resolve(this._getError(err));
+            return resolve(this._getNapiError(err));
           }
         });
       } catch (err) {
         log.error(err, 'Kalam.Dispose.catch');
 
-        return resolve(this._getError(err));
+        return resolve(this._getNapiError(err));
       }
     });
   }

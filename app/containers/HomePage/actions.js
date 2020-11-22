@@ -1,3 +1,4 @@
+import path from 'path';
 import prefixer from '../../utils/reducerPrefixer';
 import { throwAlert } from '../Alerts/actions';
 import {
@@ -140,12 +141,30 @@ export function setMtpStorageOptions(
       //   storageId: storagesData[0].Sid.toString(),
       //   files: ['/TEST1', '/TEST2'],
       // });
-      const { data: WalkData } = await kalamFfi.Walk({
+      // const { data: WalkData } = await kalamFfi.Walk({
+      //   storageId: storagesData[0].Sid.toString(),
+      //   fullPath: '/',
+      // });
+
+      const tempDataPath = path.resolve(
+        path.join('./mtp-mock-files', 'mtp-test-files', 'test-large-file')
+      );
+
+      const {
+        data: UploadFilesData,
+        error: error1,
+      } = await kalamFfi.UploadFiles({
         storageId: storagesData[0].Sid.toString(),
-        fullPath: '/',
+        sources: [tempDataPath],
+        destination: '/mtp-test-files/temp_dir',
+        preprocessFiles: true,
       });
 
+      console.log(error1);
+
       await kalamFfi.Dispose();
+
+      return;
 
       const { error, stderr, data } = await fileExplorerController.listStorages(
         {

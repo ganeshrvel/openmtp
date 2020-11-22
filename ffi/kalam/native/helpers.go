@@ -150,6 +150,19 @@ func _walk(storageId uint32, fullPath string, recursive bool, skipDisallowedFile
 	return files, nil
 }
 
+func _uploadFiles(storageId uint32, sources []string, destination string, preprocessFiles bool, preprocessCb mtpx.LocalPreprocessCb, progressCb mtpx.ProgressCb) (err error) {
+	if err := verifyMtpSession(verifyMtpSessionMode{}); err != nil {
+		return err
+	}
+
+	_, _, _, err = mtpx.UploadFiles(container.dev, storageId, sources, destination, preprocessFiles, preprocessCb, progressCb)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func _dispose() error {
 	v := verifyMtpSessionMode{skipDeviceChangeCheck: true}
 

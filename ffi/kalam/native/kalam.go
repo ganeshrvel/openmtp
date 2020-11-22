@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"github.com/ganeshrvel/go-mtpx"
 	jsoniter "github.com/json-iterator/go"
+	"github.com/kr/pretty"
+	"os"
 )
 
 //	#include "stdint.h"
@@ -162,7 +164,7 @@ func RenameFile(ptr int64, json *C.char) {
 
 //export Walk
 func Walk(ptr int64, json *C.char) {
-	i := WalkFileInput{}
+	i := WalkInput{}
 
 	var j = jsoniter.ConfigFastest
 	err := j.UnmarshalFromString(C.GoString(json), &i)
@@ -180,6 +182,49 @@ func Walk(ptr int64, json *C.char) {
 	}
 
 	send_to_js.SendWalk(ptr, files)
+}
+
+//export UploadFiles
+func UploadFiles(onPreProcessPtr, onProgressPtr, onDonePtr int64, json *C.char) {
+	i := UploadFilesInput{}
+
+	var j = jsoniter.ConfigFastest
+	err := j.UnmarshalFromString(C.GoString(json), &i)
+	if err != nil {
+		send_to_js.SendError(onDonePtr, fmt.Errorf("error occured while Unmarshalling UploadFiles input data %+v: ", err))
+
+		return
+	}
+
+	pretty.Println(i)
+
+	err = _uploadFiles(i.StorageId, i.Sources, i.Destination, i.PreprocessFiles,
+		func(fi *os.FileInfo, fullPath string, err error) error {
+			if err != nil {
+				return err
+			}
+
+			send_to_js.SendUploadFilesPreProcess(onPreProcessPtr, fi, fullPath)
+
+			return nil
+		},
+		func(p *mtpx.ProgressInfo, err error) error {
+			if err != nil {
+				return err
+			}
+
+			send_to_js.SendUploadFilesProgress(onProgressPtr, p)
+
+			return nil
+		})
+	if err != nil {
+		pretty.Println(err)
+		send_to_js.SendError(onDonePtr, err)
+
+		return
+	}
+
+	send_to_js.SendUploadFilesDone(onDonePtr)
 }
 
 //export Dispose

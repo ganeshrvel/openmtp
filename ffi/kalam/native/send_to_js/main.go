@@ -23,6 +23,8 @@ import "C"
 import (
 	"github.com/ganeshrvel/go-mtpfs/mtp"
 	"github.com/ganeshrvel/go-mtpx"
+	"os"
+	"time"
 )
 
 func SendError(ptr int64, err error) {
@@ -147,6 +149,60 @@ func SendWalk(ptr int64, files []*mtpx.FileInfo) {
 	C.send_result(C.int64_t(ptr), C.CString(json))
 }
 
+func SendUploadFilesPreProcess(ptr int64, fi *os.FileInfo, fullPath string) {
+	o := UploadFilesPreProcessResult{
+		Data: TransferPreProcessData{
+			FullPath: fullPath,
+			Name:     (*fi).Name(),
+			Size:     (*fi).Size(),
+		},
+	}
+
+	json := toJson(o)
+
+	C.send_result(C.int64_t(ptr), C.CString(json))
+}
+
+func SendUploadFilesProgress(ptr int64, p *mtpx.ProgressInfo, ) {
+	o := UploadFilesProgressResult{
+		Data: TransferProgressInfo{
+			FullPath:          p.FileInfo.FullPath,
+			Name:              p.FileInfo.Name,
+			ElapsedTime:       time.Since(p.StartTime).Milliseconds(),
+			Speed:             p.Speed,
+			TotalFiles:        p.TotalFiles,
+			TotalDirectories:  p.TotalDirectories,
+			FilesSent:         p.FilesSent,
+			FilesSentProgress: p.FilesSentProgress,
+			ActiveFileSize: TransferSizeInfo{
+				Total:    p.ActiveFileSize.Total,
+				Sent:     p.ActiveFileSize.Sent,
+				Progress: p.ActiveFileSize.Progress,
+			},
+			BulkFileSize: TransferSizeInfo{
+				Total:    p.BulkFileSize.Total,
+				Sent:     p.BulkFileSize.Sent,
+				Progress: p.BulkFileSize.Progress,
+			},
+			Status: p.Status,
+		},
+	}
+
+	json := toJson(o)
+
+	C.send_result(C.int64_t(ptr), C.CString(json))
+}
+
+func SendUploadFilesDone(ptr int64) {
+	o := UploadFilesDoneResult{
+		Data: true,
+	}
+
+	json := toJson(o)
+
+	C.send_result(C.int64_t(ptr), C.CString(json))
+}
+
 func SendDispose(ptr int64) {
 	o := DisposeResult{
 		Data: true,
@@ -156,42 +212,3 @@ func SendDispose(ptr int64) {
 
 	C.send_result(C.int64_t(ptr), C.CString(json))
 }
-
-//func UploadFilesCb(ptr int64, fi *mtpx.ProgressInfo) {
-//	C.send_upload_files_result(C.int64_t(ptr), C.CString(fi.FileInfo.Name), C.double(fi.Speed))
-//}
-
-//// List the file list
-//func SendWalkResult(ptr int64, device *mtp.Device, storageId uint32, fullPath string) {
-//	var fList []FileInfo
-//
-//	_, _, _ = mtpx.Walk(device, storageId, fullPath, false, false, func(objectId uint32, fi *mtpx.FileInfo, err error) error {
-//		f := FileInfo{
-//			Size:       fi.Size,
-//			IsDir:      fi.IsDir,
-//			ModTime:    fi.ModTime.Format(DateTimeFormat),
-//			Name:       fi.Name,
-//			FullPath:   fi.FullPath,
-//			ParentPath: fi.ParentPath,
-//			Extension:  fi.Extension,
-//			ParentId:   fi.ParentId,
-//			ObjectId:   fi.ObjectId,
-//		}
-//
-//		fList = append(fList, f)
-//
-//		return nil
-//	})
-//
-//	start := time.Now()
-//	var json = jsoniter.ConfigFastest
-//	w, err := json.Marshal(&fList)
-//	if err != nil {
-//		return err
-//	}
-//
-//	pretty.Println("Native elapsed: ", time.Since(start).Microseconds())
-//	pretty.Println("fList length: ", len(fList))
-//
-//	C.send_file_info_result(C.int64_t(ptr), C.CString(string(w)))
-//}
