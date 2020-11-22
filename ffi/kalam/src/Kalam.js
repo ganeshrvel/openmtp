@@ -301,7 +301,7 @@ export class Kalam {
 
     return new Promise((resolve) => {
       try {
-        const onPreProcess = ffi.Callback('void', ['string'], (result) => {
+        const onPreprocess = ffi.Callback('void', ['string'], (result) => {
           const json = JSON.parse(result);
           const err = this._getData(json);
 
@@ -309,7 +309,7 @@ export class Kalam {
             return resolve(err);
           }
 
-          console.log('UploadFiles onPreProcess: ', json);
+          console.log('UploadFiles onPreprocess: ', json);
         });
 
         const onProgress = ffi.Callback('void', ['string'], (result) => {
@@ -342,7 +342,7 @@ export class Kalam {
         const json = JSON.stringify(args);
 
         this.lib.UploadFiles.async(
-          onPreProcess,
+          onPreprocess,
           onProgress,
           onDone,
           json,

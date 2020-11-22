@@ -149,9 +149,9 @@ func SendWalk(ptr int64, files []*mtpx.FileInfo) {
 	C.send_result(C.int64_t(ptr), C.CString(json))
 }
 
-func SendUploadFilesPreProcess(ptr int64, fi *os.FileInfo, fullPath string) {
-	o := UploadFilesPreProcessResult{
-		Data: TransferPreProcessData{
+func SendUploadFilesPreprocess(ptr int64, fi *os.FileInfo, fullPath string) {
+	o := UploadFilesPreprocessResult{
+		Data: TransferPreprocessData{
 			FullPath: fullPath,
 			Name:     (*fi).Name(),
 			Size:     (*fi).Size(),

@@ -24,7 +24,7 @@ type FileExistsData struct {
 	Exists   bool   `json:"exists"`
 }
 
-type TransferPreProcessData struct {
+type TransferPreprocessData struct {
 	FullPath string `json:"fullPath"`
 	Name     string `json:"name"`
 	Size     int64  `json:"size"`
@@ -129,10 +129,10 @@ type WalkResult struct {
 	Data      []FileInfo `json:"fileInfo"`
 }
 
-type UploadFilesPreProcessResult struct {
+type UploadFilesPreprocessResult struct {
 	ErrorType ErrorType              `json:"errorType"`
 	Error     string                 `json:"error"`
-	Data      TransferPreProcessData `json:"data"`
+	Data      TransferPreprocessData `json:"data"`
 }
 
 type UploadFilesProgressResult struct {

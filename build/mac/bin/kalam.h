@@ -19,7 +19,7 @@ typedef struct { const char *p; ptrdiff_t n; } _GoString_;
 /* Start of preamble from import "C" comments.  */
 
 
-#line 12 "kalam.go"
+#line 13 "kalam.go"
 	#include "stdint.h"
 
 #line 1 "cgo-generated-wrapper"
@@ -80,7 +80,7 @@ extern void FileExists(GoInt64 ptr, char* json);
 extern void DeleteFile(GoInt64 ptr, char* json);
 extern void RenameFile(GoInt64 ptr, char* json);
 extern void Walk(GoInt64 ptr, char* json);
-extern void UploadFiles(GoInt64 onPreProcessPtr, GoInt64 onProgressPtr, GoInt64 onDonePtr, char* json);
+extern void UploadFiles(GoInt64 onPreprocessPtr, GoInt64 onProgressPtr, GoInt64 onDonePtr, char* json);
 extern void Dispose(GoInt64 ptr);
 
 #ifdef __cplusplus

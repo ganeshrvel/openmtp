@@ -1,6 +1,10 @@
 package main
 
-import "github.com/ganeshrvel/go-mtpfs/mtp"
+import (
+	"github.com/ganeshrvel/go-mtpfs/mtp"
+	"github.com/ganeshrvel/go-mtpx"
+	"os"
+)
 
 type verifyMtpSessionMode struct {
 	skipDeviceChangeCheck bool
@@ -44,4 +48,23 @@ type UploadFilesInput struct {
 	Sources         []string `json:"sources"`
 	Destination     string   `json:"destination"`
 	PreprocessFiles bool     `json:"preprocessFiles"`
+}
+
+type UploadPreprocessContainer struct {
+	fi       *os.FileInfo
+	fullPath string
+}
+
+type DownloadPreprogressContainer struct {
+	fi *mtpx.FileInfo
+}
+
+type ProgressContainer struct {
+	pInfo *mtpx.ProgressInfo
+}
+
+type progressHandler struct {
+	OnReceived  func(interface{})
+	OnError     func(error)
+	OnCompleted func()
 }

@@ -5,8 +5,9 @@ import (
 	"fmt"
 	"github.com/ganeshrvel/go-mtpx"
 	jsoniter "github.com/json-iterator/go"
-	"github.com/kr/pretty"
+	"log"
 	"os"
+	"time"
 )
 
 //	#include "stdint.h"
@@ -185,7 +186,7 @@ func Walk(ptr int64, json *C.char) {
 }
 
 //export UploadFiles
-func UploadFiles(onPreProcessPtr, onProgressPtr, onDonePtr int64, json *C.char) {
+func UploadFiles(onPreprocessPtr, onProgressPtr, onDonePtr int64, json *C.char) {
 	i := UploadFilesInput{}
 
 	var j = jsoniter.ConfigFastest
@@ -196,7 +197,34 @@ func UploadFiles(onPreProcessPtr, onProgressPtr, onDonePtr int64, json *C.char) 
 		return
 	}
 
-	pretty.Println(i)
+	var pInterface interface{}
+
+	ch := make(chan bool)
+	go func() {
+		for {
+			select {
+			case <-ch:
+				close(ch)
+
+				return
+			default:
+				if pInterface != nil {
+					switch v := pInterface.(type) {
+					case UploadPreprocessContainer:
+						send_to_js.SendUploadFilesPreprocess(onPreprocessPtr, v.fi, v.fullPath)
+
+					case ProgressContainer:
+						send_to_js.SendUploadFilesProgress(onProgressPtr, v.pInfo)
+
+					default:
+						log.Panicln("unimplemented UploadFiles.pInterface type")
+					}
+
+					time.Sleep(time.Millisecond * 500)
+				}
+			}
+		}
+	}()
 
 	err = _uploadFiles(i.StorageId, i.Sources, i.Destination, i.PreprocessFiles,
 		func(fi *os.FileInfo, fullPath string, err error) error {
@@ -204,7 +232,10 @@ func UploadFiles(onPreProcessPtr, onProgressPtr, onDonePtr int64, json *C.char) 
 				return err
 			}
 
-			send_to_js.SendUploadFilesPreProcess(onPreProcessPtr, fi, fullPath)
+			pInterface = UploadPreprocessContainer{
+				fi:       fi,
+				fullPath: fullPath,
+			}
 
 			return nil
 		},
@@ -213,16 +244,21 @@ func UploadFiles(onPreProcessPtr, onProgressPtr, onDonePtr int64, json *C.char) 
 				return err
 			}
 
-			send_to_js.SendUploadFilesProgress(onProgressPtr, p)
+			pInterface = ProgressContainer{
+				pInfo: p,
+			}
 
 			return nil
 		})
 	if err != nil {
-		pretty.Println(err)
 		send_to_js.SendError(onDonePtr, err)
+
+		ch <- true
 
 		return
 	}
+
+	ch <- true
 
 	send_to_js.SendUploadFilesDone(onDonePtr)
 }
