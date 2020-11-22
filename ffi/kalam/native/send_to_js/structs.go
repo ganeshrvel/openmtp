@@ -141,6 +141,12 @@ type UploadFilesProgressResult struct {
 	Data      TransferProgressInfo `json:"data"`
 }
 
+type DownloadFilesPreprocessResult struct {
+	ErrorType ErrorType              `json:"errorType"`
+	Error     string                 `json:"error"`
+	Data      TransferPreprocessData `json:"data"`
+}
+
 type UploadFilesDoneResult struct {
 	ErrorType ErrorType `json:"errorType"`
 	Error     string    `json:"error"`

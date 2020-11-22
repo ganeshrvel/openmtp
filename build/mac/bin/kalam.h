@@ -81,6 +81,7 @@ extern void DeleteFile(GoInt64 ptr, char* json);
 extern void RenameFile(GoInt64 ptr, char* json);
 extern void Walk(GoInt64 ptr, char* json);
 extern void UploadFiles(GoInt64 onPreprocessPtr, GoInt64 onProgressPtr, GoInt64 onDonePtr, char* json);
+extern void DownloadFiles(GoInt64 onPreprocessPtr, GoInt64 onProgressPtr, GoInt64 onDonePtr, char* json);
 extern void Dispose(GoInt64 ptr);
 
 #ifdef __cplusplus

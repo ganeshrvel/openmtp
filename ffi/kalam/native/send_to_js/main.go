@@ -163,7 +163,21 @@ func SendUploadFilesPreprocess(ptr int64, fi *os.FileInfo, fullPath string) {
 	C.send_result(C.int64_t(ptr), C.CString(json))
 }
 
-func SendUploadFilesProgress(ptr int64, p *mtpx.ProgressInfo, ) {
+func SendDownloadFilesPreprocess(ptr int64, fi *mtpx.FileInfo) {
+	o := DownloadFilesPreprocessResult{
+		Data: TransferPreprocessData{
+			FullPath: fi.FullPath,
+			Name:     fi.Name,
+			Size:     fi.Size,
+		},
+	}
+
+	json := toJson(o)
+
+	C.send_result(C.int64_t(ptr), C.CString(json))
+}
+
+func SendTransferFilesProgress(ptr int64, p *mtpx.ProgressInfo) {
 	o := UploadFilesProgressResult{
 		Data: TransferProgressInfo{
 			FullPath:          p.FileInfo.FullPath,
@@ -193,7 +207,7 @@ func SendUploadFilesProgress(ptr int64, p *mtpx.ProgressInfo, ) {
 	C.send_result(C.int64_t(ptr), C.CString(json))
 }
 
-func SendUploadFilesDone(ptr int64) {
+func SendTransferFilesDone(ptr int64) {
 	o := UploadFilesDoneResult{
 		Data: true,
 	}

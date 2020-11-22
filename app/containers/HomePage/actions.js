@@ -150,17 +150,21 @@ export function setMtpStorageOptions(
         path.join('./mtp-mock-files', 'mtp-test-files', 'test-large-file')
       );
 
-      const {
-        data: UploadFilesData,
-        error: error1,
-      } = await kalamFfi.UploadFiles({
-        storageId: storagesData[0].Sid.toString(),
-        sources: [tempDataPath],
-        destination: '/mtp-test-files/temp_dir',
-        preprocessFiles: true,
-      });
+      // const {
+      //   data: UploadFilesData,
+      // } = await kalamFfi.UploadFiles({
+      //   storageId: storagesData[0].Sid.toString(),
+      //   sources: [tempDataPath],
+      //   destination: '/mtp-test-files/temp_dir',
+      //   preprocessFiles: true, //todo
+      // });
 
-      console.log(error1);
+      const { data: downloadFilesData } = await kalamFfi.DownloadFiles({
+        storageId: storagesData[0].Sid.toString(),
+        sources: ['/mtp-test-files/test-large-file'],
+        destination: tempDataPath,
+        preprocessFiles: true, //todo
+      });
 
       await kalamFfi.Dispose();
 

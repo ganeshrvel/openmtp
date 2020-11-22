@@ -19,7 +19,7 @@ export class Kalam {
       RenameFile: ['void', ['pointer', 'string']],
       Walk: ['void', ['pointer', 'string']],
       UploadFiles: ['void', ['pointer', 'pointer', 'pointer', 'string']],
-      // DownloadFiles: ['void', ['string', 'string', 'pointer']],
+      DownloadFiles: ['void', ['pointer', 'pointer', 'pointer', 'string']],
       Dispose: ['void', ['pointer']],
     });
   }
@@ -356,6 +356,75 @@ export class Kalam {
         );
       } catch (err) {
         log.error(err, 'Kalam.UploadFiles.catch');
+
+        return resolve(this._getNapiError(err));
+      }
+    });
+  }
+
+  async DownloadFiles({ storageId, sources, destination, preprocessFiles }) {
+    checkIf(storageId, 'numericString');
+    checkIf(sources, 'array');
+    checkIf(destination, 'string');
+    checkIf(preprocessFiles, 'boolean');
+
+    return new Promise((resolve) => {
+      try {
+        const onPreprocess = ffi.Callback('void', ['string'], (result) => {
+          const json = JSON.parse(result);
+          const err = this._getData(json);
+
+          if (!undefinedOrNull(err.error)) {
+            return resolve(err);
+          }
+
+          console.log('DownloadFiles onPreprocess: ', json);
+        });
+
+        const onProgress = ffi.Callback('void', ['string'], (result) => {
+          const json = JSON.parse(result);
+          const err = this._getData(json);
+
+          if (!undefinedOrNull(err.error)) {
+            return resolve(err);
+          }
+
+          console.log('DownloadFiles onProgress: ', json);
+        });
+
+        const onDone = ffi.Callback('void', ['string'], (result) => {
+          const json = JSON.parse(result);
+
+          console.log('DownloadFiles onDone: ', json);
+
+          return resolve(this._getData(json));
+        });
+
+        const _storageId = parseInt(storageId, 10);
+
+        const args = {
+          storageId: _storageId,
+          sources,
+          destination,
+          preprocessFiles,
+        };
+        const json = JSON.stringify(args);
+
+        this.lib.DownloadFiles.async(
+          onPreprocess,
+          onProgress,
+          onDone,
+          json,
+          (err, _) => {
+            if (!undefinedOrNull(err)) {
+              log.error(err, 'Kalam.DownloadFiles.async');
+
+              return resolve(this._getNapiError(err));
+            }
+          }
+        );
+      } catch (err) {
+        log.error(err, 'Kalam.DownloadFiles.catch');
 
         return resolve(this._getNapiError(err));
       }

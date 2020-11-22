@@ -214,7 +214,7 @@ func UploadFiles(onPreprocessPtr, onProgressPtr, onDonePtr int64, json *C.char) 
 						send_to_js.SendUploadFilesPreprocess(onPreprocessPtr, v.fi, v.fullPath)
 
 					case ProgressContainer:
-						send_to_js.SendUploadFilesProgress(onProgressPtr, v.pInfo)
+						send_to_js.SendTransferFilesProgress(onProgressPtr, v.pInfo)
 
 					default:
 						log.Panicln("unimplemented UploadFiles.pInterface type")
@@ -260,7 +260,84 @@ func UploadFiles(onPreprocessPtr, onProgressPtr, onDonePtr int64, json *C.char) 
 
 	ch <- true
 
-	send_to_js.SendUploadFilesDone(onDonePtr)
+	send_to_js.SendTransferFilesDone(onDonePtr)
+}
+
+//export DownloadFiles
+func DownloadFiles(onPreprocessPtr, onProgressPtr, onDonePtr int64, json *C.char) {
+	i := DownloadFilesInput{}
+
+	var j = jsoniter.ConfigFastest
+	err := j.UnmarshalFromString(C.GoString(json), &i)
+	if err != nil {
+		send_to_js.SendError(onDonePtr, fmt.Errorf("error occured while Unmarshalling DownloadFiles input data %+v: ", err))
+
+		return
+	}
+
+	var pInterface interface{}
+
+	ch := make(chan bool)
+	go func() {
+		for {
+			select {
+			case <-ch:
+				close(ch)
+
+				return
+			default:
+				if pInterface != nil {
+					switch v := pInterface.(type) {
+					case DownloadPreprocessContainer:
+						send_to_js.SendDownloadFilesPreprocess(onPreprocessPtr, v.fi)
+
+					case ProgressContainer:
+						send_to_js.SendTransferFilesProgress(onProgressPtr, v.pInfo)
+
+					default:
+						log.Panicln("unimplemented DownloadFiles.pInterface type")
+					}
+				}
+
+				time.Sleep(time.Millisecond * 500)
+			}
+		}
+	}()
+
+	err = _downloadFiles(i.StorageId, i.Sources, i.Destination, i.PreprocessFiles,
+		func(fi *mtpx.FileInfo, err error) error {
+			if err != nil {
+				return err
+			}
+
+			pInterface = DownloadPreprocessContainer{
+				fi: fi,
+			}
+
+			return nil
+		},
+		func(p *mtpx.ProgressInfo, err error) error {
+			if err != nil {
+				return err
+			}
+
+			pInterface = ProgressContainer{
+				pInfo: p,
+			}
+
+			return nil
+		})
+	if err != nil {
+		send_to_js.SendError(onDonePtr, err)
+
+		ch <- true
+
+		return
+	}
+
+	ch <- true
+
+	send_to_js.SendTransferFilesDone(onDonePtr)
 }
 
 //export Dispose
@@ -276,74 +353,5 @@ func Dispose(ptr int64) {
 
 	send_to_js.SendDispose(ptr)
 }
-
-////export Walk
-//func Walk(fullPath *C.char, storageId int, ptr int64) {
-//	_fullPath := C.GoString(fullPath)
-//	pretty.Println("_fullPath:", _fullPath)
-//	pretty.Println("storageId:", uint32(storageId))
-//
-//	decode_native.SendWalkResult(ptr, d, uint32(storageId), _fullPath)
-//}
-//
-////export UploadFiles
-//func UploadFiles(ptr int64) {
-//	start := time.Now()
-//	uploadFile1 := getTestMocksAsset("test-large-files")
-//	sources := []string{uploadFile1}
-//	destination := "/mtp-test-files/temp_dir/test_UploadFiles"
-//	objectIdDest, totalFiles, totalSize, err := mtpx.UploadFiles(d, Sid,
-//		sources,
-//		destination,
-//		func(fi *mtpx.TransferredFileInfo, err error) error {
-//			pretty.Printf("Filename: %s\n", fi.FileInfo.Name)
-//			pretty.Printf("Speed: %d MB/s\n", fi.Speed)
-//
-//			decode_native.UploadFilesCb(ptr, fi)
-//			return nil
-//		},
-//	)
-//
-//	if err != nil {
-//		return
-//	}
-//
-//	pretty.Println(objectIdDest)
-//	pretty.Println(totalFiles)
-//	pretty.Println(totalSize)
-//	pretty.Println("time elapsed: ", time.Since(start).Seconds())
-//}
-//
-///// [sourcesJson] source list string slice in json format
-////export DownloadFiles
-//func DownloadFiles(sourcesJson, destination *C.char, ptr int64) {
-//	var sources []string
-//
-//	_sourcesJson := C.GoString(sourcesJson)
-//	_destination := C.GoString(destination)
-//
-//	var json = jsoniter.ConfigFastest
-//	err := json.UnmarshalFromString(_sourcesJson, &sources)
-//	if err != nil {
-//		return
-//	}
-//
-//	_, _, err = mtpx.DownloadFiles(d, Sid,
-//		sources, _destination,
-//		func(downloadFi *mtpx.TransferredFileInfo, err error) error {
-//			fmt.Printf("Current filepath: %s\n", downloadFi.FileInfo.FullPath)
-//			fmt.Printf("%f MB/s\n", downloadFi.Speed)
-//
-//			return nil
-//		},
-//	)
-//	if err != nil {
-//		return
-//	}
-//
-//	//pretty.Println(totalFiles)
-//	//pretty.Println(totalSize)
-//	//pretty.Println("time elapsed: ", time.Since(start).Seconds())
-//}
 
 func main() {}

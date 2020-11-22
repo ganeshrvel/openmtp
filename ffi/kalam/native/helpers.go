@@ -163,6 +163,19 @@ func _uploadFiles(storageId uint32, sources []string, destination string, prepro
 	return nil
 }
 
+func _downloadFiles(storageId uint32, sources []string, destination string, preprocessFiles bool, preprocessCb mtpx.MtpPreprocessCb, progressCb mtpx.ProgressCb) (err error) {
+	if err := verifyMtpSession(verifyMtpSessionMode{}); err != nil {
+		return err
+	}
+
+	_, _, err = mtpx.DownloadFiles(container.dev, storageId, sources, destination, preprocessFiles, preprocessCb, progressCb)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func _dispose() error {
 	v := verifyMtpSessionMode{skipDeviceChangeCheck: true}
 

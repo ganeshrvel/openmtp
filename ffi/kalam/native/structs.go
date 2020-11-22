@@ -50,21 +50,22 @@ type UploadFilesInput struct {
 	PreprocessFiles bool     `json:"preprocessFiles"`
 }
 
+type DownloadFilesInput struct {
+	StorageId       uint32   `json:"storageId"`
+	Sources         []string `json:"sources"`
+	Destination     string   `json:"destination"`
+	PreprocessFiles bool     `json:"preprocessFiles"`
+}
+
 type UploadPreprocessContainer struct {
 	fi       *os.FileInfo
 	fullPath string
 }
 
-type DownloadPreprogressContainer struct {
+type DownloadPreprocessContainer struct {
 	fi *mtpx.FileInfo
 }
 
 type ProgressContainer struct {
 	pInfo *mtpx.ProgressInfo
-}
-
-type progressHandler struct {
-	OnReceived  func(interface{})
-	OnError     func(error)
-	OnCompleted func()
 }
