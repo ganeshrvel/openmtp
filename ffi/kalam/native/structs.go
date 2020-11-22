@@ -31,3 +31,10 @@ type RenameFileInput struct {
 	FullPath    string `json:"fullPath"`
 	NewFileName string `json:"newFileName"`
 }
+
+type WalkFileInput struct {
+	StorageId           uint32 `json:"storageId"`
+	FullPath            string `json:"fullPath"`
+	Recursive           bool `json:"recursive"`
+	SkipDisallowedFiles bool `json:"skipDisallowedFiles"`
+}

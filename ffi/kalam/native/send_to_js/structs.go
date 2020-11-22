@@ -72,6 +72,12 @@ type RenameFileResult struct {
 	Data      bool      `json:"data"`
 }
 
+type WalkResult struct {
+	ErrorType ErrorType `json:"errorType"`
+	Error     string    `json:"error"`
+	Data      []FileInfo  `json:"fileInfo"`
+}
+
 type DisposeResult struct {
 	ErrorType ErrorType `json:"errorType"`
 	Error     string    `json:"error"`

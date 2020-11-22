@@ -160,6 +160,28 @@ func RenameFile(ptr int64, json *C.char) {
 	send_to_js.SendRenameFile(ptr)
 }
 
+//export Walk
+func Walk(ptr int64, json *C.char) {
+	i := WalkFileInput{}
+
+	var j = jsoniter.ConfigFastest
+	err := j.UnmarshalFromString(C.GoString(json), &i)
+	if err != nil {
+		send_to_js.SendError(ptr, fmt.Errorf("error occured while Unmarshalling Walk input data %+v: ", err))
+
+		return
+	}
+
+	files, err := _walk(i.StorageId, i.FullPath, i.Recursive, i.SkipDisallowedFiles)
+	if err != nil {
+		send_to_js.SendError(ptr, err)
+
+		return
+	}
+
+	send_to_js.SendWalk(ptr, files)
+}
+
 //export Dispose
 func Dispose(ptr int64) {
 	if err := _dispose(); err != nil {

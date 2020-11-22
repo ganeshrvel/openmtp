@@ -17,8 +17,8 @@ export class Kalam {
       FileExists: ['void', ['pointer', 'string']],
       DeleteFile: ['void', ['pointer', 'string']],
       RenameFile: ['void', ['pointer', 'string']],
+      Walk: ['void', ['pointer', 'string']],
       // UploadFiles: ['void', ['pointer']],
-      // Walk: ['void', ['string', 'int', 'pointer']],
       // DownloadFiles: ['void', ['string', 'string', 'pointer']],
       Dispose: ['void', ['pointer']],
     });
@@ -249,6 +249,44 @@ export class Kalam {
         });
       } catch (err) {
         log.error(err, 'Kalam.RenameFile.catch');
+
+        return resolve(this._getError(err));
+      }
+    });
+  }
+
+  async Walk({ storageId, fullPath }) {
+    checkIf(storageId, 'numericString');
+
+    return new Promise((resolve) => {
+      try {
+        const cb = ffi.Callback('void', ['string'], (result) => {
+          const json = JSON.parse(result);
+
+          console.log('Walk: ', json);
+
+          return resolve(this._getData(json));
+        });
+
+        const _storageId = parseInt(storageId, 10);
+
+        const args = {
+          storageId: _storageId,
+          fullPath,
+          recursive: false,
+          skipDisallowedFiles: false,
+        };
+        const json = JSON.stringify(args);
+
+        this.lib.Walk.async(cb, json, (err, _) => {
+          if (!undefinedOrNull(err)) {
+            log.error(err, 'Kalam.Walk.async');
+
+            return resolve(this._getError(err));
+          }
+        });
+      } catch (err) {
+        log.error(err, 'Kalam.Walk.catch');
 
         return resolve(this._getError(err));
       }

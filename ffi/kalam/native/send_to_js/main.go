@@ -119,6 +119,34 @@ func SendRenameFile(ptr int64) {
 	C.send_result(C.int64_t(ptr), C.CString(json))
 }
 
+func SendWalk(ptr int64, files []*mtpx.FileInfo) {
+	var outputFiles []FileInfo
+
+	for _, f := range files {
+		outputFile := FileInfo{
+			Size:       f.Size,
+			IsDir:      f.IsDir,
+			ModTime:    f.ModTime.Format(DateTimeFormat),
+			Name:       f.Name,
+			FullPath:   f.FullPath,
+			ParentPath: f.ParentPath,
+			Extension:  f.Extension,
+			ParentId:   f.ParentId,
+			ObjectId:   f.ObjectId,
+		}
+
+		outputFiles = append(outputFiles, outputFile)
+	}
+
+	o := WalkResult{
+		Data: outputFiles,
+	}
+
+	json := toJson(o)
+
+	C.send_result(C.int64_t(ptr), C.CString(json))
+}
+
 func SendDispose(ptr int64) {
 	o := DisposeResult{
 		Data: true,

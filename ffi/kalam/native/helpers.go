@@ -129,6 +129,27 @@ func _renameFile(storageId uint32, fileProp mtpx.FileProp, newFileName string) (
 	return nil
 }
 
+func _walk(storageId uint32, fullPath string, recursive bool, skipDisallowedFiles bool) (files []*mtpx.FileInfo, err error) {
+	if err := verifyMtpSession(verifyMtpSessionMode{}); err != nil {
+		return []*mtpx.FileInfo{}, err
+	}
+
+	_, _, _, err = mtpx.Walk(container.dev, storageId, fullPath, recursive, skipDisallowedFiles, func(objectId uint32, fi *mtpx.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+
+		files = append(files, fi)
+
+		return nil
+	})
+	if err != nil {
+		return []*mtpx.FileInfo{}, err
+	}
+
+	return files, nil
+}
+
 func _dispose() error {
 	v := verifyMtpSessionMode{skipDeviceChangeCheck: true}
 

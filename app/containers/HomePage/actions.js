@@ -113,6 +113,10 @@ export function setMtpStorageOptions(
 
       // const { data: mkDirData1 } = await kalamFfi.MakeDirectory({
       //   storageId: storagesData[0].Sid.toString(),
+      //   fullPath: '/test2',
+      // });
+      // const { data: mkDirData2 } = await kalamFfi.MakeDirectory({
+      //   storageId: storagesData[0].Sid.toString(),
       //   fullPath: '/TEST1',
       // });
       //
@@ -124,13 +128,22 @@ export function setMtpStorageOptions(
       //
       // const { data: fileExistsData } = await kalamFfi.FileExists({
       //   storageId: storagesData[0].Sid.toString(),
-      //   files: ['/test1'],
+      //   files: ['/test1', '/test2'],
       // });
-
+      //
       // const { data: deleteFileData } = await kalamFfi.DeleteFile({
       //   storageId: storagesData[0].Sid.toString(),
       //   files: ['/TEST2', '/TEST1'],
       // });
+      //
+      // const { data: fileExistsData2 } = await kalamFfi.FileExists({
+      //   storageId: storagesData[0].Sid.toString(),
+      //   files: ['/TEST1', '/TEST2'],
+      // });
+      const { data: WalkData } = await kalamFfi.Walk({
+        storageId: storagesData[0].Sid.toString(),
+        fullPath: '/',
+      });
 
       await kalamFfi.Dispose();
 

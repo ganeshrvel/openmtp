@@ -79,6 +79,7 @@ extern void MakeDirectory(GoInt64 ptr, char* json);
 extern void FileExists(GoInt64 ptr, char* json);
 extern void DeleteFile(GoInt64 ptr, char* json);
 extern void RenameFile(GoInt64 ptr, char* json);
+extern void Walk(GoInt64 ptr, char* json);
 extern void Dispose(GoInt64 ptr);
 
 #ifdef __cplusplus
