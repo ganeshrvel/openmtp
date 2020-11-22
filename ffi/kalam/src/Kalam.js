@@ -15,6 +15,7 @@ export class Kalam {
       FetchStorages: ['void', ['pointer']],
       MakeDirectory: ['void', ['pointer', 'string']],
       FileExists: ['void', ['pointer', 'string']],
+      DeleteFile: ['void', ['pointer', 'string']],
       // UploadFiles: ['void', ['pointer']],
       // Walk: ['void', ['string', 'int', 'pointer']],
       // DownloadFiles: ['void', ['string', 'string', 'pointer']],
@@ -31,7 +32,6 @@ export class Kalam {
   }
 
   _getData(value) {
-    //todo fix the return value
     return {
       error: value.error === '' ? null : value.error,
       stderr: value.errorType === '' ? null : value.errorType,
@@ -179,6 +179,40 @@ export class Kalam {
         });
       } catch (err) {
         log.error(err, 'Kalam.FileExists.catch');
+
+        return resolve(this._getError(err));
+      }
+    });
+  }
+
+  async DeleteFile({ storageId, files }) {
+    checkIf(storageId, 'numericString');
+    checkIf(files, 'array');
+
+    return new Promise((resolve) => {
+      try {
+        const cb = ffi.Callback('void', ['string'], (result) => {
+          const json = JSON.parse(result);
+
+          console.log('DeleteFile: ', json);
+
+          return resolve(this._getData(json));
+        });
+
+        const _storageId = parseInt(storageId, 10);
+
+        const args = { storageId: _storageId, files };
+        const json = JSON.stringify(args);
+
+        this.lib.DeleteFile.async(cb, json, (err, _) => {
+          if (!undefinedOrNull(err)) {
+            log.error(err, 'Kalam.DeleteFile.async');
+
+            return resolve(this._getError(err));
+          }
+        });
+      } catch (err) {
+        log.error(err, 'Kalam.DeleteFile.catch');
 
         return resolve(this._getError(err));
       }

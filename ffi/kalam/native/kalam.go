@@ -96,7 +96,6 @@ func FileExists(ptr int64, json *C.char) {
 	}
 
 	fc, err := _fileExists(i.StorageId, fProps)
-
 	if err != nil {
 		send_to_js.SendError(ptr, err)
 
@@ -104,6 +103,35 @@ func FileExists(ptr int64, json *C.char) {
 	}
 
 	send_to_js.FileExists(ptr, fc, i.Files)
+}
+
+//export DeleteFile
+func DeleteFile(ptr int64, json *C.char) {
+	i := DeleteFileInput{}
+
+	var j = jsoniter.ConfigFastest
+	err := j.UnmarshalFromString(C.GoString(json), &i)
+	if err != nil {
+		send_to_js.SendError(ptr, fmt.Errorf("error occured while Unmarshalling DeleteFile input data %+v: ", err))
+
+		return
+	}
+
+	var fProps []mtpx.FileProp
+	for _, f := range i.Files {
+		fProp := mtpx.FileProp{FullPath: f}
+
+		fProps = append(fProps, fProp)
+	}
+
+	err = _deleteFile(i.StorageId, fProps)
+	if err != nil {
+		send_to_js.SendError(ptr, err)
+
+		return
+	}
+
+	send_to_js.DeleteFileInput(ptr)
 }
 
 //export Dispose

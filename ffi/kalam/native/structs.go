@@ -20,3 +20,8 @@ type FileExistsInput struct {
 	StorageId uint32   `json:"storageId"`
 	Files     []string `json:"Files"`
 }
+
+type DeleteFileInput struct {
+	StorageId uint32   `json:"storageId"`
+	Files     []string `json:"Files"`
+}

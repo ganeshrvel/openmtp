@@ -99,6 +99,16 @@ func FileExists(ptr int64, fc []mtpx.FileExistsContainer, inputFiles []string) {
 	C.send_result(C.int64_t(ptr), C.CString(json))
 }
 
+func DeleteFileInput(ptr int64) {
+	o := DeleteFileResult{
+		Data: true,
+	}
+
+	json := toJson(o)
+
+	C.send_result(C.int64_t(ptr), C.CString(json))
+}
+
 func SendDispose(ptr int64) {
 	o := DisposeResult{
 		Data: true,

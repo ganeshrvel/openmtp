@@ -7,6 +7,23 @@ import (
 
 type ErrorType string
 
+type FileInfo struct {
+	Size       int64  `json:"size"`
+	IsDir      bool   `json:"isDir"`
+	ModTime    string `json:"modTime"`
+	Name       string `json:"name"`
+	FullPath   string `json:"fullPath"`
+	ParentPath string `json:"parentPath"`
+	Extension  string `json:"extension"`
+	ParentId   uint32 `json:"parentId"`
+	ObjectId   uint32 `json:"objectId"`
+}
+
+type FileExistsData struct {
+	Fullpath string `json:"fullpath"`
+	Exists   bool   `json:"exists"`
+}
+
 type ErrorResult struct {
 	ErrorType ErrorType   `json:"errorType"`
 	Error     string      `json:"error"`
@@ -43,25 +60,14 @@ type FileExistsResult struct {
 	Data      []FileExistsData `json:"data"`
 }
 
-type DisposeResult struct {
+type DeleteFileResult struct {
 	ErrorType ErrorType `json:"errorType"`
 	Error     string    `json:"error"`
 	Data      bool      `json:"data"`
 }
 
-type FileInfo struct {
-	Size       int64  `json:"size"`
-	IsDir      bool   `json:"isDir"`
-	ModTime    string `json:"modTime"`
-	Name       string `json:"name"`
-	FullPath   string `json:"fullPath"`
-	ParentPath string `json:"parentPath"`
-	Extension  string `json:"extension"`
-	ParentId   uint32 `json:"parentId"`
-	ObjectId   uint32 `json:"objectId"`
-}
-
-type FileExistsData struct {
-	Fullpath string `json:"fullpath"`
-	Exists   bool   `json:"exists"`
+type DisposeResult struct {
+	ErrorType ErrorType `json:"errorType"`
+	Error     string    `json:"error"`
+	Data      bool      `json:"data"`
 }

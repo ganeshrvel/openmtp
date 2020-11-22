@@ -103,6 +103,19 @@ func _fileExists(storageId uint32, fileProps []mtpx.FileProp) (exists []mtpx.Fil
 	return exists, nil
 }
 
+func _deleteFile(storageId uint32, fileProps []mtpx.FileProp) (error error) {
+	if err := verifyMtpSession(verifyMtpSessionMode{}); err != nil {
+		return err
+	}
+
+	err := mtpx.DeleteFile(container.dev, storageId, fileProps)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func _dispose() error {
 	v := verifyMtpSessionMode{skipDeviceChangeCheck: true}
 
