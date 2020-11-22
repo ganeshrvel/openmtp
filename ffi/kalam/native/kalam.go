@@ -219,9 +219,9 @@ func UploadFiles(onPreprocessPtr, onProgressPtr, onDonePtr int64, json *C.char) 
 					default:
 						log.Panicln("unimplemented UploadFiles.pInterface type")
 					}
-
-					time.Sleep(time.Millisecond * 500)
 				}
+
+				time.Sleep(time.Millisecond * 500)
 			}
 		}
 	}()
