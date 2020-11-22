@@ -111,20 +111,26 @@ export function setMtpStorageOptions(
       await kalamFfi.FetchDeviceInfo();
       const { data: storagesData } = await kalamFfi.FetchStorages();
 
-      const { data: mkDirData } = await kalamFfi.MakeDirectory({
-        storageId: storagesData[0].Sid.toString(),
-        fullPath: '/test2',
-      });
+      // const { data: mkDirData1 } = await kalamFfi.MakeDirectory({
+      //   storageId: storagesData[0].Sid.toString(),
+      //   fullPath: '/TEST1',
+      // });
+      //
+      // const { data: renameFileData } = await kalamFfi.RenameFile({
+      //   storageId: storagesData[0].Sid.toString(),
+      //   fullPath: '/TEST1',
+      //   newFileName: '/test1',
+      // });
+      //
+      // const { data: fileExistsData } = await kalamFfi.FileExists({
+      //   storageId: storagesData[0].Sid.toString(),
+      //   files: ['/test1'],
+      // });
 
-      const { data: fileExistsData } = await kalamFfi.FileExists({
-        storageId: storagesData[0].Sid.toString(),
-        files: ['/test2'],
-      });
-
-      const { data: deleteFileData } = await kalamFfi.DeleteFile({
-        storageId: storagesData[0].Sid.toString(),
-        files: ['/test2', '/test1'],
-      });
+      // const { data: deleteFileData } = await kalamFfi.DeleteFile({
+      //   storageId: storagesData[0].Sid.toString(),
+      //   files: ['/TEST2', '/TEST1'],
+      // });
 
       await kalamFfi.Dispose();
 

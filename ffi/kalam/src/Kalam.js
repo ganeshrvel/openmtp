@@ -16,6 +16,7 @@ export class Kalam {
       MakeDirectory: ['void', ['pointer', 'string']],
       FileExists: ['void', ['pointer', 'string']],
       DeleteFile: ['void', ['pointer', 'string']],
+      RenameFile: ['void', ['pointer', 'string']],
       // UploadFiles: ['void', ['pointer']],
       // Walk: ['void', ['string', 'int', 'pointer']],
       // DownloadFiles: ['void', ['string', 'string', 'pointer']],
@@ -213,6 +214,41 @@ export class Kalam {
         });
       } catch (err) {
         log.error(err, 'Kalam.DeleteFile.catch');
+
+        return resolve(this._getError(err));
+      }
+    });
+  }
+
+  async RenameFile({ storageId, fullPath, newFileName }) {
+    checkIf(storageId, 'numericString');
+    checkIf(fullPath, 'string');
+    checkIf(newFileName, 'string');
+
+    return new Promise((resolve) => {
+      try {
+        const cb = ffi.Callback('void', ['string'], (result) => {
+          const json = JSON.parse(result);
+
+          console.log('RenameFile: ', json);
+
+          return resolve(this._getData(json));
+        });
+
+        const _storageId = parseInt(storageId, 10);
+
+        const args = { storageId: _storageId, fullPath, newFileName };
+        const json = JSON.stringify(args);
+
+        this.lib.RenameFile.async(cb, json, (err, _) => {
+          if (!undefinedOrNull(err)) {
+            log.error(err, 'Kalam.RenameFile.async');
+
+            return resolve(this._getError(err));
+          }
+        });
+      } catch (err) {
+        log.error(err, 'Kalam.RenameFile.catch');
 
         return resolve(this._getError(err));
       }

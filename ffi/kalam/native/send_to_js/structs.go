@@ -66,6 +66,12 @@ type DeleteFileResult struct {
 	Data      bool      `json:"data"`
 }
 
+type RenameFileResult struct {
+	ErrorType ErrorType `json:"errorType"`
+	Error     string    `json:"error"`
+	Data      bool      `json:"data"`
+}
+
 type DisposeResult struct {
 	ErrorType ErrorType `json:"errorType"`
 	Error     string    `json:"error"`

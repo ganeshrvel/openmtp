@@ -102,7 +102,7 @@ func FileExists(ptr int64, json *C.char) {
 		return
 	}
 
-	send_to_js.FileExists(ptr, fc, i.Files)
+	send_to_js.SendFileExists(ptr, fc, i.Files)
 }
 
 //export DeleteFile
@@ -131,7 +131,33 @@ func DeleteFile(ptr int64, json *C.char) {
 		return
 	}
 
-	send_to_js.DeleteFileInput(ptr)
+	send_to_js.SendDeleteFile(ptr)
+}
+
+//export RenameFile
+func RenameFile(ptr int64, json *C.char) {
+	i := RenameFileInput{}
+
+	var j = jsoniter.ConfigFastest
+	err := j.UnmarshalFromString(C.GoString(json), &i)
+	if err != nil {
+		send_to_js.SendError(ptr, fmt.Errorf("error occured while Unmarshalling RenameFile input data %+v: ", err))
+
+		return
+	}
+
+	var fProp = mtpx.FileProp{
+		FullPath: i.FullPath,
+	}
+
+	err = _renameFile(i.StorageId, fProp, i.NewFileName)
+	if err != nil {
+		send_to_js.SendError(ptr, err)
+
+		return
+	}
+
+	send_to_js.SendRenameFile(ptr)
 }
 
 //export Dispose

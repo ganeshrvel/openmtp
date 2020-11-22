@@ -25,3 +25,9 @@ type DeleteFileInput struct {
 	StorageId uint32   `json:"storageId"`
 	Files     []string `json:"Files"`
 }
+
+type RenameFileInput struct {
+	StorageId   uint32 `json:"storageId"`
+	FullPath    string `json:"fullPath"`
+	NewFileName string `json:"newFileName"`
+}

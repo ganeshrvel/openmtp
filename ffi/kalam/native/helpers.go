@@ -116,6 +116,19 @@ func _deleteFile(storageId uint32, fileProps []mtpx.FileProp) (error error) {
 	return nil
 }
 
+func _renameFile(storageId uint32, fileProp mtpx.FileProp, newFileName string) (error error) {
+	if err := verifyMtpSession(verifyMtpSessionMode{}); err != nil {
+		return err
+	}
+
+	_, err := mtpx.RenameFile(container.dev, storageId, fileProp, newFileName)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func _dispose() error {
 	v := verifyMtpSessionMode{skipDeviceChangeCheck: true}
 

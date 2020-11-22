@@ -79,7 +79,7 @@ func SendMakeDirectory(ptr int64) {
 	C.send_result(C.int64_t(ptr), C.CString(json))
 }
 
-func FileExists(ptr int64, fc []mtpx.FileExistsContainer, inputFiles []string) {
+func SendFileExists(ptr int64, fc []mtpx.FileExistsContainer, inputFiles []string) {
 	var fdSlice []FileExistsData
 	for i, f := range fc {
 		fd := FileExistsData{
@@ -99,8 +99,18 @@ func FileExists(ptr int64, fc []mtpx.FileExistsContainer, inputFiles []string) {
 	C.send_result(C.int64_t(ptr), C.CString(json))
 }
 
-func DeleteFileInput(ptr int64) {
+func SendDeleteFile(ptr int64) {
 	o := DeleteFileResult{
+		Data: true,
+	}
+
+	json := toJson(o)
+
+	C.send_result(C.int64_t(ptr), C.CString(json))
+}
+
+func SendRenameFile(ptr int64) {
+	o := RenameFileResult{
 		Data: true,
 	}
 
