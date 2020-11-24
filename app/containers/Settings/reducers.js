@@ -3,6 +3,7 @@ import {
   DEVICE_TYPE,
   FILE_EXPLORER_VIEW_TYPE,
   APP_THEME_MODE_TYPE,
+  MTP_MODE,
 } from '../../enums';
 
 export const initialState = {
@@ -29,6 +30,7 @@ export const initialState = {
   showLocalPane: true,
   showLocalPaneOnLeftSide: true,
   showDirectoriesFirst: true,
+  mtpMode: MTP_MODE.legacy,
 };
 
 export default function Settings(state = initialState, action) {

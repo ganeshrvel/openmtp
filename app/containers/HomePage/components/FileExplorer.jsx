@@ -56,6 +56,7 @@ import {
   makeEnableStatusBar,
   makeFileExplorerListingType,
   makeHideHiddenFiles,
+  makeMtpMode,
   makeShowDirectoriesFirst,
 } from '../../Settings/selectors';
 import { DEVICES_LABEL, DONATE_PAYPAL_URL } from '../../../constants';
@@ -176,16 +177,16 @@ class FileExplorer extends Component {
       deviceType,
       actionCreateFetchMtpStorageOptions,
       hideHiddenFiles,
+      mtpMode,
     } = this.props;
 
     if (deviceType === DEVICE_TYPE.mtp) {
-      actionCreateFetchMtpStorageOptions(
-        {
-          filePath: currentBrowsePath[deviceType],
-          ignoreHidden: hideHiddenFiles[deviceType],
-        },
-        deviceType
-      );
+      actionCreateFetchMtpStorageOptions({
+        filePath: currentBrowsePath[deviceType],
+        ignoreHidden: hideHiddenFiles[deviceType],
+        deviceType,
+        mtpMode,
+      });
     } else {
       this._handleListDirectory({
         path: currentBrowsePath[deviceType],
@@ -1747,15 +1748,19 @@ const mapDispatchToProps = (dispatch, _) =>
         dispatch(setSelectedDirLists({ selected }, deviceType));
       },
 
-      actionCreateFetchMtpStorageOptions: ({ ...args }, deviceType) => (
-        _,
-        getState
-      ) => {
+      actionCreateFetchMtpStorageOptions: ({
+        filePath,
+        ignoreHidden,
+        deviceType,
+        mtpMode,
+      }) => (_, getState) => {
         dispatch(
           setMtpStorageOptions(
-            { ...args },
-            deviceType,
             {
+              filePath,
+              ignoreHidden,
+              deviceType,
+              mtpMode,
               changeMtpStorageIdsOnlyOnDeviceChange: false,
               mtpStoragesList: {},
             },
@@ -2088,6 +2093,7 @@ const mapStateToProps = (state, _) => {
     fileExplorerListingType: makeFileExplorerListingType(state),
     focussedFileExplorerDeviceType: makeFocussedFileExplorerDeviceType(state),
     appThemeMode: makeAppThemeMode(state),
+    mtpMode: makeMtpMode(state),
     showDirectoriesFirst: makeShowDirectoriesFirst(state),
   };
 };

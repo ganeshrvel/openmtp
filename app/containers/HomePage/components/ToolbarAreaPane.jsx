@@ -29,6 +29,7 @@ import {
 import {
   makeAppThemeMode,
   makeHideHiddenFiles,
+  makeMtpMode,
   makeShowLocalPaneOnLeftSide,
 } from '../../Settings/selectors';
 import { DEVICES_DEFAULT_PATH } from '../../../constants';
@@ -161,6 +162,7 @@ class ToolbarAreaPane extends PureComponent {
       hideHiddenFiles,
       actionCreateReloadDirList,
       mtpStoragesList,
+      mtpMode,
     } = this.props;
 
     let filePath = '/';
@@ -173,14 +175,13 @@ class ToolbarAreaPane extends PureComponent {
 
       case 'refresh':
         filePath = currentBrowsePath[deviceType];
-        actionCreateReloadDirList(
-          {
-            filePath,
-            ignoreHidden: hideHiddenFiles[deviceType],
-          },
+        actionCreateReloadDirList({
+          filePath,
+          ignoreHidden: hideHiddenFiles[deviceType],
           deviceType,
-          mtpStoragesList
-        );
+          mtpStoragesList,
+          mtpMode,
+        });
         break;
 
       case 'delete':
@@ -296,12 +297,24 @@ const mapDispatchToProps = (dispatch, _) =>
         dispatch(listDirectory({ ...args }, deviceType, getState));
       },
 
-      actionCreateReloadDirList: ({ ...args }, deviceType, mtpStoragesList) => (
-        _,
-        getState
-      ) => {
+      actionCreateReloadDirList: ({
+        filePath,
+        ignoreHidden,
+        deviceType,
+        mtpStoragesList,
+        mtpMode,
+      }) => (_, getState) => {
         dispatch(
-          reloadDirList({ ...args }, deviceType, mtpStoragesList, getState)
+          reloadDirList(
+            {
+              filePath,
+              ignoreHidden,
+              deviceType,
+              mtpStoragesList,
+              mtpMode,
+            },
+            getState
+          )
         );
       },
 
@@ -431,6 +444,7 @@ const mapStateToProps = (state, __) => {
     mtpStoragesList: makeMtpStoragesList(state),
     focussedFileExplorerDeviceType: makeFocussedFileExplorerDeviceType(state),
     appThemeMode: makeAppThemeMode(state),
+    mtpMode: makeMtpMode(state),
     showLocalPaneOnLeftSide: makeShowLocalPaneOnLeftSide(state),
   };
 };

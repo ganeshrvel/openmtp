@@ -19,6 +19,7 @@ import {
   makeMtpStoragesList,
 } from '../HomePage/selectors';
 import SettingsDialog from './components/SettingsDialog';
+import { checkIf } from '../../utils/checkIf';
 
 class Settings extends Component {
   _handleDialogBoxCloseBtnClick = ({ confirm = false }) => {
@@ -49,17 +50,17 @@ class Settings extends Component {
       actionCreateReloadDirList,
       mtpStoragesList,
       currentBrowsePath,
+      mtpMode,
     } = this.props;
 
     actionCreateHideHiddenFiles({ value }, deviceType);
-    actionCreateReloadDirList(
-      {
-        filePath: currentBrowsePath[deviceType],
-        ignoreHidden: value,
-      },
+    actionCreateReloadDirList({
+      filePath: currentBrowsePath[deviceType],
+      ignoreHidden: value,
       deviceType,
-      mtpStoragesList
-    );
+      mtpStoragesList,
+      mtpMode,
+    });
   };
 
   _handleFileExplorerListingType = (event, value, deviceType) => {
@@ -235,12 +236,31 @@ const mapDispatchToProps = (dispatch, _) =>
         dispatch(setCommonSettings({ key, value }, deviceType, getState));
       },
 
-      actionCreateReloadDirList: ({ ...args }, deviceType, mtpStoragesList) => (
-        _,
-        getState
-      ) => {
+      actionCreateReloadDirList: ({
+        filePath,
+        ignoreHidden,
+        deviceType,
+        mtpStoragesList,
+        mtpMode,
+      }) => (_, getState) => {
+        checkIf(filePath, 'string');
+        checkIf(ignoreHidden, 'boolean');
+        checkIf(deviceType, 'string');
+        checkIf(mtpStoragesList, 'object');
+        checkIf(mtpMode, 'string');
+        checkIf(getState, 'function');
+
         dispatch(
-          reloadDirList({ ...args }, deviceType, mtpStoragesList, getState)
+          reloadDirList(
+            {
+              filePath,
+              ignoreHidden,
+              deviceType,
+              mtpStoragesList,
+              mtpMode,
+            },
+            getState
+          )
         );
       },
     },

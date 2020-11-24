@@ -3,8 +3,9 @@ import { FileExplorerLocalDataSource } from '../data-sources/FileExplorerLocalDa
 import { FileExplorerKalamDataSource } from '../data-sources/FileExplorerKalamDataSource';
 import { DEVICE_TYPE, MTP_MODE } from '../../../enums';
 import { checkIf } from '../../../utils/checkIf';
+import { getMtpModeSettings } from '../../../helpers/settings';
 
-const selectedMtpMode = MTP_MODE.legacy;
+const selectedMtpMode = getMtpModeSettings();
 
 export class FileExplorerRepository {
   constructor() {
@@ -26,7 +27,7 @@ export class FileExplorerRepository {
 
         case MTP_MODE.kalam:
         default:
-          break;
+          return;
       }
     }
 
@@ -57,7 +58,7 @@ export class FileExplorerRepository {
 
         case MTP_MODE.kalam:
         default:
-          break;
+          return;
       }
     }
 
@@ -90,7 +91,7 @@ export class FileExplorerRepository {
 
         case MTP_MODE.kalam:
         default:
-          break;
+          return;
       }
     }
 
@@ -121,7 +122,7 @@ export class FileExplorerRepository {
 
         case MTP_MODE.kalam:
         default:
-          break;
+          return;
       }
     }
 
@@ -151,7 +152,7 @@ export class FileExplorerRepository {
 
         case MTP_MODE.kalam:
         default:
-          break;
+          return;
       }
     }
 
@@ -181,7 +182,7 @@ export class FileExplorerRepository {
 
         case MTP_MODE.kalam:
         default:
-          break;
+          return;
       }
     }
 
@@ -231,7 +232,7 @@ export class FileExplorerRepository {
 
         case MTP_MODE.kalam:
         default:
-          break;
+          return;
       }
     }
 
@@ -253,7 +254,7 @@ export class FileExplorerRepository {
 
         case MTP_MODE.kalam:
         default:
-          break;
+          return;
       }
     }
 

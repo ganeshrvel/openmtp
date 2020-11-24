@@ -58,6 +58,11 @@ export const makeAppThemeMode = createSelector(make, (state) => {
   return getAppThemeMode(theme);
 });
 
+// returns the selected mtp mode
+export const makeMtpMode = createSelector(make, (state) =>
+  state ? state.mtpMode : initialState.mtpMode
+);
+
 export const makeShowLocalPane = createSelector(make, (state) =>
   state ? state.showLocalPane : initialState.showLocalPane
 );
