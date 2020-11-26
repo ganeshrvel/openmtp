@@ -100,23 +100,16 @@ export function getStorageId(state) {
 }
 
 export function setMtpStorageOptions(
-  {
-    filePath,
-    ignoreHidden,
-    deviceType,
-    mtpStoragesList,
-    mtpMode,
-    changeMtpStorageIdsOnlyOnDeviceChange,
-  },
+  { filePath, ignoreHidden, changeMtpStorageIdsOnlyOnDeviceChange, deviceType },
   getState
 ) {
+  checkIf(deviceType, 'string');
   checkIf(filePath, 'string');
   checkIf(ignoreHidden, 'boolean');
-  checkIf(deviceType, 'string');
-  checkIf(mtpStoragesList, 'object');
-  checkIf(mtpMode, 'string');
   checkIf(changeMtpStorageIdsOnlyOnDeviceChange, 'boolean');
   checkIf(getState, 'function');
+
+  const { mtpStoragesList, mtpMode } = getState().Home;
 
   return (dispatch) => {
     try {
@@ -228,17 +221,17 @@ function setLegacyMtpStorageOptions(
           stderr,
           data,
           callback: () => {
-            let changeMtpIdsFlag = true;
+            let updateMtpStorage = true;
 
             if (
               changeMtpStorageIdsOnlyOnDeviceChange &&
               !isEmpty(mtpStoragesList) &&
               isArraysEqual(Object.keys(data), Object.keys(mtpStoragesList))
             ) {
-              changeMtpIdsFlag = false;
+              updateMtpStorage = false;
             }
 
-            if (changeMtpIdsFlag) {
+            if (updateMtpStorage) {
               dispatch(changeMtpStorage({ ...data }));
             }
 
@@ -401,9 +394,14 @@ export function listDirectory({ ...args }, deviceType, getState) {
 }
 
 export function reloadDirList(
-  { filePath, ignoreHidden, deviceType, mtpStoragesList, mtpMode },
+  { filePath, ignoreHidden, deviceType },
   getState
 ) {
+  checkIf(deviceType, 'string');
+  checkIf(filePath, 'string');
+  checkIf(ignoreHidden, 'boolean');
+  checkIf(getState, 'function');
+
   return (dispatch) => {
     switch (deviceType) {
       case DEVICE_TYPE.local:
@@ -418,10 +416,8 @@ export function reloadDirList(
             {
               filePath,
               ignoreHidden,
-              deviceType,
-              mtpStoragesList,
-              mtpMode,
               changeMtpStorageIdsOnlyOnDeviceChange: true,
+              deviceType,
             },
             getState
           )

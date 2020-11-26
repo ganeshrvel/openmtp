@@ -177,7 +177,6 @@ class FileExplorer extends Component {
       deviceType,
       actionCreateFetchMtpStorageOptions,
       hideHiddenFiles,
-      mtpMode,
     } = this.props;
 
     if (deviceType === DEVICE_TYPE.mtp) {
@@ -185,7 +184,6 @@ class FileExplorer extends Component {
         filePath: currentBrowsePath[deviceType],
         ignoreHidden: hideHiddenFiles[deviceType],
         deviceType,
-        mtpMode,
       });
     } else {
       this._handleListDirectory({
@@ -1752,17 +1750,14 @@ const mapDispatchToProps = (dispatch, _) =>
         filePath,
         ignoreHidden,
         deviceType,
-        mtpMode,
       }) => (_, getState) => {
         dispatch(
           setMtpStorageOptions(
             {
               filePath,
               ignoreHidden,
-              deviceType,
-              mtpMode,
               changeMtpStorageIdsOnlyOnDeviceChange: false,
-              mtpStoragesList: {},
+              deviceType,
             },
             getState
           )

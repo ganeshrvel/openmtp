@@ -48,9 +48,7 @@ class Settings extends Component {
     const {
       actionCreateHideHiddenFiles,
       actionCreateReloadDirList,
-      mtpStoragesList,
       currentBrowsePath,
-      mtpMode,
     } = this.props;
 
     actionCreateHideHiddenFiles({ value }, deviceType);
@@ -58,8 +56,6 @@ class Settings extends Component {
       filePath: currentBrowsePath[deviceType],
       ignoreHidden: value,
       deviceType,
-      mtpStoragesList,
-      mtpMode,
     });
   };
 
@@ -236,19 +232,14 @@ const mapDispatchToProps = (dispatch, _) =>
         dispatch(setCommonSettings({ key, value }, deviceType, getState));
       },
 
-      actionCreateReloadDirList: ({
-        filePath,
-        ignoreHidden,
-        deviceType,
-        mtpStoragesList,
-        mtpMode,
-      }) => (_, getState) => {
+      actionCreateReloadDirList: ({ filePath, ignoreHidden, deviceType }) => (
+        _,
+        getState
+      ) => {
         checkIf(filePath, 'string');
         checkIf(ignoreHidden, 'boolean');
-        checkIf(deviceType, 'string');
-        checkIf(mtpStoragesList, 'object');
-        checkIf(mtpMode, 'string');
         checkIf(getState, 'function');
+        checkIf(deviceType, 'string');
 
         dispatch(
           reloadDirList(
@@ -256,8 +247,6 @@ const mapDispatchToProps = (dispatch, _) =>
               filePath,
               ignoreHidden,
               deviceType,
-              mtpStoragesList,
-              mtpMode,
             },
             getState
           )

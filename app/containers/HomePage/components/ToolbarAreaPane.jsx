@@ -42,6 +42,7 @@ import { pathUp } from '../../../utils/files';
 import { DEVICE_TYPE } from '../../../enums';
 import { log } from '../../../utils/log';
 import fileExplorerController from '../../../data/file-explorer/controllers/FileExplorerController';
+import { checkIf } from '../../../utils/checkIf';
 
 class ToolbarAreaPane extends PureComponent {
   constructor(props) {
@@ -161,8 +162,6 @@ class ToolbarAreaPane extends PureComponent {
       deviceType,
       hideHiddenFiles,
       actionCreateReloadDirList,
-      mtpStoragesList,
-      mtpMode,
     } = this.props;
 
     let filePath = '/';
@@ -179,8 +178,6 @@ class ToolbarAreaPane extends PureComponent {
           filePath,
           ignoreHidden: hideHiddenFiles[deviceType],
           deviceType,
-          mtpStoragesList,
-          mtpMode,
         });
         break;
 
@@ -297,21 +294,18 @@ const mapDispatchToProps = (dispatch, _) =>
         dispatch(listDirectory({ ...args }, deviceType, getState));
       },
 
-      actionCreateReloadDirList: ({
-        filePath,
-        ignoreHidden,
-        deviceType,
-        mtpStoragesList,
-        mtpMode,
-      }) => (_, getState) => {
+      actionCreateReloadDirList: ({ filePath, ignoreHidden, deviceType }) => (
+        _,
+        getState
+      ) => {
+        checkIf(deviceType, 'string');
+
         dispatch(
           reloadDirList(
             {
               filePath,
               ignoreHidden,
               deviceType,
-              mtpStoragesList,
-              mtpMode,
             },
             getState
           )
