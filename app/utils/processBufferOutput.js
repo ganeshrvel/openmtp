@@ -1,11 +1,218 @@
+/* eslint-disable no-case-declarations */
+
 import { EOL } from 'os';
 import { replaceBulk } from './funcs';
 import { log } from './log';
 import { isGoogleAndroidFileTransferActive } from './isGoogleAndroidFileTransferActive';
 import { DEVICES_LABEL } from '../constants';
-import { DEVICE_TYPE } from '../enums';
+import { DEVICE_TYPE, MTP_MODE } from '../enums';
+import { checkIf } from './checkIf';
 
-export const processMtpBuffer = async ({ error, stderr }) => {
+export const processMtpBuffer = async ({ error, stderr, mtpMode }) => {
+  checkIf(mtpMode, 'string');
+
+  if (mtpMode === MTP_MODE.kalam) {
+    return processKalamMtpBuffer({ error, stderr });
+  }
+
+  return processLegacyMtpBuffer({ error, stderr });
+};
+
+// [stderr] variable will hold the kalam ffi errorTypes
+export const processKalamMtpBuffer = async ({ error, stderr }) => {
+  const mtpErrors = {
+    ErrorMtpDetectFailed: `No ${
+      DEVICES_LABEL[DEVICE_TYPE.mtp]
+    } or MTP device found.`,
+    ErrorMtpChanged: null,
+    ErrorDeviceSetup: `An error occured while setting up the ${
+      DEVICES_LABEL[DEVICE_TYPE.mtp]
+    }`,
+    ErrorMultipleDevice: 'Multiple MTP devices found',
+    ErrorAllowSamsungStorageAccess: null,
+    ErrorDeviceInfo: 'An error occured while fetching the device information',
+    ErrorStorageInfo: 'An error occured while fetching the storage information',
+    ErrorNoStorage: `Your ${
+      DEVICES_LABEL[DEVICE_TYPE.mtp]
+    } storage is inaccessible.`,
+    ErrorStorageFull: `${DEVICES_LABEL[DEVICE_TYPE.mtp]} storage is full`,
+    ErrorListDirectory: `An error occured while listing the ${
+      DEVICES_LABEL[DEVICE_TYPE.mtp]
+    } directory! Try again.`,
+    ErrorFileNotFound: 'File not found',
+    ErrorFilePermission: `Operation not permitted`,
+    ErrorLocalFileRead: `The file is inaccessible`,
+    ErrorInvalidPath: 'Invalid path',
+    ErrorFileTransfer:
+      'An error occured while transferring the file! Try again.',
+    ErrorFileObjectRead:
+      'An error occured while reading the MTP file object! Try again.',
+    ErrorSendObject: 'An error occured while sending the object! Try again.',
+    ErrorGeneral: `Oops.. Your ${
+      DEVICES_LABEL[DEVICE_TYPE.mtp]
+    } has gone crazy! Try again.`,
+  };
+
+  const googleAndroidFileTransferIsActive = `Quit 'Android File Transfer' app (by Google) and reload.`;
+  const noMtpError = stderr === 'ErrorMtpDetectFailed';
+  const processErrorValue = mtpErrors[stderr ?? ''];
+
+  log.doLog(
+    `MTP buffer o/p logging;${EOL}MTP Mode: ${
+      MTP_MODE.kalam
+    }${EOL}Raw error: ${error.toString()}${EOL}Processed error: ${processErrorValue}${EOL}Error type: ${stderr}`,
+    !noMtpError
+  );
+
+  switch (stderr) {
+    /* No MTP device found */
+    case 'ErrorMtpDetectFailed':
+      const _isGoogleAndroidFileTransferActive = await isGoogleAndroidFileTransferActive();
+
+      if (_isGoogleAndroidFileTransferActive) {
+        return {
+          error: googleAndroidFileTransferIsActive,
+          throwAlert: true,
+          logError: true,
+          mtpStatus: false,
+        };
+      }
+
+      return {
+        error: processErrorValue,
+        throwAlert: false,
+        logError: false,
+        mtpStatus: false,
+      };
+
+    case 'ErrorStorageFull':
+      return {
+        error: processErrorValue,
+        throwAlert: true,
+        logError: true,
+        mtpStatus: false,
+      };
+
+    case 'ErrorNoStorage':
+      return {
+        error: processErrorValue,
+        throwAlert: true,
+        logError: true,
+        mtpStatus: false,
+      };
+
+    case 'ErrorStorageInfo':
+      return {
+        error: processErrorValue,
+        throwAlert: true,
+        logError: true,
+        mtpStatus: false,
+      };
+
+    case 'ErrorDeviceInfo':
+      return {
+        error: processErrorValue,
+        throwAlert: true,
+        logError: true,
+        mtpStatus: false,
+      };
+
+    case 'ErrorMultipleDevice':
+      return {
+        error: processErrorValue,
+        throwAlert: true,
+        logError: true,
+        mtpStatus: false,
+      };
+
+    case 'ErrorDeviceSetup':
+      return {
+        error: processErrorValue,
+        throwAlert: true,
+        logError: true,
+        mtpStatus: false,
+      };
+
+    case 'ErrorSendObject':
+      return {
+        error: processErrorValue,
+        throwAlert: true,
+        logError: true,
+        mtpStatus: true,
+      };
+
+    case 'ErrorFileObjectRead':
+      return {
+        error: processErrorValue,
+        throwAlert: true,
+        logError: true,
+        mtpStatus: true,
+      };
+
+    case 'ErrorFileTransfer':
+      return {
+        error: processErrorValue,
+        throwAlert: true,
+        logError: true,
+        mtpStatus: true,
+      };
+
+    case 'ErrorInvalidPath':
+      return {
+        error: processErrorValue,
+        throwAlert: true,
+        logError: true,
+        mtpStatus: true,
+      };
+
+    case 'ErrorLocalFileRead':
+      return {
+        error: processErrorValue,
+        throwAlert: true,
+        logError: true,
+        mtpStatus: true,
+      };
+
+    case 'ErrorFilePermission':
+      return {
+        error: processErrorValue,
+        throwAlert: true,
+        logError: true,
+        mtpStatus: true,
+      };
+
+    case 'ErrorFileNotFound':
+      return {
+        error: processErrorValue,
+        throwAlert: true,
+        logError: true,
+        mtpStatus: true,
+      };
+
+    case 'ErrorListDirectory':
+      return {
+        error: processErrorValue,
+        throwAlert: true,
+        logError: true,
+        mtpStatus: true,
+      };
+
+    case 'ErrorAllowSamsungStorageAccess':
+    case 'ErrorMtpChanged':
+      break;
+
+    case 'ErrorGeneral':
+    default:
+      return {
+        error: processErrorValue,
+        throwAlert: true,
+        logError: true,
+        mtpStatus: true,
+      };
+  }
+};
+
+export const processLegacyMtpBuffer = async ({ error, stderr }) => {
   // Error string are used for partial error string matching
   // this will be later used to pick the appropriate error out from the [errorDictionary]
   const errorTpl = {
@@ -55,7 +262,7 @@ export const processMtpBuffer = async ({ error, stderr }) => {
       error: null,
       throwAlert: false,
       logError: true,
-      status: true,
+      mtpStatus: true,
     };
   }
 
@@ -73,7 +280,9 @@ export const processMtpBuffer = async ({ error, stderr }) => {
   const noMtpError = checkError('noMtp');
 
   log.doLog(
-    `MTP buffer o/p logging;${EOL}error: ${errorStringified.trim()}${EOL}stderr: ${stderrStringified.trim()}`,
+    `MTP buffer o/p logging;${EOL}MTP Mode: ${
+      MTP_MODE.legacy
+    }${EOL}error: ${errorStringified.trim()}${EOL}stderr: ${stderrStringified.trim()}`,
     !noMtpError
   );
 
@@ -88,7 +297,7 @@ export const processMtpBuffer = async ({ error, stderr }) => {
         error: errorDictionary.googleAndroidFileTransferIsActive,
         throwAlert: true,
         logError: true,
-        status: false,
+        mtpStatus: false,
       };
     }
 
@@ -96,7 +305,7 @@ export const processMtpBuffer = async ({ error, stderr }) => {
       error: errorDictionary.noMtp,
       throwAlert: false,
       logError: false,
-      status: false,
+      mtpStatus: false,
     };
   }
 
@@ -108,7 +317,7 @@ export const processMtpBuffer = async ({ error, stderr }) => {
       error: errorDictionary.deviceLocked,
       throwAlert: true,
       logError: true,
-      status: false,
+      mtpStatus: false,
     };
   }
 
@@ -120,7 +329,7 @@ export const processMtpBuffer = async ({ error, stderr }) => {
       error: errorDictionary.unResponsive,
       throwAlert: true,
       logError: true,
-      status: false,
+      mtpStatus: false,
     };
   }
 
@@ -132,7 +341,7 @@ export const processMtpBuffer = async ({ error, stderr }) => {
       error: errorDictionary.unResponsive,
       throwAlert: true,
       logError: true,
-      status: false,
+      mtpStatus: false,
     };
   }
 
@@ -144,7 +353,7 @@ export const processMtpBuffer = async ({ error, stderr }) => {
       error: errorDictionary.unResponsive,
       throwAlert: true,
       logError: true,
-      status: false,
+      mtpStatus: false,
     };
   }
 
@@ -157,7 +366,7 @@ export const processMtpBuffer = async ({ error, stderr }) => {
       error: errorDictionary.mtpStorageNotAccessible,
       throwAlert: true,
       logError: true,
-      status: false,
+      mtpStatus: false,
     };
   }
 
@@ -169,7 +378,7 @@ export const processMtpBuffer = async ({ error, stderr }) => {
       error: sanitizeErrors(stderrStringified || errorStringified),
       throwAlert: true,
       logError: true,
-      status: true,
+      mtpStatus: true,
     };
   }
 
@@ -181,7 +390,7 @@ export const processMtpBuffer = async ({ error, stderr }) => {
       error: errorDictionary.noPerm,
       throwAlert: true,
       logError: true,
-      status: true,
+      mtpStatus: true,
     };
   }
 
@@ -193,7 +402,7 @@ export const processMtpBuffer = async ({ error, stderr }) => {
       error: errorDictionary.fileNotFound,
       throwAlert: true,
       logError: true,
-      status: true,
+      mtpStatus: true,
     };
   }
 
@@ -206,7 +415,7 @@ export const processMtpBuffer = async ({ error, stderr }) => {
       error: sanitizeErrors(stderrStringified || errorStringified),
       throwAlert: true,
       logError: true,
-      status: true,
+      mtpStatus: true,
     };
   }
 
@@ -218,7 +427,7 @@ export const processMtpBuffer = async ({ error, stderr }) => {
       error: errorDictionary.partialDeletion,
       throwAlert: true,
       logError: true,
-      status: true,
+      mtpStatus: true,
     };
   }
 
@@ -227,7 +436,7 @@ export const processMtpBuffer = async ({ error, stderr }) => {
     error: errorDictionary.common,
     throwAlert: true,
     logError: true,
-    status: true,
+    mtpStatus: true,
   };
 };
 
@@ -311,7 +520,7 @@ export const processLocalBuffer = ({ error, stderr }) => {
       error: errorDictionary.fileNotFound,
       throwAlert: true,
       logError: true,
-      status: true,
+      mtpStatus: true,
     };
   }
 

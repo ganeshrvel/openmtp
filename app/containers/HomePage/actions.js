@@ -114,9 +114,9 @@ export function initializeMtp(
 
   return async (dispatch) => {
     try {
-      await kalamFfi.InitializeMtp();
-      await kalamFfi.FetchDeviceInfo();
-      const { data: storagesData } = await kalamFfi.FetchStorages();
+      // await kalamFfi.InitializeMtp();
+      // await kalamFfi.FetchDeviceInfo();
+      // // const { data: storagesData } = await kalamFfi.FetchStorages();
       // const { data: mkDirData1 } = await kalamFfi.MakeDirectory({
       //   storageId: storagesData[0].Sid.toString(),
       //   fullPath: '/test2',
@@ -227,46 +227,44 @@ function initKalamMtp(
     checkIf(changeMtpStorageIdsOnlyOnDeviceChange, 'boolean');
 
     try {
-      const { error, stderr, data } = await fileExplorerController.listStorages(
-        {
-          deviceType,
-        }
-      );
+      const { mtpStatus } = getState().Home;
+      const { mtpMode } = getState().Settings;
 
-      dispatch(
-        churnMtpBuffer({
-          deviceType,
-          error,
-          stderr,
-          data,
-          onSuccess: () => {
-            let updateMtpStorage = true;
+      if (!mtpStatus) {
+        return;
+      }
 
-            if (
-              changeMtpStorageIdsOnlyOnDeviceChange &&
-              !isEmpty(mtpStoragesList) &&
-              isArraysEqual(Object.keys(data), Object.keys(mtpStoragesList))
-            ) {
-              updateMtpStorage = false;
-            }
+      const {
+        error: initializeError,
+        stderr: initializeStderr,
+        data: initializeData,
+      } = await kalamFfi.InitializeMtp();
 
-            if (updateMtpStorage) {
-              dispatch(changeMtpStorage({ ...data }));
-            }
+      await new Promise((resolve) => {
+        dispatch(
+          churnMtpBuffer({
+            deviceType,
+            error: initializeError,
+            stderr: initializeStderr,
+            data: initializeData,
+            mtpMode,
+            onSuccess: async () => {
+              //todo set device data
+              return resolve(initializeData);
+            },
+          })
+        );
+      });
 
-            dispatch(
-              listDirectory(
-                {
-                  filePath,
-                  ignoreHidden,
-                },
-                deviceType,
-                getState
-              )
-            );
-          },
-        })
-      );
+      const {
+        error: listStoragesError,
+        stderr: listStoragesStderr,
+        data: listStoragesData,
+      } = await fileExplorerController.listStorages({
+        deviceType,
+      });
+
+      await new Promise((resolve) => {});
     } catch (e) {
       log.error(e);
     }
@@ -290,6 +288,8 @@ function initLegacyMtp(
     checkIf(mtpStoragesList, 'object');
     checkIf(changeMtpStorageIdsOnlyOnDeviceChange, 'boolean');
 
+    const { mtpMode } = getState().Settings;
+
     try {
       const { error, stderr, data } = await fileExplorerController.listStorages(
         {
@@ -303,6 +303,7 @@ function initLegacyMtp(
           error,
           stderr,
           data,
+          mtpMode,
           onSuccess: () => {
             let updateMtpStorage = true;
 
@@ -351,19 +352,27 @@ export function setMtpStatus(data) {
   };
 }
 
-// this is the main entry point of data received from the MTP kernel.
-// the data received here undergoes processing and the neccessary actions are taken accordingly
-export function churnMtpBuffer({ deviceType, error, stderr, _, onSuccess }) {
+// This is the main entry point of data received from the MTP kernel.
+// The data received here undergoes processing and the neccessary actions are taken accordingly
+export function churnMtpBuffer({
+  deviceType,
+  error,
+  stderr,
+  _,
+  mtpMode,
+  onSuccess,
+}) {
   checkIf(onSuccess, 'function');
+  checkIf(mtpMode, 'string');
 
   return async (dispatch) => {
     try {
       const {
-        status: mtpStatus,
+        mtpStatus,
         error: mtpError,
         throwAlert: mtpThrowAlert,
         logError: mtpLogError,
-      } = await processMtpBuffer({ error, stderr });
+      } = await processMtpBuffer({ error, stderr, mtpMode });
 
       dispatch(setMtpStatus(mtpStatus));
 
@@ -421,6 +430,8 @@ export function churnLocalBuffer({ _, error, stderr, __, onSuccess }) {
 export function listDirectory({ ...args }, deviceType, getState) {
   checkIf(getState, 'function');
 
+  const { mtpMode } = getState().Settings;
+
   try {
     switch (deviceType) {
       case DEVICE_TYPE.local:
@@ -467,6 +478,7 @@ export function listDirectory({ ...args }, deviceType, getState) {
               error,
               stderr,
               data,
+              mtpMode,
               onSuccess: () => {
                 dispatch(_listDirectory(data, deviceType), getState);
                 dispatch(setSelectedDirLists({ selected: [] }, deviceType));

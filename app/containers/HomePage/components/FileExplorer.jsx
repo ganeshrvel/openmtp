@@ -1771,6 +1771,8 @@ const mapDispatchToProps = (dispatch, _) =>
         { filePath, newFilename, deviceType },
         { ...listDirectoryArgs }
       ) => async (_, getState) => {
+        const { mtpMode } = getState().Settings;
+
         try {
           switch (deviceType) {
             case DEVICE_TYPE.local:
@@ -1822,6 +1824,7 @@ const mapDispatchToProps = (dispatch, _) =>
                   error: mtpError,
                   stderr: mtpStderr,
                   data: mtpData,
+                  mtpMode,
                   onSuccess: () => {
                     dispatch(
                       listDirectory(
@@ -1847,6 +1850,8 @@ const mapDispatchToProps = (dispatch, _) =>
         { ...listDirectoryArgs }
       ) => async (_, getState) => {
         try {
+          const { mtpMode } = getState().Settings;
+
           switch (deviceType) {
             case DEVICE_TYPE.local:
               const {
@@ -1895,6 +1900,7 @@ const mapDispatchToProps = (dispatch, _) =>
                   error: mtpError,
                   stderr: mtpStderr,
                   data: mtpData,
+                  mtpMode,
                   onSuccess: () => {
                     dispatch(
                       listDirectory(
@@ -1952,6 +1958,8 @@ const mapDispatchToProps = (dispatch, _) =>
         deviceType
       ) => (_, getState) => {
         try {
+          const { mtpMode } = getState().Settings;
+
           const {
             destinationFolder,
             storageId,
@@ -1966,6 +1974,7 @@ const mapDispatchToProps = (dispatch, _) =>
                 error,
                 stderr,
                 data,
+                mtpMode,
                 onSuccess: () => {
                   getCurrentWindow().setProgressBar(-1);
                   dispatch(clearFileTransfer());

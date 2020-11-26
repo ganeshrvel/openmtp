@@ -317,6 +317,8 @@ const mapDispatchToProps = (dispatch, _) =>
         { ...listDirectoryArgs }
       ) => async (_, getState) => {
         try {
+          const { mtpMode } = getState().Settings;
+
           switch (deviceType) {
             case DEVICE_TYPE.local:
               const {
@@ -365,6 +367,7 @@ const mapDispatchToProps = (dispatch, _) =>
                   error: mtpError,
                   stderr: mtpStderr,
                   data: mtpData,
+                  mtpMode,
                   onSuccess: () => {
                     dispatch(
                       listDirectory(

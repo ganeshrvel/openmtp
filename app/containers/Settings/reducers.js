@@ -30,7 +30,7 @@ export const initialState = {
   showLocalPane: true,
   showLocalPaneOnLeftSide: true,
   showDirectoriesFirst: true,
-  mtpMode: MTP_MODE.kalam,
+  mtpMode: MTP_MODE.legacy,
 };
 
 export default function Settings(state = initialState, action) {
