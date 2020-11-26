@@ -19,7 +19,7 @@ typedef struct { const char *p; ptrdiff_t n; } _GoString_;
 /* Start of preamble from import "C" comments.  */
 
 
-#line 13 "kalam.go"
+#line 14 "kalam.go"
 	#include "stdint.h"
 
 #line 1 "cgo-generated-wrapper"

@@ -7,6 +7,7 @@ import (
 	jsoniter "github.com/json-iterator/go"
 	"log"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -50,6 +51,13 @@ func FetchDeviceInfo(ptr int64) {
 func FetchStorages(ptr int64) {
 	storages, err := _fetchStorages()
 	if err != nil {
+		if container.dev != nil && container.deviceInfo != nil &&
+			strings.Contains(strings.ToLower(container.deviceInfo.Manufacturer), "samsung") {
+			if strings.Contains(err.Error(), "EOF") {
+				err = fmt.Errorf("allow samsung storage access")
+			}
+		}
+
 		send_to_js.SendError(ptr, err)
 
 		return

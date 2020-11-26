@@ -5,10 +5,11 @@ import {
   processLocalBuffer,
 } from '../../utils/processBufferOutput';
 import { isArraysEqual, isEmpty } from '../../utils/funcs';
-import { DEVICE_TYPE } from '../../enums';
+import { DEVICE_TYPE, MTP_MODE } from '../../enums';
 import { log } from '../../utils/log';
 import fileExplorerController from '../../data/file-explorer/controllers/FileExplorerController';
 import { checkIf } from '../../utils/checkIf';
+import kalamFfi from '../../../ffi/kalam/src/Kalam';
 
 const prefix = '@@Home';
 const actionTypesList = [
@@ -111,11 +112,11 @@ export function initializeMtp(
 
   const { mtpStoragesList, mtpMode } = getState().Home;
 
-  return (dispatch) => {
+  return async (dispatch) => {
     try {
-      // await kalamFfi.InitializeMtp();
-      // await kalamFfi.FetchDeviceInfo();
-      // const { data: storagesData } = await kalamFfi.FetchStorages();
+      await kalamFfi.InitializeMtp();
+      await kalamFfi.FetchDeviceInfo();
+      const { data: storagesData } = await kalamFfi.FetchStorages();
       // const { data: mkDirData1 } = await kalamFfi.MakeDirectory({
       //   storageId: storagesData[0].Sid.toString(),
       //   fullPath: '/test2',
@@ -169,20 +170,102 @@ export function initializeMtp(
       // });
       // await kalamFfi.Dispose();
       // if(mode==legacy){
-      //   setLegacyMtpStorageOptions()
+      //   initLegacyMtp()
       // }
 
-      return dispatch(
-        setLegacyMtpStorageOptions(
-          {
-            filePath,
-            ignoreHidden,
-            deviceType,
-            mtpStoragesList,
-            changeMtpStorageIdsOnlyOnDeviceChange,
+      switch (mtpMode) {
+        case MTP_MODE.kalam:
+          return dispatch(
+            initKalamMtp(
+              {
+                filePath,
+                ignoreHidden,
+                deviceType,
+                mtpStoragesList,
+                changeMtpStorageIdsOnlyOnDeviceChange,
+              },
+              getState
+            )
+          );
+
+        case MTP_MODE.legacy:
+        default:
+          return dispatch(
+            initLegacyMtp(
+              {
+                filePath,
+                ignoreHidden,
+                deviceType,
+                mtpStoragesList,
+                changeMtpStorageIdsOnlyOnDeviceChange,
+              },
+              getState
+            )
+          );
+      }
+    } catch (e) {
+      log.error(e);
+    }
+  };
+}
+
+function initKalamMtp(
+  {
+    filePath,
+    ignoreHidden,
+    deviceType,
+    mtpStoragesList,
+    changeMtpStorageIdsOnlyOnDeviceChange,
+  },
+  getState
+) {
+  return async (dispatch) => {
+    checkIf(filePath, 'string');
+    checkIf(ignoreHidden, 'boolean');
+    checkIf(deviceType, 'string');
+    checkIf(mtpStoragesList, 'object');
+    checkIf(changeMtpStorageIdsOnlyOnDeviceChange, 'boolean');
+
+    try {
+      const { error, stderr, data } = await fileExplorerController.listStorages(
+        {
+          deviceType,
+        }
+      );
+
+      dispatch(
+        churnMtpBuffer({
+          deviceType,
+          error,
+          stderr,
+          data,
+          onSuccess: () => {
+            let updateMtpStorage = true;
+
+            if (
+              changeMtpStorageIdsOnlyOnDeviceChange &&
+              !isEmpty(mtpStoragesList) &&
+              isArraysEqual(Object.keys(data), Object.keys(mtpStoragesList))
+            ) {
+              updateMtpStorage = false;
+            }
+
+            if (updateMtpStorage) {
+              dispatch(changeMtpStorage({ ...data }));
+            }
+
+            dispatch(
+              listDirectory(
+                {
+                  filePath,
+                  ignoreHidden,
+                },
+                deviceType,
+                getState
+              )
+            );
           },
-          getState
-        )
+        })
       );
     } catch (e) {
       log.error(e);
@@ -190,7 +273,7 @@ export function initializeMtp(
   };
 }
 
-function setLegacyMtpStorageOptions(
+function initLegacyMtp(
   {
     filePath,
     ignoreHidden,
