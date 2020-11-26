@@ -99,7 +99,7 @@ export function getStorageId(state) {
   return null;
 }
 
-export function setMtpStorageOptions(
+export function initializeMtp(
   { filePath, ignoreHidden, changeMtpStorageIdsOnlyOnDeviceChange, deviceType },
   getState
 ) {
@@ -215,12 +215,12 @@ function setLegacyMtpStorageOptions(
       );
 
       dispatch(
-        processMtpOutput({
+        churnMtpBuffer({
           deviceType,
           error,
           stderr,
           data,
-          callback: () => {
+          onSuccess: () => {
             let updateMtpStorage = true;
 
             if (
@@ -268,7 +268,11 @@ export function setMtpStatus(data) {
   };
 }
 
-export function processMtpOutput({ deviceType, error, stderr, _, callback }) {
+// this is the main entry point of data received from the MTP kernel.
+// the data received here undergoes processing and the neccessary actions are taken accordingly
+export function churnMtpBuffer({ deviceType, error, stderr, _, onSuccess }) {
+  checkIf(onSuccess, 'function');
+
   return async (dispatch) => {
     try {
       const {
@@ -286,7 +290,7 @@ export function processMtpOutput({ deviceType, error, stderr, _, callback }) {
       }
 
       if (mtpError) {
-        log.error(mtpError, 'processMtpOutput', mtpLogError);
+        log.error(mtpError, 'churnMtpBuffer', mtpLogError);
         if (mtpThrowAlert) {
           dispatch(throwAlert({ message: mtpError.toString() }));
         }
@@ -294,14 +298,18 @@ export function processMtpOutput({ deviceType, error, stderr, _, callback }) {
         return false;
       }
 
-      callback();
+      onSuccess();
     } catch (e) {
       log.error(e);
     }
   };
 }
 
-export function processLocalOutput({ _, error, stderr, __, callback }) {
+// this is the main entry point of data received from the local disk file actions.
+// the data received here undergoes processing and the neccessary actions are taken accordingly
+export function churnLocalBuffer({ _, error, stderr, __, onSuccess }) {
+  checkIf(onSuccess, 'function');
+
   return (dispatch) => {
     try {
       const {
@@ -311,7 +319,7 @@ export function processLocalOutput({ _, error, stderr, __, callback }) {
       } = processLocalBuffer({ error, stderr });
 
       if (localError) {
-        log.error(localError, 'processLocalOutput', localLogError);
+        log.error(localError, 'churnLocalBuffer', localLogError);
 
         if (localThrowAlert) {
           dispatch(throwAlert({ message: localError.toString() }));
@@ -320,7 +328,7 @@ export function processLocalOutput({ _, error, stderr, __, callback }) {
         return false;
       }
 
-      callback();
+      onSuccess();
     } catch (e) {
       log.error(e);
     }
@@ -371,12 +379,12 @@ export function listDirectory({ ...args }, deviceType, getState) {
           });
 
           dispatch(
-            processMtpOutput({
+            churnMtpBuffer({
               deviceType,
               error,
               stderr,
               data,
-              callback: () => {
+              onSuccess: () => {
                 dispatch(_listDirectory(data, deviceType), getState);
                 dispatch(setSelectedDirLists({ selected: [] }, deviceType));
                 dispatch(setCurrentBrowsePath(args.filePath, deviceType));
@@ -412,7 +420,7 @@ export function reloadDirList(
 
       case DEVICE_TYPE.mtp:
         dispatch(
-          setMtpStorageOptions(
+          initializeMtp(
             {
               filePath,
               ignoreHidden,

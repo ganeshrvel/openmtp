@@ -11,8 +11,8 @@ import { withReducer } from '../../../store/reducers/withReducer';
 import reducers from '../reducers';
 import {
   listDirectory,
-  processMtpOutput,
-  processLocalOutput,
+  churnMtpBuffer,
+  churnLocalBuffer,
   changeMtpStorage,
   getStorageId,
   reloadDirList,
@@ -330,12 +330,12 @@ const mapDispatchToProps = (dispatch, _) =>
               });
 
               dispatch(
-                processLocalOutput({
+                churnLocalBuffer({
                   deviceType,
                   error: localError,
                   stderr: localStderr,
                   data: localData,
-                  callback: () => {
+                  onSuccess: () => {
                     dispatch(
                       listDirectory(
                         { ...listDirectoryArgs },
@@ -360,12 +360,12 @@ const mapDispatchToProps = (dispatch, _) =>
               });
 
               dispatch(
-                processMtpOutput({
+                churnMtpBuffer({
                   deviceType,
                   error: mtpError,
                   stderr: mtpStderr,
                   data: mtpData,
-                  callback: () => {
+                  onSuccess: () => {
                     dispatch(
                       listDirectory(
                         { ...listDirectoryArgs },

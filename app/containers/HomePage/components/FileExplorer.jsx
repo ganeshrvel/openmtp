@@ -29,9 +29,9 @@ import {
   setSortingDirLists,
   setSelectedDirLists,
   listDirectory,
-  processMtpOutput,
-  processLocalOutput,
-  setMtpStorageOptions,
+  churnMtpBuffer,
+  churnLocalBuffer,
+  initializeMtp,
   getStorageId,
   setFileTransferClipboard,
   setFilesDrag,
@@ -175,12 +175,12 @@ class FileExplorer extends Component {
     const {
       currentBrowsePath,
       deviceType,
-      actionCreateFetchMtpStorageOptions,
+      actionCreateInitializeMtp,
       hideHiddenFiles,
     } = this.props;
 
     if (deviceType === DEVICE_TYPE.mtp) {
-      actionCreateFetchMtpStorageOptions({
+      actionCreateInitializeMtp({
         filePath: currentBrowsePath[deviceType],
         ignoreHidden: hideHiddenFiles[deviceType],
         deviceType,
@@ -1746,13 +1746,12 @@ const mapDispatchToProps = (dispatch, _) =>
         dispatch(setSelectedDirLists({ selected }, deviceType));
       },
 
-      actionCreateFetchMtpStorageOptions: ({
-        filePath,
-        ignoreHidden,
-        deviceType,
-      }) => (_, getState) => {
+      actionCreateInitializeMtp: ({ filePath, ignoreHidden, deviceType }) => (
+        _,
+        getState
+      ) => {
         dispatch(
-          setMtpStorageOptions(
+          initializeMtp(
             {
               filePath,
               ignoreHidden,
@@ -1787,12 +1786,12 @@ const mapDispatchToProps = (dispatch, _) =>
               });
 
               dispatch(
-                processLocalOutput({
+                churnLocalBuffer({
                   deviceType,
                   error: localError,
                   stderr: localStderr,
                   data: localData,
-                  callback: () => {
+                  onSuccess: () => {
                     dispatch(
                       listDirectory(
                         { ...listDirectoryArgs },
@@ -1818,12 +1817,12 @@ const mapDispatchToProps = (dispatch, _) =>
               });
 
               dispatch(
-                processMtpOutput({
+                churnMtpBuffer({
                   deviceType,
                   error: mtpError,
                   stderr: mtpStderr,
                   data: mtpData,
-                  callback: () => {
+                  onSuccess: () => {
                     dispatch(
                       listDirectory(
                         { ...listDirectoryArgs },
@@ -1861,12 +1860,12 @@ const mapDispatchToProps = (dispatch, _) =>
               });
 
               dispatch(
-                processLocalOutput({
+                churnLocalBuffer({
                   deviceType,
                   error: localError,
                   stderr: localStderr,
                   data: localData,
-                  callback: () => {
+                  onSuccess: () => {
                     dispatch(
                       listDirectory(
                         { ...listDirectoryArgs },
@@ -1891,12 +1890,12 @@ const mapDispatchToProps = (dispatch, _) =>
               });
 
               dispatch(
-                processMtpOutput({
+                churnMtpBuffer({
                   deviceType,
                   error: mtpError,
                   stderr: mtpStderr,
                   data: mtpData,
-                  callback: () => {
+                  onSuccess: () => {
                     dispatch(
                       listDirectory(
                         { ...listDirectoryArgs },
@@ -1962,12 +1961,12 @@ const mapDispatchToProps = (dispatch, _) =>
           // on error callback for file transfer
           const onError = ({ error, stderr, data }) => {
             dispatch(
-              processMtpOutput({
+              churnMtpBuffer({
                 deviceType: DEVICE_TYPE.mtp,
                 error,
                 stderr,
                 data,
-                callback: () => {
+                onSuccess: () => {
                   getCurrentWindow().setProgressBar(-1);
                   dispatch(clearFileTransfer());
                   dispatch(
