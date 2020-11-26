@@ -80,11 +80,13 @@ func processError(e error) (errorType ErrorType, errorMsg string) {
 			errorType = ErrorMtpChanged
 			errorMsg = e.Error()
 		} else {
+			// Mark an error as general error as a fallthrough
 			errorType = ErrorGeneral
 			errorMsg = e.Error()
 		}
 	}
 
+	// handle special cases of error
 	if strings.Contains(errorMsg, "allow samsung storage access") {
 		errorType = ErrorAllowSamsungStorageAccess
 		errorMsg = e.Error()
