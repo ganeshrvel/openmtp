@@ -4,7 +4,7 @@ import {
   processMtpBuffer,
   processLocalBuffer,
 } from '../../utils/processBufferOutput';
-import { isArraysEqual } from '../../utils/funcs';
+import { isArraysEqual, isEmpty } from '../../utils/funcs';
 import { DEVICE_TYPE } from '../../enums';
 import { log } from '../../utils/log';
 import fileExplorerController from '../../data/file-explorer/controllers/FileExplorerController';
@@ -232,7 +232,7 @@ function setLegacyMtpStorageOptions(
 
             if (
               changeMtpStorageIdsOnlyOnDeviceChange &&
-              Object.keys(mtpStoragesList).length > 0 &&
+              !isEmpty(mtpStoragesList) &&
               isArraysEqual(Object.keys(data), Object.keys(mtpStoragesList))
             ) {
               changeMtpIdsFlag = false;

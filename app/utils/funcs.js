@@ -1,3 +1,4 @@
+import { isObject } from 'nice-utils';
 import { APP_TITLEBAR_DOM_ID } from '../constants/dom';
 
 export const isArraysEqual = (a, b) => {
@@ -154,8 +155,16 @@ export const undefinedOrNull = (_var) => {
   return typeof _var === 'undefined' || _var === null;
 };
 
-export const isEmpty = (_var) => {
-  return undefinedOrNull(_var) || _var.length < 1;
+export const isEmpty = (x) => {
+  if (undefinedOrNull(x)) {
+    return true;
+  }
+
+  if (isObject(x) && Object.keys(x).length < 1) {
+    return true;
+  }
+
+  return x.length < 1;
 };
 
 /**

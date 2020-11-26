@@ -7158,6 +7158,11 @@ nice-try@^1.0.4:
   resolved "https://registry.yarnpkg.com/nice-try/-/nice-try-1.0.5.tgz#a3378a7696ce7d223e88fc9b764bd7ef1089e366"
   integrity sha512-1nh45deeb5olNY7eX82BkPO7SSxR5SSYJiPTrTdFUVYwAl8CKMA5N9PjTYkHiRjisVcxcQ1HXdLhx2qxxJzLNQ==
 
+nice-utils@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/nice-utils/-/nice-utils-1.0.3.tgz#fe1705e4fe56dae33bde5258c64ee16cc9fdc652"
+  integrity sha512-d2R2j4JPQf2dKLQapMuitX56LDFrqSekGb+g3SZ15pnyYEO2JfWSHrRdBEKXUO+AowcjZfzP1d7Ba/zeKUecBg==
+
 no-case@^3.0.3:
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/no-case/-/no-case-3.0.3.tgz#c21b434c1ffe48b39087e86cfb4d2582e9df18f8"
