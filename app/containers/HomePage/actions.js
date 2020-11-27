@@ -297,10 +297,20 @@ function initKalamMtp(
       checkIf(postStorageAccessMtpDevice, 'object');
 
       if (!postStorageAccessMtpDevice.isAvailable) {
+        console.log('postStorageAccessMtpDevice not isAvailable');
+
         return;
       }
+      console.log('postStorageAccessMtpDevice isAvailable');
 
       dispatch(reloadDirList({ filePath, ignoreHidden, deviceType }, getState));
+
+      //todo
+      //todo
+      //todo
+      //todo
+      //todo
+      //todo
     } catch (e) {
       log.error(e);
     }
@@ -477,6 +487,8 @@ export function churnMtpBuffer({
         throwAlert: mtpThrowAlert,
         logError: mtpLogError,
       } = await processMtpBuffer({ error, stderr, mtpMode });
+
+      console.log('mtpStatus', mtpStatus);
 
       dispatch(
         setMtpStatus({
@@ -655,6 +667,8 @@ export function reloadDirList(
             if (mtpDevice.isAvailable) {
               //todo if an error occured while listing then call init mtp
 
+              console.log('isAvailable');
+
               return dispatch(
                 listDirectory(
                   {
@@ -667,6 +681,7 @@ export function reloadDirList(
               );
             }
 
+            console.log('not isAvailable');
             // if the mtp was not previously initialized then initialize it
             return dispatch(
               initializeMtp(
