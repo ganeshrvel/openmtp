@@ -40,13 +40,17 @@ export class Kalam {
     };
   }
 
-  async InitializeMtp() {
+  /**
+   * description - Initialize Kalam MTP
+   *
+   * @return {Promise<object>}
+   * @constructor
+   */
+  async initialize() {
     return new Promise((resolve) => {
       try {
         const onDone = ffi.Callback('void', ['string'], (result) => {
           const json = JSON.parse(result);
-
-          console.log('InitializeMtp: ', json);
 
           return resolve(this._getData(json));
         });
@@ -66,13 +70,17 @@ export class Kalam {
     });
   }
 
-  async FetchDeviceInfo() {
+  /**
+   * description - Fetch device information
+   *
+   * @return {Promise<object>}
+   * @constructor
+   */
+  async fetchDeviceInfo() {
     return new Promise((resolve) => {
       try {
         const onDone = ffi.Callback('void', ['string'], (result) => {
           const json = JSON.parse(result);
-
-          console.log('FetchDeviceInfo: ', json);
 
           return resolve(this._getData(json));
         });
@@ -92,13 +100,17 @@ export class Kalam {
     });
   }
 
-  async FetchStorages() {
+  /**
+   * description - Fetch Storages
+   *
+   * @return {Promise<[string]>}
+   * @constructor
+   */
+  async listStorages() {
     return new Promise((resolve) => {
       try {
         const onDone = ffi.Callback('void', ['string'], (result) => {
           const json = JSON.parse(result);
-
-          console.log('FetchStorages: ', json);
 
           return resolve(this._getData(json));
         });
@@ -118,7 +130,7 @@ export class Kalam {
     });
   }
 
-  async MakeDirectory({ storageId, fullPath }) {
+  async makeDirectory({ storageId, fullPath }) {
     checkIf(storageId, 'numericString');
     checkIf(fullPath, 'string');
 
@@ -126,8 +138,6 @@ export class Kalam {
       try {
         const onDone = ffi.Callback('void', ['string'], (result) => {
           const json = JSON.parse(result);
-
-          console.log('MakeDirectory: ', json);
 
           return resolve(this._getData(json));
         });
@@ -152,7 +162,7 @@ export class Kalam {
     });
   }
 
-  async FileExists({ storageId, files }) {
+  async fileExists({ storageId, files }) {
     checkIf(storageId, 'numericString');
     checkIf(files, 'array');
 
@@ -160,8 +170,6 @@ export class Kalam {
       try {
         const onDone = ffi.Callback('void', ['string'], (result) => {
           const json = JSON.parse(result);
-
-          console.log('FileExists: ', json);
 
           return resolve(this._getData(json));
         });
@@ -186,7 +194,7 @@ export class Kalam {
     });
   }
 
-  async DeleteFile({ storageId, files }) {
+  async deleteFile({ storageId, files }) {
     checkIf(storageId, 'numericString');
     checkIf(files, 'array');
 
@@ -194,8 +202,6 @@ export class Kalam {
       try {
         const onDone = ffi.Callback('void', ['string'], (result) => {
           const json = JSON.parse(result);
-
-          console.log('DeleteFile: ', json);
 
           return resolve(this._getData(json));
         });
@@ -220,7 +226,7 @@ export class Kalam {
     });
   }
 
-  async RenameFile({ storageId, fullPath, newFileName }) {
+  async renameFile({ storageId, fullPath, newFileName }) {
     checkIf(storageId, 'numericString');
     checkIf(fullPath, 'string');
     checkIf(newFileName, 'string');
@@ -229,8 +235,6 @@ export class Kalam {
       try {
         const onDone = ffi.Callback('void', ['string'], (result) => {
           const json = JSON.parse(result);
-
-          console.log('RenameFile: ', json);
 
           return resolve(this._getData(json));
         });
@@ -255,15 +259,20 @@ export class Kalam {
     });
   }
 
-  async Walk({ storageId, fullPath }) {
+  /**
+   * description - Walk files
+   *
+   * @return {Promise<[string]>}
+   * @constructor
+   */
+  async walk({ storageId, fullPath }) {
     checkIf(storageId, 'numericString');
+    checkIf(fullPath, 'string');
 
     return new Promise((resolve) => {
       try {
         const onDone = ffi.Callback('void', ['string'], (result) => {
           const json = JSON.parse(result);
-
-          console.log('Walk: ', json);
 
           return resolve(this._getData(json));
         });
@@ -293,7 +302,7 @@ export class Kalam {
     });
   }
 
-  async UploadFiles({ storageId, sources, destination, preprocessFiles }) {
+  async uploadFiles({ storageId, sources, destination, preprocessFiles }) {
     checkIf(storageId, 'numericString');
     checkIf(sources, 'array');
     checkIf(destination, 'string');
@@ -308,8 +317,6 @@ export class Kalam {
           if (!undefinedOrNull(err.error)) {
             return resolve(err);
           }
-
-          console.log('UploadFiles onPreprocess: ', json);
         });
 
         const onProgress = ffi.Callback('void', ['string'], (result) => {
@@ -319,14 +326,10 @@ export class Kalam {
           if (!undefinedOrNull(err.error)) {
             return resolve(err);
           }
-
-          console.log('UploadFiles onProgress: ', json);
         });
 
         const onDone = ffi.Callback('void', ['string'], (result) => {
           const json = JSON.parse(result);
-
-          console.log('UploadFiles onDone: ', json);
 
           return resolve(this._getData(json));
         });
@@ -362,7 +365,7 @@ export class Kalam {
     });
   }
 
-  async DownloadFiles({ storageId, sources, destination, preprocessFiles }) {
+  async downloadFiles({ storageId, sources, destination, preprocessFiles }) {
     checkIf(storageId, 'numericString');
     checkIf(sources, 'array');
     checkIf(destination, 'string');
@@ -377,8 +380,6 @@ export class Kalam {
           if (!undefinedOrNull(err.error)) {
             return resolve(err);
           }
-
-          console.log('DownloadFiles onPreprocess: ', json);
         });
 
         const onProgress = ffi.Callback('void', ['string'], (result) => {
@@ -388,14 +389,10 @@ export class Kalam {
           if (!undefinedOrNull(err.error)) {
             return resolve(err);
           }
-
-          console.log('DownloadFiles onProgress: ', json);
         });
 
         const onDone = ffi.Callback('void', ['string'], (result) => {
           const json = JSON.parse(result);
-
-          console.log('DownloadFiles onDone: ', json);
 
           return resolve(this._getData(json));
         });
@@ -431,13 +428,11 @@ export class Kalam {
     });
   }
 
-  async Dispose() {
+  async dispose() {
     return new Promise((resolve) => {
       try {
         const onDone = ffi.Callback('void', ['string'], (result) => {
           const json = JSON.parse(result);
-
-          console.log('Dispose: ', json);
 
           return resolve(this._getData(json));
         });
@@ -457,7 +452,3 @@ export class Kalam {
     });
   }
 }
-
-const kalamFfi = new Kalam();
-
-export default kalamFfi;

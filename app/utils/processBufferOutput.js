@@ -7,6 +7,7 @@ import { isGoogleAndroidFileTransferActive } from './isGoogleAndroidFileTransfer
 import { DEVICES_LABEL } from '../constants';
 import { DEVICE_TYPE, MTP_MODE } from '../enums';
 import { checkIf } from './checkIf';
+import { MTP_ERROR } from '../enums/mtpError';
 
 export const processMtpBuffer = async ({ error, stderr, mtpMode }) => {
   checkIf(mtpMode, 'string');
@@ -21,39 +22,44 @@ export const processMtpBuffer = async ({ error, stderr, mtpMode }) => {
 // [stderr] variable will hold the kalam ffi errorTypes
 export const processKalamMtpBuffer = async ({ error, stderr }) => {
   const mtpErrors = {
-    ErrorMtpDetectFailed: `No ${
+    [MTP_ERROR.ErrorMtpDetectFailed]: `No ${
       DEVICES_LABEL[DEVICE_TYPE.mtp]
     } or MTP device found.`,
-    ErrorMtpChanged: null,
-    ErrorDeviceSetup: `An error occured while setting up the ${
+    [MTP_ERROR.ErrorMtpChanged]: null,
+    [MTP_ERROR.ErrorDeviceSetup]: `An error occured while setting up the ${
       DEVICES_LABEL[DEVICE_TYPE.mtp]
     }`,
-    ErrorDeviceLocked: `Unlock your ${
+    [MTP_ERROR.ErrorDeviceLocked]: `Unlock your ${
       DEVICES_LABEL[DEVICE_TYPE.mtp]
     } and refresh again`,
-    ErrorMultipleDevice: 'Multiple MTP devices found',
-    ErrorAllowStorageAccess: `Accept MTP access to your ${
+    [MTP_ERROR.ErrorMultipleDevice]: 'Multiple MTP devices found',
+    [MTP_ERROR.ErrorAllowStorageAccess]: `Accept MTP access to your ${
       DEVICES_LABEL[DEVICE_TYPE.mtp]
     }'s storage and refresh again`,
-    ErrorDeviceInfo: 'An error occured while fetching the device information',
-    ErrorStorageInfo: 'An error occured while fetching the storage information',
-    ErrorNoStorage: `Your ${
+    [MTP_ERROR.ErrorDeviceInfo]:
+      'An error occured while fetching the device information',
+    [MTP_ERROR.ErrorStorageInfo]:
+      'An error occured while fetching the storage information',
+    [MTP_ERROR.ErrorNoStorage]: `Your ${
       DEVICES_LABEL[DEVICE_TYPE.mtp]
     } storage is inaccessible.`,
-    ErrorStorageFull: `${DEVICES_LABEL[DEVICE_TYPE.mtp]} storage is full`,
-    ErrorListDirectory: `An error occured while listing the ${
+    [MTP_ERROR.ErrorStorageFull]: `${
+      DEVICES_LABEL[DEVICE_TYPE.mtp]
+    } storage is full`,
+    [MTP_ERROR.ErrorListDirectory]: `An error occured while listing the ${
       DEVICES_LABEL[DEVICE_TYPE.mtp]
     } directory! Try again.`,
-    ErrorFileNotFound: 'File not found',
-    ErrorFilePermission: `Operation not permitted`,
-    ErrorLocalFileRead: `The file is inaccessible`,
-    ErrorInvalidPath: 'Invalid path',
-    ErrorFileTransfer:
+    [MTP_ERROR.ErrorFileNotFound]: 'File not found',
+    [MTP_ERROR.ErrorFilePermission]: `Operation not permitted`,
+    [MTP_ERROR.ErrorLocalFileRead]: `The file is inaccessible`,
+    [MTP_ERROR.ErrorInvalidPath]: 'Invalid path',
+    [MTP_ERROR.ErrorFileTransfer]:
       'An error occured while transferring the file! Try again.',
-    ErrorFileObjectRead:
+    [MTP_ERROR.ErrorFileObjectRead]:
       'An error occured while reading the MTP file object! Try again.',
-    ErrorSendObject: 'An error occured while sending the object! Try again.',
-    ErrorGeneral: `Oops.. Your ${
+    [MTP_ERROR.ErrorSendObject]:
+      'An error occured while sending the object! Try again.',
+    [MTP_ERROR.ErrorGeneral]: `Oops.. Your ${
       DEVICES_LABEL[DEVICE_TYPE.mtp]
     } has gone crazy! Try again.`,
   };
@@ -80,7 +86,7 @@ export const processKalamMtpBuffer = async ({ error, stderr }) => {
 
   switch (stderr) {
     /* No MTP device found */
-    case 'ErrorMtpDetectFailed':
+    case MTP_ERROR.ErrorMtpDetectFailed:
       const _isGoogleAndroidFileTransferActive = await isGoogleAndroidFileTransferActive();
 
       if (_isGoogleAndroidFileTransferActive) {
@@ -99,7 +105,7 @@ export const processKalamMtpBuffer = async ({ error, stderr }) => {
         mtpStatus: false,
       };
 
-    case 'ErrorStorageFull':
+    case MTP_ERROR.ErrorStorageFull:
       return {
         error: processErrorValue,
         throwAlert: true,
@@ -107,7 +113,7 @@ export const processKalamMtpBuffer = async ({ error, stderr }) => {
         mtpStatus: false,
       };
 
-    case 'ErrorNoStorage':
+    case MTP_ERROR.ErrorNoStorage:
       return {
         error: processErrorValue,
         throwAlert: true,
@@ -115,7 +121,7 @@ export const processKalamMtpBuffer = async ({ error, stderr }) => {
         mtpStatus: false,
       };
 
-    case 'ErrorStorageInfo':
+    case MTP_ERROR.ErrorStorageInfo:
       return {
         error: processErrorValue,
         throwAlert: true,
@@ -123,7 +129,7 @@ export const processKalamMtpBuffer = async ({ error, stderr }) => {
         mtpStatus: false,
       };
 
-    case 'ErrorDeviceInfo':
+    case MTP_ERROR.ErrorDeviceInfo:
       return {
         error: processErrorValue,
         throwAlert: true,
@@ -131,7 +137,7 @@ export const processKalamMtpBuffer = async ({ error, stderr }) => {
         mtpStatus: false,
       };
 
-    case 'ErrorMultipleDevice':
+    case MTP_ERROR.ErrorMultipleDevice:
       return {
         error: processErrorValue,
         throwAlert: true,
@@ -139,7 +145,7 @@ export const processKalamMtpBuffer = async ({ error, stderr }) => {
         mtpStatus: false,
       };
 
-    case 'ErrorDeviceSetup':
+    case MTP_ERROR.ErrorDeviceSetup:
       return {
         error: processErrorValue,
         throwAlert: true,
@@ -147,7 +153,7 @@ export const processKalamMtpBuffer = async ({ error, stderr }) => {
         mtpStatus: false,
       };
 
-    case 'ErrorSendObject':
+    case MTP_ERROR.ErrorSendObject:
       return {
         error: processErrorValue,
         throwAlert: true,
@@ -155,7 +161,7 @@ export const processKalamMtpBuffer = async ({ error, stderr }) => {
         mtpStatus: true,
       };
 
-    case 'ErrorFileObjectRead':
+    case MTP_ERROR.ErrorFileObjectRead:
       return {
         error: processErrorValue,
         throwAlert: true,
@@ -163,7 +169,7 @@ export const processKalamMtpBuffer = async ({ error, stderr }) => {
         mtpStatus: true,
       };
 
-    case 'ErrorFileTransfer':
+    case MTP_ERROR.ErrorFileTransfer:
       return {
         error: processErrorValue,
         throwAlert: true,
@@ -171,7 +177,7 @@ export const processKalamMtpBuffer = async ({ error, stderr }) => {
         mtpStatus: true,
       };
 
-    case 'ErrorInvalidPath':
+    case MTP_ERROR.ErrorInvalidPath:
       return {
         error: processErrorValue,
         throwAlert: true,
@@ -179,7 +185,7 @@ export const processKalamMtpBuffer = async ({ error, stderr }) => {
         mtpStatus: true,
       };
 
-    case 'ErrorLocalFileRead':
+    case MTP_ERROR.ErrorLocalFileRead:
       return {
         error: processErrorValue,
         throwAlert: true,
@@ -187,7 +193,7 @@ export const processKalamMtpBuffer = async ({ error, stderr }) => {
         mtpStatus: true,
       };
 
-    case 'ErrorFilePermission':
+    case MTP_ERROR.ErrorFilePermission:
       return {
         error: processErrorValue,
         throwAlert: true,
@@ -195,7 +201,7 @@ export const processKalamMtpBuffer = async ({ error, stderr }) => {
         mtpStatus: true,
       };
 
-    case 'ErrorFileNotFound':
+    case MTP_ERROR.ErrorFileNotFound:
       return {
         error: processErrorValue,
         throwAlert: true,
@@ -203,7 +209,7 @@ export const processKalamMtpBuffer = async ({ error, stderr }) => {
         mtpStatus: true,
       };
 
-    case 'ErrorListDirectory':
+    case MTP_ERROR.ErrorListDirectory:
       return {
         error: processErrorValue,
         throwAlert: true,
@@ -211,7 +217,7 @@ export const processKalamMtpBuffer = async ({ error, stderr }) => {
         mtpStatus: true,
       };
 
-    case 'ErrorAllowStorageAccess':
+    case MTP_ERROR.ErrorAllowStorageAccess:
       return {
         error: processErrorValue,
         throwAlert: true,
@@ -219,7 +225,7 @@ export const processKalamMtpBuffer = async ({ error, stderr }) => {
         mtpStatus: false,
       };
 
-    case 'ErrorMtpChanged':
+    case MTP_ERROR.ErrorMtpChanged:
       return {
         error: processErrorValue,
         throwAlert: false,
@@ -227,7 +233,15 @@ export const processKalamMtpBuffer = async ({ error, stderr }) => {
         mtpStatus: false,
       };
 
-    case 'ErrorGeneral':
+    case MTP_ERROR.ErrorDeviceLocked:
+      return {
+        error: processErrorValue,
+        throwAlert: true,
+        logError: true,
+        mtpStatus: false,
+      };
+
+    case MTP_ERROR.ErrorGeneral:
     default:
       return {
         error: processErrorValue,

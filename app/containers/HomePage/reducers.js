@@ -143,6 +143,7 @@ export const initialState = {
 
   mtpDevice: {
     isAvailable: false,
+    error: null,
   },
   contextMenuList: {
     [DEVICE_TYPE.local]: {
@@ -201,6 +202,18 @@ export const initialState = {
     },
   },
 
+  /**
+   *
+   * Model:
+   * {
+   *      string: { <----- storageId
+   *        "name": string,
+   *        "selected": boolean,
+   *        "info": {} | undefined,
+   *      }
+   *    }
+   *
+   */
   mtpStoragesList: {},
 
   fileTransfer: {
@@ -278,7 +291,7 @@ export default function Home(state = initialState, action) {
         ...state,
         mtpDevice: {
           ...state.mtpDevice,
-          isAvailable: payload,
+          ...payload,
         },
       };
 

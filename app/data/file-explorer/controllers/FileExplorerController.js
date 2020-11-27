@@ -7,6 +7,17 @@ class FileExplorerController {
   }
 
   /**
+   * description - Initialize
+   *
+   * @return {Promise<{data: object, error: string|null, stderr: string|null}>}
+   */
+  async initialize({ deviceType }) {
+    checkIf(deviceType, 'string');
+
+    return this.repository.initialize({ deviceType });
+  }
+
+  /**
    * description - Fetch storages
    *
    * @return {Promise<{data: object|boolean, error: string|null, stderr: string|null}>}

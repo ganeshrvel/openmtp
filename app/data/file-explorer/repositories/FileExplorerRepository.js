@@ -15,6 +15,28 @@ export class FileExplorerRepository {
   }
 
   /**
+   * description - Initialize
+   *
+   * @return {Promise<{data: object, error: string|null, stderr: string|null}>}
+   */
+  async initialize({ deviceType }) {
+    checkIf(deviceType, 'string');
+
+    if (deviceType === DEVICE_TYPE.mtp) {
+      switch (selectedMtpMode) {
+        case MTP_MODE.legacy:
+          throw `initialize for MTP_MODE.legacy is unimplemented`;
+
+        case MTP_MODE.kalam:
+        default:
+          return this.kalamyMtpDataSource.initialize();
+      }
+    }
+
+    throw `initialize for deviceType=DEVICE_TYPE.local is unimplemented`;
+  }
+
+  /**
    * description - Fetch storages
    *
    * @return {Promise<{data: object|boolean, error: string|null, stderr: string|null}>}
@@ -27,11 +49,10 @@ export class FileExplorerRepository {
 
         case MTP_MODE.kalam:
         default:
-          return;
+          return this.kalamyMtpDataSource.listStorages();
       }
     }
 
-    // eslint-disable-next-line no-throw-literal
     throw `listStorages for deviceType=DEVICE_TYPE.local is unimplemented`;
   }
 
@@ -58,7 +79,11 @@ export class FileExplorerRepository {
 
         case MTP_MODE.kalam:
         default:
-          return;
+          return this.kalamyMtpDataSource.listFiles({
+            filePath,
+            ignoreHidden,
+            storageId,
+          });
       }
     }
 

@@ -9,10 +9,10 @@ type ErrorType string
 
 type FileInfo struct {
 	Size       int64  `json:"size"`
-	IsDir      bool   `json:"isDir"`
-	ModTime    string `json:"modTime"`
+	IsDir      bool   `json:"isFolder"`
+	ModTime    string `json:"dateAdded"`
 	Name       string `json:"name"`
-	FullPath   string `json:"fullPath"`
+	FullPath   string `json:"path"`
 	ParentPath string `json:"parentPath"`
 	Extension  string `json:"extension"`
 	ParentId   uint32 `json:"parentId"`
@@ -126,7 +126,7 @@ type RenameFileResult struct {
 type WalkResult struct {
 	ErrorType ErrorType  `json:"errorType"`
 	Error     string     `json:"error"`
-	Data      []FileInfo `json:"fileInfo"`
+	Data      []FileInfo `json:"data"`
 }
 
 type UploadFilesPreprocessResult struct {

@@ -4,12 +4,12 @@ import {
   processMtpBuffer,
   processLocalBuffer,
 } from '../../utils/processBufferOutput';
-import { isArraysEqual, isEmpty } from '../../utils/funcs';
+import { isArraysEqual, isEmpty, undefinedOrNull } from '../../utils/funcs';
 import { DEVICE_TYPE, MTP_MODE } from '../../enums';
 import { log } from '../../utils/log';
 import fileExplorerController from '../../data/file-explorer/controllers/FileExplorerController';
 import { checkIf } from '../../utils/checkIf';
-import kalamFfi from '../../../ffi/kalam/src/Kalam';
+import { MTP_ERROR } from '../../enums/mtpError';
 
 const prefix = '@@Home';
 const actionTypesList = [
@@ -80,7 +80,7 @@ function _listDirectory(data, deviceType, _) {
 
 export function getStorageId(state) {
   if (
-    typeof Object.keys(state.mtpStoragesList).length === 'undefined' ||
+    undefinedOrNull(state.mtpStoragesList) ||
     Object.keys(state.mtpStoragesList).length < 1
   ) {
     return null;
@@ -182,7 +182,6 @@ export function initializeMtp(
                 filePath,
                 ignoreHidden,
                 deviceType,
-                mtpStoragesList,
                 changeMtpStorageIdsOnlyOnDeviceChange,
               },
               getState
@@ -213,77 +212,95 @@ export function initializeMtp(
 }
 
 function initKalamMtp(
-  {
-    filePath,
-    ignoreHidden,
-    deviceType,
-    mtpStoragesList,
-    changeMtpStorageIdsOnlyOnDeviceChange,
-  },
+  { filePath, ignoreHidden, deviceType, changeMtpStorageIdsOnlyOnDeviceChange },
   getState
 ) {
   return async (dispatch) => {
     checkIf(filePath, 'string');
     checkIf(ignoreHidden, 'boolean');
     checkIf(deviceType, 'string');
-    checkIf(mtpStoragesList, 'object');
     checkIf(changeMtpStorageIdsOnlyOnDeviceChange, 'boolean');
 
     try {
       const { mtpMode } = getState().Settings;
-      //todo move
-      const { error, stderr, data } = await kalamFfi.InitializeMtp();
+      const { mtpDevice: preInitMtpDevice } = getState().Home;
 
-      const { error: initializeError } = await new Promise((resolve) => {
-        dispatch(
-          churnMtpBuffer({
-            deviceType,
-            error,
-            stderr,
-            data,
-            mtpMode,
-            onSuccess: () => {
-              //todo set device info
-              return resolve({
-                error: null,
-                stderr: null,
-                data,
-              });
-            },
-            onError: () => {
-              return resolve({
-                error,
-                stderr,
-                data: null,
-              });
-            },
-          })
-        );
-      });
+      checkIf(preInitMtpDevice, 'object');
 
-      const {
-        data: storagesData,
-        error: _error,
-        stderr: _stderr,
-      } = await kalamFfi.FetchStorages();
+      // if the app was expecting the user to allow access to mtp storage
+      // then don't reinitialize mtp
+      if (preInitMtpDevice?.error !== MTP_ERROR.ErrorAllowStorageAccess) {
+        const {
+          error,
+          stderr,
+          data,
+        } = await fileExplorerController.initialize({ deviceType });
 
-      if (initializeError) {
+        await new Promise((resolve) => {
+          dispatch(
+            churnMtpBuffer({
+              deviceType,
+              error,
+              stderr,
+              data,
+              mtpMode,
+              onSuccess: () => {
+                //todo set device info
+                return resolve({
+                  error: null,
+                  stderr: null,
+                  data,
+                });
+              },
+              onError: () => {
+                return resolve({
+                  error,
+                  stderr,
+                  data: null,
+                });
+              },
+            })
+          );
+        });
+      }
+
+      const { mtpDevice: postInitMtpDevice } = getState().Home;
+
+      checkIf(postInitMtpDevice, 'object');
+
+      if (!postInitMtpDevice.isAvailable) {
         return;
       }
 
-      const {
-        stderr: listStoragesStderr,
-        error: listStoragesError,
-      } = await listKalamStorages(
-        {
-          filePath,
-          ignoreHidden,
-          deviceType,
-          mtpStoragesList,
-          changeMtpStorageIdsOnlyOnDeviceChange,
-        },
-        getState
-      );
+      await new Promise((resolve) => {
+        dispatch(
+          listKalamStorages(
+            {
+              filePath,
+              ignoreHidden,
+              deviceType,
+              changeMtpStorageIdsOnlyOnDeviceChange,
+              onSuccess() {
+                resolve();
+              },
+              onError() {
+                resolve();
+              },
+            },
+            getState
+          )
+        );
+      });
+
+      const { mtpDevice: postStorageAccessMtpDevice } = getState().Home;
+
+      checkIf(postStorageAccessMtpDevice, 'object');
+
+      if (!postStorageAccessMtpDevice.isAvailable) {
+        return;
+      }
+
+      dispatch(reloadDirList({ filePath, ignoreHidden, deviceType }, getState));
     } catch (e) {
       log.error(e);
     }
@@ -295,8 +312,9 @@ function listKalamStorages(
     filePath,
     ignoreHidden,
     deviceType,
-    mtpStoragesList,
     changeMtpStorageIdsOnlyOnDeviceChange,
+    onSuccess,
+    onError,
   },
   getState
 ) {
@@ -304,11 +322,14 @@ function listKalamStorages(
     checkIf(filePath, 'string');
     checkIf(ignoreHidden, 'boolean');
     checkIf(deviceType, 'string');
-    checkIf(mtpStoragesList, 'object');
     checkIf(changeMtpStorageIdsOnlyOnDeviceChange, 'boolean');
+    checkIf(onSuccess, 'function');
+    checkIf(onError, 'function');
 
     try {
       const { mtpMode } = getState().Settings;
+
+      checkIf(mtpMode, 'string');
 
       const { error, stderr, data } = await fileExplorerController.listStorages(
         {
@@ -327,6 +348,8 @@ function listKalamStorages(
             onSuccess: async () => {
               dispatch(changeMtpStorage({ ...data }));
 
+              onSuccess();
+
               return resolve({
                 error: null,
                 stderr: null,
@@ -334,6 +357,8 @@ function listKalamStorages(
               });
             },
             onError: async () => {
+              onError();
+
               return resolve({
                 error,
                 stderr,
@@ -423,10 +448,10 @@ export function changeMtpStorage({ ...data }) {
   };
 }
 
-export function setMtpStatus(data) {
+export function setMtpStatus({ isAvailable, error }) {
   return {
     type: actionTypes.SET_MTP_STATUS,
-    payload: data,
+    payload: { isAvailable, error },
   };
 }
 
@@ -453,7 +478,12 @@ export function churnMtpBuffer({
         logError: mtpLogError,
       } = await processMtpBuffer({ error, stderr, mtpMode });
 
-      dispatch(setMtpStatus(mtpStatus));
+      dispatch(
+        setMtpStatus({
+          isAvailable: mtpStatus,
+          error: mtpMode === MTP_MODE.kalam ? stderr : error,
+        })
+      );
 
       if (!mtpStatus) {
         dispatch(_listDirectory([], deviceType));
@@ -510,7 +540,13 @@ export function churnLocalBuffer({ _, error, stderr, __, onSuccess }) {
   };
 }
 
-export function listDirectory({ ...args }, deviceType, getState) {
+export function listDirectory(
+  { filePath, ignoreHidden },
+  deviceType,
+  getState
+) {
+  checkIf(filePath, 'string');
+  checkIf(ignoreHidden, 'boolean');
   checkIf(getState, 'function');
 
   const { mtpMode } = getState().Settings;
@@ -521,8 +557,8 @@ export function listDirectory({ ...args }, deviceType, getState) {
         return async (dispatch) => {
           const { error, data } = await fileExplorerController.listFiles({
             deviceType,
-            filePath: args.filePath,
-            ignoreHidden: args.ignoreHidden,
+            filePath,
+            ignoreHidden,
             storageId: null,
           });
 
@@ -536,7 +572,7 @@ export function listDirectory({ ...args }, deviceType, getState) {
           }
 
           dispatch(_listDirectory(data, deviceType), getState);
-          dispatch(setCurrentBrowsePath(args.filePath, deviceType));
+          dispatch(setCurrentBrowsePath(filePath, deviceType));
           dispatch(setSelectedDirLists({ selected: [] }, deviceType));
         };
 
@@ -550,8 +586,8 @@ export function listDirectory({ ...args }, deviceType, getState) {
             data,
           } = await fileExplorerController.listFiles({
             deviceType,
-            filePath: args.filePath,
-            ignoreHidden: args.ignoreHidden,
+            filePath,
+            ignoreHidden,
             storageId,
           });
 
@@ -565,7 +601,7 @@ export function listDirectory({ ...args }, deviceType, getState) {
               onSuccess: () => {
                 dispatch(_listDirectory(data, deviceType), getState);
                 dispatch(setSelectedDirLists({ selected: [] }, deviceType));
-                dispatch(setCurrentBrowsePath(args.filePath, deviceType));
+                dispatch(setCurrentBrowsePath(filePath, deviceType));
               },
             })
           );
@@ -588,7 +624,9 @@ export function reloadDirList(
   checkIf(ignoreHidden, 'boolean');
   checkIf(getState, 'function');
 
-  const { mtpMode } = getState().Home;
+  const { mtpMode, mtpDevice } = getState().Home;
+
+  checkIf(mtpDevice, 'object');
 
   return (dispatch) => {
     switch (deviceType) {
@@ -614,8 +652,33 @@ export function reloadDirList(
 
           case MTP_MODE.kalam:
           default:
-            //todo list directory
-            return;
+            if (mtpDevice.isAvailable) {
+              //todo if an error occured while listing then call init mtp
+
+              return dispatch(
+                listDirectory(
+                  {
+                    filePath,
+                    ignoreHidden,
+                  },
+                  deviceType,
+                  getState
+                )
+              );
+            }
+
+            // if the mtp was not previously initialized then initialize it
+            return dispatch(
+              initializeMtp(
+                {
+                  filePath,
+                  ignoreHidden,
+                  changeMtpStorageIdsOnlyOnDeviceChange: true,
+                  deviceType,
+                },
+                getState
+              )
+            );
         }
 
       default:
