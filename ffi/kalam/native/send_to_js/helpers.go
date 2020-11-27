@@ -87,8 +87,11 @@ func processError(e error) (errorType ErrorType, errorMsg string) {
 	}
 
 	// handle special cases of error
-	if strings.Contains(errorMsg, "allow samsung storage access") {
-		errorType = ErrorAllowSamsungStorageAccess
+	if strings.Contains(errorMsg, "allow storage access") {
+		errorType = ErrorAllowStorageAccess
+		errorMsg = e.Error()
+	} else if strings.Contains(errorMsg, "device is not open") {
+		errorType = ErrorDeviceLocked
 		errorMsg = e.Error()
 	} else if strings.Contains(errorMsg, "more than 1 device") {
 		errorType = ErrorMultipleDevice

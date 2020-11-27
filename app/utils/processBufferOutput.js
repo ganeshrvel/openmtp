@@ -1,7 +1,7 @@
 /* eslint-disable no-case-declarations */
 
 import { EOL } from 'os';
-import { replaceBulk } from './funcs';
+import { replaceBulk, undefinedOrNull } from './funcs';
 import { log } from './log';
 import { isGoogleAndroidFileTransferActive } from './isGoogleAndroidFileTransferActive';
 import { DEVICES_LABEL } from '../constants';
@@ -28,8 +28,13 @@ export const processKalamMtpBuffer = async ({ error, stderr }) => {
     ErrorDeviceSetup: `An error occured while setting up the ${
       DEVICES_LABEL[DEVICE_TYPE.mtp]
     }`,
+    ErrorDeviceLocked: `Unlock your ${
+      DEVICES_LABEL[DEVICE_TYPE.mtp]
+    } and refresh again`,
     ErrorMultipleDevice: 'Multiple MTP devices found',
-    ErrorAllowSamsungStorageAccess: null,
+    ErrorAllowStorageAccess: `Accept MTP access to your ${
+      DEVICES_LABEL[DEVICE_TYPE.mtp]
+    }'s storage and refresh again`,
     ErrorDeviceInfo: 'An error occured while fetching the device information',
     ErrorStorageInfo: 'An error occured while fetching the storage information',
     ErrorNoStorage: `Your ${
@@ -55,12 +60,21 @@ export const processKalamMtpBuffer = async ({ error, stderr }) => {
 
   const googleAndroidFileTransferIsActive = `Quit 'Android File Transfer' app (by Google) and reload.`;
   const noMtpError = stderr === 'ErrorMtpDetectFailed';
-  const processErrorValue = mtpErrors[stderr ?? ''];
+
+  let processErrorValue = null;
+
+  if (undefinedOrNull(stderr)) {
+    processErrorValue = mtpErrors[stderr];
+  }
 
   log.doLog(
     `MTP buffer o/p logging;${EOL}MTP Mode: ${
       MTP_MODE.kalam
-    }${EOL}Raw error: ${error.toString()}${EOL}Processed error: ${processErrorValue}${EOL}Error type: ${stderr}`,
+    }${EOL}Raw error: ${(
+      error ?? ''
+    ).toString()}${EOL}Processed error: ${processErrorValue}${EOL}Error type: ${
+      stderr ?? ''
+    }`,
     !noMtpError
   );
 
@@ -197,9 +211,21 @@ export const processKalamMtpBuffer = async ({ error, stderr }) => {
         mtpStatus: true,
       };
 
-    case 'ErrorAllowSamsungStorageAccess':
+    case 'ErrorAllowStorageAccess':
+      return {
+        error: processErrorValue,
+        throwAlert: true,
+        logError: true,
+        mtpStatus: false,
+      };
+
     case 'ErrorMtpChanged':
-      break;
+      return {
+        error: processErrorValue,
+        throwAlert: false,
+        logError: true,
+        mtpStatus: false,
+      };
 
     case 'ErrorGeneral':
     default:
@@ -236,9 +262,9 @@ export const processLegacyMtpBuffer = async ({ error, stderr }) => {
     noPerm: `Operation not permitted.`,
     noMtp: `No ${DEVICES_LABEL[DEVICE_TYPE.mtp]} or MTP device found.`,
     googleAndroidFileTransferIsActive: `Quit 'Android File Transfer' app (by Google) and reload.`,
-    deviceLocked: `Your ${
+    deviceLocked: `Unlock your ${
       DEVICES_LABEL[DEVICE_TYPE.mtp]
-    } may be locked. Unlock it and reload.`,
+    } and refresh again`,
     unResponsive: `Your ${
       DEVICES_LABEL[DEVICE_TYPE.mtp]
     } is not responding. Reload or reconnect the device.`,

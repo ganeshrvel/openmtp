@@ -49,12 +49,26 @@ func FetchDeviceInfo(ptr int64) {
 
 //export FetchStorages
 func FetchStorages(ptr int64) {
+	_sendFetchStorages(ptr, true)
+}
+
+func _sendFetchStorages(ptr int64, retry bool) {
 	storages, err := _fetchStorages()
+
 	if err != nil {
-		if container.dev != nil && container.deviceInfo != nil &&
-			strings.Contains(strings.ToLower(container.deviceInfo.Manufacturer), "samsung") {
+		if container.dev != nil && container.deviceInfo != nil {
 			if strings.Contains(err.Error(), "EOF") {
-				err = fmt.Errorf("allow samsung storage access")
+
+				// for newer samsung devices we might need to access the storage again in case
+				// the fetch storage function returns an 'EOF' error
+				if retry {
+					// make sure the retry param is false else mtp could go into infinite loop
+					_sendFetchStorages(ptr, false)
+
+					return
+				} else {
+					err = fmt.Errorf("error allow storage access. %+v", err.Error())
+				}
 			}
 		}
 

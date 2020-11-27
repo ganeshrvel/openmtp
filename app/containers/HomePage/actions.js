@@ -110,7 +110,8 @@ export function initializeMtp(
   checkIf(changeMtpStorageIdsOnlyOnDeviceChange, 'boolean');
   checkIf(getState, 'function');
 
-  const { mtpStoragesList, mtpMode } = getState().Home;
+  const { mtpStoragesList } = getState().Home;
+  const { mtpMode } = getState().Settings;
 
   return async (dispatch) => {
     try {
@@ -189,7 +190,6 @@ export function initializeMtp(
           );
 
         case MTP_MODE.legacy:
-        default:
           return dispatch(
             initLegacyMtp(
               {
@@ -202,6 +202,9 @@ export function initializeMtp(
               getState
             )
           );
+
+        default:
+          throw `invalid value for  'mtpMode'`;
       }
     } catch (e) {
       log.error(e);
@@ -227,44 +230,119 @@ function initKalamMtp(
     checkIf(changeMtpStorageIdsOnlyOnDeviceChange, 'boolean');
 
     try {
-      const { mtpStatus } = getState().Home;
       const { mtpMode } = getState().Settings;
+      //todo move
+      const { error, stderr, data } = await kalamFfi.InitializeMtp();
 
-      if (!mtpStatus) {
-        return;
-      }
-
-      const {
-        error: initializeError,
-        stderr: initializeStderr,
-        data: initializeData,
-      } = await kalamFfi.InitializeMtp();
-
-      await new Promise((resolve) => {
+      const { error: initializeError } = await new Promise((resolve) => {
         dispatch(
           churnMtpBuffer({
             deviceType,
-            error: initializeError,
-            stderr: initializeStderr,
-            data: initializeData,
+            error,
+            stderr,
+            data,
             mtpMode,
-            onSuccess: async () => {
-              //todo set device data
-              return resolve(initializeData);
+            onSuccess: () => {
+              //todo set device info
+              return resolve({
+                error: null,
+                stderr: null,
+                data,
+              });
+            },
+            onError: () => {
+              return resolve({
+                error,
+                stderr,
+                data: null,
+              });
             },
           })
         );
       });
 
       const {
-        error: listStoragesError,
-        stderr: listStoragesStderr,
-        data: listStoragesData,
-      } = await fileExplorerController.listStorages({
-        deviceType,
-      });
+        data: storagesData,
+        error: _error,
+        stderr: _stderr,
+      } = await kalamFfi.FetchStorages();
 
-      await new Promise((resolve) => {});
+      if (initializeError) {
+        return;
+      }
+
+      const {
+        stderr: listStoragesStderr,
+        error: listStoragesError,
+      } = await listKalamStorages(
+        {
+          filePath,
+          ignoreHidden,
+          deviceType,
+          mtpStoragesList,
+          changeMtpStorageIdsOnlyOnDeviceChange,
+        },
+        getState
+      );
+    } catch (e) {
+      log.error(e);
+    }
+  };
+}
+
+function listKalamStorages(
+  {
+    filePath,
+    ignoreHidden,
+    deviceType,
+    mtpStoragesList,
+    changeMtpStorageIdsOnlyOnDeviceChange,
+  },
+  getState
+) {
+  return async (dispatch) => {
+    checkIf(filePath, 'string');
+    checkIf(ignoreHidden, 'boolean');
+    checkIf(deviceType, 'string');
+    checkIf(mtpStoragesList, 'object');
+    checkIf(changeMtpStorageIdsOnlyOnDeviceChange, 'boolean');
+
+    try {
+      const { mtpMode } = getState().Settings;
+
+      const { error, stderr, data } = await fileExplorerController.listStorages(
+        {
+          deviceType,
+        }
+      );
+
+      return new Promise((resolve) => {
+        dispatch(
+          churnMtpBuffer({
+            deviceType,
+            error,
+            stderr,
+            data,
+            mtpMode,
+            onSuccess: async () => {
+              dispatch(changeMtpStorage({ ...data }));
+
+              return resolve({
+                error: null,
+                stderr: null,
+                data,
+              });
+            },
+            onError: async () => {
+              return resolve({
+                error,
+                stderr,
+                data: null,
+              });
+            },
+          })
+        );
+      });
     } catch (e) {
       log.error(e);
     }
@@ -361,6 +439,7 @@ export function churnMtpBuffer({
   _,
   mtpMode,
   onSuccess,
+  onError,
 }) {
   checkIf(onSuccess, 'function');
   checkIf(mtpMode, 'string');
@@ -387,10 +466,14 @@ export function churnMtpBuffer({
           dispatch(throwAlert({ message: mtpError.toString() }));
         }
 
-        return false;
+        if (onError) {
+          return onError();
+        }
+
+        return;
       }
 
-      onSuccess();
+      return onSuccess();
     } catch (e) {
       log.error(e);
     }
@@ -505,27 +588,35 @@ export function reloadDirList(
   checkIf(ignoreHidden, 'boolean');
   checkIf(getState, 'function');
 
+  const { mtpMode } = getState().Home;
+
   return (dispatch) => {
     switch (deviceType) {
       case DEVICE_TYPE.local:
-        dispatch(
+        return dispatch(
           listDirectory({ filePath, ignoreHidden }, deviceType, getState)
         );
-        break;
 
       case DEVICE_TYPE.mtp:
-        dispatch(
-          initializeMtp(
-            {
-              filePath,
-              ignoreHidden,
-              changeMtpStorageIdsOnlyOnDeviceChange: true,
-              deviceType,
-            },
-            getState
-          )
-        );
-        break;
+        switch (mtpMode) {
+          case MTP_MODE.legacy:
+            return dispatch(
+              initializeMtp(
+                {
+                  filePath,
+                  ignoreHidden,
+                  changeMtpStorageIdsOnlyOnDeviceChange: true,
+                  deviceType,
+                },
+                getState
+              )
+            );
+
+          case MTP_MODE.kalam:
+          default:
+            //todo list directory
+            return;
+        }
 
       default:
         break;
