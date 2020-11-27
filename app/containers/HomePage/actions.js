@@ -262,14 +262,14 @@ function initKalamMtp(
             })
           );
         });
-      }
 
-      const { mtpDevice: postInitMtpDevice } = getState().Home;
+        const { mtpDevice: postInitMtpDevice } = getState().Home;
 
-      checkIf(postInitMtpDevice, 'object');
+        checkIf(postInitMtpDevice, 'object');
 
-      if (!postInitMtpDevice.isAvailable) {
-        return;
+        if (!postInitMtpDevice.isAvailable) {
+          return;
+        }
       }
 
       await new Promise((resolve) => {
