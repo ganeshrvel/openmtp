@@ -2,7 +2,7 @@ package send_to_js
 
 const (
 	ErrorMtpDetectFailed    ErrorType = "ErrorMtpDetectFailed"
-	ErrorMtpChanged         ErrorType = "ErrorMtpChanged"
+	ErrorDeviceChanged         ErrorType = "ErrorDeviceChanged"
 	ErrorDeviceSetup        ErrorType = "ErrorDeviceSetup"
 	ErrorMultipleDevice     ErrorType = "ErrorMultipleDevice"
 	ErrorAllowStorageAccess ErrorType = "ErrorAllowStorageAccess"

@@ -25,7 +25,7 @@ export const processKalamMtpBuffer = async ({ error, stderr }) => {
     [MTP_ERROR.ErrorMtpDetectFailed]: `No ${
       DEVICES_LABEL[DEVICE_TYPE.mtp]
     } or MTP device found.`,
-    [MTP_ERROR.ErrorMtpChanged]: null,
+    [MTP_ERROR.ErrorDeviceChanged]: null,
     [MTP_ERROR.ErrorDeviceSetup]: `An error occured while setting up the ${
       DEVICES_LABEL[DEVICE_TYPE.mtp]
     }`,
@@ -227,7 +227,7 @@ export const processKalamMtpBuffer = async ({ error, stderr }) => {
         mtpStatus: false,
       };
 
-    case MTP_ERROR.ErrorMtpChanged:
+    case MTP_ERROR.ErrorDeviceChanged:
       return {
         error: processedErrorValue,
         throwAlert: false,

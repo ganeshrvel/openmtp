@@ -10,6 +10,7 @@ import { log } from '../../utils/log';
 import fileExplorerController from '../../data/file-explorer/controllers/FileExplorerController';
 import { checkIf } from '../../utils/checkIf';
 import { MTP_ERROR } from '../../enums/mtpError';
+import { DEVICES_DEFAULT_PATH } from '../../constants';
 
 const prefix = '@@Home';
 const actionTypesList = [
@@ -67,7 +68,7 @@ export function setCurrentBrowsePath(path, deviceType) {
   };
 }
 
-function _listDirectory(data, deviceType, _) {
+function actionListDirectory(data, deviceType, _) {
   return {
     type: actionTypes.LIST_DIRECTORY,
     deviceType,
@@ -276,10 +277,10 @@ function initKalamMtp(
               ignoreHidden,
               deviceType,
               changeMtpStorageIdsOnlyOnDeviceChange,
-              onSuccess() {
+              onSuccess: () => {
                 resolve();
               },
-              onError() {
+              onError: () => {
                 resolve();
               },
             },
@@ -293,20 +294,10 @@ function initKalamMtp(
       checkIf(postStorageAccessMtpDevice, 'object');
 
       if (!postStorageAccessMtpDevice.isAvailable) {
-        console.log('postStorageAccessMtpDevice not isAvailable');
-
         return;
       }
-      console.log('postStorageAccessMtpDevice isAvailable');
 
       dispatch(reloadDirList({ filePath, ignoreHidden, deviceType }, getState));
-
-      //todo
-      //todo
-      //todo
-      //todo
-      //todo
-      //todo
     } catch (e) {
       log.error(e);
     }
@@ -467,7 +458,7 @@ export function churnMtpBuffer({
   deviceType,
   error,
   stderr,
-  _,
+  data,
   mtpMode,
   onSuccess,
   onError,
@@ -492,8 +483,10 @@ export function churnMtpBuffer({
       );
 
       if (!mtpStatus) {
-        dispatch(_listDirectory([], deviceType));
+        dispatch(actionListDirectory([], deviceType));
         dispatch(setSelectedDirLists({ selected: [] }, deviceType));
+
+        onError({ error, stderr, data: null });
       }
 
       if (mtpError) {
@@ -504,14 +497,10 @@ export function churnMtpBuffer({
           dispatch(throwAlert({ message: mtpError.toString() }));
         }
 
-        if (onError) {
-          return onError();
-        }
-
         return;
       }
 
-      return onSuccess();
+      return onSuccess({ error: null, stderr: null, data });
     } catch (e) {
       log.error(e);
     }
@@ -520,7 +509,14 @@ export function churnMtpBuffer({
 
 // this is the main entry point of data received from the local disk file actions.
 // the data received here undergoes processing and the neccessary actions are taken accordingly
-export function churnLocalBuffer({ _, error, stderr, __, onSuccess }) {
+export function churnLocalBuffer({
+  _,
+  error,
+  stderr,
+  data,
+  onSuccess,
+  onError,
+}) {
   checkIf(onSuccess, 'function');
 
   return (dispatch) => {
@@ -538,10 +534,14 @@ export function churnLocalBuffer({ _, error, stderr, __, onSuccess }) {
           dispatch(throwAlert({ message: localError.toString() }));
         }
 
+        if (onError) {
+          onError({ error, stderr, data: null });
+        }
+
         return false;
       }
 
-      onSuccess();
+      onSuccess({ error: null, stderr: null, data });
     } catch (e) {
       log.error(e);
     }
@@ -549,7 +549,7 @@ export function churnLocalBuffer({ _, error, stderr, __, onSuccess }) {
 }
 
 export function listDirectory(
-  { filePath, ignoreHidden },
+  { filePath, ignoreHidden, onError, onSuccess },
   deviceType,
   getState
 ) {
@@ -579,7 +579,7 @@ export function listDirectory(
             return;
           }
 
-          dispatch(_listDirectory(data, deviceType), getState);
+          dispatch(actionListDirectory(data, deviceType), getState);
           dispatch(setCurrentBrowsePath(filePath, deviceType));
           dispatch(setSelectedDirLists({ selected: [] }, deviceType));
         };
@@ -606,10 +606,20 @@ export function listDirectory(
               stderr,
               data,
               mtpMode,
-              onSuccess: () => {
-                dispatch(_listDirectory(data, deviceType), getState);
+              onSuccess: ({ error, stderr, data }) => {
+                dispatch(actionListDirectory(data, deviceType), getState);
                 dispatch(setSelectedDirLists({ selected: [] }, deviceType));
                 dispatch(setCurrentBrowsePath(filePath, deviceType));
+
+                if (onSuccess) {
+                  onSuccess({ error, stderr, data });
+                }
+              },
+
+              onError: ({ error, stderr, data }) => {
+                if (onError) {
+                  onError({ error, stderr, data });
+                }
               },
             })
           );
@@ -661,15 +671,28 @@ export function reloadDirList(
           case MTP_MODE.kalam:
           default:
             if (mtpDevice.isAvailable) {
-              //todo if an error occured while listing then call init mtp
-
-              console.log('isAvailable');
-
               return dispatch(
                 listDirectory(
                   {
                     filePath,
                     ignoreHidden,
+                    onError: ({ stderr }) => {
+                      // if device was changed then reinitialize the mtp
+                      if (stderr === MTP_ERROR.ErrorDeviceChanged) {
+                        return dispatch(
+                          initializeMtp(
+                            {
+                              filePath: DEVICES_DEFAULT_PATH[deviceType],
+                              ignoreHidden,
+                              changeMtpStorageIdsOnlyOnDeviceChange: true,
+                              deviceType,
+                            },
+                            getState
+                          )
+                        );
+                      }
+                    },
+                    onSuccess: () => {},
                   },
                   deviceType,
                   getState
@@ -677,7 +700,6 @@ export function reloadDirList(
               );
             }
 
-            console.log('not isAvailable');
             // if the mtp was not previously initialized then initialize it
             return dispatch(
               initializeMtp(

@@ -16,6 +16,6 @@ export const MTP_ERROR = {
   ErrorMultipleDevice: 'ErrorMultipleDevice',
   ErrorDeviceLocked: 'ErrorDeviceLocked',
   ErrorDeviceSetup: 'ErrorDeviceSetup',
-  ErrorMtpChanged: 'ErrorMtpChanged',
+  ErrorDeviceChanged: 'ErrorDeviceChanged',
   ErrorMtpDetectFailed: 'ErrorMtpDetectFailed',
 };

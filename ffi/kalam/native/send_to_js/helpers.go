@@ -77,7 +77,7 @@ func processError(e error) (errorType ErrorType, errorMsg string) {
 			errorType = ErrorMtpDetectFailed
 			errorMsg = e.Error()
 		} else if strings.Contains(e.Error(), "mtp device was removed") {
-			errorType = ErrorMtpChanged
+			errorType = ErrorDeviceChanged
 			errorMsg = e.Error()
 		} else {
 			// Mark an error as general error as a fallthrough
@@ -92,6 +92,9 @@ func processError(e error) (errorType ErrorType, errorMsg string) {
 		errorMsg = e.Error()
 	} else if strings.Contains(errorMsg, "device is not open") {
 		errorType = ErrorDeviceLocked
+		errorMsg = e.Error()
+	} else if errorType == ErrorDeviceInfo && strings.Contains(errorMsg, "LIBUSB_ERROR_NO_DEVICE") {
+		errorType = ErrorDeviceChanged
 		errorMsg = e.Error()
 	} else if strings.Contains(errorMsg, "more than 1 device") {
 		errorType = ErrorMultipleDevice
