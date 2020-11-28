@@ -229,47 +229,43 @@ function initKalamMtp(
 
       // if the app was expecting the user to allow access to mtp storage
       // then don't reinitialize mtp
-      if (preInitMtpDevice?.error !== MTP_ERROR.ErrorAllowStorageAccess) {
-        const {
-          error,
-          stderr,
-          data,
-        } = await fileExplorerController.initialize({ deviceType });
+      const { error, stderr, data } = await fileExplorerController.initialize({
+        deviceType,
+      });
 
-        await new Promise((resolve) => {
-          dispatch(
-            churnMtpBuffer({
-              deviceType,
-              error,
-              stderr,
-              data,
-              mtpMode,
-              onSuccess: () => {
-                //todo set device info
-                return resolve({
-                  error: null,
-                  stderr: null,
-                  data,
-                });
-              },
-              onError: () => {
-                return resolve({
-                  error,
-                  stderr,
-                  data: null,
-                });
-              },
-            })
-          );
-        });
+      await new Promise((resolve) => {
+        dispatch(
+          churnMtpBuffer({
+            deviceType,
+            error,
+            stderr,
+            data,
+            mtpMode,
+            onSuccess: () => {
+              //todo set device info
+              return resolve({
+                error: null,
+                stderr: null,
+                data,
+              });
+            },
+            onError: () => {
+              return resolve({
+                error,
+                stderr,
+                data: null,
+              });
+            },
+          })
+        );
+      });
 
-        const { mtpDevice: postInitMtpDevice } = getState().Home;
+      const { mtpDevice: postInitMtpDevice } = getState().Home;
 
-        checkIf(postInitMtpDevice, 'object');
+      checkIf(postInitMtpDevice, 'object');
 
-        if (!postInitMtpDevice.isAvailable) {
-          return;
-        }
+      if (!postInitMtpDevice.isAvailable) {
+        return;
       }
 
       await new Promise((resolve) => {

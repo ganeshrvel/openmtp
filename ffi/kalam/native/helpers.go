@@ -17,6 +17,8 @@ func verifyMtpSession(c verifyMtpSessionMode) error {
 		if err != nil {
 			container.deviceInfo = nil
 
+			_ = _dispose()
+
 			return err
 		}
 
@@ -177,14 +179,8 @@ func _downloadFiles(storageId uint32, sources []string, destination string, prep
 }
 
 func _dispose() error {
-	v := verifyMtpSessionMode{skipDeviceChangeCheck: true}
-
-	if !v.skipDeviceChangeCheck {
-		log.Panicln("'skipDeviceChangeCheck' should be 'true' in _dispose.verifyMtpSessionMode")
-	}
-
-	if err := verifyMtpSession(v); err != nil {
-		return err
+	if container.dev == nil {
+		return nil
 	}
 
 	mtpx.Dispose(container.dev)

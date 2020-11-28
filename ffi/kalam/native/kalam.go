@@ -66,9 +66,12 @@ func _sendFetchStorages(ptr int64, retry bool) {
 					_sendFetchStorages(ptr, false)
 
 					return
-				} else {
-					err = fmt.Errorf("error allow storage access. %+v", err.Error())
 				}
+
+				err = fmt.Errorf("error allow storage access. %+v", err.Error())
+
+				// this is done to prevent samsung devices from returning usb timeouts
+				_ = _dispose()
 			}
 		}
 

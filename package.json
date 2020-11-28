@@ -15,6 +15,7 @@
     "package-all": "yarn build && electron-builder build -mwl --publish never",
     "package-mac": "yarn build && electron-builder build --mac --publish never",
     "package-mac-without-notarize": "yarn build && cross-env ELECTRON_NOTARIZE=NO electron-builder build --mac --publish never",
+    "package-mac-without-notarize-no-verify": "yarn build-no-verify && cross-env ELECTRON_NOTARIZE=NO electron-builder build --mac --publish never",
     "package-linux": "yarn build && electron-builder build --linux --publish never",
     "package-win": "yarn build && electron-builder build --win --x64 --publish never",
     "prestart": "yarn build",
