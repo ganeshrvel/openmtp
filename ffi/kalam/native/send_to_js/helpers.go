@@ -93,6 +93,9 @@ func processError(e error) (errorType ErrorType, errorMsg string) {
 	} else if strings.Contains(errorMsg, "device is not open") {
 		errorType = ErrorDeviceLocked
 		errorMsg = e.Error()
+	} else if strings.Contains(errorMsg, "LIBUSB_ERROR_NO_DEVICE") {
+		errorType = ErrorMtpDetectFailed
+		errorMsg = e.Error()
 	} else if strings.Contains(errorMsg, "more than 1 device") {
 		errorType = ErrorMultipleDevice
 		errorMsg = e.Error()

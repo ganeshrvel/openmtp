@@ -65,7 +65,7 @@ export const processKalamMtpBuffer = async ({ error, stderr }) => {
   };
 
   const googleAndroidFileTransferIsActive = `Quit 'Android File Transfer' app (by Google) and reload.`;
-  const noMtpError = stderr === 'ErrorMtpDetectFailed';
+  const noMtpError = stderr === MTP_ERROR.ErrorMtpDetectFailed;
 
   let processErrorValue = null;
 
@@ -73,16 +73,18 @@ export const processKalamMtpBuffer = async ({ error, stderr }) => {
     processErrorValue = mtpErrors[stderr];
   }
 
-  log.doLog(
-    `MTP buffer o/p logging;${EOL}MTP Mode: ${
-      MTP_MODE.kalam
-    }${EOL}Raw error: ${(
-      error ?? ''
-    ).toString()}${EOL}Processed error: ${processErrorValue}${EOL}Error type: ${
-      stderr ?? ''
-    }`,
-    !noMtpError
-  );
+  if (stderr || error) {
+    log.doLog(
+      `MTP buffer o/p logging;${EOL}MTP Mode: ${
+        MTP_MODE.kalam
+      }${EOL}Raw error: ${(
+        error ?? ''
+      ).toString()}${EOL}Processed error: ${processErrorValue}${EOL}Error type: ${
+        stderr ?? ''
+      }`,
+      !noMtpError
+    );
+  }
 
   switch (stderr) {
     /* No MTP device found */
