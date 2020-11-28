@@ -484,8 +484,6 @@ export function churnMtpBuffer({
         logError: mtpLogError,
       } = await processMtpBuffer({ error, stderr, mtpMode });
 
-      console.log('mtpStatus', mtpStatus);
-
       dispatch(
         setMtpStatus({
           isAvailable: mtpStatus,
@@ -499,7 +497,9 @@ export function churnMtpBuffer({
       }
 
       if (mtpError) {
-        log.error(mtpError, 'churnMtpBuffer', mtpLogError);
+        log.error(mtpError, 'churnMtpBuffer.mtpError', mtpLogError);
+        log.error(error, 'churnMtpBuffer.error');
+        log.error(stderr, 'churnMtpBuffer.stderr');
         if (mtpThrowAlert) {
           dispatch(throwAlert({ message: mtpError.toString() }));
         }

@@ -67,10 +67,10 @@ export const processKalamMtpBuffer = async ({ error, stderr }) => {
   const googleAndroidFileTransferIsActive = `Quit 'Android File Transfer' app (by Google) and reload.`;
   const noMtpError = stderr === MTP_ERROR.ErrorMtpDetectFailed;
 
-  let processErrorValue = null;
+  let processedErrorValue = null;
 
-  if (undefinedOrNull(stderr)) {
-    processErrorValue = mtpErrors[stderr];
+  if (!undefinedOrNull(stderr)) {
+    processedErrorValue = mtpErrors[stderr];
   }
 
   if (stderr || error) {
@@ -79,7 +79,7 @@ export const processKalamMtpBuffer = async ({ error, stderr }) => {
         MTP_MODE.kalam
       }${EOL}Raw error: ${(
         error ?? ''
-      ).toString()}${EOL}Processed error: ${processErrorValue}${EOL}Error type: ${
+      ).toString()}${EOL}Processed error: ${processedErrorValue}${EOL}Error type: ${
         stderr ?? ''
       }`,
       !noMtpError
@@ -101,7 +101,7 @@ export const processKalamMtpBuffer = async ({ error, stderr }) => {
       }
 
       return {
-        error: processErrorValue,
+        error: processedErrorValue,
         throwAlert: false,
         logError: false,
         mtpStatus: false,
@@ -109,7 +109,7 @@ export const processKalamMtpBuffer = async ({ error, stderr }) => {
 
     case MTP_ERROR.ErrorStorageFull:
       return {
-        error: processErrorValue,
+        error: processedErrorValue,
         throwAlert: true,
         logError: true,
         mtpStatus: false,
@@ -117,7 +117,7 @@ export const processKalamMtpBuffer = async ({ error, stderr }) => {
 
     case MTP_ERROR.ErrorNoStorage:
       return {
-        error: processErrorValue,
+        error: processedErrorValue,
         throwAlert: true,
         logError: true,
         mtpStatus: false,
@@ -125,7 +125,7 @@ export const processKalamMtpBuffer = async ({ error, stderr }) => {
 
     case MTP_ERROR.ErrorStorageInfo:
       return {
-        error: processErrorValue,
+        error: processedErrorValue,
         throwAlert: true,
         logError: true,
         mtpStatus: false,
@@ -133,7 +133,7 @@ export const processKalamMtpBuffer = async ({ error, stderr }) => {
 
     case MTP_ERROR.ErrorDeviceInfo:
       return {
-        error: processErrorValue,
+        error: processedErrorValue,
         throwAlert: true,
         logError: true,
         mtpStatus: false,
@@ -141,7 +141,7 @@ export const processKalamMtpBuffer = async ({ error, stderr }) => {
 
     case MTP_ERROR.ErrorMultipleDevice:
       return {
-        error: processErrorValue,
+        error: processedErrorValue,
         throwAlert: true,
         logError: true,
         mtpStatus: false,
@@ -149,7 +149,7 @@ export const processKalamMtpBuffer = async ({ error, stderr }) => {
 
     case MTP_ERROR.ErrorDeviceSetup:
       return {
-        error: processErrorValue,
+        error: processedErrorValue,
         throwAlert: true,
         logError: true,
         mtpStatus: false,
@@ -157,7 +157,7 @@ export const processKalamMtpBuffer = async ({ error, stderr }) => {
 
     case MTP_ERROR.ErrorSendObject:
       return {
-        error: processErrorValue,
+        error: processedErrorValue,
         throwAlert: true,
         logError: true,
         mtpStatus: true,
@@ -165,7 +165,7 @@ export const processKalamMtpBuffer = async ({ error, stderr }) => {
 
     case MTP_ERROR.ErrorFileObjectRead:
       return {
-        error: processErrorValue,
+        error: processedErrorValue,
         throwAlert: true,
         logError: true,
         mtpStatus: true,
@@ -173,7 +173,7 @@ export const processKalamMtpBuffer = async ({ error, stderr }) => {
 
     case MTP_ERROR.ErrorFileTransfer:
       return {
-        error: processErrorValue,
+        error: processedErrorValue,
         throwAlert: true,
         logError: true,
         mtpStatus: true,
@@ -181,7 +181,7 @@ export const processKalamMtpBuffer = async ({ error, stderr }) => {
 
     case MTP_ERROR.ErrorInvalidPath:
       return {
-        error: processErrorValue,
+        error: processedErrorValue,
         throwAlert: true,
         logError: true,
         mtpStatus: true,
@@ -189,7 +189,7 @@ export const processKalamMtpBuffer = async ({ error, stderr }) => {
 
     case MTP_ERROR.ErrorLocalFileRead:
       return {
-        error: processErrorValue,
+        error: processedErrorValue,
         throwAlert: true,
         logError: true,
         mtpStatus: true,
@@ -197,7 +197,7 @@ export const processKalamMtpBuffer = async ({ error, stderr }) => {
 
     case MTP_ERROR.ErrorFilePermission:
       return {
-        error: processErrorValue,
+        error: processedErrorValue,
         throwAlert: true,
         logError: true,
         mtpStatus: true,
@@ -205,7 +205,7 @@ export const processKalamMtpBuffer = async ({ error, stderr }) => {
 
     case MTP_ERROR.ErrorFileNotFound:
       return {
-        error: processErrorValue,
+        error: processedErrorValue,
         throwAlert: true,
         logError: true,
         mtpStatus: true,
@@ -213,7 +213,7 @@ export const processKalamMtpBuffer = async ({ error, stderr }) => {
 
     case MTP_ERROR.ErrorListDirectory:
       return {
-        error: processErrorValue,
+        error: processedErrorValue,
         throwAlert: true,
         logError: true,
         mtpStatus: true,
@@ -221,7 +221,7 @@ export const processKalamMtpBuffer = async ({ error, stderr }) => {
 
     case MTP_ERROR.ErrorAllowStorageAccess:
       return {
-        error: processErrorValue,
+        error: processedErrorValue,
         throwAlert: true,
         logError: true,
         mtpStatus: false,
@@ -229,7 +229,7 @@ export const processKalamMtpBuffer = async ({ error, stderr }) => {
 
     case MTP_ERROR.ErrorMtpChanged:
       return {
-        error: processErrorValue,
+        error: processedErrorValue,
         throwAlert: false,
         logError: true,
         mtpStatus: false,
@@ -237,7 +237,7 @@ export const processKalamMtpBuffer = async ({ error, stderr }) => {
 
     case MTP_ERROR.ErrorDeviceLocked:
       return {
-        error: processErrorValue,
+        error: processedErrorValue,
         throwAlert: true,
         logError: true,
         mtpStatus: false,
@@ -246,7 +246,7 @@ export const processKalamMtpBuffer = async ({ error, stderr }) => {
     case MTP_ERROR.ErrorGeneral:
     default:
       return {
-        error: processErrorValue,
+        error: processedErrorValue,
         throwAlert: true,
         logError: true,
         mtpStatus: true,
