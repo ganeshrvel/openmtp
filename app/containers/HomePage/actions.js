@@ -191,7 +191,6 @@ export function initializeMtp(
                 filePath,
                 ignoreHidden,
                 deviceType,
-                changeMtpStorageIdsOnlyOnDeviceChange,
               },
               getState
             )
@@ -220,15 +219,11 @@ export function initializeMtp(
   };
 }
 
-function initKalamMtp(
-  { filePath, ignoreHidden, deviceType, changeMtpStorageIdsOnlyOnDeviceChange },
-  getState
-) {
+function initKalamMtp({ filePath, ignoreHidden, deviceType }, getState) {
   return async (dispatch) => {
     checkIf(filePath, 'string');
     checkIf(ignoreHidden, 'boolean');
     checkIf(deviceType, 'string');
-    checkIf(changeMtpStorageIdsOnlyOnDeviceChange, 'boolean');
 
     try {
       const { mtpMode } = getState().Settings;
@@ -284,6 +279,18 @@ function initKalamMtp(
         return;
       }
 
+      let _filePath = filePath;
+
+      if (
+        !undefinedOrNull(preInitMtpDevice?.info?.SerialNumber) &&
+        !undefinedOrNull(postInitMtpDevice?.info?.SerialNumber) &&
+        preInitMtpDevice?.info?.SerialNumber !==
+          postInitMtpDevice?.info?.SerialNumber
+      ) {
+        _filePath = DEVICES_DEFAULT_PATH[deviceType];
+        dispatch(changeMtpStorage({}));
+      }
+
       dispatch(
         setMtpStatus({
           isLoading: true,
@@ -297,7 +304,6 @@ function initKalamMtp(
               filePath,
               ignoreHidden,
               deviceType,
-              changeMtpStorageIdsOnlyOnDeviceChange,
               onSuccess: () => {
                 resolve();
               },
@@ -324,7 +330,12 @@ function initKalamMtp(
         })
       );
 
-      dispatch(reloadDirList({ filePath, ignoreHidden, deviceType }, getState));
+      dispatch(
+        reloadDirList(
+          { filePath: _filePath, ignoreHidden, deviceType },
+          getState
+        )
+      );
     } catch (e) {
       log.error(e);
     }
@@ -332,21 +343,13 @@ function initKalamMtp(
 }
 
 function listKalamStorages(
-  {
-    filePath,
-    ignoreHidden,
-    deviceType,
-    changeMtpStorageIdsOnlyOnDeviceChange,
-    onSuccess,
-    onError,
-  },
+  { filePath, ignoreHidden, deviceType, onSuccess, onError },
   getState
 ) {
   return async (dispatch) => {
     checkIf(filePath, 'string');
     checkIf(ignoreHidden, 'boolean');
     checkIf(deviceType, 'string');
-    checkIf(changeMtpStorageIdsOnlyOnDeviceChange, 'boolean');
     checkIf(onSuccess, 'function');
     checkIf(onError, 'function');
 
@@ -709,6 +712,7 @@ export function reloadDirList(
               })
             );
 
+            // if mtpdevice is available then list directory
             if (mtpDevice.isAvailable) {
               return dispatch(
                 listDirectory(
@@ -718,10 +722,10 @@ export function reloadDirList(
                     onError: ({ stderr }) => {
                       // if device was changed then reinitialize the mtp
                       if (stderr === MTP_ERROR.ErrorDeviceChanged) {
-                        return dispatch(
+                        dispatch(
                           initializeMtp(
                             {
-                              filePath: DEVICES_DEFAULT_PATH[deviceType],
+                              filePath,
                               ignoreHidden,
                               changeMtpStorageIdsOnlyOnDeviceChange: true,
                               deviceType,

@@ -12,8 +12,6 @@ class Titlebar extends PureComponent {
 
     const selectedStorage = getSelectedStorage(mtpStoragesList);
 
-    console.log(selectedStorage);
-
     return (
       <div
         onDoubleClick={() => {
@@ -22,21 +20,23 @@ class Titlebar extends PureComponent {
         className={styles.root}
         id={APP_TITLEBAR_DOM_ID}
       >
-        {mtpDevice?.info && !isEmpty(selectedStorage?.data) && (
-          <span className={styles.deviceInfo}>
-            <span className={styles.deviceModel}>
-              {mtpDevice?.info?.Model}&nbsp;({selectedStorage?.data?.name}
-              )&nbsp;-&nbsp;
+        {mtpDevice?.isAvailable &&
+          mtpDevice?.info &&
+          !isEmpty(selectedStorage?.data) && (
+            <span className={styles.deviceInfo}>
+              <span className={styles.deviceModel}>
+                {mtpDevice?.info?.Model}&nbsp;({selectedStorage?.data?.name}
+                )&nbsp;-&nbsp;
+              </span>
+              {niceBytes(
+                parseInt(selectedStorage?.data.info.FreeSpaceInBytes ?? 0, 10)
+              )}
+              &nbsp;Free of&nbsp;
+              {niceBytes(
+                parseInt(selectedStorage?.data.info.MaxCapability ?? 0, 10)
+              )}
             </span>
-            {niceBytes(
-              parseInt(selectedStorage?.data.info.FreeSpaceInBytes ?? 0, 10)
-            )}
-            &nbsp;free of&nbsp;
-            {niceBytes(
-              parseInt(selectedStorage?.data.info.MaxCapability ?? 0, 10)
-            )}
-          </span>
-        )}
+          )}
       </div>
     );
   }
