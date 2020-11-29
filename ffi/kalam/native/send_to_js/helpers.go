@@ -73,10 +73,13 @@ func processError(e error) (errorType ErrorType, errorMsg string) {
 
 	// this is a fallthrough case while processing errors
 	if errorType == "" {
-		if strings.Contains(e.Error(), "no mtp device found") {
+		if e.Error() == "ErrorMtpDetectFailed" {
 			errorType = ErrorMtpDetectFailed
 			errorMsg = e.Error()
-		} else if strings.Contains(e.Error(), "mtp device was removed") {
+		} else if e.Error() == "ErrorMtpLockExists" {
+			errorType = ErrorMtpLockExists
+			errorMsg = e.Error()
+		} else if e.Error() == "ErrorDeviceChanged" {
 			errorType = ErrorDeviceChanged
 			errorMsg = e.Error()
 		} else {

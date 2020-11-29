@@ -18,6 +18,12 @@ var container deviceContainer
 
 //export Initialize
 func Initialize(ptr int64) {
+	if err := lockMtp(); err != nil {
+		send_to_js.SendError(ptr, err)
+
+		return
+	}
+
 	_, err := _initialize(mtpx.Init{DebugMode: false})
 	if err != nil {
 		send_to_js.SendError(ptr, err)
@@ -37,6 +43,12 @@ func Initialize(ptr int64) {
 
 //export FetchDeviceInfo
 func FetchDeviceInfo(ptr int64) {
+	if err := lockMtp(); err != nil {
+		send_to_js.SendError(ptr, err)
+
+		return
+	}
+
 	dInfo, err := _fetchDeviceInfo()
 	if err != nil {
 		send_to_js.SendError(ptr, err)
@@ -49,6 +61,12 @@ func FetchDeviceInfo(ptr int64) {
 
 //export FetchStorages
 func FetchStorages(ptr int64) {
+	if err := lockMtp(); err != nil {
+		send_to_js.SendError(ptr, err)
+
+		return
+	}
+
 	_sendFetchStorages(ptr, true)
 }
 
@@ -85,6 +103,12 @@ func _sendFetchStorages(ptr int64, retry bool) {
 
 //export MakeDirectory
 func MakeDirectory(ptr int64, json *C.char) {
+	if err := lockMtp(); err != nil {
+		send_to_js.SendError(ptr, err)
+
+		return
+	}
+
 	i := MakeDirectoryInput{}
 
 	var j = jsoniter.ConfigFastest
@@ -106,6 +130,12 @@ func MakeDirectory(ptr int64, json *C.char) {
 
 //export FileExists
 func FileExists(ptr int64, json *C.char) {
+	if err := lockMtp(); err != nil {
+		send_to_js.SendError(ptr, err)
+
+		return
+	}
+
 	i := FileExistsInput{}
 
 	var j = jsoniter.ConfigFastest
@@ -135,6 +165,12 @@ func FileExists(ptr int64, json *C.char) {
 
 //export DeleteFile
 func DeleteFile(ptr int64, json *C.char) {
+	if err := lockMtp(); err != nil {
+		send_to_js.SendError(ptr, err)
+
+		return
+	}
+
 	i := DeleteFileInput{}
 
 	var j = jsoniter.ConfigFastest
@@ -164,6 +200,12 @@ func DeleteFile(ptr int64, json *C.char) {
 
 //export RenameFile
 func RenameFile(ptr int64, json *C.char) {
+	if err := lockMtp(); err != nil {
+		send_to_js.SendError(ptr, err)
+
+		return
+	}
+
 	i := RenameFileInput{}
 
 	var j = jsoniter.ConfigFastest
@@ -190,6 +232,12 @@ func RenameFile(ptr int64, json *C.char) {
 
 //export Walk
 func Walk(ptr int64, json *C.char) {
+	if err := lockMtp(); err != nil {
+		send_to_js.SendError(ptr, err)
+
+		return
+	}
+
 	i := WalkInput{}
 
 	var j = jsoniter.ConfigFastest
@@ -212,6 +260,12 @@ func Walk(ptr int64, json *C.char) {
 
 //export UploadFiles
 func UploadFiles(onPreprocessPtr, onProgressPtr, onDonePtr int64, json *C.char) {
+	if err := lockMtp(); err != nil {
+		send_to_js.SendError(onDonePtr, err)
+
+		return
+	}
+
 	i := UploadFilesInput{}
 
 	var j = jsoniter.ConfigFastest
@@ -290,6 +344,12 @@ func UploadFiles(onPreprocessPtr, onProgressPtr, onDonePtr int64, json *C.char) 
 
 //export DownloadFiles
 func DownloadFiles(onPreprocessPtr, onProgressPtr, onDonePtr int64, json *C.char) {
+	if err := lockMtp(); err != nil {
+		send_to_js.SendError(onDonePtr, err)
+
+		return
+	}
+
 	i := DownloadFilesInput{}
 
 	var j = jsoniter.ConfigFastest
@@ -367,6 +427,12 @@ func DownloadFiles(onPreprocessPtr, onProgressPtr, onDonePtr int64, json *C.char
 
 //export Dispose
 func Dispose(ptr int64) {
+	if err := lockMtp(); err != nil {
+		send_to_js.SendError(ptr, err)
+
+		return
+	}
+
 	if err := _dispose(); err != nil {
 		send_to_js.SendError(ptr, err)
 

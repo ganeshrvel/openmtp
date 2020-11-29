@@ -13,6 +13,7 @@ type verifyMtpSessionMode struct {
 type deviceContainer struct {
 	dev        *mtp.Device
 	deviceInfo *mtp.DeviceInfo
+	locked     bool
 }
 
 type MakeDirectoryInput struct {

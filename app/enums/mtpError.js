@@ -17,5 +17,6 @@ export const MTP_ERROR = {
   ErrorDeviceLocked: 'ErrorDeviceLocked',
   ErrorDeviceSetup: 'ErrorDeviceSetup',
   ErrorDeviceChanged: 'ErrorDeviceChanged',
+  ErrorMtpLockExists: 'ErrorMtpLockExists',
   ErrorMtpDetectFailed: 'ErrorMtpDetectFailed',
 };

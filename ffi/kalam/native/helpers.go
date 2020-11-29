@@ -9,7 +9,7 @@ import (
 
 func verifyMtpSession(c verifyMtpSessionMode) error {
 	if container.dev == nil {
-		return fmt.Errorf("no mtp device found")
+		return fmt.Errorf("ErrorMtpDetectFailed")
 	}
 
 	if !c.skipDeviceChangeCheck && container.deviceInfo != nil {
@@ -25,7 +25,7 @@ func verifyMtpSession(c verifyMtpSessionMode) error {
 		if container.deviceInfo.SerialNumber != dInfo.SerialNumber {
 			container.deviceInfo = dInfo
 
-			return fmt.Errorf("mtp device was removed")
+			return fmt.Errorf("ErrorDeviceChanged")
 		}
 	}
 
@@ -184,6 +184,20 @@ func _dispose() error {
 	}
 
 	mtpx.Dispose(container.dev)
+
+	return nil
+}
+
+func lockMtp() error {
+	if container.locked {
+		return fmt.Errorf("ErrorMtpLockExists")
+	}
+
+	container.locked = true
+
+	defer func() {
+		container.locked = false
+	}()
 
 	return nil
 }
