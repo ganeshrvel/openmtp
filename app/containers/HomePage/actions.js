@@ -248,15 +248,16 @@ function initKalamMtp(
             stderr,
             data,
             mtpMode,
-            onSuccess: () => {
-              // todo set device info
+            onSuccess: ({ _, __, data }) => {
+              dispatch(setMtpStatus({ info: data }));
+
               return resolve({
                 error: null,
                 stderr: null,
                 data,
               });
             },
-            onError: () => {
+            onError: ({ _, __, ___ }) => {
               return resolve({
                 error,
                 stderr,
@@ -465,7 +466,7 @@ export function changeMtpStorage({ ...data }) {
 
 /**
  *
- * @param args {isAvailable, error, isLoading}
+ * @param args {isAvailable, error, isLoading, info}
  * @return {{payload: {}, type: *}}
  */
 export function setMtpStatus({ ...args }) {

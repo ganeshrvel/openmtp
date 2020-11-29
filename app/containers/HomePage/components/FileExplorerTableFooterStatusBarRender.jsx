@@ -38,7 +38,7 @@ class FileExplorerTableFooterStatusBarRender extends PureComponent {
   };
 
   RenderDeviceName = () => {
-    const { classes: styles, deviceType } = this.props;
+    const { classes: styles, deviceType, mtpDevice } = this.props;
 
     if (deviceType === DEVICE_TYPE.local) {
       return (
@@ -56,7 +56,7 @@ class FileExplorerTableFooterStatusBarRender extends PureComponent {
       <Fragment>
         <FontAwesomeIcon icon={faMobile} title={deviceType} />
         <span className={styles.deviceTypeWrapper}>
-          Mobile
+          {mtpDevice?.info?.Model ?? 'Mobile'}
           <span> - </span>
         </span>
       </Fragment>

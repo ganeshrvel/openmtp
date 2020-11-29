@@ -145,7 +145,9 @@ export const initialState = {
     isAvailable: false,
     error: null,
     isLoading: false,
+    info: {},
   },
+
   contextMenuList: {
     [DEVICE_TYPE.local]: {
       rename: {
@@ -204,9 +206,9 @@ export const initialState = {
   },
 
   /**
+   * description - MTP Storage list
    *
-   * Model:
-   * {
+   *    {
    *      string: { <----- storageId
    *        "name": string,
    *        "selected": boolean,
