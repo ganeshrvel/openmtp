@@ -522,7 +522,9 @@ export function churnMtpBuffer({
         dispatch(actionListDirectory([], deviceType));
         dispatch(setSelectedDirLists({ selected: [] }, deviceType));
 
-        onError({ error, stderr, data: null });
+        if (onError) {
+          onError({ error, stderr, data: null });
+        }
       }
 
       if (mtpError) {

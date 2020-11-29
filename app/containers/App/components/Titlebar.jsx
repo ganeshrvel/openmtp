@@ -22,7 +22,7 @@ class Titlebar extends PureComponent {
       >
         {mtpDevice?.isAvailable &&
           mtpDevice?.info &&
-          !isEmpty(selectedStorage?.data) && (
+          !isEmpty(selectedStorage?.data?.info) && (
             <span className={styles.deviceInfo}>
               <span className={styles.deviceModel}>
                 {mtpDevice?.info?.Model}&nbsp;({selectedStorage?.data?.name}

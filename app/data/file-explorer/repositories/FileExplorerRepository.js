@@ -5,13 +5,12 @@ import { DEVICE_TYPE, MTP_MODE } from '../../../enums';
 import { checkIf } from '../../../utils/checkIf';
 import { getMtpModeSettings } from '../../../helpers/settings';
 
-const selectedMtpMode = getMtpModeSettings();
-
 export class FileExplorerRepository {
   constructor() {
     this.legacyMtpDataSource = new FileExplorerLegacyDataSource();
     this.localDataSource = new FileExplorerLocalDataSource();
     this.kalamyMtpDataSource = new FileExplorerKalamDataSource();
+    this.selectedMtpMode = getMtpModeSettings();
   }
 
   /**
@@ -23,7 +22,7 @@ export class FileExplorerRepository {
     checkIf(deviceType, 'string');
 
     if (deviceType === DEVICE_TYPE.mtp) {
-      switch (selectedMtpMode) {
+      switch (this.selectedMtpMode) {
         case MTP_MODE.legacy:
           throw `initialize for MTP_MODE.legacy is unimplemented`;
 
@@ -43,7 +42,7 @@ export class FileExplorerRepository {
    */
   async listStorages({ deviceType }) {
     if (deviceType === DEVICE_TYPE.mtp) {
-      switch (selectedMtpMode) {
+      switch (this.selectedMtpMode) {
         case MTP_MODE.legacy:
           return this.legacyMtpDataSource.listStorages();
 
@@ -69,7 +68,7 @@ export class FileExplorerRepository {
     if (deviceType === DEVICE_TYPE.mtp) {
       checkIf(storageId, 'numericString');
 
-      switch (selectedMtpMode) {
+      switch (this.selectedMtpMode) {
         case MTP_MODE.legacy:
           return this.legacyMtpDataSource.listFiles({
             filePath,
@@ -106,7 +105,7 @@ export class FileExplorerRepository {
     if (deviceType === DEVICE_TYPE.mtp) {
       checkIf(storageId, 'numericString');
 
-      switch (selectedMtpMode) {
+      switch (this.selectedMtpMode) {
         case MTP_MODE.legacy:
           return this.legacyMtpDataSource.renameFile({
             filePath,
@@ -138,7 +137,7 @@ export class FileExplorerRepository {
     if (deviceType === DEVICE_TYPE.mtp) {
       checkIf(storageId, 'numericString');
 
-      switch (selectedMtpMode) {
+      switch (this.selectedMtpMode) {
         case MTP_MODE.legacy:
           return this.legacyMtpDataSource.deleteFiles({
             fileList,
@@ -168,7 +167,7 @@ export class FileExplorerRepository {
     if (deviceType === DEVICE_TYPE.mtp) {
       checkIf(storageId, 'numericString');
 
-      switch (selectedMtpMode) {
+      switch (this.selectedMtpMode) {
         case MTP_MODE.legacy:
           return this.legacyMtpDataSource.makeDirectory({
             filePath,
@@ -198,7 +197,7 @@ export class FileExplorerRepository {
     if (deviceType === DEVICE_TYPE.mtp) {
       checkIf(storageId, 'numericString');
 
-      switch (selectedMtpMode) {
+      switch (this.selectedMtpMode) {
         case MTP_MODE.legacy:
           return this.legacyMtpDataSource.filesExist({
             fileList,
@@ -243,7 +242,7 @@ export class FileExplorerRepository {
     if (deviceType === DEVICE_TYPE.mtp) {
       checkIf(storageId, 'numericString');
 
-      switch (selectedMtpMode) {
+      switch (this.selectedMtpMode) {
         case MTP_MODE.legacy:
           return this.legacyMtpDataSource.transferFiles({
             destination,
@@ -273,7 +272,7 @@ export class FileExplorerRepository {
    */
   async fetchDebugReport({ deviceType }) {
     if (deviceType === DEVICE_TYPE.mtp) {
-      switch (selectedMtpMode) {
+      switch (this.selectedMtpMode) {
         case MTP_MODE.legacy:
           return this.legacyMtpDataSource.fetchDebugReport();
 
