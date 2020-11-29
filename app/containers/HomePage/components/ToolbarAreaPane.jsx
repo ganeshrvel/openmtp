@@ -14,7 +14,7 @@ import {
   churnMtpBuffer,
   churnLocalBuffer,
   changeMtpStorage,
-  getStorageId,
+  getSelectedStorageIdFromState,
   reloadDirList,
 } from '../actions';
 import {
@@ -352,7 +352,7 @@ const mapDispatchToProps = (dispatch, _) =>
               );
               break;
             case DEVICE_TYPE.mtp:
-              const storageId = getStorageId(getState().Home);
+              const storageId = getSelectedStorageIdFromState(getState().Home);
               const {
                 error: mtpError,
                 stderr: mtpStderr,

@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 import { initialState } from './reducers';
-import { getStorageId } from './actions';
+import { getSelectedStorageIdFromState } from './actions';
 
 const make = (state, __) => (state ? state.Home : {});
 
@@ -41,7 +41,7 @@ export const makeMtpStoragesList = createSelector(make, (state) =>
 );
 
 export const makeStorageId = createSelector(make, (state) =>
-  state ? getStorageId(state) : {}
+  state ? getSelectedStorageIdFromState(state) : {}
 );
 
 export const makeFileTransferClipboard = createSelector(make, (state) =>

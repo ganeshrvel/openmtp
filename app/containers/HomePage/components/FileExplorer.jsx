@@ -32,7 +32,7 @@ import {
   churnMtpBuffer,
   churnLocalBuffer,
   initializeMtp,
-  getStorageId,
+  getSelectedStorageIdFromState,
   setFileTransferClipboard,
   setFilesDrag,
   clearFilesDrag,
@@ -1806,7 +1806,7 @@ const mapDispatchToProps = (dispatch, _) =>
               );
               break;
             case DEVICE_TYPE.mtp:
-              const storageId = getStorageId(getState().Home);
+              const storageId = getSelectedStorageIdFromState(getState().Home);
               const {
                 error: mtpError,
                 stderr: mtpStderr,
@@ -1883,7 +1883,7 @@ const mapDispatchToProps = (dispatch, _) =>
               );
               break;
             case DEVICE_TYPE.mtp:
-              const storageId = getStorageId(getState().Home);
+              const storageId = getSelectedStorageIdFromState(getState().Home);
               const {
                 error: mtpError,
                 stderr: mtpStderr,

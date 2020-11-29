@@ -79,22 +79,30 @@ function actionListDirectory(data, deviceType, _) {
   };
 }
 
-export function getStorageId(state) {
-  if (
-    undefinedOrNull(state.mtpStoragesList) ||
-    Object.keys(state.mtpStoragesList).length < 1
-  ) {
+export function getSelectedStorageIdFromState(state) {
+  const selectedStorage = getSelectedStorage(state.mtpStoragesList);
+
+  if (isEmpty(selectedStorage)) {
     return null;
   }
 
-  const { mtpStoragesList } = state;
+  return selectedStorage.id;
+}
+
+export function getSelectedStorage(mtpStoragesList) {
+  checkIf(mtpStoragesList, 'object');
+
+  if (isEmpty(mtpStoragesList)) {
+    return null;
+  }
+
   const mtpStoragesListKeys = Object.keys(mtpStoragesList);
 
   for (let i = 0; i < mtpStoragesListKeys.length; i += 1) {
     const itemKey = mtpStoragesListKeys[i];
 
     if (mtpStoragesList[itemKey].selected) {
-      return itemKey;
+      return { id: itemKey, data: mtpStoragesList[itemKey] };
     }
   }
 
@@ -611,7 +619,7 @@ export function listDirectory(
 
       case DEVICE_TYPE.mtp:
         return async (dispatch) => {
-          const storageId = getStorageId(getState().Home);
+          const storageId = getSelectedStorageIdFromState(getState().Home);
 
           const {
             error,

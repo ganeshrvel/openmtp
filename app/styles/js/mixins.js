@@ -1,5 +1,9 @@
 // eslint-disable-next-line no-unused-vars
+import { checkIf } from '../../utils/checkIf';
+
 export default ({ theme }) => {
+  checkIf(theme, 'object');
+
   return {
     resetUl: {
       'margin-block-start': 'unset',

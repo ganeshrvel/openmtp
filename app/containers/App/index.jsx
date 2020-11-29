@@ -32,6 +32,7 @@ import {
 import { getAppThemeMode } from '../../utils/theme';
 import { getMainWindowRendererProcess } from '../../utils/windowHelper';
 import { log } from '../../utils/log';
+import { makeMtpDevice, makeMtpStoragesList } from '../HomePage/selectors';
 
 class App extends Component {
   constructor(props) {
@@ -164,14 +165,14 @@ class App extends Component {
   }
 
   render() {
-    const { classes: styles } = this.props;
+    const { classes: styles, mtpDevice, mtpStoragesList } = this.props;
     const muiTheme = this.getMuiTheme();
 
     return (
       <div className={styles.root}>
         <MuiThemeProvider theme={muiTheme}>
           <CssBaseline />
-          <Titlebar />
+          <Titlebar mtpDevice={mtpDevice} mtpStoragesList={mtpStoragesList} />
           <Alerts />
           <ErrorBoundary>
             <SettingsDialog />
@@ -201,6 +202,8 @@ const mapStateToProps = (state) => {
   return {
     appThemeModeSettings: makeAppThemeModeSettings(state),
     appThemeMode: makeAppThemeMode(state),
+    mtpDevice: makeMtpDevice(state),
+    mtpStoragesList: makeMtpStoragesList(state),
   };
 };
 
