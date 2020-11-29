@@ -26,7 +26,7 @@ export const processKalamMtpBuffer = async ({ error, stderr }) => {
       DEVICES_LABEL[DEVICE_TYPE.mtp]
     } or MTP device found.`,
     [MTP_ERROR.ErrorDeviceChanged]: null,
-    [MTP_ERROR.ErrorMtpLockExists]: `Not so fast tiger! MTP is not so quick as you are.`,
+    [MTP_ERROR.ErrorMtpLockExists]: `Easy tiger! MTP is not so quick as you are`,
     [MTP_ERROR.ErrorDeviceSetup]: `An error occured while setting up the ${
       DEVICES_LABEL[DEVICE_TYPE.mtp]
     }`,
