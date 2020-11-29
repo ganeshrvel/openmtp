@@ -1,6 +1,7 @@
 /* eslint no-case-declarations: off */
 
 import React, { Component, Fragment } from 'react';
+import * as path from 'path';
 import Typography from '@material-ui/core/Typography';
 import {
   faGithub,
@@ -82,10 +83,11 @@ import {
   redditShareUrl,
   twitterShareUrl,
 } from '../../../templates/socialMediaShareBtns';
-import { baseName, pathInfo, sanitizePath } from '../../../utils/files';
+import { baseName, pathInfo, pathUp, sanitizePath } from '../../../utils/files';
 import { DEVICE_TYPE, FILE_EXPLORER_VIEW_TYPE } from '../../../enums';
 import { log } from '../../../utils/log';
 import fileExplorerController from '../../../data/file-explorer/controllers/FileExplorerController';
+
 
 const { Menu, getCurrentWindow } = remote;
 
@@ -1004,37 +1006,43 @@ class FileExplorer extends Component {
       return null;
     }
 
-    const _newFilename = sanitizePath(newFilename);
+    const sanitizedNewFilename = sanitizePath(newFilename);
     const filePath = data.path;
+    const filename = data.name;
 
-    if (_newFilename === data.path) {
+    const newFilepath = path.join(pathUp(filePath), sanitizedNewFilename);
+
+    if (newFilepath === data.path) {
       this._handleClearEditDialog(targetAction);
 
       return null;
     }
 
-    if (
-      await fileExplorerController.filesExist({
-        deviceType,
-        fileList: [_newFilename],
-        storageId,
-      })
-    ) {
-      this._handleErrorsEditDialog(
-        {
-          toggle: true,
-          message: `Error: The name "${_newFilename}" is already taken.`,
-        },
-        targetAction
-      );
+    // if the new filename and the existing filename are just case different then skip the edit dialog
+    if (sanitizedNewFilename.toLowerCase() !== filename.toLowerCase()) {
+      if (
+        await fileExplorerController.filesExist({
+          deviceType,
+          fileList: [newFilepath],
+          storageId,
+        })
+      ) {
+        this._handleErrorsEditDialog(
+          {
+            toggle: true,
+            message: `Error: The name "${sanitizedNewFilename}" is already taken.`,
+          },
+          targetAction
+        );
 
-      return null;
+        return null;
+      }
     }
 
     actionCreateRenameFile(
       {
         filePath,
-        newFilename: _newFilename,
+        newFilename: sanitizedNewFilename,
         deviceType,
       },
       {
