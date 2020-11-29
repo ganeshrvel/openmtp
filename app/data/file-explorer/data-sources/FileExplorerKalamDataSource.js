@@ -1,6 +1,7 @@
 import { log } from '../../../utils/log';
 import { Kalam } from '../../../../ffi/kalam/src/Kalam';
 import { checkIf } from '../../../utils/checkIf';
+import { isEmpty } from '../../../utils/funcs';
 
 export class FileExplorerKalamDataSource {
   constructor() {
@@ -72,10 +73,80 @@ export class FileExplorerKalamDataSource {
   async listFiles({ filePath, ignoreHidden, storageId }) {
     checkIf(filePath, 'string');
     checkIf(ignoreHidden, 'boolean');
-    checkIf(storageId, 'string');
+    checkIf(storageId, 'numericString');
 
+    //todo - add ignoreHidden logic in gomtpx
     try {
       return this.kalamFfi.walk({ fullPath: filePath, storageId });
+    } catch (e) {
+      log.error(e);
+
+      return {
+        error: e,
+        stderr: null,
+        data: null,
+      };
+    }
+  }
+
+  /**
+   * description - Rename a device file
+   *
+   * @param filePath
+   * @param newFilename
+   * @param storageId
+   * @return {Promise<{data: null|boolean, error: string|null, stderr: string|null}>}
+   */
+  async renameFile({ filePath, newFilename, storageId }) {
+    checkIf(filePath, 'string');
+    checkIf(newFilename, 'string');
+    checkIf(storageId, 'numericString');
+
+    try {
+      return this.kalamFfi.renameFile({
+        fullPath: filePath,
+        storageId,
+        newFilename,
+      });
+    } catch (e) {
+      log.error(e);
+
+      return {
+        error: e,
+        stderr: null,
+        data: null,
+      };
+    }
+  }
+
+  /**
+   * description - Check if files exist in the device
+   *
+   * @param {[string]} fileList
+   * @param {string} storageId
+   * @return {Promise<boolean>}
+   */
+  async filesExist({ fileList, storageId }) {
+    checkIf(fileList, 'array');
+    checkIf(storageId, 'numericString');
+
+    try {
+      const { error, stderr, data } = await this.kalamFfi.fileExist({
+        storageId,
+        files: fileList,
+      });
+
+      if (error || stderr) {
+        return true;
+      }
+
+      if (isEmpty(data)) {
+        return true;
+      }
+
+      const existsItems = data.filter((a) => a.exists);
+
+      return existsItems.length > 0;
     } catch (e) {
       log.error(e);
 

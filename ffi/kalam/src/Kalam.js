@@ -162,7 +162,7 @@ export class Kalam {
     });
   }
 
-  async fileExists({ storageId, files }) {
+  async fileExist({ storageId, files }) {
     checkIf(storageId, 'numericString');
     checkIf(files, 'array');
 
@@ -226,10 +226,10 @@ export class Kalam {
     });
   }
 
-  async renameFile({ storageId, fullPath, newFileName }) {
+  async renameFile({ storageId, fullPath, newFilename }) {
     checkIf(storageId, 'numericString');
     checkIf(fullPath, 'string');
-    checkIf(newFileName, 'string');
+    checkIf(newFilename, 'string');
 
     return new Promise((resolve) => {
       try {
@@ -241,7 +241,11 @@ export class Kalam {
 
         const _storageId = parseInt(storageId, 10);
 
-        const args = { storageId: _storageId, fullPath, newFileName };
+        const args = {
+          storageId: _storageId,
+          fullPath,
+          newFileName: newFilename,
+        };
         const json = JSON.stringify(args);
 
         this.lib.RenameFile.async(onDone, json, (err, _) => {
