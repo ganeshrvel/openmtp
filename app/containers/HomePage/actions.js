@@ -228,6 +228,12 @@ function initKalamMtp(
 
       checkIf(preInitMtpDevice, 'object');
 
+      dispatch(
+        setMtpStatus({
+          isLoading: true,
+        })
+      );
+
       // if the app was expecting the user to allow access to mtp storage
       // then don't reinitialize mtp
       const { error, stderr, data } = await fileExplorerController.initialize({
@@ -243,7 +249,7 @@ function initKalamMtp(
             data,
             mtpMode,
             onSuccess: () => {
-              //todo set device info
+              // todo set device info
               return resolve({
                 error: null,
                 stderr: null,
@@ -268,6 +274,12 @@ function initKalamMtp(
       if (!postInitMtpDevice.isAvailable) {
         return;
       }
+
+      dispatch(
+        setMtpStatus({
+          isLoading: true,
+        })
+      );
 
       await new Promise((resolve) => {
         dispatch(
@@ -296,6 +308,12 @@ function initKalamMtp(
       if (!postStorageAccessMtpDevice.isAvailable) {
         return;
       }
+
+      dispatch(
+        setMtpStatus({
+          isLoading: true,
+        })
+      );
 
       dispatch(reloadDirList({ filePath, ignoreHidden, deviceType }, getState));
     } catch (e) {
@@ -445,10 +463,15 @@ export function changeMtpStorage({ ...data }) {
   };
 }
 
-export function setMtpStatus({ isAvailable, error }) {
+/**
+ *
+ * @param args {isAvailable, error, isLoading}
+ * @return {{payload: {}, type: *}}
+ */
+export function setMtpStatus({ ...args }) {
   return {
     type: actionTypes.SET_MTP_STATUS,
-    payload: { isAvailable, error },
+    payload: args,
   };
 }
 
@@ -479,6 +502,7 @@ export function churnMtpBuffer({
         setMtpStatus({
           isAvailable: mtpStatus,
           error: mtpMode === MTP_MODE.kalam ? stderr : error,
+          isLoading: false,
         })
       );
 
@@ -670,6 +694,12 @@ export function reloadDirList(
 
           case MTP_MODE.kalam:
           default:
+            dispatch(
+              setMtpStatus({
+                isLoading: true,
+              })
+            );
+
             if (mtpDevice.isAvailable) {
               return dispatch(
                 listDirectory(

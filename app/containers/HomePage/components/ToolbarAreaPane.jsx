@@ -245,6 +245,7 @@ class ToolbarAreaPane extends PureComponent {
       focussedFileExplorerDeviceType,
       appThemeMode,
       showLocalPaneOnLeftSide,
+      mtpMode,
       ...parentProps
     } = this.props;
 
@@ -268,6 +269,7 @@ class ToolbarAreaPane extends PureComponent {
           toggleDrawer={toggleDrawer}
           appThemeMode={appThemeMode}
           showLocalPaneOnLeftSide={showLocalPaneOnLeftSide}
+          mtpMode={mtpMode}
           onDeleteConfirmDialog={this._handleDeleteConfirmDialog}
           onMtpStoragesListClick={this._handleMtpStoragesListClick}
           onToggleDrawer={this._handleToggleDrawer}

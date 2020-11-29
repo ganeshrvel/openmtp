@@ -144,6 +144,7 @@ export const initialState = {
   mtpDevice: {
     isAvailable: false,
     error: null,
+    isLoading: false,
   },
   contextMenuList: {
     [DEVICE_TYPE.local]: {

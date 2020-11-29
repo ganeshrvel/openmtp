@@ -14,7 +14,7 @@ import {
   Confirm as ConfirmDialog,
   Selection as SelectionDialog,
 } from '../../../components/DialogBox';
-import { DEVICE_TYPE } from '../../../enums';
+import { DEVICE_TYPE, MTP_MODE } from '../../../enums';
 
 export default class ToolbarAreaPane extends PureComponent {
   activeToolbarList = ({ ...args }) => {
@@ -25,12 +25,19 @@ export default class ToolbarAreaPane extends PureComponent {
       deviceType,
       mtpStoragesList,
       mtpDevice,
+      mtpMode,
     } = args;
 
     const _directoryLists = directoryLists[deviceType];
     const _currentBrowsePath = currentBrowsePath[deviceType];
     const _activeToolbarList = toolbarList[deviceType];
     const isMtp = deviceType === DEVICE_TYPE.mtp;
+
+    let enabled = true;
+
+    if (isMtp && mtpMode === MTP_MODE.kalam) {
+      enabled = !mtpDevice.isLoading;
+    }
 
     Object.keys(_activeToolbarList).map((a) => {
       const item = _activeToolbarList[a];
@@ -39,20 +46,21 @@ export default class ToolbarAreaPane extends PureComponent {
         case 'up':
           _activeToolbarList[a] = {
             ...item,
-            enabled: _currentBrowsePath !== '/',
+            enabled: _currentBrowsePath !== '/' && enabled,
           };
           break;
 
         case 'refresh':
           _activeToolbarList[a] = {
             ...item,
+            enabled,
           };
           break;
 
         case 'delete':
           _activeToolbarList[a] = {
             ...item,
-            enabled: _directoryLists.queue.selected.length > 0,
+            enabled: _directoryLists.queue.selected.length > 0 && enabled,
           };
           break;
 
@@ -62,7 +70,8 @@ export default class ToolbarAreaPane extends PureComponent {
             enabled:
               Object.keys(mtpStoragesList).length > 0 &&
               isMtp &&
-              mtpDevice.isAvailable,
+              mtpDevice.isAvailable &&
+              enabled,
           };
           break;
 
@@ -104,6 +113,7 @@ export default class ToolbarAreaPane extends PureComponent {
       onDoubleClickToolBar,
       onToolbarAction,
       showLocalPaneOnLeftSide,
+      mtpMode,
     } = this.props;
 
     const _toolbarList = this.activeToolbarList({
@@ -113,6 +123,7 @@ export default class ToolbarAreaPane extends PureComponent {
       deviceType,
       mtpStoragesList,
       mtpDevice,
+      mtpMode,
     });
 
     const RenderLazyLoaderOverlay = LazyLoaderOverlay({ appThemeMode });
