@@ -150,7 +150,10 @@ export class FileExplorerRepository {
 
         case MTP_MODE.kalam:
         default:
-          return;
+          return this.kalamMtpDataSource.deleteFiles({
+            fileList,
+            storageId,
+          });
       }
     }
 
@@ -180,7 +183,10 @@ export class FileExplorerRepository {
 
         case MTP_MODE.kalam:
         default:
-          return;
+          return this.kalamMtpDataSource.makeDirectory({
+            filePath,
+            storageId,
+          });
       }
     }
 

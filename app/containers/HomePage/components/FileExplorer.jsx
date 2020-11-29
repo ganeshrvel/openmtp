@@ -88,7 +88,6 @@ import { DEVICE_TYPE, FILE_EXPLORER_VIEW_TYPE } from '../../../enums';
 import { log } from '../../../utils/log';
 import fileExplorerController from '../../../data/file-explorer/controllers/FileExplorerController';
 
-
 const { Menu, getCurrentWindow } = remote;
 
 let allowFileDropFlag = false;

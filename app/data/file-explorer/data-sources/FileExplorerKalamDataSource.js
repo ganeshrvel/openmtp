@@ -157,4 +157,50 @@ export class FileExplorerKalamDataSource {
       };
     }
   }
+
+  /**
+   * description - Create a device directory
+   *
+   * @param filePath
+   * @param storageId
+   * @return {Promise<{data: null|boolean, error: string|null, stderr: string|null}>}
+   */
+  async makeDirectory({ filePath, storageId }) {
+    checkIf(filePath, 'string');
+    checkIf(storageId, 'numericString');
+
+    try {
+      return this.kalamFfi.makeDirectory({
+        storageId,
+        fullPath: filePath,
+      });
+    } catch (e) {
+      log.error(e);
+
+      return { error: e, stderr: null, data: false };
+    }
+  }
+
+  /**
+   * description - Delete device files
+   *
+   * @param fileList [string]
+   * @param storageId
+   * @return {Promise<{data: null|boolean, error: string|null, stderr: string|null}>}
+   */
+  async deleteFiles({ fileList, storageId }) {
+    checkIf(fileList, 'array');
+    checkIf(storageId, 'numericString');
+
+    return this.kalamFfi.deleteFile({
+      storageId,
+      files: fileList,
+    });
+  }
+
+  catch(e) {
+    log.error(e);
+
+    return { error: e, stderr: null, data: false };
+  }
 }
