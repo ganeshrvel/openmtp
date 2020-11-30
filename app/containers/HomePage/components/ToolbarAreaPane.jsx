@@ -51,6 +51,7 @@ class ToolbarAreaPane extends PureComponent {
       toggleDrawer: false,
       toggleDeleteConfirmDialog: false,
       toggleMtpStorageSelectionDialog: false,
+      toggleMtpModeSelectionDialog: false,
     };
     this.state = {
       ...this.initialState,
@@ -109,7 +110,39 @@ class ToolbarAreaPane extends PureComponent {
     });
   };
 
+  _handleToggleMtpModeSelectionDialog = (status) => {
+    this.setState({
+      toggleMtpModeSelectionDialog: status,
+    });
+  };
+
   _handleMtpStoragesListClick = ({ ...args }) => {
+    const {
+      actionCreateSetMtpStorage,
+      mtpStoragesList,
+      deviceType,
+      hideHiddenFiles,
+    } = this.props;
+
+    const { selectedValue, triggerChange } = args;
+
+    this._handleToggleMtpStorageSelectionDialog(false);
+
+    if (!triggerChange) {
+      return null;
+    }
+
+    actionCreateSetMtpStorage(
+      { selectedValue, mtpStoragesList },
+      {
+        filePath: DEVICES_DEFAULT_PATH.mtp,
+        ignoreHidden: hideHiddenFiles[deviceType],
+      },
+      deviceType
+    );
+  };
+
+  _handleMtpModeSelectionDialogClick = ({ ...args }) => {
     const {
       actionCreateSetMtpStorage,
       mtpStoragesList,
@@ -197,6 +230,10 @@ class ToolbarAreaPane extends PureComponent {
         this._handleOpenGitHubRepo();
         break;
 
+      case 'mtpMode':
+        this._handleToggleMtpModeSelectionDialog(true);
+        break;
+
       default:
         break;
     }
@@ -253,6 +290,7 @@ class ToolbarAreaPane extends PureComponent {
       toggleDrawer,
       toggleDeleteConfirmDialog,
       toggleMtpStorageSelectionDialog,
+      toggleMtpModeSelectionDialog,
     } = this.state;
 
     const { isLoaded: isLoadedDirectoryLists } = directoryLists[deviceType];
@@ -266,12 +304,16 @@ class ToolbarAreaPane extends PureComponent {
           isLoadedDirectoryLists={isLoadedDirectoryLists}
           toggleDeleteConfirmDialog={toggleDeleteConfirmDialog}
           toggleMtpStorageSelectionDialog={toggleMtpStorageSelectionDialog}
+          toggleMtpModeSelectionDialog={toggleMtpModeSelectionDialog}
           toggleDrawer={toggleDrawer}
           appThemeMode={appThemeMode}
           showLocalPaneOnLeftSide={showLocalPaneOnLeftSide}
           mtpMode={mtpMode}
           onDeleteConfirmDialog={this._handleDeleteConfirmDialog}
           onMtpStoragesListClick={this._handleMtpStoragesListClick}
+          onMtpModeSelectionDialogClick={
+            this._handleMtpModeSelectionDialogClick
+          }
           onToggleDrawer={this._handleToggleDrawer}
           onListDirectory={this._handleListDirectory}
           onDoubleClickToolBar={this._handleDoubleClickToolBar}

@@ -4,6 +4,7 @@ import {
   faSync,
   faSdCard,
   faCog,
+  faBolt,
   faArrowLeft,
 } from '@fortawesome/free-solid-svg-icons';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
@@ -107,10 +108,10 @@ export const initialState = {
         label: 'Storage',
         icon: faSdCard,
       },
-      settings: {
+      mtpMode: {
         enabled: true,
-        label: 'Settings',
-        icon: faCog,
+        label: 'MTP Mode',
+        icon: faBolt,
       },
     },
   },

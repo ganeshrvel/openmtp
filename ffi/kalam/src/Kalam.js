@@ -371,11 +371,24 @@ export class Kalam {
     });
   }
 
-  async downloadFiles({ storageId, sources, destination, preprocessFiles }) {
+  async downloadFiles({
+    storageId,
+    sources,
+    destination,
+    preprocessFiles,
+    onError,
+    onPreprocess,
+    onProgress,
+    onCompleted,
+  }) {
     checkIf(storageId, 'numericString');
     checkIf(sources, 'array');
     checkIf(destination, 'string');
     checkIf(preprocessFiles, 'boolean');
+    checkIf(onError, 'function');
+    checkIf(onPreprocess, 'function');
+    checkIf(onProgress, 'function');
+    checkIf(onCompleted, 'function');
 
     return new Promise((resolve) => {
       try {

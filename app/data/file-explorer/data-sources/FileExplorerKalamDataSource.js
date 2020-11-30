@@ -215,6 +215,22 @@ export class FileExplorerKalamDataSource {
    */
 
   /**
+   * @typedef {function(preprocessCallbackInfo)} preprocessCallback
+   * @callback preprocessCallback
+   * @param {preprocessCallbackInfo} args - preprocess object
+   */
+
+  /**
+   * @typedef {Object} preprocessCallbackInfo
+   * @property {number} percentage - percentage
+   * @property {number} activeFileSize - total size of the current file
+   * @property {number} activeFileSent - total bytes of the current file transferred
+   * @property {string} currentFile - current file
+   * @property {string} speed - speed
+   * @property {string} elapsedTime - elapsed time
+   */
+
+  /**
    * @typedef {function(progressCallbackInfo)} progressCallback
    * @callback progressCallback
    * @param {progressCallbackInfo} args - progress object
@@ -243,6 +259,7 @@ export class FileExplorerKalamDataSource {
    * @param {[string]} fileList
    * @param {string} storageId
    * @param {errorCallback} onError
+   * @param {preprocessCallback} onPreprocess
    * @param {progressCallback} onProgress
    * @param {completedCallback} onCompleted
    *
@@ -254,11 +271,13 @@ export class FileExplorerKalamDataSource {
     direction,
     storageId,
     onError,
+    onPreprocess,
     onProgress,
     onCompleted,
   }) {
     checkIf(storageId, 'numericString');
     checkIf(onError, 'function');
+    checkIf(onPreprocess, 'function');
     checkIf(onProgress, 'function');
     checkIf(onCompleted, 'function');
 
