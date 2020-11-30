@@ -248,7 +248,7 @@ func Walk(ptr int64, json *C.char) {
 		return
 	}
 
-	files, err := _walk(i.StorageId, i.FullPath, i.Recursive, i.SkipDisallowedFiles)
+	files, err := _walk(i.StorageId, i.FullPath, i.Recursive, i.SkipDisallowedFiles, i.SkipHiddenFiles)
 	if err != nil {
 		send_to_js.SendError(ptr, err)
 

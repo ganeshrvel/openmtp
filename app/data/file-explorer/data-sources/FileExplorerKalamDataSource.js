@@ -1,7 +1,7 @@
 import { log } from '../../../utils/log';
 import { Kalam } from '../../../../ffi/kalam/src/Kalam';
 import { checkIf } from '../../../utils/checkIf';
-import { isEmpty } from '../../../utils/funcs';
+import { isArray, isEmpty } from '../../../utils/funcs';
 
 export class FileExplorerKalamDataSource {
   constructor() {
@@ -75,9 +75,12 @@ export class FileExplorerKalamDataSource {
     checkIf(ignoreHidden, 'boolean');
     checkIf(storageId, 'numericString');
 
-    //todo - add ignoreHidden logic in gomtpx
     try {
-      return this.kalamFfi.walk({ fullPath: filePath, storageId });
+      return this.kalamFfi.walk({
+        fullPath: filePath,
+        storageId,
+        skipHiddenFiles: ignoreHidden,
+      });
     } catch (e) {
       log.error(e);
 
@@ -196,6 +199,103 @@ export class FileExplorerKalamDataSource {
       storageId,
       files: fileList,
     });
+  }
+
+  /**
+   * @typedef {function(errorCallbackInfo)} errorCallback
+   * @callback errorCallback
+   * @param {errorCallbackInfo} args - error object
+   */
+
+  /**
+   * @typedef {Object} errorCallbackInfo
+   * @property {string} error - error text
+   * @property {string} stderr - std error text
+   * @property {null} data - data
+   */
+
+  /**
+   * @typedef {function(progressCallbackInfo)} progressCallback
+   * @callback progressCallback
+   * @param {progressCallbackInfo} args - progress object
+   */
+
+  /**
+   * @typedef {Object} progressCallbackInfo
+   * @property {number} percentage - percentage
+   * @property {number} activeFileSize - total size of the current file
+   * @property {number} activeFileSent - total bytes of the current file transferred
+   * @property {string} currentFile - current file
+   * @property {string} speed - speed
+   * @property {string} elapsedTime - elapsed time
+   */
+
+  /**
+   * @typedef {function()} completedCallback
+   * @callback completedCallback
+   */
+
+  /**
+   * description - Upload or download files from MTP device to local or vice versa
+   *
+   * @param {string} destination
+   * @param {'upload'|'download'} direction
+   * @param {[string]} fileList
+   * @param {string} storageId
+   * @param {errorCallback} onError
+   * @param {progressCallback} onProgress
+   * @param {completedCallback} onCompleted
+   *
+   * @return
+   */
+  async transferFiles({
+    destination,
+    fileList,
+    direction,
+    storageId,
+    onError,
+    onProgress,
+    onCompleted,
+  }) {
+    checkIf(storageId, 'numericString');
+    checkIf(onError, 'function');
+    checkIf(onProgress, 'function');
+    checkIf(onCompleted, 'function');
+
+    try {
+      if (isEmpty(destination)) {
+        onError({
+          error: `Invalid path`,
+          stderr: null,
+          data: null,
+        });
+
+        return;
+      }
+
+      if (isEmpty(fileList) || !isArray(fileList)) {
+        onError({
+          error: `No files selected`,
+          stderr: null,
+          data: null,
+        });
+
+        return;
+      }
+
+      switch (direction) {
+        case 'download':
+          return;
+
+        case 'upload':
+          return;
+
+        default:
+          break;
+      }
+    } catch (e) {
+      log.error(e);
+    }
   }
 
   catch(e) {

@@ -42,6 +42,7 @@ type WalkInput struct {
 	FullPath            string `json:"fullPath"`
 	Recursive           bool   `json:"recursive"`
 	SkipDisallowedFiles bool   `json:"skipDisallowedFiles"`
+	SkipHiddenFiles     bool   `json:"skipHiddenFiles"`
 }
 
 type UploadFilesInput struct {

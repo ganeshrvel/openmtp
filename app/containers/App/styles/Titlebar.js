@@ -13,7 +13,7 @@ export const styles = (theme) => {
       ...mixins({ theme }).center,
       width: `100%`,
       textAlign: 'center',
-      color: 'rgba(255, 255, 255, 0.50)',
+      color: theme.palette.lightText1Color,
       fontWeight: 'bold',
       fontSize: '12px',
     },

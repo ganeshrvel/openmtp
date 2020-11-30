@@ -269,9 +269,10 @@ export class Kalam {
    * @return {Promise<[string]>}
    * @constructor
    */
-  async walk({ storageId, fullPath }) {
+  async walk({ storageId, fullPath, skipHiddenFiles }) {
     checkIf(storageId, 'numericString');
     checkIf(fullPath, 'string');
+    checkIf(skipHiddenFiles, 'boolean');
 
     return new Promise((resolve) => {
       try {
@@ -288,6 +289,7 @@ export class Kalam {
           fullPath,
           recursive: false,
           skipDisallowedFiles: false,
+          skipHiddenFiles,
         };
         const json = JSON.stringify(args);
 
