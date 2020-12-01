@@ -28,7 +28,7 @@ import { withReducer } from '../../../store/reducers/withReducer';
 import reducers from '../reducers';
 import {
   setSortingDirLists,
-  setSelectedDirLists,
+  actionSetSelectedDirLists,
   listDirectory,
   churnMtpBuffer,
   churnLocalBuffer,
@@ -1735,7 +1735,7 @@ const mapDispatchToProps = (dispatch, _) =>
       ) => {
         if (isChecked) {
           dispatch(
-            setSelectedDirLists(
+            actionSetSelectedDirLists(
               {
                 selected,
               },
@@ -1746,11 +1746,11 @@ const mapDispatchToProps = (dispatch, _) =>
           return;
         }
 
-        dispatch(setSelectedDirLists({ selected: [] }, deviceType));
+        dispatch(actionSetSelectedDirLists({ selected: [] }, deviceType));
       },
 
       actionCreateTableClick: ({ selected }, deviceType) => (_, __) => {
-        dispatch(setSelectedDirLists({ selected }, deviceType));
+        dispatch(actionSetSelectedDirLists({ selected }, deviceType));
       },
 
       actionCreateInitializeMtp: ({ filePath, ignoreHidden, deviceType }) => (
@@ -1762,7 +1762,7 @@ const mapDispatchToProps = (dispatch, _) =>
             {
               filePath,
               ignoreHidden,
-              changeMtpStorageIdsOnlyOnDeviceChange: false,
+               changeLegacyMtpStorageOnlyOnDeviceChange: false,
               deviceType,
             },
             getState
@@ -1953,7 +1953,7 @@ const mapDispatchToProps = (dispatch, _) =>
             })
           );
 
-          dispatch(setSelectedDirLists({ selected: [] }, deviceType));
+          dispatch(actionSetSelectedDirLists({ selected: [] }, deviceType));
         } catch (e) {
           log.error(e);
         }

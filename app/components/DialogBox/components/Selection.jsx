@@ -43,12 +43,12 @@ class Selection extends PureComponent {
                 <Fragment key={item.value}>
                   <ListItem
                     button
-                    onClick={() =>
+                    onClick={() => {
                       this._handleListItemClick({
                         selectedValue: item.value,
                         triggerChange: true,
-                      })
-                    }
+                      });
+                    }}
                   >
                     {showAvatar && (
                       <ListItemAvatar>

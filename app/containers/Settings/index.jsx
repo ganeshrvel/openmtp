@@ -10,6 +10,7 @@ import {
   fileExplorerListingType,
   freshInstall,
   hideHiddenFiles,
+  selectMtpMode,
   setCommonSettings,
   toggleSettings,
 } from './actions';
@@ -155,6 +156,12 @@ class Settings extends Component {
     );
   };
 
+  _handleMtpModeChange = (event, value, deviceType) => {
+    const { actionCreateSelectMtpMode } = this.props;
+
+    actionCreateSelectMtpMode({ value }, deviceType);
+  };
+
   _handleSetCommonSettingsChange = ({ key, value }, deviceType) => {
     const { actionSetCommonSettings } = this.props;
 
@@ -166,6 +173,7 @@ class Settings extends Component {
       freshInstall,
       toggleSettings,
       appThemeMode,
+      mtpMode,
       classes: styles,
       ...parentProps
     } = this.props;
@@ -177,6 +185,7 @@ class Settings extends Component {
         freshInstall={freshInstall}
         toggleSettings={toggleSettings}
         appThemeMode={appThemeMode}
+        mtpMode={mtpMode}
         styles={styles}
         onAnalyticsChange={this._handleAnalyticsChange}
         onHiddenFilesChange={this._handleHiddenFilesChange}
@@ -194,6 +203,7 @@ class Settings extends Component {
           this._handleShowLocalPaneOnLeftSideChange
         }
         onShowDirectoriesFirstChange={this._handleShowDirectoriesFirstChange}
+        onMtpModeChange={this._handleMtpModeChange}
         {...parentProps}
       />
     );
@@ -223,6 +233,13 @@ const mapDispatchToProps = (dispatch, _) =>
         getState
       ) => {
         dispatch(fileExplorerListingType({ ...data }, deviceType, getState));
+      },
+
+      actionCreateSelectMtpMode: ({ value }, deviceType) => (_, getState) => {
+        checkIf(value, 'string');
+        checkIf(deviceType, 'string');
+
+        dispatch(selectMtpMode({ value }, deviceType, getState));
       },
 
       actionSetCommonSettings: ({ key, value }, deviceType) => (

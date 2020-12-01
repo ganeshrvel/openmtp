@@ -10,7 +10,6 @@ export class FileExplorerRepository {
     this.legacyMtpDataSource = new FileExplorerLegacyDataSource();
     this.localDataSource = new FileExplorerLocalDataSource();
     this.kalamMtpDataSource = new FileExplorerKalamDataSource();
-    this.selectedMtpMode = getMtpModeSettings();
   }
 
   /**
@@ -19,10 +18,12 @@ export class FileExplorerRepository {
    * @return {Promise<{data: object, error: string|null, stderr: string|null}>}
    */
   async initialize({ deviceType }) {
+    const selectedMtpMode = getMtpModeSettings();
+
     checkIf(deviceType, 'string');
 
     if (deviceType === DEVICE_TYPE.mtp) {
-      switch (this.selectedMtpMode) {
+      switch (selectedMtpMode) {
         case MTP_MODE.legacy:
           throw `initialize for MTP_MODE.legacy is unimplemented`;
 
@@ -36,13 +37,39 @@ export class FileExplorerRepository {
   }
 
   /**
+   * description - Dispose
+   *
+   * @return {Promise<{data: object, error: string|null, stderr: string|null}>}
+   */
+  async dispose({ deviceType }) {
+    checkIf(deviceType, 'string');
+
+    const selectedMtpMode = getMtpModeSettings();
+
+    if (deviceType === DEVICE_TYPE.mtp) {
+      switch (selectedMtpMode) {
+        case MTP_MODE.legacy:
+          throw `dispose for MTP_MODE.legacy is unimplemented`;
+
+        case MTP_MODE.kalam:
+        default:
+          return this.kalamMtpDataSource.dispose();
+      }
+    }
+
+    throw `dispose for deviceType=DEVICE_TYPE.local is unimplemented`;
+  }
+
+  /**
    * description - Fetch storages
    *
    * @return {Promise<{data: object|boolean, error: string|null, stderr: string|null}>}
    */
   async listStorages({ deviceType }) {
+    const selectedMtpMode = getMtpModeSettings();
+
     if (deviceType === DEVICE_TYPE.mtp) {
-      switch (this.selectedMtpMode) {
+      switch (selectedMtpMode) {
         case MTP_MODE.legacy:
           return this.legacyMtpDataSource.listStorages();
 
@@ -68,7 +95,9 @@ export class FileExplorerRepository {
     if (deviceType === DEVICE_TYPE.mtp) {
       checkIf(storageId, 'numericString');
 
-      switch (this.selectedMtpMode) {
+      const selectedMtpMode = getMtpModeSettings();
+
+      switch (selectedMtpMode) {
         case MTP_MODE.legacy:
           return this.legacyMtpDataSource.listFiles({
             filePath,
@@ -105,7 +134,9 @@ export class FileExplorerRepository {
     if (deviceType === DEVICE_TYPE.mtp) {
       checkIf(storageId, 'numericString');
 
-      switch (this.selectedMtpMode) {
+      const selectedMtpMode = getMtpModeSettings();
+
+      switch (selectedMtpMode) {
         case MTP_MODE.legacy:
           return this.legacyMtpDataSource.renameFile({
             filePath,
@@ -141,7 +172,9 @@ export class FileExplorerRepository {
     if (deviceType === DEVICE_TYPE.mtp) {
       checkIf(storageId, 'numericString');
 
-      switch (this.selectedMtpMode) {
+      const selectedMtpMode = getMtpModeSettings();
+
+      switch (selectedMtpMode) {
         case MTP_MODE.legacy:
           return this.legacyMtpDataSource.deleteFiles({
             fileList,
@@ -174,7 +207,9 @@ export class FileExplorerRepository {
     if (deviceType === DEVICE_TYPE.mtp) {
       checkIf(storageId, 'numericString');
 
-      switch (this.selectedMtpMode) {
+      const selectedMtpMode = getMtpModeSettings();
+
+      switch (selectedMtpMode) {
         case MTP_MODE.legacy:
           return this.legacyMtpDataSource.makeDirectory({
             filePath,
@@ -207,7 +242,9 @@ export class FileExplorerRepository {
     if (deviceType === DEVICE_TYPE.mtp) {
       checkIf(storageId, 'numericString');
 
-      switch (this.selectedMtpMode) {
+      const selectedMtpMode = getMtpModeSettings();
+
+      switch (selectedMtpMode) {
         case MTP_MODE.legacy:
           return this.legacyMtpDataSource.filesExist({
             fileList,
@@ -255,7 +292,9 @@ export class FileExplorerRepository {
     if (deviceType === DEVICE_TYPE.mtp) {
       checkIf(storageId, 'numericString');
 
-      switch (this.selectedMtpMode) {
+      const selectedMtpMode = getMtpModeSettings();
+
+      switch (selectedMtpMode) {
         case MTP_MODE.legacy:
           return this.legacyMtpDataSource.transferFiles({
             destination,
@@ -284,8 +323,10 @@ export class FileExplorerRepository {
    * @return {Promise<{data: string|null, error: string|null, stderr: string|null}>}
    */
   async fetchDebugReport({ deviceType }) {
+    const selectedMtpMode = getMtpModeSettings();
+
     if (deviceType === DEVICE_TYPE.mtp) {
-      switch (this.selectedMtpMode) {
+      switch (selectedMtpMode) {
         case MTP_MODE.legacy:
           return this.legacyMtpDataSource.fetchDebugReport();
 

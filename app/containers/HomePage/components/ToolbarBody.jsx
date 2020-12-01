@@ -9,7 +9,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import classNames from 'classnames';
 import {
   faSdCard,
-  faFire,
+  faBolt,
   faTerminal,
 } from '@fortawesome/free-solid-svg-icons';
 import SidebarAreaPaneLists from './SidebarAreaPaneLists';
@@ -90,7 +90,6 @@ export default class ToolbarAreaPane extends PureComponent {
         case 'mtpMode':
           _activeToolbarList[a] = {
             ...item,
-            enabled: mtpDevice.isAvailable && enabled,
           };
           break;
         default:
@@ -159,7 +158,7 @@ export default class ToolbarAreaPane extends PureComponent {
       {
         value: MTP_MODE.kalam,
         name: `${capitalize(MTP_MODE.kalam)} Mode`,
-        icon: faFire,
+        icon: faBolt,
       },
       {
         value: MTP_MODE.legacy,
@@ -188,7 +187,7 @@ export default class ToolbarAreaPane extends PureComponent {
           onClose={onMtpStoragesListClick}
         />
         <SelectionDialog
-          titleText="Select MTP mode"
+          titleText="Select MTP Mode"
           list={mtpModeList}
           id="selectionDialog"
           showAvatar

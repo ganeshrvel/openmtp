@@ -28,6 +28,25 @@ export class FileExplorerKalamDataSource {
   }
 
   /**
+   * description - Dispose Kalam MTP
+   *
+   * @return {Promise<{data: object, error: string|null, stderr: string|null}>}
+   */
+  async dispose() {
+    try {
+      return this.kalamFfi.dispose();
+    } catch (e) {
+      log.error(e);
+
+      return {
+        error: e,
+        stderr: null,
+        data: null,
+      };
+    }
+  }
+
+  /**
    * description - Fetch Kalam MTP storages
    *
    * @return {Promise<{data: {}, error: string|null, stderr: string|null}>}

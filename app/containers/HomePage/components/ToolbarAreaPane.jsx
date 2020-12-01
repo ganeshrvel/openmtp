@@ -13,7 +13,7 @@ import {
   listDirectory,
   churnMtpBuffer,
   churnLocalBuffer,
-  changeMtpStorage,
+  actionChangeMtpStorage,
   getSelectedStorageIdFromState,
   reloadDirList,
 } from '../actions';
@@ -33,7 +33,7 @@ import {
   makeShowLocalPaneOnLeftSide,
 } from '../../Settings/selectors';
 import { DEVICES_DEFAULT_PATH } from '../../../constants';
-import { toggleSettings } from '../../Settings/actions';
+import { selectMtpMode, toggleSettings } from '../../Settings/actions';
 import { toggleWindowSizeOnDoubleClick } from '../../../utils/titlebarDoubleClick';
 import ToolbarBody from './ToolbarBody';
 import { openExternalUrl } from '../../../utils/url';
@@ -143,29 +143,17 @@ class ToolbarAreaPane extends PureComponent {
   };
 
   _handleMtpModeSelectionDialogClick = ({ ...args }) => {
-    const {
-      actionCreateSetMtpStorage,
-      mtpStoragesList,
-      deviceType,
-      hideHiddenFiles,
-    } = this.props;
+    const { actionCreateSelectMtpMode, deviceType } = this.props;
 
     const { selectedValue, triggerChange } = args;
 
-    this._handleToggleMtpStorageSelectionDialog(false);
+    this._handleToggleMtpModeSelectionDialog(false);
 
     if (!triggerChange) {
       return null;
     }
 
-    actionCreateSetMtpStorage(
-      { selectedValue, mtpStoragesList },
-      {
-        filePath: DEVICES_DEFAULT_PATH.mtp,
-        ignoreHidden: hideHiddenFiles[deviceType],
-      },
-      deviceType
-    );
+    actionCreateSelectMtpMode({ value: selectedValue }, deviceType);
   };
 
   _handleDeleteConfirmDialog = (confirm) => {
@@ -463,10 +451,16 @@ const mapDispatchToProps = (dispatch, _) =>
           return null;
         });
 
-        dispatch(changeMtpStorage({ ..._mtpStoragesList }));
+        dispatch(actionChangeMtpStorage({ ..._mtpStoragesList }));
         dispatch(listDirectory({ ...listDirArgs }, deviceType, getState));
       },
 
+      actionCreateSelectMtpMode: ({ value }, deviceType) => (_, getState) => {
+        checkIf(value, 'string');
+        checkIf(deviceType, 'string');
+
+        dispatch(selectMtpMode({ value }, deviceType, getState));
+      },
       actionCreateToggleSettings: (data) => (_, __) => {
         dispatch(toggleSettings(data));
       },

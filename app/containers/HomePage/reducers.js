@@ -4,7 +4,7 @@ import {
   faSync,
   faSdCard,
   faCog,
-  faBolt,
+  faPlug,
   faArrowLeft,
 } from '@fortawesome/free-solid-svg-icons';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
@@ -111,7 +111,7 @@ export const initialState = {
       mtpMode: {
         enabled: true,
         label: 'MTP Mode',
-        icon: faBolt,
+        icon: faPlug,
       },
     },
   },

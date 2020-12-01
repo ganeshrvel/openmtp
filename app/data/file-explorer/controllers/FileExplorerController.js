@@ -18,6 +18,17 @@ class FileExplorerController {
   }
 
   /**
+   * description - Dispose
+   *
+   * @return {Promise<{data: object, error: string|null, stderr: string|null}>}
+   */
+  async dispose({ deviceType }) {
+    checkIf(deviceType, 'string');
+
+    return this.repository.dispose({ deviceType });
+  }
+
+  /**
    * description - Fetch storages
    *
    * @return {Promise<{data: object|boolean, error: string|null, stderr: string|null}>}

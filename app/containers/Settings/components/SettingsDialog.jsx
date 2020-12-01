@@ -22,7 +22,9 @@ import {
   DEVICE_TYPE,
   FILE_EXPLORER_VIEW_TYPE,
   APP_THEME_MODE_TYPE,
+  MTP_MODE,
 } from '../../../enums';
+import { capitalize } from '../../../utils/funcs';
 
 const isMas = electronIs.mas();
 
@@ -75,6 +77,7 @@ export default class SettingsDialog extends PureComponent {
       showLocalPane,
       showLocalPaneOnLeftSide,
       showDirectoriesFirst,
+      mtpMode,
       onAnalyticsChange,
       onHiddenFilesChange,
       onFileExplorerListingType,
@@ -87,6 +90,7 @@ export default class SettingsDialog extends PureComponent {
       onShowLocalPaneChange,
       onShowLocalPaneOnLeftSideChange,
       onShowDirectoriesFirstChange,
+      onMtpModeChange,
     } = this.props;
 
     const { tabIndex } = this.state;
@@ -169,6 +173,32 @@ export default class SettingsDialog extends PureComponent {
                         value={APP_THEME_MODE_TYPE.auto}
                         control={<Radio />}
                         label="Auto"
+                      />
+                    </RadioGroup>
+
+                    <Typography
+                      variant="subtitle2"
+                      className={`${styles.subtitle}  ${styles.fmSettingsStylesFix}`}
+                    >
+                      MTP Mode
+                    </Typography>
+                    <RadioGroup
+                      aria-label="app-theme-mode"
+                      name="app-theme-mode"
+                      value={mtpMode}
+                      onChange={(e, value) =>
+                        onMtpModeChange(e, value, DEVICE_TYPE.mtp)
+                      }
+                    >
+                      <FormControlLabel
+                        value={MTP_MODE.kalam}
+                        control={<Radio />}
+                        label={capitalize(MTP_MODE.kalam)}
+                      />
+                      <FormControlLabel
+                        value={MTP_MODE.legacy}
+                        control={<Radio />}
+                        label={capitalize(MTP_MODE.legacy)}
                       />
                     </RadioGroup>
 

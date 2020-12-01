@@ -1,7 +1,11 @@
+import { remote } from 'electron';
 import omitLodash from 'lodash/omit';
 import prefixer from '../../utils/reducerPrefixer';
 import { settingsStorage } from '../../utils/storageHelper';
 import { initialState } from './reducers';
+import { checkIf } from '../../utils/checkIf';
+import { MTP_MODE } from '../../enums';
+import { DEVICES_DEFAULT_PATH } from '../../constants';
 
 const prefix = '@@Settings';
 const actionTypesList = [
@@ -73,15 +77,91 @@ export function fileExplorerListingType({ ...data }, deviceType, getState) {
   };
 }
 
+export function selectMtpMode({ value }, deviceType, getState) {
+  const { hideHiddenFiles, mtpMode } = getState().Settings;
+
+  checkIf(deviceType, 'string');
+  checkIf(getState, 'function');
+  checkIf(hideHiddenFiles, 'object');
+  checkIf(mtpMode, 'string');
+
+  // use require to import 'HomePage/actions' else the app will crash
+  // eslint-disable-next-line global-require
+  const { disposeMtp, initializeMtp } = require('../HomePage/actions');
+
+  return async (dispatch) => {
+    // dont proceed if the mtp wasn't changed
+    if (mtpMode === value) {
+      return;
+    }
+
+    // reset the mtp device if it was previously connected using kalam
+    if (mtpMode === MTP_MODE.kalam) {
+      const { error, stderr } = await new Promise((resolve) => {
+        dispatch(
+          disposeMtp(
+            {
+              deviceType,
+              onSuccess: ({ error, stderr, data }) => {
+                resolve({ error, stderr, data });
+              },
+              onError: ({ error, stderr, data }) => {
+                resolve({ error, stderr, data });
+              },
+            },
+            getState
+          )
+        );
+      });
+
+      if (error || stderr) {
+        return;
+      }
+    }
+
+    await new Promise((resolve) => {
+      dispatch(
+        setCommonSettings(
+          {
+            key: 'mtpMode',
+            value,
+            onSuccess: () => {
+              resolve();
+            },
+          },
+          deviceType,
+          getState
+        )
+      );
+    });
+
+    dispatch(
+      initializeMtp(
+        {
+          deviceType,
+          filePath: DEVICES_DEFAULT_PATH[deviceType],
+          ignoreHidden: hideHiddenFiles[deviceType],
+          changeLegacyMtpStorageOnlyOnDeviceChange: true,
+        },
+        getState
+      )
+    );
+  };
+}
+
 // @param [key]: settings key name
 // @param [value]: settings value
-export function setCommonSettings({ key, value }, deviceType, getState) {
+export function setCommonSettings(
+  { key, value, onSuccess },
+  deviceType,
+  getState
+) {
   if (typeof initialState[key] === 'undefined') {
     // eslint-disable-next-line no-throw-literal
     throw `invalid settings key: ${key}`;
   }
 
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch({
       type: actionTypes.COMMON_SETTINGS,
       deviceType,
@@ -91,11 +171,17 @@ export function setCommonSettings({ key, value }, deviceType, getState) {
       },
     });
 
-    dispatch(copySettingsToJsonFile(getState));
+    dispatch(
+      copySettingsToJsonFile(getState, () => {
+        if (onSuccess) {
+          onSuccess();
+        }
+      })
+    );
   };
 }
 
-export function copySettingsToJsonFile(getState) {
+export function copySettingsToJsonFile(getState, onSuccess) {
   return (_) => {
     const settingsState = getState().Settings ? getState().Settings : {};
     const filteredSettings = omitLodash(
@@ -104,6 +190,10 @@ export function copySettingsToJsonFile(getState) {
     );
 
     settingsStorage.setAll({ ...filteredSettings });
+
+    if (onSuccess) {
+      onSuccess();
+    }
   };
 }
 
