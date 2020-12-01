@@ -210,7 +210,6 @@ const mapStateToProps = (state) => {
     mtpDevice: makeMtpDevice(state),
     mtpMode: makeMtpMode(state),
     mtpStoragesList: makeMtpStoragesList(state),
-    mtpMode: makeMtpMode(state),
   };
 };
 

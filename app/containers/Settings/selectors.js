@@ -63,6 +63,15 @@ export const makeMtpMode = createSelector(make, (state) =>
   state ? state.mtpMode : initialState.mtpMode
 );
 
+// returns the selected mtp mode
+export const makeenableFilesPreprocessingBeforeTransfer = createSelector(
+  make,
+  (state) =>
+    state
+      ? state.enableFilesPreprocessingBeforeTransfer
+      : initialState.enableFilesPreprocessingBeforeTransfer
+);
+
 export const makeShowLocalPane = createSelector(make, (state) =>
   state ? state.showLocalPane : initialState.showLocalPane
 );

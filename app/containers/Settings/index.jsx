@@ -156,6 +156,16 @@ class Settings extends Component {
     );
   };
 
+  _handleenableFilesPreprocessingBeforeTransferChange = (event, value, deviceType) => {
+    this._handleSetCommonSettingsChange(
+      {
+        key: 'enableFilesPreprocessingBeforeTransfer',
+        value,
+      },
+      deviceType
+    );
+  };
+
   _handleMtpModeChange = (event, value, deviceType) => {
     const { actionCreateSelectMtpMode } = this.props;
 
@@ -172,8 +182,6 @@ class Settings extends Component {
     const {
       freshInstall,
       toggleSettings,
-      appThemeMode,
-      mtpMode,
       classes: styles,
       ...parentProps
     } = this.props;
@@ -184,8 +192,6 @@ class Settings extends Component {
         open={showSettings}
         freshInstall={freshInstall}
         toggleSettings={toggleSettings}
-        appThemeMode={appThemeMode}
-        mtpMode={mtpMode}
         styles={styles}
         onAnalyticsChange={this._handleAnalyticsChange}
         onHiddenFilesChange={this._handleHiddenFilesChange}
@@ -203,6 +209,9 @@ class Settings extends Component {
           this._handleShowLocalPaneOnLeftSideChange
         }
         onShowDirectoriesFirstChange={this._handleShowDirectoriesFirstChange}
+        onenableFilesPreprocessingBeforeTransferChange={
+          this._handleenableFilesPreprocessingBeforeTransferChange
+        }
         onMtpModeChange={this._handleMtpModeChange}
         {...parentProps}
       />

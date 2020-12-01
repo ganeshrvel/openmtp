@@ -15,7 +15,7 @@ export const styles = (theme) => ({
   tabContainer: {
     paddingTop: 20,
     paddingLeft: 15,
-    height: 350,
+    height: 390,
     overflowX: `auto`,
     overflowY: `auto`,
     borderBottom: `rgba(0, 122, 245, 0.15) 1px solid`,
@@ -58,9 +58,15 @@ export const styles = (theme) => ({
     top: -10,
     left: 2,
   },
-  onboardingPaperBody: {
-    color: theme.palette.background.paper,
+  onboardingPaperBody: {},
+  onboardingPaperBodyItem: {
+    color: '#ffffff',
+    display: 'block',
+    width: '100%',
+    fontSize: 13,
+    fontWeight: 500,
   },
+
   a: {
     fontWeight: `bold`,
   },

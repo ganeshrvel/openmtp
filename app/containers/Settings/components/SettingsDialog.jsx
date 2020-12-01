@@ -78,6 +78,7 @@ export default class SettingsDialog extends PureComponent {
       showLocalPaneOnLeftSide,
       showDirectoriesFirst,
       mtpMode,
+      enableFilesPreprocessingBeforeTransfer,
       onAnalyticsChange,
       onHiddenFilesChange,
       onFileExplorerListingType,
@@ -91,6 +92,7 @@ export default class SettingsDialog extends PureComponent {
       onShowLocalPaneOnLeftSideChange,
       onShowDirectoriesFirstChange,
       onMtpModeChange,
+      onenableFilesPreprocessingBeforeTransferChange,
     } = this.props;
 
     const { tabIndex } = this.state;
@@ -201,21 +203,6 @@ export default class SettingsDialog extends PureComponent {
                         label={capitalize(MTP_MODE.legacy)}
                       />
                     </RadioGroup>
-
-                    {freshInstall ? (
-                      <Paper
-                        className={`${styles.onboardingPaper}`}
-                        elevation={0}
-                      >
-                        <div className={styles.onboardingPaperArrow} />
-                        <Typography
-                          component="p"
-                          className={`${styles.onboardingPaperBody}`}
-                        >
-                          Use the toggles to enable or disable the item.
-                        </Typography>
-                      </Paper>
-                    ) : null}
                   </FormGroup>
                 </div>
               </SettingsDialogTabContainer>
@@ -309,6 +296,55 @@ export default class SettingsDialog extends PureComponent {
                       variant="subtitle2"
                       className={`${styles.subtitle} ${styles.fmSettingsStylesFix}`}
                     >
+                      Show remaining file size and count on the file transfer
+                      screen
+                    </Typography>
+                    <FormControlLabel
+                      className={styles.switch}
+                      control={
+                        <Switch
+                          checked={enableFilesPreprocessingBeforeTransfer}
+                          onChange={(e) =>
+                            onenableFilesPreprocessingBeforeTransferChange(
+                              e,
+                              !enableFilesPreprocessingBeforeTransfer
+                            )
+                          }
+                        />
+                      }
+                      label={showDirectoriesFirst ? `Enabled` : `Disabled`}
+                    />
+                    <Typography variant="caption">
+                      Note: To fetch the total transfer information, the files
+                      need to be processed first. It may take a few seconds to a
+                      few minutes depending on the total number of files to be
+                      copied.
+                    </Typography>
+
+                    {!freshInstall ? (
+                      <Paper
+                        className={`${styles.onboardingPaper}`}
+                        elevation={0}
+                      >
+                        <Typography
+                          component="p"
+                          className={`${styles.onboardingPaperBody}`}
+                        >
+                          <span className={`${styles.onboardingPaperBodyItem}`}>
+                            &#9679;&nbsp;Use the toggles to enable or disable an
+                            item.
+                          </span>
+                          <span className={`${styles.onboardingPaperBodyItem}`}>
+                            &#9679;&nbsp;Scroll down for more Settings.
+                          </span>
+                        </Typography>
+                      </Paper>
+                    ) : null}
+
+                    <Typography
+                      variant="subtitle2"
+                      className={`${styles.subtitle} ${styles.fmSettingsStylesFix}`}
+                    >
                       Show directories first
                     </Typography>
                     <FormControlLabel
@@ -326,21 +362,6 @@ export default class SettingsDialog extends PureComponent {
                       }
                       label={showDirectoriesFirst ? `Enabled` : `Disabled`}
                     />
-
-                    {freshInstall ? (
-                      <Paper
-                        className={`${styles.onboardingPaper}`}
-                        elevation={0}
-                      >
-                        <div className={styles.onboardingPaperArrow} />
-                        <Typography
-                          component="p"
-                          className={`${styles.onboardingPaperBody}`}
-                        >
-                          Use the toggles to enable or disable the item.
-                        </Typography>
-                      </Paper>
-                    ) : null}
 
                     <Typography
                       variant="subtitle2"

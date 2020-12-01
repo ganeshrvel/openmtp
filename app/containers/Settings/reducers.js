@@ -31,6 +31,7 @@ export const initialState = {
   showLocalPaneOnLeftSide: true,
   showDirectoriesFirst: true,
   mtpMode: MTP_MODE.kalam,
+  enableFilesPreprocessingBeforeTransfer: true,
 };
 
 export default function Settings(state = initialState, action) {
