@@ -34,7 +34,9 @@ class Titlebar extends PureComponent {
             )}, ${capitalize(mtpMode)} Mode`}
           </span>
         ) : (
-          capitalize(mtpMode)
+          <span className={styles.deviceInfo}>
+            {`${capitalize(mtpMode)} Mode`}
+          </span>
         )}
       </div>
     );
