@@ -2004,12 +2004,12 @@ const mapDispatchToProps = (dispatch, _) =>
             activeFileSize,
             activeFileSizeSent,
           }) => {
-            const bodyText1 = `${Math.floor(activeFileProgress)}% complete of ${
-              springTruncate(currentFile, 45).truncatedText
-            }`;
-            const bodyText2 = `${niceBytes(activeFileSizeSent)} / ${niceBytes(
-              activeFileSize
-            )}`;
+            const bodyText1 = `${Math.floor(
+              activeFileProgress
+            )}% complete of "${springTruncate(currentFile, 45).truncatedText}"`;
+            const progressText = `${niceBytes(
+              activeFileSizeSent
+            )} / ${niceBytes(activeFileSize)}`;
 
             getCurrentWindow().setProgressBar(activeFileProgress / 100);
             dispatch(
@@ -2017,7 +2017,7 @@ const mapDispatchToProps = (dispatch, _) =>
                 titleText: `Copying files to ${DEVICES_LABEL[deviceType]}...`,
                 toggle: true,
                 bodyText1,
-                bodyText2: `Elapsed: ${elapsedTime} | Progress: ${bodyText2} @ ${speed}/sec`,
+                bodyText2: `Elapsed: ${elapsedTime} | Progress: ${progressText} @ ${speed}/sec`,
                 percentage: activeFileProgress,
               })
             );
