@@ -62,6 +62,7 @@ import {
 } from '../../Settings/selectors';
 import { DEVICES_LABEL, DONATE_PAYPAL_URL } from '../../../constants';
 import {
+  getPluralText,
   isArray,
   isEmpty,
   isFloat,
@@ -70,7 +71,6 @@ import {
   niceBytes,
   removeArrayDuplicates,
   springTruncate,
-  truncate,
   undefinedOrNull,
 } from '../../../utils/funcs';
 import { getMainWindowRendererProcess } from '../../../helpers/windowHelper';
@@ -1669,7 +1669,6 @@ class FileExplorer extends Component {
           trigger={togglePasteConfirmDialog}
           onClickHandler={this._handlePasteConfirmDialog}
         />
-        ;
         <FileExplorerBodyRender
           deviceType={deviceType}
           fileExplorerListingType={fileExplorerListingType}
@@ -1957,7 +1956,10 @@ const mapDispatchToProps = (dispatch, _) =>
         deviceType
       ) => (_, getState) => {
         try {
-          const { mtpMode } = getState().Settings;
+          const {
+            mtpMode,
+            enableFilesPreprocessingBeforeTransfer,
+          } = getState().Settings;
 
           const {
             destinationFolder,
@@ -1996,21 +1998,12 @@ const mapDispatchToProps = (dispatch, _) =>
             currentFile,
             activeFileSize,
             activeFileSizeSent,
+            totalFiles,
+            filesSent,
+            totalFileSize,
+            totalFileSizeSent,
+            totalFileProgress,
           }) => {
-            //todo
-            //currentFile: fullPath,
-            //                 elapsedTime: msToTime(elapsedTime),
-            //                 speed,
-            //                 totalFiles,
-            //                 filesSent,
-            //                 filesSentProgress,
-            //                 totalFileSize: bulkFileSize.total,
-            //                 totalFileSizeSent: bulkFileSize.sent,
-            //                 totalFileProgress: bulkFileSize.progress,
-            //                 activeFileSize: activeFileSize.total,
-            //                 activeFileSizeSent: activeFileSize.sent,
-            //                 activeFileProgress: activeFileSize.progress,
-
             let windowProgressBar = 0;
             let bodyText1 = 0;
             let progressText = 0;
@@ -2036,22 +2029,50 @@ const mapDispatchToProps = (dispatch, _) =>
                 },
               ];
             } else {
+              // active file progress
               bodyText1 = `${Math.floor(activeFileProgress)}% complete of "${
                 springTruncate(currentFile, 45).truncatedText
               }"`;
               progressText = `${niceBytes(activeFileSizeSent)} / ${niceBytes(
                 activeFileSize
               )}`;
-              windowProgressBar = activeFileProgress / 100;
+              const elapsedTimeText = `Elapsed: ${elapsedTime} | `;
 
               progressInfo = [
                 {
                   bodyText1,
-                  bodyText2: `Elapsed: ${elapsedTime} | Progress: ${progressText} @ ${speed}/sec`,
+                  bodyText2: `${
+                    !enableFilesPreprocessingBeforeTransfer
+                      ? elapsedTimeText
+                      : ''
+                  }Progress: ${progressText} @ ${speed}/sec`,
                   variant: `determinate`,
                   percentage: activeFileProgress,
                 },
               ];
+              windowProgressBar = activeFileProgress / 100;
+
+              /// if preprocessing of file transfer is enabled then show total file transfer information as well
+              if (enableFilesPreprocessingBeforeTransfer) {
+                // if preprocessing of file transfer is enabled then [windowProgressBar]
+                // progress value should be the [totalFileProgress] else [activeFileProgress] will be used
+                windowProgressBar = totalFileProgress / 100;
+
+                const bodyText1 = `${filesSent} of ${totalFiles} ${getPluralText(
+                  'file',
+                  totalFiles
+                )} copied | ${Math.floor(totalFileProgress)}% completed`;
+                const progressText = `${niceBytes(
+                  totalFileSizeSent
+                )} / ${niceBytes(totalFileSize)}`;
+
+                progressInfo.push({
+                  bodyText1,
+                  bodyText2: `${elapsedTimeText}Progress: ${progressText}`,
+                  variant: `determinate`,
+                  percentage: totalFileProgress,
+                });
+              }
             }
 
             getCurrentWindow().setProgressBar(windowProgressBar);

@@ -1,4 +1,5 @@
 import React, { PureComponent, Fragment } from 'react';
+import classnames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Dialog from '@material-ui/core/Dialog';
@@ -62,7 +63,11 @@ class ProgressBar extends PureComponent {
             return (
               // eslint-disable-next-line react/no-array-index-key
               <Fragment key={index}>
-                <DialogContentText className={styles.dialogContentTextTop}>
+                <DialogContentText
+                  className={classnames(styles.dialogContentTextTop, {
+                    [styles.dialogFixMultipleProgressPadding]: index > 0,
+                  })}
+                >
                   {a.bodyText1 ?? ''}
                 </DialogContentText>
 

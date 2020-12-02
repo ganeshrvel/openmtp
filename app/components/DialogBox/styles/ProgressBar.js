@@ -2,6 +2,9 @@ export const styles = (_) => ({
   root: {
     flexGrow: 1,
   },
+  dialogFixMultipleProgressPadding: {
+    marginTop: 35,
+  },
   dialogContentTextTop: {
     marginBottom: 10,
   },
