@@ -1,9 +1,9 @@
 import path from 'path';
 import { remote } from 'electron';
-import { getPlatform } from './getPlatform';
+import { getPlatform } from '../utils/getPlatform';
 import { IS_PROD } from '../constants/env';
-import { PATHS } from './paths';
-import { isPackaged } from './isPackaged';
+import { PATHS } from '../constants/paths';
+import { isPackaged } from '../utils/isPackaged';
 
 const { root } = PATHS;
 const { getAppPath } = remote.app;

@@ -1,9 +1,9 @@
-import prefixer from '../../utils/reducerPrefixer';
+import prefixer from '../../helpers/reducerPrefixer';
 import { throwAlert } from '../Alerts/actions';
 import {
   processMtpBuffer,
   processLocalBuffer,
-} from '../../utils/processBufferOutput';
+} from '../../helpers/processBufferOutput';
 import { isArraysEqual, isEmpty, undefinedOrNull } from '../../utils/funcs';
 import { DEVICE_TYPE, MTP_MODE } from '../../enums';
 import { log } from '../../utils/log';

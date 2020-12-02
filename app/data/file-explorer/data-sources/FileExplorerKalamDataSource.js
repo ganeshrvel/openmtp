@@ -2,6 +2,7 @@ import { log } from '../../../utils/log';
 import { Kalam } from '../../../../ffi/kalam/src/Kalam';
 import { checkIf } from '../../../utils/checkIf';
 import { isArray, isEmpty } from '../../../utils/funcs';
+import { getEnableFilesPreprocessingBeforeTransferSetting } from '../../../helpers/settings';
 
 export class FileExplorerKalamDataSource {
   constructor() {
@@ -326,7 +327,16 @@ export class FileExplorerKalamDataSource {
           return;
 
         case 'upload':
-          return;
+          return this.kalamFfi.uploadFiles({
+            storageId,
+            destination,
+            preprocessFiles: getEnableFilesPreprocessingBeforeTransferSetting(),
+            sources: fileList,
+            onError,
+            onCompleted,
+            onPreprocess,
+            onProgress,
+          });
 
         default:
           break;

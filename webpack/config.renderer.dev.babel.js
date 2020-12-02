@@ -12,7 +12,7 @@ import chalk from 'chalk';
 import merge from 'webpack-merge';
 import { spawn, execSync } from 'child_process';
 import baseConfig from './config.base';
-import { PATHS } from '../app/utils/paths';
+import { PATHS } from '../app/constants/paths';
 import { PORT } from '../config/env';
 
 const publicPath = `http://localhost:${PORT}/dist`;

@@ -15,7 +15,7 @@ import Switch from '@material-ui/core/Switch';
 import FormControl from '@material-ui/core/FormControl';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import { privacyPolicyWindow } from '../../../utils/createWindows';
+import { privacyPolicyWindow } from '../../../helpers/createWindows';
 import { DEVICES_LABEL } from '../../../constants';
 import SettingsDialogTabContainer from './SettingsDialogTabContainer';
 import {
@@ -321,7 +321,7 @@ export default class SettingsDialog extends PureComponent {
                       copied.
                     </Typography>
 
-                    {!freshInstall ? (
+                    {freshInstall ? (
                       <Paper
                         className={`${styles.onboardingPaper}`}
                         elevation={0}

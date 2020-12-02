@@ -7,11 +7,11 @@ import { join, resolve } from 'path';
 import { homedir as homedirOs } from 'os';
 import url from 'url';
 import { rootPath as root } from 'electron-root-path';
-import { isPackaged } from './isPackaged';
-import { IS_DEV } from '../constants/env';
-import { yearMonthNow } from './date';
-import { APP_NAME } from '../constants/meta';
-import { getAppDataPath } from './files';
+import { isPackaged } from '../utils/isPackaged';
+import { IS_DEV } from './env';
+import { yearMonthNow } from '../utils/date';
+import { APP_NAME } from './meta';
+import { getAppDataPath } from '../utils/files';
 
 const appPath = join(root, `./app`);
 const configDir = join(root, `./config`);

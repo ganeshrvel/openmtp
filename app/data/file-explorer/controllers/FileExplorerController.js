@@ -149,6 +149,7 @@ class FileExplorerController {
    * @param {[string]} fileList
    * @param {string} storageId
    * @param {errorCallback} onError
+   * @param {preprocessCallback} onPreprocess
    * @param {progressCallback} onProgress
    * @param {completedCallback} onCompleted
    *
@@ -161,6 +162,7 @@ class FileExplorerController {
     direction,
     storageId,
     onError,
+    onPreprocess,
     onProgress,
     onCompleted,
   }) => {
@@ -169,6 +171,7 @@ class FileExplorerController {
     checkIf(direction, 'string');
     checkIf(fileList, 'array');
     checkIf(onError, 'function');
+    checkIf(onPreprocess, 'function');
     checkIf(onProgress, 'function');
     checkIf(onCompleted, 'function');
 
@@ -181,6 +184,7 @@ class FileExplorerController {
       onError,
       onProgress,
       onCompleted,
+      onPreprocess,
     });
   };
 

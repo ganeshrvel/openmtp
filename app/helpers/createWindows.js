@@ -1,9 +1,9 @@
 import { BrowserWindow, remote } from 'electron';
-import { PATHS } from './paths';
-import { log } from './log';
+import { PATHS } from '../constants/paths';
+import { log } from '../utils/log';
 import { loadProfileErrorHtml } from '../templates/loadProfileError';
 import { APP_TITLE } from '../constants/meta';
-import { undefinedOrNull } from './funcs';
+import { undefinedOrNull } from '../utils/funcs';
 import { PRIVACY_POLICY_PAGE_TITLE } from '../templates/privacyPolicyPage';
 import { APP_FEATURES_PAGE_TITLE } from '../templates/appFeaturesPage';
 import { KEYBOARD_SHORTCUTS_PAGE_TITLE } from '../templates/keyboardShortcutsPage';

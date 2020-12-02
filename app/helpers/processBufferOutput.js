@@ -1,12 +1,12 @@
 /* eslint-disable no-case-declarations */
 
 import { EOL } from 'os';
-import { replaceBulk, undefinedOrNull } from './funcs';
-import { log } from './log';
-import { isGoogleAndroidFileTransferActive } from './isGoogleAndroidFileTransferActive';
+import { replaceBulk, undefinedOrNull } from '../utils/funcs';
+import { log } from '../utils/log';
+import { isGoogleAndroidFileTransferActive } from '../utils/isGoogleAndroidFileTransferActive';
 import { DEVICES_LABEL } from '../constants';
 import { DEVICE_TYPE, MTP_MODE } from '../enums';
-import { checkIf } from './checkIf';
+import { checkIf } from '../utils/checkIf';
 import { MTP_ERROR } from '../enums/mtpError';
 
 export const processMtpBuffer = async ({ error, stderr, mtpMode }) => {

@@ -9,7 +9,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import { actionTypes } from './actions';
-import { PATHS } from '../../utils/paths';
+import { PATHS } from '../../constants/paths';
 import {
   DEVICES_DEFAULT_PATH,
   FILE_EXPLORER_DEFAULT_FOCUSSED_DEVICE_TYPE,

@@ -16,8 +16,8 @@ import Alerts from '../Alerts';
 import Titlebar from './components/Titlebar';
 import ErrorBoundary from '../ErrorBoundary';
 import Routes from '../../routing';
-import { bootLoader } from '../../utils/bootHelper';
-import { settingsStorage } from '../../utils/storageHelper';
+import { bootLoader } from '../../helpers/bootHelper';
+import { settingsStorage } from '../../helpers/storageHelper';
 import SettingsDialog from '../Settings';
 import { withReducer } from '../../store/reducers/withReducer';
 import reducers from './reducers';
@@ -30,8 +30,8 @@ import {
   makeAppThemeModeSettings,
   makeMtpMode,
 } from '../Settings/selectors';
-import { getAppThemeMode } from '../../utils/theme';
-import { getMainWindowRendererProcess } from '../../utils/windowHelper';
+import { getAppThemeMode } from '../../helpers/theme';
+import { getMainWindowRendererProcess } from '../../helpers/windowHelper';
 import { log } from '../../utils/log';
 import { makeMtpDevice, makeMtpStoragesList } from '../HomePage/selectors';
 

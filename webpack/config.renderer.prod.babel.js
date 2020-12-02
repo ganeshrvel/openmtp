@@ -10,7 +10,7 @@ import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import merge from 'webpack-merge';
 import TerserPlugin from 'terser-webpack-plugin';
 import baseConfig from './config.base';
-import { PATHS } from '../app/utils/paths';
+import { PATHS } from '../app/constants/paths';
 
 export default merge(baseConfig, {
   devtool: 'source-map',

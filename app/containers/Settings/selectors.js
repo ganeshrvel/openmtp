@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 import { initialState } from './reducers';
-import { getAppThemeMode } from '../../utils/theme';
+import { getAppThemeMode } from '../../helpers/theme';
 
 const make = (state, _) => (state ? state.Settings : {});
 

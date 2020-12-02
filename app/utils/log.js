@@ -1,8 +1,8 @@
 import os, { EOL } from 'os';
 import { IS_DEV } from '../constants/env';
 import { APP_NAME, APP_VERSION } from '../constants/meta';
-import { PATHS } from './paths';
-import { appendFileAsync } from './fileOps';
+import { PATHS } from '../constants/paths';
+import { appendFileAsync } from '../helpers/fileOps';
 import { dateTimeUnixTimestampNow } from './date';
 
 const { logFile } = PATHS;

@@ -8,7 +8,7 @@ import webpack from 'webpack';
 import path from 'path';
 import merge from 'webpack-merge';
 import baseConfig from './config.base';
-import { PATHS } from '../app/utils/paths';
+import { PATHS } from '../app/constants/paths';
 
 const pkg = require('../package.json');
 

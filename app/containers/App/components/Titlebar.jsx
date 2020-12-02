@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import { styles } from '../styles/Titlebar';
-import { toggleWindowSizeOnDoubleClick } from '../../../utils/titlebarDoubleClick';
+import { toggleWindowSizeOnDoubleClick } from '../../../helpers/titlebarDoubleClick';
 import { APP_TITLEBAR_DOM_ID } from '../../../constants/dom';
 import { capitalize, isEmpty, niceBytes } from '../../../utils/funcs';
 import { getSelectedStorage } from '../../HomePage/actions';

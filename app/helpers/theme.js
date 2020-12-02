@@ -1,7 +1,7 @@
 import { nativeTheme, remote } from 'electron';
 import { APP_THEME_MODE_TYPE } from '../enums';
-import { undefinedOrNull } from './funcs';
-import { getAppThemeModeSettings } from '../helpers/settings';
+import { undefinedOrNull } from '../utils/funcs';
+import { getAppThemeModeSetting } from './settings';
 
 // [appThemeModeSettings] is optional
 // if [appThemeModeSettings] is not provided then fetch the theme value from the settings
@@ -12,7 +12,7 @@ export const getAppThemeMode = (appThemeModeSettings) => {
   let _appThemeModeSettings = appThemeModeSettings;
 
   if (undefinedOrNull(_appThemeModeSettings)) {
-    _appThemeModeSettings = getAppThemeModeSettings();
+    _appThemeModeSettings = getAppThemeModeSetting();
   }
 
   switch (_appThemeModeSettings) {

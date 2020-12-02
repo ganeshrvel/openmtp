@@ -7,7 +7,7 @@ import merge from 'webpack-merge';
 import TerserPlugin from 'terser-webpack-plugin';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import baseConfig from './config.base';
-import { PATHS } from '../app/utils/paths';
+import { PATHS } from '../app/constants/paths';
 
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 

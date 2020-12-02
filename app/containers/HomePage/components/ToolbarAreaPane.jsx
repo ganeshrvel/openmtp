@@ -34,7 +34,7 @@ import {
 } from '../../Settings/selectors';
 import { DEVICES_DEFAULT_PATH } from '../../../constants';
 import { selectMtpMode, toggleSettings } from '../../Settings/actions';
-import { toggleWindowSizeOnDoubleClick } from '../../../utils/titlebarDoubleClick';
+import { toggleWindowSizeOnDoubleClick } from '../../../helpers/titlebarDoubleClick';
 import ToolbarBody from './ToolbarBody';
 import { openExternalUrl } from '../../../utils/url';
 import { APP_GITHUB_URL } from '../../../constants/meta';

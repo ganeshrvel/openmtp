@@ -72,7 +72,7 @@ import {
   truncate,
   undefinedOrNull,
 } from '../../../utils/funcs';
-import { getMainWindowRendererProcess } from '../../../utils/windowHelper';
+import { getMainWindowRendererProcess } from '../../../helpers/windowHelper';
 import { throwAlert } from '../../Alerts/actions';
 import { imgsrc } from '../../../utils/imgsrc';
 import FileExplorerBodyRender from './FileExplorerBodyRender';
@@ -1762,7 +1762,7 @@ const mapDispatchToProps = (dispatch, _) =>
             {
               filePath,
               ignoreHidden,
-               changeLegacyMtpStorageOnlyOnDeviceChange: false,
+              changeLegacyMtpStorageOnlyOnDeviceChange: false,
               deviceType,
             },
             getState
@@ -2025,6 +2025,34 @@ const mapDispatchToProps = (dispatch, _) =>
             );
           };
 
+          // on pre process callback for file transfer
+          const onPreprocess = ({
+            elapsedTime,
+            speed,
+            percentage,
+            currentFile,
+            activeFileSize,
+            activeFileSent,
+          }) => {
+            const bodyText1 = `${percentage}% complete of ${truncate(
+              baseName(currentFile),
+              45
+            )}`;
+            const bodyText2 = `${niceBytes(activeFileSent)} / ${niceBytes(
+              activeFileSize
+            )}`;
+
+            getCurrentWindow().setProgressBar(percentage / 100);
+            dispatch(
+              setFileTransferProgress({
+                toggle: true,
+                bodyText1,
+                bodyText2: `Elapsed: ${elapsedTime} | Progress: ${bodyText2} @ ${speed}/sec`,
+                percentage,
+              })
+            );
+          };
+
           // on completed callback for file transfer
           const onCompleted = () => {
             getCurrentWindow().setProgressBar(-1);
@@ -2045,6 +2073,7 @@ const mapDispatchToProps = (dispatch, _) =>
                 onCompleted,
                 onError,
                 onProgress,
+                onPreprocess,
               });
 
               break;
@@ -2058,6 +2087,7 @@ const mapDispatchToProps = (dispatch, _) =>
                 onCompleted,
                 onError,
                 onProgress,
+                onPreprocess,
               });
 
               break;

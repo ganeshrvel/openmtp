@@ -1,4 +1,4 @@
-import { kalamLibPath } from '../../../app/utils/binaries';
+import { kalamLibPath } from '../../../app/helpers/binaries';
 import { log } from '../../../app/utils/log';
 import { undefinedOrNull } from '../../../app/utils/funcs';
 import { checkIf } from '../../../app/utils/checkIf';
@@ -308,29 +308,60 @@ export class Kalam {
     });
   }
 
-  async uploadFiles({ storageId, sources, destination, preprocessFiles }) {
+  async uploadFiles({
+    storageId,
+    sources,
+    destination,
+    preprocessFiles,
+    onError,
+    onPreprocess,
+    onProgress,
+    onCompleted,
+  }) {
     checkIf(storageId, 'numericString');
     checkIf(sources, 'array');
     checkIf(destination, 'string');
     checkIf(preprocessFiles, 'boolean');
+    checkIf(onError, 'function');
+    checkIf(onPreprocess, 'function');
+    checkIf(onProgress, 'function');
+    checkIf(onCompleted, 'function');
 
     return new Promise((resolve) => {
       try {
         const onPreprocess = ffi.Callback('void', ['string'], (result) => {
           const json = JSON.parse(result);
-          const err = this._getData(json);
+          const { error, data, stderr } = this._getData(json);
 
-          if (!undefinedOrNull(err.error)) {
-            return resolve(err);
+          if (!undefinedOrNull(error)) {
+            onError({ error, data: null, stderr });
+
+            return resolve(error);
+          }
+
+          if (onPreprocess && data) {
+            const { fullPath, size, name } = data;
+
+            onPreprocess({ fullPath, size, name });
           }
         });
 
         const onProgress = ffi.Callback('void', ['string'], (result) => {
           const json = JSON.parse(result);
-          const err = this._getData(json);
+          const { error, data, stderr } = this._getData(json);
 
-          if (!undefinedOrNull(err.error)) {
-            return resolve(err);
+          if (!undefinedOrNull(error)) {
+            onError({ error, data: null, stderr });
+
+            return resolve(error);
+          }
+
+          if (onProgress && data) {
+            // const { fullPath, size, name } = data;
+            //
+            // onProgress({ fullPath, size, name });
+
+            console.log(data);
           }
         });
 

@@ -1,7 +1,7 @@
 import { remote } from 'electron';
 import omitLodash from 'lodash/omit';
-import prefixer from '../../utils/reducerPrefixer';
-import { settingsStorage } from '../../utils/storageHelper';
+import prefixer from '../../helpers/reducerPrefixer';
+import { settingsStorage } from '../../helpers/storageHelper';
 import { initialState } from './reducers';
 import { checkIf } from '../../utils/checkIf';
 import { MTP_MODE } from '../../enums';
