@@ -85,7 +85,7 @@ import {
   twitterShareUrl,
 } from '../../../templates/socialMediaShareBtns';
 import { baseName, pathInfo, pathUp, sanitizePath } from '../../../utils/files';
-import { DEVICE_TYPE, FILE_EXPLORER_VIEW_TYPE } from '../../../enums';
+import { DEVICE_TYPE, FILE_EXPLORER_VIEW_TYPE, MTP_MODE } from '../../../enums';
 import { log } from '../../../utils/log';
 import fileExplorerController from '../../../data/file-explorer/controllers/FileExplorerController';
 
@@ -2004,14 +2004,36 @@ const mapDispatchToProps = (dispatch, _) =>
             activeFileSize,
             activeFileSizeSent,
           }) => {
-            const bodyText1 = `${Math.floor(
-              activeFileProgress
-            )}% complete of "${springTruncate(currentFile, 45).truncatedText}"`;
-            const progressText = `${niceBytes(
-              activeFileSizeSent
-            )} / ${niceBytes(activeFileSize)}`;
+            //todo
+            //currentFile: fullPath,
+            //                 elapsedTime: msToTime(elapsedTime),
+            //                 speed,
+            //                 totalFiles,
+            //                 filesSent,
+            //                 filesSentProgress,
+            //                 totalFileSize: bulkFileSize.total,
+            //                 totalFileSizeSent: bulkFileSize.sent,
+            //                 totalFileProgress: bulkFileSize.progress,
+            //                 activeFileSize: activeFileSize.total,
+            //                 activeFileSizeSent: activeFileSize.sent,
+            //                 activeFileProgress: activeFileSize.progress,
 
-            getCurrentWindow().setProgressBar(activeFileProgress / 100);
+            let windowProgressBar = 0;
+            let bodyText1 = 0;
+            let progressText = 0;
+
+            if (mtpMode === MTP_MODE.legacy) {
+              bodyText1 = `${Math.floor(activeFileProgress)}% complete of "${
+                springTruncate(currentFile, 45).truncatedText
+              }"`;
+              progressText = `${niceBytes(activeFileSizeSent)} / ${niceBytes(
+                activeFileSize
+              )}`;
+              windowProgressBar = activeFileProgress / 100;
+            } else {
+            }
+
+            getCurrentWindow().setProgressBar(windowProgressBar);
             dispatch(
               setFileTransferProgress({
                 titleText: `Copying files to ${DEVICES_LABEL[deviceType]}...`,

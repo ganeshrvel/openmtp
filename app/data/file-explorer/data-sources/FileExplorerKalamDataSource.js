@@ -352,7 +352,7 @@ export class FileExplorerKalamDataSource {
               onProgress({
                 currentFile: fullPath,
                 elapsedTime: msToTime(elapsedTime),
-                speed,
+                speed: `${speed} MB`,
                 totalFiles,
                 filesSent,
                 filesSentProgress,
