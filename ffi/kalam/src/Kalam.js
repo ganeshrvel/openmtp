@@ -329,24 +329,28 @@ export class Kalam {
 
     return new Promise((resolve) => {
       try {
-        const onPreprocess = ffi.Callback('void', ['string'], (result) => {
-          const json = JSON.parse(result);
-          const { error, data, stderr } = this._getData(json);
+        const onFfiPreprocessPtr = ffi.Callback(
+          'void',
+          ['string'],
+          (result) => {
+            const json = JSON.parse(result);
+            const { error, data, stderr } = this._getData(json);
 
-          if (!undefinedOrNull(error)) {
-            onError({ error, data: null, stderr });
+            if (!undefinedOrNull(error)) {
+              onError({ error, data: null, stderr });
 
-            return resolve(error);
+              return resolve(error);
+            }
+
+            if (onPreprocess && data) {
+              const { fullPath, size, name } = data;
+
+              onPreprocess({ fullPath, size, name });
+            }
           }
+        );
 
-          if (onPreprocess && data) {
-            const { fullPath, size, name } = data;
-
-            onPreprocess({ fullPath, size, name });
-          }
-        });
-
-        const onProgress = ffi.Callback('void', ['string'], (result) => {
+        const onFfiProgressPtr = ffi.Callback('void', ['string'], (result) => {
           const json = JSON.parse(result);
           const { error, data, stderr } = this._getData(json);
 
@@ -357,16 +361,16 @@ export class Kalam {
           }
 
           if (onProgress && data) {
-            // const { fullPath, size, name } = data;
-            //
-            // onProgress({ fullPath, size, name });
-
-            console.log(data);
+            onProgress({ ...data });
           }
         });
 
-        const onDone = ffi.Callback('void', ['string'], (result) => {
+        const onFfiDonePtr = ffi.Callback('void', ['string'], (result) => {
           const json = JSON.parse(result);
+
+          if (onCompleted) {
+            onCompleted();
+          }
 
           return resolve(this._getData(json));
         });
@@ -382,9 +386,9 @@ export class Kalam {
         const json = JSON.stringify(args);
 
         this.lib.UploadFiles.async(
-          onPreprocess,
-          onProgress,
-          onDone,
+          onFfiPreprocessPtr,
+          onFfiProgressPtr,
+          onFfiDonePtr,
           json,
           (err, _) => {
             if (!undefinedOrNull(err)) {
@@ -423,7 +427,20 @@ export class Kalam {
 
     return new Promise((resolve) => {
       try {
-        const onPreprocess = ffi.Callback('void', ['string'], (result) => {
+        const onFfiPreprocessPtr = ffi.Callback(
+          'void',
+          ['string'],
+          (result) => {
+            const json = JSON.parse(result);
+            const err = this._getData(json);
+
+            if (!undefinedOrNull(err.error)) {
+              return resolve(err);
+            }
+          }
+        );
+
+        const onFfiProgressPtr = ffi.Callback('void', ['string'], (result) => {
           const json = JSON.parse(result);
           const err = this._getData(json);
 
@@ -432,16 +449,7 @@ export class Kalam {
           }
         });
 
-        const onProgress = ffi.Callback('void', ['string'], (result) => {
-          const json = JSON.parse(result);
-          const err = this._getData(json);
-
-          if (!undefinedOrNull(err.error)) {
-            return resolve(err);
-          }
-        });
-
-        const onDone = ffi.Callback('void', ['string'], (result) => {
+        const onFfiDonePtr = ffi.Callback('void', ['string'], (result) => {
           const json = JSON.parse(result);
 
           return resolve(this._getData(json));
@@ -458,9 +466,9 @@ export class Kalam {
         const json = JSON.stringify(args);
 
         this.lib.DownloadFiles.async(
-          onPreprocess,
-          onProgress,
-          onDone,
+          onFfiPreprocessPtr,
+          onFfiProgressPtr,
+          onFfiDonePtr,
           json,
           (err, _) => {
             if (!undefinedOrNull(err)) {

@@ -3,6 +3,7 @@ import { Kalam } from '../../../../ffi/kalam/src/Kalam';
 import { checkIf } from '../../../utils/checkIf';
 import { isArray, isEmpty } from '../../../utils/funcs';
 import { getEnableFilesPreprocessingBeforeTransferSetting } from '../../../helpers/settings';
+import { msToTime } from '../../../utils/date';
 
 export class FileExplorerKalamDataSource {
   constructor() {
@@ -242,12 +243,8 @@ export class FileExplorerKalamDataSource {
 
   /**
    * @typedef {Object} preprocessCallbackInfo
-   * @property {number} percentage - percentage
-   * @property {number} activeFileSize - total size of the current file
-   * @property {number} activeFileSent - total bytes of the current file transferred
-   * @property {string} currentFile - current file
-   * @property {string} speed - speed
-   * @property {string} elapsedTime - elapsed time
+   * @property {string} fullPath - full file path
+   * @property {number} name - file name
    */
 
   /**
@@ -258,11 +255,20 @@ export class FileExplorerKalamDataSource {
 
   /**
    * @typedef {Object} progressCallbackInfo
-   * @property {number} percentage - percentage
-   * @property {number} activeFileSize - total size of the current file
-   * @property {number} activeFileSent - total bytes of the current file transferred
-   * @property {string} currentFile - current file
-   * @property {string} speed - speed
+   * @property {number} totalFiles - [count] total number of files to transfer. note: this value will be 0 if pre-processing is false
+   * @property {number} filesSent - [count] total number of files sent
+   * @property {number} filesSentProgress - [count] total number of files sent (in percentage)
+   *
+   * @property {number} totalFileSize - [size] total size to transfer. note: this value will be 0 if pre-processing was false
+   * @property {number} totalFileSizeSent - [size] total size sent
+   * @property {number} totalFileProgress - [size] total size sent (in percentage)
+   *
+   * @property {number} activeFileSize - [size] total size of the current file
+   * @property {number} activeFileSizeSent - [size] total size of the current file sent
+   * @property {number} activeFileProgress - [size] total size of the current file sent (in percentage)
+   *
+   * @property {string} currentFile - current file (full path)
+   * @property {string} speed - transfer rate (in MB/s)
    * @property {string} elapsedTime - elapsed time
    */
 
@@ -332,10 +338,34 @@ export class FileExplorerKalamDataSource {
             destination,
             preprocessFiles: getEnableFilesPreprocessingBeforeTransferSetting(),
             sources: fileList,
+            onPreprocess,
+            onProgress: ({
+              fullPath,
+              elapsedTime,
+              speed,
+              totalFiles,
+              filesSent,
+              filesSentProgress,
+              activeFileSize,
+              bulkFileSize,
+            }) => {
+              onProgress({
+                currentFile: fullPath,
+                elapsedTime: msToTime(elapsedTime),
+                speed,
+                totalFiles,
+                filesSent,
+                filesSentProgress,
+                totalFileSize: bulkFileSize.total,
+                totalFileSizeSent: bulkFileSize.sent,
+                totalFileProgress: bulkFileSize.progress,
+                activeFileSize: activeFileSize.total,
+                activeFileSizeSent: activeFileSize.sent,
+                activeFileProgress: activeFileSize.progress,
+              });
+            },
             onError,
             onCompleted,
-            onPreprocess,
-            onProgress,
           });
 
         default:

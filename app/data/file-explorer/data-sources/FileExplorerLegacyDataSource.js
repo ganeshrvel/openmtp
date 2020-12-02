@@ -211,7 +211,7 @@ export class FileExplorerLegacyDataSource {
           percentage: _percentage,
           currentFile,
           activeFileSize,
-          activeFileSent,
+          activeFileSizeSent,
         } = transferList;
 
         const copiedTimeDiff = currentCopiedTime - prevCopiedTime;
@@ -230,10 +230,10 @@ export class FileExplorerLegacyDataSource {
         onProgress({
           elapsedTime,
           speed: _speed,
-          percentage: _percentage,
+          activeFileProgress: _percentage,
           currentFile,
           activeFileSize,
-          activeFileSent,
+          activeFileSizeSent,
         });
       }, handletransferListTimeInterval);
 
@@ -320,7 +320,7 @@ export class FileExplorerLegacyDataSource {
           transferList = {
             currentFile: filePath,
             activeFileSize: totalFileSize,
-            activeFileSent: currentProgressSize,
+            activeFileSizeSent: currentProgressSize,
             percentage: perc,
             currentCopiedBlockSize,
             currentCopiedTime,
@@ -710,9 +710,9 @@ export class FileExplorerLegacyDataSource {
 
   /**
    * @typedef {Object} progressCallbackInfo
-   * @property {number} percentage - percentage
    * @property {number} activeFileSize - total size of the current file
-   * @property {number} activeFileSent - total bytes of the current file transferred
+   * @property {number} activeFileSizeSent - total bytes of the current file transferred
+   * @property {number} activeFileProgress - progress of the current file
    * @property {string} currentFile - current file
    * @property {string} speed - speed
    * @property {string} elapsedTime - elapsed time

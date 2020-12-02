@@ -146,7 +146,7 @@ export const springTruncate = (str, minChars = 10, ellipsis = '...') => {
 
   return {
     text: _str,
-    truncatedText: str,
+    truncatedText: _str,
     isTruncated: false,
   };
 };

@@ -69,6 +69,7 @@ import {
   isNumber,
   niceBytes,
   removeArrayDuplicates,
+  springTruncate,
   truncate,
   undefinedOrNull,
 } from '../../../utils/funcs';
@@ -1630,7 +1631,7 @@ class FileExplorer extends Component {
         />
 
         <ProgressBarDialog
-          titleText="Transferring files..."
+          titleText={fileTransferProgess.titleText ?? 'Transferring files...'}
           bodyText1={`${
             fileTransferProgess.bodyText1 ? fileTransferProgess.bodyText1 : ''
           }`}
@@ -1640,7 +1641,9 @@ class FileExplorer extends Component {
           trigger={togglePasteDialog}
           fullWidthDialog
           maxWidthDialog="sm"
-          variant="determinate"
+          variant={
+            fileTransferProgess.indeterminate ? 'indeterminate' : 'determinate'
+          }
           helpText="If the progress bar freezes while transferring the files, restart the app and reconnect the device. This is a known Android MTP bug."
           progressValue={fileTransferProgess.percentage}
         >
@@ -1973,6 +1976,53 @@ const mapDispatchToProps = (dispatch, _) =>
             fileTransferClipboard,
           } = pasteArgs;
 
+          // on pre process callback for file transfer
+          const onPreprocess = ({ fullPath }) => {
+            const bodyText1 = `Processing "${
+              springTruncate(fullPath, 75).truncatedText
+            }"`;
+
+            getCurrentWindow().setProgressBar(0);
+            dispatch(
+              setFileTransferProgress({
+                titleText: `Copying files to ${DEVICES_LABEL[deviceType]}...`,
+                toggle: true,
+                bodyText1,
+                bodyText2: null,
+                percentage: 0,
+                indeterminate: true,
+              })
+            );
+          };
+
+          // on progress callback for file transfer
+          const onProgress = ({
+            elapsedTime,
+            speed,
+            activeFileProgress,
+            currentFile,
+            activeFileSize,
+            activeFileSizeSent,
+          }) => {
+            const bodyText1 = `${Math.floor(activeFileProgress)}% complete of ${
+              springTruncate(currentFile, 45).truncatedText
+            }`;
+            const bodyText2 = `${niceBytes(activeFileSizeSent)} / ${niceBytes(
+              activeFileSize
+            )}`;
+
+            getCurrentWindow().setProgressBar(activeFileProgress / 100);
+            dispatch(
+              setFileTransferProgress({
+                titleText: `Copying files to ${DEVICES_LABEL[deviceType]}...`,
+                toggle: true,
+                bodyText1,
+                bodyText2: `Elapsed: ${elapsedTime} | Progress: ${bodyText2} @ ${speed}/sec`,
+                percentage: activeFileProgress,
+              })
+            );
+          };
+
           // on error callback for file transfer
           const onError = ({ error, stderr, data }) => {
             dispatch(
@@ -1993,62 +2043,6 @@ const mapDispatchToProps = (dispatch, _) =>
                     )
                   );
                 },
-              })
-            );
-          };
-
-          // on progress callback for file transfer
-          const onProgress = ({
-            elapsedTime,
-            speed,
-            percentage,
-            currentFile,
-            activeFileSize,
-            activeFileSent,
-          }) => {
-            const bodyText1 = `${percentage}% complete of ${truncate(
-              baseName(currentFile),
-              45
-            )}`;
-            const bodyText2 = `${niceBytes(activeFileSent)} / ${niceBytes(
-              activeFileSize
-            )}`;
-
-            getCurrentWindow().setProgressBar(percentage / 100);
-            dispatch(
-              setFileTransferProgress({
-                toggle: true,
-                bodyText1,
-                bodyText2: `Elapsed: ${elapsedTime} | Progress: ${bodyText2} @ ${speed}/sec`,
-                percentage,
-              })
-            );
-          };
-
-          // on pre process callback for file transfer
-          const onPreprocess = ({
-            elapsedTime,
-            speed,
-            percentage,
-            currentFile,
-            activeFileSize,
-            activeFileSent,
-          }) => {
-            const bodyText1 = `${percentage}% complete of ${truncate(
-              baseName(currentFile),
-              45
-            )}`;
-            const bodyText2 = `${niceBytes(activeFileSent)} / ${niceBytes(
-              activeFileSize
-            )}`;
-
-            getCurrentWindow().setProgressBar(percentage / 100);
-            dispatch(
-              setFileTransferProgress({
-                toggle: true,
-                bodyText1,
-                bodyText2: `Elapsed: ${elapsedTime} | Progress: ${bodyText2} @ ${speed}/sec`,
-                percentage,
               })
             );
           };

@@ -227,9 +227,11 @@ export const initialState = {
     },
     progress: {
       toggle: false,
+      titleText: null,
       bodyText1: null,
       bodyText2: null,
       percentage: 0,
+      indeterminate: false,
     },
   },
 
