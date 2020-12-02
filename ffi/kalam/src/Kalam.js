@@ -2,6 +2,7 @@ import { kalamLibPath } from '../../../app/helpers/binaries';
 import { log } from '../../../app/utils/log';
 import { undefinedOrNull } from '../../../app/utils/funcs';
 import { checkIf } from '../../../app/utils/checkIf';
+import { FILE_TRANSFER_DIRECTION } from '../../../app/enums';
 
 const ffi = require('ffi-napi');
 
@@ -308,7 +309,8 @@ export class Kalam {
     });
   }
 
-  async uploadFiles({
+  async transferFiles({
+    direction,
     storageId,
     sources,
     destination,
@@ -318,6 +320,7 @@ export class Kalam {
     onProgress,
     onCompleted,
   }) {
+    checkIf(direction, 'string');
     checkIf(storageId, 'numericString');
     checkIf(sources, 'array');
     checkIf(destination, 'string');
@@ -385,101 +388,43 @@ export class Kalam {
         };
         const json = JSON.stringify(args);
 
-        this.lib.UploadFiles.async(
+        let ffiFunc;
+
+        switch (direction) {
+          case FILE_TRANSFER_DIRECTION.download:
+            ffiFunc = this.lib.DownloadFiles;
+
+            break;
+          case FILE_TRANSFER_DIRECTION.upload:
+            ffiFunc = this.lib.UploadFiles;
+
+            break;
+
+          default:
+            throw `unsupported 'direction' in Kalam.transferFiles`;
+        }
+
+        ffiFunc.async(
           onFfiPreprocessPtr,
           onFfiProgressPtr,
           onFfiDonePtr,
           json,
           (err, _) => {
             if (!undefinedOrNull(err)) {
-              log.error(err, 'Kalam.UploadFiles.async');
+              log.error(
+                err,
+                `Kalam.transferFiles.async - Transfer type: ${direction}`
+              );
 
               return resolve(this._getNapiError(err));
             }
           }
         );
       } catch (err) {
-        log.error(err, 'Kalam.UploadFiles.catch');
-
-        return resolve(this._getNapiError(err));
-      }
-    });
-  }
-
-  async downloadFiles({
-    storageId,
-    sources,
-    destination,
-    preprocessFiles,
-    onError,
-    onPreprocess,
-    onProgress,
-    onCompleted,
-  }) {
-    checkIf(storageId, 'numericString');
-    checkIf(sources, 'array');
-    checkIf(destination, 'string');
-    checkIf(preprocessFiles, 'boolean');
-    checkIf(onError, 'function');
-    checkIf(onPreprocess, 'function');
-    checkIf(onProgress, 'function');
-    checkIf(onCompleted, 'function');
-
-    return new Promise((resolve) => {
-      try {
-        const onFfiPreprocessPtr = ffi.Callback(
-          'void',
-          ['string'],
-          (result) => {
-            const json = JSON.parse(result);
-            const err = this._getData(json);
-
-            if (!undefinedOrNull(err.error)) {
-              return resolve(err);
-            }
-          }
+        log.error(
+          err,
+          `Kalam.transferFiles.catch - Transfer type: ${direction}`
         );
-
-        const onFfiProgressPtr = ffi.Callback('void', ['string'], (result) => {
-          const json = JSON.parse(result);
-          const err = this._getData(json);
-
-          if (!undefinedOrNull(err.error)) {
-            return resolve(err);
-          }
-        });
-
-        const onFfiDonePtr = ffi.Callback('void', ['string'], (result) => {
-          const json = JSON.parse(result);
-
-          return resolve(this._getData(json));
-        });
-
-        const _storageId = parseInt(storageId, 10);
-
-        const args = {
-          storageId: _storageId,
-          sources,
-          destination,
-          preprocessFiles,
-        };
-        const json = JSON.stringify(args);
-
-        this.lib.DownloadFiles.async(
-          onFfiPreprocessPtr,
-          onFfiProgressPtr,
-          onFfiDonePtr,
-          json,
-          (err, _) => {
-            if (!undefinedOrNull(err)) {
-              log.error(err, 'Kalam.DownloadFiles.async');
-
-              return resolve(this._getNapiError(err));
-            }
-          }
-        );
-      } catch (err) {
-        log.error(err, 'Kalam.DownloadFiles.catch');
 
         return resolve(this._getNapiError(err));
       }

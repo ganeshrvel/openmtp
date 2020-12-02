@@ -85,7 +85,12 @@ import {
   twitterShareUrl,
 } from '../../../templates/socialMediaShareBtns';
 import { baseName, pathInfo, pathUp, sanitizePath } from '../../../utils/files';
-import { DEVICE_TYPE, FILE_EXPLORER_VIEW_TYPE, MTP_MODE } from '../../../enums';
+import {
+  DEVICE_TYPE,
+  FILE_EXPLORER_VIEW_TYPE,
+  FILE_TRANSFER_DIRECTION,
+  MTP_MODE,
+} from '../../../enums';
 import { log } from '../../../utils/log';
 import fileExplorerController from '../../../data/file-explorer/controllers/FileExplorerController';
 
@@ -2125,7 +2130,7 @@ const mapDispatchToProps = (dispatch, _) =>
                 destination: destinationFolder,
                 storageId,
                 fileList: fileTransferClipboard?.queue ?? [],
-                direction: 'download',
+                direction: FILE_TRANSFER_DIRECTION.download,
                 onCompleted,
                 onError,
                 onProgress,
@@ -2139,7 +2144,7 @@ const mapDispatchToProps = (dispatch, _) =>
                 destination: destinationFolder,
                 storageId,
                 fileList: fileTransferClipboard?.queue ?? [],
-                direction: 'upload',
+                direction: FILE_TRANSFER_DIRECTION.upload,
                 onCompleted,
                 onError,
                 onProgress,

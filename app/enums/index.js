@@ -23,3 +23,8 @@ export const APP_THEME_MODE_TYPE = {
   dark: 'dark',
   auto: 'auto',
 };
+
+export const FILE_TRANSFER_DIRECTION = {
+  upload: 'upload',
+  download: 'download',
+};

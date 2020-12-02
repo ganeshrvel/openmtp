@@ -301,6 +301,7 @@ export class FileExplorerKalamDataSource {
     onProgress,
     onCompleted,
   }) {
+    checkIf(direction, 'string');
     checkIf(storageId, 'numericString');
     checkIf(onError, 'function');
     checkIf(onPreprocess, 'function');
@@ -328,49 +329,41 @@ export class FileExplorerKalamDataSource {
         return;
       }
 
-      switch (direction) {
-        case 'download':
-          return;
-
-        case 'upload':
-          return this.kalamFfi.uploadFiles({
-            storageId,
-            destination,
-            preprocessFiles: getEnableFilesPreprocessingBeforeTransferSetting(),
-            sources: fileList,
-            onPreprocess,
-            onProgress: ({
-              fullPath,
-              elapsedTime,
-              speed,
-              totalFiles,
-              filesSent,
-              filesSentProgress,
-              activeFileSize,
-              bulkFileSize,
-            }) => {
-              onProgress({
-                currentFile: fullPath,
-                elapsedTime: msToTime(elapsedTime),
-                speed: `${speed} MB`,
-                totalFiles,
-                filesSent,
-                filesSentProgress,
-                totalFileSize: bulkFileSize.total,
-                totalFileSizeSent: bulkFileSize.sent,
-                totalFileProgress: bulkFileSize.progress,
-                activeFileSize: activeFileSize.total,
-                activeFileSizeSent: activeFileSize.sent,
-                activeFileProgress: activeFileSize.progress,
-              });
-            },
-            onError,
-            onCompleted,
+      return this.kalamFfi.transferFiles({
+        direction,
+        storageId,
+        destination,
+        preprocessFiles: getEnableFilesPreprocessingBeforeTransferSetting(),
+        sources: fileList,
+        onPreprocess,
+        onProgress: ({
+          fullPath,
+          elapsedTime,
+          speed,
+          totalFiles,
+          filesSent,
+          filesSentProgress,
+          activeFileSize,
+          bulkFileSize,
+        }) => {
+          onProgress({
+            currentFile: fullPath,
+            elapsedTime: msToTime(elapsedTime),
+            speed: `${speed} MB`,
+            totalFiles,
+            filesSent,
+            filesSentProgress,
+            totalFileSize: bulkFileSize.total,
+            totalFileSizeSent: bulkFileSize.sent,
+            totalFileProgress: bulkFileSize.progress,
+            activeFileSize: activeFileSize.total,
+            activeFileSizeSent: activeFileSize.sent,
+            activeFileProgress: activeFileSize.progress,
           });
-
-        default:
-          break;
-      }
+        },
+        onError,
+        onCompleted,
+      });
     } catch (e) {
       log.error(e);
     }
