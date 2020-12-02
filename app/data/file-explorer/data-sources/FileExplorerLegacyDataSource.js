@@ -12,7 +12,7 @@ import {
   undefinedOrNull,
 } from '../../../utils/funcs';
 import { DEVICES_LABEL } from '../../../constants';
-import { DEVICE_TYPE } from '../../../enums';
+import { DEVICE_TYPE, FILE_TRANSFER_DIRECTION } from '../../../enums';
 import { baseName, getExtension } from '../../../utils/files';
 import { mtpCliPath } from '../../../helpers/binaries';
 import { appDateFormat, msToTime, unixTimestampNow } from '../../../utils/date';
@@ -775,7 +775,7 @@ export class FileExplorerLegacyDataSource {
       let cmdArgs = [];
 
       switch (direction) {
-        case 'download':
+        case FILE_TRANSFER_DIRECTION.download:
           cmdArgs = (fileList ?? []).map((sourcePath) => {
             const destinationPath = path.resolve(destination);
             const escapedDestinationPath = this._escapeShellMtp(
@@ -793,7 +793,7 @@ export class FileExplorerLegacyDataSource {
             onCompleted,
           });
 
-        case 'upload':
+        case FILE_TRANSFER_DIRECTION.upload:
           cmdArgs = (fileList ?? []).map((sourcePath) => {
             const destinationPath = path.resolve(destination);
             const escapedDestinationPath = `${this._escapeShellMtp(
