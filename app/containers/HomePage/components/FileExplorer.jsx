@@ -1610,7 +1610,6 @@ class FileExplorer extends Component {
           btnNegativeText="Cancel"
           errors={rename.errors}
         />
-
         <TextFieldEditDialog
           titleText={`Create a new folder on your ${DEVICES_LABEL[deviceType]}`}
           bodyText={`Path: ${newFolder.data.path || ''}`}
@@ -1629,23 +1628,13 @@ class FileExplorer extends Component {
           btnNegativeText="Cancel"
           errors={newFolder.errors}
         />
-
         <ProgressBarDialog
+          values={fileTransferProgess.values}
           titleText={fileTransferProgess.titleText ?? 'Transferring files...'}
-          bodyText1={`${
-            fileTransferProgess.bodyText1 ? fileTransferProgess.bodyText1 : ''
-          }`}
-          bodyText2={`${
-            fileTransferProgess.bodyText2 ? fileTransferProgess.bodyText2 : ''
-          }`}
           trigger={togglePasteDialog}
           fullWidthDialog
           maxWidthDialog="sm"
-          variant={
-            fileTransferProgess.indeterminate ? 'indeterminate' : 'determinate'
-          }
           helpText="If the progress bar freezes while transferring the files, restart the app and reconnect the device. This is a known Android MTP bug."
-          progressValue={fileTransferProgess.percentage}
         >
           <div className={styles.socialMediaShareContainer}>
             <Typography className={styles.socialMediaShareTitle}>
@@ -1673,7 +1662,6 @@ class FileExplorer extends Component {
             </div>
           </div>
         </ProgressBarDialog>
-
         <ConfirmDialog
           fullWidthDialog
           maxWidthDialog="xs"
@@ -1681,7 +1669,7 @@ class FileExplorer extends Component {
           trigger={togglePasteConfirmDialog}
           onClickHandler={this._handlePasteConfirmDialog}
         />
-
+        ;
         <FileExplorerBodyRender
           deviceType={deviceType}
           fileExplorerListingType={fileExplorerListingType}
@@ -1712,6 +1700,7 @@ class FileExplorer extends Component {
           }
           onAcceleratorActivation={this._handleAcceleratorActivation}
         />
+        ;
       </Fragment>
     );
   }
@@ -1987,10 +1976,14 @@ const mapDispatchToProps = (dispatch, _) =>
               setFileTransferProgress({
                 titleText: `Copying files to ${DEVICES_LABEL[deviceType]}...`,
                 toggle: true,
-                bodyText1,
-                bodyText2: null,
-                percentage: 0,
-                indeterminate: true,
+                values: [
+                  {
+                    bodyText1,
+                    bodyText2: null,
+                    percentage: 0,
+                    variant: `indeterminate`,
+                  },
+                ],
               })
             );
           };
@@ -2022,6 +2015,9 @@ const mapDispatchToProps = (dispatch, _) =>
             let bodyText1 = 0;
             let progressText = 0;
 
+            let progressInfo = [];
+
+            /// file transfer progress on legacy mode
             if (mtpMode === MTP_MODE.legacy) {
               bodyText1 = `${Math.floor(activeFileProgress)}% complete of "${
                 springTruncate(currentFile, 45).truncatedText
@@ -2030,7 +2026,32 @@ const mapDispatchToProps = (dispatch, _) =>
                 activeFileSize
               )}`;
               windowProgressBar = activeFileProgress / 100;
+
+              progressInfo = [
+                {
+                  bodyText1,
+                  bodyText2: `Elapsed: ${elapsedTime} | Progress: ${progressText} @ ${speed}/sec`,
+                  variant: `determinate`,
+                  percentage: activeFileProgress,
+                },
+              ];
             } else {
+              bodyText1 = `${Math.floor(activeFileProgress)}% complete of "${
+                springTruncate(currentFile, 45).truncatedText
+              }"`;
+              progressText = `${niceBytes(activeFileSizeSent)} / ${niceBytes(
+                activeFileSize
+              )}`;
+              windowProgressBar = activeFileProgress / 100;
+
+              progressInfo = [
+                {
+                  bodyText1,
+                  bodyText2: `Elapsed: ${elapsedTime} | Progress: ${progressText} @ ${speed}/sec`,
+                  variant: `determinate`,
+                  percentage: activeFileProgress,
+                },
+              ];
             }
 
             getCurrentWindow().setProgressBar(windowProgressBar);
@@ -2038,9 +2059,7 @@ const mapDispatchToProps = (dispatch, _) =>
               setFileTransferProgress({
                 titleText: `Copying files to ${DEVICES_LABEL[deviceType]}...`,
                 toggle: true,
-                bodyText1,
-                bodyText2: `Elapsed: ${elapsedTime} | Progress: ${progressText} @ ${speed}/sec`,
-                percentage: activeFileProgress,
+                values: progressInfo,
               })
             );
           };
