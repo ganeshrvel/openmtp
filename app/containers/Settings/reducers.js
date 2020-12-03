@@ -23,7 +23,6 @@ export const initialState = {
     [DEVICE_TYPE.local]: true,
     [DEVICE_TYPE.mtp]: true,
   },
-
   fileExplorerListingType: {
     [DEVICE_TYPE.local]: FILE_EXPLORER_VIEW_TYPE.grid,
     [DEVICE_TYPE.mtp]: FILE_EXPLORER_VIEW_TYPE.grid,

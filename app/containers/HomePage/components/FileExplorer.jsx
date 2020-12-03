@@ -1643,6 +1643,7 @@ class FileExplorer extends Component {
           values={fileTransferProgess.values}
           titleText={fileTransferProgess.titleText ?? 'Transferring files...'}
           trigger={togglePasteDialog}
+          bottomText={fileTransferProgess.bottomText}
           fullWidthDialog
           maxWidthDialog="sm"
           helpText="If the progress bar freezes while transferring the files, restart the app and reconnect the device. This is a known Android MTP bug."
@@ -1988,6 +1989,7 @@ const mapDispatchToProps = (dispatch, _) =>
             dispatch(
               setFileTransferProgress({
                 titleText: `Copying files to ${DEVICES_LABEL[deviceType]}...`,
+                bottomText: `If file processing is taking too much time, you may disable it from 'Settings' > 'FILE MANAGER' > 'Display overall progress on the file transfer screen'`,
                 toggle: true,
                 values: [
                   {
@@ -2094,6 +2096,7 @@ const mapDispatchToProps = (dispatch, _) =>
             dispatch(
               setFileTransferProgress({
                 titleText: `Copying files to ${DEVICES_LABEL[deviceType]}...`,
+                bottomText: null,
                 toggle: true,
                 values: progressInfo,
               })

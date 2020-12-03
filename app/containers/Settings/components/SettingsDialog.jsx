@@ -297,8 +297,7 @@ export default class SettingsDialog extends PureComponent {
                       variant="subtitle2"
                       className={`${styles.subtitle} ${styles.fmSettingsStylesFix}`}
                     >
-                      Display total file count and size on the file transfer
-                      screen
+                      Display overall progress on the file transfer screen
                     </Typography>
                     <FormControlLabel
                       className={styles.switch}

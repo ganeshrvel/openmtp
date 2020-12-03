@@ -31,6 +31,7 @@ class ProgressBar extends PureComponent {
       maxWidthDialog,
       helpText,
       children,
+      bottomText,
     } = this.props;
 
     checkIf(values, 'array');
@@ -84,6 +85,7 @@ class ProgressBar extends PureComponent {
             );
           })}
 
+          {bottomText && <div className={styles.bottomText}>{bottomText}</div>}
           {children && <div className={styles.childrenWrapper}>{children}</div>}
         </DialogContent>
       </Dialog>

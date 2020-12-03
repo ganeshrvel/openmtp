@@ -113,6 +113,11 @@ export const initialState = {
         label: 'MTP Mode',
         icon: faPlug,
       },
+      settings: {
+        enabled: true,
+        label: 'Settings',
+        icon: faCog,
+      },
     },
   },
 
@@ -228,6 +233,7 @@ export const initialState = {
     progress: {
       toggle: false,
       titleText: null,
+      bottomText: null,
       /**
        *  [{
        *    percentage,
