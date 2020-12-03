@@ -7,6 +7,7 @@ import { withReducer } from '../../store/reducers/withReducer';
 import reducers from './reducers';
 import { makeCommonSettings } from './selectors';
 import {
+  setFilesPreprocessingBeforeTransfer,
   fileExplorerListingType,
   freshInstall,
   hideHiddenFiles,
@@ -21,6 +22,7 @@ import {
 } from '../HomePage/selectors';
 import SettingsDialog from './components/SettingsDialog';
 import { checkIf } from '../../utils/checkIf';
+import { FILE_TRANSFER_DIRECTION } from '../../enums';
 
 class Settings extends Component {
   _handleDialogBoxCloseBtnClick = ({ confirm = false }) => {
@@ -156,18 +158,13 @@ class Settings extends Component {
     );
   };
 
-  _handleenableFilesPreprocessingBeforeTransferChange = (
-    event,
-    value,
-    deviceType
-  ) => {
-    this._handleSetCommonSettingsChange(
-      {
-        key: 'enableFilesPreprocessingBeforeTransfer',
-        value,
-      },
-      deviceType
-    );
+  _handleFilesPreprocessingBeforeTransferChange = (event, value, direction) => {
+    const { actionCreateSetFilesPreprocessingBeforeTransfer } = this.props;
+
+    checkIf(direction, 'string');
+    checkIf(direction, 'inObjectValues', FILE_TRANSFER_DIRECTION);
+
+    actionCreateSetFilesPreprocessingBeforeTransfer({ value, direction });
   };
 
   _handleMtpModeChange = (event, value, deviceType) => {
@@ -213,8 +210,8 @@ class Settings extends Component {
           this._handleShowLocalPaneOnLeftSideChange
         }
         onShowDirectoriesFirstChange={this._handleShowDirectoriesFirstChange}
-        onenableFilesPreprocessingBeforeTransferChange={
-          this._handleenableFilesPreprocessingBeforeTransferChange
+        onFilesPreprocessingBeforeTransferChange={
+          this._handleFilesPreprocessingBeforeTransferChange
         }
         onMtpModeChange={this._handleMtpModeChange}
         {...parentProps}
@@ -239,6 +236,13 @@ const mapDispatchToProps = (dispatch, _) =>
         getState
       ) => {
         dispatch(hideHiddenFiles({ ...data }, deviceType, getState));
+      },
+
+      actionCreateSetFilesPreprocessingBeforeTransfer: ({ ...data }) => (
+        _,
+        getState
+      ) => {
+        dispatch(setFilesPreprocessingBeforeTransfer({ ...data }, getState));
       },
 
       actionCreateFileExplorerListingType: ({ ...data }, deviceType) => (

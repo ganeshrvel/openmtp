@@ -94,6 +94,7 @@ import {
 } from '../../../enums';
 import { log } from '../../../utils/log';
 import fileExplorerController from '../../../data/file-explorer/controllers/FileExplorerController';
+import { checkIf } from '../../../utils/checkIf';
 
 const { Menu, getCurrentWindow } = remote;
 
@@ -1968,7 +1969,7 @@ const mapDispatchToProps = (dispatch, _) =>
         try {
           const {
             mtpMode,
-            enableFilesPreprocessingBeforeTransfer,
+            filesPreprocessingBeforeTransfer,
           } = getState().Settings;
 
           const {
@@ -2013,6 +2014,7 @@ const mapDispatchToProps = (dispatch, _) =>
             totalFileSize,
             totalFileSizeSent,
             totalFileProgress,
+            direction,
           }) => {
             let windowProgressBar = 0;
             let bodyText1 = 0;
@@ -2039,6 +2041,9 @@ const mapDispatchToProps = (dispatch, _) =>
                 },
               ];
             } else {
+              checkIf(direction, 'string');
+              checkIf(direction, 'inObjectValues', FILE_TRANSFER_DIRECTION);
+
               // active file progress
               bodyText1 = `${Math.floor(activeFileProgress)}% complete of "${
                 springTruncate(currentFile, 45).truncatedText
@@ -2052,7 +2057,7 @@ const mapDispatchToProps = (dispatch, _) =>
                 {
                   bodyText1,
                   bodyText2: `${
-                    !enableFilesPreprocessingBeforeTransfer
+                    !filesPreprocessingBeforeTransfer[direction]
                       ? elapsedTimeText
                       : ''
                   }Progress: ${progressText} @ ${speed}/sec`,
@@ -2063,7 +2068,7 @@ const mapDispatchToProps = (dispatch, _) =>
               windowProgressBar = activeFileProgress / 100;
 
               /// if preprocessing of file transfer is enabled then show total file transfer information as well
-              if (enableFilesPreprocessingBeforeTransfer) {
+              if (filesPreprocessingBeforeTransfer[direction]) {
                 // if preprocessing of file transfer is enabled then [windowProgressBar]
                 // progress value should be the [totalFileProgress] else [activeFileProgress] will be used
                 windowProgressBar = totalFileProgress / 100;

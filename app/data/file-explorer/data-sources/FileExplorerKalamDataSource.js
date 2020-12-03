@@ -2,7 +2,7 @@ import { log } from '../../../utils/log';
 import { Kalam } from '../../../../ffi/kalam/src/Kalam';
 import { checkIf } from '../../../utils/checkIf';
 import { isArray, isEmpty } from '../../../utils/funcs';
-import { getEnableFilesPreprocessingBeforeTransferSetting } from '../../../helpers/settings';
+import { getFilesPreprocessingBeforeTransferSetting } from '../../../helpers/settings';
 import { msToTime } from '../../../utils/date';
 
 export class FileExplorerKalamDataSource {
@@ -270,6 +270,8 @@ export class FileExplorerKalamDataSource {
    * @property {string} currentFile - current file (full path)
    * @property {string} speed - transfer rate (in MB/s)
    * @property {string} elapsedTime - elapsed time
+   *
+   * @property {'upload'|'download'} direction - direction of file transfer
    */
 
   /**
@@ -280,6 +282,7 @@ export class FileExplorerKalamDataSource {
   /**
    * description - Upload or download files from MTP device to local or vice versa
    *
+   * @param {string} deviceType
    * @param {string} destination
    * @param {'upload'|'download'} direction
    * @param {[string]} fileList
@@ -292,6 +295,7 @@ export class FileExplorerKalamDataSource {
    * @return
    */
   async transferFiles({
+    deviceType,
     destination,
     fileList,
     direction,
@@ -301,7 +305,9 @@ export class FileExplorerKalamDataSource {
     onProgress,
     onCompleted,
   }) {
+    checkIf(deviceType, 'string');
     checkIf(direction, 'string');
+    checkIf(fileList, 'array');
     checkIf(storageId, 'numericString');
     checkIf(onError, 'function');
     checkIf(onPreprocess, 'function');
@@ -333,7 +339,9 @@ export class FileExplorerKalamDataSource {
         direction,
         storageId,
         destination,
-        preprocessFiles: getEnableFilesPreprocessingBeforeTransferSetting(),
+        preprocessFiles: getFilesPreprocessingBeforeTransferSetting({
+          direction,
+        }),
         sources: fileList,
         onPreprocess,
         onProgress: ({
@@ -359,6 +367,7 @@ export class FileExplorerKalamDataSource {
             activeFileSize: activeFileSize.total,
             activeFileSizeSent: activeFileSize.sent,
             activeFileProgress: activeFileSize.progress,
+            direction,
           });
         },
         onError,

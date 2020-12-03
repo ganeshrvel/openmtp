@@ -47,6 +47,16 @@ export const isArray = (n) => {
   return Array.isArray(n);
 };
 
+/**
+ *
+ * @param arr {[]} - array
+ * @param n {any} - search
+ * @return {boolean}
+ */
+export const inArray = (arr, n) => {
+  return arr.includes(n);
+};
+
 export const niceBytes = (a, b) => {
   if (a === 0) {
     return '0 Bytes';

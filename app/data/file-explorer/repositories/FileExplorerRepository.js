@@ -313,6 +313,7 @@ export class FileExplorerRepository {
         case MTP_MODE.kalam:
         default:
           return this.kalamMtpDataSource.transferFiles({
+            deviceType,
             destination,
             fileList,
             direction,

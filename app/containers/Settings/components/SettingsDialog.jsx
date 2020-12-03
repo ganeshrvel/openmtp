@@ -23,6 +23,7 @@ import {
   FILE_EXPLORER_VIEW_TYPE,
   APP_THEME_MODE_TYPE,
   MTP_MODE,
+  FILE_TRANSFER_DIRECTION,
 } from '../../../enums';
 import { capitalize } from '../../../utils/funcs';
 
@@ -78,7 +79,7 @@ export default class SettingsDialog extends PureComponent {
       showLocalPaneOnLeftSide,
       showDirectoriesFirst,
       mtpMode,
-      enableFilesPreprocessingBeforeTransfer,
+      filesPreprocessingBeforeTransfer,
       onAnalyticsChange,
       onHiddenFilesChange,
       onFileExplorerListingType,
@@ -92,7 +93,7 @@ export default class SettingsDialog extends PureComponent {
       onShowLocalPaneOnLeftSideChange,
       onShowDirectoriesFirstChange,
       onMtpModeChange,
-      onenableFilesPreprocessingBeforeTransferChange,
+      onFilesPreprocessingBeforeTransferChange,
     } = this.props;
 
     const { tabIndex } = this.state;
@@ -296,30 +297,53 @@ export default class SettingsDialog extends PureComponent {
                       variant="subtitle2"
                       className={`${styles.subtitle} ${styles.fmSettingsStylesFix}`}
                     >
-                      Show remaining file size and count on the file transfer
+                      Display total file count and size on the file transfer
                       screen
                     </Typography>
                     <FormControlLabel
                       className={styles.switch}
                       control={
                         <Switch
-                          checked={enableFilesPreprocessingBeforeTransfer}
+                          checked={
+                            filesPreprocessingBeforeTransfer[
+                              FILE_TRANSFER_DIRECTION.download
+                            ]
+                          }
                           onChange={(e) =>
-                            onenableFilesPreprocessingBeforeTransferChange(
+                            onFilesPreprocessingBeforeTransferChange(
                               e,
-                              !enableFilesPreprocessingBeforeTransfer
+                              !filesPreprocessingBeforeTransfer[
+                                FILE_TRANSFER_DIRECTION.download
+                              ],
+                              FILE_TRANSFER_DIRECTION.download
                             )
                           }
                         />
                       }
-                      label={showDirectoriesFirst ? `Enabled` : `Disabled`}
+                      label={`To ${DEVICES_LABEL[DEVICE_TYPE.local]}`}
                     />
-                    <Typography variant="caption">
-                      Note: To fetch the total transfer information, the files
-                      need to be processed first. It may take a few seconds to a
-                      few minutes depending on the total number of files to be
-                      copied.
-                    </Typography>
+                    <FormControlLabel
+                      className={styles.switch}
+                      control={
+                        <Switch
+                          checked={
+                            filesPreprocessingBeforeTransfer[
+                              FILE_TRANSFER_DIRECTION.upload
+                            ]
+                          }
+                          onChange={(e) =>
+                            onFilesPreprocessingBeforeTransferChange(
+                              e,
+                              !filesPreprocessingBeforeTransfer[
+                                FILE_TRANSFER_DIRECTION.upload
+                              ],
+                              FILE_TRANSFER_DIRECTION.upload
+                            )
+                          }
+                        />
+                      }
+                      label={`To ${DEVICES_LABEL[DEVICE_TYPE.mtp]}`}
+                    />
 
                     {freshInstall ? (
                       <Paper
@@ -340,6 +364,13 @@ export default class SettingsDialog extends PureComponent {
                         </Typography>
                       </Paper>
                     ) : null}
+
+                    <Typography variant="caption">
+                      Note: To fetch the total transfer information, the files
+                      need to be processed first. It may take a few seconds to a
+                      few minutes depending on the total number of files to be
+                      copied.
+                    </Typography>
 
                     <Typography
                       variant="subtitle2"

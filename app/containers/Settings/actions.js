@@ -13,6 +13,7 @@ const actionTypesList = [
   'SET_ONBOARDING',
   'HIDE_HIDDEN_FILES',
   'FILE_EXPLORER_LISTING_TYPE',
+  'SET_FILES_PREPROCESSING_BEFORE_TRANSFER',
   'COMMON_SETTINGS',
   'COPY_JSON_FILE_TO_SETTINGS',
 ];
@@ -58,6 +59,19 @@ export function hideHiddenFiles({ ...data }, deviceType, getState) {
       type: actionTypes.HIDE_HIDDEN_FILES,
       deviceType,
       payload: value,
+    });
+    dispatch(copySettingsToJsonFile(getState));
+  };
+}
+
+export function setFilesPreprocessingBeforeTransfer({ ...data }, getState) {
+  const { value, direction } = data;
+
+  return (dispatch) => {
+    dispatch({
+      type: actionTypes.SET_FILES_PREPROCESSING_BEFORE_TRANSFER,
+      deviceType: null,
+      payload: { value, direction },
     });
     dispatch(copySettingsToJsonFile(getState));
   };

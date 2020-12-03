@@ -2,6 +2,8 @@ import { settingsStorage } from './storageHelper';
 import { getAppThemeMode } from './theme';
 import { undefinedOrNull } from '../utils/funcs';
 import { initialState } from '../containers/Settings/reducers';
+import { checkIf } from '../utils/checkIf';
+import { FILE_TRANSFER_DIRECTION } from '../enums';
 
 export const getAppThemeModeSetting = () => {
   const setting = settingsStorage.getItems(['appThemeMode']);
@@ -27,16 +29,23 @@ export const getMtpModeSetting = () => {
   return value;
 };
 
-export const getEnableFilesPreprocessingBeforeTransferSetting = () => {
+export const getFilesPreprocessingBeforeTransferSetting = ({ direction }) => {
+  checkIf(direction, 'string');
+  checkIf(direction, 'inObjectValues', FILE_TRANSFER_DIRECTION);
+
   const setting = settingsStorage.getItems([
-    'enableFilesPreprocessingBeforeTransfer',
+    'filesPreprocessingBeforeTransfer',
   ]);
 
-  let value = setting.mtpMode;
+  let value = setting.filesPreprocessingBeforeTransfer
+    ? setting.filesPreprocessingBeforeTransfer[direction]
+    : null;
 
   if (undefinedOrNull(value)) {
-    value = initialState.enableFilesPreprocessingBeforeTransfer;
+    value = initialState.filesPreprocessingBeforeTransfer[direction];
   }
+
+  checkIf(value, 'boolean');
 
   return value;
 };
