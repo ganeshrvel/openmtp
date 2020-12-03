@@ -93,7 +93,7 @@ export class FileExplorerRepository {
    */
   async listFiles({ deviceType, filePath, ignoreHidden, storageId }) {
     if (deviceType === DEVICE_TYPE.mtp) {
-      checkIf(storageId, 'numericString');
+      checkIf(storageId, 'number');
 
       const selectedMtpMode = getMtpModeSetting();
 
@@ -132,7 +132,7 @@ export class FileExplorerRepository {
    */
   async renameFile({ deviceType, filePath, newFilename, storageId }) {
     if (deviceType === DEVICE_TYPE.mtp) {
-      checkIf(storageId, 'numericString');
+      checkIf(storageId, 'number');
 
       const selectedMtpMode = getMtpModeSetting();
 
@@ -170,7 +170,7 @@ export class FileExplorerRepository {
    */
   async deleteFiles({ deviceType, fileList, storageId }) {
     if (deviceType === DEVICE_TYPE.mtp) {
-      checkIf(storageId, 'numericString');
+      checkIf(storageId, 'number');
 
       const selectedMtpMode = getMtpModeSetting();
 
@@ -205,7 +205,7 @@ export class FileExplorerRepository {
    */
   async makeDirectory({ deviceType, filePath, storageId }) {
     if (deviceType === DEVICE_TYPE.mtp) {
-      checkIf(storageId, 'numericString');
+      checkIf(storageId, 'number');
 
       const selectedMtpMode = getMtpModeSetting();
 
@@ -240,7 +240,7 @@ export class FileExplorerRepository {
    */
   async filesExist({ deviceType, fileList, storageId }) {
     if (deviceType === DEVICE_TYPE.mtp) {
-      checkIf(storageId, 'numericString');
+      checkIf(storageId, 'number');
 
       const selectedMtpMode = getMtpModeSetting();
 
@@ -292,7 +292,7 @@ export class FileExplorerRepository {
     onCompleted,
   }) {
     if (deviceType === DEVICE_TYPE.mtp) {
-      checkIf(storageId, 'numericString');
+      checkIf(storageId, 'number');
       checkIf(onPreprocess, 'function');
 
       const selectedMtpMode = getMtpModeSetting();

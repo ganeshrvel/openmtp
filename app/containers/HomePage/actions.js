@@ -82,11 +82,11 @@ function actionListDirectory(data, deviceType, _) {
 export function getSelectedStorageIdFromState(state) {
   const selectedStorage = getSelectedStorage(state.mtpStoragesList);
 
-  if (isEmpty(selectedStorage)) {
+  if (isEmpty(selectedStorage?.id)) {
     return null;
   }
 
-  return selectedStorage.id;
+  return parseInt(selectedStorage.id, 10);
 }
 
 export function getSelectedStorage(mtpStoragesList) {
@@ -642,7 +642,6 @@ export function listDirectory(
       case DEVICE_TYPE.mtp:
         return async (dispatch) => {
           const storageId = getSelectedStorageIdFromState(getState().Home);
-
           const {
             error,
             stderr,

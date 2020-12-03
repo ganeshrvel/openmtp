@@ -234,6 +234,7 @@ export const initialState = {
       toggle: false,
       titleText: null,
       bottomText: null,
+
       /**
        *  [{
        *    percentage,

@@ -132,7 +132,7 @@ export class Kalam {
   }
 
   async makeDirectory({ storageId, fullPath }) {
-    checkIf(storageId, 'numericString');
+    checkIf(storageId, 'number');
     checkIf(fullPath, 'string');
 
     return new Promise((resolve) => {
@@ -164,7 +164,7 @@ export class Kalam {
   }
 
   async fileExist({ storageId, files }) {
-    checkIf(storageId, 'numericString');
+    checkIf(storageId, 'number');
     checkIf(files, 'array');
 
     return new Promise((resolve) => {
@@ -196,7 +196,7 @@ export class Kalam {
   }
 
   async deleteFile({ storageId, files }) {
-    checkIf(storageId, 'numericString');
+    checkIf(storageId, 'number');
     checkIf(files, 'array');
 
     return new Promise((resolve) => {
@@ -228,7 +228,7 @@ export class Kalam {
   }
 
   async renameFile({ storageId, fullPath, newFilename }) {
-    checkIf(storageId, 'numericString');
+    checkIf(storageId, 'number');
     checkIf(fullPath, 'string');
     checkIf(newFilename, 'string');
 
@@ -271,7 +271,7 @@ export class Kalam {
    * @constructor
    */
   async walk({ storageId, fullPath, skipHiddenFiles }) {
-    checkIf(storageId, 'numericString');
+    checkIf(storageId, 'number');
     checkIf(fullPath, 'string');
     checkIf(skipHiddenFiles, 'boolean');
 
@@ -321,7 +321,7 @@ export class Kalam {
     onCompleted,
   }) {
     checkIf(direction, 'string');
-    checkIf(storageId, 'numericString');
+    checkIf(storageId, 'number');
     checkIf(sources, 'array');
     checkIf(destination, 'string');
     checkIf(preprocessFiles, 'boolean');

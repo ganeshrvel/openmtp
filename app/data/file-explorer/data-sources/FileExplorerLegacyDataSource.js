@@ -407,7 +407,7 @@ export class FileExplorerLegacyDataSource {
           }
 
           const matchDesc = _matchDesc[1].trim();
-          const matchedStorageId = _matchedStorageIds[1].trim();
+          const matchedStorageId = parseInt(_matchedStorageIds[1].trim(), 10);
 
           storageList = {
             ...storageList,

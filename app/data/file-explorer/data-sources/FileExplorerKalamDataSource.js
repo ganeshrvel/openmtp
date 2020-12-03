@@ -64,7 +64,7 @@ export class FileExplorerKalamDataSource {
       const storageList = {};
 
       data.forEach((a, index) => {
-        storageList[`${a.Sid}`] = {
+        storageList[a.Sid] = {
           name: a.Info.StorageDescription,
           selected: index === 0,
           info: a.Info,
@@ -94,7 +94,7 @@ export class FileExplorerKalamDataSource {
   async listFiles({ filePath, ignoreHidden, storageId }) {
     checkIf(filePath, 'string');
     checkIf(ignoreHidden, 'boolean');
-    checkIf(storageId, 'numericString');
+    checkIf(storageId, 'number');
 
     try {
       return this.kalamFfi.walk({
@@ -124,7 +124,7 @@ export class FileExplorerKalamDataSource {
   async renameFile({ filePath, newFilename, storageId }) {
     checkIf(filePath, 'string');
     checkIf(newFilename, 'string');
-    checkIf(storageId, 'numericString');
+    checkIf(storageId, 'number');
 
     try {
       return this.kalamFfi.renameFile({
@@ -152,7 +152,7 @@ export class FileExplorerKalamDataSource {
    */
   async filesExist({ fileList, storageId }) {
     checkIf(fileList, 'array');
-    checkIf(storageId, 'numericString');
+    checkIf(storageId, 'number');
 
     try {
       const { error, stderr, data } = await this.kalamFfi.fileExist({
@@ -191,7 +191,7 @@ export class FileExplorerKalamDataSource {
    */
   async makeDirectory({ filePath, storageId }) {
     checkIf(filePath, 'string');
-    checkIf(storageId, 'numericString');
+    checkIf(storageId, 'number');
 
     try {
       return this.kalamFfi.makeDirectory({
@@ -214,7 +214,7 @@ export class FileExplorerKalamDataSource {
    */
   async deleteFiles({ fileList, storageId }) {
     checkIf(fileList, 'array');
-    checkIf(storageId, 'numericString');
+    checkIf(storageId, 'number');
 
     return this.kalamFfi.deleteFile({
       storageId,
@@ -308,7 +308,7 @@ export class FileExplorerKalamDataSource {
     checkIf(deviceType, 'string');
     checkIf(direction, 'string');
     checkIf(fileList, 'array');
-    checkIf(storageId, 'numericString');
+    checkIf(storageId, 'number');
     checkIf(onError, 'function');
     checkIf(onPreprocess, 'function');
     checkIf(onProgress, 'function');
