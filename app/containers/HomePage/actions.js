@@ -129,65 +129,6 @@ export function initializeMtp(
 
   return async (dispatch) => {
     try {
-      // await kalamFfi.InitializeMtp();
-      // await kalamFfi.FetchDeviceInfo();
-      // // const { data: storagesData } = await kalamFfi.FetchStorages();
-      // const { data: mkDirData1 } = await kalamFfi.MakeDirectory({
-      //   storageId: storagesData[0].Sid.toString(),
-      //   fullPath: '/test2',
-      // });
-      // const { data: mkDirData2 } = await kalamFfi.MakeDirectory({
-      //   storageId: storagesData[0].Sid.toString(),
-      //   fullPath: '/TEST1',
-      // });
-      //
-      // const { data: renameFileData } = await kalamFfi.RenameFile({
-      //   storageId: storagesData[0].Sid.toString(),
-      //   fullPath: '/TEST1',
-      //   newFileName: '/test1',
-      // });
-      //
-      // const { data: fileExistsData } = await kalamFfi.FileExists({
-      //   storageId: storagesData[0].Sid.toString(),
-      //   files: ['/test1', '/test2'],
-      // });
-      //
-      // const { data: deleteFileData } = await kalamFfi.DeleteFile({
-      //   storageId: storagesData[0].Sid.toString(),
-      //   files: ['/TEST2', '/TEST1'],
-      // });
-      //
-      // const { data: fileExistsData2 } = await kalamFfi.FileExists({
-      //   storageId: storagesData[0].Sid.toString(),
-      //   files: ['/TEST1', '/TEST2'],
-      // });
-      // const { data: WalkData } = await kalamFfi.Walk({
-      //   storageId: storagesData[0].Sid.toString(),
-      //   fullPath: '/',
-      // });
-      //
-      // const tempDataPath = path.resolve(
-      //   path.join('./mtp-mock-files', 'mtp-test-files', 'test-large-file')
-      // );
-      // const {
-      //   data: UploadFilesData,
-      // } = await kalamFfi.UploadFiles({
-      //   storageId: storagesData[0].Sid.toString(),
-      //   sources: [tempDataPath],
-      //   destination: '/mtp-test-files/temp_dir',
-      //   preprocessFiles: true, //todo
-      // });
-      // const { data: downloadFilesData } = await kalamFfi.DownloadFiles({
-      //   storageId: storagesData[0].Sid.toString(),
-      //   sources: ['/mtp-test-files/test-large-file'],
-      //   destination: tempDataPath,
-      //   preprocessFiles: true, //todo
-      // });
-      // await kalamFfi.Dispose();
-      // if(mode==legacy){
-      //   initLegacyMtp()
-      // }
-
       switch (mtpMode) {
         case MTP_MODE.kalam:
           return dispatch(
@@ -216,7 +157,7 @@ export function initializeMtp(
           );
 
         default:
-          throw `invalid value for 'mtpMode'`;
+          return;
       }
     } catch (e) {
       log.error(e);
@@ -287,7 +228,7 @@ export function disposeMtp({ deviceType, onSuccess, onError }, getState) {
           return;
 
         default:
-          throw `dispose mtp isn't available for mtpmode=kalam`;
+          return;
       }
     } catch (e) {
       log.error(e);

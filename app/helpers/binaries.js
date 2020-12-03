@@ -1,16 +1,14 @@
 import path from 'path';
-import { remote } from 'electron';
 import { getPlatform } from '../utils/getPlatform';
 import { IS_PROD } from '../constants/env';
 import { PATHS } from '../constants/paths';
 import { isPackaged } from '../utils/isPackaged';
 
 const { root } = PATHS;
-const { getAppPath } = remote.app;
 
 const binariesPath =
   IS_PROD && isPackaged
-    ? path.join(path.dirname(getAppPath()), '..', './Resources', './bin')
+    ? path.join(root, '..', './Resources', './bin')
     : path.join(root, './build', getPlatform(), './bin');
 
 export const mtpCliPath = path.resolve(path.join(binariesPath, './mtp-cli'));

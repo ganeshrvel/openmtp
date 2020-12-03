@@ -15,7 +15,8 @@ import { nonBootableDeviceWindow } from './helpers/createWindows';
 import { APP_TITLE } from './constants/meta';
 import { isPackaged } from './utils/isPackaged';
 import { getWindowBackgroundColor } from './helpers/windowHelper';
-import { APP_THEME_MODE_TYPE } from './enums';
+import { APP_THEME_MODE_TYPE, DEVICE_TYPE } from './enums';
+import fileExplorerController from './data/file-explorer/controllers/FileExplorerController';
 
 const isSingleInstance = app.requestSingleInstanceLock();
 const isDeviceBootable = bootTheDevice();
@@ -242,7 +243,17 @@ if (!isDeviceBootable) {
     }
   });
 
-  app.on('before-quit', () => (app.quitting = true)); // eslint-disable-line no-return-assign
+  app.on('before-quit', async () => {
+    fileExplorerController
+      .dispose({
+        deviceType: DEVICE_TYPE.mtp,
+      })
+      .catch((e) => {
+        log.error(e, `main.dev -> before-quit`);
+      });
+
+    app.quitting = true;
+  });
 
   nativeTheme.on('updated', () => {
     const setting = settingsStorage.getItems(['appThemeMode']);

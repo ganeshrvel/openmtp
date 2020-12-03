@@ -156,7 +156,11 @@ class Settings extends Component {
     );
   };
 
-  _handleenableFilesPreprocessingBeforeTransferChange = (event, value, deviceType) => {
+  _handleenableFilesPreprocessingBeforeTransferChange = (
+    event,
+    value,
+    deviceType
+  ) => {
     this._handleSetCommonSettingsChange(
       {
         key: 'enableFilesPreprocessingBeforeTransfer',

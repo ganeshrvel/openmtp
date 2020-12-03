@@ -1,4 +1,3 @@
-import { remote } from 'electron';
 import omitLodash from 'lodash/omit';
 import prefixer from '../../helpers/reducerPrefixer';
 import { settingsStorage } from '../../helpers/storageHelper';

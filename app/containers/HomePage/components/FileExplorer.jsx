@@ -40,6 +40,7 @@ import {
   setFocussedFileExplorerDeviceType,
   clearFileTransfer,
   setFileTransferProgress,
+  disposeMtp,
 } from '../actions';
 import {
   makeDirectoryLists,
@@ -224,6 +225,8 @@ class FileExplorer extends Component {
   }
 
   componentWillUnmount() {
+    const { actionCreatedDisposeMtp, deviceType } = this.props;
+
     this.deregisterAccelerators();
 
     this.mainWindowRendererProcess.webContents.removeListener(
@@ -232,6 +235,8 @@ class FileExplorer extends Component {
     );
     ipcRenderer.removeListener('isFileTransferActiveSeek', () => {});
     ipcRenderer.removeListener('isFileTransferActiveReply', () => {});
+
+    actionCreatedDisposeMtp({ deviceType });
   }
 
   registerAccelerators = () => {
@@ -2171,6 +2176,26 @@ const mapDispatchToProps = (dispatch, _) =>
       actionCreateClearFilesDrag: () => (_, __) => {
         try {
           dispatch(clearFilesDrag());
+        } catch (e) {
+          log.error(e);
+        }
+      },
+      actionCreatedDisposeMtp: ({ deviceType }) => (_, getState) => {
+        try {
+          if (deviceType === DEVICE_TYPE.local) {
+            return;
+          }
+
+          dispatch(
+            disposeMtp(
+              {
+                deviceType,
+                onError: () => {},
+                onSuccess: () => {},
+              },
+              getState
+            )
+          );
         } catch (e) {
           log.error(e);
         }
