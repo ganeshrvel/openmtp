@@ -8,7 +8,7 @@ const { root } = PATHS;
 
 const binariesPath =
   IS_PROD && isPackaged
-    ? path.join(root, '..', './Resources', './bin')
+    ? path.join(root, './Contents', './Resources', './bin')
     : path.join(root, './build', getPlatform(), './bin');
 
 export const mtpCliPath = path.resolve(path.join(binariesPath, './mtp-cli'));
