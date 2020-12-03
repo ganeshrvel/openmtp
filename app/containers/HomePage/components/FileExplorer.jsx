@@ -1981,7 +1981,7 @@ const mapDispatchToProps = (dispatch, _) =>
           // on pre process callback for file transfer
           const onPreprocess = ({ fullPath }) => {
             const bodyText1 = `Processing "${
-              springTruncate(fullPath, 75).truncatedText
+              springTruncate(fullPath, 45).truncatedText
             }"`;
 
             getCurrentWindow().setProgressBar(0);
