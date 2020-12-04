@@ -4,7 +4,7 @@
  * Base webpack config used across other specific configs
  */
 
-import path, { join } from 'path';
+import { join } from 'path';
 import webpack from 'webpack';
 import { rootPath } from 'electron-root-path';
 import { PATHS } from '../app/constants/paths';
@@ -40,11 +40,7 @@ export default {
    */
   resolve: {
     extensions: ['.js', '.jsx', '.json'],
-    alias: {
-      'react-dom': '@hot-loader/react-dom',
-      '@Log': path.resolve(__dirname, '../app/utils/log.js'),
-      '@Alerts': path.resolve(__dirname, '../app/containers/Alerts/actions.js'),
-    },
+    modules: [PATHS.nodeModules],
   },
 
   plugins: [

@@ -5,7 +5,6 @@
 import webpack from 'webpack';
 import merge from 'webpack-merge';
 import TerserPlugin from 'terser-webpack-plugin';
-import SentryWebpackPlugin from '@sentry/webpack-plugin';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import baseConfig from './config.base';
 import { PATHS } from '../app/constants/paths';
@@ -16,9 +15,7 @@ export default merge(baseConfig, {
   devtool: 'source-map',
   mode: 'production',
   target: 'electron-main',
-  entry: {
-    client: ['./app/main.dev'],
-  },
+  entry: './app/main.dev',
 
   output: {
     path: PATHS.root,
@@ -61,20 +58,6 @@ export default merge(baseConfig, {
       NODE_ENV: 'production',
       DEBUG_PROD: false,
       START_MINIMIZED: false,
-    }),
-
-    new SentryWebpackPlugin({
-      // sentry-cli configuration
-      authToken: process.env.SENTRY_AUTH_TOKEN,
-      org: 'ioganeshrvel',
-      project: 'openmtp',
-      urlPrefix: '~/app/dist',
-      validate: true,
-      configFile: '../sentry.properties',
-
-      // webpack specific configuration
-      include: '.',
-      ignore: ['node_modules', 'config.renderer.prod.babel.js'],
     }),
   ],
 

@@ -85,7 +85,7 @@ export const log = {
     }
 
     if (!isEmpty(customError)) {
-      err += `Custom ${logType}: ${customError}${EOL}`;
+      err += `Custom ${logType}: ${customError.toString()}${EOL}`;
     }
 
     let _deviceInfoStrigified = '';

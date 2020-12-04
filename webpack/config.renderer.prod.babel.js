@@ -5,7 +5,6 @@
 import path from 'path';
 import webpack from 'webpack';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
-import SentryWebpackPlugin from '@sentry/webpack-plugin';
 import OptimizeCSSAssetsPlugin from 'optimize-css-assets-webpack-plugin';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import merge from 'webpack-merge';
@@ -17,9 +16,12 @@ export default merge(baseConfig, {
   devtool: 'source-map',
   mode: 'production',
   target: 'electron-renderer',
-  entry: {
-    client: ['./app/index.js'],
-  },
+
+  entry: [
+    'core-js',
+    'regenerator-runtime/runtime',
+    path.join(PATHS.app, 'index.js'),
+  ],
 
   output: {
     path: path.join(PATHS.app, 'dist'),
@@ -42,8 +44,7 @@ export default merge(baseConfig, {
           {
             loader: 'css-loader',
             options: {
-              // publicPath: './',
-              // sourceMap: true
+              sourceMap: true,
             },
           },
         ],
@@ -54,18 +55,14 @@ export default merge(baseConfig, {
         use: [
           {
             loader: MiniCssExtractPlugin.loader,
-            options: {
-              publicPath: './',
-            },
           },
           {
             loader: 'css-loader',
             options: {
-              // publicPath: './',
               modules: {
                 localIdentName: '[name]__[local]__[hash:base64:5]',
               },
-              // sourceMap: true
+              sourceMap: true,
             },
           },
         ],
@@ -76,23 +73,18 @@ export default merge(baseConfig, {
         use: [
           {
             loader: MiniCssExtractPlugin.loader,
-            options: {
-              publicPath: './',
-            },
           },
           {
             loader: 'css-loader',
             options: {
-              // publicPath: './',
-              // sourceMap: true,
+              sourceMap: true,
               importLoaders: 1,
             },
           },
           {
             loader: 'sass-loader',
             options: {
-              // publicPath: './',
-              // sourceMap: true
+              sourceMap: true,
             },
           },
         ],
@@ -110,19 +102,17 @@ export default merge(baseConfig, {
           {
             loader: 'css-loader',
             options: {
-              // publicPath: './',
               modules: {
                 localIdentName: '[name]__[local]__[hash:base64:5]',
               },
               importLoaders: 1,
-              // sourceMap: true
+              sourceMap: true,
             },
           },
           {
             loader: 'sass-loader',
             options: {
-              // publicPath: './',
-              // sourceMap: true
+              sourceMap: true,
             },
           },
         ],
@@ -134,7 +124,7 @@ export default merge(baseConfig, {
           loader: 'url-loader',
           options: {
             publicPath: './',
-            limit: 10000, // kb
+            limit: 10000,
             mimetype: 'application/font-woff',
             name: 'fonts/[name].[hash].[ext]',
           },
@@ -215,6 +205,7 @@ export default merge(baseConfig, {
           compress: {},
         },
       }),
+
       new OptimizeCSSAssetsPlugin({
         cssProcessorOptions: {
           map: {
@@ -248,20 +239,6 @@ export default merge(baseConfig, {
       analyzerMode:
         process.env.OPEN_ANALYZER === 'true' ? 'server' : 'disabled',
       openAnalyzer: process.env.OPEN_ANALYZER === 'true',
-    }),
-
-    new SentryWebpackPlugin({
-      // sentry-cli configuration
-      authToken: process.env.SENTRY_AUTH_TOKEN,
-      org: 'ioganeshrvel',
-      project: 'openmtp',
-      urlPrefix: '~/app/dist',
-      validate: true,
-      configFile: '../sentry.properties',
-
-      // webpack specific configuration
-      include: '.',
-      ignore: ['node_modules', 'config.renderer.prod.babel.js'],
     }),
   ],
 
