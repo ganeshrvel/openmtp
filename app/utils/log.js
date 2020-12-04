@@ -1,5 +1,5 @@
 import os, { EOL } from 'os';
-import { IS_DEV } from '../constants/env';
+import { IS_DEV, RENDERER } from '../constants/env';
 import { APP_NAME, APP_VERSION } from '../constants/meta';
 import { PATHS } from '../constants/paths';
 import { appendFileAsync } from '../helpers/fileOps';
@@ -22,8 +22,19 @@ export const log = {
     }
   },
 
-  error(e, title = `Log`, logError = true, allowInProd = false) {
+  error(
+    e,
+    title = `Log`,
+    logError = true,
+    allowInProd = false,
+    reportToSentry = true
+  ) {
     let _consoleError = e;
+
+    if (RENDERER) {
+      // eslint-disable-next-line global-require
+      const { store } = require('../store/configureStore');
+    }
 
     if (isConsoleError(e)) {
       _consoleError = `Error Stack:${EOL}${JSON.stringify(e.stack)}${EOL}`;

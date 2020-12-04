@@ -122,6 +122,19 @@ security add-generic-password -a "<apple-developer-account-username>" -w <app-sp
 - Log into your [Apple App Store Connect Account](https://appstoreconnect.apple.com/agreements/# "Apple App Store Connect Account") and accept the presented terms and conditions
 - The statuses shall turn *Active*
 
+**Sentry**
+
+```shell
+npm install -g @sentry/wizard
+sentry-wizard --integration electron
+
+# Upload Debug Information
+# Everytime the electron.js version is upgraded run:
+node sentry-symbols.js
+
+sentry-cli login
+```
+
 **Packaging**
 Instructions: [https://www.electron.build/code-signing](https://www.electron.build/code-signing "https://www.electron.build/code-signing")
 
@@ -136,6 +149,7 @@ $ yarn package
 # For multiple platforms
 $ yarn package-all
 ```
+
 
 
 ### Technical Features

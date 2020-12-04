@@ -10,12 +10,15 @@ const isDebug = process.env.DEBUG_PROD === 'true';
 const config = {
   dev: {
     reportToSenty: true, //todo -> false
+    enableAnalytics: true, //todo -> false
   },
   prod: {
     reportToSenty: true,
+    enableAnalytics: true,
   },
   debug: {
     reportToSenty: true,
+    enableAnalytics: true,
   },
 };
 
@@ -34,3 +37,5 @@ module.exports.IS_DEV = isDev;
 module.exports.IS_PROD = isProd;
 
 module.exports.DEBUG_PROD = isDebug;
+
+module.exports.RENDERER = process && process.type === 'renderer';

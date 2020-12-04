@@ -5,6 +5,7 @@
 import path from 'path';
 import webpack from 'webpack';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import SentryWebpackPlugin from '@sentry/webpack-plugin';
 import OptimizeCSSAssetsPlugin from 'optimize-css-assets-webpack-plugin';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import merge from 'webpack-merge';
@@ -247,6 +248,17 @@ export default merge(baseConfig, {
       analyzerMode:
         process.env.OPEN_ANALYZER === 'true' ? 'server' : 'disabled',
       openAnalyzer: process.env.OPEN_ANALYZER === 'true',
+    }),
+
+    new SentryWebpackPlugin({
+      // sentry-cli configuration
+      authToken: process.env.SENTRY_AUTH_TOKEN,
+      org: 'ioganeshrvel',
+      project: 'openmtp',
+
+      // webpack specific configuration
+      include: '.',
+      ignore: ['node_modules', 'config.renderer.prod.babel.js'],
     }),
   ],
 
