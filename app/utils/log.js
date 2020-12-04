@@ -4,6 +4,9 @@ import { APP_NAME, APP_VERSION } from '../constants/meta';
 import { PATHS } from '../constants/paths';
 import { appendFileAsync } from '../helpers/fileOps';
 import { dateTimeUnixTimestampNow } from './date';
+import { isEmpty } from './funcs';
+import { sentryService } from '../services/sentry';
+import { getDeviceInfo } from '../helpers/deviceInfo';
 
 const { logFile } = PATHS;
 
@@ -22,20 +25,16 @@ export const log = {
     }
   },
 
-  error(
-    e,
-    title = `Log`,
-    logError = true,
-    allowInProd = false,
-    reportToSentry = true
-  ) {
+  /**
+   *
+   * @param e - error
+   * @param title - Title
+   * @param logError - should log the error to the log file
+   * @param allowInProd - display the error in production
+   * @param report - should report the error to crashanalytics services
+   */
+  error(e, title = `Log`, logError = true, allowInProd = false, report = true) {
     let _consoleError = e;
-
-    if (RENDERER) {
-      // import it here so that the main process doesnt crash
-      // eslint-disable-next-line global-require
-      const { store } = require('../store/configureStore');
-    }
 
     if (isConsoleError(e)) {
       _consoleError = `Error Stack:${EOL}${JSON.stringify(e.stack)}${EOL}`;
@@ -43,7 +42,8 @@ export const log = {
 
     this.doLog(
       `Error title: ${title}${EOL}Error body: ${EOL}${_consoleError.toString()}${EOL}`,
-      logError
+      logError,
+      report
     );
 
     if (allowInProd) {
@@ -57,7 +57,14 @@ export const log = {
     }
   },
 
-  doLog(e, logError = true, consoleError = null) {
+  /**
+   *
+   * @param e - error
+   * @param logError - should log the error to the log file
+   * @param consoleError - console error to extract the stacktrace out of it
+   * @param report - should report the error to crashanalytics services
+   */
+  doLog(e, logError = true, consoleError = null, report = true) {
     if (logError === false) {
       return null;
     }
@@ -75,14 +82,30 @@ export const log = {
       )}${EOL}`;
     }
 
-    appendFileAsync(
-      logFile,
-      `${sectionSeperator}${EOL}${EOL}App Name: ${APP_NAME}${EOL}App Version: ${APP_VERSION}${EOL}Date Time: ${dateTimeUnixTimestampNow(
-        {
-          monthInletters: true,
-        }
-      )}${EOL}OS type: ${os.type()} / OS Platform: ${os.platform()} / OS Release: ${os.release()}${EOL}${_consoleError.toString()}${EOL}${_consoleError}${EOL}${sectionSeperator}${EOL}`
-    );
+    let _deviceInfoStrigified = '';
+    const deviceInfo = getDeviceInfo();
+
+    Object.keys(getDeviceInfo()).forEach((a) => {
+      const item = deviceInfo[a];
+
+      _deviceInfoStrigified += `${a}: ${item}${EOL}`;
+    });
+
+    const _date = `Date Time: ${dateTimeUnixTimestampNow({
+      monthInletters: true,
+    })}`;
+
+    const _appInfo = `${EOL}App Name: ${APP_NAME}${EOL}App Version: ${APP_VERSION}`;
+    const _osInfo = `OS type: ${os.type()} / OS Platform: ${os.platform()} / OS Release: ${os.release()}`;
+
+    const _error = `${sectionSeperator}${EOL}${_appInfo}${EOL}${_date}${EOL}${_osInfo}${EOL}${_deviceInfoStrigified}Error stringified: ${_consoleError.toString()}${EOL}Error: ${_consoleError}${EOL}${sectionSeperator}${EOL}`;
+
+    appendFileAsync(logFile, _error);
+
+    //todo
+    // if (report) {
+    //   sentryService.report({ error: _error });
+    // }
   },
 };
 

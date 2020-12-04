@@ -98,7 +98,7 @@ export class FileExplorerKalamDataSource {
 
     console.log('todo -====');
     //todo removd
-    log.error('some error');
+    log.doLog('some error');
 
     try {
       return this.kalamFfi.walk({
