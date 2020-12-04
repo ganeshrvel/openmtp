@@ -3,7 +3,6 @@ import { remote } from 'electron';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import { EOL } from 'os';
 import { styles } from './styles';
 import { imgsrc } from '../../utils/imgsrc';
 import GenerateErrorReport from './components/GenerateErrorReport';
@@ -22,8 +21,13 @@ class ErrorBoundary extends Component {
       errorInfo,
     });
 
-    log.doLog(error, `ErrorBoundary.componentDidCatch.error`, true);
-    log.doLog(errorInfo, `ErrorBoundary.componentDidCatch.errorInfo`, true);
+    log.doLog(error, `ErrorBoundary.componentDidCatch.error`, null, true);
+    log.doLog(
+      errorInfo,
+      `ErrorBoundary.componentDidCatch.errorInfo`,
+      null,
+      true
+    );
   }
 
   _handleReload = () => {
