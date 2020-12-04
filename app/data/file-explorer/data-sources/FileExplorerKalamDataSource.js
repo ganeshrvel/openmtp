@@ -96,10 +96,6 @@ export class FileExplorerKalamDataSource {
     checkIf(ignoreHidden, 'boolean');
     checkIf(storageId, 'number');
 
-    console.log('todo -====');
-    //todo removd
-    log.doLog('some error');
-
     try {
       return this.kalamFfi.walk({
         fullPath: filePath,
@@ -299,16 +295,16 @@ export class FileExplorerKalamDataSource {
    * @return
    */
   async transferFiles({
-                        deviceType,
-                        destination,
-                        fileList,
-                        direction,
-                        storageId,
-                        onError,
-                        onPreprocess,
-                        onProgress,
-                        onCompleted,
-                      }) {
+    deviceType,
+    destination,
+    fileList,
+    direction,
+    storageId,
+    onError,
+    onPreprocess,
+    onProgress,
+    onCompleted,
+  }) {
     checkIf(deviceType, 'string');
     checkIf(direction, 'string');
     checkIf(fileList, 'array');
@@ -349,15 +345,15 @@ export class FileExplorerKalamDataSource {
         sources: fileList,
         onPreprocess,
         onProgress: ({
-                       fullPath,
-                       elapsedTime,
-                       speed,
-                       totalFiles,
-                       filesSent,
-                       filesSentProgress,
-                       activeFileSize,
-                       bulkFileSize,
-                     }) => {
+          fullPath,
+          elapsedTime,
+          speed,
+          totalFiles,
+          filesSent,
+          filesSentProgress,
+          activeFileSize,
+          bulkFileSize,
+        }) => {
           onProgress({
             currentFile: fullPath,
             elapsedTime: msToTime(elapsedTime),

@@ -32,6 +32,7 @@ class GoogleAnalytics {
   }
 
   async run() {
+    // this is a hashed value (sha-256)
     const _machineId = await machineId();
 
     const analytics = new Analytics(TRACKING_ID, {

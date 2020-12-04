@@ -1,10 +1,9 @@
 import os, { EOL } from 'os';
-import { IS_DEV, RENDERER } from '../constants/env';
+import { IS_DEV } from '../constants/env';
 import { APP_NAME, APP_VERSION } from '../constants/meta';
 import { PATHS } from '../constants/paths';
 import { appendFileAsync } from '../helpers/fileOps';
 import { dateTimeUnixTimestampNow } from './date';
-import { isEmpty } from './funcs';
 import { sentryService } from '../services/sentry';
 import { getDeviceInfo } from '../helpers/deviceInfo';
 
@@ -102,10 +101,15 @@ export const log = {
 
     appendFileAsync(logFile, _error);
 
-    //todo
-    // if (report) {
-    //   sentryService.report({ error: _error });
-    // }
+    if (report) {
+      let _err = e;
+
+      if (e && !isConsoleError(e)) {
+        _err = new Error(e);
+      }
+
+      sentryService.report({ error: _err });
+    }
   },
 };
 

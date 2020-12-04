@@ -1,30 +1,48 @@
-import { init, configureScope } from '@sentry/electron';
+import * as Sentry from '@sentry/electron';
+import { machineId } from 'node-machine-id';
 import { ENV_FLAVOR } from '../../constants/env';
 import { SERVICE_KEYS } from '../../constants/serviceKeys';
+import { getDeviceInfo } from '../../helpers/deviceInfo';
 
-class Sentry {
+class SentryService {
   constructor() {
-    if (!ENV_FLAVOR.reportToSenty) {
-      return;
-    }
-
-    init({
+    Sentry.init({
       dsn: SERVICE_KEYS.sentryDsn,
+      // disabled native crash reporting to respect user's privacy
       enableNative: false,
     });
   }
 
-  init() {
-    //const _machineId = await machineId();
-    //todo fix
-    configureScope((scope) => {
-      scope.setExtra('battery', 0.7);
-      scope.setTag('user_mode', 'admin');
-      scope.setUser({ id: '4711' });
+  async report({ error }) {
+    if (!ENV_FLAVOR.reportToSenty) {
+      return;
+    }
+
+    const _machineId = await machineId();
+
+    const {
+      StandardVersion,
+      MTPVersion,
+      MTPExtension,
+      Manufacturer,
+      Model,
+      DeviceVersion,
+    } = getDeviceInfo();
+
+    Sentry.configureScope((scope) => {
+      scope.setExtra('Model', Model);
+      scope.setExtra('DeviceVersion', DeviceVersion);
+      scope.setExtra('Manufacturer', Manufacturer);
+      scope.setExtra('MTPExtension', MTPExtension);
+      scope.setExtra('MTPVersion', MTPVersion);
+      scope.setExtra('StandardVersion', StandardVersion);
+
+      // this is a hashed value (sha-256)
+      scope.setUser({ id: _machineId });
+
+      Sentry.captureException(error);
     });
   }
 }
 
-export const sentryService = new Sentry();
-
-sentryService.init();
+export const sentryService = new SentryService();
