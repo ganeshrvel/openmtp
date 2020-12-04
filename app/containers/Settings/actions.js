@@ -1,4 +1,5 @@
 import omitLodash from 'lodash/omit';
+import { disposeMtp, initializeMtp } from '../HomePage/actions';
 import prefixer from '../../helpers/reducerPrefixer';
 import { settingsStorage } from '../../helpers/storageHelper';
 import { initialState } from './reducers';
@@ -97,10 +98,6 @@ export function selectMtpMode({ value }, deviceType, getState) {
   checkIf(getState, 'function');
   checkIf(hideHiddenFiles, 'object');
   checkIf(mtpMode, 'string');
-
-  // use require to import 'HomePage/actions' else the app will crash
-  // eslint-disable-next-line global-require
-  const { disposeMtp, initializeMtp } = require('../HomePage/actions');
 
   return async (dispatch) => {
     // dont proceed if the mtp wasn't changed
