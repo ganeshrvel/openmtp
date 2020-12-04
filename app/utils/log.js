@@ -11,8 +11,14 @@ import { isEmpty } from './funcs';
 const { logFile } = PATHS;
 
 export const log = {
-  info(e, title = `Log`, logError = false, allowInProd = false) {
-    this.doLog(`Info title: ${title}${EOL}Info body: ${e}${EOL}`, logError);
+  info(
+    e,
+    title = `Log`,
+    logError = false,
+    allowInProd = false,
+    report = false
+  ) {
+    this.doLog(e, title, null, logError, report, false);
 
     if (allowInProd) {
       console.info(`${title} => `, e);
@@ -34,17 +40,7 @@ export const log = {
    * @param report - should report the error to crashanalytics services
    */
   error(e, title = `Log`, logError = true, allowInProd = false, report = true) {
-    let _consoleError = e;
-
-    if (isConsoleError(e)) {
-      _consoleError = `Error Stack:${EOL}${JSON.stringify(e.stack)}${EOL}`;
-    }
-
-    this.doLog(
-      `Error title: ${title}${EOL}Error body: ${EOL}${_consoleError.toString()}${EOL}`,
-      logError,
-      report
-    );
+    this.doLog(e, title, null, logError, report, true);
 
     if (allowInProd) {
       console.error(`${title} => `, e);
@@ -59,27 +55,37 @@ export const log = {
 
   /**
    *
-   * @param e - error
-   * @param logError - should log the error to the log file
-   * @param consoleError - console error to extract the stacktrace out of it
-   * @param report - should report the error to crashanalytics services
+   * @param {any} e - error
+   * @param {boolean} logError - should log the error to the log file
+   * @param {string|null}  customError
+   * @param {any} report - should report the error to crashanalytics services
+   * @param {string|null} title
+   * @param {boolean} isError - is an error or info
    */
-  doLog(e, logError = true, consoleError = null, report = true) {
+  doLog(
+    e,
+    title = null,
+    customError = null,
+    logError = true,
+    report = true,
+    isError = true
+  ) {
+    const sectionSeperator = `=============================================================`;
+
     if (logError === false) {
       return null;
     }
 
-    const sectionSeperator = `=============================================================`;
-    let _consoleError = e;
+    const logType = isError ? `Error` : `Info`;
+    let err = `${logType} title: ${title}${EOL}${logType} body: ${EOL}${e.toString()}${EOL}`;
 
+    // if [e] is an Instance of Error then stringify it
     if (isConsoleError(e)) {
-      _consoleError = `Error Stack:${EOL}${JSON.stringify(e.stack)}${EOL}`;
+      err += `${logType} Stacktrace: ${EOL}${JSON.stringify(e.stack)}${EOL}`;
     }
 
-    if (isConsoleError(consoleError)) {
-      _consoleError += `Error Stack:${EOL}${JSON.stringify(
-        consoleError.stack
-      )}${EOL}`;
+    if (!isEmpty(customError)) {
+      err += `Custom ${logType}: ${customError}${EOL}`;
     }
 
     let _deviceInfoStrigified = '';
@@ -96,22 +102,20 @@ export const log = {
     const _date = `Date Time: ${dateTimeUnixTimestampNow({
       monthInletters: true,
     })}`;
-
     const _appInfo = `${EOL}App Name: ${APP_NAME}${EOL}App Version: ${APP_VERSION}`;
     const _osInfo = `OS type: ${os.type()} / OS Platform: ${os.platform()} / OS Release: ${os.release()}`;
-
-    const _error = `${sectionSeperator}${EOL}${_appInfo}${EOL}${_date}${EOL}${_osInfo}${EOL}${_deviceInfoStrigified}Error stringified: ${_consoleError.toString()}${EOL}Error: ${_consoleError}${EOL}${sectionSeperator}${EOL}`;
+    const _error = `${sectionSeperator}${EOL}${_appInfo}${EOL}${_date}${EOL}${_osInfo}${EOL}${_deviceInfoStrigified}${logType}: ${err}${EOL}${sectionSeperator}${EOL}`;
 
     appendFileAsync(logFile, _error);
 
     if (report) {
-      let _err = e;
+      let errorToReport = e;
 
       if (e && !isConsoleError(e)) {
-        _err = new Error(e);
+        errorToReport = new Error(e);
       }
 
-      sentryService.report({ error: _err });
+      sentryService.report({ error: errorToReport, title });
     }
   },
 };

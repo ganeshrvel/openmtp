@@ -3,6 +3,7 @@ import { throwAlert } from '../Alerts/actions';
 import {
   processMtpBuffer,
   processLocalBuffer,
+  isNoMtpError,
 } from '../../helpers/processBufferOutput';
 import { isArraysEqual, isEmpty, undefinedOrNull } from '../../utils/funcs';
 import { DEVICE_TYPE, MTP_MODE } from '../../enums';
@@ -545,9 +546,17 @@ export function churnMtpBuffer({
       }
 
       if (mtpError) {
-        log.error(mtpError, 'churnMtpBuffer.mtpError', mtpLogError);
-        log.error(error, 'churnMtpBuffer.error');
-        log.error(stderr, 'churnMtpBuffer.stderr');
+        log.error(
+          mtpError,
+          'churnMtpBuffer.mtpError',
+          mtpLogError,
+          true,
+          true,
+          false
+        );
+        log.error(error, 'churnMtpBuffer.error', true, true, false);
+        log.error(stderr, 'churnMtpBuffer.stderr', true, true, false);
+
         if (mtpThrowAlert) {
           dispatch(throwAlert({ message: mtpError.toString() }));
         }
@@ -642,6 +651,11 @@ export function listDirectory(
       case DEVICE_TYPE.mtp:
         return async (dispatch) => {
           const storageId = getSelectedStorageIdFromState(getState().Home);
+
+          if (undefinedOrNull(storageId)) {
+            return;
+          }
+
           const {
             error,
             stderr,

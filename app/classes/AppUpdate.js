@@ -112,9 +112,6 @@ export default class AppUpdate {
       }
 
       this.autoUpdater.on('error', (error) => {
-        const errorMsg =
-          error == null ? 'unknown' : (error.stack || error).toString();
-
         if (progressbarWindow !== null) {
           progressbarWindow.close();
         }
@@ -127,7 +124,8 @@ export default class AppUpdate {
             'Oops.. A network error occured. Try again!',
             'error'
           );
-          log.doLog(error);
+
+          log.doLog(error, `AppUpdate -> onerror -> isNetworkError`);
 
           return null;
         }
@@ -138,7 +136,7 @@ export default class AppUpdate {
           'error'
         );
 
-        log.error(errorMsg, `AppUpdate -> onerror`);
+        log.error(error, `AppUpdate -> onerror`);
       });
 
       this.autoUpdater.on('update-available', (info) => {

@@ -14,7 +14,7 @@ class SentryService {
     });
   }
 
-  async report({ error }) {
+  async report({ error, title }) {
     if (!ENV_FLAVOR.reportToSenty) {
       return;
     }
@@ -30,6 +30,10 @@ class SentryService {
 
           scope.setExtra(a, item);
         });
+      }
+
+      if (!isEmpty(title)) {
+        scope.setExtra('error title', title);
       }
 
       // this is a hashed value (sha-256)

@@ -831,13 +831,16 @@ export class FileExplorerLegacyDataSource {
       );
 
       if (error) {
-        log.doLog(`${error}`);
+        log.doLog(error, `FileExplorerLegacyDataSource.fetchDebugReport.error`);
 
         return { error, stderr, data: null };
       }
 
       if (stderr) {
-        log.doLog(`${stderr}`);
+        log.doLog(
+          stderr,
+          `FileExplorerLegacyDataSource.fetchDebugReport.stderr`
+        );
 
         return { error, stderr, data: null };
       }

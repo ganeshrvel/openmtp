@@ -21,13 +21,9 @@ class ErrorBoundary extends Component {
     this.setState({
       errorInfo,
     });
-    const _errorInfo = JSON.stringify(errorInfo);
 
-    log.doLog(
-      `Error boundary log capture:${EOL}${error.toString()}${EOL}${_errorInfo}`,
-      true,
-      error
-    );
+    log.doLog(error, `ErrorBoundary.componentDidCatch.error`, true);
+    log.doLog(errorInfo, `ErrorBoundary.componentDidCatch.errorInfo`, true);
   }
 
   _handleReload = () => {

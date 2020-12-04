@@ -9,6 +9,26 @@ import { DEVICE_TYPE, MTP_MODE } from '../enums';
 import { checkIf } from '../utils/checkIf';
 import { MTP_ERROR } from '../enums/mtpError';
 
+/**
+ * Will return true if the error is a mtp detect error.
+ *
+ * @param {string} error
+ * @param {string} stderr
+ * @param {'kalam'|'legacy'} mtpMode
+ */
+export function isNoMtpError({ error, stderr, mtpMode }) {
+  checkIf(mtpMode, 'inObjectValues', MTP_MODE);
+
+  if (mtpMode === MTP_MODE.legacy) {
+    return (
+      stderr.toLowerCase().indexOf('no mtp') !== -1 ||
+      error.toLowerCase().indexOf('no mtp') !== -1
+    );
+  }
+
+  return stderr === MTP_ERROR.ErrorMtpDetectFailed;
+}
+
 export const processMtpBuffer = async ({ error, stderr, mtpMode }) => {
   checkIf(mtpMode, 'string');
 
@@ -66,7 +86,7 @@ export const processKalamMtpBuffer = async ({ error, stderr }) => {
   };
 
   const googleAndroidFileTransferIsActive = `Quit 'Android File Transfer' app (by Google) and reload.`;
-  const noMtpError = stderr === MTP_ERROR.ErrorMtpDetectFailed;
+  const noMtpError = isNoMtpError({ error, stderr, mtpMode: MTP_MODE.kalam });
 
   let processedErrorValue = null;
 
@@ -75,16 +95,23 @@ export const processKalamMtpBuffer = async ({ error, stderr }) => {
   }
 
   if (stderr || error) {
-    log.doLog(
-      `MTP buffer o/p logging;${EOL}MTP Mode: ${
-        MTP_MODE.kalam
-      }${EOL}Raw error: ${(
-        error ?? ''
-      ).toString()}${EOL}Processed error: ${processedErrorValue}${EOL}Error type: ${
-        stderr ?? ''
-      }`,
-      !noMtpError
-    );
+    // do not report no mtp error
+    if (!noMtpError) {
+      log.doLog(
+        `MTP buffer o/p logging;${EOL}MTP Mode: ${
+          MTP_MODE.kalam
+        }${EOL}Raw error: ${(
+          error ?? ''
+        ).toString()}${EOL}Processed error: ${processedErrorValue}${EOL}Error type: ${
+          stderr ?? ''
+        }`,
+        'processKalamMtpBuffer',
+        null,
+        true,
+        // do not report 'device changed' error
+        stderr !== MTP_ERROR.ErrorDeviceChanged
+      );
+    }
   }
 
   switch (stderr) {
@@ -328,14 +355,16 @@ export const processLegacyMtpBuffer = async ({ error, stderr }) => {
     );
   };
 
-  const noMtpError = checkError('noMtp');
+  const noMtpError = isNoMtpError({ error, stderr, mtpMode: MTP_MODE.legacy });
 
-  log.doLog(
-    `MTP buffer o/p logging;${EOL}MTP Mode: ${
-      MTP_MODE.legacy
-    }${EOL}error: ${errorStringified.trim()}${EOL}stderr: ${stderrStringified.trim()}`,
-    !noMtpError
-  );
+  if (!noMtpError) {
+    log.doLog(
+      `MTP buffer o/p logging;${EOL}MTP Mode: ${
+        MTP_MODE.legacy
+      }${EOL}error: ${errorStringified.trim()}${EOL}stderr: ${stderrStringified.trim()}`,
+      'processLegacyMtpBuffer'
+    );
+  }
 
   if (
     /* No MTP device found */
@@ -537,7 +566,8 @@ export const processLocalBuffer = ({ error, stderr }) => {
   };
 
   log.doLog(
-    `Local buffer o/p logging;${EOL}error: ${errorStringified.trim()}${EOL}stderr: ${stderrStringified.trim()}`
+    `Local buffer o/p logging;${EOL}error: ${errorStringified.trim()}${EOL}stderr: ${stderrStringified.trim()}`,
+    'processLocalBuffer'
   );
 
   if (
