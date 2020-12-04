@@ -6,6 +6,7 @@ import { appendFileAsync } from '../helpers/fileOps';
 import { dateTimeUnixTimestampNow } from './date';
 import { sentryService } from '../services/sentry';
 import { getDeviceInfo } from '../helpers/deviceInfo';
+import { isEmpty } from './funcs';
 
 const { logFile } = PATHS;
 
@@ -84,11 +85,13 @@ export const log = {
     let _deviceInfoStrigified = '';
     const deviceInfo = getDeviceInfo();
 
-    Object.keys(getDeviceInfo()).forEach((a) => {
-      const item = deviceInfo[a];
+    if (!isEmpty(deviceInfo)) {
+      Object.keys(deviceInfo).forEach((a) => {
+        const item = deviceInfo[a];
 
-      _deviceInfoStrigified += `${a}: ${item}${EOL}`;
-    });
+        _deviceInfoStrigified += `${a}: ${item}${EOL}`;
+      });
+    }
 
     const _date = `Date Time: ${dateTimeUnixTimestampNow({
       monthInletters: true,

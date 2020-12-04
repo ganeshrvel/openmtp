@@ -9,13 +9,13 @@ export function getDeviceInfo() {
     const state = store?.getState();
 
     if (isEmpty(state)) {
-      return;
+      return {};
     }
 
     const info = state?.Home?.mtpDevice?.info;
 
     if (isEmpty(info)) {
-      return;
+      return {};
     }
 
     const {

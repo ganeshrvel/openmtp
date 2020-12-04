@@ -3,6 +3,7 @@ import { machineId } from 'node-machine-id';
 import { ENV_FLAVOR } from '../../constants/env';
 import { SERVICE_KEYS } from '../../constants/serviceKeys';
 import { getDeviceInfo } from '../../helpers/deviceInfo';
+import { isEmpty } from '../../utils/funcs';
 
 class SentryService {
   constructor() {
@@ -20,22 +21,16 @@ class SentryService {
 
     const _machineId = await machineId();
 
-    const {
-      StandardVersion,
-      MTPVersion,
-      MTPExtension,
-      Manufacturer,
-      Model,
-      DeviceVersion,
-    } = getDeviceInfo();
+    const deviceInfo = getDeviceInfo();
 
     Sentry.configureScope((scope) => {
-      scope.setExtra('Model', Model);
-      scope.setExtra('DeviceVersion', DeviceVersion);
-      scope.setExtra('Manufacturer', Manufacturer);
-      scope.setExtra('MTPExtension', MTPExtension);
-      scope.setExtra('MTPVersion', MTPVersion);
-      scope.setExtra('StandardVersion', StandardVersion);
+      if (!isEmpty(deviceInfo)) {
+        Object.keys(deviceInfo).forEach((a) => {
+          const item = deviceInfo[a];
+
+          scope.setExtra(a, item);
+        });
+      }
 
       // this is a hashed value (sha-256)
       scope.setUser({ id: _machineId });
