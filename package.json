@@ -163,6 +163,7 @@
     "@fortawesome/react-fontawesome": "^0.1.12",
     "@material-ui/core": "^4.7.2",
     "@material-ui/icons": "^4.5.1",
+    "@sentry/electron": "^2.0.4",
     "@sindresorhus/is": "^4.0.0",
     "bluebird": "^3.7.2",
     "classnames": "^2.2.6",
