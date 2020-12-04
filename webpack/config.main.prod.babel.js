@@ -68,10 +68,13 @@ export default merge(baseConfig, {
       authToken: process.env.SENTRY_AUTH_TOKEN,
       org: 'ioganeshrvel',
       project: 'openmtp',
+      urlPrefix: '~/app/dist',
+      validate: true,
+      configFile: '../sentry.properties',
 
       // webpack specific configuration
       include: '.',
-      ignore: ['node_modules', 'config.main.prod.babel.js'],
+      ignore: ['node_modules', 'config.renderer.prod.babel.js'],
     }),
   ],
 

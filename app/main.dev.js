@@ -1,5 +1,7 @@
 /* eslint global-require: off */
 
+import './services/sentry/index';
+
 import { app, BrowserWindow, ipcMain, nativeTheme } from 'electron';
 import electronIs from 'electron-is';
 import MenuBuilder from './menu';
@@ -17,7 +19,6 @@ import { isPackaged } from './utils/isPackaged';
 import { getWindowBackgroundColor } from './helpers/windowHelper';
 import { APP_THEME_MODE_TYPE, DEVICE_TYPE } from './enums';
 import fileExplorerController from './data/file-explorer/controllers/FileExplorerController';
-import './services/sentry/report';
 
 const isSingleInstance = app.requestSingleInstanceLock();
 const isDeviceBootable = bootTheDevice();

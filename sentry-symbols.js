@@ -42,6 +42,7 @@ async function main() {
     arch: 'x64',
     dsym: true,
   });
+
   await sentryCli.execute(['upload-dif', '-t', 'dsym', zipPath], true);
 
   zipPath = await downloadSymbols({
