@@ -32,6 +32,7 @@ export const log = {
     let _consoleError = e;
 
     if (RENDERER) {
+      // import it here so that the main process doesnt crash
       // eslint-disable-next-line global-require
       const { store } = require('../store/configureStore');
     }

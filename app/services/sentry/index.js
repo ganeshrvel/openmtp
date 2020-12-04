@@ -9,7 +9,7 @@ if (ENV_FLAVOR.reportToSenty) {
   });
 
   //const _machineId = await machineId();
-
+  //todo fix
   configureScope((scope) => {
     scope.setExtra('battery', 0.7);
     scope.setTag('user_mode', 'admin');

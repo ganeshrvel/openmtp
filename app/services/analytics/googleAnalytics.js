@@ -7,11 +7,6 @@ import { ENV_FLAVOR } from '../../constants/env';
 import { isConnected } from '../../utils/isOnline';
 import { log } from '../../utils/log';
 
-export const analytics = new Analytics(TRACKING_ID, {
-  appName: APP_NAME,
-  appVersion: APP_VERSION,
-});
-
 class GoogleAnalytics {
   init() {
     const isAnalyticsEnabledSettings = settingsStorage.getItems([
