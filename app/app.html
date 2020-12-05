@@ -6,6 +6,10 @@
   <title>OpenMTP | Android File Transfer for macOS</title>
   <script>
     (function() {
+      if (typeof process.env.NODE_ENV === "undefined") {
+        process.env.NODE_ENV = "production";
+      }
+
       if (!process.env.HOT) {
         const link = document.createElement("link");
         link.rel = "stylesheet";
