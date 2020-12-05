@@ -6,7 +6,7 @@
   "scripts": {
     "build": "yarn lint && concurrently \"yarn build-main\" \"yarn build-renderer\"",
     "build-no-verify": "concurrently \"yarn build-main\" \"yarn build-renderer\"",
-    "build-dll": "cross-env NODE_ENV=development webpack --config ./webpack/conf ig.renderer.dev.dll.babel.js --color",
+    "build-dll": "cross-env NODE_ENV=development webpack --config ./webpack/config.renderer.dev.dll.babel.js --color",
     "build-main": "cross-env NODE_ENV=production webpack --config ./webpack/config.main.prod.babel.js --color",
     "build-renderer": "cross-env NODE_ENV=production webpack --config ./webpack/config.renderer.prod.babel.js --color",
     "dev": "cross-env NODE_ENV=development START_HOT=1 node -r @babel/register ./internals/scripts/CheckPortInUse.js && cross-env START_HOT=1 yarn start-renderer-dev",

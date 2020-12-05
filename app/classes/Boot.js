@@ -109,7 +109,7 @@ export default class Boot {
 
   async createDir(newFolderPath) {
     try {
-      createDirSync(newFolderPath);
+      await createDirSync(newFolderPath);
     } catch (e) {
       console.error(e);
     }

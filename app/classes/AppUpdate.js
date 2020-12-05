@@ -11,6 +11,7 @@ import {
   getWindowBackgroundColor,
 } from '../helpers/windowHelper';
 import { appUpdateAvailableWindow } from '../helpers/createWindows';
+import { UPDATER_STATUS } from '../enums/appUpdater';
 
 let progressbarWindow = null;
 let isFileTransferActiveFlag = false;
@@ -89,10 +90,10 @@ export default class AppUpdate {
       this.autoUpdater.updateConfigPath = PATHS.appUpdateFile;
     }
 
-    this.autoUpdater.autoDownload = autoDownload;
+    this.autoUpdater.autoDownload = autoUpdateCheck && autoDownload;
     this.autoUpdater.allowPrerelease = allowPrerelease;
-
     this.autoUpdateCheck = autoUpdateCheck;
+
     this.progressbarWindowDomReadyFlag = null;
     this.updateInitFlag = false;
     this.updateForceCheckFlag = false;
@@ -101,7 +102,8 @@ export default class AppUpdate {
       title: null,
       message: null,
     };
-    this.updateIsActive = 0; // 0 = no, 1 = update check in progress, -1 = update in progress
+
+    this.updateStatus = UPDATER_STATUS.inactive;
     this.disableAutoUpdateCheck = false;
   }
 
@@ -140,7 +142,10 @@ export default class AppUpdate {
       });
 
       this.autoUpdater.on('update-available', (info) => {
-        if (progressbarWindow !== null && this.updateIsActive !== -1) {
+        if (
+          progressbarWindow !== null &&
+          this.updateStatus !== UPDATER_STATUS.updateInProgress
+        ) {
           progressbarWindow.close();
         }
 
@@ -154,7 +159,7 @@ export default class AppUpdate {
         const _appUpdateAvailableWindow = appUpdateAvailableWindow();
 
         _appUpdateAvailableWindow.on('close', () => {
-          if (this.updateIsActive !== -1) {
+          if (this.updateStatus !== UPDATER_STATUS.updateInProgress) {
             this.closeActiveUpdates();
           }
         });
@@ -170,7 +175,7 @@ export default class AppUpdate {
           const { confirm } = args;
 
           if (!confirm) {
-            if (this.updateIsActive !== -1) {
+            if (this.updateStatus !== UPDATER_STATUS.updateInProgress) {
               this.closeActiveUpdates();
             }
 
@@ -195,27 +200,24 @@ export default class AppUpdate {
         this.setUpdateProgressWindow({ value: progress.percent || 0 });
       });
 
-      this.autoUpdater.on('update-downloaded', () => {
+      this.autoUpdater.on('update-downloaded', async () => {
         this.closeActiveUpdates();
         if (progressbarWindow !== null) {
           progressbarWindow.close();
         }
 
-        dialog.showMessageBox(
-          {
-            title: 'Install Updates',
-            message: 'Updates downloaded. Application will quit now...',
-            buttons: ['Install and Relaunch'],
-          },
-          (buttonIndex) => {
-            switch (buttonIndex) {
-              case 0:
-              default:
-                this.autoUpdater.quitAndInstall();
-                break;
-            }
-          }
-        );
+        const { response: buttonIndex } = await dialog.showMessageBox({
+          title: 'Install Updates',
+          message: 'Updates downloaded. Application will quit now...',
+          buttons: ['Install and Relaunch'],
+        });
+
+        switch (buttonIndex) {
+          case 0:
+          default:
+            this.autoUpdater.quitAndInstall();
+            break;
+        }
       });
 
       this.updateInitFlag = true;
@@ -238,16 +240,20 @@ export default class AppUpdate {
             return null;
           }
 
-          if (this.updateIsActive === 1 || this.disableAutoUpdateCheck) {
+          if (
+            this.updateStatus === UPDATER_STATUS.checkInProgress ||
+            this.disableAutoUpdateCheck
+          ) {
             return null;
           }
 
           this.autoUpdater.on('update-not-available', () => {
-            this.updateIsActive = 0;
+            this.updateStatus = UPDATER_STATUS.inactive;
           });
 
           this.autoUpdater.checkForUpdates();
-          this.updateIsActive = 1;
+
+          this.updateStatus = UPDATER_STATUS.checkInProgress;
 
           return true;
         })
@@ -257,7 +263,7 @@ export default class AppUpdate {
     }
   }
 
-  forceCheck() {
+  async forceCheck() {
     try {
       this.setMainWindow();
 
@@ -265,12 +271,15 @@ export default class AppUpdate {
         return;
       }
 
-      if (!this.updateForceCheckFlag && this.updateIsActive !== 1) {
+      if (
+        !this.updateForceCheckFlag &&
+        this.updateStatus !== UPDATER_STATUS.checkInProgress
+      ) {
         this.autoUpdater.on('checking-for-update', () => {
           this.setCheckUpdatesProgress();
         });
 
-        this.autoUpdater.on('update-not-available', () => {
+        this.autoUpdater.on('update-not-available', async () => {
           // an another 'update-not-available' event is registered at checkForUpdates() as well
           this.closeActiveUpdates();
 
@@ -278,47 +287,41 @@ export default class AppUpdate {
             progressbarWindow.close();
           }
 
-          dialog.showMessageBox(
-            {
-              title: 'No Updates Found',
-              message: 'You have the latest version installed.',
-              buttons: ['Close'],
-            },
-            (buttonIndex) => {
-              switch (buttonIndex) {
-                case 0:
-                default:
-                  break;
-              }
-            }
-          );
+          const { response: buttonIndex } = await dialog.showMessageBox({
+            title: 'No Updates Found',
+            message: 'You have the latest version installed.',
+            buttons: ['Close'],
+          });
+
+          switch (buttonIndex) {
+            case 0:
+            default:
+              break;
+          }
         });
       }
 
-      if (this.updateIsActive === 1) {
+      if (this.updateStatus === UPDATER_STATUS.checkInProgress) {
         return null;
       }
 
-      if (this.updateIsActive === -1) {
-        dialog.showMessageBox(
-          {
-            title: 'Update in progress',
-            message:
-              'Another update is in progess. Are you sure want to restart the update?',
-            buttons: ['No', 'Yes'],
-          },
-          (buttonIndex) => {
-            switch (buttonIndex) {
-              case 0:
-              default:
-                break;
-              case 1:
-                this.autoUpdater.checkForUpdates();
-                this.updateIsActive = -1;
-                break;
-            }
-          }
-        );
+      if (this.updateStatus === UPDATER_STATUS.updateInProgress) {
+        const { response: buttonIndex } = await dialog.showMessageBox({
+          title: 'Update in progress',
+          message:
+            'Another update is in progess. Are you sure want to restart the update?',
+          buttons: ['Cancel', 'Yes'],
+        });
+
+        switch (buttonIndex) {
+          case 0:
+          default:
+            break;
+          case 1:
+            this.autoUpdater.checkForUpdates();
+            this.updateStatus = UPDATER_STATUS.updateInProgress;
+            break;
+        }
 
         return null;
       }
@@ -326,7 +329,7 @@ export default class AppUpdate {
       this.autoUpdater.checkForUpdates();
       this.updateForceCheckFlag = true;
       this.disableAutoUpdateCheck = true;
-      this.updateIsActive = 1;
+      this.updateStatus = UPDATER_STATUS.checkInProgress;
     } catch (e) {
       log.error(e, `AppUpdate -> forceCheck`);
     }
@@ -458,7 +461,7 @@ export default class AppUpdate {
     );
   }
 
-  spitMessageDialog(title, message, type = 'message') {
+  async spitMessageDialog(title, message, type = 'message') {
     const { timeGenerated: _timeGenerated } = this._errorDialog;
     const delayTime = 1000;
 
@@ -478,20 +481,19 @@ export default class AppUpdate {
     switch (type) {
       default:
       case 'message':
-        dialog.showMessageBox(
-          {
-            title,
-            message,
-            buttons: ['Close'],
-          },
-          (buttonIndex) => {
-            switch (buttonIndex) {
-              case 0:
-              default:
-                break;
-            }
-          }
-        );
+        // eslint-disable-next-line no-case-declarations
+        const { response: buttonIndex } = await dialog.showMessageBox({
+          title,
+          message,
+          buttons: ['Close'],
+        });
+
+        switch (buttonIndex) {
+          case 0:
+          default:
+            break;
+        }
+
         break;
       case 'error':
         dialog.showErrorBox(title, message);
@@ -499,8 +501,8 @@ export default class AppUpdate {
     }
   }
 
-  closeActiveUpdates(updateIsActive = 0) {
+  closeActiveUpdates(updateStatus = UPDATER_STATUS.inactive) {
     this.setTaskBarProgressBar(-1);
-    this.updateIsActive = updateIsActive;
+    this.updateStatus = updateStatus;
   }
 }

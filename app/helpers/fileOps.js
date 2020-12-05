@@ -51,8 +51,8 @@ export const readFileSync = (filePath) => {
 
 export const fileExistsSync = (filePath) => _existsSync(filePath);
 
-export const createDirSync = (newFolderPath) => {
-  mkdirp.sync(newFolderPath);
+export const createDirSync = async (newFolderPath) => {
+  await mkdirp.sync(newFolderPath);
 };
 
 export const deleteFilesSync = (filePath) => {
