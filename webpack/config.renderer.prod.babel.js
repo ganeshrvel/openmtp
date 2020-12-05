@@ -28,6 +28,11 @@ export default merge(baseConfig, {
     path: path.join(PATHS.app, 'dist'),
     publicPath: './dist/',
     filename: 'renderer.prod.js',
+    devtoolModuleFilenameTemplate(info) {
+      const rel = path.relative(pkginfo.name, info.absoluteResourcePath);
+
+      return `webpack:///${rel}`;
+    },
   },
 
   module: {

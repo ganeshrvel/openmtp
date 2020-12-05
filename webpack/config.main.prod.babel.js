@@ -2,6 +2,7 @@
  * Webpack config for production electron main process
  */
 
+import path from 'path';
 import webpack from 'webpack';
 import merge from 'webpack-merge';
 import SentryWebpackPlugin from '@sentry/webpack-plugin';
@@ -22,6 +23,11 @@ export default merge(baseConfig, {
   output: {
     path: PATHS.root,
     filename: './app/main.prod.js',
+    devtoolModuleFilenameTemplate(info) {
+      const rel = path.relative(pkginfo.name, info.absoluteResourcePath);
+
+      return `webpack:///${rel}`;
+    },
   },
 
   optimization: {
