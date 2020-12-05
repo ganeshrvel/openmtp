@@ -1,4 +1,5 @@
 import { variables, mixins } from '../../../styles/js';
+import { commonThemes } from '../../../styles/js/mixins';
 
 // Styles for App/index.jsx component
 export const styles = (theme) => {
@@ -123,6 +124,7 @@ export const materialUiTheme = ({ ...args }) => {
             '--app-bg-color': palette.background.paper,
             '--app-secondary-main-color': palette.secondary.main,
             '--app-native-system-color': palette.nativeSystemColor,
+            ...commonThemes.noselect,
           },
         },
       },

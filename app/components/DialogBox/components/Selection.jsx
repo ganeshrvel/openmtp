@@ -7,8 +7,9 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
-import SdStorageIcon from '@material-ui/icons/SdStorage';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { styles } from '../styles/Selection';
+import { isEmpty } from '../../../utils/funcs';
 
 class Selection extends PureComponent {
   _handleListItemClick = ({ ...args }) => {
@@ -18,9 +19,9 @@ class Selection extends PureComponent {
   };
 
   render() {
-    const { list, titleText, open, showDiskAvatars } = this.props;
+    const { list, titleText, open, showAvatar } = this.props;
 
-    if (Object.keys(list).length < 1) {
+    if (isEmpty(list)) {
       return <Fragment />;
     }
 
@@ -37,24 +38,22 @@ class Selection extends PureComponent {
         <DialogTitle>{titleText}</DialogTitle>
         <div>
           <List>
-            {Object.keys(list).map((a) => {
-              const item = list[a];
-
+            {list.map((item) => {
               return (
-                <Fragment key={a}>
+                <Fragment key={item.value}>
                   <ListItem
                     button
-                    onClick={() =>
+                    onClick={() => {
                       this._handleListItemClick({
-                        selectedValue: a,
+                        selectedValue: item.value,
                         triggerChange: true,
-                      })
-                    }
+                      });
+                    }}
                   >
-                    {showDiskAvatars && (
+                    {showAvatar && (
                       <ListItemAvatar>
                         <Avatar>
-                          <SdStorageIcon />
+                          <FontAwesomeIcon icon={item.icon} title={item.name} />
                         </Avatar>
                       </ListItemAvatar>
                     )}

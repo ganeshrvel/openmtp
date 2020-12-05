@@ -1,4 +1,4 @@
-import prefixer from '../../utils/reducerPrefixer';
+import prefixer from '../../helpers/reducerPrefixer';
 
 const prefix = '@@App';
 const actionTypesList = ['REQ_LOAD', 'RES_LOAD', 'FAIL_LOAD'];

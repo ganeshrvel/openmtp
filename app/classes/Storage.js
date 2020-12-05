@@ -1,5 +1,5 @@
 import { log } from '../utils/log';
-import { readFileSync, writeFileSync } from '../utils/fileOps';
+import { readFileSync, writeFileSync } from '../helpers/fileOps';
 
 export default class Storage {
   constructor(filePath) {

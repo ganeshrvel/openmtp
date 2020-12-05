@@ -12,8 +12,9 @@ import chalk from 'chalk';
 import merge from 'webpack-merge';
 import { spawn, execSync } from 'child_process';
 import baseConfig from './config.base';
-import { PATHS } from '../app/utils/paths';
+import { PATHS } from '../app/constants/paths';
 import { PORT } from '../config/env';
+import CheckNodeEnv from '../internals/scripts/CheckNodeEnv';
 
 const publicPath = `http://localhost:${PORT}/dist`;
 const dll = path.resolve(PATHS.root, 'dll');
@@ -21,6 +22,12 @@ const manifest = path.resolve(dll, 'renderer.json');
 const requiredByDLLConfig = module.parent.filename.includes(
   'config.renderer.dev.dll.babel'
 );
+
+// When an ESLint server is running, we can't set the NODE_ENV so we'll check if it's
+// at the dev webpack config is not accidentally run in a production environment
+if (process.env.NODE_ENV === 'production') {
+  CheckNodeEnv('development');
+}
 
 /**
  * Warn if the DLL is not built
@@ -39,7 +46,9 @@ export default merge(baseConfig, {
   mode: 'development',
   target: 'electron-renderer',
   entry: [
-    'react-hot-loader/patch',
+    'core-js',
+    'regenerator-runtime/runtime',
+    ...(process.env.PLAIN_HMR ? [] : ['react-hot-loader/patch']),
     `webpack-dev-server/client?http://localhost:${PORT}/`,
     'webpack/hot/only-dev-server',
     path.join(PATHS.app, 'index.js'),
@@ -52,16 +61,6 @@ export default merge(baseConfig, {
 
   module: {
     rules: [
-      {
-        test: /\.jsx?$/,
-        exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            cacheDirectory: true,
-          },
-        },
-      },
       // Extract all .global.css to style.css as is
       {
         test: /\.global\.css$/,
@@ -201,6 +200,12 @@ export default merge(baseConfig, {
     ],
   },
 
+  resolve: {
+    alias: {
+      'react-dom': '@hot-loader/react-dom',
+    },
+  },
+
   plugins: [
     requiredByDLLConfig
       ? null
@@ -252,7 +257,7 @@ export default merge(baseConfig, {
     lazy: false,
     hot: true,
     headers: { 'Access-Control-Allow-Origin': '*' },
-    contentBase: path.join(PATHS.root, 'dist'),
+    contentBase: path.join(PATHS.dist),
     watchOptions: {
       aggregateTimeout: 300,
       ignored: /node_modules/,

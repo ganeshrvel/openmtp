@@ -15,14 +15,17 @@ import Switch from '@material-ui/core/Switch';
 import FormControl from '@material-ui/core/FormControl';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import { privacyPolicyWindow } from '../../../utils/createWindows';
+import { privacyPolicyWindow } from '../../../helpers/createWindows';
 import { DEVICES_LABEL } from '../../../constants';
 import SettingsDialogTabContainer from './SettingsDialogTabContainer';
 import {
   DEVICE_TYPE,
   FILE_EXPLORER_VIEW_TYPE,
   APP_THEME_MODE_TYPE,
+  MTP_MODE,
+  FILE_TRANSFER_DIRECTION,
 } from '../../../enums';
+import { capitalize } from '../../../utils/funcs';
 
 const isMas = electronIs.mas();
 
@@ -75,6 +78,8 @@ export default class SettingsDialog extends PureComponent {
       showLocalPane,
       showLocalPaneOnLeftSide,
       showDirectoriesFirst,
+      mtpMode,
+      filesPreprocessingBeforeTransfer,
       onAnalyticsChange,
       onHiddenFilesChange,
       onFileExplorerListingType,
@@ -87,6 +92,8 @@ export default class SettingsDialog extends PureComponent {
       onShowLocalPaneChange,
       onShowLocalPaneOnLeftSideChange,
       onShowDirectoriesFirstChange,
+      onMtpModeChange,
+      onFilesPreprocessingBeforeTransferChange,
     } = this.props;
 
     const { tabIndex } = this.state;
@@ -172,20 +179,31 @@ export default class SettingsDialog extends PureComponent {
                       />
                     </RadioGroup>
 
-                    {freshInstall ? (
-                      <Paper
-                        className={`${styles.onboardingPaper}`}
-                        elevation={0}
-                      >
-                        <div className={styles.onboardingPaperArrow} />
-                        <Typography
-                          component="p"
-                          className={`${styles.onboardingPaperBody}`}
-                        >
-                          Use the toggles to enable or disable the item.
-                        </Typography>
-                      </Paper>
-                    ) : null}
+                    <Typography
+                      variant="subtitle2"
+                      className={`${styles.subtitle}  ${styles.fmSettingsStylesFix}`}
+                    >
+                      MTP Mode
+                    </Typography>
+                    <RadioGroup
+                      aria-label="app-theme-mode"
+                      name="app-theme-mode"
+                      value={mtpMode}
+                      onChange={(e, value) =>
+                        onMtpModeChange(e, value, DEVICE_TYPE.mtp)
+                      }
+                    >
+                      <FormControlLabel
+                        value={MTP_MODE.kalam}
+                        control={<Radio />}
+                        label={capitalize(MTP_MODE.kalam)}
+                      />
+                      <FormControlLabel
+                        value={MTP_MODE.legacy}
+                        control={<Radio />}
+                        label={capitalize(MTP_MODE.legacy)}
+                      />
+                    </RadioGroup>
                   </FormGroup>
                 </div>
               </SettingsDialogTabContainer>
@@ -279,6 +297,84 @@ export default class SettingsDialog extends PureComponent {
                       variant="subtitle2"
                       className={`${styles.subtitle} ${styles.fmSettingsStylesFix}`}
                     >
+                      Display overall progress on the file transfer screen
+                    </Typography>
+                    <FormControlLabel
+                      className={styles.switch}
+                      control={
+                        <Switch
+                          checked={
+                            filesPreprocessingBeforeTransfer[
+                              FILE_TRANSFER_DIRECTION.download
+                            ]
+                          }
+                          onChange={(e) =>
+                            onFilesPreprocessingBeforeTransferChange(
+                              e,
+                              !filesPreprocessingBeforeTransfer[
+                                FILE_TRANSFER_DIRECTION.download
+                              ],
+                              FILE_TRANSFER_DIRECTION.download
+                            )
+                          }
+                        />
+                      }
+                      label={`To ${DEVICES_LABEL[DEVICE_TYPE.local]}`}
+                    />
+                    <FormControlLabel
+                      className={styles.switch}
+                      control={
+                        <Switch
+                          checked={
+                            filesPreprocessingBeforeTransfer[
+                              FILE_TRANSFER_DIRECTION.upload
+                            ]
+                          }
+                          onChange={(e) =>
+                            onFilesPreprocessingBeforeTransferChange(
+                              e,
+                              !filesPreprocessingBeforeTransfer[
+                                FILE_TRANSFER_DIRECTION.upload
+                              ],
+                              FILE_TRANSFER_DIRECTION.upload
+                            )
+                          }
+                        />
+                      }
+                      label={`To ${DEVICES_LABEL[DEVICE_TYPE.mtp]}`}
+                    />
+
+                    {freshInstall ? (
+                      <Paper
+                        className={`${styles.onboardingPaper}`}
+                        elevation={0}
+                      >
+                        <Typography
+                          component="p"
+                          className={`${styles.onboardingPaperBody}`}
+                        >
+                          <span className={`${styles.onboardingPaperBodyItem}`}>
+                            &#9679;&nbsp;Use the toggles to enable or disable an
+                            item.
+                          </span>
+                          <span className={`${styles.onboardingPaperBodyItem}`}>
+                            &#9679;&nbsp;Scroll down for more Settings.
+                          </span>
+                        </Typography>
+                      </Paper>
+                    ) : null}
+
+                    <Typography variant="caption">
+                      Note: To fetch the total transfer information, the files
+                      need to be processed first. It may take a few seconds to a
+                      few minutes depending on the total number of files to be
+                      copied.
+                    </Typography>
+
+                    <Typography
+                      variant="subtitle2"
+                      className={`${styles.subtitle} ${styles.fmSettingsStylesFix}`}
+                    >
                       Show directories first
                     </Typography>
                     <FormControlLabel
@@ -296,21 +392,6 @@ export default class SettingsDialog extends PureComponent {
                       }
                       label={showDirectoriesFirst ? `Enabled` : `Disabled`}
                     />
-
-                    {freshInstall ? (
-                      <Paper
-                        className={`${styles.onboardingPaper}`}
-                        elevation={0}
-                      >
-                        <div className={styles.onboardingPaperArrow} />
-                        <Typography
-                          component="p"
-                          className={`${styles.onboardingPaperBody}`}
-                        >
-                          Use the toggles to enable or disable the item.
-                        </Typography>
-                      </Paper>
-                    ) : null}
 
                     <Typography
                       variant="subtitle2"

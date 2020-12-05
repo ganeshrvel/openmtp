@@ -9,29 +9,27 @@ import {
 } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import Analytics from 'electron-ga';
-import { IS_PROD } from '../../constants/env';
 import { materialUiTheme, styles } from './styles';
 import Alerts from '../Alerts';
 import Titlebar from './components/Titlebar';
 import ErrorBoundary from '../ErrorBoundary';
 import Routes from '../../routing';
-import { bootLoader } from '../../utils/bootHelper';
-import { settingsStorage } from '../../utils/storageHelper';
+import { bootLoader } from '../../helpers/bootHelper';
+import { settingsStorage } from '../../helpers/storageHelper';
 import SettingsDialog from '../Settings';
 import { withReducer } from '../../store/reducers/withReducer';
 import reducers from './reducers';
 import { copyJsonFileToSettings, freshInstall } from '../Settings/actions';
-import { isConnected } from '../../utils/isOnline';
-import { TRACKING_ID } from '../../../config/google-analytics-key';
-import { APP_NAME, APP_VERSION } from '../../constants/meta';
 import {
   makeAppThemeMode,
   makeAppThemeModeSettings,
+  makeMtpMode,
 } from '../Settings/selectors';
-import { getAppThemeMode } from '../../utils/theme';
-import { getMainWindowRendererProcess } from '../../utils/windowHelper';
+import { getAppThemeMode } from '../../helpers/theme';
+import { getMainWindowRendererProcess } from '../../helpers/windowHelper';
 import { log } from '../../utils/log';
+import { makeMtpDevice, makeMtpStoragesList } from '../HomePage/selectors';
+import { googleAnalytics } from '../../services/analytics/googleAnalytics';
 
 class App extends Component {
   constructor(props) {
@@ -138,40 +136,22 @@ class App extends Component {
   }
 
   runAnalytics() {
-    const isAnalyticsEnabledSettings = settingsStorage.getItems([
-      'enableAnalytics',
-    ]);
-
-    try {
-      if (isAnalyticsEnabledSettings.enableAnalytics && IS_PROD) {
-        isConnected()
-          .then((connected) => {
-            const analytics = new Analytics(TRACKING_ID, {
-              appName: APP_NAME,
-              appVersion: APP_VERSION,
-            });
-
-            analytics.send('screenview', { cd: '/Home' });
-            analytics.send(`pageview`, { dp: '/Home' });
-
-            return connected;
-          })
-          .catch(() => {});
-      }
-    } catch (e) {
-      log.error(e, `App -> runAnalytics`);
-    }
+    googleAnalytics.init();
   }
 
   render() {
-    const { classes: styles } = this.props;
+    const { classes: styles, mtpDevice, mtpStoragesList, mtpMode } = this.props;
     const muiTheme = this.getMuiTheme();
 
     return (
       <div className={styles.root}>
         <MuiThemeProvider theme={muiTheme}>
           <CssBaseline />
-          <Titlebar />
+          <Titlebar
+            mtpDevice={mtpDevice}
+            mtpStoragesList={mtpStoragesList}
+            mtpMode={mtpMode}
+          />
           <Alerts />
           <ErrorBoundary>
             <SettingsDialog />
@@ -201,6 +181,9 @@ const mapStateToProps = (state) => {
   return {
     appThemeModeSettings: makeAppThemeModeSettings(state),
     appThemeMode: makeAppThemeMode(state),
+    mtpDevice: makeMtpDevice(state),
+    mtpMode: makeMtpMode(state),
+    mtpStoragesList: makeMtpStoragesList(state),
   };
 };
 

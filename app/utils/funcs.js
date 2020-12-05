@@ -1,3 +1,4 @@
+import { isObject } from 'nice-utils';
 import { APP_TITLEBAR_DOM_ID } from '../constants/dom';
 
 export const isArraysEqual = (a, b) => {
@@ -44,6 +45,16 @@ export const isNumber = (n) => {
 
 export const isArray = (n) => {
   return Array.isArray(n);
+};
+
+/**
+ *
+ * @param arr {[]} - array
+ * @param n {any} - search
+ * @return {boolean}
+ */
+export const inArray = (arr, n) => {
+  return arr.includes(n);
 };
 
 export const niceBytes = (a, b) => {
@@ -145,7 +156,7 @@ export const springTruncate = (str, minChars = 10, ellipsis = '...') => {
 
   return {
     text: _str,
-    truncatedText: str,
+    truncatedText: _str,
     isTruncated: false,
   };
 };
@@ -154,8 +165,16 @@ export const undefinedOrNull = (_var) => {
   return typeof _var === 'undefined' || _var === null;
 };
 
-export const isEmpty = (_var) => {
-  return undefinedOrNull(_var) || _var.length < 1;
+export const isEmpty = (x) => {
+  if (undefinedOrNull(x)) {
+    return true;
+  }
+
+  if (isObject(x) && Object.keys(x).length < 1) {
+    return true;
+  }
+
+  return x.length < 1;
 };
 
 /**
@@ -323,4 +342,16 @@ export const asserts = (condition, message) => {
   }
 
   throw message || 'Assertion failed';
+};
+
+export const capitalize = (s) => {
+  if (isEmpty(s)) {
+    return '';
+  }
+
+  if (typeof s !== 'string') {
+    return '';
+  }
+
+  return s.charAt(0).toUpperCase() + s.slice(1);
 };

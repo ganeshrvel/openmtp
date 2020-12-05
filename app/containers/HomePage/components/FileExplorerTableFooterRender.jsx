@@ -15,6 +15,7 @@ class FileExplorerTableFooterRender extends PureComponent {
       isStatusBarEnabled,
       directoryLists,
       fileTransferClipboard,
+      mtpDevice,
     } = this.props;
 
     return (
@@ -24,6 +25,7 @@ class FileExplorerTableFooterRender extends PureComponent {
             directoryLists={directoryLists}
             fileTransferClipboard={fileTransferClipboard}
             deviceType={deviceType}
+            mtpDevice={mtpDevice}
           />
         )}
         <Breadcrumb

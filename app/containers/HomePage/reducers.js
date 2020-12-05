@@ -4,11 +4,12 @@ import {
   faSync,
   faSdCard,
   faCog,
+  faPlug,
   faArrowLeft,
 } from '@fortawesome/free-solid-svg-icons';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import { actionTypes } from './actions';
-import { PATHS } from '../../utils/paths';
+import { PATHS } from '../../constants/paths';
 import {
   DEVICES_DEFAULT_PATH,
   FILE_EXPLORER_DEFAULT_FOCUSSED_DEVICE_TYPE,
@@ -107,6 +108,11 @@ export const initialState = {
         label: 'Storage',
         icon: faSdCard,
       },
+      mtpMode: {
+        enabled: true,
+        label: 'MTP Mode',
+        icon: faPlug,
+      },
       settings: {
         enabled: true,
         label: 'Settings',
@@ -143,7 +149,11 @@ export const initialState = {
 
   mtpDevice: {
     isAvailable: false,
+    error: null,
+    isLoading: false,
+    info: {},
   },
+
   contextMenuList: {
     [DEVICE_TYPE.local]: {
       rename: {
@@ -201,6 +211,18 @@ export const initialState = {
     },
   },
 
+  /**
+   * description - MTP Storage list
+   *
+   *    {
+   *      string: { <----- storageId
+   *        "name": string,
+   *        "selected": boolean,
+   *        "info": {} | undefined,
+   *      }
+   *    }
+   *
+   */
   mtpStoragesList: {},
 
   fileTransfer: {
@@ -210,9 +232,18 @@ export const initialState = {
     },
     progress: {
       toggle: false,
-      bodyText1: null,
-      bodyText2: null,
-      percentage: 0,
+      titleText: null,
+      bottomText: null,
+
+      /**
+       *  [{
+       *    percentage,
+       *    variant,
+       *    bodyText1,
+       *    bodyText2,
+       *  }]
+       */
+      values: [],
     },
   },
 
@@ -278,7 +309,7 @@ export default function Home(state = initialState, action) {
         ...state,
         mtpDevice: {
           ...state.mtpDevice,
-          isAvailable: payload,
+          ...payload,
         },
       };
 

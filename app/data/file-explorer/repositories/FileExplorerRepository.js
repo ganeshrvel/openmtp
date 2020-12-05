@@ -3,14 +3,61 @@ import { FileExplorerLocalDataSource } from '../data-sources/FileExplorerLocalDa
 import { FileExplorerKalamDataSource } from '../data-sources/FileExplorerKalamDataSource';
 import { DEVICE_TYPE, MTP_MODE } from '../../../enums';
 import { checkIf } from '../../../utils/checkIf';
-
-const selectedMtpMode = MTP_MODE.legacy;
+import { getMtpModeSetting } from '../../../helpers/settings';
 
 export class FileExplorerRepository {
   constructor() {
     this.legacyMtpDataSource = new FileExplorerLegacyDataSource();
     this.localDataSource = new FileExplorerLocalDataSource();
-    this.kalamyMtpDataSource = new FileExplorerKalamDataSource();
+    this.kalamMtpDataSource = new FileExplorerKalamDataSource();
+  }
+
+  /**
+   * description - Initialize
+   *
+   * @return {Promise<{data: object, error: string|null, stderr: string|null}>}
+   */
+  async initialize({ deviceType }) {
+    const selectedMtpMode = getMtpModeSetting();
+
+    checkIf(deviceType, 'string');
+
+    if (deviceType === DEVICE_TYPE.mtp) {
+      switch (selectedMtpMode) {
+        case MTP_MODE.legacy:
+          throw `initialize for MTP_MODE.legacy is unimplemented`;
+
+        case MTP_MODE.kalam:
+        default:
+          return this.kalamMtpDataSource.initialize();
+      }
+    }
+
+    throw `initialize for deviceType=DEVICE_TYPE.local is unimplemented`;
+  }
+
+  /**
+   * description - Dispose
+   *
+   * @return {Promise<{data: object, error: string|null, stderr: string|null}>}
+   */
+  async dispose({ deviceType }) {
+    checkIf(deviceType, 'string');
+
+    const selectedMtpMode = getMtpModeSetting();
+
+    if (deviceType === DEVICE_TYPE.mtp) {
+      switch (selectedMtpMode) {
+        case MTP_MODE.legacy:
+          throw `dispose for MTP_MODE.legacy is unimplemented`;
+
+        case MTP_MODE.kalam:
+        default:
+          return this.kalamMtpDataSource.dispose();
+      }
+    }
+
+    throw `dispose for deviceType=DEVICE_TYPE.local is unimplemented`;
   }
 
   /**
@@ -19,6 +66,8 @@ export class FileExplorerRepository {
    * @return {Promise<{data: object|boolean, error: string|null, stderr: string|null}>}
    */
   async listStorages({ deviceType }) {
+    const selectedMtpMode = getMtpModeSetting();
+
     if (deviceType === DEVICE_TYPE.mtp) {
       switch (selectedMtpMode) {
         case MTP_MODE.legacy:
@@ -26,11 +75,10 @@ export class FileExplorerRepository {
 
         case MTP_MODE.kalam:
         default:
-          break;
+          return this.kalamMtpDataSource.listStorages();
       }
     }
 
-    // eslint-disable-next-line no-throw-literal
     throw `listStorages for deviceType=DEVICE_TYPE.local is unimplemented`;
   }
 
@@ -45,7 +93,9 @@ export class FileExplorerRepository {
    */
   async listFiles({ deviceType, filePath, ignoreHidden, storageId }) {
     if (deviceType === DEVICE_TYPE.mtp) {
-      checkIf(storageId, 'numericString');
+      checkIf(storageId, 'number');
+
+      const selectedMtpMode = getMtpModeSetting();
 
       switch (selectedMtpMode) {
         case MTP_MODE.legacy:
@@ -57,7 +107,11 @@ export class FileExplorerRepository {
 
         case MTP_MODE.kalam:
         default:
-          break;
+          return this.kalamMtpDataSource.listFiles({
+            filePath,
+            ignoreHidden,
+            storageId,
+          });
       }
     }
 
@@ -78,7 +132,9 @@ export class FileExplorerRepository {
    */
   async renameFile({ deviceType, filePath, newFilename, storageId }) {
     if (deviceType === DEVICE_TYPE.mtp) {
-      checkIf(storageId, 'numericString');
+      checkIf(storageId, 'number');
+
+      const selectedMtpMode = getMtpModeSetting();
 
       switch (selectedMtpMode) {
         case MTP_MODE.legacy:
@@ -90,7 +146,11 @@ export class FileExplorerRepository {
 
         case MTP_MODE.kalam:
         default:
-          break;
+          return this.kalamMtpDataSource.renameFile({
+            filePath,
+            newFilename,
+            storageId,
+          });
       }
     }
 
@@ -110,7 +170,9 @@ export class FileExplorerRepository {
    */
   async deleteFiles({ deviceType, fileList, storageId }) {
     if (deviceType === DEVICE_TYPE.mtp) {
-      checkIf(storageId, 'numericString');
+      checkIf(storageId, 'number');
+
+      const selectedMtpMode = getMtpModeSetting();
 
       switch (selectedMtpMode) {
         case MTP_MODE.legacy:
@@ -121,7 +183,10 @@ export class FileExplorerRepository {
 
         case MTP_MODE.kalam:
         default:
-          break;
+          return this.kalamMtpDataSource.deleteFiles({
+            fileList,
+            storageId,
+          });
       }
     }
 
@@ -140,7 +205,9 @@ export class FileExplorerRepository {
    */
   async makeDirectory({ deviceType, filePath, storageId }) {
     if (deviceType === DEVICE_TYPE.mtp) {
-      checkIf(storageId, 'numericString');
+      checkIf(storageId, 'number');
+
+      const selectedMtpMode = getMtpModeSetting();
 
       switch (selectedMtpMode) {
         case MTP_MODE.legacy:
@@ -151,7 +218,10 @@ export class FileExplorerRepository {
 
         case MTP_MODE.kalam:
         default:
-          break;
+          return this.kalamMtpDataSource.makeDirectory({
+            filePath,
+            storageId,
+          });
       }
     }
 
@@ -170,7 +240,9 @@ export class FileExplorerRepository {
    */
   async filesExist({ deviceType, fileList, storageId }) {
     if (deviceType === DEVICE_TYPE.mtp) {
-      checkIf(storageId, 'numericString');
+      checkIf(storageId, 'number');
+
+      const selectedMtpMode = getMtpModeSetting();
 
       switch (selectedMtpMode) {
         case MTP_MODE.legacy:
@@ -181,7 +253,10 @@ export class FileExplorerRepository {
 
         case MTP_MODE.kalam:
         default:
-          break;
+          return this.kalamMtpDataSource.filesExist({
+            fileList,
+            storageId,
+          });
       }
     }
 
@@ -200,6 +275,7 @@ export class FileExplorerRepository {
    * @param {string} storageId
    * @param {errorCallback} onError
    * @param {progressCallback} onProgress
+   * @param {preprocessCallback} onPreprocess
    * @param {completedCallback} onCompleted
    *
    * @return
@@ -211,11 +287,15 @@ export class FileExplorerRepository {
     direction,
     storageId,
     onError,
+    onPreprocess,
     onProgress,
     onCompleted,
   }) {
     if (deviceType === DEVICE_TYPE.mtp) {
-      checkIf(storageId, 'numericString');
+      checkIf(storageId, 'number');
+      checkIf(onPreprocess, 'function');
+
+      const selectedMtpMode = getMtpModeSetting();
 
       switch (selectedMtpMode) {
         case MTP_MODE.legacy:
@@ -227,11 +307,22 @@ export class FileExplorerRepository {
             onError,
             onProgress,
             onCompleted,
+            onPreprocess,
           });
 
         case MTP_MODE.kalam:
         default:
-          break;
+          return this.kalamMtpDataSource.transferFiles({
+            deviceType,
+            destination,
+            fileList,
+            direction,
+            storageId,
+            onError,
+            onProgress,
+            onCompleted,
+            onPreprocess,
+          });
       }
     }
 
@@ -246,6 +337,8 @@ export class FileExplorerRepository {
    * @return {Promise<{data: string|null, error: string|null, stderr: string|null}>}
    */
   async fetchDebugReport({ deviceType }) {
+    const selectedMtpMode = getMtpModeSetting();
+
     if (deviceType === DEVICE_TYPE.mtp) {
       switch (selectedMtpMode) {
         case MTP_MODE.legacy:
@@ -253,7 +346,7 @@ export class FileExplorerRepository {
 
         case MTP_MODE.kalam:
         default:
-          break;
+          return;
       }
     }
 

@@ -5,8 +5,8 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withStyles } from '@material-ui/core/styles';
 import { styles } from '../styles/GenerateErrorReport';
-import { PATHS } from '../../../utils/paths';
-import { fileExistsSync } from '../../../utils/fileOps';
+import { PATHS } from '../../../constants/paths';
+import { fileExistsSync } from '../../../helpers/fileOps';
 import { AUTHOR_EMAIL } from '../../../constants/meta';
 import { throwAlert } from '../../Alerts/actions';
 import {

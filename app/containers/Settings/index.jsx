@@ -7,9 +7,11 @@ import { withReducer } from '../../store/reducers/withReducer';
 import reducers from './reducers';
 import { makeCommonSettings } from './selectors';
 import {
+  setFilesPreprocessingBeforeTransfer,
   fileExplorerListingType,
   freshInstall,
   hideHiddenFiles,
+  selectMtpMode,
   setCommonSettings,
   toggleSettings,
 } from './actions';
@@ -19,6 +21,8 @@ import {
   makeMtpStoragesList,
 } from '../HomePage/selectors';
 import SettingsDialog from './components/SettingsDialog';
+import { checkIf } from '../../utils/checkIf';
+import { FILE_TRANSFER_DIRECTION } from '../../enums';
 
 class Settings extends Component {
   _handleDialogBoxCloseBtnClick = ({ confirm = false }) => {
@@ -47,19 +51,15 @@ class Settings extends Component {
     const {
       actionCreateHideHiddenFiles,
       actionCreateReloadDirList,
-      mtpStoragesList,
       currentBrowsePath,
     } = this.props;
 
     actionCreateHideHiddenFiles({ value }, deviceType);
-    actionCreateReloadDirList(
-      {
-        filePath: currentBrowsePath[deviceType],
-        ignoreHidden: value,
-      },
+    actionCreateReloadDirList({
+      filePath: currentBrowsePath[deviceType],
+      ignoreHidden: value,
       deviceType,
-      mtpStoragesList
-    );
+    });
   };
 
   _handleFileExplorerListingType = (event, value, deviceType) => {
@@ -158,6 +158,21 @@ class Settings extends Component {
     );
   };
 
+  _handleFilesPreprocessingBeforeTransferChange = (event, value, direction) => {
+    const { actionCreateSetFilesPreprocessingBeforeTransfer } = this.props;
+
+    checkIf(direction, 'string');
+    checkIf(direction, 'inObjectValues', FILE_TRANSFER_DIRECTION);
+
+    actionCreateSetFilesPreprocessingBeforeTransfer({ value, direction });
+  };
+
+  _handleMtpModeChange = (event, value, deviceType) => {
+    const { actionCreateSelectMtpMode } = this.props;
+
+    actionCreateSelectMtpMode({ value }, deviceType);
+  };
+
   _handleSetCommonSettingsChange = ({ key, value }, deviceType) => {
     const { actionSetCommonSettings } = this.props;
 
@@ -168,7 +183,6 @@ class Settings extends Component {
     const {
       freshInstall,
       toggleSettings,
-      appThemeMode,
       classes: styles,
       ...parentProps
     } = this.props;
@@ -179,7 +193,6 @@ class Settings extends Component {
         open={showSettings}
         freshInstall={freshInstall}
         toggleSettings={toggleSettings}
-        appThemeMode={appThemeMode}
         styles={styles}
         onAnalyticsChange={this._handleAnalyticsChange}
         onHiddenFilesChange={this._handleHiddenFilesChange}
@@ -197,6 +210,10 @@ class Settings extends Component {
           this._handleShowLocalPaneOnLeftSideChange
         }
         onShowDirectoriesFirstChange={this._handleShowDirectoriesFirstChange}
+        onFilesPreprocessingBeforeTransferChange={
+          this._handleFilesPreprocessingBeforeTransferChange
+        }
+        onMtpModeChange={this._handleMtpModeChange}
         {...parentProps}
       />
     );
@@ -221,11 +238,25 @@ const mapDispatchToProps = (dispatch, _) =>
         dispatch(hideHiddenFiles({ ...data }, deviceType, getState));
       },
 
+      actionCreateSetFilesPreprocessingBeforeTransfer: ({ ...data }) => (
+        _,
+        getState
+      ) => {
+        dispatch(setFilesPreprocessingBeforeTransfer({ ...data }, getState));
+      },
+
       actionCreateFileExplorerListingType: ({ ...data }, deviceType) => (
         _,
         getState
       ) => {
         dispatch(fileExplorerListingType({ ...data }, deviceType, getState));
+      },
+
+      actionCreateSelectMtpMode: ({ value }, deviceType) => (_, getState) => {
+        checkIf(value, 'string');
+        checkIf(deviceType, 'string');
+
+        dispatch(selectMtpMode({ value }, deviceType, getState));
       },
 
       actionSetCommonSettings: ({ key, value }, deviceType) => (
@@ -235,12 +266,24 @@ const mapDispatchToProps = (dispatch, _) =>
         dispatch(setCommonSettings({ key, value }, deviceType, getState));
       },
 
-      actionCreateReloadDirList: ({ ...args }, deviceType, mtpStoragesList) => (
+      actionCreateReloadDirList: ({ filePath, ignoreHidden, deviceType }) => (
         _,
         getState
       ) => {
+        checkIf(filePath, 'string');
+        checkIf(ignoreHidden, 'boolean');
+        checkIf(getState, 'function');
+        checkIf(deviceType, 'string');
+
         dispatch(
-          reloadDirList({ ...args }, deviceType, mtpStoragesList, getState)
+          reloadDirList(
+            {
+              filePath,
+              ignoreHidden,
+              deviceType,
+            },
+            getState
+          )
         );
       },
     },

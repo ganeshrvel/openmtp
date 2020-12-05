@@ -4,6 +4,8 @@ import { IS_PROD } from '../../constants/env';
 
 const selectedConfigureStore = IS_PROD ? configureStoreProd : configureStoreDev;
 
-export const { configureStore } = selectedConfigureStore;
+const { configureStore } = selectedConfigureStore;
 
 export const { history } = selectedConfigureStore;
+
+export const store = configureStore();

@@ -279,6 +279,7 @@ class FileExplorerBodyRender extends PureComponent {
       onBreadcrumbPathClick,
       isStatusBarEnabled,
       fileTransferClipboard,
+      mtpDevice,
       ...parentProps
     } = this.props;
     const { directoryLists } = this.props;
@@ -318,6 +319,7 @@ class FileExplorerBodyRender extends PureComponent {
             deviceType={deviceType}
             currentBrowsePath={currentBrowsePath}
             onContextMenuClick={onContextMenuClick}
+            mtpDevice={mtpDevice}
             {...parentProps}
           />
         </div>
@@ -328,6 +330,7 @@ class FileExplorerBodyRender extends PureComponent {
           isStatusBarEnabled={isStatusBarEnabled}
           directoryLists={directoryLists[deviceType]}
           fileTransferClipboard={fileTransferClipboard}
+          mtpDevice={mtpDevice}
         />
       </Paper>
     );

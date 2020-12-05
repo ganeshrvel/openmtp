@@ -15,7 +15,7 @@ import { openExternalUrl } from '../../utils/url';
 import { resetOverFlowY } from '../../utils/styleResets';
 import { PRIVACY_POLICY_PAGE_TITLE } from '../../templates/privacyPolicyPage';
 import { styles } from './styles';
-import { PATHS } from '../../utils/paths';
+import { PATHS } from '../../constants/paths';
 
 class PrivacyPolicyPage extends Component {
   componentWillMount() {

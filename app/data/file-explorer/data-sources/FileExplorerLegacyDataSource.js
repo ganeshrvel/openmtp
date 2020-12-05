@@ -12,15 +12,15 @@ import {
   undefinedOrNull,
 } from '../../../utils/funcs';
 import { DEVICES_LABEL } from '../../../constants';
-import { DEVICE_TYPE } from '../../../enums';
+import { DEVICE_TYPE, FILE_TRANSFER_DIRECTION } from '../../../enums';
 import { baseName, getExtension } from '../../../utils/files';
-import { mtp as _mtpCli } from '../../../utils/binaries';
+import { mtpCliPath } from '../../../helpers/binaries';
 import { appDateFormat, msToTime, unixTimestampNow } from '../../../utils/date';
 import { checkIf } from '../../../utils/checkIf';
 
 export class FileExplorerLegacyDataSource {
   constructor() {
-    this.mtpCli = `"${this._escapeShellMtp(_mtpCli)}"`;
+    this.mtpCli = `"${this._escapeShellMtp(mtpCliPath)}"`;
     this.execPromise = Promise.promisify(exec);
   }
 
@@ -211,7 +211,7 @@ export class FileExplorerLegacyDataSource {
           percentage: _percentage,
           currentFile,
           activeFileSize,
-          activeFileSent,
+          activeFileSizeSent,
         } = transferList;
 
         const copiedTimeDiff = currentCopiedTime - prevCopiedTime;
@@ -230,10 +230,10 @@ export class FileExplorerLegacyDataSource {
         onProgress({
           elapsedTime,
           speed: _speed,
-          percentage: _percentage,
+          activeFileProgress: _percentage,
           currentFile,
           activeFileSize,
-          activeFileSent,
+          activeFileSizeSent,
         });
       }, handletransferListTimeInterval);
 
@@ -320,7 +320,7 @@ export class FileExplorerLegacyDataSource {
           transferList = {
             currentFile: filePath,
             activeFileSize: totalFileSize,
-            activeFileSent: currentProgressSize,
+            activeFileSizeSent: currentProgressSize,
             percentage: perc,
             currentCopiedBlockSize,
             currentCopiedTime,
@@ -407,7 +407,7 @@ export class FileExplorerLegacyDataSource {
           }
 
           const matchDesc = _matchDesc[1].trim();
-          const matchedStorageId = _matchedStorageIds[1].trim();
+          const matchedStorageId = parseInt(_matchedStorageIds[1].trim(), 10);
 
           storageList = {
             ...storageList,
@@ -710,9 +710,9 @@ export class FileExplorerLegacyDataSource {
 
   /**
    * @typedef {Object} progressCallbackInfo
-   * @property {number} percentage - percentage
    * @property {number} activeFileSize - total size of the current file
-   * @property {number} activeFileSent - total bytes of the current file transferred
+   * @property {number} activeFileSizeSent - total bytes of the current file transferred
+   * @property {number} activeFileProgress - progress of the current file
    * @property {string} currentFile - current file
    * @property {string} speed - speed
    * @property {string} elapsedTime - elapsed time
@@ -775,7 +775,7 @@ export class FileExplorerLegacyDataSource {
       let cmdArgs = [];
 
       switch (direction) {
-        case 'download':
+        case FILE_TRANSFER_DIRECTION.download:
           cmdArgs = (fileList ?? []).map((sourcePath) => {
             const destinationPath = path.resolve(destination);
             const escapedDestinationPath = this._escapeShellMtp(
@@ -793,7 +793,7 @@ export class FileExplorerLegacyDataSource {
             onCompleted,
           });
 
-        case 'upload':
+        case FILE_TRANSFER_DIRECTION.upload:
           cmdArgs = (fileList ?? []).map((sourcePath) => {
             const destinationPath = path.resolve(destination);
             const escapedDestinationPath = `${this._escapeShellMtp(
@@ -831,13 +831,16 @@ export class FileExplorerLegacyDataSource {
       );
 
       if (error) {
-        log.doLog(`${error}`);
+        log.doLog(error, `FileExplorerLegacyDataSource.fetchDebugReport.error`);
 
         return { error, stderr, data: null };
       }
 
       if (stderr) {
-        log.doLog(`${stderr}`);
+        log.doLog(
+          stderr,
+          `FileExplorerLegacyDataSource.fetchDebugReport.stderr`
+        );
 
         return { error, stderr, data: null };
       }

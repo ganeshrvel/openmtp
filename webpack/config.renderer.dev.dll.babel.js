@@ -8,11 +8,14 @@ import webpack from 'webpack';
 import path from 'path';
 import merge from 'webpack-merge';
 import baseConfig from './config.base';
-import { PATHS } from '../app/utils/paths';
+import { PATHS } from '../app/constants/paths';
+import CheckNodeEnv from '../internals/scripts/CheckNodeEnv';
 
 const pkg = require('../package.json');
 
 const dll = path.join(PATHS.root, 'dll');
+
+CheckNodeEnv('development');
 
 export default merge(baseConfig, {
   context: PATHS.root,

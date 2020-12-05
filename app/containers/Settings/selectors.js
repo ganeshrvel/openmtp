@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 import { initialState } from './reducers';
-import { getAppThemeMode } from '../../utils/theme';
+import { getAppThemeMode } from '../../helpers/theme';
 
 const make = (state, _) => (state ? state.Settings : {});
 
@@ -57,6 +57,20 @@ export const makeAppThemeMode = createSelector(make, (state) => {
 
   return getAppThemeMode(theme);
 });
+
+// returns the selected mtp mode
+export const makeMtpMode = createSelector(make, (state) =>
+  state ? state.mtpMode : initialState.mtpMode
+);
+
+// returns the selected mtp mode
+export const makeFilesPreprocessingBeforeTransfer = createSelector(
+  make,
+  (state) =>
+    state
+      ? state.filesPreprocessingBeforeTransfer
+      : initialState.filesPreprocessingBeforeTransfer
+);
 
 export const makeShowLocalPane = createSelector(make, (state) =>
   state ? state.showLocalPane : initialState.showLocalPane

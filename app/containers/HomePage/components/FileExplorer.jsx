@@ -1,6 +1,7 @@
 /* eslint no-case-declarations: off */
 
 import React, { Component, Fragment } from 'react';
+import * as path from 'path';
 import Typography from '@material-ui/core/Typography';
 import {
   faGithub,
@@ -27,18 +28,19 @@ import { withReducer } from '../../../store/reducers/withReducer';
 import reducers from '../reducers';
 import {
   setSortingDirLists,
-  setSelectedDirLists,
+  actionSetSelectedDirLists,
   listDirectory,
-  processMtpOutput,
-  processLocalOutput,
-  setMtpStorageOptions,
-  getStorageId,
+  churnMtpBuffer,
+  churnLocalBuffer,
+  initializeMtp,
+  getSelectedStorageIdFromState,
   setFileTransferClipboard,
   setFilesDrag,
   clearFilesDrag,
   setFocussedFileExplorerDeviceType,
   clearFileTransfer,
   setFileTransferProgress,
+  disposeMtp,
 } from '../actions';
 import {
   makeDirectoryLists,
@@ -56,10 +58,12 @@ import {
   makeEnableStatusBar,
   makeFileExplorerListingType,
   makeHideHiddenFiles,
+  makeMtpMode,
   makeShowDirectoriesFirst,
 } from '../../Settings/selectors';
 import { DEVICES_LABEL, DONATE_PAYPAL_URL } from '../../../constants';
 import {
+  getPluralText,
   isArray,
   isEmpty,
   isFloat,
@@ -67,10 +71,10 @@ import {
   isNumber,
   niceBytes,
   removeArrayDuplicates,
-  truncate,
+  springTruncate,
   undefinedOrNull,
 } from '../../../utils/funcs';
-import { getMainWindowRendererProcess } from '../../../utils/windowHelper';
+import { getMainWindowRendererProcess } from '../../../helpers/windowHelper';
 import { throwAlert } from '../../Alerts/actions';
 import { imgsrc } from '../../../utils/imgsrc';
 import FileExplorerBodyRender from './FileExplorerBodyRender';
@@ -81,10 +85,16 @@ import {
   redditShareUrl,
   twitterShareUrl,
 } from '../../../templates/socialMediaShareBtns';
-import { baseName, pathInfo, sanitizePath } from '../../../utils/files';
-import { DEVICE_TYPE, FILE_EXPLORER_VIEW_TYPE } from '../../../enums';
+import { baseName, pathInfo, pathUp, sanitizePath } from '../../../utils/files';
+import {
+  DEVICE_TYPE,
+  FILE_EXPLORER_VIEW_TYPE,
+  FILE_TRANSFER_DIRECTION,
+  MTP_MODE,
+} from '../../../enums';
 import { log } from '../../../utils/log';
 import fileExplorerController from '../../../data/file-explorer/controllers/FileExplorerController';
+import { checkIf } from '../../../utils/checkIf';
 
 const { Menu, getCurrentWindow } = remote;
 
@@ -174,18 +184,16 @@ class FileExplorer extends Component {
     const {
       currentBrowsePath,
       deviceType,
-      actionCreateFetchMtpStorageOptions,
+      actionCreateInitializeMtp,
       hideHiddenFiles,
     } = this.props;
 
     if (deviceType === DEVICE_TYPE.mtp) {
-      actionCreateFetchMtpStorageOptions(
-        {
-          filePath: currentBrowsePath[deviceType],
-          ignoreHidden: hideHiddenFiles[deviceType],
-        },
-        deviceType
-      );
+      actionCreateInitializeMtp({
+        filePath: currentBrowsePath[deviceType],
+        ignoreHidden: hideHiddenFiles[deviceType],
+        deviceType,
+      });
     } else {
       this._handleListDirectory({
         path: currentBrowsePath[deviceType],
@@ -218,6 +226,8 @@ class FileExplorer extends Component {
   }
 
   componentWillUnmount() {
+    const { actionCreatedDisposeMtp, deviceType } = this.props;
+
     this.deregisterAccelerators();
 
     this.mainWindowRendererProcess.webContents.removeListener(
@@ -226,6 +236,8 @@ class FileExplorer extends Component {
     );
     ipcRenderer.removeListener('isFileTransferActiveSeek', () => {});
     ipcRenderer.removeListener('isFileTransferActiveReply', () => {});
+
+    actionCreatedDisposeMtp({ deviceType });
   }
 
   registerAccelerators = () => {
@@ -1005,37 +1017,43 @@ class FileExplorer extends Component {
       return null;
     }
 
-    const _newFilename = sanitizePath(newFilename);
+    const sanitizedNewFilename = sanitizePath(newFilename);
     const filePath = data.path;
+    const filename = data.name;
 
-    if (_newFilename === data.path) {
+    const newFilepath = path.join(pathUp(filePath), sanitizedNewFilename);
+
+    if (newFilepath === data.path) {
       this._handleClearEditDialog(targetAction);
 
       return null;
     }
 
-    if (
-      await fileExplorerController.filesExist({
-        deviceType,
-        fileList: [_newFilename],
-        storageId,
-      })
-    ) {
-      this._handleErrorsEditDialog(
-        {
-          toggle: true,
-          message: `Error: The name "${_newFilename}" is already taken.`,
-        },
-        targetAction
-      );
+    // if the new filename and the existing filename are just case different then skip the edit dialog
+    if (sanitizedNewFilename.toLowerCase() !== filename.toLowerCase()) {
+      if (
+        await fileExplorerController.filesExist({
+          deviceType,
+          fileList: [newFilepath],
+          storageId,
+        })
+      ) {
+        this._handleErrorsEditDialog(
+          {
+            toggle: true,
+            message: `Error: The name "${sanitizedNewFilename}" is already taken.`,
+          },
+          targetAction
+        );
 
-      return null;
+        return null;
+      }
     }
 
     actionCreateRenameFile(
       {
         filePath,
-        newFilename: _newFilename,
+        newFilename: sanitizedNewFilename,
         deviceType,
       },
       {
@@ -1603,7 +1621,6 @@ class FileExplorer extends Component {
           btnNegativeText="Cancel"
           errors={rename.errors}
         />
-
         <TextFieldEditDialog
           titleText={`Create a new folder on your ${DEVICES_LABEL[deviceType]}`}
           bodyText={`Path: ${newFolder.data.path || ''}`}
@@ -1622,21 +1639,14 @@ class FileExplorer extends Component {
           btnNegativeText="Cancel"
           errors={newFolder.errors}
         />
-
         <ProgressBarDialog
-          titleText="Transferring files..."
-          bodyText1={`${
-            fileTransferProgess.bodyText1 ? fileTransferProgess.bodyText1 : ''
-          }`}
-          bodyText2={`${
-            fileTransferProgess.bodyText2 ? fileTransferProgess.bodyText2 : ''
-          }`}
+          values={fileTransferProgess.values}
+          titleText={fileTransferProgess.titleText ?? 'Transferring files...'}
           trigger={togglePasteDialog}
+          bottomText={fileTransferProgess.bottomText}
           fullWidthDialog
           maxWidthDialog="sm"
-          variant="determinate"
           helpText="If the progress bar freezes while transferring the files, restart the app and reconnect the device. This is a known Android MTP bug."
-          progressValue={fileTransferProgess.percentage}
         >
           <div className={styles.socialMediaShareContainer}>
             <Typography className={styles.socialMediaShareTitle}>
@@ -1664,7 +1674,6 @@ class FileExplorer extends Component {
             </div>
           </div>
         </ProgressBarDialog>
-
         <ConfirmDialog
           fullWidthDialog
           maxWidthDialog="xs"
@@ -1672,7 +1681,6 @@ class FileExplorer extends Component {
           trigger={togglePasteConfirmDialog}
           onClickHandler={this._handlePasteConfirmDialog}
         />
-
         <FileExplorerBodyRender
           deviceType={deviceType}
           fileExplorerListingType={fileExplorerListingType}
@@ -1703,6 +1711,7 @@ class FileExplorer extends Component {
           }
           onAcceleratorActivation={this._handleAcceleratorActivation}
         />
+        ;
       </Fragment>
     );
   }
@@ -1729,7 +1738,7 @@ const mapDispatchToProps = (dispatch, _) =>
       ) => {
         if (isChecked) {
           dispatch(
-            setSelectedDirLists(
+            actionSetSelectedDirLists(
               {
                 selected,
               },
@@ -1740,24 +1749,24 @@ const mapDispatchToProps = (dispatch, _) =>
           return;
         }
 
-        dispatch(setSelectedDirLists({ selected: [] }, deviceType));
+        dispatch(actionSetSelectedDirLists({ selected: [] }, deviceType));
       },
 
       actionCreateTableClick: ({ selected }, deviceType) => (_, __) => {
-        dispatch(setSelectedDirLists({ selected }, deviceType));
+        dispatch(actionSetSelectedDirLists({ selected }, deviceType));
       },
 
-      actionCreateFetchMtpStorageOptions: ({ ...args }, deviceType) => (
+      actionCreateInitializeMtp: ({ filePath, ignoreHidden, deviceType }) => (
         _,
         getState
       ) => {
         dispatch(
-          setMtpStorageOptions(
-            { ...args },
-            deviceType,
+          initializeMtp(
             {
-              changeMtpStorageIdsOnlyOnDeviceChange: false,
-              mtpStoragesList: {},
+              filePath,
+              ignoreHidden,
+              changeLegacyMtpStorageOnlyOnDeviceChange: false,
+              deviceType,
             },
             getState
           )
@@ -1772,6 +1781,8 @@ const mapDispatchToProps = (dispatch, _) =>
         { filePath, newFilename, deviceType },
         { ...listDirectoryArgs }
       ) => async (_, getState) => {
+        const { mtpMode } = getState().Settings;
+
         try {
           switch (deviceType) {
             case DEVICE_TYPE.local:
@@ -1787,12 +1798,12 @@ const mapDispatchToProps = (dispatch, _) =>
               });
 
               dispatch(
-                processLocalOutput({
+                churnLocalBuffer({
                   deviceType,
                   error: localError,
                   stderr: localStderr,
                   data: localData,
-                  callback: () => {
+                  onSuccess: () => {
                     dispatch(
                       listDirectory(
                         { ...listDirectoryArgs },
@@ -1805,7 +1816,7 @@ const mapDispatchToProps = (dispatch, _) =>
               );
               break;
             case DEVICE_TYPE.mtp:
-              const storageId = getStorageId(getState().Home);
+              const storageId = getSelectedStorageIdFromState(getState().Home);
               const {
                 error: mtpError,
                 stderr: mtpStderr,
@@ -1818,12 +1829,13 @@ const mapDispatchToProps = (dispatch, _) =>
               });
 
               dispatch(
-                processMtpOutput({
+                churnMtpBuffer({
                   deviceType,
                   error: mtpError,
                   stderr: mtpStderr,
                   data: mtpData,
-                  callback: () => {
+                  mtpMode,
+                  onSuccess: () => {
                     dispatch(
                       listDirectory(
                         { ...listDirectoryArgs },
@@ -1848,6 +1860,8 @@ const mapDispatchToProps = (dispatch, _) =>
         { ...listDirectoryArgs }
       ) => async (_, getState) => {
         try {
+          const { mtpMode } = getState().Settings;
+
           switch (deviceType) {
             case DEVICE_TYPE.local:
               const {
@@ -1861,12 +1875,12 @@ const mapDispatchToProps = (dispatch, _) =>
               });
 
               dispatch(
-                processLocalOutput({
+                churnLocalBuffer({
                   deviceType,
                   error: localError,
                   stderr: localStderr,
                   data: localData,
-                  callback: () => {
+                  onSuccess: () => {
                     dispatch(
                       listDirectory(
                         { ...listDirectoryArgs },
@@ -1879,7 +1893,7 @@ const mapDispatchToProps = (dispatch, _) =>
               );
               break;
             case DEVICE_TYPE.mtp:
-              const storageId = getStorageId(getState().Home);
+              const storageId = getSelectedStorageIdFromState(getState().Home);
               const {
                 error: mtpError,
                 stderr: mtpStderr,
@@ -1891,12 +1905,13 @@ const mapDispatchToProps = (dispatch, _) =>
               });
 
               dispatch(
-                processMtpOutput({
+                churnMtpBuffer({
                   deviceType,
                   error: mtpError,
                   stderr: mtpStderr,
                   data: mtpData,
-                  callback: () => {
+                  mtpMode,
+                  onSuccess: () => {
                     dispatch(
                       listDirectory(
                         { ...listDirectoryArgs },
@@ -1941,7 +1956,7 @@ const mapDispatchToProps = (dispatch, _) =>
             })
           );
 
-          dispatch(setSelectedDirLists({ selected: [] }, deviceType));
+          dispatch(actionSetSelectedDirLists({ selected: [] }, deviceType));
         } catch (e) {
           log.error(e);
         }
@@ -1954,20 +1969,150 @@ const mapDispatchToProps = (dispatch, _) =>
       ) => (_, getState) => {
         try {
           const {
+            mtpMode,
+            filesPreprocessingBeforeTransfer,
+          } = getState().Settings;
+
+          const {
             destinationFolder,
             storageId,
             fileTransferClipboard,
           } = pasteArgs;
 
+          // on pre process callback for file transfer
+          const onPreprocess = ({ fullPath }) => {
+            const bodyText1 = `Processing "${
+              springTruncate(fullPath, 45).truncatedText
+            }"`;
+
+            getCurrentWindow().setProgressBar(0);
+            dispatch(
+              setFileTransferProgress({
+                titleText: `Copying files to ${DEVICES_LABEL[deviceType]}...`,
+                bottomText: `If file processing is taking too much time, you may disable it from 'Settings' > 'FILE MANAGER' > 'Display overall progress on the file transfer screen'`,
+                toggle: true,
+                values: [
+                  {
+                    bodyText1,
+                    bodyText2: null,
+                    percentage: 0,
+                    variant: `indeterminate`,
+                  },
+                ],
+              })
+            );
+          };
+
+          // on progress callback for file transfer
+          const onProgress = ({
+            elapsedTime,
+            speed,
+            activeFileProgress,
+            currentFile,
+            activeFileSize,
+            activeFileSizeSent,
+            totalFiles,
+            filesSent,
+            totalFileSize,
+            totalFileSizeSent,
+            totalFileProgress,
+            direction,
+          }) => {
+            let windowProgressBar = 0;
+            let bodyText1 = 0;
+            let progressText = 0;
+
+            let progressInfo = [];
+
+            /// file transfer progress on legacy mode
+            if (mtpMode === MTP_MODE.legacy) {
+              bodyText1 = `${Math.floor(activeFileProgress)}% complete of "${
+                springTruncate(currentFile, 45).truncatedText
+              }"`;
+              progressText = `${niceBytes(activeFileSizeSent)} / ${niceBytes(
+                activeFileSize
+              )}`;
+              windowProgressBar = activeFileProgress / 100;
+
+              progressInfo = [
+                {
+                  bodyText1,
+                  bodyText2: `Elapsed: ${elapsedTime} | Progress: ${progressText} @ ${speed}/sec`,
+                  variant: `determinate`,
+                  percentage: activeFileProgress,
+                },
+              ];
+            } else {
+              checkIf(direction, 'string');
+              checkIf(direction, 'inObjectValues', FILE_TRANSFER_DIRECTION);
+
+              // active file progress
+              bodyText1 = `${Math.floor(activeFileProgress)}% complete of "${
+                springTruncate(currentFile, 45).truncatedText
+              }"`;
+              progressText = `${niceBytes(activeFileSizeSent)} / ${niceBytes(
+                activeFileSize
+              )}`;
+              const elapsedTimeText = `Elapsed: ${elapsedTime} | `;
+
+              progressInfo = [
+                {
+                  bodyText1,
+                  bodyText2: `${
+                    !filesPreprocessingBeforeTransfer[direction]
+                      ? elapsedTimeText
+                      : ''
+                  }Progress: ${progressText} @ ${speed}/sec`,
+                  variant: `determinate`,
+                  percentage: activeFileProgress,
+                },
+              ];
+              windowProgressBar = activeFileProgress / 100;
+
+              /// if preprocessing of file transfer is enabled then show total file transfer information as well
+              if (filesPreprocessingBeforeTransfer[direction]) {
+                // if preprocessing of file transfer is enabled then [windowProgressBar]
+                // progress value should be the [totalFileProgress] else [activeFileProgress] will be used
+                windowProgressBar = totalFileProgress / 100;
+
+                const bodyText1 = `${filesSent} of ${totalFiles} ${getPluralText(
+                  'file',
+                  totalFiles
+                )} copied | ${Math.floor(totalFileProgress)}% completed`;
+                const progressText = `${niceBytes(
+                  totalFileSizeSent
+                )} / ${niceBytes(totalFileSize)}`;
+
+                progressInfo.push({
+                  bodyText1,
+                  bodyText2: `${elapsedTimeText}Progress: ${progressText}`,
+                  variant: `determinate`,
+                  percentage: totalFileProgress,
+                });
+              }
+            }
+
+            getCurrentWindow().setProgressBar(windowProgressBar);
+            dispatch(
+              setFileTransferProgress({
+                titleText: `Copying files to ${DEVICES_LABEL[deviceType]}...`,
+                bottomText: null,
+                toggle: true,
+                values: progressInfo,
+              })
+            );
+          };
+
           // on error callback for file transfer
           const onError = ({ error, stderr, data }) => {
             dispatch(
-              processMtpOutput({
+              churnMtpBuffer({
                 deviceType: DEVICE_TYPE.mtp,
                 error,
                 stderr,
                 data,
-                callback: () => {
+                mtpMode,
+                onSuccess: () => {
                   getCurrentWindow().setProgressBar(-1);
                   dispatch(clearFileTransfer());
                   dispatch(
@@ -1978,34 +2123,6 @@ const mapDispatchToProps = (dispatch, _) =>
                     )
                   );
                 },
-              })
-            );
-          };
-
-          // on progress callback for file transfer
-          const onProgress = ({
-            elapsedTime,
-            speed,
-            percentage,
-            currentFile,
-            activeFileSize,
-            activeFileSent,
-          }) => {
-            const bodyText1 = `${percentage}% complete of ${truncate(
-              baseName(currentFile),
-              45
-            )}`;
-            const bodyText2 = `${niceBytes(activeFileSent)} / ${niceBytes(
-              activeFileSize
-            )}`;
-
-            getCurrentWindow().setProgressBar(percentage / 100);
-            dispatch(
-              setFileTransferProgress({
-                toggle: true,
-                bodyText1,
-                bodyText2: `Elapsed: ${elapsedTime} | Progress: ${bodyText2} @ ${speed}/sec`,
-                percentage,
               })
             );
           };
@@ -2026,10 +2143,11 @@ const mapDispatchToProps = (dispatch, _) =>
                 destination: destinationFolder,
                 storageId,
                 fileList: fileTransferClipboard?.queue ?? [],
-                direction: 'download',
+                direction: FILE_TRANSFER_DIRECTION.download,
                 onCompleted,
                 onError,
                 onProgress,
+                onPreprocess,
               });
 
               break;
@@ -2039,10 +2157,11 @@ const mapDispatchToProps = (dispatch, _) =>
                 destination: destinationFolder,
                 storageId,
                 fileList: fileTransferClipboard?.queue ?? [],
-                direction: 'upload',
+                direction: FILE_TRANSFER_DIRECTION.upload,
                 onCompleted,
                 onError,
                 onProgress,
+                onPreprocess,
               });
 
               break;
@@ -2069,6 +2188,26 @@ const mapDispatchToProps = (dispatch, _) =>
           log.error(e);
         }
       },
+      actionCreatedDisposeMtp: ({ deviceType }) => (_, getState) => {
+        try {
+          if (deviceType === DEVICE_TYPE.local) {
+            return;
+          }
+
+          dispatch(
+            disposeMtp(
+              {
+                deviceType,
+                onError: () => {},
+                onSuccess: () => {},
+              },
+              getState
+            )
+          );
+        } catch (e) {
+          log.error(e);
+        }
+      },
     },
     dispatch
   );
@@ -2088,6 +2227,7 @@ const mapStateToProps = (state, _) => {
     fileExplorerListingType: makeFileExplorerListingType(state),
     focussedFileExplorerDeviceType: makeFocussedFileExplorerDeviceType(state),
     appThemeMode: makeAppThemeMode(state),
+    mtpMode: makeMtpMode(state),
     showDirectoriesFirst: makeShowDirectoriesFirst(state),
   };
 };

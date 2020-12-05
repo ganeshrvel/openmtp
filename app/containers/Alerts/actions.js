@@ -1,4 +1,4 @@
-import prefixer from '../../utils/reducerPrefixer';
+import prefixer from '../../helpers/reducerPrefixer';
 
 const prefix = '@@Alerts';
 const actionTypesList = ['THROW_ALERT', 'CLEAR_ALERT'];

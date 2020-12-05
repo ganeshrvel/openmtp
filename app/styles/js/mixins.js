@@ -1,47 +1,55 @@
 // eslint-disable-next-line no-unused-vars
+import { checkIf } from '../../utils/checkIf';
+
+export const commonThemes = {
+  resetUl: {
+    'margin-block-start': 'unset',
+  },
+  noselect: {
+    [`-webkitTouchCallout`]: `none`,
+    [`-webkitUserSelect`]: `none`,
+    [`-khtmlUserSelect`]: `none`,
+    [`-mozUserSelect`]: `none`,
+    [`-msUserSelect`]: `none`,
+    [`userSelect`]: `none`,
+  },
+  noDrag: {
+    WebkitUserDrag: 'none',
+    KhtmlUserDrag: 'none',
+    MozUserDrag: 'none',
+    OUserDrag: 'none',
+    userDrag: 'none',
+  },
+  noOutline: {
+    outline: `none !important`,
+  },
+  absoluteCenter: {
+    position: 'absolute',
+    left: '50%',
+    top: '50%',
+    WebkitTransform: 'translate(-50%, -50%)',
+    transform: 'translate(-50%, -50%)',
+  },
+  center: {
+    marginLeft: `auto`,
+    marginRight: `auto`,
+  },
+  get appDragEnable() {
+    return {
+      [`-webkitAppRegion`]: `drag`,
+      ...this.noselect,
+    };
+  },
+  appDragDisable: {
+    [`-webkitAppRegion`]: `no-drag`,
+  },
+};
+
 export default ({ theme }) => {
+  checkIf(theme, 'object');
+
   return {
-    resetUl: {
-      'margin-block-start': 'unset',
-    },
-    noselect: {
-      [`-webkitTouchCallout`]: `none`,
-      [`-webkitUserSelect`]: `none`,
-      [`-khtmlUserSelect`]: `none`,
-      [`-mozUserSelect`]: `none`,
-      [`-msUserSelect`]: `none`,
-      [`userSelect`]: `none`,
-    },
-    noDrag: {
-      WebkitUserDrag: 'none',
-      KhtmlUserDrag: 'none',
-      MozUserDrag: 'none',
-      OUserDrag: 'none',
-      userDrag: 'none',
-    },
-    noOutline: {
-      outline: `none !important`,
-    },
-    absoluteCenter: {
-      position: 'absolute',
-      left: '50%',
-      top: '50%',
-      WebkitTransform: 'translate(-50%, -50%)',
-      transform: 'translate(-50%, -50%)',
-    },
-    center: {
-      marginLeft: `auto`,
-      marginRight: `auto`,
-    },
-    get appDragEnable() {
-      return {
-        [`-webkitAppRegion`]: `drag`,
-        ...this.noselect,
-      };
-    },
-    appDragDisable: {
-      [`-webkitAppRegion`]: `no-drag`,
-    },
+    ...commonThemes,
     a: {
       cursor: `pointer`,
       color: theme.palette.secondary.main,

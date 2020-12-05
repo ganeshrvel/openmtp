@@ -3,7 +3,10 @@ import {
   DEVICE_TYPE,
   FILE_EXPLORER_VIEW_TYPE,
   APP_THEME_MODE_TYPE,
+  MTP_MODE,
+  FILE_TRANSFER_DIRECTION,
 } from '../../enums';
+import { checkIf } from '../../utils/checkIf';
 
 export const initialState = {
   freshInstall: 0,
@@ -20,7 +23,6 @@ export const initialState = {
     [DEVICE_TYPE.local]: true,
     [DEVICE_TYPE.mtp]: true,
   },
-
   fileExplorerListingType: {
     [DEVICE_TYPE.local]: FILE_EXPLORER_VIEW_TYPE.grid,
     [DEVICE_TYPE.mtp]: FILE_EXPLORER_VIEW_TYPE.grid,
@@ -29,6 +31,11 @@ export const initialState = {
   showLocalPane: true,
   showLocalPaneOnLeftSide: true,
   showDirectoriesFirst: true,
+  mtpMode: MTP_MODE.kalam,
+  filesPreprocessingBeforeTransfer: {
+    [FILE_TRANSFER_DIRECTION.upload]: true,
+    [FILE_TRANSFER_DIRECTION.download]: true,
+  },
 };
 
 export default function Settings(state = initialState, action) {
@@ -76,6 +83,18 @@ export default function Settings(state = initialState, action) {
 
     case actionTypes.COPY_JSON_FILE_TO_SETTINGS:
       return { ...state, ...payload };
+
+    case actionTypes.SET_FILES_PREPROCESSING_BEFORE_TRANSFER:
+      checkIf(payload.direction, 'string');
+      checkIf(payload.direction, 'inObjectValues', FILE_TRANSFER_DIRECTION);
+
+      return {
+        ...state,
+        filesPreprocessingBeforeTransfer: {
+          ...state.filesPreprocessingBeforeTransfer,
+          [payload.direction]: payload.value,
+        },
+      };
 
     default:
       return state;

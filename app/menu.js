@@ -4,7 +4,7 @@ import {
   keyboardShortcutsWindow,
   privacyPolicyWindow,
   reportBugsWindow,
-} from './utils/createWindows';
+} from './helpers/createWindows';
 import { DEBUG_PROD, IS_DEV } from './constants/env';
 import { APP_NAME, APP_GITHUB_URL } from './constants/meta';
 import { openExternalUrl } from './utils/url';

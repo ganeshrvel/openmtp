@@ -7,6 +7,28 @@ class FileExplorerController {
   }
 
   /**
+   * description - Initialize
+   *
+   * @return {Promise<{data: object, error: string|null, stderr: string|null}>}
+   */
+  async initialize({ deviceType }) {
+    checkIf(deviceType, 'string');
+
+    return this.repository.initialize({ deviceType });
+  }
+
+  /**
+   * description - Dispose
+   *
+   * @return {Promise<{data: object, error: string|null, stderr: string|null}>}
+   */
+  async dispose({ deviceType }) {
+    checkIf(deviceType, 'string');
+
+    return this.repository.dispose({ deviceType });
+  }
+
+  /**
    * description - Fetch storages
    *
    * @return {Promise<{data: object|boolean, error: string|null, stderr: string|null}>}
@@ -127,6 +149,7 @@ class FileExplorerController {
    * @param {[string]} fileList
    * @param {string} storageId
    * @param {errorCallback} onError
+   * @param {preprocessCallback} onPreprocess
    * @param {progressCallback} onProgress
    * @param {completedCallback} onCompleted
    *
@@ -139,6 +162,7 @@ class FileExplorerController {
     direction,
     storageId,
     onError,
+    onPreprocess,
     onProgress,
     onCompleted,
   }) => {
@@ -147,6 +171,7 @@ class FileExplorerController {
     checkIf(direction, 'string');
     checkIf(fileList, 'array');
     checkIf(onError, 'function');
+    checkIf(onPreprocess, 'function');
     checkIf(onProgress, 'function');
     checkIf(onCompleted, 'function');
 
@@ -159,6 +184,7 @@ class FileExplorerController {
       onError,
       onProgress,
       onCompleted,
+      onPreprocess,
     });
   };
 

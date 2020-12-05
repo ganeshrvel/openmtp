@@ -1,21 +1,24 @@
 /* eslint global-require: off */
 
+import './services/sentry/index';
+
 import { app, BrowserWindow, ipcMain, nativeTheme } from 'electron';
 import electronIs from 'electron-is';
 import MenuBuilder from './menu';
 import { log } from './utils/log';
 import { DEBUG_PROD, IS_DEV, IS_PROD } from './constants/env';
 import AppUpdate from './classes/AppUpdate';
-import { PATHS } from './utils/paths';
-import { settingsStorage } from './utils/storageHelper';
+import { PATHS } from './constants/paths';
+import { settingsStorage } from './helpers/storageHelper';
 import { AUTO_UPDATE_CHECK_FIREUP_DELAY } from './constants';
 import { appEvents } from './utils/eventHandling';
-import { bootLoader } from './utils/bootHelper';
-import { nonBootableDeviceWindow } from './utils/createWindows';
+import { bootLoader } from './helpers/bootHelper';
+import { nonBootableDeviceWindow } from './helpers/createWindows';
 import { APP_TITLE } from './constants/meta';
 import { isPackaged } from './utils/isPackaged';
-import { getWindowBackgroundColor } from './utils/windowHelper';
-import { APP_THEME_MODE_TYPE } from './enums';
+import { getWindowBackgroundColor } from './helpers/windowHelper';
+import { APP_THEME_MODE_TYPE, DEVICE_TYPE } from './enums';
+import fileExplorerController from './data/file-explorer/controllers/FileExplorerController';
 
 const isSingleInstance = app.requestSingleInstanceLock();
 const isDeviceBootable = bootTheDevice();
@@ -242,7 +245,17 @@ if (!isDeviceBootable) {
     }
   });
 
-  app.on('before-quit', () => (app.quitting = true)); // eslint-disable-line no-return-assign
+  app.on('before-quit', async () => {
+    fileExplorerController
+      .dispose({
+        deviceType: DEVICE_TYPE.mtp,
+      })
+      .catch((e) => {
+        log.error(e, `main.dev -> before-quit`);
+      });
+
+    app.quitting = true;
+  });
 
   nativeTheme.on('updated', () => {
     const setting = settingsStorage.getItems(['appThemeMode']);

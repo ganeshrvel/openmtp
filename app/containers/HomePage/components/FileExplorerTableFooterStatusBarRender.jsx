@@ -6,6 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import { styles } from '../styles/FileExplorerTableFooterStatusBarRender';
 import { getPluralText } from '../../../utils/funcs';
 import { DEVICE_TYPE } from '../../../enums';
+import { DEVICES_LABEL } from '../../../constants';
 
 class FileExplorerTableFooterStatusBarRender extends PureComponent {
   getDirectoryListStats = () => {
@@ -38,14 +39,14 @@ class FileExplorerTableFooterStatusBarRender extends PureComponent {
   };
 
   RenderDeviceName = () => {
-    const { classes: styles, deviceType } = this.props;
+    const { classes: styles, deviceType, mtpDevice } = this.props;
 
     if (deviceType === DEVICE_TYPE.local) {
       return (
         <Fragment>
           <FontAwesomeIcon icon={faLaptop} title={deviceType} />
           <span className={styles.deviceTypeWrapper}>
-            Local Disk
+            {DEVICES_LABEL[deviceType]}
             <span> - </span>
           </span>
         </Fragment>
@@ -56,7 +57,7 @@ class FileExplorerTableFooterStatusBarRender extends PureComponent {
       <Fragment>
         <FontAwesomeIcon icon={faMobile} title={deviceType} />
         <span className={styles.deviceTypeWrapper}>
-          Mobile
+          {mtpDevice?.info?.Model ?? DEVICES_LABEL[deviceType]}
           <span> - </span>
         </span>
       </Fragment>

@@ -6,13 +6,13 @@
  */
 
 import { readdirSync } from 'fs';
-import { PATHS } from '../utils/paths';
+import { PATHS } from '../constants/paths';
 import {
   fileExistsSync,
   writeFileAsync,
   createDirSync,
   deleteFilesSync,
-} from '../utils/fileOps';
+} from '../helpers/fileOps';
 import { dateNow, daysDiff } from '../utils/date';
 import { LOG_FILE_ROTATION_CLEANUP_THRESHOLD } from '../constants';
 import { baseName } from '../utils/files';

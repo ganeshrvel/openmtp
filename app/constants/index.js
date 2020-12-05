@@ -3,7 +3,7 @@
  * Note: Don't import log helper file from utils here
  */
 
-import { PATHS } from '../utils/paths';
+import { PATHS } from './paths';
 import { DEVICE_TYPE } from '../enums';
 
 export const DEVICES_DEFAULT_PATH = {
