@@ -77,7 +77,7 @@ export const log = {
     }
 
     const logType = isError ? `Error` : `Info`;
-    let err = `${logType} title: ${title}${EOL}${logType} body: ${EOL}${e.toString()}${EOL}`;
+    let err = `${logType} title: ${title}${EOL}${logType} body: ${EOL}${e?.toString()}${EOL}`;
 
     // if [e] is an Instance of Error then stringify it
     if (isConsoleError(e)) {
@@ -85,7 +85,7 @@ export const log = {
     }
 
     if (!isEmpty(customError)) {
-      err += `Custom ${logType}: ${customError.toString()}${EOL}`;
+      err += `Custom ${logType}: ${customError?.toString()}${EOL}`;
     }
 
     let _deviceInfoStrigified = '';

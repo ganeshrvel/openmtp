@@ -23,7 +23,7 @@ class ErrorBoundary extends Component {
 
     log.doLog(error, `ErrorBoundary.componentDidCatch.error`, null, true);
     log.doLog(
-      errorInfo,
+      errorInfo?.componentStack,
       `ErrorBoundary.componentDidCatch.errorInfo`,
       null,
       true
