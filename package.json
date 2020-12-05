@@ -20,7 +20,7 @@
     "package-win": "yarn build && electron-builder build --win --x64 --publish never",
     "prestart": "yarn build",
     "start": "cross-env NODE_ENV=production run-electron ./app/main.prod.js",
-    "start-main-dev": "cross-env HOT=1 NODE_ENV=development run-electron -r @babel/register ./app/main.dev.js",
+    "start-main-dev": "cross-env START_HOT=1 NODE_ENV=development run-electron -r @babel/register ./app/main.dev.js",
     "start-renderer-dev": "cross-env NODE_ENV=development webpack serve --config webpack/config.renderer.dev.babel.js",
     "publish-mac": "yarn build && electron-builder build --mac --publish always",
     "dev-docs": "cross-env NODE_ENV=development webpack serve --config docs-sources/webpack/webpack.config.base.js",
