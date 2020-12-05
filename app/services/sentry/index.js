@@ -4,6 +4,7 @@ import { ENV_FLAVOR } from '../../constants/env';
 import { SERVICE_KEYS } from '../../constants/serviceKeys';
 import { getDeviceInfo } from '../../helpers/deviceInfo';
 import { isEmpty } from '../../utils/funcs';
+import { pkginfo } from '../../utils/pkginfo';
 
 class SentryService {
   constructor() {
@@ -11,6 +12,7 @@ class SentryService {
       dsn: SERVICE_KEYS.sentryDsn,
       // disabled native crash reporting to respect user's privacy
       enableNative: false,
+      release: pkginfo.version,
     });
   }
 
