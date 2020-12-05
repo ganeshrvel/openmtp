@@ -68,14 +68,15 @@ export default merge(baseConfig, {
       START_MINIMIZED: false,
     }),
 
-    new SentryWebpackPlugin({
-      include: 'app/main.prod.js.map',
-      ignore: ['node_modules', 'webpack'],
-      urlPrefix: '~/app',
-      configFile: 'sentry.properties',
-      rewrite: false,
-      release: pkginfo.version,
-    }),
+    //todo
+    /*    new SentryWebpackPlugin({
+          include: 'app/main.prod.js.map',
+          ignore: ['node_modules', 'webpack'],
+          urlPrefix: '~/app',
+          configFile: 'sentry.properties',
+          rewrite: false,
+          release: pkginfo.version,
+        }),*/
   ],
 
   /**

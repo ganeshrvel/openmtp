@@ -130,9 +130,10 @@ if (!isDeviceBootable) {
 
   const createWindow = async () => {
     try {
-      if (IS_DEV || DEBUG_PROD) {
-        await installExtensions();
-      }
+      //todo
+      // if (IS_DEV || DEBUG_PROD) {
+      await installExtensions();
+      // }
 
       mainWindow = new BrowserWindow({
         title: `${APP_TITLE}`,
@@ -194,9 +195,10 @@ if (!isDeviceBootable) {
 
       let appUpdaterEnable = true;
 
-      if (isPackaged && process.platform === 'darwin') {
-        appUpdaterEnable = !isMas && app.isInApplicationsFolder();
-      }
+      //todo uncomment
+      // if (isPackaged && process.platform === 'darwin') {
+      //   appUpdaterEnable = !isMas && app.isInApplicationsFolder();
+      // }
 
       const autoUpdateCheckSettings = settingsStorage.getItems([
         'enableBackgroundAutoUpdate',
@@ -275,3 +277,11 @@ if (!isDeviceBootable) {
     });
   });
 }
+
+//todo
+console.log('todo');
+console.log('change version code');
+console.log('uncomment enable updater check');
+console.log('webpack sentry');
+console.log('createWindow');
+console.log('main menu');
