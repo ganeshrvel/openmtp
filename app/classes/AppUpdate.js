@@ -11,6 +11,7 @@ import {
   getWindowBackgroundColor,
 } from '../helpers/windowHelper';
 import { appUpdateAvailableWindow } from '../helpers/createWindows';
+import { UPDATER_STATUS } from '../enums/appUpdater';
 
 let progressbarWindow = null;
 let isFileTransferActiveFlag = false;
@@ -101,8 +102,8 @@ export default class AppUpdate {
       title: null,
       message: null,
     };
-    //move this to enum
-    this.updateIsActive = 0; // 0 = no, 1 = update check in progress, -1 = update in progress
+
+    this.updateStatus = UPDATER_STATUS.inactive;
     this.disableAutoUpdateCheck = false;
   }
 
@@ -141,7 +142,10 @@ export default class AppUpdate {
       });
 
       this.autoUpdater.on('update-available', (info) => {
-        if (progressbarWindow !== null && this.updateIsActive !== -1) {
+        if (
+          progressbarWindow !== null &&
+          this.updateStatus !== UPDATER_STATUS.updateInProgress
+        ) {
           progressbarWindow.close();
         }
 
@@ -155,7 +159,7 @@ export default class AppUpdate {
         const _appUpdateAvailableWindow = appUpdateAvailableWindow();
 
         _appUpdateAvailableWindow.on('close', () => {
-          if (this.updateIsActive !== -1) {
+          if (this.updateStatus !== UPDATER_STATUS.updateInProgress) {
             this.closeActiveUpdates();
           }
         });
@@ -171,7 +175,7 @@ export default class AppUpdate {
           const { confirm } = args;
 
           if (!confirm) {
-            if (this.updateIsActive !== -1) {
+            if (this.updateStatus !== UPDATER_STATUS.updateInProgress) {
               this.closeActiveUpdates();
             }
 
@@ -236,16 +240,20 @@ export default class AppUpdate {
             return null;
           }
 
-          if (this.updateIsActive === 1 || this.disableAutoUpdateCheck) {
+          if (
+            this.updateStatus === UPDATER_STATUS.checkInProgress ||
+            this.disableAutoUpdateCheck
+          ) {
             return null;
           }
 
           this.autoUpdater.on('update-not-available', () => {
-            this.updateIsActive = 0;
+            this.updateStatus = UPDATER_STATUS.inactive;
           });
 
           this.autoUpdater.checkForUpdates();
-          this.updateIsActive = 1;
+
+          this.updateStatus = UPDATER_STATUS.checkInProgress;
 
           return true;
         })
@@ -263,7 +271,10 @@ export default class AppUpdate {
         return;
       }
 
-      if (!this.updateForceCheckFlag && this.updateIsActive !== 1) {
+      if (
+        !this.updateForceCheckFlag &&
+        this.updateStatus !== UPDATER_STATUS.checkInProgress
+      ) {
         this.autoUpdater.on('checking-for-update', () => {
           this.setCheckUpdatesProgress();
         });
@@ -290,11 +301,11 @@ export default class AppUpdate {
         });
       }
 
-      if (this.updateIsActive === 1) {
+      if (this.updateStatus === UPDATER_STATUS.checkInProgress) {
         return null;
       }
 
-      if (this.updateIsActive === -1) {
+      if (this.updateStatus === UPDATER_STATUS.updateInProgress) {
         const { response: buttonIndex } = await dialog.showMessageBox({
           title: 'Update in progress',
           message:
@@ -308,7 +319,7 @@ export default class AppUpdate {
             break;
           case 1:
             this.autoUpdater.checkForUpdates();
-            this.updateIsActive = -1;
+            this.updateStatus = UPDATER_STATUS.updateInProgress;
             break;
         }
 
@@ -318,7 +329,7 @@ export default class AppUpdate {
       this.autoUpdater.checkForUpdates();
       this.updateForceCheckFlag = true;
       this.disableAutoUpdateCheck = true;
-      this.updateIsActive = 1;
+      this.updateStatus = UPDATER_STATUS.checkInProgress;
     } catch (e) {
       log.error(e, `AppUpdate -> forceCheck`);
     }
@@ -490,8 +501,8 @@ export default class AppUpdate {
     }
   }
 
-  closeActiveUpdates(updateIsActive = 0) {
+  closeActiveUpdates(updateStatus = UPDATER_STATUS.inactive) {
     this.setTaskBarProgressBar(-1);
-    this.updateIsActive = updateIsActive;
+    this.updateStatus = updateStatus;
   }
 }

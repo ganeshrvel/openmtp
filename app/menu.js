@@ -19,10 +19,9 @@ export default class MenuBuilder {
   }
 
   buildMenu() {
-    //todo
-    //if (IS_DEV || DEBUG_PROD) {
+    if (IS_DEV || DEBUG_PROD) {
       this.setupDevelopmentEnvironment();
-    //}
+    }
 
     const template =
       process.platform === 'darwin'

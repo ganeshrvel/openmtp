@@ -247,15 +247,14 @@ export default merge(baseConfig, {
     //   openAnalyzer: process.env.OPEN_ANALYZER === 'true',
     // }),
 
-    //todo
- /*   new SentryWebpackPlugin({
+    new SentryWebpackPlugin({
       include: 'app/dist',
       ignore: ['node_modules', 'webpack'],
       urlPrefix: '~/app/dist',
       configFile: 'sentry.properties',
       rewrite: false,
       release: pkginfo.version,
-    }),*/
+    }),
   ],
 
   /**
