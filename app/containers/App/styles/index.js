@@ -20,6 +20,8 @@ export const getColorPalette = () => {
   const darkPrimaryColor = '#242424';
   const darkSecondaryColor = '#007af5';
 
+  const snackbarError = `#f33950`;
+
   return {
     get light() {
       return {
@@ -34,6 +36,9 @@ export const getColorPalette = () => {
         background: {
           default: darkPrimaryColor,
           paper: lightPrimaryColor,
+        },
+        snackbar: {
+          error: snackbarError,
         },
         btnTextColor: '#fff',
         fileColor: '#000',
@@ -64,6 +69,9 @@ export const getColorPalette = () => {
           primary: '#fff',
           secondary: 'rgba(255, 255, 255, 0.65)',
           disabled: 'rgba(255, 255, 255, 0.4)',
+        },
+        snackbar: {
+          error: snackbarError,
         },
         action: {
           active: 'rgba(255, 255, 255, 0.65)',

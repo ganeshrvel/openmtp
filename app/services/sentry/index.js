@@ -8,6 +8,10 @@ import { pkginfo } from '../../utils/pkginfo';
 
 class SentryService {
   constructor() {
+    if (!ENV_FLAVOR.reportToSenty) {
+      return;
+    }
+
     Sentry.init({
       dsn: SERVICE_KEYS.sentryDsn,
       // disabled native crash reporting to respect user's privacy

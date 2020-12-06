@@ -2,7 +2,7 @@ import { actionTypes } from './actions';
 
 export const initialState = {
   message: null,
-  autoHideDuration: 6000,
+  autoHideDuration: 2500, // in ms
   variant: `error`,
 };
 

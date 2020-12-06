@@ -6,7 +6,7 @@ export const styles = (theme) => ({
     backgroundColor: green[600],
   },
   error: {
-    backgroundColor: theme.palette.error.dark,
+    backgroundColor: theme.palette.snackbar.error,
   },
   info: {
     backgroundColor: theme.palette.primary.dark,
@@ -15,7 +15,10 @@ export const styles = (theme) => ({
     backgroundColor: amber[700],
   },
   icon: {
-    fontSize: 20,
+    fontSize: 25,
+    color: '#fff',
+  },
+  closeBtn: {
     color: '#fff',
   },
   iconVariant: {
@@ -26,11 +29,14 @@ export const styles = (theme) => ({
     display: 'flex',
     alignItems: 'center',
     color: '#fff',
+    fontWeight: 500,
   },
   root: {
     minWidth: 288,
     maxWidth: 568,
-    borderRadius: 4,
+    minHeight: 60,
+    borderRadius: 15,
     flexGrow: `unset`,
+    cursor: `pointer`,
   },
 });
