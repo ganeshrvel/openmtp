@@ -1,13 +1,39 @@
+import { exec } from 'child_process';
+import Promise from 'bluebird';
 import { log } from '../../../utils/log';
 import { Kalam } from '../../../../ffi/kalam/src/Kalam';
 import { checkIf } from '../../../utils/checkIf';
 import { isArray, isEmpty } from '../../../utils/funcs';
 import { getFilesPreprocessingBeforeTransferSetting } from '../../../helpers/settings';
 import { msToTime } from '../../../utils/date';
+import { kalamDebugReportCli } from '../../../helpers/binaries';
 
 export class FileExplorerKalamDataSource {
   constructor() {
     this.kalamFfi = new Kalam();
+    this.execPromise = Promise.promisify(exec);
+  }
+
+  /**
+   * Execute a binary file
+   * @param command
+   * @return {Promise<unknown>}
+   * @private
+   */
+  async _exec(command) {
+    try {
+      return new Promise((resolve) => {
+        this.execPromise(command, (error, stdout, stderr) => {
+          return resolve({
+            data: stdout,
+            stderr,
+            error,
+          });
+        });
+      });
+    } catch (e) {
+      log.error(e);
+    }
   }
 
   /**
@@ -375,12 +401,43 @@ export class FileExplorerKalamDataSource {
       });
     } catch (e) {
       log.error(e);
+
+      return { error: e, stderr: null, data: false };
     }
   }
 
-  catch(e) {
-    log.error(e);
+  /**
+   * description: fetch the required data for generating bug/error reports
+   *
+   * @return {Promise<{data: string|null, error: string|null, stderr: string|null}>}
+   */
+  async fetchDebugReport() {
+    try {
+      // dispose the mtp before generating the report
+      await this.dispose();
 
-    return { error: e, stderr: null, data: false };
+      const { data, error, stderr } = await this._exec(kalamDebugReportCli);
+
+      if (error) {
+        log.doLog(error, `FileExplorerKalamDataSource.fetchDebugReport.error`);
+
+        return { error, stderr, data: null };
+      }
+
+      if (stderr) {
+        log.doLog(
+          stderr,
+          `FileExplorerKalamDataSource.fetchDebugReport.stderr`
+        );
+
+        return { error, stderr, data: null };
+      }
+
+      return { error: null, stderr: null, data };
+    } catch (e) {
+      log.error(e);
+
+      return { error: null, stderr: null, data: null };
+    }
   }
 }

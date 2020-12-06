@@ -346,7 +346,7 @@ export class FileExplorerRepository {
 
         case MTP_MODE.kalam:
         default:
-          return;
+          return this.kalamMtpDataSource.fetchDebugReport();
       }
     }
 
