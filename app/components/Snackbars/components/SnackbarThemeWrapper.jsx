@@ -3,8 +3,7 @@ import classNames from 'classnames';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import ErrorIcon from '@material-ui/icons/Error';
 import InfoIcon from '@material-ui/icons/Info';
-import CloseIcon from '@material-ui/icons/Close';
-import IconButton from '@material-ui/core/IconButton';
+import Button from '@material-ui/core/Button';
 import SnackbarContent from '@material-ui/core/SnackbarContent';
 import WarningIcon from '@material-ui/icons/Warning';
 import { withStyles } from '@material-ui/core/styles';
@@ -23,6 +22,7 @@ const SnackbarThemeWrapper = (props) => {
 
   return (
     <SnackbarContent
+      onClick={onClose}
       className={classNames(styles[variant], styles.root)}
       aria-describedby="client-snackbar"
       message={
@@ -32,14 +32,14 @@ const SnackbarThemeWrapper = (props) => {
         </span>
       }
       action={[
-        <IconButton
-          key="close"
-          aria-label="Close"
-          className={styles.close}
+        <Button
+          key={1}
           onClick={onClose}
+          color="primary"
+          className={styles.closeBtn}
         >
-          <CloseIcon className={styles.icon} />
-        </IconButton>,
+          Close
+        </Button>,
       ]}
       {...other}
     />
