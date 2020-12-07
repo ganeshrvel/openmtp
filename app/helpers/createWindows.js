@@ -261,12 +261,6 @@ const appUpdateAvailableCreateWindow = () => {
   });
 };
 
-// todo: convert this into:
-//    {
-//       windowObj: existingWindow ?? new remote.BrowserWindow(config),
-//       isExisting: !!existingWindow,
-//     };
-// model
 export const appUpdateAvailableWindow = () => {
   try {
     if (_appUpdateAvailableWindow) {
@@ -328,47 +322,56 @@ const appFeaturesCreateWindow = (isRenderedPage) => {
   // incoming call from a rendered page
   if (isRenderedPage) {
     const allWindows = remote.BrowserWindow.getAllWindows();
+    const existingWindow = loadExistingWindow(
+      allWindows,
+      APP_FEATURES_PAGE_TITLE
+    );
 
-    return loadExistingWindow(allWindows, APP_FEATURES_PAGE_TITLE)
-      ? null
-      : new remote.BrowserWindow(config);
+    return {
+      windowObj: existingWindow ?? new remote.BrowserWindow(config),
+      isExisting: !!existingWindow,
+    };
   }
 
   // incoming call from the main process
   const allWindows = BrowserWindow.getAllWindows();
+  const existingWindow = loadExistingWindow(
+    allWindows,
+    APP_FEATURES_PAGE_TITLE
+  );
 
-  return loadExistingWindow(allWindows, APP_FEATURES_PAGE_TITLE)
-    ? null
-    : new BrowserWindow(config);
+  return {
+    windowObj: existingWindow ?? new BrowserWindow(config),
+    isExisting: !!existingWindow,
+  };
 };
 
-// todo: convert this into:
-//    {
-//       windowObj: existingWindow ?? new remote.BrowserWindow(config),
-//       isExisting: !!existingWindow,
-//     };
-// model
-export const appFeaturesWindow = (isRenderedPage = false) => {
+export const appFeaturesWindow = (isRenderedPage = false, focus = true) => {
   try {
     if (_appFeaturesWindow) {
-      _appFeaturesWindow.focus();
-      _appFeaturesWindow.show();
+      if (focus) {
+        _appFeaturesWindow.focus();
+        _appFeaturesWindow.show();
+      }
 
       return _appFeaturesWindow;
     }
 
     // show the existing _appFeaturesWindow
-    const _appFeaturesWindowTemp = appFeaturesCreateWindow(isRenderedPage);
+    const { windowObj, isExisting } = appFeaturesCreateWindow(isRenderedPage);
 
-    if (!_appFeaturesWindowTemp) {
-      return _appFeaturesWindow;
+    // return the existing windowObj object
+    if (isExisting) {
+      return windowObj;
     }
 
-    _appFeaturesWindow = _appFeaturesWindowTemp;
+    _appFeaturesWindow = windowObj;
     _appFeaturesWindow.loadURL(`${PATHS.loadUrlPath}#appFeaturesPage`);
     _appFeaturesWindow.webContents.on('did-finish-load', () => {
-      _appFeaturesWindow.show();
-      _appFeaturesWindow.focus();
+      if (focus) {
+        _appFeaturesWindow.show();
+        _appFeaturesWindow.focus();
+      }
     });
 
     _appFeaturesWindow.onerror = (error) => {
@@ -410,51 +413,63 @@ const keyboardShortcutsCreateWindow = (isRenderedPage) => {
   // incoming call from a rendered page
   if (isRenderedPage) {
     const allWindows = remote.BrowserWindow.getAllWindows();
+    const existingWindow = loadExistingWindow(
+      allWindows,
+      KEYBOARD_SHORTCUTS_PAGE_TITLE
+    );
 
-    return loadExistingWindow(allWindows, KEYBOARD_SHORTCUTS_PAGE_TITLE)
-      ? null
-      : new remote.BrowserWindow(config);
+    return {
+      windowObj: existingWindow ?? new remote.BrowserWindow(config),
+      isExisting: !!existingWindow,
+    };
   }
 
   // incoming call from the main process
   const allWindows = BrowserWindow.getAllWindows();
+  const existingWindow = loadExistingWindow(
+    allWindows,
+    KEYBOARD_SHORTCUTS_PAGE_TITLE
+  );
 
-  return loadExistingWindow(allWindows, KEYBOARD_SHORTCUTS_PAGE_TITLE)
-    ? null
-    : new BrowserWindow(config);
+  return {
+    windowObj: existingWindow ?? new BrowserWindow(config),
+    isExisting: !!existingWindow,
+  };
 };
 
-// todo: convert this into:
-//    {
-//       windowObj: existingWindow ?? new remote.BrowserWindow(config),
-//       isExisting: !!existingWindow,
-//     };
-// model
-export const keyboardShortcutsWindow = (isRenderedPage = false) => {
+export const keyboardShortcutsWindow = (
+  isRenderedPage = false,
+  focus = true
+) => {
   try {
     if (_keyboardShortcutsWindow) {
-      _keyboardShortcutsWindow.focus();
-      _keyboardShortcutsWindow.show();
+      if (focus) {
+        _keyboardShortcutsWindow.focus();
+        _keyboardShortcutsWindow.show();
+      }
 
       return _keyboardShortcutsWindow;
     }
 
     // show the existing _keyboardShortcutsWindow
-    const _keyboardShortcutsWindowTemp = keyboardShortcutsCreateWindow(
+    const { windowObj, isExisting } = keyboardShortcutsCreateWindow(
       isRenderedPage
     );
 
-    if (!_keyboardShortcutsWindowTemp) {
-      return _keyboardShortcutsWindow;
+    // return the existing windowObj object
+    if (isExisting) {
+      return windowObj;
     }
 
-    _keyboardShortcutsWindow = _keyboardShortcutsWindowTemp;
+    _keyboardShortcutsWindow = windowObj;
     _keyboardShortcutsWindow.loadURL(
       `${PATHS.loadUrlPath}#keyboardShortcutsPage`
     );
     _keyboardShortcutsWindow.webContents.on('did-finish-load', () => {
-      _keyboardShortcutsWindow.show();
-      _keyboardShortcutsWindow.focus();
+      if (focus) {
+        _keyboardShortcutsWindow.show();
+        _keyboardShortcutsWindow.focus();
+      }
     });
 
     _keyboardShortcutsWindow.onerror = (error) => {
