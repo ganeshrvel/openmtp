@@ -17,7 +17,7 @@ class ReportBugsPage extends Component {
         <Helmet titleTemplate={`%s - ${APP_TITLE}`}>
           <title>{REPORT_BUGS_PAGE_TITLE}</title>
         </Helmet>
-        <GenerateErrorReport />
+        <GenerateErrorReport isReportBugsPage />
       </div>
     );
   }

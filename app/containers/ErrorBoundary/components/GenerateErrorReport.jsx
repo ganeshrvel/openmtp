@@ -20,6 +20,8 @@ import { baseName } from '../../../utils/files';
 import { log } from '../../../utils/log';
 import { getMainWindowRendererProcess } from '../../../helpers/windowHelper';
 import { COMMUNICATION_EVENTS } from '../../../enums/communicationEvents';
+import fileExplorerController from '../../../data/file-explorer/controllers/FileExplorerController';
+import { DEVICE_TYPE } from '../../../enums';
 
 const { logFile } = PATHS;
 const { getPath } = remote.app;
@@ -53,6 +55,49 @@ class GenerateErrorReport extends PureComponent {
   };
 
   _reportBugsDisposeMtpReplyEvent = async (_, { error }) => {
+    await this.startGeneratingReport({ error });
+  };
+
+  _handleGenerateErrorLogs = async () => {
+    try {
+      const { isReportBugsPage } = this.props;
+
+      // if the generate button click action originated from the 'report bugs' page then use ipc channels to communicate
+      // else use direct method click
+      if (isReportBugsPage) {
+        this.mainWindowRendererProcess.webContents.send(
+          COMMUNICATION_EVENTS.reportBugsDisposeMtp,
+          { logFileZippedPath }
+        );
+
+        ipcRenderer.once(
+          COMMUNICATION_EVENTS.reportBugsDisposeMtpReply,
+          this._reportBugsDisposeMtpReplyEvent
+        );
+
+        return;
+      }
+
+      // direct button click action if the generate button is within the error boundary
+      await fileExplorerController.dispose({ deviceType: DEVICE_TYPE.mtp });
+
+      await fileExplorerController.fetchDebugReport({
+        deviceType: DEVICE_TYPE.mtp,
+      });
+
+      const { error } = await fileExplorerController.deleteFiles({
+        deviceType: DEVICE_TYPE.local,
+        fileList: [logFileZippedPath],
+        storageId: null,
+      });
+
+      await this.startGeneratingReport({ error });
+    } catch (e) {
+      log.error(e, `GenerateErrorReport -> generateErrorLogs`);
+    }
+  };
+
+  startGeneratingReport = async ({ error }) => {
     const { actionCreateThrowError } = this.props;
 
     if (error) {
@@ -78,22 +123,6 @@ class GenerateErrorReport extends PureComponent {
     }
 
     shell.showItemInFolder(logFileZippedPath);
-  };
-
-  _handleGenerateErrorLogs = async () => {
-    try {
-      this.mainWindowRendererProcess.webContents.send(
-        COMMUNICATION_EVENTS.reportBugsDisposeMtp,
-        { logFileZippedPath }
-      );
-
-      ipcRenderer.once(
-        COMMUNICATION_EVENTS.reportBugsDisposeMtpReply,
-        this._reportBugsDisposeMtpReplyEvent
-      );
-    } catch (e) {
-      log.error(e, `GenerateErrorReport -> generateErrorLogs`);
-    }
   };
 
   render() {
