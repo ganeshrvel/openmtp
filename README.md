@@ -3,7 +3,7 @@
 - Author: [Ganesh Rathinavel](https://www.linkedin.com/in/ganeshrvel "Ganesh Rathinavel")
 - License: [MIT](https://github.com/ganeshrvel/openmtp/blob/master/LICENSE "MIT")
 - System Requirements: macOS 10.10 or higher
-- Website URL: [https://ganeshrvel.github.io/openmtp](https://ganeshrvel.github.io/openmtp/ "https://ganeshrvel.github.io/openmtp")
+- Website URL: [https://openmtp.ganeshrvel.com](https://openmtp.ganeshrvel.com/ "https://openmtp.ganeshrvel.com")
 - Repo URL: [https://github.com/ganeshrvel/openmtp](https://github.com/ganeshrvel/openmtp/ "https://github.com/ganeshrvel/openmtp")
 - Contacts: ganeshrvel@outlook.com
 
@@ -21,6 +21,7 @@ Countless searches to find an app to solve these problems and failing to find on
 - Plug and Play via USB. No hassles, easy and instant connection.
 - Select between Internal Memory and SD Card
 - Transfer multiple files which are larger than 4GB
+- Dark mode
 - Drag-and-drop support
 - Split pane views for both Local Computer and Android device
 - Choose between Grid and List view.
@@ -29,12 +30,14 @@ Countless searches to find an app to solve these problems and failing to find on
 
 
 ### Installation
-* Download the [Latest Version](https://ganeshrvel.github.io/openmtp/?downloadApp=github&release=stable&platform=mac 'Latest Version')
+* Download the [Latest Version](https://openmtp.ganeshrvel.com/?downloadApp=github&release=stable&platform=mac 'Latest Version')
 
 * Using Homebrew Cask
   * ```brew cask install openmtp```
 
 * Find the latest *dmg* file from [GitHub Releases](https://github.com/ganeshrvel/openmtp/releases "GitHub Releases")
+
+* Download [OpenMTP 3.0.0-beta.2](https://drive.google.com/file/d/1wpSlkGWZKe4-nRYcdJaPVA3Y6kOBMTsO/view?usp=sharing "OpenMTP 3.0.0-beta-2") (Samsung support, dark theme and many more). Note: This is a prerelease version and might be unstable.
 
 ### Screengrabs
 
@@ -47,13 +50,13 @@ Countless searches to find an app to solve these problems and failing to find on
 | ------------------------------------------------- | ------------------------------------------------------------ |
 | Delete                                            | <kbd>backspace</kbd>                                         |
 | New Folder                                        | <kbd>command (⌘)</kbd>+<kbd>n</kbd>                          |
-| Copy                                              | <kbd>command (⌘)</kbd>+<kbd>c</kbd>                          |
+| Copy                                              | <kbd>command (⌘)</kbd>+<kbd>c</kbd>                          |
 | Copy to Queue                                     | <kbd>command (⌘)</kbd>+<kbd>shift</kbd>+<kbd>c</kbd>         |
-| Paste                                             | <kbd>command (⌘)</kbd>+<kbd>v</kbd>                          |
+| Paste                                             | <kbd>command (⌘)</kbd>+<kbd>v</kbd>                          |
 | Refresh                                           | <kbd>command (⌘)</kbd> +<kbd>r</kbd>                         |
-| Folder Up                                         | <kbd>command (⌘)</kbd>+<kbd>b</kbd>                          |
-| Select All                                        | <kbd>command (⌘)</kbd>+<kbd>a</kbd>                          |
-| Rename                                            | <kbd>command (⌘)</kbd>+<kbd>d</kbd>                          |
+| Folder Up                                         | <kbd>command (⌘)</kbd>+<kbd>b</kbd>                          |
+| Select All                                        | <kbd>command (⌘)</kbd>+<kbd>a</kbd>                          |
+| Rename                                            | <kbd>command (⌘)</kbd>+<kbd>d</kbd>                          |
 | Switch Tab                                        | <kbd>command(⌘)</kbd>+<kbd>1</kbd>                           |
 | Open                                              | <kbd>enter</kbd>                                             |
 | Navigate Left                                     | <kbd>left</kbd>                                              |
@@ -121,6 +124,19 @@ security add-generic-password -a "<apple-developer-account-username>" -w <app-sp
 - Log into your [Apple App Store Connect Account](https://appstoreconnect.apple.com/agreements/# "Apple App Store Connect Account") and accept the presented terms and conditions
 - The statuses shall turn *Active*
 
+**Sentry**
+
+```shell
+npm install -g @sentry/wizard
+sentry-wizard --integration electron
+
+# Upload Debug Information
+# Everytime the electron.js version is upgraded run:
+node sentry-symbols.js
+
+sentry-cli login
+```
+
 **Packaging**
 Instructions: [https://www.electron.build/code-signing](https://www.electron.build/code-signing "https://www.electron.build/code-signing")
 
@@ -135,6 +151,7 @@ $ yarn package
 # For multiple platforms
 $ yarn package-all
 ```
+
 
 
 ### Technical Features
@@ -193,13 +210,13 @@ Samsung devices aren't supported yet, follow these Github threads for any update
 
 ### Credits
 
-- Sincere thanks to [Vladimir Menshakov](https://github.com/whoozle "Vladimir Menshakov") for [android-file-transfer-linux](https://github.com/whoozle/android-file-transfer-linux "android-file-transfer-linux") c++ library and for all his help and support that were extended towards this project.
+- Thanks to [Vladimir Menshakov](https://github.com/whoozle "Vladimir Menshakov") for [android-file-transfer-linux](https://github.com/whoozle/android-file-transfer-linux "android-file-transfer-linux") (the MTP legacy Kernel).
 
 - Thanks to Ms [Ayushi Bothra](https://www.linkedin.com/in/ayushi-bothra-3103/ "Ayushi Bothra") for contributing to the documentation and pages.
 
-- This app is built upon [https://github.com/ganeshrvel/electron-react-redux-advanced-boilerplate](https://github.com/ganeshrvel/electron-react-redux-advanced-boilerplate "https://github.com/ganeshrvel/electron-react-redux-advanced-boilerplate") which is a heavily modified fork of [https://github.com/electron-react-boilerplate/electron-react-boilerplate](https://github.com/electron-react-boilerplate/electron-react-boilerplate "https://github.com/electron-react-boilerplate/electron-react-boilerplate").
+- This app was built upon [https://github.com/ganeshrvel/electron-react-redux-advanced-boilerplate](https://github.com/ganeshrvel/electron-react-redux-advanced-boilerplate "https://github.com/ganeshrvel/electron-react-redux-advanced-boilerplate") which is a heavily modified fork of [https://github.com/electron-react-boilerplate/electron-react-boilerplate](https://github.com/electron-react-boilerplate/electron-react-boilerplate "https://github.com/electron-react-boilerplate/electron-react-boilerplate").
 
-- The icons used in the app were made by [Prosymbols](https://www.flaticon.com/authors/prosymbols "Prosymbols"), [Nikita Golubev](https://www.flaticon.com/authors/nikita-golubev "Nikita Golubev"), [Those Icons](https://www.flaticon.com/authors/those-icons "Those Icons"), [Kiranshastry](https://www.flaticon.com/authors/kiranshastry "Kiranshastry"), [Elias Bikbulatov](https://www.flaticon.com/authors/elias-bikbulatov "Elias Bikbulatov") & [Pixel perfect](https://www.flaticon.com/authors/pixel-perfect "Pixel perfect") and were distributed by [www.flaticon.com](https://www.flaticon.com/ "Flaticon") which is licensed under [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/ "Creative Commons BY 3.0").
+- The icons used in the app were made by [flaticon](https://www.flaticon.com), [good-ware](https://www.flaticon.com/authors/good-ware) and [kiranshastry](https://www.flaticon.com/authors/kiranshastry) which is licensed under [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/ "Creative Commons BY 3.0").
 
 - The "no image found" icon was made by [Phonlaphat Thongsriphong](https://www.iconfinder.com/phatpc "Phonlaphat Thongsriphong").
 
