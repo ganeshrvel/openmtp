@@ -153,6 +153,7 @@ pre {
       color: rgb(249, 38, 114);
       font-weight: 700;
     }
+
     a,
     .syntax-highlighter-string {
       color: $syntaxHighlighterStringColor;
@@ -190,6 +191,7 @@ pre {
     a {
       color: $whiteColor;
     }
+
     a:hover,
     a:active {
       color: $appSecondaryColor;
@@ -200,6 +202,7 @@ pre {
     user-select: none;
     padding: 12px 6px 8px 15px;
   }
+
   .body-wrapper {
     width: 100%;
     height: 100%;
@@ -209,6 +212,7 @@ pre {
 
 section.first {
   background: linear-gradient(45deg, $appSecondaryColor 0%, #0080ff 100%);
+
   .item-left {
     position: relative;
 
@@ -216,6 +220,7 @@ section.first {
     @media (max-width: #{$mobileMaxWidth}px) {
       @include item-align();
       @include horz-vert-center();
+
       h1.heading {
         margin-bottom: 45px;
         font-weight: 400;
@@ -225,6 +230,7 @@ section.first {
         margin-top: 45px;
         color: $whiteColor;
       }
+
       .github-latest-version-wrapper {
         a {
           color: $whiteColor;
@@ -249,6 +255,7 @@ section.first {
 
     .image-wrapper {
       text-align: center;
+
       #app-screenshot-file-explorer {
         max-width: 400px;
         width: 80%;
@@ -258,6 +265,7 @@ section.first {
       }
     }
   }
+
   .item-right {
     @include horz-vert-center();
 
@@ -288,6 +296,7 @@ section.first {
         padding: 0 10px 0 10px;
         line-height: 20px;
         max-width: 500px;
+
         h1.heading {
           margin-bottom: 10px;
           font-weight: 500;
@@ -295,11 +304,29 @@ section.first {
         }
 
         p.latest-version-link {
-          margin-bottom: 20px;
+          margin-bottom: 25px;
+
+          &.first-item {
+            margin-bottom: 17px;
+          }
+
+          .title {
+            margin-bottom: 5px;
+          }
+
+          a {
+            text-decoration: underline;
+          }
+
           .github-latest-version-wrapper {
             a {
               text-decoration: underline;
             }
+          }
+
+          .block {
+            display: block;
+            margin-bottom: 3px;
           }
         }
 
@@ -316,6 +343,7 @@ section.first {
         .line-1 {
           margin-bottom: 10px;
         }
+
         .line-2 {
           margin-bottom: 10px;
         }
@@ -324,6 +352,7 @@ section.first {
       .btn-wrapper {
         margin-bottom: 16px;
         text-align: center;
+
         .button {
           @media (max-width: #{$mobileMaxWidth}px) {
             display: block;
@@ -412,6 +441,7 @@ section.second {
       }
     }
   }
+
   .item-right {
     @media (max-width: #{$mobileMaxWidth}px) {
       order: 1;
@@ -442,9 +472,11 @@ section.second {
 
       .feature-lists {
         cursor: default;
+
         li {
           display: inline-block;
         }
+
         li,
         span {
           float: left;
@@ -513,11 +545,13 @@ footer {
   }
 
   @include horz-vert-center();
+
   .footer-wrapper {
     height: 70%;
     width: 90%;
     max-width: 900px;
     max-height: 500px;
+
     .mac-window {
       height: 100%;
     }
