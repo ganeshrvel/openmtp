@@ -37,6 +37,8 @@ Countless searches to find an app to solve these problems and failing to find on
 
 * Find the latest *dmg* file from [GitHub Releases](https://github.com/ganeshrvel/openmtp/releases "GitHub Releases")
 
+* Download [OpenMTP 3.0.0-beta.2](https://drive.google.com/file/d/1wpSlkGWZKe4-nRYcdJaPVA3Y6kOBMTsO/view?usp=sharing "OpenMTP 3.0.0-beta-2") (Samsung support, dark theme and many more). Note: This is a prerelease version and might be unstable.
+
 ### Screengrabs
 
 ![OpenMTP File Explorer](https://github.com/ganeshrvel/openmtp/raw/master/blobs/images/file-explorer-bluebg.png "OpenMTP File Explorer")
@@ -208,7 +210,7 @@ Samsung devices aren't supported yet, follow these Github threads for any update
 
 ### Credits
 
-- Sincere thanks to [Vladimir Menshakov](https://github.com/whoozle "Vladimir Menshakov") for [android-file-transfer-linux](https://github.com/whoozle/android-file-transfer-linux "android-file-transfer-linux") c++ library and for all his help and support that were extended towards this project.
+- Thanks to [Vladimir Menshakov](https://github.com/whoozle "Vladimir Menshakov") for [android-file-transfer-linux](https://github.com/whoozle/android-file-transfer-linux "android-file-transfer-linux") (the MTP legacy Kernel).
 
 - Thanks to Ms [Ayushi Bothra](https://www.linkedin.com/in/ayushi-bothra-3103/ "Ayushi Bothra") for contributing to the documentation and pages.
 
