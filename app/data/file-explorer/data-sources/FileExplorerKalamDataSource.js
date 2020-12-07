@@ -413,9 +413,6 @@ export class FileExplorerKalamDataSource {
    */
   async fetchDebugReport() {
     try {
-      // dispose the mtp before generating the report
-      await this.dispose();
-
       const { data, error, stderr } = await this._exec(kalamDebugReportCli);
 
       if (error) {

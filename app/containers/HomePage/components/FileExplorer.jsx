@@ -240,6 +240,13 @@ class FileExplorer extends Component {
     ipcRenderer.removeListener('isFileTransferActiveSeek', () => {});
     ipcRenderer.removeListener('isFileTransferActiveReply', () => {});
 
+    if (deviceType === DEVICE_TYPE.mtp) {
+      ipcRenderer.removeListener(
+        COMMUNICATION_EVENTS.reportBugsDisposeMtp,
+        this._reportBugsDisposeMtpEvent
+      );
+    }
+
     actionCreatedDisposeMtp({ deviceType });
   }
 
@@ -296,19 +303,30 @@ class FileExplorer extends Component {
 
     if (deviceType === DEVICE_TYPE.mtp) {
       ipcRenderer.on(
-        COMMUNICATION_EVENTS.generateErrorLogs,
-        (event, { ...args }) => {
-          console.log('generateErrorLogs', args);
-
-          reportBugsWindow(true, false)?.send(
-            COMMUNICATION_EVENTS.generateErrorLogsReply,
-            {
-              gey: 'gtt',
-            }
-          );
-        }
+        COMMUNICATION_EVENTS.reportBugsDisposeMtp,
+        this._reportBugsDisposeMtpEvent
       );
     }
+  };
+
+  _reportBugsDisposeMtpEvent = async (_, { logFileZippedPath }) => {
+    // dispose the mtp before generating the report
+    await fileExplorerController.dispose({ deviceType: DEVICE_TYPE.mtp });
+
+    await fileExplorerController.fetchDebugReport({
+      deviceType: DEVICE_TYPE.mtp,
+    });
+
+    const { error } = await fileExplorerController.deleteFiles({
+      deviceType: DEVICE_TYPE.local,
+      fileList: [logFileZippedPath],
+      storageId: null,
+    });
+
+    reportBugsWindow(
+      true,
+      false
+    )?.send(COMMUNICATION_EVENTS.reportBugsDisposeMtpReply, { error });
   };
 
   _handleAccelerator = (pressed, event) => {

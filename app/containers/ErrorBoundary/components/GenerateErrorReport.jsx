@@ -18,8 +18,6 @@ import { compressFile } from '../../../utils/gzip';
 import GenerateErrorReportBody from './GenerateErrorReportBody';
 import { baseName } from '../../../utils/files';
 import { log } from '../../../utils/log';
-import fileExplorerController from '../../../data/file-explorer/controllers/FileExplorerController';
-import { DEVICE_TYPE } from '../../../enums';
 import { getMainWindowRendererProcess } from '../../../helpers/windowHelper';
 import { COMMUNICATION_EVENTS } from '../../../enums/communicationEvents';
 
@@ -39,7 +37,12 @@ class GenerateErrorReport extends PureComponent {
     this.mainWindowRendererProcess = getMainWindowRendererProcess();
   }
 
-  componentDidMount() {}
+  componentWillUnmount() {
+    ipcRenderer.removeListener(
+      COMMUNICATION_EVENTS.reportBugsDisposeMtpReply,
+      this._reportBugsDisposeMtpReplyEvent
+    );
+  }
 
   compressLog = () => {
     try {
@@ -49,56 +52,45 @@ class GenerateErrorReport extends PureComponent {
     }
   };
 
+  _reportBugsDisposeMtpReplyEvent = async (_, { error }) => {
+    const { actionCreateThrowError } = this.props;
+
+    if (error) {
+      actionCreateThrowError({
+        message: reportGenerateError,
+      });
+
+      return null;
+    }
+
+    this.compressLog();
+
+    if (!fileExistsSync(logFileZippedPath)) {
+      actionCreateThrowError({
+        message: reportGenerateError,
+      });
+
+      return null;
+    }
+
+    if (window) {
+      window.location.href = `${mailTo} ${mailToInstructions}`;
+    }
+
+    shell.showItemInFolder(logFileZippedPath);
+  };
+
   _handleGenerateErrorLogs = async () => {
     try {
       this.mainWindowRendererProcess.webContents.send(
-        COMMUNICATION_EVENTS.generateErrorLogs,
-        { something: 'something' }
+        COMMUNICATION_EVENTS.reportBugsDisposeMtp,
+        { logFileZippedPath }
       );
 
-      ipcRenderer.on(
-        COMMUNICATION_EVENTS.generateErrorLogsReply,
-        (event, { ...args }) => {
-          console.log('generateErrorLogsReply', args);
-        }
+      ipcRenderer.once(
+        COMMUNICATION_EVENTS.reportBugsDisposeMtpReply,
+        this._reportBugsDisposeMtpReplyEvent
       );
-
-      return;
-      const { actionCreateThrowError } = this.props;
-
-      await fileExplorerController.fetchDebugReport({
-        deviceType: DEVICE_TYPE.mtp,
-      });
-
-      const { error } = await fileExplorerController.deleteFiles({
-        deviceType: DEVICE_TYPE.local,
-        fileList: [logFileZippedPath],
-        storageId: null,
-      });
-
-      if (error) {
-        actionCreateThrowError({
-          message: reportGenerateError,
-        });
-
-        return null;
-      }
-
-      this.compressLog();
-
-      if (!fileExistsSync(logFileZippedPath)) {
-        actionCreateThrowError({
-          message: reportGenerateError,
-        });
-
-        return null;
-      }
-
-      if (window) {
-        window.location.href = `${mailTo} ${mailToInstructions}`;
-      }
-
-      shell.showItemInFolder(logFileZippedPath);
     } catch (e) {
       log.error(e, `GenerateErrorReport -> generateErrorLogs`);
     }
