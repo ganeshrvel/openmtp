@@ -95,6 +95,8 @@ import {
 import { log } from '../../../utils/log';
 import fileExplorerController from '../../../data/file-explorer/controllers/FileExplorerController';
 import { checkIf } from '../../../utils/checkIf';
+import { COMMUNICATION_EVENTS } from '../../../enums/communicationEvents';
+import { reportBugsWindow } from '../../../helpers/createWindows';
 
 const { Menu, getCurrentWindow } = remote;
 
@@ -205,6 +207,7 @@ class FileExplorer extends Component {
   componentDidMount() {
     this.registerAccelerators();
     this.registerAppUpdate();
+    this.registerGenerateErrorReport();
   }
 
   componentWillReceiveProps({
@@ -237,6 +240,13 @@ class FileExplorer extends Component {
     ipcRenderer.removeListener('isFileTransferActiveSeek', () => {});
     ipcRenderer.removeListener('isFileTransferActiveReply', () => {});
 
+    if (deviceType === DEVICE_TYPE.mtp) {
+      ipcRenderer.removeListener(
+        COMMUNICATION_EVENTS.reportBugsDisposeMtp,
+        this._reportBugsDisposeMtpEvent
+      );
+    }
+
     actionCreatedDisposeMtp({ deviceType });
   }
 
@@ -266,7 +276,7 @@ class FileExplorer extends Component {
     const { deviceType } = this.props;
 
     /**
-     * check whether an active file trasfer window is available.
+     * check whether an active file trasnfer window is available.
      * This is to prevent race between file transfer and app update taskbar progressbar access
      */
 
@@ -286,6 +296,37 @@ class FileExplorer extends Component {
         });
       });
     }
+  };
+
+  registerGenerateErrorReport = () => {
+    const { deviceType } = this.props;
+
+    if (deviceType === DEVICE_TYPE.mtp) {
+      ipcRenderer.on(
+        COMMUNICATION_EVENTS.reportBugsDisposeMtp,
+        this._reportBugsDisposeMtpEvent
+      );
+    }
+  };
+
+  _reportBugsDisposeMtpEvent = async (_, { logFileZippedPath }) => {
+    // dispose the mtp before generating the report
+    await fileExplorerController.dispose({ deviceType: DEVICE_TYPE.mtp });
+
+    await fileExplorerController.fetchDebugReport({
+      deviceType: DEVICE_TYPE.mtp,
+    });
+
+    const { error } = await fileExplorerController.deleteFiles({
+      deviceType: DEVICE_TYPE.local,
+      fileList: [logFileZippedPath],
+      storageId: null,
+    });
+
+    reportBugsWindow(
+      true,
+      false
+    )?.send(COMMUNICATION_EVENTS.reportBugsDisposeMtpReply, { error });
   };
 
   _handleAccelerator = (pressed, event) => {

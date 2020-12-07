@@ -820,7 +820,7 @@ export class FileExplorerLegacyDataSource {
   }
 
   /**
-   * description: fetch the data for generating bug/error reports
+   * description: fetch the required data for generating bug/error reports
    *
    * @return {Promise<{data: string|null, error: string|null, stderr: string|null}>}
    */

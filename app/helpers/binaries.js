@@ -13,6 +13,10 @@ const binariesPath =
 
 export const mtpCliPath = path.resolve(path.join(binariesPath, './mtp-cli'));
 
+export const kalamDebugReportCli = path.resolve(
+  path.join(binariesPath, './kalam_debug_report')
+);
+
 export const kalamLibPath = path.resolve(
   path.join(binariesPath, './kalam.dylib')
 );

@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { shell, remote } from 'electron';
+import React, { PureComponent } from 'react';
+import { shell, remote, ipcRenderer } from 'electron';
 import path from 'path';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -18,6 +18,8 @@ import { compressFile } from '../../../utils/gzip';
 import GenerateErrorReportBody from './GenerateErrorReportBody';
 import { baseName } from '../../../utils/files';
 import { log } from '../../../utils/log';
+import { getMainWindowRendererProcess } from '../../../helpers/windowHelper';
+import { COMMUNICATION_EVENTS } from '../../../enums/communicationEvents';
 import fileExplorerController from '../../../data/file-explorer/controllers/FileExplorerController';
 import { DEVICE_TYPE } from '../../../enums';
 
@@ -30,7 +32,20 @@ const logFileZippedPath = path.resolve(
 );
 const mailToInstructions = _mailToInstructions(zippedLogFileBaseName);
 
-class GenerateErrorReport extends Component {
+class GenerateErrorReport extends PureComponent {
+  constructor() {
+    super();
+
+    this.mainWindowRendererProcess = getMainWindowRendererProcess();
+  }
+
+  componentWillUnmount() {
+    ipcRenderer.removeListener(
+      COMMUNICATION_EVENTS.reportBugsDisposeMtpReply,
+      this._reportBugsDisposeMtpReplyEvent
+    );
+  }
+
   compressLog = () => {
     try {
       compressFile(logFile, logFileZippedPath);
@@ -39,9 +54,32 @@ class GenerateErrorReport extends Component {
     }
   };
 
+  _reportBugsDisposeMtpReplyEvent = async (_, { error }) => {
+    await this.startGeneratingReport({ error });
+  };
+
   _handleGenerateErrorLogs = async () => {
     try {
-      const { actionCreateThrowError } = this.props;
+      const { isReportBugsPage } = this.props;
+
+      // if the generate button click action originated from the 'report bugs' page then use ipc channels to communicate
+      // else use direct method click
+      if (isReportBugsPage) {
+        this.mainWindowRendererProcess.webContents.send(
+          COMMUNICATION_EVENTS.reportBugsDisposeMtp,
+          { logFileZippedPath }
+        );
+
+        ipcRenderer.once(
+          COMMUNICATION_EVENTS.reportBugsDisposeMtpReply,
+          this._reportBugsDisposeMtpReplyEvent
+        );
+
+        return;
+      }
+
+      // direct button click action if the generate button is within the error boundary
+      await fileExplorerController.dispose({ deviceType: DEVICE_TYPE.mtp });
 
       await fileExplorerController.fetchDebugReport({
         deviceType: DEVICE_TYPE.mtp,
@@ -53,32 +91,38 @@ class GenerateErrorReport extends Component {
         storageId: null,
       });
 
-      if (error) {
-        actionCreateThrowError({
-          message: reportGenerateError,
-        });
-
-        return null;
-      }
-
-      this.compressLog();
-
-      if (!fileExistsSync(logFileZippedPath)) {
-        actionCreateThrowError({
-          message: reportGenerateError,
-        });
-
-        return null;
-      }
-
-      if (window) {
-        window.location.href = `${mailTo} ${mailToInstructions}`;
-      }
-
-      shell.showItemInFolder(logFileZippedPath);
+      await this.startGeneratingReport({ error });
     } catch (e) {
       log.error(e, `GenerateErrorReport -> generateErrorLogs`);
     }
+  };
+
+  startGeneratingReport = async ({ error }) => {
+    const { actionCreateThrowError } = this.props;
+
+    if (error) {
+      actionCreateThrowError({
+        message: reportGenerateError,
+      });
+
+      return null;
+    }
+
+    this.compressLog();
+
+    if (!fileExistsSync(logFileZippedPath)) {
+      actionCreateThrowError({
+        message: reportGenerateError,
+      });
+
+      return null;
+    }
+
+    if (window) {
+      window.location.href = `${mailTo} ${mailToInstructions}`;
+    }
+
+    shell.showItemInFolder(logFileZippedPath);
   };
 
   render() {

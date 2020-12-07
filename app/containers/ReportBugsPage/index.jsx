@@ -6,6 +6,7 @@ import { bindActionCreators } from 'redux';
 import GenerateErrorReport from '../ErrorBoundary/components/GenerateErrorReport';
 import { APP_TITLE } from '../../constants/meta';
 import { styles } from './styles';
+import { REPORT_BUGS_PAGE_TITLE } from '../../templates/generateErrorReport';
 
 class ReportBugsPage extends Component {
   render() {
@@ -14,9 +15,9 @@ class ReportBugsPage extends Component {
     return (
       <div className={styles.root}>
         <Helmet titleTemplate={`%s - ${APP_TITLE}`}>
-          <title>Report Bugs</title>
+          <title>{REPORT_BUGS_PAGE_TITLE}</title>
         </Helmet>
-        <GenerateErrorReport />
+        <GenerateErrorReport isReportBugsPage />
       </div>
     );
   }

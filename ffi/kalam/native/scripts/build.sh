@@ -32,11 +32,11 @@ printf "\n"
 )
 
 printf "\n\n\n"
-echo "building kalam_debug_data..."
+echo "building kalam_debug_report..."
 printf "\n\n"
 (
   cd ./ffi/kalam/native && CGO_CFLAGS='-Wno-deprecated-declarations' \
     go build \
     -v -a -trimpath \
-    -o ../../../build/mac/bin/kalam_debug_data debug_data/*.go
+    -o ../../../build/mac/bin/kalam_debug_report kalam_debug_report/*.go
 )
