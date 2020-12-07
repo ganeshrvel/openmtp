@@ -8,6 +8,7 @@ import { PRIVACY_POLICY_PAGE_TITLE } from '../templates/privacyPolicyPage';
 import { APP_FEATURES_PAGE_TITLE } from '../templates/appFeaturesPage';
 import { KEYBOARD_SHORTCUTS_PAGE_TITLE } from '../templates/keyboardShortcutsPage';
 import { getWindowBackgroundColor } from './windowHelper';
+import { REPORT_BUGS_PAGE_TITLE } from '../templates/generateErrorReport';
 
 let _nonBootableDeviceWindow = null;
 let _reportBugsWindow = null;
@@ -68,8 +69,8 @@ export const nonBootableDeviceWindow = () => {
  * Report Bugs Window
  */
 
-const reportBugsCreateWindow = () => {
-  return new BrowserWindow({
+const reportBugsCreateWindow = (isRenderedPage) => {
+  const config = {
     height: 480,
     width: 600,
     show: false,
@@ -82,10 +83,33 @@ const reportBugsCreateWindow = () => {
       enableRemoteModule: true,
     },
     backgroundColor: getWindowBackgroundColor(),
-  });
+  };
+
+  // incoming call from a rendered page
+  if (isRenderedPage) {
+    const allWindows = remote.BrowserWindow.getAllWindows();
+    const existingWindow = loadExistingWindow(
+      allWindows,
+      REPORT_BUGS_PAGE_TITLE
+    );
+
+    return {
+      window: existingWindow ?? remote.BrowserWindow(config),
+      isExisting: !!existingWindow,
+    };
+  }
+
+  // incoming call from the main process
+  const allWindows = BrowserWindow.getAllWindows();
+  const existingWindow = loadExistingWindow(allWindows, REPORT_BUGS_PAGE_TITLE);
+
+  return {
+    window: existingWindow ?? BrowserWindow(config),
+    isExisting: !!existingWindow,
+  };
 };
 
-export const reportBugsWindow = () => {
+export const reportBugsWindow = (isRenderedPage = false) => {
   try {
     if (_reportBugsWindow) {
       _reportBugsWindow.focus();
@@ -94,8 +118,13 @@ export const reportBugsWindow = () => {
       return _reportBugsWindow;
     }
 
-    _reportBugsWindow = reportBugsCreateWindow();
+    const { window, isExisting } = reportBugsCreateWindow(isRenderedPage);
 
+    if (isExisting) {
+      return window;
+    }
+
+    _reportBugsWindow = window;
     _reportBugsWindow.loadURL(`${PATHS.loadUrlPath}#reportBugsPage`);
     _reportBugsWindow.webContents.on('did-finish-load', () => {
       _reportBugsWindow.show();
@@ -407,7 +436,6 @@ export const keyboardShortcutsWindow = (isRenderedPage = false) => {
 };
 
 // Load an Existing Window
-
 export const loadExistingWindow = (allWindows, title) => {
   if (!undefinedOrNull(allWindows)) {
     for (let i = 0; i < allWindows.length; i += 1) {

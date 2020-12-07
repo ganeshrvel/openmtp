@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { shell, remote } from 'electron';
+import React, { PureComponent } from 'react';
+import { shell, remote, ipcRenderer } from 'electron';
 import path from 'path';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -20,6 +20,8 @@ import { baseName } from '../../../utils/files';
 import { log } from '../../../utils/log';
 import fileExplorerController from '../../../data/file-explorer/controllers/FileExplorerController';
 import { DEVICE_TYPE } from '../../../enums';
+import { getMainWindowRendererProcess } from '../../../helpers/windowHelper';
+import { COMMUNICATION_EVENTS } from '../../../enums/communicationEvents';
 
 const { logFile } = PATHS;
 const { getPath } = remote.app;
@@ -30,7 +32,15 @@ const logFileZippedPath = path.resolve(
 );
 const mailToInstructions = _mailToInstructions(zippedLogFileBaseName);
 
-class GenerateErrorReport extends Component {
+class GenerateErrorReport extends PureComponent {
+  constructor() {
+    super();
+
+    this.mainWindowRendererProcess = getMainWindowRendererProcess();
+  }
+
+  componentDidMount() {}
+
   compressLog = () => {
     try {
       compressFile(logFile, logFileZippedPath);
@@ -41,6 +51,19 @@ class GenerateErrorReport extends Component {
 
   _handleGenerateErrorLogs = async () => {
     try {
+      this.mainWindowRendererProcess.webContents.send(
+        COMMUNICATION_EVENTS.generateErrorLogs,
+        { something: 'something' }
+      );
+
+      ipcRenderer.on(
+        COMMUNICATION_EVENTS.generateErrorLogsReply,
+        (event, { ...args }) => {
+          console.log('generateErrorLogsReply', args);
+        }
+      );
+
+      return;
       const { actionCreateThrowError } = this.props;
 
       await fileExplorerController.fetchDebugReport({

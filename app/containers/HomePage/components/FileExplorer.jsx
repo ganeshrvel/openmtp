@@ -95,6 +95,8 @@ import {
 import { log } from '../../../utils/log';
 import fileExplorerController from '../../../data/file-explorer/controllers/FileExplorerController';
 import { checkIf } from '../../../utils/checkIf';
+import { COMMUNICATION_EVENTS } from '../../../enums/communicationEvents';
+import { reportBugsWindow } from '../../../helpers/createWindows';
 
 const { Menu, getCurrentWindow } = remote;
 
@@ -205,6 +207,7 @@ class FileExplorer extends Component {
   componentDidMount() {
     this.registerAccelerators();
     this.registerAppUpdate();
+    this.registerGenerateErrorReport();
   }
 
   componentWillReceiveProps({
@@ -266,7 +269,7 @@ class FileExplorer extends Component {
     const { deviceType } = this.props;
 
     /**
-     * check whether an active file trasfer window is available.
+     * check whether an active file trasnfer window is available.
      * This is to prevent race between file transfer and app update taskbar progressbar access
      */
 
@@ -285,6 +288,26 @@ class FileExplorer extends Component {
           isActive: isActiveFileTransferProgess,
         });
       });
+    }
+  };
+
+  registerGenerateErrorReport = () => {
+    const { deviceType } = this.props;
+
+    if (deviceType === DEVICE_TYPE.mtp) {
+      ipcRenderer.on(
+        COMMUNICATION_EVENTS.generateErrorLogs,
+        (event, { ...args }) => {
+          console.log('generateErrorLogs', args);
+
+          reportBugsWindow(true)?.send(
+            COMMUNICATION_EVENTS.generateErrorLogsReply,
+            {
+              gey: 'gtt',
+            }
+          );
+        }
+      );
     }
   };
 
