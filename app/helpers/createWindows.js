@@ -94,7 +94,7 @@ const reportBugsCreateWindow = (isRenderedPage) => {
     );
 
     return {
-      window: existingWindow ?? remote.BrowserWindow(config),
+      windowObj: existingWindow ?? new remote.BrowserWindow(config),
       isExisting: !!existingWindow,
     };
   }
@@ -104,31 +104,36 @@ const reportBugsCreateWindow = (isRenderedPage) => {
   const existingWindow = loadExistingWindow(allWindows, REPORT_BUGS_PAGE_TITLE);
 
   return {
-    window: existingWindow ?? BrowserWindow(config),
+    windowObj: existingWindow ?? new BrowserWindow(config),
     isExisting: !!existingWindow,
   };
 };
 
-export const reportBugsWindow = (isRenderedPage = false) => {
+export const reportBugsWindow = (isRenderedPage = false, focus = true) => {
   try {
     if (_reportBugsWindow) {
-      _reportBugsWindow.focus();
-      _reportBugsWindow.show();
+      if (focus) {
+        _reportBugsWindow.focus();
+        _reportBugsWindow.show();
+      }
 
       return _reportBugsWindow;
     }
 
-    const { window, isExisting } = reportBugsCreateWindow(isRenderedPage);
+    const { windowObj, isExisting } = reportBugsCreateWindow(isRenderedPage);
 
+    // return the existing windowObj object
     if (isExisting) {
-      return window;
+      return windowObj;
     }
 
-    _reportBugsWindow = window;
+    _reportBugsWindow = windowObj;
     _reportBugsWindow.loadURL(`${PATHS.loadUrlPath}#reportBugsPage`);
     _reportBugsWindow.webContents.on('did-finish-load', () => {
-      _reportBugsWindow.show();
-      _reportBugsWindow.focus();
+      if (focus) {
+        _reportBugsWindow.show();
+        _reportBugsWindow.focus();
+      }
     });
 
     _reportBugsWindow.onerror = (error) => {
@@ -149,7 +154,7 @@ export const reportBugsWindow = (isRenderedPage = false) => {
  * Privacy Policy Window
  */
 
-const privacyPolicyCreateWindow = (isRenderedPage) => {
+const privacyPolicyCreateWindow = (isRenderedPage = false) => {
   const config = {
     width: 800,
     height: 600,
@@ -170,41 +175,56 @@ const privacyPolicyCreateWindow = (isRenderedPage) => {
   // incoming call from a rendered page
   if (isRenderedPage) {
     const allWindows = remote.BrowserWindow.getAllWindows();
+    const existingWindow = loadExistingWindow(
+      allWindows,
+      PRIVACY_POLICY_PAGE_TITLE
+    );
 
-    return loadExistingWindow(allWindows, PRIVACY_POLICY_PAGE_TITLE)
-      ? null
-      : new remote.BrowserWindow(config);
+    return {
+      windowObj: existingWindow ?? new remote.BrowserWindow(config),
+      isExisting: !!existingWindow,
+    };
   }
 
   // incoming call from the main process
   const allWindows = BrowserWindow.getAllWindows();
+  const existingWindow = loadExistingWindow(
+    allWindows,
+    PRIVACY_POLICY_PAGE_TITLE
+  );
 
-  return loadExistingWindow(allWindows, PRIVACY_POLICY_PAGE_TITLE)
-    ? null
-    : new BrowserWindow(config);
+  return {
+    windowObj: existingWindow ?? new BrowserWindow(config),
+    isExisting: !!existingWindow,
+  };
 };
 
-export const privacyPolicyWindow = (isRenderedPage = false) => {
+export const privacyPolicyWindow = (isRenderedPage = false, focus = true) => {
   try {
     if (_privacyPolicyWindow) {
-      _privacyPolicyWindow.focus();
-      _privacyPolicyWindow.show();
+      if (focus) {
+        _privacyPolicyWindow.focus();
+        _privacyPolicyWindow.show();
+      }
 
       return _privacyPolicyWindow;
     }
 
     // show the existing _privacyPolicyWindow
-    const _privacyPolicyWindowTemp = privacyPolicyCreateWindow(isRenderedPage);
+    const { windowObj, isExisting } = privacyPolicyCreateWindow(isRenderedPage);
 
-    if (!_privacyPolicyWindowTemp) {
-      return _privacyPolicyWindow;
+    // return the existing windowObj object
+    if (isExisting) {
+      return windowObj;
     }
 
-    _privacyPolicyWindow = _privacyPolicyWindowTemp;
+    _privacyPolicyWindow = windowObj;
     _privacyPolicyWindow.loadURL(`${PATHS.loadUrlPath}#privacyPolicyPage`);
     _privacyPolicyWindow.webContents.on('did-finish-load', () => {
-      _privacyPolicyWindow.show();
-      _privacyPolicyWindow.focus();
+      if (focus) {
+        _privacyPolicyWindow.show();
+        _privacyPolicyWindow.focus();
+      }
     });
 
     _privacyPolicyWindow.onerror = (error) => {
@@ -224,7 +244,6 @@ export const privacyPolicyWindow = (isRenderedPage = false) => {
 /**
  * App Update Available Window
  */
-
 const appUpdateAvailableCreateWindow = () => {
   return new BrowserWindow({
     width: 650,
@@ -242,6 +261,12 @@ const appUpdateAvailableCreateWindow = () => {
   });
 };
 
+// todo: convert this into:
+//    {
+//       windowObj: existingWindow ?? new remote.BrowserWindow(config),
+//       isExisting: !!existingWindow,
+//     };
+// model
 export const appUpdateAvailableWindow = () => {
   try {
     if (_appUpdateAvailableWindow) {
@@ -284,7 +309,6 @@ export const appUpdateAvailableWindow = () => {
 /**
  * App Features Window
  */
-
 const appFeaturesCreateWindow = (isRenderedPage) => {
   const config = {
     width: 800,
@@ -318,6 +342,12 @@ const appFeaturesCreateWindow = (isRenderedPage) => {
     : new BrowserWindow(config);
 };
 
+// todo: convert this into:
+//    {
+//       windowObj: existingWindow ?? new remote.BrowserWindow(config),
+//       isExisting: !!existingWindow,
+//     };
+// model
 export const appFeaturesWindow = (isRenderedPage = false) => {
   try {
     if (_appFeaturesWindow) {
@@ -394,6 +424,12 @@ const keyboardShortcutsCreateWindow = (isRenderedPage) => {
     : new BrowserWindow(config);
 };
 
+// todo: convert this into:
+//    {
+//       windowObj: existingWindow ?? new remote.BrowserWindow(config),
+//       isExisting: !!existingWindow,
+//     };
+// model
 export const keyboardShortcutsWindow = (isRenderedPage = false) => {
   try {
     if (_keyboardShortcutsWindow) {

@@ -300,7 +300,7 @@ class FileExplorer extends Component {
         (event, { ...args }) => {
           console.log('generateErrorLogs', args);
 
-          reportBugsWindow(true)?.send(
+          reportBugsWindow(true, false)?.send(
             COMMUNICATION_EVENTS.generateErrorLogsReply,
             {
               gey: 'gtt',
