@@ -1,14 +1,18 @@
 import Analytics from 'electron-ga';
 import { machineId } from 'node-machine-id';
-import { TRACKING_ID } from '../../../config/google-analytics-key';
+import { GA_TRACKING_ID } from '../../../config/google-analytics-key';
 import { APP_NAME, APP_VERSION } from '../../constants/meta';
 import { settingsStorage } from '../../helpers/storageHelper';
 import { ENV_FLAVOR } from '../../constants/env';
 import { isConnected } from '../../utils/isOnline';
 import { log } from '../../utils/log';
+import { getDeviceInfo } from '../../helpers/deviceInfo';
+import { isEmpty } from '../../utils/funcs';
 
 class GoogleAnalytics {
   init() {
+    this.analytics = null;
+
     const isAnalyticsEnabledSettings = settingsStorage.getItems([
       'enableAnalytics',
     ]);
@@ -21,6 +25,10 @@ class GoogleAnalytics {
         isConnected()
           .then(async (connected) => {
             await this.run();
+
+            if (!connected) {
+              return;
+            }
 
             return connected;
           })
@@ -35,14 +43,39 @@ class GoogleAnalytics {
     // this is a hashed value (sha-256)
     const _machineId = await machineId();
 
-    const analytics = new Analytics(TRACKING_ID, {
+    this.analytics = new Analytics(GA_TRACKING_ID, {
       appName: APP_NAME,
       appVersion: APP_VERSION,
       userId: _machineId,
     });
 
-    analytics.send('screenview', { cd: '/Home' });
-    analytics.send(`pageview`, { dp: '/Home' });
+    this.analytics?.send('screenview', { cd: '/FileExplorer' });
+    this.analytics?.send(`pageview`, { dp: '/FileExplorer' });
+
+    this.sendDeviceInfo();
+  }
+
+  sendDeviceInfo() {
+    if (!this.analytics) {
+      this.init();
+
+      return;
+    }
+
+    const deviceInfo = getDeviceInfo();
+
+    if (!isEmpty(deviceInfo)) {
+      Object.keys(deviceInfo).forEach((key) => {
+        const value = deviceInfo[key];
+
+        this.analytics.send('event', {
+          ec: 'Device Information',
+          ea: 'fetch',
+          el: key,
+          ev: value,
+        });
+      });
+    }
   }
 }
 

@@ -38,4 +38,4 @@ module.exports.IS_PROD = isProd;
 
 module.exports.DEBUG_PROD = isDebug;
 
-module.exports.RENDERER = process && process.type === 'renderer';
+module.exports.IS_RENDERER = process && process.type === 'renderer';

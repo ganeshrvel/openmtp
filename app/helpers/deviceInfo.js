@@ -1,8 +1,8 @@
-import { RENDERER } from '../constants/env';
+import { IS_RENDERER } from '../constants/env';
 import { isEmpty } from '../utils/funcs';
 
 export function getDeviceInfo() {
-  if (RENDERER) {
+  if (IS_RENDERER) {
     // import it here so that the main process doesnt crash
     // eslint-disable-next-line global-require
     const { store } = require('../store/configureStore');
