@@ -49,7 +49,7 @@ export class FileExplorerRepository {
     if (deviceType === DEVICE_TYPE.mtp) {
       switch (selectedMtpMode) {
         case MTP_MODE.legacy:
-          throw `dispose for MTP_MODE.legacy is unimplemented`;
+          break;
 
         case MTP_MODE.kalam:
         default:
