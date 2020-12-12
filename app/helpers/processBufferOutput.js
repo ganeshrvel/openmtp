@@ -21,8 +21,8 @@ export function isNoMtpError({ error, stderr, mtpMode }) {
 
   if (mtpMode === MTP_MODE.legacy) {
     return (
-      stderr.toLowerCase().indexOf('no mtp') !== -1 ||
-      error.toLowerCase().indexOf('no mtp') !== -1
+      (stderr ?? '').toLowerCase().indexOf('no mtp') !== -1 ||
+      (error ?? '').toLowerCase().indexOf('no mtp') !== -1
     );
   }
 
