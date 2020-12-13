@@ -30,7 +30,7 @@ export function isNoMtpError({ error, stderr, mtpMode }) {
 }
 
 export const processMtpBuffer = async ({ error, stderr, mtpMode }) => {
-  checkIf(mtpMode, 'string');
+  checkIf(mtpMode, 'inObjectValues', MTP_MODE);
 
   if (mtpMode === MTP_MODE.kalam) {
     return processKalamMtpBuffer({ error, stderr });

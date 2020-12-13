@@ -2,6 +2,8 @@ import { FileExplorerRepository } from '../repositories/FileExplorerRepository';
 import { checkIf } from '../../../utils/checkIf';
 import { analyticsService } from '../../../services/analytics';
 import { EVENT_TYPE } from '../../../enums/events';
+import { processMtpBuffer } from '../../../helpers/processBufferOutput';
+import { getMtpModeSetting } from '../../../helpers/settings';
 
 class FileExplorerController {
   constructor() {
@@ -15,9 +17,35 @@ class FileExplorerController {
    */
   async initialize({ deviceType }) {
     checkIf(deviceType, 'string');
-    analyticsService.sendEvent(EVENT_TYPE.MTP_INITIALIZE, {});
+    analyticsService.sendEvent(EVENT_TYPE.MTP_INITIALIZE_BEGIN, {});
 
     const result = await this.repository.initialize({ deviceType });
+
+    // we use timeout here not to block the thread
+    setTimeout(async () => {
+      const mtpMode = getMtpModeSetting();
+
+      const { mtpStatus, error: mtpError } = await processMtpBuffer({
+        error: result.error,
+        stderr: result.stderr,
+        mtpMode,
+      });
+
+      if (mtpError) {
+        // send out an error event
+        analyticsService.sendEvent(EVENT_TYPE.MTP_INITIALIZE_ERROR, {
+          'MTP Status': mtpStatus,
+          'MTP Mode': mtpMode,
+          stderr: result.stderr,
+          error: result.stderr,
+        });
+      } else {
+        analyticsService.sendEvent(EVENT_TYPE.MTP_INITIALIZE_SUCCESS, {
+          'MTP Status': mtpStatus,
+          'MTP Mode': mtpMode,
+        });
+      }
+    }, 100);
 
     return result;
   }
