@@ -4,6 +4,7 @@ import { settingsStorage } from '../../helpers/storageHelper';
 import { MixpanelAnalytics } from './mixpanelAnalytics';
 import { getDeviceInfo } from '../../helpers/deviceInfo';
 import { checkIf } from '../../utils/checkIf';
+import { getMtpModeSetting } from '../../helpers/settings';
 
 class AnalyticsService {
   constructor() {
@@ -58,10 +59,11 @@ class AnalyticsService {
 
     try {
       const deviceInfo = getDeviceInfo();
+      const mtpMode = getMtpModeSetting();
 
       // send device info google analytics
-      await this.googleAnalytics.sendDeviceInfo({ deviceInfo });
-      await this.mixpanelAnalytics.sendDeviceInfo({ deviceInfo });
+      await this.googleAnalytics.sendDeviceInfo({ deviceInfo, mtpMode });
+      await this.mixpanelAnalytics.sendDeviceInfo({ deviceInfo, mtpMode });
     } catch (e) {
       log.error(e, `AnalyticsService -> sendDeviceInfo`);
     }

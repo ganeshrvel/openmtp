@@ -8,6 +8,7 @@ import { EVENTS } from '../../enums/events';
 import { SERVICE_KEYS } from '../../constants/serviceKeys';
 import { checkIf } from '../../utils/checkIf';
 import { getDeviceInfo } from '../../helpers/deviceInfo';
+import { MTP_MODE } from '../../enums';
 
 export class MixpanelAnalytics {
   constructor() {
@@ -85,8 +86,9 @@ export class MixpanelAnalytics {
     }
   }
 
-  async sendDeviceInfo({ deviceInfo }) {
+  async sendDeviceInfo({ deviceInfo, mtpMode }) {
     checkIf(deviceInfo, 'object');
+    checkIf(mtpMode, 'inObjectValues', MTP_MODE);
 
     try {
       // reconnect analytics if [analytics] object is null
@@ -98,19 +100,18 @@ export class MixpanelAnalytics {
         }
       }
 
-      if (isEmpty(deviceInfo)) {
-        return;
+      if (!isEmpty(deviceInfo)) {
+        const eventData = {
+          USER_ID: this.machineId,
+          'MTP Mode': mtpMode,
+        };
+
+        Object.keys(deviceInfo).forEach((key) => {
+          eventData[key] = deviceInfo[key];
+        });
+
+        await this.sendEvent(EVENTS.DEVICE_INFO, eventData);
       }
-
-      const eventData = {
-        USER_ID: this.machineId,
-      };
-
-      Object.keys(deviceInfo).forEach((key) => {
-        eventData[key] = deviceInfo[key];
-      });
-
-      await this.sendEvent(EVENTS.DEVICE_INFO, eventData);
     } catch (e) {
       log.error(e, `GoogleAnalytics -> sendDeviceInfo`);
     }

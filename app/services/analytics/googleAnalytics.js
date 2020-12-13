@@ -8,6 +8,7 @@ import { ENV_FLAVOR } from '../../constants/env';
 import { EVENTS } from '../../enums/events';
 import { SERVICE_KEYS } from '../../constants/serviceKeys';
 import { checkIf } from '../../utils/checkIf';
+import { MTP_MODE } from '../../enums';
 
 export class GoogleAnalytics {
   constructor() {
@@ -61,8 +62,9 @@ export class GoogleAnalytics {
     }
   }
 
-  async sendDeviceInfo({ deviceInfo }) {
+  async sendDeviceInfo({ deviceInfo, mtpMode }) {
     checkIf(deviceInfo, 'object');
+    checkIf(mtpMode, 'inObjectValues', MTP_MODE);
 
     try {
       // reconnect analytics if [analytics] object is null
@@ -74,18 +76,31 @@ export class GoogleAnalytics {
         }
       }
 
-      if (isEmpty(deviceInfo)) {
-        return;
+      if (!isEmpty(deviceInfo)) {
+        Object.keys(deviceInfo).forEach((key) => {
+          const value = deviceInfo[key];
+
+          const eventData = {
+            ec: EVENTS.DEVICE_INFO,
+            ea: 'fetch',
+            el: key,
+            ev: value,
+          };
+
+          if (ENV_FLAVOR.enableGoogleAnalytics) {
+            this.analytics.send('event', eventData);
+          }
+
+          this._print(EVENTS.DEVICE_INFO, eventData);
+        });
       }
 
-      Object.keys(deviceInfo).forEach((key) => {
-        const value = deviceInfo[key];
-
+      if (!isEmpty(mtpMode)) {
         const eventData = {
           ec: EVENTS.DEVICE_INFO,
           ea: 'fetch',
-          el: key,
-          ev: value,
+          el: 'MTP Mode',
+          ev: mtpMode,
         };
 
         if (ENV_FLAVOR.enableGoogleAnalytics) {
@@ -93,7 +108,7 @@ export class GoogleAnalytics {
         }
 
         this._print(EVENTS.DEVICE_INFO, eventData);
-      });
+      }
     } catch (e) {
       log.error(e, `GoogleAnalytics -> sendDeviceInfo`);
     }
