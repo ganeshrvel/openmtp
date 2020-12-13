@@ -55,6 +55,13 @@ export class MixpanelAnalytics {
     }
   }
 
+  sendEvent(key, value) {
+    checkIf(key, 'string');
+    checkIf(value, 'object');
+
+    mixpanel.track(key, value);
+  }
+
   async sendDeviceInfo({ deviceInfo }) {
     checkIf(deviceInfo, 'object');
 
@@ -81,7 +88,7 @@ export class MixpanelAnalytics {
       });
 
       if (ENV_FLAVOR.enableMixpanelAnalytics) {
-        mixpanel.people.set(eventData);
+        this.sendEvent(EVENTS.DEVICE_INFO, eventData);
       }
 
       this._print(EVENTS.DEVICE_INFO, eventData);
