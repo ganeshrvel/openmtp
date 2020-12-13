@@ -1,5 +1,5 @@
 import os, { EOL } from 'os';
-import { IS_DEV } from '../constants/env';
+import { IS_PROD } from '../constants/env';
 import { APP_NAME, APP_VERSION } from '../constants/meta';
 import { PATHS } from '../constants/paths';
 import { appendFileAsync } from '../helpers/fileOps';
@@ -20,15 +20,11 @@ export const log = {
   ) {
     this.doLog(e, title, null, logError, report, false);
 
-    if (allowInProd) {
-      console.info(`${title} => `, e);
-
+    if (IS_PROD && !allowInProd) {
       return;
     }
 
-    if (IS_DEV) {
-      console.info(`${title} => `, e);
-    }
+    console.info(`${title} => `, e);
   },
 
   /**
@@ -42,15 +38,11 @@ export const log = {
   error(e, title = `Log`, logError = true, allowInProd = false, report = true) {
     this.doLog(e, title, null, logError, report, true);
 
-    if (allowInProd) {
-      console.error(`${title} => `, e);
-
+    if (IS_PROD && !allowInProd) {
       return;
     }
 
-    if (IS_DEV) {
-      console.error(`${title} => `, e);
-    }
+    console.error(`${title} => `, e);
   },
 
   /**
@@ -70,11 +62,11 @@ export const log = {
     report = true,
     isError = true
   ) {
-    const sectionSeperator = `=============================================================`;
-
     if (logError === false) {
       return null;
     }
+
+    const sectionSeperator = `=============================================================`;
 
     const logType = isError ? `Error` : `Info`;
     let err = `${logType} title: ${title}${EOL}${logType} body: ${EOL}${e?.toString()}${EOL}`;
