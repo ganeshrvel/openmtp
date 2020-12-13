@@ -3,6 +3,7 @@ import { GoogleAnalytics } from './googleAnalytics';
 import { settingsStorage } from '../../helpers/storageHelper';
 import { MixpanelAnalytics } from './mixpanelAnalytics';
 import { getDeviceInfo } from '../../helpers/deviceInfo';
+import { checkIf } from '../../utils/checkIf';
 
 class AnalyticsService {
   constructor() {
@@ -17,6 +18,22 @@ class AnalyticsService {
 
     return isAnalyticsEnabledSettings.enableAnalytics;
   };
+
+  async sendEvent(key, value) {
+    checkIf(key, 'string');
+    checkIf(value, 'object');
+
+    // if analytics is disabled then dont proceed
+    if (!this._isAnalyticsEnabled()) {
+      return;
+    }
+
+    try {
+      await this.mixpanelAnalytics.sendEvent(key, value);
+    } catch (e) {
+      log.error(e, `GoogleAnalytics -> sendEvent`);
+    }
+  }
 
   async init() {
     // if analytics is disabled then dont proceed

@@ -7,6 +7,7 @@ import { ENV_FLAVOR } from '../../constants/env';
 import { EVENTS } from '../../enums/events';
 import { SERVICE_KEYS } from '../../constants/serviceKeys';
 import { checkIf } from '../../utils/checkIf';
+import { getDeviceInfo } from '../../helpers/deviceInfo';
 
 export class MixpanelAnalytics {
   constructor() {
@@ -55,11 +56,33 @@ export class MixpanelAnalytics {
     }
   }
 
-  sendEvent(key, value) {
+  async sendEvent(key, value) {
     checkIf(key, 'string');
     checkIf(value, 'object');
 
-    mixpanel.track(key, value);
+    try {
+      // reconnect analytics if [analytics] object is null
+      if (!this.isInitialized) {
+        await this.init();
+
+        if (!this.isInitialized) {
+          return;
+        }
+
+        // if initialized then send the deviceInfo event
+        const deviceInfo = getDeviceInfo();
+
+        await this.sendDeviceInfo({ deviceInfo });
+      }
+
+      if (ENV_FLAVOR.enableMixpanelAnalytics) {
+        mixpanel.track(key, value);
+      }
+
+      this._print(key, value);
+    } catch (e) {
+      log.error(e, `GoogleAnalytics -> sendEvent`);
+    }
   }
 
   async sendDeviceInfo({ deviceInfo }) {
@@ -87,11 +110,7 @@ export class MixpanelAnalytics {
         eventData[key] = deviceInfo[key];
       });
 
-      if (ENV_FLAVOR.enableMixpanelAnalytics) {
-        this.sendEvent(EVENTS.DEVICE_INFO, eventData);
-      }
-
-      this._print(EVENTS.DEVICE_INFO, eventData);
+      await this.sendEvent(EVENTS.DEVICE_INFO, eventData);
     } catch (e) {
       log.error(e, `GoogleAnalytics -> sendDeviceInfo`);
     }

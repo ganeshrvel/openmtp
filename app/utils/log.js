@@ -1,4 +1,5 @@
 import os, { EOL } from 'os';
+import { machineId } from 'node-machine-id';
 import { IS_PROD } from '../constants/env';
 import { APP_NAME, APP_VERSION } from '../constants/meta';
 import { PATHS } from '../constants/paths';
@@ -7,6 +8,7 @@ import { dateTimeUnixTimestampNow } from './date';
 import { sentryService } from '../services/sentry';
 import { getDeviceInfo } from '../helpers/deviceInfo';
 import { isEmpty } from './funcs';
+import { getMtpModeSetting } from '../helpers/settings';
 
 const { logFile } = PATHS;
 
@@ -53,8 +55,7 @@ export const log = {
    * @param {any} report - should report the error to crashanalytics services
    * @param {string|null} title
    * @param {boolean} isError - is an error or info
-   */
-  doLog(
+   */ async doLog(
     e,
     title = null,
     customError = null,
@@ -82,6 +83,8 @@ export const log = {
 
     let _deviceInfoStrigified = '';
     const deviceInfo = getDeviceInfo();
+    const mtpMode = getMtpModeSetting();
+    const uuid = await machineId();
 
     if (!isEmpty(deviceInfo)) {
       Object.keys(deviceInfo).forEach((a) => {
@@ -94,9 +97,10 @@ export const log = {
     const _date = `Date Time: ${dateTimeUnixTimestampNow({
       monthInletters: true,
     })}`;
-    const _appInfo = `${EOL}App Name: ${APP_NAME}${EOL}App Version: ${APP_VERSION}`;
+    const _appInfo = `${EOL}App Name: ${APP_NAME}${EOL}App Version: ${APP_VERSION}${EOL}UUID: ${uuid}`;
+    const _mtpMode = `${EOL}MTP Mode: ${mtpMode}`;
     const _osInfo = `OS type: ${os.type()} / OS Platform: ${os.platform()} / OS Release: ${os.release()}`;
-    const _error = `${sectionSeperator}${EOL}${_appInfo}${EOL}${_date}${EOL}${_osInfo}${EOL}${_deviceInfoStrigified}${logType}: ${err}${EOL}${sectionSeperator}${EOL}`;
+    const _error = `${sectionSeperator}${EOL}${_appInfo}${EOL}${_mtpMode}${EOL}${_date}${EOL}${_osInfo}${EOL}${_deviceInfoStrigified}${logType}: ${err}${EOL}${sectionSeperator}${EOL}`;
 
     appendFileAsync(logFile, _error);
 
@@ -107,7 +111,7 @@ export const log = {
         errorToReport = new Error(e);
       }
 
-      sentryService.report({ error: errorToReport, title });
+      await sentryService.report({ error: errorToReport, title, mtpMode });
     }
   },
 };

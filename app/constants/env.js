@@ -21,7 +21,7 @@ const config = {
   debug: {
     reportToSenty: true,
     enableGoogleAnalytics: true,
-    enableMixpanelAnalytics: true,
+    enableMixPanelAnalytics: true,
   },
 };
 
