@@ -4,7 +4,7 @@ import { machineId } from 'node-machine-id';
 import { log } from '../../utils/log';
 import { isEmpty } from '../../utils/funcs';
 import { ENV_FLAVOR } from '../../constants/env';
-import { EVENTS } from '../../enums/events';
+import { EVENT_TYPE } from '../../enums/events';
 import { SERVICE_KEYS } from '../../constants/serviceKeys';
 import { checkIf } from '../../utils/checkIf';
 import { getDeviceInfo } from '../../helpers/deviceInfo';
@@ -45,7 +45,7 @@ export class MixpanelAnalytics {
         mixpanel.identify(this.machineId);
       }
 
-      this._print(EVENTS.INIT, this.machineId);
+      this._print(EVENT_TYPE.INIT, this.machineId);
 
       this.isInitialized = true;
 
@@ -58,7 +58,7 @@ export class MixpanelAnalytics {
   }
 
   async sendEvent(key, value) {
-    checkIf(key, 'string');
+    checkIf(key, 'inObjectValues', EVENT_TYPE);
     checkIf(value, 'object');
 
     try {
@@ -110,7 +110,7 @@ export class MixpanelAnalytics {
           eventData[key] = deviceInfo[key];
         });
 
-        await this.sendEvent(EVENTS.DEVICE_INFO, eventData);
+        await this.sendEvent(EVENT_TYPE.DEVICE_INFO, eventData);
       }
     } catch (e) {
       log.error(e, `GoogleAnalytics -> sendDeviceInfo`);

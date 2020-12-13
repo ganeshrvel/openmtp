@@ -1,4 +1,6 @@
-export const EVENTS = {
+export const EVENT_TYPE = {
   INIT: 'INIT',
   DEVICE_INFO: 'DEVICE_INFO',
+  REFRESH: 'REFRESH',
+  MTP_INITIALIZE: 'MTP_INITIALIZE',
 };

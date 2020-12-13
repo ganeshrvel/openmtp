@@ -5,6 +5,7 @@ import { MixpanelAnalytics } from './mixpanelAnalytics';
 import { getDeviceInfo } from '../../helpers/deviceInfo';
 import { checkIf } from '../../utils/checkIf';
 import { getMtpModeSetting } from '../../helpers/settings';
+import { EVENT_TYPE } from '../../enums/events';
 
 class AnalyticsService {
   constructor() {
@@ -21,7 +22,7 @@ class AnalyticsService {
   };
 
   async sendEvent(key, value) {
-    checkIf(key, 'string');
+    checkIf(key, 'inObjectValues', EVENT_TYPE);
     checkIf(value, 'object');
 
     // if analytics is disabled then dont proceed

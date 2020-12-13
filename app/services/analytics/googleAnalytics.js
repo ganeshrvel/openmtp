@@ -5,7 +5,7 @@ import { APP_NAME, APP_VERSION } from '../../constants/meta';
 import { log } from '../../utils/log';
 import { isEmpty } from '../../utils/funcs';
 import { ENV_FLAVOR } from '../../constants/env';
-import { EVENTS } from '../../enums/events';
+import { EVENT_TYPE } from '../../enums/events';
 import { SERVICE_KEYS } from '../../constants/serviceKeys';
 import { checkIf } from '../../utils/checkIf';
 import { MTP_MODE } from '../../enums';
@@ -81,7 +81,7 @@ export class GoogleAnalytics {
           const value = deviceInfo[key];
 
           const eventData = {
-            ec: EVENTS.DEVICE_INFO,
+            ec: EVENT_TYPE.DEVICE_INFO,
             ea: 'fetch',
             el: key,
             ev: value,
@@ -91,13 +91,13 @@ export class GoogleAnalytics {
             this.analytics.send('event', eventData);
           }
 
-          this._print(EVENTS.DEVICE_INFO, eventData);
+          this._print(EVENT_TYPE.DEVICE_INFO, eventData);
         });
       }
 
       if (!isEmpty(mtpMode)) {
         const eventData = {
-          ec: EVENTS.DEVICE_INFO,
+          ec: EVENT_TYPE.DEVICE_INFO,
           ea: 'fetch',
           el: 'MTP Mode',
           ev: mtpMode,
@@ -107,7 +107,7 @@ export class GoogleAnalytics {
           this.analytics.send('event', eventData);
         }
 
-        this._print(EVENTS.DEVICE_INFO, eventData);
+        this._print(EVENT_TYPE.DEVICE_INFO, eventData);
       }
     } catch (e) {
       log.error(e, `GoogleAnalytics -> sendDeviceInfo`);

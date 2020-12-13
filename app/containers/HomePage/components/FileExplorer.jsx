@@ -97,6 +97,8 @@ import fileExplorerController from '../../../data/file-explorer/controllers/File
 import { checkIf } from '../../../utils/checkIf';
 import { COMMUNICATION_EVENTS } from '../../../enums/communicationEvents';
 import { reportBugsWindow } from '../../../helpers/createWindows';
+import { analyticsService } from '../../../services/analytics';
+import { EVENT_TYPE } from '../../../enums/events';
 
 const { Menu, getCurrentWindow } = remote;
 
@@ -554,6 +556,8 @@ class FileExplorer extends Component {
         break;
 
       case 'refresh':
+        analyticsService.sendEvent(EVENT_TYPE.REFRESH, {});
+
         this.mainWindowRendererProcess.webContents.send(
           'fileExplorerToolbarActionCommunication',
           {
