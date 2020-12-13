@@ -10,16 +10,8 @@ class FileExplorerController {
     this.repository = new FileExplorerRepository();
   }
 
-  /**
-   * description - Initialize
-   *
-   * @return {Promise<{data: object, error: string|null, stderr: string|null}>}
-   */
-  async initialize({ deviceType }) {
-    checkIf(deviceType, 'string');
-    analyticsService.sendEvent(EVENT_TYPE.MTP_INITIALIZE_BEGIN, {});
-
-    const result = await this.repository.initialize({ deviceType });
+  _sentEvent({ result, eventKey }) {
+    checkIf(eventKey, 'string');
 
     // we use timeout here not to block the thread
     setTimeout(async () => {
@@ -33,19 +25,34 @@ class FileExplorerController {
 
       if (mtpError) {
         // send out an error event
-        analyticsService.sendEvent(EVENT_TYPE.MTP_INITIALIZE_ERROR, {
+        await analyticsService.sendEvent(EVENT_TYPE[`${eventKey}_ERROR`], {
           'MTP Status': mtpStatus,
           'MTP Mode': mtpMode,
           stderr: result.stderr,
-          error: result.stderr,
+          error: result.error,
         });
-      } else {
-        analyticsService.sendEvent(EVENT_TYPE.MTP_INITIALIZE_SUCCESS, {
-          'MTP Status': mtpStatus,
-          'MTP Mode': mtpMode,
-        });
+
+        return;
       }
+
+      await analyticsService.sendEvent(EVENT_TYPE[`${eventKey}_SUCCESS`], {
+        'MTP Status': mtpStatus,
+        'MTP Mode': mtpMode,
+      });
     }, 100);
+  }
+
+  /**
+   * description - Initialize
+   *
+   * @return {Promise<{data: object, error: string|null, stderr: string|null}>}
+   */
+  async initialize({ deviceType }) {
+    checkIf(deviceType, 'string');
+
+    const result = await this.repository.initialize({ deviceType });
+
+    this._sentEvent({ result, eventKey: 'MTP_INITIALIZE' });
 
     return result;
   }
@@ -58,7 +65,11 @@ class FileExplorerController {
   async dispose({ deviceType }) {
     checkIf(deviceType, 'string');
 
-    return this.repository.dispose({ deviceType });
+    const result = await this.repository.dispose({ deviceType });
+
+    this._sentEvent({ result, eventKey: 'MTP_DISPOSE' });
+
+    return result;
   }
 
   /**
@@ -69,7 +80,11 @@ class FileExplorerController {
   async listStorages({ deviceType }) {
     checkIf(deviceType, 'string');
 
-    return this.repository.listStorages({ deviceType });
+    const result = await this.repository.listStorages({ deviceType });
+
+    this._sentEvent({ result, eventKey: 'MTP_LIST_STORAGES' });
+
+    return result;
   }
 
   /**
@@ -86,12 +101,16 @@ class FileExplorerController {
     checkIf(filePath, 'string');
     checkIf(ignoreHidden, 'boolean');
 
-    return this.repository.listFiles({
+    const result = await this.repository.listFiles({
       deviceType,
       filePath,
       ignoreHidden,
       storageId,
     });
+
+    this._sentEvent({ result, eventKey: 'MTP_LIST_FILES' });
+
+    return result;
   }
 
   /**
@@ -108,12 +127,16 @@ class FileExplorerController {
     checkIf(filePath, 'string');
     checkIf(newFilename, 'string');
 
-    return this.repository.renameFile({
+    const result = await this.repository.renameFile({
       deviceType,
       filePath,
       newFilename,
       storageId,
     });
+
+    this._sentEvent({ result, eventKey: 'MTP_RENAME_FILE' });
+
+    return result;
   }
 
   /**
@@ -128,11 +151,15 @@ class FileExplorerController {
     checkIf(deviceType, 'string');
     checkIf(fileList, 'array');
 
-    return this.repository.deleteFiles({
+    const result = await this.repository.deleteFiles({
       deviceType,
       fileList,
       storageId,
     });
+
+    this._sentEvent({ result, eventKey: 'MTP_DELETE_FILE' });
+
+    return result;
   }
 
   /**
@@ -147,11 +174,15 @@ class FileExplorerController {
     checkIf(deviceType, 'string');
     checkIf(filePath, 'string');
 
-    return this.repository.makeDirectory({
+    const result = await this.repository.makeDirectory({
       deviceType,
       filePath,
       storageId,
     });
+
+    this._sentEvent({ result, eventKey: 'MTP_DELETE_FILE' });
+
+    return result;
   }
 
   /**
@@ -166,11 +197,15 @@ class FileExplorerController {
     checkIf(deviceType, 'string');
     checkIf(fileList, 'array');
 
-    return this.repository.filesExist({
+    const result = await this.repository.filesExist({
       deviceType,
       fileList,
       storageId,
     });
+
+    this._sentEvent({ result, eventKey: 'MTP_FILES_EXIST' });
+
+    return result;
   }
 
   /**
@@ -188,7 +223,7 @@ class FileExplorerController {
    *
    * @return
    */
-  transferFiles = ({
+  transferFiles = async ({
     deviceType,
     destination,
     fileList,
@@ -208,7 +243,7 @@ class FileExplorerController {
     checkIf(onProgress, 'function');
     checkIf(onCompleted, 'function');
 
-    return this.repository.transferFiles({
+    const result = await this.repository.transferFiles({
       deviceType,
       destination,
       fileList,
@@ -219,6 +254,10 @@ class FileExplorerController {
       onCompleted,
       onPreprocess,
     });
+
+    this._sentEvent({ result, eventKey: 'MTP_TRANSFER_FILES' });
+
+    return result;
   };
 
   /**
@@ -230,7 +269,11 @@ class FileExplorerController {
   async fetchDebugReport({ deviceType }) {
     checkIf(deviceType, 'string');
 
-    return this.repository.fetchDebugReport({ deviceType });
+    const result = await this.repository.fetchDebugReport({ deviceType });
+
+    this._sentEvent({ result, eventKey: 'MTP_FETCH_DEBUG_REPORT' });
+
+    return result;
   }
 }
 
