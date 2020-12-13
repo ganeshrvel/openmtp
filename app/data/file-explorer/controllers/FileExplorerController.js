@@ -14,6 +14,7 @@ class FileExplorerController {
     checkIf(eventKey, 'string');
 
     // we use timeout here not to block the thread
+    // todo move this to worker thread
     setTimeout(async () => {
       const mtpMode = getMtpModeSetting();
 
@@ -35,6 +36,7 @@ class FileExplorerController {
         return;
       }
 
+      // send a success event
       await analyticsService.sendEvent(EVENT_TYPE[`${eventKey}_SUCCESS`], {
         'MTP Status': mtpStatus,
         'MTP Mode': mtpMode,
