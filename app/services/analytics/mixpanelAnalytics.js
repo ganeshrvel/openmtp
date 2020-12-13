@@ -1,7 +1,6 @@
-import Analytics from 'electron-ga';
 import { isObject } from 'nice-utils';
+import mixpanel from 'mixpanel-browser';
 import { machineId } from 'node-machine-id';
-import { APP_NAME, APP_VERSION } from '../../constants/meta';
 import { log } from '../../utils/log';
 import { isEmpty } from '../../utils/funcs';
 import { ENV_FLAVOR } from '../../constants/env';
@@ -9,16 +8,16 @@ import { EVENTS } from '../../enums/events';
 import { SERVICE_KEYS } from '../../constants/serviceKeys';
 import { checkIf } from '../../utils/checkIf';
 
-export class GoogleAnalytics {
+export class MixpanelAnalytics {
   constructor() {
-    this.analytics = null;
+    this.isInitialized = false;
     this.machineId = null;
   }
 
   _print(key, value) {
     let _value = value;
 
-    if (isObject(value)) {
+    if (value && isObject(value)) {
       _value = JSON.stringify(value);
     }
 
@@ -26,7 +25,7 @@ export class GoogleAnalytics {
       '════════════════════════════════════════════════════════════════════'
     );
     log.info(
-      "Google analytics log. This wouldn't show up in the production mode"
+      "Mixpanel analytics log. This wouldn't show up in the production mode"
     );
     log.info(_value.toString(), `'${key}'`);
     log.info(
@@ -39,23 +38,18 @@ export class GoogleAnalytics {
       // this is a hashed value (sha-256)
       this.machineId = await machineId();
 
-      this.analytics = new Analytics(SERVICE_KEYS.googleAnalytics, {
-        appName: APP_NAME,
-        appVersion: APP_VERSION,
-        userId: this.machineId,
-      });
-
-      if (ENV_FLAVOR.enableGoogleAnalytics) {
-        this.analytics?.send('screenview', { cd: '/FileExplorer' });
-        this.analytics?.send(`pageview`, { dp: '/FileExplorer' });
+      if (ENV_FLAVOR.enableMixpanelAnalytics) {
+        mixpanel.init(SERVICE_KEYS.mixpanelAnalytics);
+        mixpanel.identify(this.machineId);
       }
 
-      this._print('screenview', '/FileExplorer');
-      this._print('pageview', '/FileExplorer');
+      this._print(EVENTS.INIT, this.machineId);
 
-      return this.analytics;
+      this.isInitialized = true;
+
+      return this.isInitialized;
     } catch (e) {
-      log.error(e, `GoogleAnalytics -> _init`);
+      log.error(e, `MixpanelAnalytics -> _init`);
 
       return null;
     }
@@ -66,10 +60,10 @@ export class GoogleAnalytics {
 
     try {
       // reconnect analytics if [analytics] object is null
-      if (!this.analytics) {
+      if (!this.isInitialized) {
         await this.init();
 
-        if (!this.analytics) {
+        if (!this.isInitialized) {
           return;
         }
       }
@@ -78,22 +72,19 @@ export class GoogleAnalytics {
         return;
       }
 
+      const eventData = {
+        USER_ID: this.machineId,
+      };
+
       Object.keys(deviceInfo).forEach((key) => {
-        const value = deviceInfo[key];
-
-        const eventData = {
-          ec: EVENTS.DEVICE_INFO,
-          ea: 'fetch',
-          el: key,
-          ev: value,
-        };
-
-        if (ENV_FLAVOR.enableGoogleAnalytics) {
-          this.analytics.send('event', eventData);
-        }
-
-        this._print(EVENTS.DEVICE_INFO, eventData);
+        eventData[key] = deviceInfo[key];
       });
+
+      if (ENV_FLAVOR.enableMixpanelAnalytics) {
+        mixpanel.people.set(eventData);
+      }
+
+      this._print(EVENTS.DEVICE_INFO, eventData);
     } catch (e) {
       log.error(e, `GoogleAnalytics -> sendDeviceInfo`);
     }

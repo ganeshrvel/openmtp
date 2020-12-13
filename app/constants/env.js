@@ -11,17 +11,17 @@ const config = {
   dev: {
     reportToSenty: false,
     enableGoogleAnalytics: true, //todo false
-    enableMixPanel: true, //todo false
+    enableMixpanelAnalytics: true, //todo false
   },
   prod: {
     reportToSenty: true,
     enableGoogleAnalytics: true,
-    enableMixPanel: true,
+    enableMixpanelAnalytics: true,
   },
   debug: {
     reportToSenty: true,
     enableGoogleAnalytics: true,
-    enableMixPanel: true,
+    enableMixpanelAnalytics: true,
   },
 };
 

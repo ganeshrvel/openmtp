@@ -1,10 +1,13 @@
 import { log } from '../../utils/log';
 import { GoogleAnalytics } from './googleAnalytics';
 import { settingsStorage } from '../../helpers/storageHelper';
+import { MixpanelAnalytics } from './mixpanelAnalytics';
+import { getDeviceInfo } from '../../helpers/deviceInfo';
 
 class AnalyticsService {
   constructor() {
     this.googleAnalytics = new GoogleAnalytics();
+    this.mixpanelAnalytics = new MixpanelAnalytics();
   }
 
   _isAnalyticsEnabled = () => {
@@ -24,6 +27,7 @@ class AnalyticsService {
     try {
       // init google analytics
       await this.googleAnalytics.init();
+      await this.mixpanelAnalytics.init();
     } catch (e) {
       log.error(e, `AnalyticsService -> init`);
     }
@@ -36,8 +40,11 @@ class AnalyticsService {
     }
 
     try {
+      const deviceInfo = getDeviceInfo();
+
       // send device info google analytics
-      await this.googleAnalytics.sendDeviceInfo();
+      await this.googleAnalytics.sendDeviceInfo({ deviceInfo });
+      await this.mixpanelAnalytics.sendDeviceInfo({ deviceInfo });
     } catch (e) {
       log.error(e, `AnalyticsService -> sendDeviceInfo`);
     }
