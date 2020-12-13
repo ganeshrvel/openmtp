@@ -10,7 +10,7 @@ const isDebug = process.env.DEBUG_PROD === 'true';
 const config = {
   dev: {
     reportToSenty: false,
-    enableAnalytics: false,
+    enableAnalytics: true,//todo false
   },
   prod: {
     reportToSenty: true,

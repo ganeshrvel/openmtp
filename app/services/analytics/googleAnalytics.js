@@ -4,77 +4,83 @@ import { GA_TRACKING_ID } from '../../../config/google-analytics-key';
 import { APP_NAME, APP_VERSION } from '../../constants/meta';
 import { settingsStorage } from '../../helpers/storageHelper';
 import { ENV_FLAVOR } from '../../constants/env';
-import { isConnected } from '../../utils/isOnline';
 import { log } from '../../utils/log';
 import { getDeviceInfo } from '../../helpers/deviceInfo';
 import { isEmpty } from '../../utils/funcs';
 
 class GoogleAnalytics {
-  init() {
-    this.analytics = null;
-
+  _isAnalyticsEnabled = () => {
     const isAnalyticsEnabledSettings = settingsStorage.getItems([
       'enableAnalytics',
     ]);
 
-    try {
-      if (
-        isAnalyticsEnabledSettings.enableAnalytics &&
-        ENV_FLAVOR.enableAnalytics
-      ) {
-        isConnected()
-          .then(async (connected) => {
-            await this.run();
+    return (
+      isAnalyticsEnabledSettings.enableAnalytics && ENV_FLAVOR.enableAnalytics
+    );
+  };
 
-            if (!connected) {
-              return;
-            }
+  async init() {
+    this.analytics = null;
 
-            return connected;
-          })
-          .catch(() => {});
-      }
-    } catch (e) {
-      log.error(e, `App -> runAnalytics`);
-    }
-  }
-
-  async run() {
-    // this is a hashed value (sha-256)
-    const _machineId = await machineId();
-
-    this.analytics = new Analytics(GA_TRACKING_ID, {
-      appName: APP_NAME,
-      appVersion: APP_VERSION,
-      userId: _machineId,
-    });
-
-    this.analytics?.send('screenview', { cd: '/FileExplorer' });
-    this.analytics?.send(`pageview`, { dp: '/FileExplorer' });
-
-    this.sendDeviceInfo();
-  }
-
-  sendDeviceInfo() {
-    if (!this.analytics) {
-      this.init();
-
+    if (!this._isAnalyticsEnabled()) {
       return;
     }
 
-    const deviceInfo = getDeviceInfo();
+    try {
+      await this._init();
+    } catch (e) {
+      log.error(e, `GoogleAnalytics -> init`);
+    }
+  }
 
-    if (!isEmpty(deviceInfo)) {
-      Object.keys(deviceInfo).forEach((key) => {
-        const value = deviceInfo[key];
+  async _init() {
+    try {
+      // this is a hashed value (sha-256)
+      const _machineId = await machineId();
 
-        this.analytics.send('event', {
-          ec: 'Device Information',
-          ea: 'fetch',
-          el: key,
-          ev: value,
-        });
+      this.analytics = new Analytics(GA_TRACKING_ID, {
+        appName: APP_NAME,
+        appVersion: APP_VERSION,
+        userId: _machineId,
       });
+
+      this.analytics?.send('screenview', { cd: '/FileExplorer' });
+      this.analytics?.send(`pageview`, { dp: '/FileExplorer' });
+
+      await this.sendDeviceInfo();
+    } catch (e) {
+      log.error(e, `GoogleAnalytics -> _init`);
+    }
+  }
+
+  async sendDeviceInfo() {
+    try {
+      if (!this._isAnalyticsEnabled()) {
+        return;
+      }
+
+      if (!this.analytics) {
+        await this.init();
+
+        return;
+      }
+
+      const deviceInfo = getDeviceInfo();
+
+      if (!isEmpty(deviceInfo)) {
+        Object.keys(deviceInfo).forEach((key) => {
+          const value = deviceInfo[key];
+
+          this.analytics.send('event', {
+            ec: 'Device Information',
+            ea: 'fetch',
+            el: key,
+            ev: value,
+          });
+        });
+      }
+    } catch (e) {
+      log.error(e, `GoogleAnalytics -> sendDeviceInfo`);
     }
   }
 }

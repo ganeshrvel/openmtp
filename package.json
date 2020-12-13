@@ -183,6 +183,7 @@
     "hotkeys-js": "^3.8.1",
     "junk": "^3.1.0",
     "lodash": "^4.17.20",
+    "mixpanel-browser": "^2.40.0",
     "mkdirp": "^1.0.4",
     "nice-utils": "^1.0.3",
     "node-machine-id": "^1.1.12",
