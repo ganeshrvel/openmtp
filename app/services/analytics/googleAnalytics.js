@@ -23,16 +23,12 @@ export class GoogleAnalytics {
       _value = JSON.stringify(value);
     }
 
-    log.info(
-      '════════════════════════════════════════════════════════════════════'
-    );
+    log.printBoundary();
     log.info(
       "Google analytics log. This wouldn't show up in the production mode"
     );
-    log.info(_value.toString(), `'${key}'`);
-    log.info(
-      '════════════════════════════════════════════════════════════════════'
-    );
+    log.info(_value.toString(), `${key}`);
+    log.printBoundary();
   }
 
   async init() {

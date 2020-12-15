@@ -1,3 +1,4 @@
+import clp from 'console-log-plus';
 import os, { EOL } from 'os';
 import { machineId } from 'node-machine-id';
 import { IS_PROD } from '../constants/env';
@@ -13,20 +14,36 @@ import { getMtpModeSetting } from '../helpers/settings';
 const { logFile } = PATHS;
 
 export const log = {
-  info(
-    e,
-    title = `Log`,
-    logError = false,
-    allowInProd = false,
-    report = false
-  ) {
+  printBoundary(char = '═', length = 70) {
+    let output = char;
+
+    for (let i = 0; i < length; i += 1) {
+      output += char;
+    }
+
+    console.info(output);
+  },
+  info(e, title = ``, logError = false, allowInProd = false, report = false) {
     this.doLog(e, title, null, logError, report, false);
 
     if (IS_PROD && !allowInProd) {
       return;
     }
 
-    console.info(`${title} => `, e);
+    if (!isEmpty(title)) {
+      clp({
+        color: 'white',
+        background: 'green',
+        message: title,
+      });
+    }
+
+    if (!isEmpty(e)) {
+      clp({
+        color: 'blue',
+        message: e,
+      });
+    }
   },
 
   /**
@@ -44,7 +61,18 @@ export const log = {
       return;
     }
 
-    console.error(`${title} => `, e);
+    if (!isEmpty(title)) {
+      clp({
+        color: 'white',
+        background: 'red',
+        message: title,
+      });
+    }
+
+    clp({
+      color: 'red',
+      message: e,
+    });
   },
 
   /**

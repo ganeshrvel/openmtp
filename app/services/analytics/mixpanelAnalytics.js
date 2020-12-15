@@ -23,16 +23,13 @@ export class MixpanelAnalytics {
       _value = JSON.stringify(value);
     }
 
+    log.printBoundary();
     log.info(
-      '════════════════════════════════════════════════════════════════════'
+      "Mixpanel analytics log. This wouldn't show up in the production mode",
+      ''
     );
-    log.info(
-      "Mixpanel analytics log. This wouldn't show up in the production mode"
-    );
-    log.info(_value.toString(), `'${key}'`);
-    log.info(
-      '════════════════════════════════════════════════════════════════════'
-    );
+    log.info(_value.toString(), `${key}`);
+    log.printBoundary();
   }
 
   async init() {
