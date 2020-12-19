@@ -1026,6 +1026,19 @@ class FileExplorer extends Component {
     });
   };
 
+  _handleClearEditDialog = (targetAction) => {
+    const { toggleDialog } = this.state;
+
+    this.setState({
+      toggleDialog: {
+        ...toggleDialog,
+        [targetAction]: {
+          ...this.initialState.toggleDialog[targetAction],
+        },
+      },
+    });
+  };
+
   _handleRenameEditDialog = async ({ ...args }) => {
     const {
       deviceType,
@@ -1039,9 +1052,22 @@ class FileExplorer extends Component {
     const { data } = this.state.toggleDialog.rename;
     const { confirm, textFieldValue: newFilename } = args;
     const targetAction = 'rename';
+    const deviceTypeUpperCase = deviceType.toUpperCase();
+
+    analyticsService.sendEvent(
+      EVENT_TYPE[`${deviceTypeUpperCase}_RENAME_STARTED`],
+      {}
+    );
 
     if (!confirm || newFilename === null) {
       this._handleClearEditDialog(targetAction);
+
+      analyticsService.sendEvent(
+        EVENT_TYPE[`${deviceTypeUpperCase}_RENAME_EXIT`],
+        {
+          Reason: 'EXIT',
+        }
+      );
 
       return null;
     }
@@ -1055,6 +1081,13 @@ class FileExplorer extends Component {
         targetAction
       );
 
+      analyticsService.sendEvent(
+        EVENT_TYPE[`${deviceTypeUpperCase}_RENAME_EXIT`],
+        {
+          Reason: 'ILLEGAL_CHARACTERS',
+        }
+      );
+
       return null;
     }
 
@@ -1066,6 +1099,13 @@ class FileExplorer extends Component {
 
     if (newFilepath === data.path) {
       this._handleClearEditDialog(targetAction);
+
+      analyticsService.sendEvent(
+        EVENT_TYPE[`${deviceTypeUpperCase}_RENAME_EXIT`],
+        {
+          Reason: 'NO_CHANGE',
+        }
+      );
 
       return null;
     }
@@ -1085,6 +1125,13 @@ class FileExplorer extends Component {
             message: `Error: The name "${sanitizedNewFilename}" is already taken.`,
           },
           targetAction
+        );
+
+        analyticsService.sendEvent(
+          EVENT_TYPE[`${deviceTypeUpperCase}_RENAME_EXIT`],
+          {
+            Reason: 'FILE_EXISTS',
+          }
         );
 
         return null;
@@ -1115,19 +1162,6 @@ class FileExplorer extends Component {
         [targetAction]: {
           ...toggleDialog[targetAction],
           errors: { ...args },
-        },
-      },
-    });
-  };
-
-  _handleClearEditDialog = (targetAction) => {
-    const { toggleDialog } = this.state;
-
-    this.setState({
-      toggleDialog: {
-        ...toggleDialog,
-        [targetAction]: {
-          ...this.initialState.toggleDialog[targetAction],
         },
       },
     });
