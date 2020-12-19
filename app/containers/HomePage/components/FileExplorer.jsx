@@ -554,8 +554,6 @@ class FileExplorer extends Component {
         break;
 
       case 'refresh':
-        analyticsService.sendEvent(EVENT_TYPE.REFRESH, {});
-
         this.mainWindowRendererProcess.webContents.send(
           'fileExplorerToolbarActionCommunication',
           {

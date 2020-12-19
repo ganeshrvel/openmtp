@@ -42,7 +42,7 @@ export class MixpanelAnalytics {
         mixpanel.identify(this.machineId);
       }
 
-      this._print(EVENT_TYPE.INIT, this.machineId);
+      this._print(EVENT_TYPE.MIXPANEL_INIT, this.machineId);
 
       this.isInitialized = true;
 

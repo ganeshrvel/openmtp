@@ -39,10 +39,12 @@ import ToolbarBody from './ToolbarBody';
 import { openExternalUrl } from '../../../utils/url';
 import { APP_GITHUB_URL } from '../../../constants/meta';
 import { pathUp } from '../../../utils/files';
-import { DEVICE_TYPE } from '../../../enums';
+import { DEVICE_TYPE, MTP_MODE } from '../../../enums';
 import { log } from '../../../utils/log';
 import fileExplorerController from '../../../data/file-explorer/controllers/FileExplorerController';
 import { checkIf } from '../../../utils/checkIf';
+import { analyticsService } from '../../../services/analytics';
+import { EVENT_TYPE } from '../../../enums/events';
 
 class ToolbarAreaPane extends PureComponent {
   constructor(props) {
@@ -74,7 +76,6 @@ class ToolbarAreaPane extends PureComponent {
 
   fileExplorerToolbarActionCommunicationEvent = (event, { ...args }) => {
     const { deviceType } = this.props;
-
     const { type, deviceType: _focussedFileExplorerDeviceType } = args;
 
     if (deviceType !== _focussedFileExplorerDeviceType) {
@@ -105,15 +106,29 @@ class ToolbarAreaPane extends PureComponent {
   };
 
   _handleToggleMtpStorageSelectionDialog = (status) => {
+    const dialogStatus = status ? 'OPEN' : 'CLOSE';
+
     this.setState({
       toggleMtpStorageSelectionDialog: status,
     });
+
+    analyticsService.sendEvent(
+      EVENT_TYPE[`MTP_TOOLBAR_STORAGE_DIALOG_${dialogStatus}`],
+      {}
+    );
   };
 
   _handleToggleMtpModeSelectionDialog = (status) => {
+    const dialogStatus = status ? 'OPEN' : 'CLOSE';
+
     this.setState({
       toggleMtpModeSelectionDialog: status,
     });
+
+    analyticsService.sendEvent(
+      EVENT_TYPE[`MTP_TOOLBAR_MTP_MODE_DIALOG_${dialogStatus}`],
+      {}
+    );
   };
 
   _handleMtpStoragesListClick = ({ ...args }) => {
@@ -186,13 +201,17 @@ class ToolbarAreaPane extends PureComponent {
     } = this.props;
 
     let filePath = '/';
+    const deviceTypeUpperCase = deviceType.toUpperCase();
 
     switch (itemType) {
       case 'up':
         filePath = pathUp(currentBrowsePath[deviceType]);
         this._handleListDirectory({ filePath, deviceType });
 
-
+        analyticsService.sendEvent(
+          EVENT_TYPE[`${deviceTypeUpperCase}_TOOLBAR_FOLDER_UP`],
+          {}
+        );
 
         break;
 
@@ -204,27 +223,45 @@ class ToolbarAreaPane extends PureComponent {
           deviceType,
         });
 
+        analyticsService.sendEvent(
+          EVENT_TYPE[`${deviceTypeUpperCase}_TOOLBAR_REFRESH`],
+          {}
+        );
+
         break;
 
       case 'delete':
         this._handleToggleDeleteConfirmDialog(true);
 
+        analyticsService.sendEvent(
+          EVENT_TYPE[`${deviceTypeUpperCase}_TOOLBAR_DELETE`],
+          {}
+        );
+
         break;
 
       case 'storage':
         this._handleToggleMtpStorageSelectionDialog(true);
+
         break;
 
       case 'settings':
         this._handleToggleSettings(true);
+
         break;
 
       case 'gitHub':
         this._handleOpenGitHubRepo();
+
+        analyticsService.sendEvent(
+          EVENT_TYPE[`${deviceTypeUpperCase}_TOOLBAR_GITHUB_TAP`],
+          {}
+        );
         break;
 
       case 'mtpMode':
         this._handleToggleMtpModeSelectionDialog(true);
+
         break;
 
       default:

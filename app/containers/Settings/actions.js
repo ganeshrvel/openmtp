@@ -6,6 +6,8 @@ import { initialState } from './reducers';
 import { checkIf } from '../../utils/checkIf';
 import { MTP_MODE } from '../../enums';
 import { DEVICES_DEFAULT_PATH } from '../../constants';
+import { analyticsService } from '../../services/analytics';
+import { EVENT_TYPE } from '../../enums/events';
 
 const prefix = '@@Settings';
 const actionTypesList = [
@@ -24,6 +26,13 @@ const excludeItemsFromSettingsFile = ['toggleSettings'];
 export const actionTypes = prefixer(prefix, actionTypesList);
 
 export function toggleSettings(data) {
+  const dialogStatus = data ? 'OPEN' : 'CLOSE';
+
+  analyticsService.sendEvent(
+    EVENT_TYPE[`TOOLBAR_SETTINGS_DIALOG_${dialogStatus}`],
+    {}
+  );
+
   return {
     type: actionTypes.TOGGLE_SETTINGS,
     payload: data,
