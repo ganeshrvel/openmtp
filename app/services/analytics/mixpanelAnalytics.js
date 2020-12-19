@@ -9,6 +9,7 @@ import { SERVICE_KEYS } from '../../constants/serviceKeys';
 import { checkIf } from '../../utils/checkIf';
 import { getDeviceInfo } from '../../helpers/deviceInfo';
 import { MTP_MODE } from '../../enums';
+import { getMtpModeSetting } from '../../helpers/settings';
 
 export class MixpanelAnalytics {
   constructor() {
@@ -69,8 +70,9 @@ export class MixpanelAnalytics {
 
         // if initialized then send the deviceInfo event
         const deviceInfo = getDeviceInfo();
+        const mtpMode = getMtpModeSetting();
 
-        await this.sendDeviceInfo({ deviceInfo });
+        await this.sendDeviceInfo({ deviceInfo, mtpMode });
       }
 
       if (ENV_FLAVOR.enableMixpanelAnalytics) {

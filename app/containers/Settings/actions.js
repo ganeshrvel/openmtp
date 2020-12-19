@@ -47,7 +47,12 @@ export function freshInstall({ ...data }, getState) {
       type: actionTypes.FRESH_INSTALL,
       payload: isFreshInstall,
     });
+
     dispatch(copySettingsToJsonFile(getState));
+
+    analyticsService.sendEvent(EVENT_TYPE.TOOLBAR_SETTINGS_CHANGE, {
+      isFreshInstall,
+    });
   };
 }
 
@@ -57,7 +62,12 @@ export function setOnboarding({ ...data }, getState) {
       type: actionTypes.SET_ONBOARDING,
       payload: data,
     });
+
     dispatch(copySettingsToJsonFile(getState));
+
+    analyticsService.sendEvent(EVENT_TYPE.TOOLBAR_SETTINGS_CHANGE, {
+      onboarding: data,
+    });
   };
 }
 
@@ -70,7 +80,13 @@ export function hideHiddenFiles({ ...data }, deviceType, getState) {
       deviceType,
       payload: value,
     });
+
     dispatch(copySettingsToJsonFile(getState));
+
+    analyticsService.sendEvent(EVENT_TYPE.TOOLBAR_SETTINGS_CHANGE, {
+      hideHiddenFiles: value,
+      deviceType,
+    });
   };
 }
 
@@ -83,7 +99,13 @@ export function setFilesPreprocessingBeforeTransfer({ ...data }, getState) {
       deviceType: null,
       payload: { value, direction },
     });
+
     dispatch(copySettingsToJsonFile(getState));
+
+    analyticsService.sendEvent(EVENT_TYPE.TOOLBAR_SETTINGS_CHANGE, {
+      filesPreprocessingBeforeTransfer: value,
+      direction,
+    });
   };
 }
 
@@ -96,7 +118,13 @@ export function fileExplorerListingType({ ...data }, deviceType, getState) {
       deviceType,
       payload: value,
     });
+
     dispatch(copySettingsToJsonFile(getState));
+
+    analyticsService.sendEvent(EVENT_TYPE.TOOLBAR_SETTINGS_CHANGE, {
+      fileExplorerListingType: value,
+      deviceType,
+    });
   };
 }
 
@@ -181,6 +209,15 @@ export function setCommonSettings(
   }
 
   return async (dispatch) => {
+    // if the [key] == [enableAnalytics] and it is toggled on, report it
+    if (key === 'enableAnalytics' && !value) {
+      analyticsService.sendEvent(EVENT_TYPE.TOOLBAR_SETTINGS_CHANGE, {
+        isCommonSettings: true,
+        [key]: value,
+        deviceType,
+      });
+    }
+
     dispatch({
       type: actionTypes.COMMON_SETTINGS,
       deviceType,
@@ -197,6 +234,17 @@ export function setCommonSettings(
         }
       })
     );
+
+    // if the [key] == [enableAnalytics] and it is toggled off, report it
+    // log for all other keys
+    // note: if [enableAnalytics] is false then reporting is automatically disabled by [AnalyticsService] itself.
+    if (key !== 'enableAnalytics' || (key === 'enableAnalytics' && value)) {
+      analyticsService.sendEvent(EVENT_TYPE.TOOLBAR_SETTINGS_CHANGE, {
+        isCommonSettings: true,
+        [key]: value,
+        deviceType,
+      });
+    }
   };
 }
 
