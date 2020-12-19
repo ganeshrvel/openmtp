@@ -14,8 +14,9 @@ class FileExplorerController {
     this.repository = new FileExplorerRepository();
   }
 
-  async _sentEvent({ result, deviceType, eventKey }) {
+  async _sentEvent({ result, deviceType, eventKey, attachData = false }) {
     checkIf(eventKey, 'string');
+    checkIf(attachData, 'boolean');
     checkIf(deviceType, 'inObjectValues', DEVICE_TYPE);
 
     // events related to local disk actions
@@ -50,7 +51,17 @@ class FileExplorerController {
       }
 
       // send a success event
-      await analyticsService.sendEvent(_eventKey, {});
+      let data = {};
+
+      if (attachData) {
+        data = {
+          data: result.data,
+        };
+      }
+
+      await analyticsService.sendEvent(_eventKey, {
+        ...data,
+      });
 
       return;
     }
@@ -90,9 +101,18 @@ class FileExplorerController {
     }
 
     // send a success event
+    let data = {};
+
+    if (attachData) {
+      data = {
+        data: result.data,
+      };
+    }
+
     await analyticsService.sendEvent(_eventKey, {
       'MTP Status': mtpStatus,
       'MTP Mode': mtpMode,
+      ...data,
     });
   }
 
@@ -136,7 +156,12 @@ class FileExplorerController {
 
     const result = await this.repository.listStorages({ deviceType });
 
-    this._sentEvent({ result, deviceType, eventKey: 'LIST_STORAGES' });
+    this._sentEvent({
+      result,
+      deviceType,
+      eventKey: 'LIST_STORAGES',
+      attachData: true,
+    });
 
     return result;
   }
