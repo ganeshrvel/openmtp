@@ -184,7 +184,7 @@ class FileExplorer extends Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const {
       currentBrowsePath,
       deviceType,
@@ -204,9 +204,7 @@ class FileExplorer extends Component {
         deviceType,
       });
     }
-  }
 
-  componentDidMount() {
     this.registerAccelerators();
     this.registerAppUpdate();
     this.registerGenerateErrorReport();

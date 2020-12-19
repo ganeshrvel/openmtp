@@ -4,44 +4,47 @@ import { analyticsService } from '../../../services/analytics';
 import { EVENT_TYPE } from '../../../enums/events';
 import { processMtpBuffer } from '../../../helpers/processBufferOutput';
 import { getMtpModeSetting } from '../../../helpers/settings';
+import { DEVICE_TYPE } from '../../../enums';
 
 class FileExplorerController {
   constructor() {
     this.repository = new FileExplorerRepository();
   }
 
-  _sentEvent({ result, eventKey }) {
+  async _sentEvent({ result, deviceType, eventKey }) {
     checkIf(eventKey, 'string');
+    checkIf(deviceType, 'inObjectValues', DEVICE_TYPE);
 
-    // we use timeout here not to block the thread
+    if (deviceType !== DEVICE_TYPE.mtp) {
+      return;
+    }
+
     // todo move this to worker thread
-    setTimeout(async () => {
-      const mtpMode = getMtpModeSetting();
+    const mtpMode = getMtpModeSetting();
 
-      const { mtpStatus, error: mtpError } = await processMtpBuffer({
-        error: result.error,
-        stderr: result.stderr,
-        mtpMode,
-      });
+    const { mtpStatus, error: mtpError } = await processMtpBuffer({
+      error: result.error,
+      stderr: result.stderr,
+      mtpMode,
+    });
 
-      if (mtpError) {
-        // send out an error event
-        await analyticsService.sendEvent(EVENT_TYPE[`${eventKey}_ERROR`], {
-          'MTP Status': mtpStatus,
-          'MTP Mode': mtpMode,
-          stderr: result.stderr,
-          error: result.error,
-        });
-
-        return;
-      }
-
-      // send a success event
-      await analyticsService.sendEvent(EVENT_TYPE[`${eventKey}_SUCCESS`], {
+    if (mtpError) {
+      // send out an error event
+      await analyticsService.sendEvent(EVENT_TYPE[`${eventKey}_ERROR`], {
         'MTP Status': mtpStatus,
         'MTP Mode': mtpMode,
+        stderr: result.stderr,
+        error: result.error,
       });
-    }, 100);
+
+      return;
+    }
+
+    // send a success event
+    await analyticsService.sendEvent(EVENT_TYPE[`${eventKey}_SUCCESS`], {
+      'MTP Status': mtpStatus,
+      'MTP Mode': mtpMode,
+    });
   }
 
   /**
@@ -54,7 +57,7 @@ class FileExplorerController {
 
     const result = await this.repository.initialize({ deviceType });
 
-    this._sentEvent({ result, eventKey: 'MTP_INITIALIZE' });
+    this._sentEvent({ result, deviceType, eventKey: 'MTP_INITIALIZE' });
 
     return result;
   }
@@ -69,7 +72,7 @@ class FileExplorerController {
 
     const result = await this.repository.dispose({ deviceType });
 
-    this._sentEvent({ result, eventKey: 'MTP_DISPOSE' });
+    this._sentEvent({ result, deviceType, eventKey: 'MTP_DISPOSE' });
 
     return result;
   }
@@ -84,7 +87,7 @@ class FileExplorerController {
 
     const result = await this.repository.listStorages({ deviceType });
 
-    this._sentEvent({ result, eventKey: 'MTP_LIST_STORAGES' });
+    this._sentEvent({ result, deviceType, eventKey: 'MTP_LIST_STORAGES' });
 
     return result;
   }
@@ -110,7 +113,7 @@ class FileExplorerController {
       storageId,
     });
 
-    this._sentEvent({ result, eventKey: 'MTP_LIST_FILES' });
+    this._sentEvent({ result, deviceType, eventKey: 'MTP_LIST_FILES' });
 
     return result;
   }
@@ -136,7 +139,7 @@ class FileExplorerController {
       storageId,
     });
 
-    this._sentEvent({ result, eventKey: 'MTP_RENAME_FILE' });
+    this._sentEvent({ result, deviceType, eventKey: 'MTP_RENAME_FILE' });
 
     return result;
   }
@@ -159,7 +162,7 @@ class FileExplorerController {
       storageId,
     });
 
-    this._sentEvent({ result, eventKey: 'MTP_DELETE_FILE' });
+    this._sentEvent({ result, deviceType, eventKey: 'MTP_DELETE_FILE' });
 
     return result;
   }
@@ -182,7 +185,7 @@ class FileExplorerController {
       storageId,
     });
 
-    this._sentEvent({ result, eventKey: 'MTP_DELETE_FILE' });
+    this._sentEvent({ result, deviceType, eventKey: 'MTP_DELETE_FILE' });
 
     return result;
   }
@@ -205,7 +208,7 @@ class FileExplorerController {
       storageId,
     });
 
-    this._sentEvent({ result, eventKey: 'MTP_FILES_EXIST' });
+    this._sentEvent({ result, deviceType, eventKey: 'MTP_FILES_EXIST' });
 
     return result;
   }
@@ -257,7 +260,7 @@ class FileExplorerController {
       onPreprocess,
     });
 
-    this._sentEvent({ result, eventKey: 'MTP_TRANSFER_FILES' });
+    this._sentEvent({ result, deviceType, eventKey: 'MTP_TRANSFER_FILES' });
 
     return result;
   };
@@ -273,7 +276,7 @@ class FileExplorerController {
 
     const result = await this.repository.fetchDebugReport({ deviceType });
 
-    this._sentEvent({ result, eventKey: 'MTP_FETCH_DEBUG_REPORT' });
+    this._sentEvent({ result, deviceType, eventKey: 'MTP_FETCH_DEBUG_REPORT' });
 
     return result;
   }
