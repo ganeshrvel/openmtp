@@ -234,7 +234,7 @@ class FileExplorerController {
       storageId,
     });
 
-    this._sentEvent({ result, deviceType, eventKey: 'DELETE_FILE' });
+    this._sentEvent({ result, deviceType, eventKey: 'NEW_FOLDER' });
 
     return result;
   }

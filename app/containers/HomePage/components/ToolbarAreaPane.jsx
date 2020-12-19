@@ -83,7 +83,7 @@ class ToolbarAreaPane extends PureComponent {
       return null;
     }
 
-    this._handleToolbarAction(type);
+    this._handleToolbarAction(type, true);
   };
 
   _handleDoubleClickToolBar = (event) => {
@@ -101,9 +101,19 @@ class ToolbarAreaPane extends PureComponent {
   };
 
   _handleToggleDeleteConfirmDialog = (status) => {
+    const { deviceType } = this.props;
+
+    const dialogStatus = status ? 'OPEN' : 'CLOSE';
+    const deviceTypeUpperCase = deviceType.toUpperCase();
+
     this.setState({
       toggleDeleteConfirmDialog: status,
     });
+
+    analyticsService.sendEvent(
+      EVENT_TYPE[`${deviceTypeUpperCase}_DELETE_DIALOG_${dialogStatus}`],
+      {}
+    );
   };
 
   _handleToggleMtpStorageSelectionDialog = (status) => {
@@ -206,7 +216,9 @@ class ToolbarAreaPane extends PureComponent {
     openExternalUrl(APP_GITHUB_URL);
   };
 
-  _handleToolbarAction = (itemType) => {
+  _handleToolbarAction = (itemType, isAccelerator = false) => {
+    checkIf(isAccelerator, 'boolean');
+
     const {
       currentBrowsePath,
       deviceType,
@@ -216,6 +228,7 @@ class ToolbarAreaPane extends PureComponent {
 
     let filePath = '/';
     const deviceTypeUpperCase = deviceType.toUpperCase();
+    const actionOrigin = isAccelerator ? 'KEYMAP' : 'TOOLBAR';
 
     switch (itemType) {
       case 'up':
@@ -223,7 +236,7 @@ class ToolbarAreaPane extends PureComponent {
         this._handleListDirectory({ filePath, deviceType });
 
         analyticsService.sendEvent(
-          EVENT_TYPE[`${deviceTypeUpperCase}_TOOLBAR_FOLDER_UP`],
+          EVENT_TYPE[`${deviceTypeUpperCase}_${actionOrigin}_FOLDER_UP`],
           {}
         );
 
@@ -238,7 +251,7 @@ class ToolbarAreaPane extends PureComponent {
         });
 
         analyticsService.sendEvent(
-          EVENT_TYPE[`${deviceTypeUpperCase}_TOOLBAR_REFRESH`],
+          EVENT_TYPE[`${deviceTypeUpperCase}_${actionOrigin}_REFRESH`],
           {}
         );
 
@@ -246,11 +259,6 @@ class ToolbarAreaPane extends PureComponent {
 
       case 'delete':
         this._handleToggleDeleteConfirmDialog(true);
-
-        analyticsService.sendEvent(
-          EVENT_TYPE[`${deviceTypeUpperCase}_TOOLBAR_DELETE`],
-          {}
-        );
 
         break;
 
@@ -268,7 +276,7 @@ class ToolbarAreaPane extends PureComponent {
         this._handleOpenGitHubRepo();
 
         analyticsService.sendEvent(
-          EVENT_TYPE[`${deviceTypeUpperCase}_TOOLBAR_GITHUB_TAP`],
+          EVENT_TYPE[`${deviceTypeUpperCase}_${actionOrigin}_GITHUB_TAP`],
           {}
         );
         break;

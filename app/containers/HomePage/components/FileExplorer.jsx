@@ -1325,9 +1325,22 @@ class FileExplorer extends Component {
     const { data } = this.state.toggleDialog.newFolder;
     const { confirm, textFieldValue: newFolderName } = args;
     const targetAction = 'newFolder';
+    const deviceTypeUpperCase = deviceType.toUpperCase();
+
+    analyticsService.sendEvent(
+      EVENT_TYPE[`${deviceTypeUpperCase}_NEW_FOLDER_STARTED`],
+      {}
+    );
 
     if (!confirm) {
       this._handleClearEditDialog(targetAction);
+
+      analyticsService.sendEvent(
+        EVENT_TYPE[`${deviceTypeUpperCase}_NEW_FOLDER_EXIT`],
+        {
+          Reason: 'NO_CHANGE',
+        }
+      );
 
       return null;
     }
@@ -1341,6 +1354,13 @@ class FileExplorer extends Component {
         targetAction
       );
 
+      analyticsService.sendEvent(
+        EVENT_TYPE[`${deviceTypeUpperCase}_NEW_FOLDER_EXIT`],
+        {
+          Reason: 'EMPTY_FOLDER_NAME',
+        }
+      );
+
       return null;
     }
 
@@ -1351,6 +1371,13 @@ class FileExplorer extends Component {
           message: `Error: Illegal characters.`,
         },
         targetAction
+      );
+
+      analyticsService.sendEvent(
+        EVENT_TYPE[`${deviceTypeUpperCase}_NEW_FOLDER_EXIT`],
+        {
+          Reason: 'ILLEGAL_CHARACTERS',
+        }
       );
 
       return null;
@@ -1371,6 +1398,13 @@ class FileExplorer extends Component {
           message: `Error: The name "${newFolderName}" is already taken.`,
         },
         targetAction
+      );
+
+      analyticsService.sendEvent(
+        EVENT_TYPE[`${deviceTypeUpperCase}_RENAME_EXIT`],
+        {
+          Reason: 'FILE_EXISTS',
+        }
       );
 
       return null;
