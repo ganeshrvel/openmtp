@@ -16,6 +16,7 @@ import {
   actionChangeMtpStorage,
   getSelectedStorageIdFromState,
   reloadDirList,
+  getSelectedStorage,
 } from '../actions';
 import {
   makeDirectoryLists,
@@ -39,7 +40,7 @@ import ToolbarBody from './ToolbarBody';
 import { openExternalUrl } from '../../../utils/url';
 import { APP_GITHUB_URL } from '../../../constants/meta';
 import { pathUp } from '../../../utils/files';
-import { DEVICE_TYPE, MTP_MODE } from '../../../enums';
+import { DEVICE_TYPE } from '../../../enums';
 import { log } from '../../../utils/log';
 import fileExplorerController from '../../../data/file-explorer/controllers/FileExplorerController';
 import { checkIf } from '../../../utils/checkIf';
@@ -141,6 +142,13 @@ class ToolbarAreaPane extends PureComponent {
 
     const { selectedValue, triggerChange } = args;
 
+    if (triggerChange) {
+      analyticsService.sendEvent(EVENT_TYPE.MTP_TOOLBAR_STORAGE_SELECTED, {
+        'Current Storage': getSelectedStorage(mtpStoragesList),
+        'Selected Storage': selectedValue,
+      });
+    }
+
     this._handleToggleMtpStorageSelectionDialog(false);
 
     if (!triggerChange) {
@@ -158,9 +166,15 @@ class ToolbarAreaPane extends PureComponent {
   };
 
   _handleMtpModeSelectionDialogClick = ({ ...args }) => {
-    const { actionCreateSelectMtpMode, deviceType } = this.props;
-
+    const { actionCreateSelectMtpMode, deviceType, mtpMode } = this.props;
     const { selectedValue, triggerChange } = args;
+
+    if (triggerChange) {
+      analyticsService.sendEvent(EVENT_TYPE.MTP_TOOLBAR_MTP_MODE_SELECTED, {
+        'Current MTP Mode': mtpMode,
+        'Selected MTP Mode': selectedValue,
+      });
+    }
 
     this._handleToggleMtpModeSelectionDialog(false);
 
