@@ -2,7 +2,10 @@ import { FileExplorerRepository } from '../repositories/FileExplorerRepository';
 import { checkIf } from '../../../utils/checkIf';
 import { analyticsService } from '../../../services/analytics';
 import { EVENT_TYPE } from '../../../enums/events';
-import { processMtpBuffer } from '../../../helpers/processBufferOutput';
+import {
+  processLocalBuffer,
+  processMtpBuffer,
+} from '../../../helpers/processBufferOutput';
 import { getMtpModeSetting } from '../../../helpers/settings';
 import { DEVICE_TYPE } from '../../../enums';
 
@@ -15,13 +18,45 @@ class FileExplorerController {
     checkIf(eventKey, 'string');
     checkIf(deviceType, 'inObjectValues', DEVICE_TYPE);
 
-    if (deviceType !== DEVICE_TYPE.mtp) {
+    // events related to local disk actions
+    if (deviceType === DEVICE_TYPE.local) {
+      const { error: localError } = await processLocalBuffer({
+        error: result.error,
+        stderr: result.stderr,
+      });
+
+      if (localError) {
+        const _eventKey = `${EVENT_TYPE[`LOCAL_${eventKey}_ERROR`]}`;
+
+        // if the event key is not listed in the [EVENT_TYPE] object then don't proceed
+        if (!_eventKey) {
+          return;
+        }
+
+        // send out an error event
+        await analyticsService.sendEvent(_eventKey, {
+          stderr: result.stderr,
+          error: result.error,
+        });
+
+        return;
+      }
+
+      const _eventKey = `${EVENT_TYPE[`LOCAL_${eventKey}_SUCCESS`]}`;
+
+      // if the event key is not listed in the [EVENT_TYPE] object then don't proceed
+      if (!_eventKey) {
+        return;
+      }
+
+      // send a success event
+      await analyticsService.sendEvent(_eventKey, {});
+
       return;
     }
 
-    // todo move this to worker thread
+    // events related to mtp actions
     const mtpMode = getMtpModeSetting();
-
     const { mtpStatus, error: mtpError } = await processMtpBuffer({
       error: result.error,
       stderr: result.stderr,
@@ -29,8 +64,15 @@ class FileExplorerController {
     });
 
     if (mtpError) {
+      const _eventKey = `${EVENT_TYPE[`MTP_${eventKey}_ERROR`]}`;
+
+      // if the event key is not listed in the [EVENT_TYPE] object then don't proceed
+      if (!_eventKey) {
+        return;
+      }
+
       // send out an error event
-      await analyticsService.sendEvent(EVENT_TYPE[`${eventKey}_ERROR`], {
+      await analyticsService.sendEvent(_eventKey, {
         'MTP Status': mtpStatus,
         'MTP Mode': mtpMode,
         stderr: result.stderr,
@@ -40,8 +82,15 @@ class FileExplorerController {
       return;
     }
 
+    const _eventKey = `${EVENT_TYPE[`MTP_${eventKey}_SUCCESS`]}`;
+
+    // if the event key is not listed in the [EVENT_TYPE] object then don't proceed
+    if (!_eventKey) {
+      return;
+    }
+
     // send a success event
-    await analyticsService.sendEvent(EVENT_TYPE[`${eventKey}_SUCCESS`], {
+    await analyticsService.sendEvent(_eventKey, {
       'MTP Status': mtpStatus,
       'MTP Mode': mtpMode,
     });
@@ -57,7 +106,7 @@ class FileExplorerController {
 
     const result = await this.repository.initialize({ deviceType });
 
-    this._sentEvent({ result, deviceType, eventKey: 'MTP_INITIALIZE' });
+    this._sentEvent({ result, deviceType, eventKey: 'INITIALIZE' });
 
     return result;
   }
@@ -72,7 +121,7 @@ class FileExplorerController {
 
     const result = await this.repository.dispose({ deviceType });
 
-    this._sentEvent({ result, deviceType, eventKey: 'MTP_DISPOSE' });
+    this._sentEvent({ result, deviceType, eventKey: 'DISPOSE' });
 
     return result;
   }
@@ -87,7 +136,7 @@ class FileExplorerController {
 
     const result = await this.repository.listStorages({ deviceType });
 
-    this._sentEvent({ result, deviceType, eventKey: 'MTP_LIST_STORAGES' });
+    this._sentEvent({ result, deviceType, eventKey: 'LIST_STORAGES' });
 
     return result;
   }
@@ -113,7 +162,7 @@ class FileExplorerController {
       storageId,
     });
 
-    this._sentEvent({ result, deviceType, eventKey: 'MTP_LIST_FILES' });
+    this._sentEvent({ result, deviceType, eventKey: 'LIST_FILES' });
 
     return result;
   }
@@ -139,7 +188,7 @@ class FileExplorerController {
       storageId,
     });
 
-    this._sentEvent({ result, deviceType, eventKey: 'MTP_RENAME_FILE' });
+    this._sentEvent({ result, deviceType, eventKey: 'RENAME_FILE' });
 
     return result;
   }
@@ -162,7 +211,7 @@ class FileExplorerController {
       storageId,
     });
 
-    this._sentEvent({ result, deviceType, eventKey: 'MTP_DELETE_FILE' });
+    this._sentEvent({ result, deviceType, eventKey: 'DELETE_FILE' });
 
     return result;
   }
@@ -185,7 +234,7 @@ class FileExplorerController {
       storageId,
     });
 
-    this._sentEvent({ result, deviceType, eventKey: 'MTP_DELETE_FILE' });
+    this._sentEvent({ result, deviceType, eventKey: 'DELETE_FILE' });
 
     return result;
   }
@@ -208,7 +257,7 @@ class FileExplorerController {
       storageId,
     });
 
-    this._sentEvent({ result, deviceType, eventKey: 'MTP_FILES_EXIST' });
+    this._sentEvent({ result, deviceType, eventKey: 'FILES_EXIST' });
 
     return result;
   }
@@ -260,7 +309,7 @@ class FileExplorerController {
       onPreprocess,
     });
 
-    this._sentEvent({ result, deviceType, eventKey: 'MTP_TRANSFER_FILES' });
+    this._sentEvent({ result, deviceType, eventKey: 'TRANSFER_FILES' });
 
     return result;
   };
@@ -276,7 +325,7 @@ class FileExplorerController {
 
     const result = await this.repository.fetchDebugReport({ deviceType });
 
-    this._sentEvent({ result, deviceType, eventKey: 'MTP_FETCH_DEBUG_REPORT' });
+    this._sentEvent({ result, deviceType, eventKey: 'FETCH_DEBUG_REPORT' });
 
     return result;
   }

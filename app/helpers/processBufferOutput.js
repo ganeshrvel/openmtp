@@ -33,14 +33,14 @@ export const processMtpBuffer = async ({ error, stderr, mtpMode }) => {
   checkIf(mtpMode, 'inObjectValues', MTP_MODE);
 
   if (mtpMode === MTP_MODE.kalam) {
-    return processKalamMtpBuffer({ error, stderr });
+    return _processKalamMtpBuffer({ error, stderr });
   }
 
-  return processLegacyMtpBuffer({ error, stderr });
+  return _processLegacyMtpBuffer({ error, stderr });
 };
 
 // [stderr] variable will hold the kalam ffi errorTypes
-export const processKalamMtpBuffer = async ({ error, stderr }) => {
+export const _processKalamMtpBuffer = async ({ error, stderr }) => {
   const mtpErrors = {
     [MTP_ERROR.ErrorMtpDetectFailed]: `No ${
       DEVICES_LABEL[DEVICE_TYPE.mtp]
@@ -290,7 +290,7 @@ export const processKalamMtpBuffer = async ({ error, stderr }) => {
   }
 };
 
-export const processLegacyMtpBuffer = async ({ error, stderr }) => {
+export const _processLegacyMtpBuffer = async ({ error, stderr }) => {
   // Error string are used for partial error string matching
   // this will be later used to pick the appropriate error out from the [errorDictionary]
   const errorTpl = {

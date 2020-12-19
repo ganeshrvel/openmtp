@@ -12,16 +12,19 @@ const config = {
     reportToSenty: false,
     enableGoogleAnalytics: true, //todo false
     enableMixpanelAnalytics: true, //todo false
+    disableReactWarnings: true,
   },
   prod: {
     reportToSenty: true,
     enableGoogleAnalytics: true,
     enableMixpanelAnalytics: true,
+    disableReactWarnings: false,
   },
   debug: {
     reportToSenty: true,
     enableGoogleAnalytics: true,
     enableMixPanelAnalytics: true,
+    disableReactWarnings: false,
   },
 };
 

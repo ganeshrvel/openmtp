@@ -191,6 +191,9 @@ class ToolbarAreaPane extends PureComponent {
       case 'up':
         filePath = pathUp(currentBrowsePath[deviceType]);
         this._handleListDirectory({ filePath, deviceType });
+
+
+
         break;
 
       case 'refresh':
@@ -200,10 +203,12 @@ class ToolbarAreaPane extends PureComponent {
           ignoreHidden: hideHiddenFiles[deviceType],
           deviceType,
         });
+
         break;
 
       case 'delete':
         this._handleToggleDeleteConfirmDialog(true);
+
         break;
 
       case 'storage':
