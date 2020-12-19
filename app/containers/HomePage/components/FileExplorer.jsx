@@ -1589,9 +1589,16 @@ class FileExplorer extends Component {
   _handleTableDoubleClick = (item, deviceType) => {
     const { isFolder, path } = item;
 
+    const deviceTypeUpperCase = deviceType.toUpperCase();
+
     if (!isFolder) {
       if (deviceType === DEVICE_TYPE.local) {
         shell.openPath(path);
+
+        analyticsService.sendEvent(
+          EVENT_TYPE[`${deviceTypeUpperCase}_OPEN_FILE`],
+          {}
+        );
       }
 
       return null;
@@ -1601,6 +1608,11 @@ class FileExplorer extends Component {
       path,
       deviceType,
     });
+
+    analyticsService.sendEvent(
+      EVENT_TYPE[`${deviceTypeUpperCase}_OPEN_DIRECTORY`],
+      {}
+    );
   };
 
   tableSort = ({ ...args }) => {
