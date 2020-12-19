@@ -472,6 +472,8 @@ class FileExplorer extends Component {
       return null;
     }
 
+    const deviceTypeUpperCase = deviceType.toUpperCase();
+
     switch (type) {
       case 'navigationLeft':
       case 'navigationRight':
@@ -510,6 +512,11 @@ class FileExplorer extends Component {
           break;
         }
 
+        analyticsService.sendEvent(
+          EVENT_TYPE[`${deviceTypeUpperCase}_COPY_FILES`],
+          {}
+        );
+
         actionCreateCopy({
           selected,
           deviceType,
@@ -520,6 +527,11 @@ class FileExplorer extends Component {
         if (selected.length < 1) {
           break;
         }
+
+        analyticsService.sendEvent(
+          EVENT_TYPE[`${deviceTypeUpperCase}_COPY_TO_QUEUE_FILES`],
+          {}
+        );
 
         actionCreateCopy({
           selected,
@@ -949,6 +961,7 @@ class FileExplorer extends Component {
   /* activate actions using mouse */
   _handleContextMenuListActions = ({ ...args }) => {
     const { deviceType, directoryLists, actionCreateCopy } = this.props;
+    const deviceTypeUpperCase = deviceType.toUpperCase();
 
     Object.keys(args).map((a) => {
       const item = args[a];
@@ -971,6 +984,12 @@ class FileExplorer extends Component {
           const selectedItemsToCopy = directoryLists[deviceType].queue.selected;
 
           actionCreateCopy({ selected: selectedItemsToCopy, deviceType });
+
+          analyticsService.sendEvent(
+            EVENT_TYPE[`${deviceTypeUpperCase}_COPY_FILES`],
+            {}
+          );
+
           break;
 
         case 'copyToQueue':
@@ -983,6 +1002,12 @@ class FileExplorer extends Component {
             deviceType,
             toQueue: true,
           });
+
+          analyticsService.sendEvent(
+            EVENT_TYPE[`${deviceTypeUpperCase}_COPY_TO_QUEUE_FILES`],
+            {}
+          );
+
           break;
 
         case 'paste':
@@ -1436,6 +1461,7 @@ class FileExplorer extends Component {
     let { queue } = fileTransferClipboard;
     const destinationFolder = currentBrowsePath[deviceType];
     let invalidFileNameFlag = false;
+    const deviceTypeUpperCase = deviceType.toUpperCase();
 
     queue = queue.map((a) => {
       const _baseName = baseName(a);
@@ -1447,6 +1473,11 @@ class FileExplorer extends Component {
 
       return fullPath;
     });
+
+    analyticsService.sendEvent(
+      EVENT_TYPE[`${deviceTypeUpperCase}_PASTE_FILES`],
+      {}
+    );
 
     if (invalidFileNameFlag) {
       actionCreateThrowError({
@@ -1463,15 +1494,22 @@ class FileExplorer extends Component {
         storageId,
       })
     ) {
+      analyticsService.sendEvent(
+        EVENT_TYPE[`${deviceTypeUpperCase}_PASTE_FILES_DIALOG_OPEN`],
+        {
+          Reason: 'FILES_EXIST',
+        }
+      );
+
       this._handleTogglePasteConfirmDialog(true);
 
       return null;
     }
 
-    this._handlePasteConfirmDialog(true);
+    this._handlePasteConfirm(true);
   };
 
-  _handlePasteConfirmDialog = (confirm) => {
+  _handlePasteConfirm = (confirm) => {
     const {
       deviceType,
       hideHiddenFiles,
@@ -1483,8 +1521,16 @@ class FileExplorer extends Component {
     const destinationFolder = currentBrowsePath[deviceType];
 
     this._handleTogglePasteConfirmDialog(false);
+    const deviceTypeUpperCase = deviceType.toUpperCase();
 
     if (!confirm) {
+      analyticsService.sendEvent(
+        EVENT_TYPE[`${deviceTypeUpperCase}_PASTE_FILES_DIALOG_CLOSE`],
+        {
+          Reason: 'REPLACE_FILES_DENIED',
+        }
+      );
+
       return null;
     }
 
@@ -1800,7 +1846,7 @@ class FileExplorer extends Component {
           maxWidthDialog="xs"
           bodyText="Replace and merge the existing items?"
           trigger={togglePasteConfirmDialog}
-          onClickHandler={this._handlePasteConfirmDialog}
+          onClickHandler={this._handlePasteConfirm}
         />
         <FileExplorerBodyRender
           deviceType={deviceType}
