@@ -26,7 +26,7 @@ class Breadcrumb extends PureComponent {
     const deviceTypeUpperCase = deviceType.toUpperCase();
 
     analyticsService.sendEvent(
-      EVENT_TYPE[`${deviceTypeUpperCase}_BREADCRUMB_OPEN_PATH`],
+      EVENT_TYPE[`${deviceTypeUpperCase}_BREADCRUMB_PATH_TAP`],
       {}
     );
   };
