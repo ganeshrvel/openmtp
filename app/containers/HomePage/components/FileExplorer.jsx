@@ -1282,8 +1282,10 @@ class FileExplorer extends Component {
     const { directoryLists, filesDrag } = this.props;
     const { sourceDeviceType } = filesDrag;
 
-    const sourceDeviceTypeUpperCase = sourceDeviceType.toUpperCase();
     const isExternalFiles = !isEmpty(externalFiles);
+    const sourceDeviceTypeUpperCase = isExternalFiles
+      ? 'EXTERNAL'
+      : sourceDeviceType.toUpperCase();
 
     analyticsService.sendEvent(
       EVENT_TYPE[`${sourceDeviceTypeUpperCase}_DRAG_FILES_DROPPED`],
@@ -1310,7 +1312,10 @@ class FileExplorer extends Component {
       sourceDeviceType === destinationDeviceType ||
       destinationDeviceType === null
     ) {
-      const sourceDeviceTypeUpperCase = sourceDeviceType.toUpperCase();
+      const isExternalFiles = !isEmpty(externalFiles);
+      const sourceDeviceTypeUpperCase = isExternalFiles
+        ? 'EXTERNAL'
+        : sourceDeviceType.toUpperCase();
 
       analyticsService.sendEvent(
         EVENT_TYPE[`${sourceDeviceTypeUpperCase}_DRAG_FILES_CANCELLED`],
