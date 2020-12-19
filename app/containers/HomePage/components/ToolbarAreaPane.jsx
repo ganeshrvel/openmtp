@@ -180,7 +180,7 @@ class ToolbarAreaPane extends PureComponent {
     const { selectedValue, triggerChange } = args;
 
     if (triggerChange) {
-      analyticsService.sendEvent(EVENT_TYPE.MTP_TOOLBAR_MTP_MODE_SELECTED, {
+      analyticsService.sendEvent(EVENT_TYPE.MTP_MODE_SELECTED, {
         'Current MTP Mode': mtpMode,
         'Selected MTP Mode': selectedValue,
       });
@@ -523,7 +523,9 @@ const mapDispatchToProps = (dispatch, _) =>
         checkIf(value, 'string');
         checkIf(deviceType, 'string');
 
-        dispatch(selectMtpMode({ value }, deviceType, getState));
+        dispatch(
+          selectMtpMode({ value, reportEvent: false }, deviceType, getState)
+        );
       },
       actionCreateToggleSettings: (data) => (_, __) => {
         dispatch(toggleSettings(data));

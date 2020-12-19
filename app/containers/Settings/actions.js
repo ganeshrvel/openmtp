@@ -51,7 +51,8 @@ export function freshInstall({ ...data }, getState) {
     dispatch(copySettingsToJsonFile(getState));
 
     analyticsService.sendEvent(EVENT_TYPE.TOOLBAR_SETTINGS_CHANGE, {
-      isFreshInstall,
+      key: 'isFreshInstall',
+      value: isFreshInstall,
     });
   };
 }
@@ -66,7 +67,8 @@ export function setOnboarding({ ...data }, getState) {
     dispatch(copySettingsToJsonFile(getState));
 
     analyticsService.sendEvent(EVENT_TYPE.TOOLBAR_SETTINGS_CHANGE, {
-      onboarding: data,
+      key: 'onboarding',
+      value: data,
     });
   };
 }
@@ -84,7 +86,8 @@ export function hideHiddenFiles({ ...data }, deviceType, getState) {
     dispatch(copySettingsToJsonFile(getState));
 
     analyticsService.sendEvent(EVENT_TYPE.TOOLBAR_SETTINGS_CHANGE, {
-      hideHiddenFiles: value,
+      key: 'hideHiddenFiles',
+      value: data,
       deviceType,
     });
   };
@@ -103,7 +106,8 @@ export function setFilesPreprocessingBeforeTransfer({ ...data }, getState) {
     dispatch(copySettingsToJsonFile(getState));
 
     analyticsService.sendEvent(EVENT_TYPE.TOOLBAR_SETTINGS_CHANGE, {
-      filesPreprocessingBeforeTransfer: value,
+      key: 'filesPreprocessingBeforeTransfer',
+      value,
       direction,
     });
   };
@@ -122,19 +126,33 @@ export function fileExplorerListingType({ ...data }, deviceType, getState) {
     dispatch(copySettingsToJsonFile(getState));
 
     analyticsService.sendEvent(EVENT_TYPE.TOOLBAR_SETTINGS_CHANGE, {
-      fileExplorerListingType: value,
+      key: 'fileExplorerListingType',
+      value,
       deviceType,
     });
   };
 }
 
-export function selectMtpMode({ value }, deviceType, getState) {
+export function selectMtpMode(
+  { value, reportEvent = true },
+  deviceType,
+  getState
+) {
   const { hideHiddenFiles, mtpMode } = getState().Settings;
 
   checkIf(deviceType, 'string');
   checkIf(getState, 'function');
   checkIf(hideHiddenFiles, 'object');
   checkIf(mtpMode, 'string');
+
+  const key = 'mtpMode';
+
+  if (reportEvent) {
+    analyticsService.sendEvent(EVENT_TYPE.MTP_MODE_SELECTED, {
+      'Current MTP Mode': mtpMode,
+      'Selected MTP Mode': value,
+    });
+  }
 
   return async (dispatch) => {
     // dont proceed if the mtp wasn't changed
@@ -170,7 +188,7 @@ export function selectMtpMode({ value }, deviceType, getState) {
       dispatch(
         setCommonSettings(
           {
-            key: 'mtpMode',
+            key,
             value,
             onSuccess: () => {
               resolve();
@@ -209,13 +227,17 @@ export function setCommonSettings(
   }
 
   return async (dispatch) => {
-    // if the [key] == [enableAnalytics] and it is toggled on, report it
-    if (key === 'enableAnalytics' && !value) {
-      analyticsService.sendEvent(EVENT_TYPE.TOOLBAR_SETTINGS_CHANGE, {
-        isCommonSettings: true,
-        [key]: value,
-        deviceType,
-      });
+    // key == [mtpMode] is handled separately, so skip it
+    if (key !== 'mtpMode') {
+      if (key === 'enableAnalytics' && !value) {
+        // if the [key] == [enableAnalytics] and it is toggled on, report it
+        analyticsService.sendEvent(EVENT_TYPE.TOOLBAR_SETTINGS_CHANGE, {
+          key,
+          value,
+          isCommonSettings: true,
+          deviceType,
+        });
+      }
     }
 
     dispatch({
@@ -235,15 +257,19 @@ export function setCommonSettings(
       })
     );
 
-    // if the [key] == [enableAnalytics] and it is toggled off, report it
-    // log for all other keys
-    // note: if [enableAnalytics] is false then reporting is automatically disabled by [AnalyticsService] itself.
-    if (key !== 'enableAnalytics' || (key === 'enableAnalytics' && value)) {
-      analyticsService.sendEvent(EVENT_TYPE.TOOLBAR_SETTINGS_CHANGE, {
-        isCommonSettings: true,
-        [key]: value,
-        deviceType,
-      });
+    // key == [mtpMode] is handled separately, so skip it
+    if (key !== 'mtpMode') {
+      // if the [key] == [enableAnalytics] and it is toggled off, report it
+      // log for all other keys
+      // note: if [enableAnalytics] is false then reporting is automatically disabled by [AnalyticsService] itself.
+      if (key !== 'enableAnalytics' || (key === 'enableAnalytics' && value)) {
+        analyticsService.sendEvent(EVENT_TYPE.TOOLBAR_SETTINGS_CHANGE, {
+          key,
+          value,
+          isCommonSettings: true,
+          deviceType,
+        });
+      }
     }
   };
 }
