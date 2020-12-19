@@ -21,7 +21,6 @@ import {
 } from '../../../components/DialogBox';
 import { DEVICE_TYPE, MTP_MODE } from '../../../enums';
 import { capitalize, isEmpty } from '../../../utils/funcs';
-import { getSelectedStorage } from '../actions';
 
 export default class ToolbarAreaPane extends PureComponent {
   activeToolbarList = ({ ...args }) => {
@@ -146,7 +145,8 @@ export default class ToolbarAreaPane extends PureComponent {
 
     if (!isEmpty(mtpStoragesList)) {
       _mtpStoragesList = Object.keys(mtpStoragesList).map((a) => {
-        const item = mtpStoragesList[a];
+        // spread operator is used here to prevent modifying the original object
+        const item = { ...mtpStoragesList[a] };
 
         item.icon = faSdCard;
         item.value = a;

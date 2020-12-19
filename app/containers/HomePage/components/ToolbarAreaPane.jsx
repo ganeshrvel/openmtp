@@ -154,7 +154,7 @@ class ToolbarAreaPane extends PureComponent {
 
     if (triggerChange) {
       analyticsService.sendEvent(EVENT_TYPE.MTP_TOOLBAR_STORAGE_SELECTED, {
-        'Current Storage': getSelectedStorage(mtpStoragesList),
+        'Current Storage': getSelectedStorage(mtpStoragesList)?.data,
         'Selected Storage': selectedValue,
       });
     }
