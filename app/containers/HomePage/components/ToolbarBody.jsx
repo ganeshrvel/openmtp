@@ -21,6 +21,7 @@ import {
 } from '../../../components/DialogBox';
 import { DEVICE_TYPE, MTP_MODE } from '../../../enums';
 import { capitalize, isEmpty } from '../../../utils/funcs';
+import { getSelectedStorage } from '../actions';
 
 export default class ToolbarAreaPane extends PureComponent {
   activeToolbarList = ({ ...args }) => {
@@ -159,11 +160,13 @@ export default class ToolbarAreaPane extends PureComponent {
         value: MTP_MODE.kalam,
         name: `${capitalize(MTP_MODE.kalam)} Mode`,
         icon: faBolt,
+        selected: mtpMode === MTP_MODE.kalam,
       },
       {
         value: MTP_MODE.legacy,
         name: `${capitalize(MTP_MODE.legacy)} Mode`,
         icon: faTerminal,
+        selected: mtpMode === MTP_MODE.legacy,
       },
     ];
 
