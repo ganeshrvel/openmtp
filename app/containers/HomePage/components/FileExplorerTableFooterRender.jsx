@@ -31,6 +31,7 @@ class FileExplorerTableFooterRender extends PureComponent {
         <Breadcrumb
           onBreadcrumbPathClick={onBreadcrumbPathClick}
           currentBrowsePath={currentBrowsePath[deviceType]}
+          deviceType={deviceType}
         />
       </TableFooter>
     );
