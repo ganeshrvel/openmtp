@@ -63,6 +63,7 @@ import {
 } from '../../Settings/selectors';
 import { DEVICES_LABEL, DONATE_PAYPAL_URL } from '../../../constants';
 import {
+  arrayAverage,
   getPluralText,
   isArray,
   isEmpty,
@@ -2171,6 +2172,11 @@ const mapDispatchToProps = (dispatch, _) =>
         { ...listDirectoryArgs },
         deviceType
       ) => (_, getState) => {
+        let sessionElapsedTime = 0;
+        const sessionTransferSpeeds = [];
+        let sessionTotalFiles = 0;
+        let sessionTransferDirection;
+
         try {
           const {
             mtpMode,
@@ -2182,6 +2188,8 @@ const mapDispatchToProps = (dispatch, _) =>
             storageId,
             fileTransferClipboard,
           } = pasteArgs;
+
+          analyticsService.sendEvent(EVENT_TYPE.FILE_TRANSFER_STARTED, {});
 
           // on pre process callback for file transfer
           const onPreprocess = ({ fullPath }) => {
@@ -2227,6 +2235,11 @@ const mapDispatchToProps = (dispatch, _) =>
             let progressText = 0;
 
             let progressInfo = [];
+
+            sessionElapsedTime = elapsedTime;
+            sessionTransferSpeeds.push(parseFloat(speed));
+            sessionTotalFiles = totalFiles;
+            sessionTransferDirection = direction;
 
             /// file transfer progress on legacy mode
             if (mtpMode === MTP_MODE.legacy) {
@@ -2329,6 +2342,8 @@ const mapDispatchToProps = (dispatch, _) =>
                 },
               })
             );
+
+            analyticsService.sendEvent(EVENT_TYPE.FILE_TRANSFER_ERROR, {});
           };
 
           // on completed callback for file transfer
@@ -2338,6 +2353,17 @@ const mapDispatchToProps = (dispatch, _) =>
             dispatch(
               listDirectory({ ...listDirectoryArgs }, deviceType, getState)
             );
+
+            analyticsService.sendEvent(EVENT_TYPE.FILE_TRANSFER_COMPLETED, {
+              'Transfer direction': sessionTransferDirection,
+              'Total files': sessionTotalFiles,
+              'Average transfer speed': `${arrayAverage(
+                sessionTransferSpeeds
+              )} MB/s`,
+              'Elapsed time': sessionElapsedTime,
+              'Is files preprocessing enabled':
+                filesPreprocessingBeforeTransfer[sessionTransferDirection],
+            });
           };
 
           switch (deviceType) {
