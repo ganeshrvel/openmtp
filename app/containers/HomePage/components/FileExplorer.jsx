@@ -1216,12 +1216,19 @@ class FileExplorer extends Component {
   }
 
   _handleFilesDragStart = (e, { sourceDeviceType }) => {
+    const sourceDeviceTypeUpperCase = sourceDeviceType.toUpperCase();
+
     this._handleSetFilesDrag({
       sourceDeviceType,
       destinationDeviceType: null,
       enter: false,
       lock: false,
     });
+
+    analyticsService.sendEvent(
+      EVENT_TYPE[`${sourceDeviceTypeUpperCase}_DRAG_FILES_STARTED`],
+      {}
+    );
 
     e.dataTransfer.setDragImage(this.filesDragGhostImg, 0, 0);
   };
@@ -1275,10 +1282,22 @@ class FileExplorer extends Component {
     const { directoryLists, filesDrag } = this.props;
     const { sourceDeviceType } = filesDrag;
 
-    if (isEmpty(externalFiles)) {
+    const sourceDeviceTypeUpperCase = sourceDeviceType.toUpperCase();
+    const isExternalFiles = !isEmpty(externalFiles);
+
+    analyticsService.sendEvent(
+      EVENT_TYPE[`${sourceDeviceTypeUpperCase}_DRAG_FILES_DROPPED`],
+      {
+        isExternalFiles,
+      }
+    );
+
+    // if files were dragged from the app pane itself
+    if (!isExternalFiles) {
       return directoryLists[sourceDeviceType]?.queue?.selected ?? [];
     }
 
+    // if files were dragged from the finder window then go here
     return [...externalFiles].map((f) => f.path);
   };
 
@@ -1288,9 +1307,22 @@ class FileExplorer extends Component {
 
     if (
       !allowFileDropFlag ||
-      destinationDeviceType === null ||
-      sourceDeviceType === destinationDeviceType
+      sourceDeviceType === destinationDeviceType ||
+      destinationDeviceType === null
     ) {
+      const sourceDeviceTypeUpperCase = sourceDeviceType.toUpperCase();
+
+      analyticsService.sendEvent(
+        EVENT_TYPE[`${sourceDeviceTypeUpperCase}_DRAG_FILES_CANCELLED`],
+        {
+          'Is file drop allowed': allowFileDropFlag,
+          Reason:
+            sourceDeviceType === destinationDeviceType
+              ? 'Source and destination are same'
+              : false,
+        }
+      );
+
       return null;
     }
 
@@ -1864,6 +1896,7 @@ class FileExplorer extends Component {
           onFilesDragOver={this._handleFilesDragOver}
           onFilesDragEnd={this._handleFilesDragEnd}
           onFilesDrop={this._handleTableDrop}
+          onDragStart={this._handleFilesDragStart}
           onBreadcrumbPathClick={this._handleBreadcrumbPathClick}
           onSelectAllClick={this._handleSelectAllClick}
           onRequestSort={this._handleRequestSort}
@@ -1871,7 +1904,6 @@ class FileExplorer extends Component {
           onTableDoubleClick={this._handleTableDoubleClick}
           onTableClick={this._handleTableClick}
           onIsDraggable={this._handleIsDraggable}
-          onDragStart={this._handleFilesDragStart}
           onExternalFileDragLeave={this._handleExternalFileDragLeave}
           onFocussedFileExplorerDeviceType={
             this._handleFocussedFileExplorerDeviceType
