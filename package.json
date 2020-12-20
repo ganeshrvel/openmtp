@@ -55,7 +55,7 @@
     ]
   },
   "browserslist": [
-    "electron 4.0"
+    "electron 10.0"
   ],
   "main": "./app/main.prod.js",
   "build": {
