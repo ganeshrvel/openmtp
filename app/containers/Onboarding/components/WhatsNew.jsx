@@ -18,10 +18,14 @@ import FlipToBackIcon from '@material-ui/icons/FlipToBack';
 import BuildIcon from '@material-ui/icons/Build';
 import { styles } from '../styles/WhatsNew';
 import { APP_NAME, APP_VERSION } from '../../../constants/meta';
+import { MTP_MODE } from '../../../enums';
+import { capitalize } from '../../../utils/funcs';
 
 class WhatsNew extends PureComponent {
   render() {
     const { classes: styles, hideTitle } = this.props;
+
+    const kalamLabel = capitalize(MTP_MODE.kalam);
 
     return (
       <div className={styles.root}>
@@ -38,20 +42,11 @@ class WhatsNew extends PureComponent {
         <List>
           <ListItem>
             <ListItemIcon>
-              <SpeedIcon />
+              <SpeedIcon htmlColor="#fa4d0a" />
             </ListItemIcon>
             <ListItemText
-              primary="New and Super performant 'Kalam' MTP kernel"
-              secondary="Settings > 'General' Tab > 'MTP Mode' > Select 'Kalam Mode'"
-            />
-          </ListItem>
-          <ListItem>
-            <ListItemIcon>
-              <FileCopyIcon />
-            </ListItemIcon>
-            <ListItemText
-              primary="5-6x faster file copy speed"
-              secondary="Settings > 'General' Tab > 'MTP Mode' > Select 'Kalam Mode'"
+              primary={`New and Super performant '${kalamLabel}' MTP kernel`}
+              secondary={`Settings > 'General' Tab > 'MTP Mode' > Select '${kalamLabel} Mode'`}
             />
           </ListItem>
           <ListItem>
@@ -60,7 +55,16 @@ class WhatsNew extends PureComponent {
             </ListItemIcon>
             <ListItemText
               primary="Much awaited Samsung phone support"
-              secondary="Settings > 'General' Tab > 'MTP Mode' > Select 'Kalam Mode'"
+              secondary={`Settings > 'General' Tab > 'MTP Mode' > Select '${kalamLabel} Mode'`}
+            />
+          </ListItem>
+          <ListItem>
+            <ListItemIcon>
+              <FileCopyIcon />
+            </ListItemIcon>
+            <ListItemText
+              primary="5-6x faster file copy speed"
+              secondary={`Settings > 'General' Tab > 'MTP Mode' > Select '${kalamLabel} Mode'`}
             />
           </ListItem>
           <ListItem>
