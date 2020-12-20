@@ -1,7 +1,7 @@
 {
   "name": "openmtp",
   "productName": "OpenMTP",
-  "version": "3.0.0-beta.2",
+  "version": "3.0.0-beta.3",
   "description": "OpenMTP | Android File Transfer for macOS",
   "scripts": {
     "build": "yarn lint && concurrently \"yarn build-main\" \"yarn build-renderer\"",
@@ -55,7 +55,7 @@
     ]
   },
   "browserslist": [
-    "electron 4.0"
+    "electron 10.0"
   ],
   "main": "./app/main.prod.js",
   "build": {
@@ -167,6 +167,7 @@
     "@sindresorhus/is": "^4.0.0",
     "bluebird": "^3.7.2",
     "classnames": "^2.2.6",
+    "console-log-plus": "^1.0.8",
     "dayjs": "^1.9.6",
     "dotenv": "^8.2.0",
     "electron-debug": "^3.1.0",
@@ -183,6 +184,7 @@
     "hotkeys-js": "^3.8.1",
     "junk": "^3.1.0",
     "lodash": "^4.17.20",
+    "mixpanel-browser": "^2.40.0",
     "mkdirp": "^1.0.4",
     "nice-utils": "^1.0.3",
     "node-machine-id": "^1.1.12",

@@ -9,12 +9,21 @@ import Divider from '@material-ui/core/Divider';
 import FolderIcon from '@material-ui/icons/Folder';
 import { styles } from '../styles/SidebarAreaPaneLists';
 import { quickHash } from '../../../utils/funcs';
+import { analyticsService } from '../../../services/analytics';
+import { EVENT_TYPE } from '../../../enums/events';
 
 class SidebarAreaPaneLists extends PureComponent {
   _handleListDirectory({ ...args }) {
-    const { onClickHandler } = this.props;
+    const { onClickHandler, deviceType } = this.props;
 
     onClickHandler({ ...args });
+
+    const deviceTypeUpperCase = deviceType.toUpperCase();
+
+    analyticsService.sendEvent(
+      EVENT_TYPE[`${deviceTypeUpperCase}_SIDEBAR_PATH_TAP`],
+      {}
+    );
   }
 
   ListsRender = (listData) => {
@@ -55,7 +64,7 @@ class SidebarAreaPaneLists extends PureComponent {
     return (
       <div className={styles.listsWrapper}>
         <Typography variant="caption" className={styles.listsCaption}>
-          Favourites
+          Favorites
         </Typography>
         {sidebarTop.length > 1 && this.ListsRender(sidebarTop)}
 

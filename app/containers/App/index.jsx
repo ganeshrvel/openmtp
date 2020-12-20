@@ -29,7 +29,7 @@ import { getAppThemeMode } from '../../helpers/theme';
 import { getMainWindowRendererProcess } from '../../helpers/windowHelper';
 import { log } from '../../utils/log';
 import { makeMtpDevice, makeMtpStoragesList } from '../HomePage/selectors';
-import { googleAnalytics } from '../../services/analytics/googleAnalytics';
+import { analyticsService } from '../../services/analytics';
 
 class App extends Component {
   constructor(props) {
@@ -135,8 +135,8 @@ class App extends Component {
     }
   }
 
-  runAnalytics() {
-    googleAnalytics.init();
+  async runAnalytics() {
+    await analyticsService.init();
   }
 
   render() {

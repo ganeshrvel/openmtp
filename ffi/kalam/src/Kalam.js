@@ -342,7 +342,7 @@ export class Kalam {
             if (!undefinedOrNull(error)) {
               onError({ error, data: null, stderr });
 
-              return resolve(error);
+              return resolve({ error, stderr, data: null });
             }
 
             if (onPreprocess && data) {
@@ -360,7 +360,7 @@ export class Kalam {
           if (!undefinedOrNull(error)) {
             onError({ error, data: null, stderr });
 
-            return resolve(error);
+            return resolve({ error, stderr, data: null });
           }
 
           if (onProgress && data) {

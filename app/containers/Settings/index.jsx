@@ -256,7 +256,9 @@ const mapDispatchToProps = (dispatch, _) =>
         checkIf(value, 'string');
         checkIf(deviceType, 'string');
 
-        dispatch(selectMtpMode({ value }, deviceType, getState));
+        dispatch(
+          selectMtpMode({ value, reportEvent: true }, deviceType, getState)
+        );
       },
 
       actionSetCommonSettings: ({ key, value }, deviceType) => (

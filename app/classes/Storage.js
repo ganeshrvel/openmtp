@@ -1,5 +1,7 @@
 import { log } from '../utils/log';
 import { readFileSync, writeFileSync } from '../helpers/fileOps';
+import { checkIf } from '../utils/checkIf';
+import { isEmpty } from '../utils/funcs';
 
 export default class Storage {
   constructor(filePath) {
@@ -25,8 +27,10 @@ export default class Storage {
   }
 
   getItems(keys) {
+    checkIf(keys, 'array');
+
     try {
-      if (typeof keys === 'undefined' || keys === null || keys.length < 0) {
+      if (isEmpty(keys)) {
         return {};
       }
 

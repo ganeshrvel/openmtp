@@ -1,4 +1,5 @@
 import React, { PureComponent, Fragment } from 'react';
+import classnames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import Avatar from '@material-ui/core/Avatar';
@@ -19,7 +20,7 @@ class Selection extends PureComponent {
   };
 
   render() {
-    const { list, titleText, open, showAvatar } = this.props;
+    const { list, titleText, open, showAvatar, classes: styles } = this.props;
 
     if (isEmpty(list)) {
       return <Fragment />;
@@ -52,8 +53,18 @@ class Selection extends PureComponent {
                   >
                     {showAvatar && (
                       <ListItemAvatar>
-                        <Avatar>
-                          <FontAwesomeIcon icon={item.icon} title={item.name} />
+                        <Avatar
+                          className={classnames({
+                            [styles.selectedAvatar]: item.selected,
+                          })}
+                        >
+                          <FontAwesomeIcon
+                            icon={item.icon}
+                            title={item.name}
+                            className={classnames({
+                              [styles.selectedIcon]: item.selected,
+                            })}
+                          />
                         </Avatar>
                       </ListItemAvatar>
                     )}

@@ -5,12 +5,14 @@ import { toggleWindowSizeOnDoubleClick } from '../../../helpers/titlebarDoubleCl
 import { APP_TITLEBAR_DOM_ID } from '../../../constants/dom';
 import { capitalize, isEmpty, niceBytes } from '../../../utils/funcs';
 import { getSelectedStorage } from '../../HomePage/actions';
+import { getCurrentWindowHash } from '../../../helpers/windowHelper';
 
 class Titlebar extends PureComponent {
   render() {
     const { classes: styles, mtpDevice, mtpStoragesList, mtpMode } = this.props;
 
     const selectedStorage = getSelectedStorage(mtpStoragesList);
+    const windowHash = getCurrentWindowHash();
 
     return (
       <div
@@ -20,9 +22,10 @@ class Titlebar extends PureComponent {
         className={styles.root}
         id={APP_TITLEBAR_DOM_ID}
       >
-        {mtpDevice?.isAvailable &&
-        mtpDevice?.info &&
-        !isEmpty(selectedStorage?.data?.info) ? (
+        {/* Only show the device info. on the main window */}
+        {windowHash !== '/' ? null : mtpDevice?.isAvailable &&
+          mtpDevice?.info &&
+          !isEmpty(selectedStorage?.data?.info) ? (
           <span className={styles.deviceInfo}>
             <span className={styles.deviceModel}>
               {`${mtpDevice?.info?.Model} (${selectedStorage?.data?.name}) - `}

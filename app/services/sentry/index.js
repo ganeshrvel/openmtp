@@ -5,6 +5,8 @@ import { SERVICE_KEYS } from '../../constants/serviceKeys';
 import { getDeviceInfo } from '../../helpers/deviceInfo';
 import { isEmpty } from '../../utils/funcs';
 import { pkginfo } from '../../utils/pkginfo';
+import { checkIf } from '../../utils/checkIf';
+import { MTP_MODE } from '../../enums';
 
 class SentryService {
   constructor() {
@@ -12,20 +14,26 @@ class SentryService {
       return;
     }
 
+    this.init();
+  }
+
+  async init() {
     Sentry.init({
       dsn: SERVICE_KEYS.sentryDsn,
       // disabled native crash reporting to respect user's privacy
       enableNative: false,
       release: pkginfo.version,
     });
+
+    this.machineId = await machineId();
   }
 
-  async report({ error, title }) {
+  async report({ error, title, mtpMode }) {
+    checkIf(mtpMode, 'inObjectValues', MTP_MODE);
+
     if (!ENV_FLAVOR.reportToSenty) {
       return;
     }
-
-    const _machineId = await machineId();
 
     const deviceInfo = getDeviceInfo();
 
@@ -42,8 +50,10 @@ class SentryService {
         scope.setExtra('error title', title);
       }
 
+      scope.setExtra('MTP Mode', mtpMode);
+
       // this is a hashed value (sha-256)
-      scope.setUser({ id: _machineId });
+      scope.setUser({ id: machineId });
 
       Sentry.captureException(error);
     });

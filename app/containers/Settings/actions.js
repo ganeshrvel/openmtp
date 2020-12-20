@@ -6,6 +6,8 @@ import { initialState } from './reducers';
 import { checkIf } from '../../utils/checkIf';
 import { MTP_MODE } from '../../enums';
 import { DEVICES_DEFAULT_PATH } from '../../constants';
+import { analyticsService } from '../../services/analytics';
+import { EVENT_TYPE } from '../../enums/events';
 
 const prefix = '@@Settings';
 const actionTypesList = [
@@ -24,6 +26,13 @@ const excludeItemsFromSettingsFile = ['toggleSettings'];
 export const actionTypes = prefixer(prefix, actionTypesList);
 
 export function toggleSettings(data) {
+  const dialogStatus = data ? 'OPEN' : 'CLOSE';
+
+  analyticsService.sendEvent(
+    EVENT_TYPE[`TOOLBAR_SETTINGS_DIALOG_${dialogStatus}`],
+    {}
+  );
+
   return {
     type: actionTypes.TOGGLE_SETTINGS,
     payload: data,
@@ -38,7 +47,13 @@ export function freshInstall({ ...data }, getState) {
       type: actionTypes.FRESH_INSTALL,
       payload: isFreshInstall,
     });
+
     dispatch(copySettingsToJsonFile(getState));
+
+    analyticsService.sendEvent(EVENT_TYPE.TOOLBAR_SETTINGS_CHANGE, {
+      key: 'isFreshInstall',
+      value: isFreshInstall,
+    });
   };
 }
 
@@ -48,7 +63,13 @@ export function setOnboarding({ ...data }, getState) {
       type: actionTypes.SET_ONBOARDING,
       payload: data,
     });
+
     dispatch(copySettingsToJsonFile(getState));
+
+    analyticsService.sendEvent(EVENT_TYPE.TOOLBAR_SETTINGS_CHANGE, {
+      key: 'onboarding',
+      value: data,
+    });
   };
 }
 
@@ -61,7 +82,14 @@ export function hideHiddenFiles({ ...data }, deviceType, getState) {
       deviceType,
       payload: value,
     });
+
     dispatch(copySettingsToJsonFile(getState));
+
+    analyticsService.sendEvent(EVENT_TYPE.TOOLBAR_SETTINGS_CHANGE, {
+      key: 'hideHiddenFiles',
+      value: data,
+      deviceType,
+    });
   };
 }
 
@@ -74,7 +102,14 @@ export function setFilesPreprocessingBeforeTransfer({ ...data }, getState) {
       deviceType: null,
       payload: { value, direction },
     });
+
     dispatch(copySettingsToJsonFile(getState));
+
+    analyticsService.sendEvent(EVENT_TYPE.TOOLBAR_SETTINGS_CHANGE, {
+      key: 'filesPreprocessingBeforeTransfer',
+      value,
+      direction,
+    });
   };
 }
 
@@ -87,17 +122,37 @@ export function fileExplorerListingType({ ...data }, deviceType, getState) {
       deviceType,
       payload: value,
     });
+
     dispatch(copySettingsToJsonFile(getState));
+
+    analyticsService.sendEvent(EVENT_TYPE.TOOLBAR_SETTINGS_CHANGE, {
+      key: 'fileExplorerListingType',
+      value,
+      deviceType,
+    });
   };
 }
 
-export function selectMtpMode({ value }, deviceType, getState) {
+export function selectMtpMode(
+  { value, reportEvent = true },
+  deviceType,
+  getState
+) {
   const { hideHiddenFiles, mtpMode } = getState().Settings;
 
   checkIf(deviceType, 'string');
   checkIf(getState, 'function');
   checkIf(hideHiddenFiles, 'object');
   checkIf(mtpMode, 'string');
+
+  const key = 'mtpMode';
+
+  if (reportEvent) {
+    analyticsService.sendEvent(EVENT_TYPE.MTP_MODE_SELECTED, {
+      'Current MTP Mode': mtpMode,
+      'Selected MTP Mode': value,
+    });
+  }
 
   return async (dispatch) => {
     // dont proceed if the mtp wasn't changed
@@ -133,7 +188,7 @@ export function selectMtpMode({ value }, deviceType, getState) {
       dispatch(
         setCommonSettings(
           {
-            key: 'mtpMode',
+            key,
             value,
             onSuccess: () => {
               resolve();
@@ -172,6 +227,19 @@ export function setCommonSettings(
   }
 
   return async (dispatch) => {
+    // key == [mtpMode] is handled separately, so skip it
+    if (key !== 'mtpMode') {
+      if (key === 'enableAnalytics' && !value) {
+        // if the [key] == [enableAnalytics] and it is toggled on, report it
+        analyticsService.sendEvent(EVENT_TYPE.TOOLBAR_SETTINGS_CHANGE, {
+          key,
+          value,
+          isCommonSettings: true,
+          deviceType,
+        });
+      }
+    }
+
     dispatch({
       type: actionTypes.COMMON_SETTINGS,
       deviceType,
@@ -188,6 +256,21 @@ export function setCommonSettings(
         }
       })
     );
+
+    // key == [mtpMode] is handled separately, so skip it
+    if (key !== 'mtpMode') {
+      // if the [key] == [enableAnalytics] and it is toggled off, report it
+      // log for all other keys
+      // note: if [enableAnalytics] is false then reporting is automatically disabled by [AnalyticsService] itself.
+      if (key !== 'enableAnalytics' || (key === 'enableAnalytics' && value)) {
+        analyticsService.sendEvent(EVENT_TYPE.TOOLBAR_SETTINGS_CHANGE, {
+          key,
+          value,
+          isCommonSettings: true,
+          deviceType,
+        });
+      }
+    }
   };
 }
 

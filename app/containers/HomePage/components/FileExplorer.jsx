@@ -63,6 +63,7 @@ import {
 } from '../../Settings/selectors';
 import { DEVICES_LABEL, DONATE_PAYPAL_URL } from '../../../constants';
 import {
+  arrayAverage,
   getPluralText,
   isArray,
   isEmpty,
@@ -97,6 +98,8 @@ import fileExplorerController from '../../../data/file-explorer/controllers/File
 import { checkIf } from '../../../utils/checkIf';
 import { COMMUNICATION_EVENTS } from '../../../enums/communicationEvents';
 import { reportBugsWindow } from '../../../helpers/createWindows';
+import { analyticsService } from '../../../services/analytics';
+import { EVENT_TYPE } from '../../../enums/events';
 
 const { Menu, getCurrentWindow } = remote;
 
@@ -182,7 +185,7 @@ class FileExplorer extends Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const {
       currentBrowsePath,
       deviceType,
@@ -202,9 +205,7 @@ class FileExplorer extends Component {
         deviceType,
       });
     }
-  }
 
-  componentDidMount() {
     this.registerAccelerators();
     this.registerAppUpdate();
     this.registerGenerateErrorReport();
@@ -472,6 +473,8 @@ class FileExplorer extends Component {
       return null;
     }
 
+    const deviceTypeUpperCase = deviceType.toUpperCase();
+
     switch (type) {
       case 'navigationLeft':
       case 'navigationRight':
@@ -510,6 +513,11 @@ class FileExplorer extends Component {
           break;
         }
 
+        analyticsService.sendEvent(
+          EVENT_TYPE[`${deviceTypeUpperCase}_COPY_FILES`],
+          {}
+        );
+
         actionCreateCopy({
           selected,
           deviceType,
@@ -520,6 +528,11 @@ class FileExplorer extends Component {
         if (selected.length < 1) {
           break;
         }
+
+        analyticsService.sendEvent(
+          EVENT_TYPE[`${deviceTypeUpperCase}_COPY_TO_QUEUE_FILES`],
+          {}
+        );
 
         actionCreateCopy({
           selected,
@@ -949,6 +962,7 @@ class FileExplorer extends Component {
   /* activate actions using mouse */
   _handleContextMenuListActions = ({ ...args }) => {
     const { deviceType, directoryLists, actionCreateCopy } = this.props;
+    const deviceTypeUpperCase = deviceType.toUpperCase();
 
     Object.keys(args).map((a) => {
       const item = args[a];
@@ -971,6 +985,12 @@ class FileExplorer extends Component {
           const selectedItemsToCopy = directoryLists[deviceType].queue.selected;
 
           actionCreateCopy({ selected: selectedItemsToCopy, deviceType });
+
+          analyticsService.sendEvent(
+            EVENT_TYPE[`${deviceTypeUpperCase}_COPY_FILES`],
+            {}
+          );
+
           break;
 
         case 'copyToQueue':
@@ -983,6 +1003,12 @@ class FileExplorer extends Component {
             deviceType,
             toQueue: true,
           });
+
+          analyticsService.sendEvent(
+            EVENT_TYPE[`${deviceTypeUpperCase}_COPY_TO_QUEUE_FILES`],
+            {}
+          );
+
           break;
 
         case 'paste':
@@ -1026,6 +1052,19 @@ class FileExplorer extends Component {
     });
   };
 
+  _handleClearEditDialog = (targetAction) => {
+    const { toggleDialog } = this.state;
+
+    this.setState({
+      toggleDialog: {
+        ...toggleDialog,
+        [targetAction]: {
+          ...this.initialState.toggleDialog[targetAction],
+        },
+      },
+    });
+  };
+
   _handleRenameEditDialog = async ({ ...args }) => {
     const {
       deviceType,
@@ -1039,9 +1078,22 @@ class FileExplorer extends Component {
     const { data } = this.state.toggleDialog.rename;
     const { confirm, textFieldValue: newFilename } = args;
     const targetAction = 'rename';
+    const deviceTypeUpperCase = deviceType.toUpperCase();
+
+    analyticsService.sendEvent(
+      EVENT_TYPE[`${deviceTypeUpperCase}_RENAME_STARTED`],
+      {}
+    );
 
     if (!confirm || newFilename === null) {
       this._handleClearEditDialog(targetAction);
+
+      analyticsService.sendEvent(
+        EVENT_TYPE[`${deviceTypeUpperCase}_RENAME_EXIT`],
+        {
+          Reason: 'EXIT',
+        }
+      );
 
       return null;
     }
@@ -1055,6 +1107,13 @@ class FileExplorer extends Component {
         targetAction
       );
 
+      analyticsService.sendEvent(
+        EVENT_TYPE[`${deviceTypeUpperCase}_RENAME_EXIT`],
+        {
+          Reason: 'ILLEGAL_CHARACTERS',
+        }
+      );
+
       return null;
     }
 
@@ -1066,6 +1125,13 @@ class FileExplorer extends Component {
 
     if (newFilepath === data.path) {
       this._handleClearEditDialog(targetAction);
+
+      analyticsService.sendEvent(
+        EVENT_TYPE[`${deviceTypeUpperCase}_RENAME_EXIT`],
+        {
+          Reason: 'NO_CHANGE',
+        }
+      );
 
       return null;
     }
@@ -1085,6 +1151,13 @@ class FileExplorer extends Component {
             message: `Error: The name "${sanitizedNewFilename}" is already taken.`,
           },
           targetAction
+        );
+
+        analyticsService.sendEvent(
+          EVENT_TYPE[`${deviceTypeUpperCase}_RENAME_EXIT`],
+          {
+            Reason: 'FILE_EXISTS',
+          }
         );
 
         return null;
@@ -1120,19 +1193,6 @@ class FileExplorer extends Component {
     });
   };
 
-  _handleClearEditDialog = (targetAction) => {
-    const { toggleDialog } = this.state;
-
-    this.setState({
-      toggleDialog: {
-        ...toggleDialog,
-        [targetAction]: {
-          ...this.initialState.toggleDialog[targetAction],
-        },
-      },
-    });
-  };
-
   _handleTogglePasteConfirmDialog = (status) => {
     this.setState({
       togglePasteConfirmDialog: status,
@@ -1157,12 +1217,19 @@ class FileExplorer extends Component {
   }
 
   _handleFilesDragStart = (e, { sourceDeviceType }) => {
+    const sourceDeviceTypeUpperCase = sourceDeviceType?.toUpperCase();
+
     this._handleSetFilesDrag({
       sourceDeviceType,
       destinationDeviceType: null,
       enter: false,
       lock: false,
     });
+
+    analyticsService.sendEvent(
+      EVENT_TYPE[`${sourceDeviceTypeUpperCase}_DRAG_FILES_STARTED`],
+      {}
+    );
 
     e.dataTransfer.setDragImage(this.filesDragGhostImg, 0, 0);
   };
@@ -1216,10 +1283,24 @@ class FileExplorer extends Component {
     const { directoryLists, filesDrag } = this.props;
     const { sourceDeviceType } = filesDrag;
 
-    if (isEmpty(externalFiles)) {
+    const isExternalFiles = !isEmpty(externalFiles);
+    const sourceDeviceTypeUpperCase = isExternalFiles
+      ? 'EXTERNAL'
+      : sourceDeviceType?.toUpperCase();
+
+    analyticsService.sendEvent(
+      EVENT_TYPE[`${sourceDeviceTypeUpperCase}_DRAG_FILES_DROPPED`],
+      {
+        isExternalFiles,
+      }
+    );
+
+    // if files were dragged from the app pane itself
+    if (!isExternalFiles) {
       return directoryLists[sourceDeviceType]?.queue?.selected ?? [];
     }
 
+    // if files were dragged from the finder window then go here
     return [...externalFiles].map((f) => f.path);
   };
 
@@ -1229,9 +1310,25 @@ class FileExplorer extends Component {
 
     if (
       !allowFileDropFlag ||
-      destinationDeviceType === null ||
-      sourceDeviceType === destinationDeviceType
+      sourceDeviceType === destinationDeviceType ||
+      destinationDeviceType === null
     ) {
+      const isExternalFiles = !isEmpty(externalFiles);
+      const sourceDeviceTypeUpperCase = isExternalFiles
+        ? 'EXTERNAL'
+        : sourceDeviceType?.toUpperCase();
+
+      analyticsService.sendEvent(
+        EVENT_TYPE[`${sourceDeviceTypeUpperCase}_DRAG_FILES_CANCELLED`],
+        {
+          'Is file drop allowed': allowFileDropFlag,
+          Reason:
+            sourceDeviceType === destinationDeviceType
+              ? 'Source and destination are same'
+              : false,
+        }
+      );
+
       return null;
     }
 
@@ -1291,9 +1388,22 @@ class FileExplorer extends Component {
     const { data } = this.state.toggleDialog.newFolder;
     const { confirm, textFieldValue: newFolderName } = args;
     const targetAction = 'newFolder';
+    const deviceTypeUpperCase = deviceType.toUpperCase();
+
+    analyticsService.sendEvent(
+      EVENT_TYPE[`${deviceTypeUpperCase}_NEW_FOLDER_STARTED`],
+      {}
+    );
 
     if (!confirm) {
       this._handleClearEditDialog(targetAction);
+
+      analyticsService.sendEvent(
+        EVENT_TYPE[`${deviceTypeUpperCase}_NEW_FOLDER_EXIT`],
+        {
+          Reason: 'NO_CHANGE',
+        }
+      );
 
       return null;
     }
@@ -1307,6 +1417,13 @@ class FileExplorer extends Component {
         targetAction
       );
 
+      analyticsService.sendEvent(
+        EVENT_TYPE[`${deviceTypeUpperCase}_NEW_FOLDER_EXIT`],
+        {
+          Reason: 'EMPTY_FOLDER_NAME',
+        }
+      );
+
       return null;
     }
 
@@ -1317,6 +1434,13 @@ class FileExplorer extends Component {
           message: `Error: Illegal characters.`,
         },
         targetAction
+      );
+
+      analyticsService.sendEvent(
+        EVENT_TYPE[`${deviceTypeUpperCase}_NEW_FOLDER_EXIT`],
+        {
+          Reason: 'ILLEGAL_CHARACTERS',
+        }
       );
 
       return null;
@@ -1337,6 +1461,13 @@ class FileExplorer extends Component {
           message: `Error: The name "${newFolderName}" is already taken.`,
         },
         targetAction
+      );
+
+      analyticsService.sendEvent(
+        EVENT_TYPE[`${deviceTypeUpperCase}_RENAME_EXIT`],
+        {
+          Reason: 'FILE_EXISTS',
+        }
       );
 
       return null;
@@ -1368,6 +1499,7 @@ class FileExplorer extends Component {
     let { queue } = fileTransferClipboard;
     const destinationFolder = currentBrowsePath[deviceType];
     let invalidFileNameFlag = false;
+    const deviceTypeUpperCase = deviceType.toUpperCase();
 
     queue = queue.map((a) => {
       const _baseName = baseName(a);
@@ -1379,6 +1511,11 @@ class FileExplorer extends Component {
 
       return fullPath;
     });
+
+    analyticsService.sendEvent(
+      EVENT_TYPE[`${deviceTypeUpperCase}_PASTE_FILES`],
+      {}
+    );
 
     if (invalidFileNameFlag) {
       actionCreateThrowError({
@@ -1395,15 +1532,22 @@ class FileExplorer extends Component {
         storageId,
       })
     ) {
+      analyticsService.sendEvent(
+        EVENT_TYPE[`${deviceTypeUpperCase}_PASTE_FILES_DIALOG_OPEN`],
+        {
+          Reason: 'FILES_EXIST',
+        }
+      );
+
       this._handleTogglePasteConfirmDialog(true);
 
       return null;
     }
 
-    this._handlePasteConfirmDialog(true);
+    this._handlePasteConfirm(true);
   };
 
-  _handlePasteConfirmDialog = (confirm) => {
+  _handlePasteConfirm = (confirm) => {
     const {
       deviceType,
       hideHiddenFiles,
@@ -1415,8 +1559,16 @@ class FileExplorer extends Component {
     const destinationFolder = currentBrowsePath[deviceType];
 
     this._handleTogglePasteConfirmDialog(false);
+    const deviceTypeUpperCase = deviceType.toUpperCase();
 
     if (!confirm) {
+      analyticsService.sendEvent(
+        EVENT_TYPE[`${deviceTypeUpperCase}_PASTE_FILES_DIALOG_CLOSE`],
+        {
+          Reason: 'REPLACE_FILES_DENIED',
+        }
+      );
+
       return null;
     }
 
@@ -1521,9 +1673,16 @@ class FileExplorer extends Component {
   _handleTableDoubleClick = (item, deviceType) => {
     const { isFolder, path } = item;
 
+    const deviceTypeUpperCase = deviceType.toUpperCase();
+
     if (!isFolder) {
       if (deviceType === DEVICE_TYPE.local) {
         shell.openPath(path);
+
+        analyticsService.sendEvent(
+          EVENT_TYPE[`${deviceTypeUpperCase}_OPEN_FILE`],
+          {}
+        );
       }
 
       return null;
@@ -1533,6 +1692,11 @@ class FileExplorer extends Component {
       path,
       deviceType,
     });
+
+    analyticsService.sendEvent(
+      EVENT_TYPE[`${deviceTypeUpperCase}_OPEN_DIRECTORY`],
+      {}
+    );
   };
 
   tableSort = ({ ...args }) => {
@@ -1720,7 +1884,7 @@ class FileExplorer extends Component {
           maxWidthDialog="xs"
           bodyText="Replace and merge the existing items?"
           trigger={togglePasteConfirmDialog}
-          onClickHandler={this._handlePasteConfirmDialog}
+          onClickHandler={this._handlePasteConfirm}
         />
         <FileExplorerBodyRender
           deviceType={deviceType}
@@ -1738,6 +1902,7 @@ class FileExplorer extends Component {
           onFilesDragOver={this._handleFilesDragOver}
           onFilesDragEnd={this._handleFilesDragEnd}
           onFilesDrop={this._handleTableDrop}
+          onDragStart={this._handleFilesDragStart}
           onBreadcrumbPathClick={this._handleBreadcrumbPathClick}
           onSelectAllClick={this._handleSelectAllClick}
           onRequestSort={this._handleRequestSort}
@@ -1745,7 +1910,6 @@ class FileExplorer extends Component {
           onTableDoubleClick={this._handleTableDoubleClick}
           onTableClick={this._handleTableClick}
           onIsDraggable={this._handleIsDraggable}
-          onDragStart={this._handleFilesDragStart}
           onExternalFileDragLeave={this._handleExternalFileDragLeave}
           onFocussedFileExplorerDeviceType={
             this._handleFocussedFileExplorerDeviceType
@@ -2008,6 +2172,11 @@ const mapDispatchToProps = (dispatch, _) =>
         { ...listDirectoryArgs },
         deviceType
       ) => (_, getState) => {
+        let sessionElapsedTime = 0;
+        const sessionTransferSpeeds = [];
+        let sessionTotalFiles = 0;
+        let sessionTransferDirection;
+
         try {
           const {
             mtpMode,
@@ -2019,6 +2188,8 @@ const mapDispatchToProps = (dispatch, _) =>
             storageId,
             fileTransferClipboard,
           } = pasteArgs;
+
+          analyticsService.sendEvent(EVENT_TYPE.FILE_TRANSFER_STARTED, {});
 
           // on pre process callback for file transfer
           const onPreprocess = ({ fullPath }) => {
@@ -2064,6 +2235,11 @@ const mapDispatchToProps = (dispatch, _) =>
             let progressText = 0;
 
             let progressInfo = [];
+
+            sessionElapsedTime = elapsedTime;
+            sessionTransferSpeeds.push(parseFloat(speed));
+            sessionTotalFiles = totalFiles;
+            sessionTransferDirection = direction;
 
             /// file transfer progress on legacy mode
             if (mtpMode === MTP_MODE.legacy) {
@@ -2166,6 +2342,8 @@ const mapDispatchToProps = (dispatch, _) =>
                 },
               })
             );
+
+            analyticsService.sendEvent(EVENT_TYPE.FILE_TRANSFER_ERROR, {});
           };
 
           // on completed callback for file transfer
@@ -2175,6 +2353,17 @@ const mapDispatchToProps = (dispatch, _) =>
             dispatch(
               listDirectory({ ...listDirectoryArgs }, deviceType, getState)
             );
+
+            analyticsService.sendEvent(EVENT_TYPE.FILE_TRANSFER_COMPLETED, {
+              'Transfer direction': sessionTransferDirection,
+              'Total files': sessionTotalFiles,
+              'Average transfer speed': `${arrayAverage(
+                sessionTransferSpeeds
+              )} MB/s`,
+              'Elapsed time': sessionElapsedTime,
+              'Is files preprocessing enabled':
+                filesPreprocessingBeforeTransfer[sessionTransferDirection],
+            });
           };
 
           switch (deviceType) {

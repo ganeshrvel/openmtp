@@ -1,6 +1,9 @@
 import { BrowserWindow, remote } from 'electron';
+import { urls } from 'nice-utils';
 import { getAppThemeMode } from './theme';
 import { getCurrentThemePalette } from '../containers/App/styles';
+import { undefinedOrNull } from '../utils/funcs';
+import { IS_RENDERER } from '../constants/env';
 
 export const getMainWindowMainProcess = () => {
   const _mainWindow = BrowserWindow.getAllWindows();
@@ -27,4 +30,18 @@ export const getWindowBackgroundColor = () => {
   const { background } = getCurrentThemePalette(appThemeMode);
 
   return background.paper;
+};
+
+export const getCurrentWindowHash = () => {
+  if (!IS_RENDERER) {
+    return null;
+  }
+
+  const hash = urls().getHash();
+
+  if (undefinedOrNull(hash) || hash === '') {
+    return '/';
+  }
+
+  return hash;
 };

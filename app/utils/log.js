@@ -1,5 +1,7 @@
+import clp from 'console-log-plus';
 import os, { EOL } from 'os';
-import { IS_DEV } from '../constants/env';
+import { machineId } from 'node-machine-id';
+import { IS_PROD } from '../constants/env';
 import { APP_NAME, APP_VERSION } from '../constants/meta';
 import { PATHS } from '../constants/paths';
 import { appendFileAsync } from '../helpers/fileOps';
@@ -7,27 +9,44 @@ import { dateTimeUnixTimestampNow } from './date';
 import { sentryService } from '../services/sentry';
 import { getDeviceInfo } from '../helpers/deviceInfo';
 import { isEmpty } from './funcs';
+import { getMtpModeSetting } from '../helpers/settings';
 
 const { logFile } = PATHS;
 
 export const log = {
-  info(
-    e,
-    title = `Log`,
-    logError = false,
-    allowInProd = false,
-    report = false
-  ) {
-    this.doLog(e, title, null, logError, report, false);
-
-    if (allowInProd) {
-      console.info(`${title} => `, e);
-
+  printBoundary(char = '═', length = 70, allowInProd = false) {
+    if (IS_PROD && !allowInProd) {
       return;
     }
 
-    if (IS_DEV) {
-      console.info(`${title} => `, e);
+    let output = char;
+
+    for (let i = 0; i < length; i += 1) {
+      output += char;
+    }
+
+    console.info(output);
+  },
+  info(e, title = ``, logError = false, allowInProd = false, report = false) {
+    this.doLog(e, title, null, logError, report, false);
+
+    if (IS_PROD && !allowInProd) {
+      return;
+    }
+
+    if (!isEmpty(title)) {
+      clp({
+        color: 'white',
+        background: 'green',
+        message: title,
+      });
+    }
+
+    if (!isEmpty(e)) {
+      clp({
+        color: 'blue',
+        message: e,
+      });
     }
   },
 
@@ -42,15 +61,22 @@ export const log = {
   error(e, title = `Log`, logError = true, allowInProd = false, report = true) {
     this.doLog(e, title, null, logError, report, true);
 
-    if (allowInProd) {
-      console.error(`${title} => `, e);
-
+    if (IS_PROD && !allowInProd) {
       return;
     }
 
-    if (IS_DEV) {
-      console.error(`${title} => `, e);
+    if (!isEmpty(title)) {
+      clp({
+        color: 'white',
+        background: 'red',
+        message: title,
+      });
     }
+
+    clp({
+      color: 'red',
+      message: e,
+    });
   },
 
   /**
@@ -61,8 +87,7 @@ export const log = {
    * @param {any} report - should report the error to crashanalytics services
    * @param {string|null} title
    * @param {boolean} isError - is an error or info
-   */
-  doLog(
+   */ async doLog(
     e,
     title = null,
     customError = null,
@@ -70,11 +95,11 @@ export const log = {
     report = true,
     isError = true
   ) {
-    const sectionSeperator = `=============================================================`;
-
     if (logError === false) {
       return null;
     }
+
+    const sectionSeperator = `=============================================================`;
 
     const logType = isError ? `Error` : `Info`;
     let err = `${logType} title: ${title}${EOL}${logType} body: ${EOL}${e?.toString()}${EOL}`;
@@ -90,6 +115,8 @@ export const log = {
 
     let _deviceInfoStrigified = '';
     const deviceInfo = getDeviceInfo();
+    const mtpMode = getMtpModeSetting();
+    const uuid = await machineId();
 
     if (!isEmpty(deviceInfo)) {
       Object.keys(deviceInfo).forEach((a) => {
@@ -102,9 +129,10 @@ export const log = {
     const _date = `Date Time: ${dateTimeUnixTimestampNow({
       monthInletters: true,
     })}`;
-    const _appInfo = `${EOL}App Name: ${APP_NAME}${EOL}App Version: ${APP_VERSION}`;
+    const _appInfo = `${EOL}App Name: ${APP_NAME}${EOL}App Version: ${APP_VERSION}${EOL}UUID: ${uuid}`;
+    const _mtpMode = `${EOL}MTP Mode: ${mtpMode}`;
     const _osInfo = `OS type: ${os.type()} / OS Platform: ${os.platform()} / OS Release: ${os.release()}`;
-    const _error = `${sectionSeperator}${EOL}${_appInfo}${EOL}${_date}${EOL}${_osInfo}${EOL}${_deviceInfoStrigified}${logType}: ${err}${EOL}${sectionSeperator}${EOL}`;
+    const _error = `${sectionSeperator}${EOL}${_appInfo}${EOL}${_mtpMode}${EOL}${_date}${EOL}${_osInfo}${EOL}${_deviceInfoStrigified}${logType}: ${err}${EOL}${sectionSeperator}${EOL}`;
 
     appendFileAsync(logFile, _error);
 
@@ -115,7 +143,7 @@ export const log = {
         errorToReport = new Error(e);
       }
 
-      sentryService.report({ error: errorToReport, title });
+      await sentryService.report({ error: errorToReport, title, mtpMode });
     }
   },
 };

@@ -145,7 +145,8 @@ export default class ToolbarAreaPane extends PureComponent {
 
     if (!isEmpty(mtpStoragesList)) {
       _mtpStoragesList = Object.keys(mtpStoragesList).map((a) => {
-        const item = mtpStoragesList[a];
+        // spread operator is used here to prevent modifying the original object
+        const item = { ...mtpStoragesList[a] };
 
         item.icon = faSdCard;
         item.value = a;
@@ -159,11 +160,13 @@ export default class ToolbarAreaPane extends PureComponent {
         value: MTP_MODE.kalam,
         name: `${capitalize(MTP_MODE.kalam)} Mode`,
         icon: faBolt,
+        selected: mtpMode === MTP_MODE.kalam,
       },
       {
         value: MTP_MODE.legacy,
         name: `${capitalize(MTP_MODE.legacy)} Mode`,
         icon: faTerminal,
+        selected: mtpMode === MTP_MODE.legacy,
       },
     ];
 

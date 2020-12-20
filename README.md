@@ -2,7 +2,7 @@
 
 - Author: [Ganesh Rathinavel](https://www.linkedin.com/in/ganeshrvel "Ganesh Rathinavel")
 - License: [MIT](https://github.com/ganeshrvel/openmtp/blob/master/LICENSE "MIT")
-- System Requirements: macOS 10.10 or higher
+- System Requirements: macOS 10.11 or higher
 - Website URL: [https://openmtp.ganeshrvel.com](https://openmtp.ganeshrvel.com/ "https://openmtp.ganeshrvel.com")
 - Repo URL: [https://github.com/ganeshrvel/openmtp](https://github.com/ganeshrvel/openmtp/ "https://github.com/ganeshrvel/openmtp")
 - Contacts: ganeshrvel@outlook.com
@@ -153,10 +153,9 @@ $ yarn package-all
 ```
 
 
-
 ### Technical Features
-- Built using Electron v6, React v16.8, Redux v4, Webpack v4, Babel v7 and Material UI v4.2 and highly modular
-- Loadables, dynamic reducer injection, selectors for efficient code. splitting and performance/startup optimisation
+- Built using Electron v11 and React v17
+- Loadables, Dynamic Reducer Injection, Selectors for code splitting and performance optimization
 - Hot module reload (HMR) for instant feedback
 - Inbuilt error logging and profile/settings management
 - Industry standard state management
@@ -210,9 +209,11 @@ Samsung devices aren't supported yet, follow these Github threads for any update
 
 ### Credits
 
-- Thanks to [Vladimir Menshakov](https://github.com/whoozle "Vladimir Menshakov") for [android-file-transfer-linux](https://github.com/whoozle/android-file-transfer-linux "android-file-transfer-linux") (the MTP legacy Kernel).
-
 - Thanks to Ms [Ayushi Bothra](https://www.linkedin.com/in/ayushi-bothra-3103/ "Ayushi Bothra") for contributing to the documentation and pages.
+
+- App logo was contributed by [Shubhendu Mitra](https://www.linkedin.com/in/shubhendum/ "Shubhendu Mitra - LinkedIn"). Make sure to check out more of his works on [Behance](https://www.behance.net/soponhara "Shubhendu Mitra - Behance").
+
+- Thanks to [Vladimir Menshakov](https://github.com/whoozle "Vladimir Menshakov") for [android-file-transfer-linux](https://github.com/whoozle/android-file-transfer-linux "android-file-transfer-linux") (the MTP legacy Kernel).
 
 - This app was built upon [https://github.com/ganeshrvel/electron-react-redux-advanced-boilerplate](https://github.com/ganeshrvel/electron-react-redux-advanced-boilerplate "https://github.com/ganeshrvel/electron-react-redux-advanced-boilerplate") which is a heavily modified fork of [https://github.com/electron-react-boilerplate/electron-react-boilerplate](https://github.com/electron-react-boilerplate/electron-react-boilerplate "https://github.com/electron-react-boilerplate/electron-react-boilerplate").
 

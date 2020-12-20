@@ -28,6 +28,7 @@ module.exports = {
     'consistent-return': 'off',
     'comma-dangle': 'off',
     'generator-star-spacing': 'off',
+    'no-nested-ternary': 'off',
     'import/no-cycle': 'off',
     'import/no-dynamic-require': 'off',
     'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
