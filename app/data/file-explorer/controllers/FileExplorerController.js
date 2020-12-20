@@ -8,7 +8,7 @@ import {
 } from '../../../helpers/processBufferOutput';
 import { getMtpModeSetting } from '../../../helpers/settings';
 import { DEVICE_TYPE } from '../../../enums';
-import { unixTimestampNow } from "../../../utils/date";
+import { unixTimestampNow } from '../../../utils/date';
 
 class FileExplorerController {
   constructor() {
