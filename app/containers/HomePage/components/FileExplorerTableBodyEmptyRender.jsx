@@ -17,6 +17,7 @@ import UsbIcon from '@material-ui/icons/Usb';
 import TouchAppIcon from '@material-ui/icons/TouchApp';
 import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
 import CachedIcon from '@material-ui/icons/Cached';
+import PermDeviceInformationIcon from '@material-ui/icons/PermDeviceInformation';
 import SettingsInputHdmiIcon from '@material-ui/icons/SettingsInputHdmi';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -169,16 +170,22 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
                         <ListItemIcon>
                           <CachedIcon />
                         </ListItemIcon>
-                        <ListItemText primary="Click Refresh Button above" />
+                        <ListItemText primary="Tap on the 'Refresh' button above" />
+                      </ListItem>
+                      <ListItem>
+                        <ListItemIcon>
+                          <PermDeviceInformationIcon />
+                        </ListItemIcon>
+                        <ListItemText
+                          primary="If you are trying to connect a SAMSUNG device then accept the 'Allow access to device data' confirmation pop up in your phone"
+                          secondary="Tap on the 'Refresh' button again. Reconnect your phone and repeat the above steps if it doesn't help"
+                        />
                       </ListItem>
                       <ListItem>
                         <ListItemIcon>
                           <SettingsInputHdmiIcon />
                         </ListItemIcon>
-                        <ListItemText
-                          primary="Reconnect the cable and repeat the above steps if you keep
-                  seeing this message"
-                        />
+                        <ListItemText primary="Reconnect the cable and repeat the above steps if you keep seeing this message" />
                       </ListItem>
                     </div>
                   </List>

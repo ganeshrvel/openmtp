@@ -26,9 +26,9 @@ class FileExplorerTableBodyEmptyHelpPhoneNotRecognizedRender extends PureCompone
             there&apos;s a community, whose facing the same problem as I did.
           </Typography>
           <Typography component="p" variant="body2" paragraph>
-            I wasn&apos;t wrong, I guess. Within a few months of launch, we are
-            a strong community with users from over&nbsp;
-            <strong>70 countries</strong>. It&apos;s overwhelming to see the
+            I wasn&apos;t wrong, I guess. Now, we are a strong community with
+            users from over&nbsp;
+            <strong>180 countries</strong>. It&apos;s overwhelming to see the
             response that I have received from all of you, not just appreciating
             the app, but also giving me suggestions and feedback to improve it.
           </Typography>
@@ -47,15 +47,16 @@ class FileExplorerTableBodyEmptyHelpPhoneNotRecognizedRender extends PureCompone
             Some of you have been telling me that there are issues with
             connecting certain mobile phones (<i>mostly Samsung</i>) to OpenMTP.
             I have been working hard to fix this issue by migrating the existing
-            MTP Kernel to a better one but the development has slowed down due
-            to various reasons.
+            MTP Kernel to a better one.
           </Typography>
 
-          <Typography component="p" variant="body2">
-            I am looking for developers who can write Native Node.js modules and
-            are interested in contributing to the development of the next
-            generation OpenMTP MTP Kernel.
+          <Typography component="p" variant="body2" paragraph>
+            <strong>{`If you are trying to connect your Samsung device then you may need to
+              accept the "Allow access to device data" confirmation pop up in your
+              phone. Tap on the "Refresh" button in OpenMTP after that. Unplug, reconnect and
+              try again if it doesn't help.`}</strong>
           </Typography>
+
           <Typography component="p" variant="body2" paragraph>
             You may reach out to me at&nbsp;
             <a
