@@ -155,7 +155,7 @@ $ yarn package-all
 
 ### Technical Features
 - Built using Electron v11 and React v17
-- Loadables, Dynamic Reducer Injection, Selectors for code splitting and performance optimizations
+- Loadables, Dynamic Reducer Injection, Selectors for code splitting and performance optimization
 - Hot module reload (HMR) for instant feedback
 - Inbuilt error logging and profile/settings management
 - Industry standard state management
