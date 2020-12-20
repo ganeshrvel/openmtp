@@ -37,13 +37,13 @@ Countless searches to find an app to solve these problems and failing to find on
 
 * Find the latest *dmg* file from [GitHub Releases](https://github.com/ganeshrvel/openmtp/releases "GitHub Releases")
 
-* Download [OpenMTP 3.0.0-beta.2](https://drive.google.com/file/d/1wpSlkGWZKe4-nRYcdJaPVA3Y6kOBMTsO/view?usp=sharing "OpenMTP 3.0.0-beta-2") (Samsung support, dark theme and many more). Note: This is a prerelease version and might be unstable.
+* Download [OpenMTP 3.0.0-beta.3](https://github.com/ganeshrvel/openmtp/releases/download/v3.0.0-beta.3/OpenMTP-3.0.0-beta.3.dmg "OpenMTP 3.0.0-beta.3") (Samsung support, dark theme and many more). Note: This is a prerelease version and it might be unstable.
 
 ### Screengrabs
 
-![OpenMTP File Explorer](https://github.com/ganeshrvel/openmtp/raw/master/blobs/images/file-explorer-bluebg.png "OpenMTP File Explorer")
+![OpenMTP File Explorer](https://github.com/ganeshrvel/openmtp/raw/master/blobs/images/file-explorer-bluebg.jpg "OpenMTP File Explorer")
 
-![OpenMTP File Transfer](https://github.com/ganeshrvel/openmtp/raw/master/blobs/images/file-transfer-bluebg.png "OpenMTP File Transfer")
+![OpenMTP File Transfer](https://github.com/ganeshrvel/openmtp/raw/master/blobs/images/file-transfer-bluebg.jpg "OpenMTP File Transfer")
 
 ### Keyboard Shortcuts
 | Command                                           | Keyboard Shortcut                                            |
