@@ -11,11 +11,14 @@ import { getDeviceInfo } from '../../helpers/deviceInfo';
 import { MTP_MODE } from '../../enums';
 import { getMtpModeSetting } from '../../helpers/settings';
 import { unixTimestampNow } from '../../utils/date';
+import { getCurrentWindowHash } from '../../helpers/windowHelper';
 
 export class MixpanelAnalytics {
   constructor() {
     this.isInitialized = false;
     this.machineId = null;
+
+    this.isMainWindow = getCurrentWindowHash() === '/';
   }
 
   _print(key, value) {
@@ -36,6 +39,11 @@ export class MixpanelAnalytics {
 
   async init() {
     try {
+      // dont proceed if the object is not a main window
+      if (!this.isMainWindow) {
+        return;
+      }
+
       // this is a hashed value (sha-256)
       this.machineId = await machineId();
 
@@ -59,6 +67,11 @@ export class MixpanelAnalytics {
   async sendEvent(key, value) {
     checkIf(key, 'inObjectValues', EVENT_TYPE);
     checkIf(value, 'object');
+
+    // dont proceed if the object is not a main window
+    if (!this.isMainWindow) {
+      return;
+    }
 
     try {
       // reconnect analytics if [analytics] object is null
@@ -94,6 +107,11 @@ export class MixpanelAnalytics {
   async sendDeviceInfo({ deviceInfo, mtpMode }) {
     checkIf(deviceInfo, 'object');
     checkIf(mtpMode, 'inObjectValues', MTP_MODE);
+
+    // dont proceed if the object is not a main window
+    if (!this.isMainWindow) {
+      return;
+    }
 
     try {
       // reconnect analytics if [analytics] object is null

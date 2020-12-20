@@ -9,6 +9,7 @@ import { EVENT_TYPE } from '../../enums/events';
 import { SERVICE_KEYS } from '../../constants/serviceKeys';
 import { checkIf } from '../../utils/checkIf';
 import { MTP_MODE } from '../../enums';
+import { getCurrentWindowHash } from '../../helpers/windowHelper';
 
 export class GoogleAnalytics {
   constructor() {
@@ -42,13 +43,20 @@ export class GoogleAnalytics {
         userId: this.machineId,
       });
 
-      if (ENV_FLAVOR.enableGoogleAnalytics) {
-        this.analytics?.send('screenview', { cd: '/FileExplorer' });
-        this.analytics?.send(`pageview`, { dp: '/FileExplorer' });
+      const hashName = getCurrentWindowHash();
+      let pageName = '/home';
+
+      if (hashName !== '/') {
+        pageName = hashName;
       }
 
-      this._print('screenview', '/FileExplorer');
-      this._print('pageview', '/FileExplorer');
+      if (ENV_FLAVOR.enableGoogleAnalytics) {
+        this.analytics?.send('screenview', { cd: pageName });
+        this.analytics?.send(`pageview`, { dp: pageName });
+      }
+
+      this._print('screenview', pageName);
+      this._print('pageview', pageName);
 
       return this.analytics;
     } catch (e) {

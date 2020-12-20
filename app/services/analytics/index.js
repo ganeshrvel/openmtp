@@ -15,6 +15,7 @@ class AnalyticsService {
   }
 
   _isAnalyticsEnabled = () => {
+    // dont proceed if the instance is not a renderer.
     if (!IS_RENDERER) {
       return;
     }

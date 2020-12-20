@@ -356,5 +356,10 @@ export const capitalize = (s) => {
   return s.charAt(0).toUpperCase() + s.slice(1);
 };
 
-export const arrayAverage = (array) =>
-  array.reduce((a, b) => a + b) / array.length;
+export const arrayAverage = (array) => {
+  if (isEmpty(array)) {
+    return 0;
+  }
+
+  return array.reduce((a, b) => a + b) / array.length;
+};
