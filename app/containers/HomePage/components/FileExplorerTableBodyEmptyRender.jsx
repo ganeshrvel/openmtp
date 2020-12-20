@@ -29,6 +29,8 @@ import Features from '../../Onboarding/components/Features';
 import { Notification as NotificationDialog } from '../../../components/DialogBox';
 import FileExplorerTableBodyEmptyHelpPhoneNotRecognizedRender from './FileExplorerTableBodyEmptyHelpPhoneNotRecognizedRender';
 import { helpPhoneNotConnecting } from '../../../templates/fileExplorer';
+import { analyticsService } from '../../../services/analytics';
+import { EVENT_TYPE } from '../../../enums/events';
 
 class FileExplorerTableBodyEmptyRender extends PureComponent {
   constructor(props) {
@@ -57,6 +59,18 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
 
   _handleHelpPhoneNotRecognizedBtn = (value) => {
     this.setState({ showHelpPhoneNotRecognizedDialog: value });
+
+    if (value) {
+      analyticsService.sendEvent(
+        EVENT_TYPE.MTP_HELP_PHONE_NOT_CONNECTED_DIALOG_OPEN,
+        {}
+      );
+    } else {
+      analyticsService.sendEvent(
+        EVENT_TYPE.MTP_HELP_PHONE_NOT_CONNECTED_DIALOG_CLOSE,
+        {}
+      );
+    }
   };
 
   _handleHelpPhoneNotRecognizedDialog = () => {
@@ -91,7 +105,9 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
               <Button
                 color="secondary"
                 className={styles.helpPhoneNotRecognized}
-                onClick={() => this._handleHelpPhoneNotRecognizedBtn(true)}
+                onClick={() => {
+                  this._handleHelpPhoneNotRecognizedBtn(true);
+                }}
               >
                 {helpPhoneNotConnecting}
               </Button>

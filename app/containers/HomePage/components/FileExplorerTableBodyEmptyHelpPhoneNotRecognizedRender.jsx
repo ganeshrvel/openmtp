@@ -12,8 +12,19 @@ import {
 } from '../../../constants/meta';
 import { DONATE_PAYPAL_URL } from '../../../constants';
 import { helpPhoneNotConnecting } from '../../../templates/fileExplorer';
+import { analyticsService } from '../../../services/analytics';
+import { EVENT_TYPE } from '../../../enums/events';
 
 class FileExplorerTableBodyEmptyHelpPhoneNotRecognizedRender extends PureComponent {
+  _handleGithubThreadTap = (events) => {
+    openExternalUrl(`${APP_GITHUB_ISSUES_URL}8`, events);
+
+    analyticsService.sendEvent(
+      EVENT_TYPE.MTP_HELP_PHONE_NOT_CONNECTED_GITHUB_THREAD_TAP,
+      {}
+    );
+  };
+
   render() {
     const { classes: styles } = this.props;
 
@@ -65,13 +76,7 @@ class FileExplorerTableBodyEmptyHelpPhoneNotRecognizedRender extends PureCompone
               {AUTHOR_EMAIL}
             </a>
             &nbsp;or check out this&nbsp;
-            <a
-              onClick={(events) => {
-                openExternalUrl(`${APP_GITHUB_ISSUES_URL}8`, events);
-              }}
-            >
-              thread
-            </a>
+            <a onClick={this._handleGithubThreadTap}>thread</a>
             &nbsp;on GitHub for tracking the same,&nbsp;
             <i>to collaborate and make this community bigger and stronger</i>!
           </Typography>
