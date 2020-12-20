@@ -8,6 +8,7 @@ import {
 } from '../../../helpers/processBufferOutput';
 import { getMtpModeSetting } from '../../../helpers/settings';
 import { DEVICE_TYPE } from '../../../enums';
+import { unixTimestampNow } from "../../../utils/date";
 
 class FileExplorerController {
   constructor() {
@@ -36,6 +37,7 @@ class FileExplorerController {
 
         // send out an error event
         await analyticsService.sendEvent(_eventKey, {
+          time: unixTimestampNow(),
           stderr: result.stderr,
           error: result.error,
         });
@@ -60,6 +62,7 @@ class FileExplorerController {
       }
 
       await analyticsService.sendEvent(_eventKey, {
+        time: unixTimestampNow(),
         ...data,
       });
 
@@ -84,6 +87,7 @@ class FileExplorerController {
 
       // send out an error event
       await analyticsService.sendEvent(_eventKey, {
+        time: unixTimestampNow(),
         'MTP Status': mtpStatus,
         'MTP Mode': mtpMode,
         stderr: result.stderr,
@@ -110,6 +114,7 @@ class FileExplorerController {
     }
 
     await analyticsService.sendEvent(_eventKey, {
+      time: unixTimestampNow(),
       'MTP Status': mtpStatus,
       'MTP Mode': mtpMode,
       ...data,

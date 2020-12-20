@@ -10,6 +10,7 @@ import { checkIf } from '../../utils/checkIf';
 import { getDeviceInfo } from '../../helpers/deviceInfo';
 import { MTP_MODE } from '../../enums';
 import { getMtpModeSetting } from '../../helpers/settings';
+import { unixTimestampNow } from '../../utils/date';
 
 export class MixpanelAnalytics {
   constructor() {
@@ -75,11 +76,16 @@ export class MixpanelAnalytics {
         await this.sendDeviceInfo({ deviceInfo, mtpMode });
       }
 
+      const _value = {
+        time: unixTimestampNow(),
+        ...(value ?? {}),
+      };
+
       if (ENV_FLAVOR.enableMixpanelAnalytics) {
-        mixpanel.track(key, value);
+        mixpanel.track(key, _value);
       }
 
-      this._print(key, value);
+      this._print(key, _value);
     } catch (e) {
       log.error(e, `GoogleAnalytics -> sendEvent`);
     }

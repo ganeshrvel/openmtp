@@ -6,6 +6,7 @@ import { getDeviceInfo } from '../../helpers/deviceInfo';
 import { checkIf } from '../../utils/checkIf';
 import { getMtpModeSetting } from '../../helpers/settings';
 import { EVENT_TYPE } from '../../enums/events';
+import { IS_RENDERER } from '../../constants/env';
 
 class AnalyticsService {
   constructor() {
@@ -14,6 +15,10 @@ class AnalyticsService {
   }
 
   _isAnalyticsEnabled = () => {
+    if (!IS_RENDERER) {
+      return;
+    }
+
     const isAnalyticsEnabledSettings = settingsStorage.getItems([
       'enableAnalytics',
     ]);
@@ -33,7 +38,7 @@ class AnalyticsService {
     try {
       await this.mixpanelAnalytics.sendEvent(key, value);
     } catch (e) {
-      log.error(e, `GoogleAnalytics -> sendEvent`);
+      log.error(e, `AnalyticsService -> sendEvent`);
     }
   }
 
