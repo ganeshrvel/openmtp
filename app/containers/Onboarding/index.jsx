@@ -46,7 +46,7 @@ class Onboarding extends PureComponent {
   };
 
   render() {
-    const { classes: styles, freshInstall } = this.props;
+    const { classes: styles } = this.props;
     const { fireOnboarding } = this.state;
 
     return (
@@ -64,20 +64,11 @@ class Onboarding extends PureComponent {
         <DialogTitle>Release at a Glance!</DialogTitle>
         <DialogContent>
           <div className={styles.contentBox}>
-            {freshInstall ? (
-              <Fragment>
-                <Features hideTitle={false} />
-                <Divider className={styles.divider} />
-                <WhatsNew hideTitle={false} />
-              </Fragment>
-            ) : null}
-            {!freshInstall ? (
-              <Fragment>
-                <WhatsNew hideTitle={false} />
-                <Divider className={styles.divider} />
-                <Features hideTitle={false} />
-              </Fragment>
-            ) : null}
+            <Fragment>
+              <WhatsNew hideTitle={false} />
+              <Divider className={styles.divider} />
+              <Features hideTitle={false} />
+            </Fragment>
           </div>
         </DialogContent>
         <DialogActions>
