@@ -37,11 +37,11 @@ export const getCurrentWindowHash = () => {
     return null;
   }
 
-  const currentPage = window?.location?.href;
+  const hash = urls().getHash();
 
-  if (undefinedOrNull(currentPage)) {
+  if (undefinedOrNull(hash) || hash === '') {
     return '/';
   }
 
-  return urls(currentPage).getHash();
+  return hash;
 };

@@ -14,7 +14,11 @@ import { getMtpModeSetting } from '../helpers/settings';
 const { logFile } = PATHS;
 
 export const log = {
-  printBoundary(char = '═', length = 70) {
+  printBoundary(char = '═', length = 70, allowInProd = false) {
+    if (IS_PROD && !allowInProd) {
+      return;
+    }
+
     let output = char;
 
     for (let i = 0; i < length; i += 1) {
