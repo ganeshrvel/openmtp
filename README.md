@@ -41,9 +41,9 @@ Countless searches to find an app to solve these problems and failing to find on
 
 ### Screengrabs
 
-![OpenMTP File Explorer](https://github.com/ganeshrvel/openmtp/raw/master/blobs/images/file-explorer-bluebg.png "OpenMTP File Explorer")
+![OpenMTP File Explorer](https://github.com/ganeshrvel/openmtp/raw/master/blobs/images/file-explorer-bluebg.jpg "OpenMTP File Explorer")
 
-![OpenMTP File Transfer](https://github.com/ganeshrvel/openmtp/raw/master/blobs/images/file-transfer-bluebg.png "OpenMTP File Transfer")
+![OpenMTP File Transfer](https://github.com/ganeshrvel/openmtp/raw/master/blobs/images/file-transfer-bluebg.jpg "OpenMTP File Transfer")
 
 ### Keyboard Shortcuts
 | Command                                           | Keyboard Shortcut                                            |
