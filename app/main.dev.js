@@ -19,6 +19,7 @@ import { isPackaged } from './utils/isPackaged';
 import { getWindowBackgroundColor } from './helpers/windowHelper';
 import { APP_THEME_MODE_TYPE, DEVICE_TYPE } from './enums';
 import fileExplorerController from './data/file-explorer/controllers/FileExplorerController';
+import { getEnablePrereleaseUpdatesSetting } from './helpers/settings';
 
 const isSingleInstance = app.requestSingleInstanceLock();
 const isDeviceBootable = bootTheDevice();
@@ -201,18 +202,17 @@ if (!isDeviceBootable) {
       const autoUpdateCheckSettings = settingsStorage.getItems([
         'enableBackgroundAutoUpdate',
         'enableAutoUpdateCheck',
-        'enablePrereleaseUpdates',
       ]);
 
       const autoUpdateCheck =
         autoUpdateCheckSettings.enableAutoUpdateCheck !== false;
+      const isPrereleaseUpdatesEnabled = getEnablePrereleaseUpdatesSetting();
 
       const autoAppUpdate = new AppUpdate({
         autoUpdateCheck,
         autoDownload:
           autoUpdateCheckSettings.enableBackgroundAutoUpdate !== false,
-        allowPrerelease:
-          autoUpdateCheckSettings.enablePrereleaseUpdates === true,
+        allowPrerelease: isPrereleaseUpdatesEnabled === true,
       });
 
       autoAppUpdate.init();

@@ -87,7 +87,7 @@ export function hideHiddenFiles({ ...data }, deviceType, getState) {
 
     analyticsService.sendEvent(EVENT_TYPE.TOOLBAR_SETTINGS_CHANGE, {
       key: 'hideHiddenFiles',
-      value: data,
+      value,
       deviceType,
     });
   };

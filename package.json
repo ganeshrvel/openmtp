@@ -1,7 +1,7 @@
 {
   "name": "openmtp",
   "productName": "OpenMTP",
-  "version": "3.0.0-beta.3",
+  "version": "3.0.0-beta.4",
   "description": "OpenMTP | Android File Transfer for macOS",
   "scripts": {
     "build": "yarn lint && concurrently \"yarn build-main\" \"yarn build-renderer\"",
@@ -207,6 +207,7 @@
     "roboto-fontface": "^0.10.0",
     "run-electron": "^1.0.0",
     "sanitize-html": "^2.1.1",
+    "semver": "^7.3.4",
     "source-map-support": "^0.5.19",
     "styled-components": "^4.4.1",
     "url": "^0.11.0",
