@@ -37,7 +37,7 @@ Countless searches to find an app to solve these problems and failing to find on
 
 * Find the latest *dmg* file from [GitHub Releases](https://github.com/ganeshrvel/openmtp/releases "GitHub Releases")
 
-* Download [OpenMTP 3.0.0-beta.3](https://github.com/ganeshrvel/openmtp/releases/download/v3.0.0-beta.3/OpenMTP-3.0.0-beta.3.dmg "OpenMTP 3.0.0-beta.3") (Samsung support, dark theme and many more). Note: This is a prerelease version and it might be unstable.
+* Download [OpenMTP v3.0.0-beta.4](https://github.com/ganeshrvel/openmtp/releases/download/v3.0.0-beta.4/OpenMTP-3.0.0-beta.4.dmg "OpenMTP v3.0.0-beta.4") (Samsung support, dark theme and many more). Note: This is a prerelease version and it might be unstable.
 
 ### Screengrabs
 
