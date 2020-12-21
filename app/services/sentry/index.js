@@ -53,7 +53,7 @@ class SentryService {
       scope.setExtra('MTP Mode', mtpMode);
 
       // this is a hashed value (sha-256)
-      scope.setUser({ id: machineId });
+      scope.setUser({ id: this.machineId });
 
       Sentry.captureException(error);
     });
