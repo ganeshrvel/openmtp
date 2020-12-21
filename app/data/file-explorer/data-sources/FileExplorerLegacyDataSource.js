@@ -6,7 +6,6 @@ import { log } from '../../../utils/log';
 import {
   isArray,
   isEmpty,
-  niceBytes,
   percentage,
   splitIntoLines,
   undefinedOrNull,
@@ -221,7 +220,6 @@ export class FileExplorerLegacyDataSource {
             ? (prevCopiedBlockSize - currentCopiedBlockSize) *
               (1000 / copiedTimeDiff)
             : 0;
-        const _speed = speed ? `${niceBytes(speed)}` : `--`;
         const elapsedTime = msToTime(currentCopiedTime - startTime);
 
         prevCopiedTime = currentCopiedTime;
@@ -229,7 +227,7 @@ export class FileExplorerLegacyDataSource {
 
         onProgress({
           elapsedTime,
-          speed: _speed,
+          speed,
           activeFileProgress: _percentage,
           currentFile,
           activeFileSize,
@@ -714,7 +712,7 @@ export class FileExplorerLegacyDataSource {
    * @property {number} activeFileSizeSent - total bytes of the current file transferred
    * @property {number} activeFileProgress - progress of the current file
    * @property {string} currentFile - current file
-   * @property {string} speed - speed
+   * @property {int} speed - speed in bytes
    * @property {string} elapsedTime - elapsed time
    */
 
