@@ -12,6 +12,7 @@ import { MTP_MODE } from '../../enums';
 import { getMtpModeSetting } from '../../helpers/settings';
 import { unixTimestampNow } from '../../utils/date';
 import { getCurrentWindowHash } from '../../helpers/windowHelper';
+import { getPlatform } from '../../utils/getPlatform';
 
 export class MixpanelAnalytics {
   constructor() {
@@ -49,6 +50,14 @@ export class MixpanelAnalytics {
 
       if (ENV_FLAVOR.enableMixpanelAnalytics) {
         mixpanel.init(SERVICE_KEYS.mixpanelAnalytics);
+
+        const osVersion = `${getPlatform()} ${process.getSystemVersion()}`;
+
+        mixpanel.people.set({
+          USER_ID: this.machineId,
+          $os: osVersion,
+        });
+
         mixpanel.identify(this.machineId);
       }
 
@@ -131,6 +140,11 @@ export class MixpanelAnalytics {
 
         Object.keys(deviceInfo).forEach((key) => {
           eventData[key] = deviceInfo[key];
+        });
+
+        mixpanel.people.union({
+          Manufacturer: deviceInfo.Manufacturer,
+          Model: deviceInfo.Model,
         });
 
         await this.sendEvent(EVENT_TYPE.DEVICE_INFO, eventData);
