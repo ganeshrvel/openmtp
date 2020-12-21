@@ -294,7 +294,7 @@ export class FileExplorerKalamDataSource {
    * @property {number} activeFileProgress - [size] total size of the current file sent (in percentage)
    *
    * @property {string} currentFile - current file (full path)
-   * @property {string} speed - transfer rate (in MB/s)
+   * @property {int} speed - speed in MBs
    * @property {string} elapsedTime - elapsed time
    *
    * @property {'upload'|'download'} direction - direction of file transfer
@@ -383,7 +383,7 @@ export class FileExplorerKalamDataSource {
           onProgress({
             currentFile: fullPath,
             elapsedTime: msToTime(elapsedTime),
-            speed: `${speed} MB`,
+            speed,
             totalFiles,
             filesSent,
             filesSentProgress,

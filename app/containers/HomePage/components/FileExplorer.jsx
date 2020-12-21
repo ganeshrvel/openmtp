@@ -2237,7 +2237,6 @@ const mapDispatchToProps = (dispatch, _) =>
             let progressInfo = [];
 
             sessionElapsedTime = elapsedTime;
-            sessionTransferSpeeds.push(parseFloat(speed));
             sessionTotalFiles = totalFiles;
             sessionTransferDirection = direction;
 
@@ -2251,10 +2250,14 @@ const mapDispatchToProps = (dispatch, _) =>
               )}`;
               windowProgressBar = activeFileProgress / 100;
 
+              sessionTransferSpeeds.push(parseFloat(speed) / 1000 / 1000);
+
+              const _speed = speed ? `${niceBytes(speed)}` : `--`;
+
               progressInfo = [
                 {
                   bodyText1,
-                  bodyText2: `Elapsed: ${elapsedTime} | Progress: ${progressText} @ ${speed}/sec`,
+                  bodyText2: `Elapsed: ${elapsedTime} | Progress: ${progressText} @ ${_speed}/sec`,
                   variant: `determinate`,
                   percentage: activeFileProgress,
                 },
@@ -2262,6 +2265,8 @@ const mapDispatchToProps = (dispatch, _) =>
             } else {
               checkIf(direction, 'string');
               checkIf(direction, 'inObjectValues', FILE_TRANSFER_DIRECTION);
+
+              sessionTransferSpeeds.push(parseFloat(speed));
 
               // active file progress
               bodyText1 = `${Math.floor(activeFileProgress)}% complete of "${
@@ -2279,7 +2284,7 @@ const mapDispatchToProps = (dispatch, _) =>
                     !filesPreprocessingBeforeTransfer[direction]
                       ? elapsedTimeText
                       : ''
-                  }Progress: ${progressText} @ ${speed}/sec`,
+                  }Progress: ${progressText} @ ${speed} MB/sec`,
                   variant: `determinate`,
                   percentage: activeFileProgress,
                 },

@@ -1,6 +1,7 @@
 import { isObject } from 'nice-utils';
 import mixpanel from 'mixpanel-browser';
 import { machineId } from 'node-machine-id';
+import { release } from 'os';
 import { log } from '../../utils/log';
 import { isEmpty } from '../../utils/funcs';
 import { ENV_FLAVOR } from '../../constants/env';
@@ -12,6 +13,7 @@ import { MTP_MODE } from '../../enums';
 import { getMtpModeSetting } from '../../helpers/settings';
 import { unixTimestampNow } from '../../utils/date';
 import { getCurrentWindowHash } from '../../helpers/windowHelper';
+import { getPlatform } from '../../utils/getPlatform';
 
 export class MixpanelAnalytics {
   constructor() {
@@ -49,6 +51,19 @@ export class MixpanelAnalytics {
 
       if (ENV_FLAVOR.enableMixpanelAnalytics) {
         mixpanel.init(SERVICE_KEYS.mixpanelAnalytics);
+
+        const osVersion = `${getPlatform()} ${
+          process?.getSystemVersion() ?? release()
+        }`;
+
+        mixpanel.people.set({
+          USER_ID: this.machineId,
+        });
+
+        mixpanel.people.union({
+          OS_VERSION: osVersion,
+        });
+
         mixpanel.identify(this.machineId);
       }
 
@@ -133,7 +148,14 @@ export class MixpanelAnalytics {
           eventData[key] = deviceInfo[key];
         });
 
-        await this.sendEvent(EVENT_TYPE.DEVICE_INFO, eventData);
+        if (ENV_FLAVOR.enableMixpanelAnalytics) {
+          mixpanel.people.union({
+            Manufacturer: deviceInfo.Manufacturer,
+            Model: deviceInfo.Model,
+          });
+
+          await this.sendEvent(EVENT_TYPE.DEVICE_INFO, eventData);
+        }
       }
     } catch (e) {
       log.error(e, `GoogleAnalytics -> sendDeviceInfo`);
