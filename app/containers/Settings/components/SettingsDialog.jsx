@@ -25,7 +25,7 @@ import {
   MTP_MODE,
   FILE_TRANSFER_DIRECTION,
 } from '../../../enums';
-import { capitalize } from '../../../utils/funcs';
+import { capitalize, isPrereleaseVersion } from '../../../utils/funcs';
 
 const isMas = electronIs.mas();
 
@@ -524,6 +524,7 @@ export default class SettingsDialog extends PureComponent {
                       control={
                         <Switch
                           checked={enablePrereleaseUpdates}
+                          disabled={isPrereleaseVersion()}
                           onChange={(e) =>
                             onPrereleaseUpdatesChange(
                               e,

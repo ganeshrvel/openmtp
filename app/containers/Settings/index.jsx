@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import { styles } from './styles';
 import { withReducer } from '../../store/reducers/withReducer';
 import reducers from './reducers';
-import { makeCommonSettings } from './selectors';
+import { makeCommonSettings, makeEnablePrereleaseUpdates } from './selectors';
 import {
   setFilesPreprocessingBeforeTransfer,
   fileExplorerListingType,
@@ -184,6 +184,7 @@ class Settings extends Component {
       freshInstall,
       toggleSettings,
       classes: styles,
+      enablePrereleaseUpdates,
       ...parentProps
     } = this.props;
     const showSettings = toggleSettings || freshInstall !== 0;
@@ -194,6 +195,7 @@ class Settings extends Component {
         freshInstall={freshInstall}
         toggleSettings={toggleSettings}
         styles={styles}
+        enablePrereleaseUpdates={enablePrereleaseUpdates}
         onAnalyticsChange={this._handleAnalyticsChange}
         onHiddenFilesChange={this._handleHiddenFilesChange}
         onFileExplorerListingType={this._handleFileExplorerListingType}
@@ -299,6 +301,7 @@ const mapStateToProps = (state, _) => {
     currentBrowsePath: makeCurrentBrowsePath(state),
     mtpStoragesList: makeMtpStoragesList(state),
     ...commonSettings,
+    enablePrereleaseUpdates: makeEnablePrereleaseUpdates(state),
   };
 };
 

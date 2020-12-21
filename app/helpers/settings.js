@@ -1,6 +1,6 @@
 import { settingsStorage } from './storageHelper';
 import { getAppThemeMode } from './theme';
-import { undefinedOrNull } from '../utils/funcs';
+import { isPrereleaseVersion, undefinedOrNull } from '../utils/funcs';
 import { initialState } from '../containers/Settings/reducers';
 import { checkIf } from '../utils/checkIf';
 import { FILE_TRANSFER_DIRECTION } from '../enums';
@@ -46,6 +46,24 @@ export const getFilesPreprocessingBeforeTransferSetting = ({ direction }) => {
   }
 
   checkIf(value, 'boolean');
+
+  return value;
+};
+
+export const getEnablePrereleaseUpdatesSetting = () => {
+  const setting = settingsStorage.getItems(['enablePrereleaseUpdates']);
+
+  let value = setting.enablePrereleaseUpdates;
+
+  const isPrerelease = isPrereleaseVersion();
+
+  if (isPrerelease) {
+    return true;
+  }
+
+  if (undefinedOrNull(value)) {
+    value = initialState.enablePrereleaseUpdates;
+  }
 
   return value;
 };

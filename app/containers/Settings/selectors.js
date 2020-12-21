@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect';
 import { initialState } from './reducers';
 import { getAppThemeMode } from '../../helpers/theme';
+import { isPrereleaseVersion } from '../../utils/funcs';
 
 const make = (state, _) => (state ? state.Settings : {});
 
@@ -34,9 +35,17 @@ export const makeEnableBackgroundAutoUpdate = createSelector(make, (state) =>
     : initialState.enableBackgroundAutoUpdate
 );
 
-export const makeEnablePrereleaseUpdates = createSelector(make, (state) =>
-  state ? state.enablePrereleaseUpdates : initialState.enablePrereleaseUpdates
-);
+export const makeEnablePrereleaseUpdates = createSelector(make, (state) => {
+  const isPrerelease = isPrereleaseVersion();
+
+  if (isPrerelease) {
+    return true;
+  }
+
+  return state
+    ? state.enablePrereleaseUpdates
+    : initialState.enablePrereleaseUpdates;
+});
 
 export const makeEnableAnalytics = createSelector(make, (state) =>
   state ? state.enableAnalytics : initialState.enableAnalytics
