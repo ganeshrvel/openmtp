@@ -7,6 +7,7 @@ import {
   FILE_TRANSFER_DIRECTION,
 } from '../../enums';
 import { checkIf } from '../../utils/checkIf';
+import { isPrereleaseVersion } from '../../utils/funcs';
 
 export const initialState = {
   freshInstall: 0,
@@ -16,7 +17,8 @@ export const initialState = {
   toggleSettings: false,
   enableAutoUpdateCheck: true,
   enableBackgroundAutoUpdate: true,
-  enablePrereleaseUpdates: false,
+  // if the freshly installed version is a prerelease version then save [enablePrereleaseUpdates] as true
+  enablePrereleaseUpdates: isPrereleaseVersion() || false,
   enableAnalytics: true,
   enableStatusBar: true,
   hideHiddenFiles: {
