@@ -28,3 +28,8 @@ export const FILE_TRANSFER_DIRECTION = {
   upload: 'upload',
   download: 'download',
 };
+
+export const USB_HOTPLUG_EVENTS = {
+  attach: 'attach',
+  detach: 'detach',
+};

@@ -302,10 +302,12 @@ function initKalamMtp({ filePath, ignoreHidden, deviceType }, getState) {
       let _filePath = filePath;
 
       if (
-        !undefinedOrNull(preInitMtpDevice?.info?.SerialNumber) &&
-        !undefinedOrNull(postInitMtpDevice?.info?.SerialNumber) &&
-        preInitMtpDevice?.info?.SerialNumber !==
-          postInitMtpDevice?.info?.SerialNumber
+        !undefinedOrNull(preInitMtpDevice?.info?.mtpDeviceInfo?.SerialNumber) &&
+        !undefinedOrNull(
+          postInitMtpDevice?.info?.mtpDeviceInfo?.SerialNumber
+        ) &&
+        preInitMtpDevice?.info?.mtpDeviceInfo?.SerialNumber !==
+          postInitMtpDevice?.info?.mtpDeviceInfo?.SerialNumber
       ) {
         _filePath = DEVICES_DEFAULT_PATH[deviceType];
         dispatch(actionChangeMtpStorage({}));

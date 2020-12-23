@@ -209,6 +209,7 @@ class FileExplorer extends Component {
     this.registerAccelerators();
     this.registerAppUpdate();
     this.registerGenerateErrorReport();
+    this.registerUsbHotplug();
   }
 
   componentWillReceiveProps({
@@ -310,6 +311,17 @@ class FileExplorer extends Component {
     }
   };
 
+  registerUsbHotplug = () => {
+    const { deviceType } = this.props;
+
+    if (deviceType === DEVICE_TYPE.mtp) {
+      ipcRenderer.on(
+        COMMUNICATION_EVENTS.usbHotplug,
+        this._handleUsbHotplugEvent
+      );
+    }
+  };
+
   _reportBugsDisposeMtpEvent = async (_, { logFileZippedPath }) => {
     // dispose the mtp before generating the report
     await fileExplorerController.dispose({ deviceType: DEVICE_TYPE.mtp });
@@ -328,6 +340,12 @@ class FileExplorer extends Component {
       true,
       false
     )?.send(COMMUNICATION_EVENTS.reportBugsDisposeMtpReply, { error });
+  };
+
+  _handleUsbHotplugEvent = async (_, { device, eventName }) => {
+    console.log('======');
+    console.log(eventName);
+    console.log(device);
   };
 
   _handleAccelerator = (pressed, event) => {

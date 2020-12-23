@@ -4,6 +4,7 @@ import './services/sentry/index';
 
 import { app, BrowserWindow, ipcMain, nativeTheme } from 'electron';
 import electronIs from 'electron-is';
+import usbDetect from 'usb-detection';
 import MenuBuilder from './menu';
 import { log } from './utils/log';
 import { DEBUG_PROD, IS_DEV, IS_PROD } from './constants/env';
@@ -17,9 +18,10 @@ import { nonBootableDeviceWindow } from './helpers/createWindows';
 import { APP_TITLE } from './constants/meta';
 import { isPackaged } from './utils/isPackaged';
 import { getWindowBackgroundColor } from './helpers/windowHelper';
-import { APP_THEME_MODE_TYPE, DEVICE_TYPE } from './enums';
+import { APP_THEME_MODE_TYPE, DEVICE_TYPE, USB_HOTPLUG_EVENTS } from './enums';
 import fileExplorerController from './data/file-explorer/controllers/FileExplorerController';
 import { getEnablePrereleaseUpdatesSetting } from './helpers/settings';
+import { COMMUNICATION_EVENTS } from './enums/communicationEvents';
 
 const isSingleInstance = app.requestSingleInstanceLock();
 const isDeviceBootable = bootTheDevice();
@@ -230,6 +232,23 @@ if (!isDeviceBootable) {
           autoAppUpdate.checkForUpdates();
         }, AUTO_UPDATE_CHECK_FIREUP_DELAY);
       }
+
+      // send attach and detach events to the renderer
+      usbDetect.startMonitoring();
+
+      usbDetect.on('add', (device) => {
+        mainWindow.webContents.send(COMMUNICATION_EVENTS.usbHotplug, {
+          device: JSON.stringify(device),
+          eventName: USB_HOTPLUG_EVENTS.attach,
+        });
+      });
+
+      usbDetect.on('remove', (device) => {
+        mainWindow.webContents.send(COMMUNICATION_EVENTS.usbHotplug, {
+          device: JSON.stringify(device),
+          eventName: USB_HOTPLUG_EVENTS.detach,
+        });
+      });
     } catch (e) {
       log.error(e, `main.dev -> ready`);
     }
@@ -253,6 +272,8 @@ if (!isDeviceBootable) {
       .catch((e) => {
         log.error(e, `main.dev -> before-quit`);
       });
+
+    usbDetect.stopMonitoring();
 
     app.quitting = true;
   });
