@@ -21,6 +21,7 @@ export const initialState = {
   enablePrereleaseUpdates: isPrereleaseVersion() || false,
   enableAnalytics: true,
   enableStatusBar: true,
+  enableUsbHotplug: true,
   hideHiddenFiles: {
     [DEVICE_TYPE.local]: true,
     [DEVICE_TYPE.mtp]: true,

@@ -58,6 +58,7 @@ import {
 import {
   makeAppThemeMode,
   makeEnableStatusBar,
+  makeEnableUsbHotplug,
   makeFileExplorerListingType,
   makeHideHiddenFiles,
   makeMtpMode,
@@ -358,10 +359,8 @@ class FileExplorer extends Component {
       currentBrowsePath,
       deviceType,
       hideHiddenFiles,
+      enableUsbHotplug,
     } = this.props;
-
-    //todo
-    //add a setting value
 
     checkIf(device, 'string');
     checkIf(eventName, 'inObjectValues', USB_HOTPLUG_EVENTS);
@@ -385,6 +384,10 @@ class FileExplorer extends Component {
         vendorId: _usbDeviceInfo.vendorId,
         eventName,
       });
+
+      if (!enableUsbHotplug) {
+        return;
+      }
 
       switch (eventName) {
         case USB_HOTPLUG_EVENTS.detach:
@@ -2601,6 +2604,7 @@ const mapStateToProps = (state, _) => {
     focussedFileExplorerDeviceType: makeFocussedFileExplorerDeviceType(state),
     appThemeMode: makeAppThemeMode(state),
     mtpMode: makeMtpMode(state),
+    enableUsbHotplug: makeEnableUsbHotplug(state),
     showDirectoriesFirst: makeShowDirectoriesFirst(state),
   };
 };

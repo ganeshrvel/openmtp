@@ -72,7 +72,12 @@ export const makeMtpMode = createSelector(make, (state) =>
   state ? state.mtpMode : initialState.mtpMode
 );
 
-// returns the selected mtp mode
+// returns whether USB hotplug is enabled or not
+export const makeEnableUsbHotplug = createSelector(make, (state) =>
+  state ? state.enableUsbHotplug : initialState.enableUsbHotplug
+);
+
+// returns the preprocessing before transfer state
 export const makeFilesPreprocessingBeforeTransfer = createSelector(
   make,
   (state) =>

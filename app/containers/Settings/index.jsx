@@ -158,6 +158,16 @@ class Settings extends Component {
     );
   };
 
+  _handleEnableUsbHotplug = (event, value, deviceType) => {
+    this._handleSetCommonSettingsChange(
+      {
+        key: 'enableUsbHotplug',
+        value,
+      },
+      deviceType
+    );
+  };
+
   _handleFilesPreprocessingBeforeTransferChange = (event, value, direction) => {
     const { actionCreateSetFilesPreprocessingBeforeTransfer } = this.props;
 
@@ -216,6 +226,7 @@ class Settings extends Component {
           this._handleFilesPreprocessingBeforeTransferChange
         }
         onMtpModeChange={this._handleMtpModeChange}
+        onEnableUsbHotplug={this._handleEnableUsbHotplug}
         {...parentProps}
       />
     );
