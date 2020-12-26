@@ -151,6 +151,11 @@ export const initialState = {
     isAvailable: false,
     error: null,
     isLoading: false,
+
+    /**
+     * params: {mtpDeviceInfo, usbDeviceInfo} - info
+     *
+     */
     info: {},
   },
 

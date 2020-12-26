@@ -38,7 +38,14 @@ func Initialize(ptr int64) {
 		return
 	}
 
-	send_to_js.SendInitialize(ptr, dInfo)
+	usbDesc, err := container.dev.GetUsbInfo()
+	if err != nil {
+		send_to_js.SendError(ptr, err)
+
+		return
+	}
+
+	send_to_js.SendInitialize(ptr, dInfo, usbDesc)
 }
 
 //export FetchDeviceInfo
@@ -56,7 +63,14 @@ func FetchDeviceInfo(ptr int64) {
 		return
 	}
 
-	send_to_js.SendDeviceInfo(ptr, dInfo)
+	usbDesc, err := container.dev.GetUsbInfo()
+	if err != nil {
+		send_to_js.SendError(ptr, err)
+
+		return
+	}
+
+	send_to_js.SendDeviceInfo(ptr, dInfo, usbDesc)
 }
 
 //export FetchStorages

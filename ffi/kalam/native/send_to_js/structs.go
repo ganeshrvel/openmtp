@@ -81,16 +81,21 @@ type ErrorResult struct {
 	Data      interface{} `json:"data"`
 }
 
+type DeviceInfo struct {
+	MtpDeviceInfo *mtp.DeviceInfo    `json:"mtpDeviceInfo"`
+	UsbDeviceInfo *mtp.UsbDeviceInfo `json:"usbDeviceInfo"`
+}
+
 type InitializeResult struct {
-	ErrorType ErrorType      `json:"errorType"`
-	Error     string         `json:"error"`
-	Data      mtp.DeviceInfo `json:"data"`
+	ErrorType ErrorType  `json:"errorType"`
+	Error     string     `json:"error"`
+	Data      DeviceInfo `json:"data"`
 }
 
 type DeviceInfoResult struct {
-	ErrorType ErrorType      `json:"errorType"`
-	Error     string         `json:"error"`
-	Data      mtp.DeviceInfo `json:"data"`
+	ErrorType ErrorType  `json:"errorType"`
+	Error     string     `json:"error"`
+	Data      DeviceInfo `json:"data"`
 }
 
 type StoragesResult struct {

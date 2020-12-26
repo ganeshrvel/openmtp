@@ -14,6 +14,7 @@ import { getMtpModeSetting } from '../../helpers/settings';
 import { unixTimestampNow } from '../../utils/date';
 import { getCurrentWindowHash } from '../../helpers/windowHelper';
 import { getPlatform } from '../../utils/getPlatform';
+import { APP_VERSION } from '../../constants/meta';
 
 export class MixpanelAnalytics {
   constructor() {
@@ -58,10 +59,12 @@ export class MixpanelAnalytics {
 
         mixpanel.people.set({
           USER_ID: this.machineId,
+          CURRENT_APP_VERSION: APP_VERSION,
         });
 
         mixpanel.people.union({
           OS_VERSION: osVersion,
+          APP_VERSION,
         });
 
         mixpanel.identify(this.machineId);

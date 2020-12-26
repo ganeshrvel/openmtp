@@ -12,7 +12,7 @@ export function getDeviceInfo() {
       return {};
     }
 
-    const info = state?.Home?.mtpDevice?.info;
+    const info = state?.Home?.mtpDevice?.info?.mtpDeviceInfo;
 
     if (isEmpty(info)) {
       return {};

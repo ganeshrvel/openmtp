@@ -13,7 +13,6 @@ class Titlebar extends PureComponent {
 
     const selectedStorage = getSelectedStorage(mtpStoragesList);
     const windowHash = getCurrentWindowHash();
-
     return (
       <div
         onDoubleClick={() => {
@@ -24,16 +23,16 @@ class Titlebar extends PureComponent {
       >
         {/* Only show the device info. on the main window */}
         {windowHash !== '/' ? null : mtpDevice?.isAvailable &&
-          mtpDevice?.info &&
+          mtpDevice?.info?.mtpDeviceInfo &&
           !isEmpty(selectedStorage?.data?.info) ? (
           <span className={styles.deviceInfo}>
             <span className={styles.deviceModel}>
-              {`${mtpDevice?.info?.Model} (${selectedStorage?.data?.name}) - `}
+              {`${mtpDevice?.info?.mtpDeviceInfo?.Model} (${selectedStorage?.data?.name}) - `}
             </span>
             {`${niceBytes(
-              parseInt(selectedStorage?.data.info.FreeSpaceInBytes ?? 0, 10)
+              parseInt(selectedStorage?.data.info?.FreeSpaceInBytes ?? 0, 10)
             )} Free of ${niceBytes(
-              parseInt(selectedStorage?.data.info.MaxCapability ?? 0, 10)
+              parseInt(selectedStorage?.data.info?.MaxCapability ?? 0, 10)
             )}, ${capitalize(mtpMode)} Mode`}
           </span>
         ) : (

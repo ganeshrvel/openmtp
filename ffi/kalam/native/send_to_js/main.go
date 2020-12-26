@@ -41,9 +41,12 @@ func SendError(ptr int64, err error) {
 	C.send_result(C.int64_t(ptr), C.CString(json))
 }
 
-func SendInitialize(ptr int64, deviceInfo *mtp.DeviceInfo) {
+func SendInitialize(ptr int64, deviceInfo *mtp.DeviceInfo, usbDesc *mtp.UsbDeviceInfo) {
 	o := InitializeResult{
-		Data: *deviceInfo,
+		Data: DeviceInfo{
+			MtpDeviceInfo: deviceInfo,
+			UsbDeviceInfo: usbDesc,
+		},
 	}
 
 	json := toJson(o)
@@ -51,9 +54,12 @@ func SendInitialize(ptr int64, deviceInfo *mtp.DeviceInfo) {
 	C.send_result(C.int64_t(ptr), C.CString(json))
 }
 
-func SendDeviceInfo(ptr int64, deviceInfo *mtp.DeviceInfo) {
+func SendDeviceInfo(ptr int64, deviceInfo *mtp.DeviceInfo, usbDesc *mtp.UsbDeviceInfo) {
 	o := DeviceInfoResult{
-		Data: *deviceInfo,
+		Data: DeviceInfo{
+			MtpDeviceInfo: deviceInfo,
+			UsbDeviceInfo: usbDesc,
+		},
 	}
 
 	json := toJson(o)
