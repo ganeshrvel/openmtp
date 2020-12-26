@@ -41,6 +41,8 @@ import {
   clearFileTransfer,
   setFileTransferProgress,
   disposeMtp,
+  actionSetMtpStatus,
+  reloadDirList,
 } from '../actions';
 import {
   makeDirectoryLists,
@@ -92,6 +94,7 @@ import {
   FILE_EXPLORER_VIEW_TYPE,
   FILE_TRANSFER_DIRECTION,
   MTP_MODE,
+  USB_HOTPLUG_EVENTS,
 } from '../../../enums';
 import { log } from '../../../utils/log';
 import fileExplorerController from '../../../data/file-explorer/controllers/FileExplorerController';
@@ -183,6 +186,8 @@ class FileExplorer extends Component {
     this.keyedAcceleratorList = {
       shift: false,
     };
+
+    this.usbHotplugTimerId = null;
   }
 
   componentDidMount() {
@@ -246,6 +251,10 @@ class FileExplorer extends Component {
       ipcRenderer.removeListener(
         COMMUNICATION_EVENTS.reportBugsDisposeMtp,
         this._reportBugsDisposeMtpEvent
+      );
+      ipcRenderer.removeListener(
+        COMMUNICATION_EVENTS.usbHotplug,
+        this._handleUsbHotplugEvent
       );
     }
 
@@ -343,9 +352,93 @@ class FileExplorer extends Component {
   };
 
   _handleUsbHotplugEvent = async (_, { device, eventName }) => {
-    console.log('======');
-    console.log(eventName);
-    console.log(device);
+    const {
+      mtpDevice,
+      actionCreateReloadDirList,
+      currentBrowsePath,
+      deviceType,
+      hideHiddenFiles,
+    } = this.props;
+
+    //todo
+    //add a setting value
+
+    checkIf(device, 'string');
+    checkIf(eventName, 'inObjectValues', USB_HOTPLUG_EVENTS);
+
+    checkIf(actionCreateReloadDirList, 'function');
+    checkIf(currentBrowsePath, 'object');
+    checkIf(deviceType, 'inObjectValues', DEVICE_TYPE);
+    checkIf(hideHiddenFiles, 'object');
+
+    try {
+      if (isEmpty(device) || isEmpty(eventName)) {
+        return;
+      }
+
+      const _usbDeviceInfo = JSON.parse(device);
+
+      analyticsService.sendEvent(EVENT_TYPE.MTP_USB_HOTPLUG_RECEIVED, {
+        manufacturer: _usbDeviceInfo.manufacturer,
+        deviceName: _usbDeviceInfo.deviceName,
+        productId: _usbDeviceInfo.productId,
+        vendorId: _usbDeviceInfo.vendorId,
+        eventName,
+      });
+
+      switch (eventName) {
+        case USB_HOTPLUG_EVENTS.detach:
+          // if an usb device was detached and mtp device is disconnected then
+          // try to disconnect the mtp device
+          if (mtpDevice.isAvailable) {
+            // check to see if the detached usb device was the connected mtp device itself
+            if (
+              _usbDeviceInfo.serialNumber ===
+              mtpDevice?.info?.usbDeviceInfo?.SerialNumber
+            ) {
+              analyticsService.sendEvent(EVENT_TYPE.MTP_USB_HOTPLUG_DETTACHED, {
+                manufacturer: _usbDeviceInfo.manufacturer,
+                deviceName: _usbDeviceInfo.deviceName,
+                productId: _usbDeviceInfo.productId,
+                vendorId: _usbDeviceInfo.vendorId,
+                eventName,
+              });
+
+              actionCreateReloadDirList({
+                filePath: currentBrowsePath[deviceType],
+                ignoreHidden: hideHiddenFiles[deviceType],
+                deviceType,
+              });
+            }
+          }
+
+          break;
+
+        case USB_HOTPLUG_EVENTS.attach:
+        default:
+          // if an usb device was attached and mtp device is connected then
+          // try to connect the mtp device
+          if (!mtpDevice.isAvailable) {
+            analyticsService.sendEvent(EVENT_TYPE.MTP_USB_HOTPLUG_ATTACHED, {
+              manufacturer: _usbDeviceInfo.manufacturer,
+              deviceName: _usbDeviceInfo.deviceName,
+              productId: _usbDeviceInfo.productId,
+              vendorId: _usbDeviceInfo.vendorId,
+              eventName,
+            });
+
+            actionCreateReloadDirList({
+              filePath: currentBrowsePath[deviceType],
+              ignoreHidden: hideHiddenFiles[deviceType],
+              deviceType,
+            });
+          }
+
+          break;
+      }
+    } catch (e) {
+      log.error(e, 'FileExplorer._handleUsbHotplugEvent');
+    }
   };
 
   _handleAccelerator = (pressed, event) => {
@@ -1996,8 +2089,35 @@ const mapDispatchToProps = (dispatch, _) =>
         );
       },
 
+      /**
+       *
+       * @param args {isAvailable, error, isLoading, info}
+       * @return {{payload: {}, type: *}}
+       */
+      actionCreateSetMtpStatus: ({ ...args }) => (_, __) => {
+        dispatch(actionSetMtpStatus(args));
+      },
+
       actionCreateListDirectory: ({ ...args }, deviceType) => (_, getState) => {
         dispatch(listDirectory({ ...args }, deviceType, getState));
+      },
+
+      actionCreateReloadDirList: ({ filePath, ignoreHidden, deviceType }) => (
+        _,
+        getState
+      ) => {
+        checkIf(deviceType, 'inObjectValues', DEVICE_TYPE);
+
+        dispatch(
+          reloadDirList(
+            {
+              filePath,
+              ignoreHidden,
+              deviceType,
+            },
+            getState
+          )
+        );
       },
 
       actionCreateRenameFile: (

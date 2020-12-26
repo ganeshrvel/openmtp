@@ -711,7 +711,7 @@ export function reloadDirList(
   { filePath, ignoreHidden, deviceType },
   getState
 ) {
-  checkIf(deviceType, 'string');
+  checkIf(deviceType, 'inObjectValues', DEVICE_TYPE);
   checkIf(filePath, 'string');
   checkIf(ignoreHidden, 'boolean');
   checkIf(getState, 'function');
