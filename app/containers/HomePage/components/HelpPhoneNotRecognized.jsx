@@ -1,16 +1,31 @@
 import React, { PureComponent } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
+import CachedIcon from '@material-ui/icons/Cached';
+import UsbIcon from '@material-ui/icons/Usb';
+import TouchAppIcon from '@material-ui/icons/TouchApp';
+import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
+import LockOpenIcon from '@material-ui/icons/Lock';
+import Accordion from '@material-ui/core/Accordion';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { styles } from '../styles/HelpPhoneNotRecognized';
 import { openExternalUrl } from '../../../utils/url';
-import { APP_GITHUB_ISSUES_URL } from '../../../constants/meta';
+import { APP_GITHUB_ISSUES_URL, APP_NAME } from '../../../constants/meta';
 import { analyticsService } from '../../../services/analytics';
 import { EVENT_TYPE } from '../../../enums/events';
+import { DEVICES_LABEL } from '../../../constants';
+import { DEVICE_TYPE } from '../../../enums';
+import { mtpErrors } from '../../../helpers/processBufferOutput';
+import { MTP_ERROR } from '../../../enums/mtpError';
+import { imgsrc } from '../../../utils/imgsrc';
 
 class HelpPhoneNotRecognized extends PureComponent {
   _handleGithubThreadTap = (events) => {
@@ -22,84 +37,157 @@ class HelpPhoneNotRecognized extends PureComponent {
     );
   };
 
+  RenderBasicConnection = () => {
+    this.hotplugSetting = `Check if 'Enable auto device detection (USB Hotplug)' is enabled under Settings > General Tab`;
+
+    const deviceLabel = DEVICES_LABEL[DEVICE_TYPE.mtp];
+
+    return (
+      <>
+        <ListItem>
+          <ListItemIcon>
+            <LockOpenIcon />
+          </ListItemIcon>
+          <ListItemText primary="Unlock your Android device" />
+        </ListItem>
+        <ListItem>
+          <ListItemIcon>
+            <UsbIcon />
+          </ListItemIcon>
+          <ListItemText primary="Unplug your phone and reconnect it" />
+        </ListItem>
+        <ListItem>
+          <ListItemIcon>
+            <TouchAppIcon />
+          </ListItemIcon>
+          <ListItemText
+            primary="On your device, tap the 'Charging this device via
+                  USB' notification"
+            secondary={`Skip this step if ${APP_NAME} detects your ${deviceLabel.toLowerCase()} automatically`}
+          />
+        </ListItem>
+        <ListItem>
+          <ListItemIcon>
+            <RadioButtonCheckedIcon />
+          </ListItemIcon>
+          <ListItemText primary="Under 'Use USB for' select File Transfer" />
+        </ListItem>
+        <ListItem>
+          <ListItemIcon>
+            <FiberManualRecordIcon />
+          </ListItemIcon>
+          <ListItemText
+            primary="It should connect automatically"
+            secondary={this.hotplugSetting}
+          />
+        </ListItem>
+        <ListItem>
+          <ListItemIcon>
+            <CachedIcon />
+          </ListItemIcon>
+          <ListItemText
+            primary="Tap on the 'Refresh' button in the app if the phone doesn't get connected automatically"
+            secondary={this.hotplugSetting}
+          />
+        </ListItem>
+      </>
+    );
+  };
+
   render() {
     const { classes: styles } = this.props;
+    const { RenderBasicConnection } = this;
+
+    const deviceLabel = DEVICES_LABEL[DEVICE_TYPE.mtp];
 
     return (
       <div className={styles.root}>
         <Paper elevation={0}>
-          <ExpansionPanel className={styles.expansionRoot}>
-            <ExpansionPanelSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel1a-content"
-              id="panel1a-header"
-            >
+          <Accordion className={styles.expansionRoot}>
+            {/* <----- my device is not connecting -----> */}
+
+            <AccordionSummary expandIcon={<ExpandMoreIcon />} Accordion>
               <Typography className={styles.heading}>
-                Expansion Panel 1
+                {`My ${deviceLabel.toLowerCase()} is not connecting`}
               </Typography>
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails>
-              <Typography>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
-                eget.
-              </Typography>
-            </ExpansionPanelDetails>
-          </ExpansionPanel>
-          <ExpansionPanel className={styles.expansionRoot}>
-            <ExpansionPanelSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel2a-content"
-              id="panel2a-header"
-            >
+            </AccordionSummary>
+            <AccordionDetails>
+              <List component="div" disablePadding>
+                <RenderBasicConnection />
+              </List>
+            </AccordionDetails>
+          </Accordion>
+
+          {/* <----- i keep seeing setting up device -----> */}
+
+          <Accordion className={styles.expansionRoot}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />} Accordion>
               <Typography className={styles.heading}>
-                Expansion Panel 2
+                {`I keep seeing "${mtpErrors[[MTP_ERROR.ErrorDeviceSetup]]}"`}
               </Typography>
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails>
-              <Typography>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
-                eget.
-              </Typography>
-            </ExpansionPanelDetails>
-          </ExpansionPanel>
-          <ExpansionPanel className={styles.expansionRoot}>
-            <ExpansionPanelSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel2a-content"
-              id="panel2a-header"
-            >
+            </AccordionSummary>
+            <AccordionDetails>
+              <List component="div" disablePadding>
+                <RenderBasicConnection />
+              </List>
+            </AccordionDetails>
+          </Accordion>
+
+          {/* <----- i keep seeing allow storage access -----> */}
+          <Accordion className={styles.expansionRoot}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />} Accordion>
               <Typography className={styles.heading}>
-                Expansion Panel 2
+                {`I keep seeing "${
+                  mtpErrors[[MTP_ERROR.ErrorAllowStorageAccess]]
+                }"`}
               </Typography>
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails>
-              <Typography>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
-                eget.
-              </Typography>
-            </ExpansionPanelDetails>
-          </ExpansionPanel>
-          <ExpansionPanel className={styles.expansionRoot}>
-            <ExpansionPanelSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel2a-content"
-              id="panel2a-header"
-            >
-              <Typography className={styles.heading}>
-                Expansion Panel 2
-              </Typography>
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails>
-              <Typography>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
-                eget.
-              </Typography>
-            </ExpansionPanelDetails>
-          </ExpansionPanel>
+            </AccordionSummary>
+
+            <AccordionDetails>
+              <List component="div" disablePadding>
+                <ListItem>
+                  <ListItemIcon>
+                    <LockOpenIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Unlock your Android device" />
+                </ListItem>
+                <ListItem>
+                  <ListItemIcon>
+                    <TouchAppIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={`Tap on the "Allow" button, if you see the "Allow access to the device data" pop up`}
+                    secondary={
+                      <>
+                        <img
+                          src={imgsrc(`help/allow-data-access.png`)}
+                          alt="Allow access to the device data"
+                          className={styles.allowDeviceData}
+                        />
+                      </>
+                    }
+                  />
+                </ListItem>
+                <ListItem>
+                  <ListItemIcon>
+                    <FiberManualRecordIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={`If you don't see the "Allow access to the device data" pop up then reconnect your phone and try again`}
+                  />
+                </ListItem>
+
+                <ListItem>
+                  <ListItemIcon>
+                    <FiberManualRecordIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={`If you are prompted to "Allow access to the device data" multiple times then reconnect your phone and try again`}
+                  />
+                </ListItem>
+              </List>
+            </AccordionDetails>
+          </Accordion>
         </Paper>
       </div>
     );
