@@ -27,7 +27,11 @@ import {
 } from '../../../constants/meta';
 import { analyticsService } from '../../../services/analytics';
 import { EVENT_TYPE } from '../../../enums/events';
-import { DEVICES_LABEL, DONATE_PAYPAL_URL } from '../../../constants';
+import {
+  BUY_ME_A_COFFEE_URL,
+  DEVICES_LABEL,
+  DONATE_PAYPAL_URL,
+} from '../../../constants';
 import { DEVICE_TYPE } from '../../../enums';
 import { mtpErrors } from '../../../helpers/processBufferOutput';
 import { MTP_ERROR } from '../../../enums/mtpError';
@@ -296,13 +300,21 @@ class HelpPhoneNotRecognized extends PureComponent {
 
           <Typography component="p" variant="body2" paragraph>
             If you&apos;d like to support my work or buy me up a cup of coffee,
-            donate via&nbsp;
+            donate via&nbsp;Paypal:&nbsp;
             <a
               onClick={(events) => {
                 openExternalUrl(DONATE_PAYPAL_URL, events);
               }}
             >
               {DONATE_PAYPAL_URL}
+            </a>
+            &nbsp;or Buy me a coffee:&nbsp;
+            <a
+              onClick={(events) => {
+                openExternalUrl(BUY_ME_A_COFFEE_URL, events);
+              }}
+            >
+              {BUY_ME_A_COFFEE_URL}
             </a>
             .
           </Typography>
