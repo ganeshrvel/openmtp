@@ -9,7 +9,6 @@ import { resetOverFlowY } from '../../utils/styleResets';
 import { styles } from './styles';
 import { HELP_FAQS_PAGE_TITLE } from '../../templates/helpFaqsPage';
 import HelpPhoneNotRecognized from './components/HelpPhoneNotRecognized';
-import { helpPhoneNotConnecting } from '../../templates/fileExplorer';
 
 class HelpFaqsPage extends Component {
   componentWillMount() {
@@ -25,7 +24,7 @@ class HelpFaqsPage extends Component {
           <title>{HELP_FAQS_PAGE_TITLE}</title>
         </Helmet>
         <Typography variant="h5" className={styles.heading}>
-          {helpPhoneNotConnecting}
+          {HELP_FAQS_PAGE_TITLE}
         </Typography>
         <div className={styles.body}>
           <HelpPhoneNotRecognized />
