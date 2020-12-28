@@ -64,7 +64,12 @@ import {
   makeMtpMode,
   makeShowDirectoriesFirst,
 } from '../../Settings/selectors';
-import { DEVICES_LABEL, DONATE_PAYPAL_URL } from '../../../constants';
+import {
+  DEVICES_LABEL,
+  DONATE_PAYPAL_URL,
+  USB_HOTPLUG_MAX_ATTEMPTS,
+  USB_HOTPLUG_MAX_ATTEMPTS_TIMEOUT,
+} from '../../../constants';
 import {
   arrayAverage,
   getPluralText,
@@ -188,7 +193,10 @@ class FileExplorer extends Component {
       shift: false,
     };
 
-    this.usbHotplugTimerId = null;
+    this.usbHotplug = {
+      attempts: 0,
+      lastAttempted: Date.now(),
+    };
   }
 
   componentDidMount() {
@@ -387,6 +395,40 @@ class FileExplorer extends Component {
 
       if (!enableUsbHotplug) {
         return;
+      }
+
+      // if [this.usbHotplug] is null then set the object
+      if (!this.usbHotplug) {
+        this.usbHotplug = {
+          attempts: 1,
+          lastAttempted: Date.now(),
+        };
+      } else {
+        // if the last attempt to connect the device was made more than [USB_HOTPLUG_MAX_ATTEMPTS_TIMEOUT] milliseconds ago then reset the attempts counter
+        if (
+          Date.now() - this.usbHotplug.lastAttempted >=
+          USB_HOTPLUG_MAX_ATTEMPTS_TIMEOUT
+        ) {
+          this.usbHotplug = {
+            // update the number of attempts
+            attempts: 0,
+            lastAttempted: Date.now(),
+          };
+        }
+
+        // check for the number of connect attempts
+        // if the number of connect attempts are greater than [USB_HOTPLUG_MAX_ATTEMPTS]
+        // and if the [lastAttempted] and was made within [USB_HOTPLUG_MAX_ATTEMPTS_TIMEOUT] then don't connect
+        else if (
+          this.usbHotplug.attempts > USB_HOTPLUG_MAX_ATTEMPTS &&
+          Date.now() - this.usbHotplug.lastAttempted <
+            USB_HOTPLUG_MAX_ATTEMPTS_TIMEOUT
+        ) {
+          return;
+        }
+
+        // update the number of attempts
+        this.usbHotplug.attempts += 1;
       }
 
       switch (eventName) {

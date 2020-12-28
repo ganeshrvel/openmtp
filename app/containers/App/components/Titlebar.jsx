@@ -13,6 +13,7 @@ class Titlebar extends PureComponent {
 
     const selectedStorage = getSelectedStorage(mtpStoragesList);
     const windowHash = getCurrentWindowHash();
+
     return (
       <div
         onDoubleClick={() => {

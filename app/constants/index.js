@@ -27,3 +27,7 @@ export const FILE_EXPLORER_TABLE_TRUNCATE_MAX_CHARS = 37;
 export const FILE_EXPLORER_GRID_TRUNCATE_MAX_CHARS = 20;
 
 export const DONATE_PAYPAL_URL = `https://paypal.me/ganeshrvel`;
+
+export const USB_HOTPLUG_MAX_ATTEMPTS = 5;
+
+export const USB_HOTPLUG_MAX_ATTEMPTS_TIMEOUT = 10000; // in ms

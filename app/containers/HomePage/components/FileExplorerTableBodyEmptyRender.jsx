@@ -27,7 +27,7 @@ import { styles } from '../styles/FileExplorerTableBodyEmptyRender';
 import KeyboadShortcuts from '../../KeyboardShortcutsPage/components/KeyboadShortcuts';
 import Features from '../../Onboarding/components/Features';
 import { Notification as NotificationDialog } from '../../../components/DialogBox';
-import FileExplorerTableBodyEmptyHelpPhoneNotRecognizedRender from './FileExplorerTableBodyEmptyHelpPhoneNotRecognizedRender';
+import HelpPhoneNotRecognized from './HelpPhoneNotRecognized';
 import { helpPhoneNotConnecting } from '../../../templates/fileExplorer';
 import { analyticsService } from '../../../services/analytics';
 import { EVENT_TYPE } from '../../../enums/events';
@@ -288,11 +288,9 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
 
               <NotificationDialog
                 fullWidthDialog
-                maxWidthDialog="sm"
+                maxWidthDialog="md"
                 titleText={helpPhoneNotConnecting}
-                bodyText={
-                  <FileExplorerTableBodyEmptyHelpPhoneNotRecognizedRender />
-                }
+                bodyText={<HelpPhoneNotRecognized />}
                 trigger={showHelpPhoneNotRecognizedDialog}
                 onClickHandler={this._handleHelpPhoneNotRecognizedDialog}
               />
