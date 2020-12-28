@@ -103,7 +103,6 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
           <TableCell colSpan={6} className={styles.tableCell}>
             <Paper style={{ height: `100%` }} elevation={0}>
               <Button
-                color="secondary"
                 className={styles.helpPhoneNotRecognized}
                 onClick={() => {
                   this._handleHelpPhoneNotRecognizedBtn(true);

@@ -103,7 +103,7 @@ class HelpPhoneNotRecognized extends PureComponent {
             <UsbIcon />
           </ListItemIcon>
           <ListItemText
-            primary="Unplug your phone and reconnect it"
+            primary={`Unplug your ${deviceLabel.toLowerCase()} and reconnect it`}
             secondary={`Follow the instructions below if your ${deviceLabel.toLowerCase()} is still undetected`}
           />
         </ListItem>
@@ -159,7 +159,7 @@ class HelpPhoneNotRecognized extends PureComponent {
             <CachedIcon />
           </ListItemIcon>
           <ListItemText
-            primary="Tap on the 'Refresh' button in the app if the phone doesn't get connected automatically"
+            primary={`Tap on the 'Refresh' button in the app if the ${deviceLabel.toLowerCase()} doesn't get connected automatically`}
             secondary={hotplugSettingText}
           />
         </ListItem>
@@ -185,24 +185,31 @@ class HelpPhoneNotRecognized extends PureComponent {
     );
   };
 
-  RenderBasicConnection = ({ showUnplugPhone = true }) => {
+  RenderBasicConnection = ({
+    showUnplugPhone = true,
+    showUnlockPhone = true,
+  }) => {
     const { RenderFileTransfer } = this;
 
     return (
       <>
-        <ListItem>
-          <ListItemIcon>
-            <LockOpenIcon />
-          </ListItemIcon>
-          <ListItemText primary="Unlock your Android device" />
-        </ListItem>
+        {showUnlockPhone && (
+          <ListItem>
+            <ListItemIcon>
+              <LockOpenIcon />
+            </ListItemIcon>
+            <ListItemText primary="Unlock your Android device" />
+          </ListItem>
+        )}
 
         {showUnplugPhone && (
           <ListItem>
             <ListItemIcon>
               <UsbIcon />
             </ListItemIcon>
-            <ListItemText primary="Unplug your phone and reconnect it" />
+            <ListItemText
+              primary={`Unplug your ${deviceLabel.toLowerCase()} and reconnect it`}
+            />
           </ListItem>
         )}
 
@@ -222,7 +229,7 @@ class HelpPhoneNotRecognized extends PureComponent {
             <CachedIcon />
           </ListItemIcon>
           <ListItemText
-            primary="Tap on the 'Refresh' button in the app if the phone doesn't get connected automatically"
+            primary={`Tap on the 'Refresh' button in the app if the ${deviceLabel.toLowerCase()} doesn't get connected automatically`}
             secondary={hotplugSettingText}
           />
         </ListItem>
@@ -307,7 +314,7 @@ class HelpPhoneNotRecognized extends PureComponent {
                     <FiberManualRecordIcon />
                   </ListItemIcon>
                   <ListItemText
-                    primary={`If you don't see the "Allow access to the device data" pop up then reconnect your phone`}
+                    primary={`If you don't see the "Allow access to the device data" pop up then reconnect your ${deviceLabel.toLowerCase()}`}
                     secondary={`Follow the instructions below if your ${deviceLabel.toLowerCase()} is still undetected`}
                   />
                 </ListItem>
@@ -317,7 +324,7 @@ class HelpPhoneNotRecognized extends PureComponent {
                     <FiberManualRecordIcon />
                   </ListItemIcon>
                   <ListItemText
-                    primary={`If you are prompted to "Allow access to the device data" multiple times then reconnect your phone and try again`}
+                    primary={`If you are prompted to "Allow access to the device data" multiple times then reconnect your ${deviceLabel.toLowerCase()} and try again`}
                   />
                 </ListItem>
               </List>
@@ -380,6 +387,55 @@ class HelpPhoneNotRecognized extends PureComponent {
                 </ListItem>
 
                 <RenderBasicConnection showUnplugPhone={false} />
+              </List>
+            </AccordionDetails>
+          </Accordion>
+
+          {/* <----- phone gets disconnected everytime screen goes into sleep -----> */}
+          <Accordion className={styles.expansionRoot}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography className={styles.heading}>
+                {`My ${deviceLabel.toLowerCase()} gets disconnected everytime the display goes into sleep`}
+              </Typography>
+            </AccordionSummary>
+
+            <AccordionDetails>
+              <List component="div" disablePadding>
+                <ListItem>
+                  <ListItemIcon>
+                    <FiberManualRecordIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={`In a very rare case your ${deviceLabel.toLowerCase()} may get disconnected when your display goes into sleep. This may disrupt any active file transfers`}
+                  />
+                </ListItem>
+
+                <ListItem>
+                  <ListItemIcon>
+                    <LockOpenIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Unlock your Android device" />
+                </ListItem>
+
+                <ListItem>
+                  <ListItemIcon>
+                    <RadioButtonCheckedIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={`Open ${deviceLabel.toLowerCase()}'s Settings > Display > Sleep and set it as 30 minutes or whatever is the highest`}
+                    secondary={
+                      <>
+                        <img
+                          src={imgsrc(`help/sleep-setting.jpg`)}
+                          alt="Sleep settings"
+                          className={styles.imagePlaceholder}
+                        />
+                      </>
+                    }
+                  />
+                </ListItem>
+
+                <RenderBasicConnection showUnlockPhone={false} />
               </List>
             </AccordionDetails>
           </Accordion>

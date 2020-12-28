@@ -7,6 +7,7 @@ export const styles = (theme) => ({
   helpPhoneNotRecognized: {
     width: '100%',
     ...mixins({ theme }).center,
+    color: theme.palette.snackbar.error,
   },
   noMtp: {
     marginTop: 10,
