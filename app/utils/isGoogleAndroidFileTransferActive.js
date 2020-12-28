@@ -52,8 +52,5 @@ export const isGoogleAndroidFileTransferActive = async () => {
     'Android File Transfer Agent.app'
   );
 
-  console.log('isAftRunning', isAftRunning);
-  console.log('isAftAgentRunning', isAftAgentRunning);
-
   return isAftRunning && isAftAgentRunning;
 };
