@@ -8,6 +8,7 @@ export const styles = (theme) => ({
     width: '100%',
     ...mixins({ theme }).center,
     color: theme.palette.snackbar.error,
+    fontWeight: 600,
   },
   noMtp: {
     marginTop: 10,

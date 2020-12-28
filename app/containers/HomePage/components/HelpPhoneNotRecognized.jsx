@@ -5,6 +5,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+import DeleteIcon from '@material-ui/icons/Delete';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import CachedIcon from '@material-ui/icons/Cached';
 import UsbIcon from '@material-ui/icons/Usb';
@@ -436,6 +437,28 @@ class HelpPhoneNotRecognized extends PureComponent {
                 </ListItem>
 
                 <RenderBasicConnection showUnlockPhone={false} />
+              </List>
+            </AccordionDetails>
+          </Accordion>
+
+          {/* <----- i keep seeing multiple devices error -----> */}
+          <Accordion className={styles.expansionRoot}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography className={styles.heading}>
+                {`I keep seeing "Quit 'Android File Transfer' app (by Google) and Refresh"`}
+              </Typography>
+            </AccordionSummary>
+
+            <AccordionDetails>
+              <List component="div" disablePadding>
+                <ListItem>
+                  <ListItemIcon>
+                    <DeleteIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Quit and uninstall Google's 'Android File Transfer' app" />
+                </ListItem>
+
+                <RenderBasicConnection showUnplugPhone={false} />
               </List>
             </AccordionDetails>
           </Accordion>
