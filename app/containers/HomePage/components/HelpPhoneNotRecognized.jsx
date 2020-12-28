@@ -18,7 +18,7 @@ import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { styles } from '../styles/HelpPhoneNotRecognized';
 import { openExternalUrl } from '../../../utils/url';
-import { APP_GITHUB_ISSUES_URL, APP_NAME } from '../../../constants/meta';
+import { APP_GITHUB_ISSUES_URL } from '../../../constants/meta';
 import { analyticsService } from '../../../services/analytics';
 import { EVENT_TYPE } from '../../../enums/events';
 import { DEVICES_LABEL } from '../../../constants';
@@ -26,6 +26,9 @@ import { DEVICE_TYPE } from '../../../enums';
 import { mtpErrors } from '../../../helpers/processBufferOutput';
 import { MTP_ERROR } from '../../../enums/mtpError';
 import { imgsrc } from '../../../utils/imgsrc';
+
+const hotplugSettingText = `Check if 'Enable auto device detection (USB Hotplug)' is enabled under Settings > General Tab`;
+const deviceLabel = DEVICES_LABEL[DEVICE_TYPE.mtp];
 
 class HelpPhoneNotRecognized extends PureComponent {
   _handleGithubThreadTap = (events) => {
@@ -37,25 +40,11 @@ class HelpPhoneNotRecognized extends PureComponent {
     );
   };
 
-  RenderBasicConnection = () => {
+  RenderFileTransfer = () => {
     const { classes: styles } = this.props;
-
-    this.hotplugSetting = `Check if 'Enable auto device detection (USB Hotplug)' is enabled under Settings > General Tab`;
 
     return (
       <>
-        <ListItem>
-          <ListItemIcon>
-            <LockOpenIcon />
-          </ListItemIcon>
-          <ListItemText primary="Unlock your Android device" />
-        </ListItem>
-        <ListItem>
-          <ListItemIcon>
-            <UsbIcon />
-          </ListItemIcon>
-          <ListItemText primary="Unplug your phone and reconnect it" />
-        </ListItem>
         <ListItem>
           <ListItemIcon>
             <TouchAppIcon />
@@ -91,13 +80,78 @@ class HelpPhoneNotRecognized extends PureComponent {
             }
           />
         </ListItem>
+      </>
+    );
+  };
+
+  RenderRefreshButtonIsStuck = () => {
+    const { classes: styles } = this.props;
+
+    const { RenderFileTransfer } = this;
+
+    return (
+      <>
+        <ListItem>
+          <ListItemIcon>
+            <LockOpenIcon />
+          </ListItemIcon>
+          <ListItemText primary="Unlock your Android device" />
+        </ListItem>
+
+        <ListItem>
+          <ListItemIcon>
+            <UsbIcon />
+          </ListItemIcon>
+          <ListItemText
+            primary="Unplug your phone and reconnect it"
+            secondary={`Follow the instructions below if your ${deviceLabel.toLowerCase()} is still undetected`}
+          />
+        </ListItem>
+
+        <ListItem>
+          <ListItemIcon>
+            <TouchAppIcon />
+          </ListItemIcon>
+          <ListItemText
+            primary="On your device, tap the 'Transferring media files' notification"
+            secondary={
+              <>
+                <img
+                  src={imgsrc(`help/usb-notification-transferring-media.png`)}
+                  alt="Transferring media files"
+                  className={styles.imagePlaceholder}
+                />
+              </>
+            }
+          />
+        </ListItem>
+        <ListItem>
+          <ListItemIcon>
+            <RadioButtonCheckedIcon />
+          </ListItemIcon>
+          <ListItemText
+            primary="Under 'Use USB for' select 'Charging'"
+            secondary={
+              <>
+                <img
+                  src={imgsrc(`help/charge-only-permission.png`)}
+                  alt="Charging"
+                  className={styles.imagePlaceholder}
+                />
+              </>
+            }
+          />
+        </ListItem>
+
+        <RenderFileTransfer />
+
         <ListItem>
           <ListItemIcon>
             <FiberManualRecordIcon />
           </ListItemIcon>
           <ListItemText
             primary="It should connect automatically"
-            secondary={this.hotplugSetting}
+            secondary={hotplugSettingText}
           />
         </ListItem>
         <ListItem>
@@ -106,7 +160,67 @@ class HelpPhoneNotRecognized extends PureComponent {
           </ListItemIcon>
           <ListItemText
             primary="Tap on the 'Refresh' button in the app if the phone doesn't get connected automatically"
-            secondary={this.hotplugSetting}
+            secondary={hotplugSettingText}
+          />
+        </ListItem>
+
+        <ListItem>
+          <ListItemIcon>
+            <TouchAppIcon />
+          </ListItemIcon>
+          <ListItemText
+            primary={`Tap on the "Allow" button, if you see the "Allow access to the device data" pop up`}
+            secondary={
+              <>
+                <img
+                  src={imgsrc(`help/allow-data-access.png`)}
+                  alt="Allow access to the device data"
+                  className={styles.imagePlaceholder}
+                />
+              </>
+            }
+          />
+        </ListItem>
+      </>
+    );
+  };
+
+  RenderBasicConnection = () => {
+    const { RenderFileTransfer } = this;
+
+    return (
+      <>
+        <ListItem>
+          <ListItemIcon>
+            <LockOpenIcon />
+          </ListItemIcon>
+          <ListItemText primary="Unlock your Android device" />
+        </ListItem>
+        <ListItem>
+          <ListItemIcon>
+            <UsbIcon />
+          </ListItemIcon>
+          <ListItemText primary="Unplug your phone and reconnect it" />
+        </ListItem>
+
+        <RenderFileTransfer />
+
+        <ListItem>
+          <ListItemIcon>
+            <FiberManualRecordIcon />
+          </ListItemIcon>
+          <ListItemText
+            primary="It should connect automatically"
+            secondary={hotplugSettingText}
+          />
+        </ListItem>
+        <ListItem>
+          <ListItemIcon>
+            <CachedIcon />
+          </ListItemIcon>
+          <ListItemText
+            primary="Tap on the 'Refresh' button in the app if the phone doesn't get connected automatically"
+            secondary={hotplugSettingText}
           />
         </ListItem>
       </>
@@ -115,9 +229,7 @@ class HelpPhoneNotRecognized extends PureComponent {
 
   render() {
     const { classes: styles } = this.props;
-    const { RenderBasicConnection } = this;
-
-    const deviceLabel = DEVICES_LABEL[DEVICE_TYPE.mtp];
+    const { RenderBasicConnection, RenderRefreshButtonIsStuck } = this;
 
     return (
       <div className={styles.root}>
@@ -199,50 +311,42 @@ class HelpPhoneNotRecognized extends PureComponent {
 
                 <ListItem>
                   <ListItemIcon>
-                    <TouchAppIcon />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary="On your device, tap the 'Charging this device via
-                  USB' notification"
-                    secondary={
-                      <>
-                        <img
-                          src={imgsrc(
-                            `help/usb-notification-charging-via-usb.png`
-                          )}
-                          alt="Use USB for"
-                          className={styles.imagePlaceholder}
-                        />
-                      </>
-                    }
-                  />
-                </ListItem>
-                <ListItem>
-                  <ListItemIcon>
-                    <RadioButtonCheckedIcon />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary="Under 'Use USB for' select File Transfer"
-                    secondary={
-                      <>
-                        <img
-                          src={imgsrc(`help/transfer-media-permission.png`)}
-                          alt="Allow access to the device data"
-                          className={styles.imagePlaceholder}
-                        />
-                      </>
-                    }
-                  />
-                </ListItem>
-
-                <ListItem>
-                  <ListItemIcon>
                     <FiberManualRecordIcon />
                   </ListItemIcon>
                   <ListItemText
                     primary={`If you are prompted to "Allow access to the device data" multiple times then reconnect your phone and try again`}
                   />
                 </ListItem>
+              </List>
+            </AccordionDetails>
+          </Accordion>
+
+          {/* <----- Allow access to the device data" multiple times -----> */}
+          <Accordion className={styles.expansionRoot}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography className={styles.heading}>
+                {`I am prompted to "Allow access to the device data" multiple times`}
+              </Typography>
+            </AccordionSummary>
+
+            <AccordionDetails>
+              <List component="div" disablePadding>
+                <RenderRefreshButtonIsStuck />
+              </List>
+            </AccordionDetails>
+          </Accordion>
+
+          {/* <----- refresh button is stuck -----> */}
+          <Accordion className={styles.expansionRoot}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography className={styles.heading}>
+                {`Refresh button is stuck`}
+              </Typography>
+            </AccordionSummary>
+
+            <AccordionDetails>
+              <List component="div" disablePadding>
+                <RenderRefreshButtonIsStuck />
               </List>
             </AccordionDetails>
           </Accordion>
