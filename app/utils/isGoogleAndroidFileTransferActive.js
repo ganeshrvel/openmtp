@@ -3,9 +3,8 @@ import Promise from 'bluebird';
 import { log } from './log';
 import { checkIf } from './checkIf';
 
-export const isProcessRunning = (query, cb) => {
+export const isProcessRunning = (query) => {
   checkIf(query, 'string');
-  checkIf(cb, 'function');
 
   const { platform } = process;
   let cmd = '';
@@ -15,7 +14,7 @@ export const isProcessRunning = (query, cb) => {
       cmd = `tasklist`;
       break;
     case 'darwin':
-      cmd = `ps -ax | grep "${query}"`;
+      cmd = `pgrep -i "${query}"`;
       break;
     case 'linux':
       cmd = `ps -A`;
@@ -24,29 +23,32 @@ export const isProcessRunning = (query, cb) => {
       break;
   }
 
-  exec(cmd, (err, stdout, stderr) => {
-    if (err) {
-      log.error(err, 'isProcessRunning -> err');
+  return new Promise((resolve) => {
+    exec(cmd, (err, stdout, stderr) => {
+      if (err) {
+        log.error(err, 'isProcessRunning -> err');
 
-      return cb(false);
-    }
+        return resolve(false);
+      }
 
-    if (stderr) {
-      log.error(stderr, 'isProcessRunning -> stderr');
+      if (stderr) {
+        log.error(stderr, 'isProcessRunning -> stderr');
 
-      return cb(false);
-    }
+        return resolve(false);
+      }
 
-    cb(stdout?.toLowerCase()?.indexOf(query?.toLowerCase()) > -1);
+      return resolve(stdout?.toLowerCase()?.indexOf(query?.toLowerCase()) > -1);
+    });
+  }).catch((e) => {
+    log.error(e, 'isProcessRunning -> catch');
   });
 };
 
-export const isGoogleAndroidFileTransferActive = () => {
-  return new Promise((resolve) => {
-    isProcessRunning('Android File Transfer', (status) => {
-      return resolve(status);
-    });
-  }).catch((e) => {
-    log.error(e, 'isGoogleAndroidFileTransferActive -> Promise');
-  });
+export const isGoogleAndroidFileTransferActive = async () => {
+  const isAftRunning = await isProcessRunning('Android File Transfer');
+  const isAftAgentRunning = await isProcessRunning(
+    'Android File Transfer Agent'
+  );
+
+  return isAftRunning && isAftAgentRunning;
 };
