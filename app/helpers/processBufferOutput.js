@@ -39,53 +39,53 @@ export const processMtpBuffer = async ({ error, stderr, mtpMode }) => {
   return _processLegacyMtpBuffer({ error, stderr });
 };
 
+export const mtpErrors = {
+  [MTP_ERROR.ErrorMtpDetectFailed]: `No ${
+    DEVICES_LABEL[DEVICE_TYPE.mtp]
+  } or MTP device found.`,
+  [MTP_ERROR.ErrorDeviceChanged]: null,
+  [MTP_ERROR.ErrorMtpLockExists]: `Easy tiger! MTP is not so quick as you are`,
+  [MTP_ERROR.ErrorDeviceSetup]: `An error occured while setting up the ${
+    DEVICES_LABEL[DEVICE_TYPE.mtp]
+  }`,
+  [MTP_ERROR.ErrorDeviceLocked]: `Unlock your ${
+    DEVICES_LABEL[DEVICE_TYPE.mtp]
+  } and refresh again`,
+  [MTP_ERROR.ErrorMultipleDevice]: 'Multiple MTP devices found',
+  [MTP_ERROR.ErrorAllowStorageAccess]: `Accept MTP access to your ${
+    DEVICES_LABEL[DEVICE_TYPE.mtp]
+  }'s storage and refresh again`,
+  [MTP_ERROR.ErrorDeviceInfo]:
+    'An error occured while fetching the device information',
+  [MTP_ERROR.ErrorStorageInfo]:
+    'An error occured while fetching the storage information',
+  [MTP_ERROR.ErrorNoStorage]: `Your ${
+    DEVICES_LABEL[DEVICE_TYPE.mtp]
+  } storage is inaccessible.`,
+  [MTP_ERROR.ErrorStorageFull]: `${
+    DEVICES_LABEL[DEVICE_TYPE.mtp]
+  } storage is full`,
+  [MTP_ERROR.ErrorListDirectory]: `An error occured while listing the ${
+    DEVICES_LABEL[DEVICE_TYPE.mtp]
+  } directory! Try again.`,
+  [MTP_ERROR.ErrorFileNotFound]: 'File not found',
+  [MTP_ERROR.ErrorFilePermission]: `Operation not permitted`,
+  [MTP_ERROR.ErrorLocalFileRead]: `The file is inaccessible`,
+  [MTP_ERROR.ErrorInvalidPath]: 'Invalid path',
+  [MTP_ERROR.ErrorFileTransfer]:
+    'An error occured while transferring the file! Try again.',
+  [MTP_ERROR.ErrorFileObjectRead]:
+    'An error occured while reading the MTP file object! Try again.',
+  [MTP_ERROR.ErrorSendObject]:
+    'An error occured while sending the object! Try again.',
+  [MTP_ERROR.ErrorGeneral]: `Oops.. Your ${
+    DEVICES_LABEL[DEVICE_TYPE.mtp]
+  } has gone crazy! Try again.`,
+};
+
 // [stderr] variable will hold the kalam ffi errorTypes
 export const _processKalamMtpBuffer = async ({ error, stderr }) => {
-  const mtpErrors = {
-    [MTP_ERROR.ErrorMtpDetectFailed]: `No ${
-      DEVICES_LABEL[DEVICE_TYPE.mtp]
-    } or MTP device found.`,
-    [MTP_ERROR.ErrorDeviceChanged]: null,
-    [MTP_ERROR.ErrorMtpLockExists]: `Easy tiger! MTP is not so quick as you are`,
-    [MTP_ERROR.ErrorDeviceSetup]: `An error occured while setting up the ${
-      DEVICES_LABEL[DEVICE_TYPE.mtp]
-    }`,
-    [MTP_ERROR.ErrorDeviceLocked]: `Unlock your ${
-      DEVICES_LABEL[DEVICE_TYPE.mtp]
-    } and refresh again`,
-    [MTP_ERROR.ErrorMultipleDevice]: 'Multiple MTP devices found',
-    [MTP_ERROR.ErrorAllowStorageAccess]: `Accept MTP access to your ${
-      DEVICES_LABEL[DEVICE_TYPE.mtp]
-    }'s storage and refresh again`,
-    [MTP_ERROR.ErrorDeviceInfo]:
-      'An error occured while fetching the device information',
-    [MTP_ERROR.ErrorStorageInfo]:
-      'An error occured while fetching the storage information',
-    [MTP_ERROR.ErrorNoStorage]: `Your ${
-      DEVICES_LABEL[DEVICE_TYPE.mtp]
-    } storage is inaccessible.`,
-    [MTP_ERROR.ErrorStorageFull]: `${
-      DEVICES_LABEL[DEVICE_TYPE.mtp]
-    } storage is full`,
-    [MTP_ERROR.ErrorListDirectory]: `An error occured while listing the ${
-      DEVICES_LABEL[DEVICE_TYPE.mtp]
-    } directory! Try again.`,
-    [MTP_ERROR.ErrorFileNotFound]: 'File not found',
-    [MTP_ERROR.ErrorFilePermission]: `Operation not permitted`,
-    [MTP_ERROR.ErrorLocalFileRead]: `The file is inaccessible`,
-    [MTP_ERROR.ErrorInvalidPath]: 'Invalid path',
-    [MTP_ERROR.ErrorFileTransfer]:
-      'An error occured while transferring the file! Try again.',
-    [MTP_ERROR.ErrorFileObjectRead]:
-      'An error occured while reading the MTP file object! Try again.',
-    [MTP_ERROR.ErrorSendObject]:
-      'An error occured while sending the object! Try again.',
-    [MTP_ERROR.ErrorGeneral]: `Oops.. Your ${
-      DEVICES_LABEL[DEVICE_TYPE.mtp]
-    } has gone crazy! Try again.`,
-  };
-
-  const googleAndroidFileTransferIsActive = `Quit 'Android File Transfer' app (by Google) and reload.`;
+  const googleAndroidFileTransferIsActive = `Quit 'Android File Transfer' app (by Google) and Refresh`;
   const noMtpError = isNoMtpError({ error, stderr, mtpMode: MTP_MODE.kalam });
 
   let processedErrorValue = null;
@@ -112,22 +112,22 @@ export const _processKalamMtpBuffer = async ({ error, stderr }) => {
         stderr !== MTP_ERROR.ErrorDeviceChanged
       );
     }
+
+    const _isGoogleAndroidFileTransferActive = await isGoogleAndroidFileTransferActive();
+
+    if (_isGoogleAndroidFileTransferActive) {
+      return {
+        error: googleAndroidFileTransferIsActive,
+        throwAlert: true,
+        logError: true,
+        mtpStatus: false,
+      };
+    }
   }
 
   switch (stderr) {
     /* No MTP device found */
     case MTP_ERROR.ErrorMtpDetectFailed:
-      const _isGoogleAndroidFileTransferActive = await isGoogleAndroidFileTransferActive();
-
-      if (_isGoogleAndroidFileTransferActive) {
-        return {
-          error: googleAndroidFileTransferIsActive,
-          throwAlert: true,
-          logError: true,
-          mtpStatus: false,
-        };
-      }
-
       return {
         error: processedErrorValue,
         throwAlert: false,
@@ -313,7 +313,7 @@ export const _processLegacyMtpBuffer = async ({ error, stderr }) => {
   const errorDictionary = {
     noPerm: `Operation not permitted.`,
     noMtp: `No ${DEVICES_LABEL[DEVICE_TYPE.mtp]} or MTP device found.`,
-    googleAndroidFileTransferIsActive: `Quit 'Android File Transfer' app (by Google) and reload.`,
+    googleAndroidFileTransferIsActive: `Quit 'Android File Transfer' app (by Google) and Refresh.`,
     deviceLocked: `Unlock your ${
       DEVICES_LABEL[DEVICE_TYPE.mtp]
     } and refresh again`,

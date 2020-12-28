@@ -1,1 +1,1 @@
-export const helpPhoneNotConnecting = `Help - My phone is not connecting!`;
+export const helpPhoneNotConnecting = `FAQs - My phone is not connecting!`;

@@ -26,11 +26,10 @@ import Button from '@material-ui/core/Button';
 import { styles } from '../styles/FileExplorerTableBodyEmptyRender';
 import KeyboadShortcuts from '../../KeyboardShortcutsPage/components/KeyboadShortcuts';
 import Features from '../../Onboarding/components/Features';
-import { Notification as NotificationDialog } from '../../../components/DialogBox';
-import FileExplorerTableBodyEmptyHelpPhoneNotRecognizedRender from './FileExplorerTableBodyEmptyHelpPhoneNotRecognizedRender';
 import { helpPhoneNotConnecting } from '../../../templates/fileExplorer';
 import { analyticsService } from '../../../services/analytics';
 import { EVENT_TYPE } from '../../../enums/events';
+import { helpFaqsWindow } from '../../../helpers/createWindows';
 
 class FileExplorerTableBodyEmptyRender extends PureComponent {
   constructor(props) {
@@ -42,7 +41,6 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
         keyboardNavigation: false,
         features: false,
       },
-      showHelpPhoneNotRecognizedDialog: false,
     };
   }
 
@@ -57,24 +55,17 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
     });
   };
 
-  _handleHelpPhoneNotRecognizedBtn = (value) => {
-    this.setState({ showHelpPhoneNotRecognizedDialog: value });
+  _handleHelpPhoneNotRecognizedBtn = () => {
+    helpFaqsWindow(true);
 
-    if (value) {
-      analyticsService.sendEvent(
-        EVENT_TYPE.MTP_HELP_PHONE_NOT_CONNECTED_DIALOG_OPEN,
-        {}
-      );
-    } else {
-      analyticsService.sendEvent(
-        EVENT_TYPE.MTP_HELP_PHONE_NOT_CONNECTED_DIALOG_CLOSE,
-        {}
-      );
-    }
+    analyticsService.sendEvent(
+      EVENT_TYPE.MTP_HELP_PHONE_NOT_CONNECTED_DIALOG_OPEN,
+      {}
+    );
   };
 
   _handleHelpPhoneNotRecognizedDialog = () => {
-    this._handleHelpPhoneNotRecognizedBtn(false);
+    this._handleHelpPhoneNotRecognizedBtn();
   };
 
   render() {
@@ -88,7 +79,7 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
       onContextMenuClick,
     } = this.props;
 
-    const { expansionPanel, showHelpPhoneNotRecognizedDialog } = this.state;
+    const { expansionPanel } = this.state;
 
     const _eventTarget = 'emptyRowTarget';
 
@@ -103,10 +94,9 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
           <TableCell colSpan={6} className={styles.tableCell}>
             <Paper style={{ height: `100%` }} elevation={0}>
               <Button
-                color="secondary"
                 className={styles.helpPhoneNotRecognized}
                 onClick={() => {
-                  this._handleHelpPhoneNotRecognizedBtn(true);
+                  this._handleHelpPhoneNotRecognizedBtn();
                 }}
               >
                 {helpPhoneNotConnecting}
@@ -285,17 +275,6 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
                   </div>
                 </Collapse>
               </List>
-
-              <NotificationDialog
-                fullWidthDialog
-                maxWidthDialog="sm"
-                titleText={helpPhoneNotConnecting}
-                bodyText={
-                  <FileExplorerTableBodyEmptyHelpPhoneNotRecognizedRender />
-                }
-                trigger={showHelpPhoneNotRecognizedDialog}
-                onClickHandler={this._handleHelpPhoneNotRecognizedDialog}
-              />
             </Paper>
           </TableCell>
         </TableRow>

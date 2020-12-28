@@ -90,16 +90,6 @@ func _sendFetchStorages(ptr int64, retry bool) {
 	if err != nil {
 		if container.dev != nil && container.deviceInfo != nil {
 			if strings.Contains(err.Error(), "EOF") {
-
-				// for newer samsung devices we might need to access the storage again in case
-				// the fetch storage function returns an 'EOF' error
-				if retry {
-					// make sure the retry param is false else mtp could go into infinite loop
-					_sendFetchStorages(ptr, false)
-
-					return
-				}
-
 				err = fmt.Errorf("error allow storage access. %+v", err.Error())
 
 				// this is done to prevent samsung devices from returning usb timeouts
