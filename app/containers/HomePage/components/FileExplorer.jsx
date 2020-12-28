@@ -109,6 +109,7 @@ import { COMMUNICATION_EVENTS } from '../../../enums/communicationEvents';
 import { reportBugsWindow } from '../../../helpers/createWindows';
 import { analyticsService } from '../../../services/analytics';
 import { EVENT_TYPE } from '../../../enums/events';
+import { redactHomeDirectory } from '../../../helpers/logs';
 
 const { Menu, getCurrentWindow } = remote;
 

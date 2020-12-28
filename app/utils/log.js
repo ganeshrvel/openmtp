@@ -10,6 +10,7 @@ import { sentryService } from '../services/sentry';
 import { getDeviceInfo } from '../helpers/deviceInfo';
 import { isEmpty } from './funcs';
 import { getMtpModeSetting } from '../helpers/settings';
+import { redactHomeDirectory } from '../helpers/logs';
 
 const { logFile } = PATHS;
 
@@ -113,6 +114,9 @@ export const log = {
       err += `Custom ${logType}: ${customError?.toString()}${EOL}`;
     }
 
+    // [Privacy] redact home directory path from the error log
+    err = redactHomeDirectory(err);
+
     let _deviceInfoStrigified = '';
     const deviceInfo = getDeviceInfo();
     const mtpMode = getMtpModeSetting();
@@ -140,7 +144,10 @@ export const log = {
       let errorToReport = e;
 
       if (e && !isConsoleError(e)) {
-        errorToReport = new Error(e);
+        // [Privacy] redact home directory path from the error log
+        const _e = redactHomeDirectory(e);
+
+        errorToReport = new Error(_e);
       }
 
       await sentryService.report({ error: errorToReport, title, mtpMode });
