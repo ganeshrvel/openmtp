@@ -1,5 +1,6 @@
 import React, { PureComponent, Fragment } from 'react';
 import classnames from 'classnames';
+import Tooltip from '@material-ui/core/Tooltip';
 import { withStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import Avatar from '@material-ui/core/Avatar';
@@ -69,7 +70,9 @@ class Selection extends PureComponent {
                       </ListItemAvatar>
                     )}
 
-                    <ListItemText primary={item.name} />
+                    <Tooltip title={item.hint ?? ''}>
+                      <ListItemText primary={item.name} />
+                    </Tooltip>
                   </ListItem>
                 </Fragment>
               );
