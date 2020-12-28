@@ -85,7 +85,7 @@ export const mtpErrors = {
 
 // [stderr] variable will hold the kalam ffi errorTypes
 export const _processKalamMtpBuffer = async ({ error, stderr }) => {
-  const googleAndroidFileTransferIsActive = `Quit 'Android File Transfer' app (by Google) and reload.`;
+  const googleAndroidFileTransferIsActive = `Quit 'Android File Transfer' app (by Google) and Refresh`;
   const noMtpError = isNoMtpError({ error, stderr, mtpMode: MTP_MODE.kalam });
 
   let processedErrorValue = null;
@@ -313,7 +313,7 @@ export const _processLegacyMtpBuffer = async ({ error, stderr }) => {
   const errorDictionary = {
     noPerm: `Operation not permitted.`,
     noMtp: `No ${DEVICES_LABEL[DEVICE_TYPE.mtp]} or MTP device found.`,
-    googleAndroidFileTransferIsActive: `Quit 'Android File Transfer' app (by Google) and reload.`,
+    googleAndroidFileTransferIsActive: `Quit 'Android File Transfer' app (by Google) and Refresh.`,
     deviceLocked: `Unlock your ${
       DEVICES_LABEL[DEVICE_TYPE.mtp]
     } and refresh again`,

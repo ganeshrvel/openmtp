@@ -14,7 +14,7 @@ export const isProcessRunning = (query) => {
       cmd = `tasklist`;
       break;
     case 'darwin':
-      cmd = `pgrep -i "${query}"`;
+      cmd = `pgrep -fil "${query}"`;
       break;
     case 'linux':
       cmd = `ps -A`;
@@ -37,7 +37,9 @@ export const isProcessRunning = (query) => {
         return resolve(false);
       }
 
-      return resolve(stdout?.toLowerCase()?.indexOf(query?.toLowerCase()) > -1);
+      return resolve(
+        typeof stdout !== 'undefined' && stdout !== null && stdout !== ''
+      );
     });
   }).catch((e) => {
     log.error(e, 'isProcessRunning -> catch');
@@ -45,10 +47,13 @@ export const isProcessRunning = (query) => {
 };
 
 export const isGoogleAndroidFileTransferActive = async () => {
-  const isAftRunning = await isProcessRunning('Android File Transfer');
+  const isAftRunning = await isProcessRunning('Android File transfer.app');
   const isAftAgentRunning = await isProcessRunning(
-    'Android File Transfer Agent'
+    'Android File Transfer Agent.app'
   );
+
+  console.log('isAftRunning', isAftRunning);
+  console.log('isAftAgentRunning', isAftAgentRunning);
 
   return isAftRunning && isAftAgentRunning;
 };
