@@ -28,6 +28,8 @@ export const FILE_EXPLORER_GRID_TRUNCATE_MAX_CHARS = 20;
 
 export const DONATE_PAYPAL_URL = `https://paypal.me/ganeshrvel`;
 
+export const BUY_ME_A_COFFEE_URL = `https://www.buymeacoffee.com/ganeshrvel`;
+
 export const USB_HOTPLUG_MAX_ATTEMPTS = 6;
 
 export const USB_HOTPLUG_MAX_ATTEMPTS_TIMEOUT = 15000; // in ms

@@ -21,6 +21,7 @@ import {
 } from '../../../components/DialogBox';
 import { DEVICE_TYPE, MTP_MODE } from '../../../enums';
 import { capitalize, isEmpty } from '../../../utils/funcs';
+import { imgsrc } from '../../../utils/imgsrc';
 
 export default class ToolbarAreaPane extends PureComponent {
   activeToolbarList = ({ ...args }) => {
@@ -161,12 +162,15 @@ export default class ToolbarAreaPane extends PureComponent {
         name: `${capitalize(MTP_MODE.kalam)} Mode`,
         icon: faBolt,
         selected: mtpMode === MTP_MODE.kalam,
+        hint:
+          'The all new and powerful MTP kernel — named after Dr. A. P. J. Abdul Kalam - Statesman, Scientist and Poet',
       },
       {
         value: MTP_MODE.legacy,
         name: `${capitalize(MTP_MODE.legacy)} Mode`,
         icon: faTerminal,
         selected: mtpMode === MTP_MODE.legacy,
+        hint: `Previous generation MTP Kernel. Use this if Kalam mode doesn't detect your phone`,
       },
     ];
 
@@ -246,13 +250,24 @@ export default class ToolbarAreaPane extends PureComponent {
                         className={classNames({
                           [styles.disabledNavBtns]: !item.enabled,
                           [styles.invertedNavBtns]: item.invert,
+                          [styles.imageBtn]: item.image,
                         })}
                       >
-                        <FontAwesomeIcon
-                          icon={item.icon}
-                          className={styles.navBtnImgs}
-                          title={item.label}
-                        />
+                        {item.image && (
+                          <img
+                            alt={item.label}
+                            src={imgsrc(item.image, false)}
+                            className={styles.navBtnImages}
+                          />
+                        )}
+
+                        {item.icon && (
+                          <FontAwesomeIcon
+                            icon={item.icon}
+                            className={styles.navBtnIcons}
+                            title={item.label}
+                          />
+                        )}
                       </IconButton>
                     </div>
                   </Tooltip>

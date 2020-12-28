@@ -65,6 +65,7 @@ import {
   makeShowDirectoriesFirst,
 } from '../../Settings/selectors';
 import {
+  BUY_ME_A_COFFEE_URL,
   DEVICES_LABEL,
   DONATE_PAYPAL_URL,
   USB_HOTPLUG_MAX_ATTEMPTS,
@@ -147,6 +148,14 @@ const socialMediaShareBtnsList = [
   {
     enabled: true,
     label: 'Buy me a Coffee',
+    url: BUY_ME_A_COFFEE_URL,
+    image: 'toolbar/buymeacoffee.png',
+    icon: null,
+    invert: false,
+  },
+  {
+    enabled: true,
+    label: 'Paypal',
     icon: faPaypal,
     url: DONATE_PAYPAL_URL,
     invert: false,
@@ -2023,11 +2032,21 @@ class FileExplorer extends Component {
                       disabled={!a.enabled}
                       onClick={() => openExternalUrl(a.url)}
                     >
-                      <FontAwesomeIcon
-                        icon={a.icon}
-                        className={styles.socialMediaShareBtn}
-                        title={a.label}
-                      />
+                      {a.image && (
+                        <img
+                          alt={a.label}
+                          src={imgsrc(a.image, false)}
+                          className={styles.socialMediaShareBtnImages}
+                        />
+                      )}
+
+                      {a.icon && (
+                        <FontAwesomeIcon
+                          icon={a.icon}
+                          className={styles.socialMediaShareBtn}
+                          title={a.label}
+                        />
+                      )}
                     </IconButton>
                   </div>
                 </Tooltip>

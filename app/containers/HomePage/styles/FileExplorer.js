@@ -15,4 +15,15 @@ export const styles = (theme) => ({
     width: `22px`,
     color: theme.palette.contrastPrimaryMainColor,
   },
+  socialMediaShareBtnImages: {
+    height: 21,
+    width: 21,
+  },
+  imageBtn: {
+    padding: `7px !important`,
+    background: '#fff',
+    [`&:hover`]: {
+      background: `rgba(255, 255, 255, 0.85) !important`,
+    },
+  },
 });

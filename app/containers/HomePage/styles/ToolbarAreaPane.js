@@ -33,12 +33,23 @@ export const styles = (theme) => {
     noAppDrag: {
       ...mixins({ theme }).appDragDisable,
     },
-    navBtnImgs: {
+    navBtnIcons: {
       height: 25,
       width: `25px !important`,
       color: theme.palette.contrastPrimaryMainColor,
       ...mixins({ theme }).noDrag,
       ...mixins({ theme }).noselect,
+    },
+    navBtnImages: {
+      height: 32,
+      width: `32px !important`,
+    },
+    imageBtn: {
+      padding: `7px !important`,
+      background: '#fff',
+      [`&:hover`]: {
+        background: `rgba(255, 255, 255, 0.85) !important`,
+      },
     },
     disabledNavBtns: {
       backgroundColor: `${theme.palette.disabledBgColor} !important`,

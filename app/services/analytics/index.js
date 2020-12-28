@@ -7,6 +7,8 @@ import { checkIf } from '../../utils/checkIf';
 import { getMtpModeSetting } from '../../helpers/settings';
 import { EVENT_TYPE } from '../../enums/events';
 import { IS_RENDERER } from '../../constants/env';
+import { inArray } from '../../utils/funcs';
+import { redactHomeDirectory } from '../../helpers/logs';
 
 class AnalyticsService {
   constructor() {
@@ -36,8 +38,15 @@ class AnalyticsService {
       return;
     }
 
+    let _value = value;
+
+    if (inArray(['stderr', 'error'], key)) {
+      // [Privacy] redact home directory path from the error log
+      _value = redactHomeDirectory(value);
+    }
+
     try {
-      await this.mixpanelAnalytics.sendEvent(key, value);
+      await this.mixpanelAnalytics.sendEvent(key, _value);
     } catch (e) {
       log.error(e, `AnalyticsService -> sendEvent`);
     }

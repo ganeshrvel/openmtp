@@ -25,13 +25,13 @@ export const isProcessRunning = (query) => {
 
   return new Promise((resolve) => {
     exec(cmd, (err, stdout, stderr) => {
-      if (err) {
+      if (err?.code === 3) {
         log.error(err, 'isProcessRunning -> err');
 
         return resolve(false);
       }
 
-      if (stderr) {
+      if (stderr?.code === 3) {
         log.error(stderr, 'isProcessRunning -> stderr');
 
         return resolve(false);
