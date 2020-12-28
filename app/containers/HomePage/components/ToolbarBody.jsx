@@ -21,6 +21,7 @@ import {
 } from '../../../components/DialogBox';
 import { DEVICE_TYPE, MTP_MODE } from '../../../enums';
 import { capitalize, isEmpty } from '../../../utils/funcs';
+import { imgsrc } from '../../../utils/imgsrc';
 
 export default class ToolbarAreaPane extends PureComponent {
   activeToolbarList = ({ ...args }) => {
@@ -246,13 +247,24 @@ export default class ToolbarAreaPane extends PureComponent {
                         className={classNames({
                           [styles.disabledNavBtns]: !item.enabled,
                           [styles.invertedNavBtns]: item.invert,
+                          [styles.imageBtn]: item.image,
                         })}
                       >
-                        <FontAwesomeIcon
-                          icon={item.icon}
-                          className={styles.navBtnImgs}
-                          title={item.label}
-                        />
+                        {item.image && (
+                          <img
+                            alt={item.label}
+                            src={imgsrc(item.image, false)}
+                            className={styles.navBtnImages}
+                          />
+                        )}
+
+                        {item.icon && (
+                          <FontAwesomeIcon
+                            icon={item.icon}
+                            className={styles.navBtnIcons}
+                            title={item.label}
+                          />
+                        )}
                       </IconButton>
                     </div>
                   </Tooltip>

@@ -113,6 +113,12 @@ export const initialState = {
         label: 'MTP Mode',
         icon: faPlug,
       },
+      buyMeACoffee: {
+        enabled: true,
+        label: 'Buy Me A Coffee',
+        image: 'toolbar/buymeacoffee.png',
+        icon: null,
+      },
       settings: {
         enabled: true,
         label: 'Settings',
