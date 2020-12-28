@@ -12,9 +12,9 @@ export const styles = (theme) => ({
   heading: {
     fontWeight: 600,
   },
-  allowDeviceData: {
-    height: 200,
-    width: 'auto',
+  imagePlaceholder: {
+    width: 200,
+    height: 'auto',
   },
   imgWrapper: {
     ...mixins({ theme }).center,

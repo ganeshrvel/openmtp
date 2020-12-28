@@ -38,9 +38,9 @@ class HelpPhoneNotRecognized extends PureComponent {
   };
 
   RenderBasicConnection = () => {
-    this.hotplugSetting = `Check if 'Enable auto device detection (USB Hotplug)' is enabled under Settings > General Tab`;
+    const { classes: styles } = this.props;
 
-    const deviceLabel = DEVICES_LABEL[DEVICE_TYPE.mtp];
+    this.hotplugSetting = `Check if 'Enable auto device detection (USB Hotplug)' is enabled under Settings > General Tab`;
 
     return (
       <>
@@ -63,14 +63,33 @@ class HelpPhoneNotRecognized extends PureComponent {
           <ListItemText
             primary="On your device, tap the 'Charging this device via
                   USB' notification"
-            secondary={`Skip this step if ${APP_NAME} detects your ${deviceLabel.toLowerCase()} automatically`}
+            secondary={
+              <>
+                <img
+                  src={imgsrc(`help/usb-notification-charging-via-usb.png`)}
+                  alt="Use USB for"
+                  className={styles.imagePlaceholder}
+                />
+              </>
+            }
           />
         </ListItem>
         <ListItem>
           <ListItemIcon>
             <RadioButtonCheckedIcon />
           </ListItemIcon>
-          <ListItemText primary="Under 'Use USB for' select File Transfer" />
+          <ListItemText
+            primary="Under 'Use USB for' select File Transfer"
+            secondary={
+              <>
+                <img
+                  src={imgsrc(`help/transfer-media-permission.png`)}
+                  alt="Allow access to the device data"
+                  className={styles.imagePlaceholder}
+                />
+              </>
+            }
+          />
         </ListItem>
         <ListItem>
           <ListItemIcon>
@@ -106,7 +125,7 @@ class HelpPhoneNotRecognized extends PureComponent {
           <Accordion className={styles.expansionRoot}>
             {/* <----- my device is not connecting -----> */}
 
-            <AccordionSummary expandIcon={<ExpandMoreIcon />} Accordion>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography className={styles.heading}>
                 {`My ${deviceLabel.toLowerCase()} is not connecting`}
               </Typography>
@@ -121,7 +140,7 @@ class HelpPhoneNotRecognized extends PureComponent {
           {/* <----- i keep seeing setting up device -----> */}
 
           <Accordion className={styles.expansionRoot}>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />} Accordion>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography className={styles.heading}>
                 {`I keep seeing "${mtpErrors[[MTP_ERROR.ErrorDeviceSetup]]}"`}
               </Typography>
@@ -135,7 +154,7 @@ class HelpPhoneNotRecognized extends PureComponent {
 
           {/* <----- i keep seeing allow storage access -----> */}
           <Accordion className={styles.expansionRoot}>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />} Accordion>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography className={styles.heading}>
                 {`I keep seeing "${
                   mtpErrors[[MTP_ERROR.ErrorAllowStorageAccess]]
@@ -162,7 +181,7 @@ class HelpPhoneNotRecognized extends PureComponent {
                         <img
                           src={imgsrc(`help/allow-data-access.png`)}
                           alt="Allow access to the device data"
-                          className={styles.allowDeviceData}
+                          className={styles.imagePlaceholder}
                         />
                       </>
                     }
@@ -173,7 +192,46 @@ class HelpPhoneNotRecognized extends PureComponent {
                     <FiberManualRecordIcon />
                   </ListItemIcon>
                   <ListItemText
-                    primary={`If you don't see the "Allow access to the device data" pop up then reconnect your phone and try again`}
+                    primary={`If you don't see the "Allow access to the device data" pop up then reconnect your phone`}
+                    secondary={`Follow the instructions below if your ${deviceLabel.toLowerCase()} is still undetected`}
+                  />
+                </ListItem>
+
+                <ListItem>
+                  <ListItemIcon>
+                    <TouchAppIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary="On your device, tap the 'Charging this device via
+                  USB' notification"
+                    secondary={
+                      <>
+                        <img
+                          src={imgsrc(
+                            `help/usb-notification-charging-via-usb.png`
+                          )}
+                          alt="Use USB for"
+                          className={styles.imagePlaceholder}
+                        />
+                      </>
+                    }
+                  />
+                </ListItem>
+                <ListItem>
+                  <ListItemIcon>
+                    <RadioButtonCheckedIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary="Under 'Use USB for' select File Transfer"
+                    secondary={
+                      <>
+                        <img
+                          src={imgsrc(`help/transfer-media-permission.png`)}
+                          alt="Allow access to the device data"
+                          className={styles.imagePlaceholder}
+                        />
+                      </>
+                    }
                   />
                 </ListItem>
 
