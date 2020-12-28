@@ -5,6 +5,7 @@ import { loadProfileErrorHtml } from '../templates/loadProfileError';
 import { APP_TITLE } from '../constants/meta';
 import { undefinedOrNull } from '../utils/funcs';
 import { PRIVACY_POLICY_PAGE_TITLE } from '../templates/privacyPolicyPage';
+import { HELP_FAQS_PAGE_TITLE } from '../templates/helpFaqsPage';
 import { APP_FEATURES_PAGE_TITLE } from '../templates/appFeaturesPage';
 import { KEYBOARD_SHORTCUTS_PAGE_TITLE } from '../templates/keyboardShortcutsPage';
 import { getWindowBackgroundColor } from './windowHelper';
@@ -13,6 +14,7 @@ import { REPORT_BUGS_PAGE_TITLE } from '../templates/generateErrorReport';
 let _nonBootableDeviceWindow = null;
 let _reportBugsWindow = null;
 let _privacyPolicyWindow = null;
+let _helpFaqsWindow = null;
 let _appUpdateAvailableWindow = null;
 let _appFeaturesWindow = null;
 let _keyboardShortcutsWindow = null;
@@ -483,6 +485,91 @@ export const keyboardShortcutsWindow = (
     return _keyboardShortcutsWindow;
   } catch (e) {
     log.error(e, `createWindows -> keyboardShortcutsWindow`);
+  }
+};
+
+/**
+ * Help FAQs Policy Window
+ */
+
+const helpFaqsCreateWindow = (isRenderedPage = false) => {
+  const config = {
+    width: 800,
+    height: 600,
+    minWidth: 600,
+    minHeight: 400,
+    show: false,
+    resizable: true,
+    title: `${APP_TITLE}`,
+    minimizable: true,
+    fullscreenable: true,
+    webPreferences: {
+      nodeIntegration: true,
+      enableRemoteModule: true,
+    },
+    backgroundColor: getWindowBackgroundColor(),
+  };
+
+  // incoming call from a rendered page
+  if (isRenderedPage) {
+    const allWindows = remote.BrowserWindow.getAllWindows();
+    const existingWindow = loadExistingWindow(allWindows, HELP_FAQS_PAGE_TITLE);
+
+    return {
+      windowObj: existingWindow ?? new remote.BrowserWindow(config),
+      isExisting: !!existingWindow,
+    };
+  }
+
+  // incoming call from the main process
+  const allWindows = BrowserWindow.getAllWindows();
+  const existingWindow = loadExistingWindow(allWindows, HELP_FAQS_PAGE_TITLE);
+
+  return {
+    windowObj: existingWindow ?? new BrowserWindow(config),
+    isExisting: !!existingWindow,
+  };
+};
+
+export const helpFaqsWindow = (isRenderedPage = false, focus = true) => {
+  try {
+    if (_helpFaqsWindow) {
+      if (focus) {
+        _helpFaqsWindow.focus();
+        _helpFaqsWindow.show();
+      }
+
+      return _helpFaqsWindow;
+    }
+
+    // show the existing _helpFaqsWindow
+    const { windowObj, isExisting } = helpFaqsCreateWindow(isRenderedPage);
+
+    // return the existing windowObj object
+    if (isExisting) {
+      return windowObj;
+    }
+
+    _helpFaqsWindow = windowObj;
+    _helpFaqsWindow.loadURL(`${PATHS.loadUrlPath}#helpFaqsPage`);
+    _helpFaqsWindow.webContents.on('did-finish-load', () => {
+      if (focus) {
+        _helpFaqsWindow.show();
+        _helpFaqsWindow.focus();
+      }
+    });
+
+    _helpFaqsWindow.onerror = (error) => {
+      log.error(error, `createWindows -> helpFaqsWindow -> onerror`);
+    };
+
+    _helpFaqsWindow.on('closed', () => {
+      _helpFaqsWindow = null;
+    });
+
+    return _helpFaqsWindow;
+  } catch (e) {
+    log.error(e, `createWindows -> helpFaqsWindow`);
   }
 };
 

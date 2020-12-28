@@ -1,11 +1,7 @@
 import mixins from '../../../styles/js/mixins';
 
 export const styles = (theme) => ({
-  root: {
-    minHeight: 400,
-    overflowY: 'auto',
-    maxHeight: 400,
-  },
+  root: {},
   expansionRoot: {
     background: theme.palette.tableHeaderFooterBgColor,
   },

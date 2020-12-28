@@ -9,6 +9,7 @@ import PrivacyPolicyPage from '../containers/PrivacyPolicyPage/Loadable';
 import AppFeaturesPage from '../containers/AppFeaturesPage/Loadable';
 import KeyboardShortcutsPage from '../containers/KeyboardShortcutsPage/Loadable';
 import NotFoundPage from '../containers/NotFoundPage/Loadable';
+import HelpFaqsPage from '../containers/HelpFaqsPage/Loadable';
 
 export const routes = {
   Home: {
@@ -35,6 +36,11 @@ export const routes = {
     path: '/privacyPolicyPage',
     exact: true,
     component: PrivacyPolicyPage,
+  },
+  HelpFaqsPage: {
+    path: '/helpFaqsPage',
+    exact: true,
+    component: HelpFaqsPage,
   },
   AppFeaturesPage: {
     path: '/appFeaturesPage',

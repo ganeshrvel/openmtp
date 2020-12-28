@@ -32,6 +32,7 @@ const hotplugSettingText = `Check if 'Enable auto device detection (USB Hotplug)
 const deviceLabel = DEVICES_LABEL[DEVICE_TYPE.mtp];
 
 class HelpPhoneNotRecognized extends PureComponent {
+  //todo
   _handleGithubThreadTap = (events) => {
     openExternalUrl(`${APP_GITHUB_ISSUES_URL}8`, events);
 
