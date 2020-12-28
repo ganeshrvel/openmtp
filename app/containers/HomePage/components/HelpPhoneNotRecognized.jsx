@@ -185,7 +185,7 @@ class HelpPhoneNotRecognized extends PureComponent {
     );
   };
 
-  RenderBasicConnection = () => {
+  RenderBasicConnection = ({ showUnplugPhone = true }) => {
     const { RenderFileTransfer } = this;
 
     return (
@@ -196,12 +196,15 @@ class HelpPhoneNotRecognized extends PureComponent {
           </ListItemIcon>
           <ListItemText primary="Unlock your Android device" />
         </ListItem>
-        <ListItem>
-          <ListItemIcon>
-            <UsbIcon />
-          </ListItemIcon>
-          <ListItemText primary="Unplug your phone and reconnect it" />
-        </ListItem>
+
+        {showUnplugPhone && (
+          <ListItem>
+            <ListItemIcon>
+              <UsbIcon />
+            </ListItemIcon>
+            <ListItemText primary="Unplug your phone and reconnect it" />
+          </ListItem>
+        )}
 
         <RenderFileTransfer />
 
@@ -347,6 +350,36 @@ class HelpPhoneNotRecognized extends PureComponent {
             <AccordionDetails>
               <List component="div" disablePadding>
                 <RenderRefreshButtonIsStuck />
+              </List>
+            </AccordionDetails>
+          </Accordion>
+
+          {/* <----- i keep seeing multiple devices error -----> */}
+          <Accordion className={styles.expansionRoot}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography className={styles.heading}>
+                {`I keep seeing "${
+                  mtpErrors[[MTP_ERROR.ErrorMultipleDevice]]
+                }"`}
+              </Typography>
+            </AccordionSummary>
+
+            <AccordionDetails>
+              <List component="div" disablePadding>
+                <ListItem>
+                  <ListItemIcon>
+                    <FiberManualRecordIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Unplug all your MTP devices" />
+                </ListItem>
+                <ListItem>
+                  <ListItemIcon>
+                    <UsbIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Plug your MTP devices" />
+                </ListItem>
+
+                <RenderBasicConnection showUnplugPhone={false} />
               </List>
             </AccordionDetails>
           </Accordion>
