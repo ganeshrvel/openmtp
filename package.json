@@ -193,7 +193,6 @@
     "os": "^0.1.1",
     "path": "^0.12.7",
     "prop-types": "^15.7.2",
-    "ps-list": "^7.2.0",
     "react": "^17.0.1",
     "react-dom": "npm:@hot-loader/react-dom",
     "react-helmet": "^6.1.0",

@@ -112,22 +112,22 @@ export const _processKalamMtpBuffer = async ({ error, stderr }) => {
         stderr !== MTP_ERROR.ErrorDeviceChanged
       );
     }
+
+    const _isGoogleAndroidFileTransferActive = await isGoogleAndroidFileTransferActive();
+
+    if (_isGoogleAndroidFileTransferActive) {
+      return {
+        error: googleAndroidFileTransferIsActive,
+        throwAlert: true,
+        logError: true,
+        mtpStatus: false,
+      };
+    }
   }
 
   switch (stderr) {
     /* No MTP device found */
     case MTP_ERROR.ErrorMtpDetectFailed:
-      const _isGoogleAndroidFileTransferActive = await isGoogleAndroidFileTransferActive();
-
-      if (_isGoogleAndroidFileTransferActive) {
-        return {
-          error: googleAndroidFileTransferIsActive,
-          throwAlert: true,
-          logError: true,
-          mtpStatus: false,
-        };
-      }
-
       return {
         error: processedErrorValue,
         throwAlert: false,
