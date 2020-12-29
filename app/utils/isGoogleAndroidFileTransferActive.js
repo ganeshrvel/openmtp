@@ -14,7 +14,7 @@ export const isProcessRunning = (query) => {
       cmd = `tasklist`;
       break;
     case 'darwin':
-      cmd = `pgrep -fil "${query}"`;
+      cmd = `ps aux | grep "${query}" | grep -v grep`;
       break;
     case 'linux':
       cmd = `ps -A`;
@@ -25,17 +25,13 @@ export const isProcessRunning = (query) => {
 
   return new Promise((resolve) => {
     exec(cmd, (err, stdout, stderr) => {
-      console.log('err', err);
-      console.log('stderr', stderr);
-      console.log('stdout', stdout);
-
-      if (err?.code === 3) {
+      if (err?.code > 1) {
         log.error(err, 'isProcessRunning -> err');
 
         return resolve(false);
       }
 
-      if (stderr?.code === 3) {
+      if (err?.code > 1) {
         log.error(stderr, 'isProcessRunning -> stderr');
 
         return resolve(false);

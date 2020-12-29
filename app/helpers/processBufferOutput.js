@@ -114,10 +114,6 @@ export const _processKalamMtpBuffer = async ({ error, stderr }) => {
     }
 
     const _isGoogleAndroidFileTransferActive = await isGoogleAndroidFileTransferActive();
-    console.log(
-      '_isGoogleAndroidFileTransferActive',
-      _isGoogleAndroidFileTransferActive
-    );
 
     if (_isGoogleAndroidFileTransferActive) {
       return {
