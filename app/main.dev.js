@@ -133,9 +133,9 @@ if (!isDeviceBootable) {
 
   const createWindow = async () => {
     try {
-      if (IS_DEV || DEBUG_PROD) {
+      //if (IS_DEV || DEBUG_PROD) {
         await installExtensions();
-      }
+      //}
 
       mainWindow = new BrowserWindow({
         title: `${APP_TITLE}`,
