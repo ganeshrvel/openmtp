@@ -23,8 +23,8 @@ class FileExplorerController {
     // events related to local disk actions
     if (deviceType === DEVICE_TYPE.local) {
       const { error: localError } = await processLocalBuffer({
-        error: result.error,
-        stderr: result.stderr,
+        error: result?.error,
+        stderr: result?.stderr,
       });
 
       if (localError) {
@@ -38,8 +38,8 @@ class FileExplorerController {
         // send out an error event
         await analyticsService.sendEvent(_eventKey, {
           time: unixTimestampNow(),
-          stderr: result.stderr,
-          error: result.error,
+          stderr: result?.stderr,
+          error: result?.error,
         });
 
         return;
@@ -57,7 +57,7 @@ class FileExplorerController {
 
       if (attachData) {
         data = {
-          data: result.data,
+          data: result?.data,
         };
       }
 
@@ -72,8 +72,8 @@ class FileExplorerController {
     // events related to mtp actions
     const mtpMode = getMtpModeSetting();
     const { mtpStatus, error: mtpError } = await processMtpBuffer({
-      error: result.error,
-      stderr: result.stderr,
+      error: result?.error,
+      stderr: result?.stderr,
       mtpMode,
     });
 
@@ -90,8 +90,8 @@ class FileExplorerController {
         time: unixTimestampNow(),
         'MTP Status': mtpStatus,
         'MTP Mode': mtpMode,
-        stderr: result.stderr,
-        error: result.error,
+        stderr: result?.stderr,
+        error: result?.error,
       });
 
       return;
@@ -109,7 +109,7 @@ class FileExplorerController {
 
     if (attachData) {
       data = {
-        data: result.data,
+        data: result?.data,
       };
     }
 
