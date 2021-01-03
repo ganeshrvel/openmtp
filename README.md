@@ -33,7 +33,7 @@ Countless searches to find an app to solve these problems and failing to find on
 * Download the [Latest Version](https://openmtp.ganeshrvel.com/?downloadApp=github&release=stable&platform=mac 'Latest Version')
 
 * Using Homebrew Cask
-  * ```brew cask install openmtp```
+  * ```brew install openmtp --cask```
 
 * Find the latest *dmg* file from [GitHub Releases](https://github.com/ganeshrvel/openmtp/releases "GitHub Releases")
 
@@ -213,7 +213,9 @@ Samsung devices aren't supported yet, follow these Github threads for any update
 
 - App logo was contributed by [Shubhendu Mitra](https://www.linkedin.com/in/shubhendum/ "Shubhendu Mitra - LinkedIn"). Make sure to check out more of his works on [Behance](https://www.behance.net/soponhara "Shubhendu Mitra - Behance").
 
-- Thanks to [Vladimir Menshakov](https://github.com/whoozle "Vladimir Menshakov") for [android-file-transfer-linux](https://github.com/whoozle/android-file-transfer-linux "android-file-transfer-linux") (the MTP legacy Kernel).
+- Thanks to [Vladimir Menshakov](https://github.com/whoozle "Vladimir Menshakov") for [android-file-transfer-linux](https://github.com/whoozle/android-file-transfer-linux "android-file-transfer-linux") (the MTP legacy Kernel)
+
+- Shoutout to [@yennsarah](https://github.com/yennsarah "yennsarah"), [@h0tk3y](https://github.com/h0tk3y), [@riginoommen](https://github.com/riginoommen "riginoommen"), [@AjithKumarvm](https://github.com/AjithKumarvm "AjithKumarvm"), [@kiranshaji555](https://github.com/kiranshaji555), Dick Cowan, Kjell Dankert, Thorolf E.R. Weißhuhn and to all other community members who helped me test the application.
 
 - This app was built upon [https://github.com/ganeshrvel/electron-react-redux-advanced-boilerplate](https://github.com/ganeshrvel/electron-react-redux-advanced-boilerplate "https://github.com/ganeshrvel/electron-react-redux-advanced-boilerplate") which is a heavily modified fork of [https://github.com/electron-react-boilerplate/electron-react-boilerplate](https://github.com/electron-react-boilerplate/electron-react-boilerplate "https://github.com/electron-react-boilerplate/electron-react-boilerplate").
 
