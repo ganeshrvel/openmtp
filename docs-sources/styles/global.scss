@@ -473,6 +473,10 @@ section.second {
       .feature-lists {
         cursor: default;
 
+        ul {
+          display: grid;
+        }
+
         li {
           display: inline-block;
         }
