@@ -151,9 +151,9 @@ if (!isDeviceBootable) {
         backgroundColor: getWindowBackgroundColor(),
       });
 
-      mainWindow.loadURL(`${PATHS.loadUrlPath}`);
+      mainWindow?.loadURL(`${PATHS.loadUrlPath}`);
 
-      mainWindow.webContents.on('did-finish-load', () => {
+      mainWindow?.webContents?.on('did-finish-load', () => {
         if (!mainWindow) {
           throw new Error(`"mainWindow" is not defined`);
         }
@@ -237,14 +237,22 @@ if (!isDeviceBootable) {
       usbDetect.startMonitoring();
 
       usbDetect.on('add', (device) => {
-        mainWindow.webContents.send(COMMUNICATION_EVENTS.usbHotplug, {
+        if (!mainWindow) {
+          return;
+        }
+
+        mainWindow?.webContents?.send(COMMUNICATION_EVENTS.usbHotplug, {
           device: JSON.stringify(device),
           eventName: USB_HOTPLUG_EVENTS.attach,
         });
       });
 
       usbDetect.on('remove', (device) => {
-        mainWindow.webContents.send(COMMUNICATION_EVENTS.usbHotplug, {
+        if (!mainWindow) {
+          return;
+        }
+
+        mainWindow?.webContents?.send(COMMUNICATION_EVENTS.usbHotplug, {
           device: JSON.stringify(device),
           eventName: USB_HOTPLUG_EVENTS.detach,
         });
@@ -291,7 +299,7 @@ if (!isDeviceBootable) {
       return;
     }
 
-    mainWindow.webContents.send('nativeThemeUpdated', {
+    mainWindow?.webContents?.send('nativeThemeUpdated', {
       shouldUseDarkColors: nativeTheme.shouldUseDarkColors,
     });
   });
