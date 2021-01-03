@@ -2,6 +2,7 @@
 
 import React, { Component, Fragment } from 'react';
 import * as path from 'path';
+import classnames from 'classnames';
 import Typography from '@material-ui/core/Typography';
 import {
   faGithub,
@@ -147,17 +148,17 @@ const socialMediaShareBtnsList = [
   },
   {
     enabled: true,
-    label: 'Buy me a Coffee',
-    url: BUY_ME_A_COFFEE_URL,
-    image: 'toolbar/buymeacoffee.png',
-    icon: null,
+    label: 'Paypal',
+    icon: faPaypal,
+    url: DONATE_PAYPAL_URL,
     invert: false,
   },
   {
     enabled: true,
-    label: 'Paypal',
-    icon: faPaypal,
-    url: DONATE_PAYPAL_URL,
+    label: 'Buy me a Coffee',
+    url: BUY_ME_A_COFFEE_URL,
+    image: 'toolbar/buymeacoffee.png',
+    icon: null,
     invert: false,
   },
 ];
@@ -2022,7 +2023,7 @@ class FileExplorer extends Component {
             <Typography className={styles.socialMediaShareTitle}>
               Liked using the App?
             </Typography>
-            <div className={styles.socialMediaShareBtnsWrapper}>
+            <div className={styles.socialMediaShareBtnsContainer}>
               {socialMediaShareBtnsList.map((a, index) => (
                 // eslint-disable-next-line react/no-array-index-key
                 <Tooltip key={index} title={a.label}>
@@ -2031,6 +2032,9 @@ class FileExplorer extends Component {
                       aria-label={a.label}
                       disabled={!a.enabled}
                       onClick={() => openExternalUrl(a.url)}
+                      className={classnames(styles.socialMediaBtnWrapper, {
+                        [styles.socialMediaBtnWrapperForImage]: !!a.image,
+                      })}
                     >
                       {a.image && (
                         <img

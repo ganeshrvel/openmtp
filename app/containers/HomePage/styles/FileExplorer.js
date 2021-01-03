@@ -6,9 +6,21 @@ export const styles = (theme) => ({
     fontSize: 11,
     fontWeight: 500,
   },
-  socialMediaShareBtnsWrapper: {
+  socialMediaShareBtnsContainer: {
     width: '100%',
     display: 'flex',
+    alignItems: 'center',
+  },
+  socialMediaBtnWrapper: {
+    width: 50,
+    height: 50,
+  },
+  socialMediaBtnWrapperForImage: {
+    padding: `7px !important`,
+    background: '#fff',
+    [`&:hover`]: {
+      background: `rgba(255, 255, 255, 0.85) !important`,
+    },
   },
   socialMediaShareBtn: {
     height: 22,
@@ -16,8 +28,8 @@ export const styles = (theme) => ({
     color: theme.palette.contrastPrimaryMainColor,
   },
   socialMediaShareBtnImages: {
-    height: 21,
-    width: 21,
+    height: 27,
+    width: 27,
   },
   imageBtn: {
     padding: `7px !important`,
