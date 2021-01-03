@@ -229,8 +229,8 @@ If you are interested in fixing issues and contributing directly to the code bas
 
 ### Support OpenMTP
 Help me keep the app FREE and open for all.
-PayPal: [paypal.me/ganeshrvel](https://paypal.me/ganeshrvel "https://paypal.me/ganeshrvel")
-Buy Me A Coffee: [buymeacoffee.com/ganeshrvel](https://buymeacoffee.com/ganeshrvel "https://buymeacoffee.com/ganeshrvel")
+- Donate Via PayPal: [paypal.me/ganeshrvel](https://paypal.me/ganeshrvel "https://paypal.me/ganeshrvel")
+- Buy Me A Coffee (UPI, PayPal, Credit/Debit Cards, Internet Banking): [buymeacoffee.com/ganeshrvel](https://buymeacoffee.com/ganeshrvel "https://buymeacoffee.com/ganeshrvel")
 
 ### Contacts
 Please feel free to contact me at ganeshrvel@outlook.com
