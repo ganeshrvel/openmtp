@@ -33,7 +33,28 @@ export const processMtpBuffer = async ({ error, stderr, mtpMode }) => {
   checkIf(mtpMode, 'inObjectValues', MTP_MODE);
 
   if (mtpMode === MTP_MODE.kalam) {
-    return _processKalamMtpBuffer({ error, stderr });
+    const result = await _processKalamMtpBuffer({ error, stderr });
+    const noMtpError = isNoMtpError({ error, stderr, mtpMode: MTP_MODE.kalam });
+
+    if (stderr || error) {
+      // do not report no mtp error
+      if (!noMtpError) {
+        log.doLog(
+          `MTP buffer o/p logging;${EOL}MTP Mode: ${
+            MTP_MODE.kalam
+          }${EOL}Raw error: ${(error ?? '').toString()}${EOL}Processed error: ${
+            result.error
+          }${EOL}Error type: ${stderr ?? ''}`,
+          'processKalamMtpBuffer',
+          null,
+          result.reportError === true,
+          // do not report 'device changed' error
+          stderr !== MTP_ERROR.ErrorDeviceChanged
+        );
+      }
+    }
+
+    return result;
   }
 
   return _processLegacyMtpBuffer({ error, stderr });
@@ -83,35 +104,21 @@ export const mtpErrors = {
   } has gone crazy! Try again.`,
 };
 
-// [stderr] variable will hold the kalam ffi errorTypes
-export const _processKalamMtpBuffer = async ({ error, stderr }) => {
+/**
+ *
+ * Helper function for processKalamMtpBuffer
+ *
+ * @param [stderr] variable will hold the kalam ffi errorTypes
+ * @return {Promise<{throwAlert: boolean, logError: boolean, mtpStatus: boolean, reportError: boolean, error: string}|{throwAlert: boolean, logError: boolean, mtpStatus: boolean, reportError: boolean, error: null}>}
+ * @private
+ */
+export const _processKalamMtpBuffer = async ({ stderr }) => {
   const googleAndroidFileTransferIsActive = `Quit 'Android File Transfer' app (by Google) and Refresh`;
-  const noMtpError = isNoMtpError({ error, stderr, mtpMode: MTP_MODE.kalam });
 
   let processedErrorValue = null;
 
   if (!undefinedOrNull(stderr)) {
     processedErrorValue = mtpErrors[stderr];
-  }
-
-  if (stderr || error) {
-    // do not report no mtp error
-    if (!noMtpError) {
-      log.doLog(
-        `MTP buffer o/p logging;${EOL}MTP Mode: ${
-          MTP_MODE.kalam
-        }${EOL}Raw error: ${(
-          error ?? ''
-        ).toString()}${EOL}Processed error: ${processedErrorValue}${EOL}Error type: ${
-          stderr ?? ''
-        }`,
-        'processKalamMtpBuffer',
-        null,
-        true,
-        // do not report 'device changed' error
-        stderr !== MTP_ERROR.ErrorDeviceChanged
-      );
-    }
   }
 
   switch (stderr) {
@@ -125,6 +132,7 @@ export const _processKalamMtpBuffer = async ({ error, stderr }) => {
           throwAlert: true,
           logError: true,
           mtpStatus: false,
+          reportError: false,
         };
       }
 
@@ -142,6 +150,7 @@ export const _processKalamMtpBuffer = async ({ error, stderr }) => {
         throwAlert: false,
         logError: false,
         mtpStatus: false,
+        reportError: false,
       };
 
     case MTP_ERROR.ErrorStorageFull:
@@ -150,6 +159,7 @@ export const _processKalamMtpBuffer = async ({ error, stderr }) => {
         throwAlert: true,
         logError: true,
         mtpStatus: false,
+        reportError: false,
       };
 
     case MTP_ERROR.ErrorNoStorage:
@@ -158,6 +168,7 @@ export const _processKalamMtpBuffer = async ({ error, stderr }) => {
         throwAlert: true,
         logError: true,
         mtpStatus: false,
+        reportError: true,
       };
 
     case MTP_ERROR.ErrorStorageInfo:
@@ -166,6 +177,7 @@ export const _processKalamMtpBuffer = async ({ error, stderr }) => {
         throwAlert: true,
         logError: true,
         mtpStatus: false,
+        reportError: true,
       };
 
     case MTP_ERROR.ErrorDeviceInfo:
@@ -174,6 +186,7 @@ export const _processKalamMtpBuffer = async ({ error, stderr }) => {
         throwAlert: true,
         logError: true,
         mtpStatus: false,
+        reportError: true,
       };
 
     case MTP_ERROR.ErrorMultipleDevice:
@@ -182,6 +195,7 @@ export const _processKalamMtpBuffer = async ({ error, stderr }) => {
         throwAlert: true,
         logError: true,
         mtpStatus: false,
+        reportError: false,
       };
 
     case MTP_ERROR.ErrorDeviceSetup:
@@ -190,6 +204,7 @@ export const _processKalamMtpBuffer = async ({ error, stderr }) => {
         throwAlert: true,
         logError: true,
         mtpStatus: false,
+        reportError: true,
       };
 
     case MTP_ERROR.ErrorSendObject:
@@ -198,6 +213,7 @@ export const _processKalamMtpBuffer = async ({ error, stderr }) => {
         throwAlert: true,
         logError: true,
         mtpStatus: true,
+        reportError: true,
       };
 
     case MTP_ERROR.ErrorFileObjectRead:
@@ -206,6 +222,7 @@ export const _processKalamMtpBuffer = async ({ error, stderr }) => {
         throwAlert: true,
         logError: true,
         mtpStatus: true,
+        reportError: true,
       };
 
     case MTP_ERROR.ErrorFileTransfer:
@@ -214,6 +231,7 @@ export const _processKalamMtpBuffer = async ({ error, stderr }) => {
         throwAlert: true,
         logError: true,
         mtpStatus: true,
+        reportError: true,
       };
 
     case MTP_ERROR.ErrorInvalidPath:
@@ -222,6 +240,7 @@ export const _processKalamMtpBuffer = async ({ error, stderr }) => {
         throwAlert: true,
         logError: true,
         mtpStatus: true,
+        reportError: true,
       };
 
     case MTP_ERROR.ErrorLocalFileRead:
@@ -230,6 +249,7 @@ export const _processKalamMtpBuffer = async ({ error, stderr }) => {
         throwAlert: true,
         logError: true,
         mtpStatus: true,
+        reportError: true,
       };
 
     case MTP_ERROR.ErrorFilePermission:
@@ -238,6 +258,7 @@ export const _processKalamMtpBuffer = async ({ error, stderr }) => {
         throwAlert: true,
         logError: true,
         mtpStatus: true,
+        reportError: true,
       };
 
     case MTP_ERROR.ErrorFileNotFound:
@@ -246,6 +267,7 @@ export const _processKalamMtpBuffer = async ({ error, stderr }) => {
         throwAlert: true,
         logError: true,
         mtpStatus: true,
+        reportError: false,
       };
 
     case MTP_ERROR.ErrorListDirectory:
@@ -254,6 +276,7 @@ export const _processKalamMtpBuffer = async ({ error, stderr }) => {
         throwAlert: true,
         logError: true,
         mtpStatus: true,
+        reportError: true,
       };
 
     case MTP_ERROR.ErrorAllowStorageAccess:
@@ -262,6 +285,7 @@ export const _processKalamMtpBuffer = async ({ error, stderr }) => {
         throwAlert: true,
         logError: true,
         mtpStatus: false,
+        reportError: false,
       };
 
     case MTP_ERROR.ErrorDeviceChanged:
@@ -270,6 +294,7 @@ export const _processKalamMtpBuffer = async ({ error, stderr }) => {
         throwAlert: false,
         logError: true,
         mtpStatus: false,
+        reportError: false,
       };
 
     case MTP_ERROR.ErrorMtpLockExists:
@@ -278,6 +303,7 @@ export const _processKalamMtpBuffer = async ({ error, stderr }) => {
         throwAlert: true,
         logError: true,
         mtpStatus: true,
+        reportError: false,
       };
 
     case MTP_ERROR.ErrorDeviceLocked:
@@ -286,6 +312,7 @@ export const _processKalamMtpBuffer = async ({ error, stderr }) => {
         throwAlert: true,
         logError: true,
         mtpStatus: false,
+        reportError: false,
       };
 
     case MTP_ERROR.ErrorGeneral:
@@ -295,10 +322,20 @@ export const _processKalamMtpBuffer = async ({ error, stderr }) => {
         throwAlert: true,
         logError: true,
         mtpStatus: true,
+        reportError: true,
       };
   }
 };
 
+/**
+ *
+ * Helper function for processLegacyMtpBuffer
+ *
+ * @param [error] - error
+ * @param [stderr] variable will hold the kalam ffi errorTypes
+ * @return {Promise<{throwAlert: boolean, logError: boolean, mtpStatus: boolean, reportError: boolean, error: string}|{throwAlert: boolean, logError: boolean, mtpStatus: boolean, reportError: boolean, error: null}>}
+ * @private
+ */
 export const _processLegacyMtpBuffer = async ({ error, stderr }) => {
   // Error string are used for partial error string matching
   // this will be later used to pick the appropriate error out from the [errorDictionary]
@@ -387,6 +424,7 @@ export const _processLegacyMtpBuffer = async ({ error, stderr }) => {
         throwAlert: true,
         logError: true,
         mtpStatus: false,
+        reportError: false,
       };
     }
 
@@ -395,6 +433,8 @@ export const _processLegacyMtpBuffer = async ({ error, stderr }) => {
       throwAlert: false,
       logError: false,
       mtpStatus: false,
+
+      reportError: false,
     };
   }
 
@@ -407,6 +447,8 @@ export const _processLegacyMtpBuffer = async ({ error, stderr }) => {
       throwAlert: true,
       logError: true,
       mtpStatus: false,
+
+      reportError: false,
     };
   }
 
@@ -419,6 +461,8 @@ export const _processLegacyMtpBuffer = async ({ error, stderr }) => {
       throwAlert: true,
       logError: true,
       mtpStatus: false,
+
+      reportError: true,
     };
   }
 
@@ -431,6 +475,7 @@ export const _processLegacyMtpBuffer = async ({ error, stderr }) => {
       throwAlert: true,
       logError: true,
       mtpStatus: false,
+      reportError: true,
     };
   }
 
@@ -443,6 +488,7 @@ export const _processLegacyMtpBuffer = async ({ error, stderr }) => {
       throwAlert: true,
       logError: true,
       mtpStatus: false,
+      reportError: true,
     };
   }
 
@@ -456,6 +502,7 @@ export const _processLegacyMtpBuffer = async ({ error, stderr }) => {
       throwAlert: true,
       logError: true,
       mtpStatus: false,
+      reportError: true,
     };
   }
 
@@ -468,6 +515,7 @@ export const _processLegacyMtpBuffer = async ({ error, stderr }) => {
       throwAlert: true,
       logError: true,
       mtpStatus: true,
+      reportError: true,
     };
   }
 
@@ -480,6 +528,7 @@ export const _processLegacyMtpBuffer = async ({ error, stderr }) => {
       throwAlert: true,
       logError: true,
       mtpStatus: true,
+      reportError: true,
     };
   }
 
@@ -492,6 +541,7 @@ export const _processLegacyMtpBuffer = async ({ error, stderr }) => {
       throwAlert: true,
       logError: true,
       mtpStatus: true,
+      reportError: true,
     };
   }
 
@@ -505,6 +555,7 @@ export const _processLegacyMtpBuffer = async ({ error, stderr }) => {
       throwAlert: true,
       logError: true,
       mtpStatus: true,
+      reportError: true,
     };
   }
 
@@ -517,6 +568,7 @@ export const _processLegacyMtpBuffer = async ({ error, stderr }) => {
       throwAlert: true,
       logError: true,
       mtpStatus: true,
+      reportError: true,
     };
   }
 
@@ -526,6 +578,7 @@ export const _processLegacyMtpBuffer = async ({ error, stderr }) => {
     throwAlert: true,
     logError: true,
     mtpStatus: true,
+    reportError: true,
   };
 };
 

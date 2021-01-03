@@ -16,7 +16,7 @@ const queryToRegex = (str) => {
 };
 
 export const isProcessRunning = (query) => {
-  checkIf(checkIf, 'string');
+  checkIf(query, 'string');
 
   return new Promise((resolve) => {
     let stdout = '';

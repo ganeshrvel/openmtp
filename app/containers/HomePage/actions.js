@@ -530,6 +530,7 @@ export function churnMtpBuffer({
         error: mtpError,
         throwAlert: mtpThrowAlert,
         logError: mtpLogError,
+        reportError: mtpReportError,
       } = await processMtpBuffer({ error, stderr, mtpMode });
 
       dispatch(
@@ -555,7 +556,7 @@ export function churnMtpBuffer({
           'churnMtpBuffer.mtpError',
           mtpLogError,
           true,
-          true,
+          mtpReportError === true,
           false
         );
         log.error(error, 'churnMtpBuffer.error', true, true, false);
