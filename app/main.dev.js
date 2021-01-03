@@ -141,7 +141,7 @@ if (!isDeviceBootable) {
         title: `${APP_TITLE}`,
         center: true,
         show: false,
-        minWidth: 854,
+        minWidth: 880,
         minHeight: 640,
         titleBarStyle: 'hidden',
         webPreferences: {

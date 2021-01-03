@@ -12,6 +12,7 @@ export const styles = (theme) => {
     },
     toolbarInnerWrapper: {
       display: 'flex',
+      alignItems: 'center',
     },
     toolbar: {
       width: `auto`,
@@ -41,11 +42,11 @@ export const styles = (theme) => {
       ...mixins({ theme }).noselect,
     },
     navBtnImages: {
-      height: 32,
-      width: `32px !important`,
+      height: 27,
+      width: `27px !important`,
     },
     imageBtn: {
-      padding: `7px !important`,
+      padding: `10px !important`,
       background: '#fff',
       [`&:hover`]: {
         background: `rgba(255, 255, 255, 0.85) !important`,

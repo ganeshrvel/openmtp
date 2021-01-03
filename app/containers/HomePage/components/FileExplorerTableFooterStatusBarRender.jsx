@@ -57,7 +57,9 @@ class FileExplorerTableFooterStatusBarRender extends PureComponent {
       <Fragment>
         <FontAwesomeIcon icon={faMobile} title={deviceType} />
         <span className={styles.deviceTypeWrapper}>
-          {mtpDevice?.info?.mtpDeviceInfo?.Model ?? DEVICES_LABEL[deviceType]}
+          {mtpDevice?.isAvailable && mtpDevice?.info?.mtpDeviceInfo
+            ? mtpDevice?.info?.mtpDeviceInfo?.Model
+            : DEVICES_LABEL[deviceType]}
           <span> - </span>
         </span>
       </Fragment>

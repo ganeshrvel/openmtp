@@ -15,6 +15,10 @@ import {
   FILE_EXPLORER_DEFAULT_FOCUSSED_DEVICE_TYPE,
 } from '../../constants';
 import { DEVICE_TYPE } from '../../enums';
+import {
+  buyMeACoffeeText,
+  donateUsingPayPal,
+} from '../../templates/fileExplorer';
 
 export const initialState = {
   focussedFileExplorerDeviceType: {
@@ -115,15 +119,19 @@ export const initialState = {
       },
       paypal: {
         enabled: true,
-        label: 'Donate using PayPal',
+        label: donateUsingPayPal,
         icon: faPaypal,
       },
       buyMeACoffee: {
         enabled: true,
-        label:
-          'Buy me a Coffee (UPI, PayPal, Credit/Debit Cards, Internet Banking)',
+        label: buyMeACoffeeText,
         image: 'toolbar/buymeacoffee.png',
         icon: null,
+      },
+      settings: {
+        enabled: true,
+        label: 'Settings',
+        icon: faCog,
       },
     },
   },

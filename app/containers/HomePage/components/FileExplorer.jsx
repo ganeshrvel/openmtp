@@ -111,6 +111,10 @@ import { COMMUNICATION_EVENTS } from '../../../enums/communicationEvents';
 import { reportBugsWindow } from '../../../helpers/createWindows';
 import { analyticsService } from '../../../services/analytics';
 import { EVENT_TYPE } from '../../../enums/events';
+import {
+  buyMeACoffeeText,
+  donateUsingPayPal,
+} from '../../../templates/fileExplorer';
 
 const { Menu, getCurrentWindow } = remote;
 
@@ -120,15 +124,14 @@ let multipleSelectDirection = null;
 const donationBtnsList = [
   {
     enabled: true,
-    label: 'Donate using PayPal',
+    label: donateUsingPayPal,
     icon: faPaypal,
     url: DONATE_PAYPAL_URL,
     invert: false,
   },
   {
     enabled: true,
-    label:
-      'Buy me a Coffee (UPI, PayPal, Credit/Debit Cards, Internet Banking)',
+    label: buyMeACoffeeText,
     url: BUY_ME_A_COFFEE_URL,
     image: 'toolbar/buymeacoffee.png',
     icon: null,
