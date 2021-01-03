@@ -196,9 +196,7 @@ $ set UPGRADE_EXTENSIONS=1 && npm run dev
 
 ### Troubleshooting
 #### Your device is not recognized
-Samsung devices aren't supported yet, follow these Github threads for any updates on this issue:
-- https://github.com/ganeshrvel/openmtp/issues/8
-- https://github.com/ganeshrvel/openmtp/issues/118
+- Raise an issue if your device is undetected: https://github.com/ganeshrvel/openmtp/issues/new?template=contribute.md
 
 #### **Notarizing Electron apps throws - “You must first sign the relevant contracts online. (1048)” error**
 
