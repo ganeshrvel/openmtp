@@ -38,6 +38,9 @@ class PrivacyPolicyPage extends Component {
             <span>Effective date: December 28, 2018</span>
           </p>
           <p>
+            <span>Updated date: January 3, 2021</span>
+          </p>
+          <p>
             <span>
               {APP_NAME} (&quot;us&quot;, &quot;we&quot;, or &quot;our&quot;)
               operates the app (hereinafter referred to as the
@@ -142,7 +145,7 @@ class PrivacyPolicyPage extends Component {
             </span>
           </p>
           <p>
-            <span>Examples of LocalStorage files we use:</span>
+            <span>LocalStorage files we used in the app:</span>
           </p>
           <ul>
             <li>
@@ -315,7 +318,14 @@ class PrivacyPolicyPage extends Component {
           <p>
             <span>
               We may use third-party Service Providers to monitor and analyze
-              the use of our Service.
+              the use of our Service. These information will be help us squash
+              some bugs and improve the user experience.
+            </span>
+          </p>
+          <p>
+            <span>
+              {`We don't send any of your personal information to these third party services. We send an anonymized, hashed and irreversible token to these services to analyze
+              the use of our Service.`}
             </span>
           </p>
           <p>
@@ -334,8 +344,7 @@ class PrivacyPolicyPage extends Component {
           </p>
           <p>
             <span>
-              For more information on the privacy practices of Google, please
-              visit the Google Privacy &amp; Terms web page:&nbsp;
+              For more information visit:&nbsp;
               <a
                 onClick={(events) => {
                   openExternalUrl(
@@ -345,6 +354,52 @@ class PrivacyPolicyPage extends Component {
                 }}
               >
                 https://policies.google.com/privacy?hl=en
+              </a>
+            </span>
+          </p>
+          <p>
+            <span>Mixpanel</span>
+          </p>
+          <p>
+            <span>
+              Mixpanel is a web analytics service offered by Mixpanel Inc. that
+              tracks and reports website/app traffic. Mixpanel uses the data
+              collected to track and monitor the use of our Service.
+            </span>
+          </p>
+          <p>
+            <span>
+              For more information visit:&nbsp;
+              <a
+                onClick={(events) => {
+                  openExternalUrl(
+                    'https://mixpanel.com/legal/privacy-policy/',
+                    events
+                  );
+                }}
+              >
+                https://mixpanel.com/legal/privacy-policy/
+              </a>
+            </span>
+          </p>
+          <p>
+            <span>Sentry</span>
+          </p>
+          <p>
+            <span>
+              Sentry is a service that will help us to monitor and fix
+              bugs/crashes in the app.
+            </span>
+          </p>
+          <p>
+            <span>
+              For more information visit:&nbsp;
+              <a
+                onClick={(events) => {
+                  openExternalUrl('https://sentry.io/privacy/', events);
+                }}
+              >
+                https://sentry.io/privacy/
               </a>
             </span>
           </p>
