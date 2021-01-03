@@ -494,7 +494,7 @@ export const keyboardShortcutsWindow = (
 
 const helpFaqsCreateWindow = (isRenderedPage = false) => {
   const config = {
-    width: 800,
+    width: 920,
     height: 800,
     minWidth: 600,
     minHeight: 400,
