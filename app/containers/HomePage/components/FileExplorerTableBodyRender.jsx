@@ -1,25 +1,23 @@
-'use strict';
-
 import React, { PureComponent, Fragment } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import FileExplorerTableHeadRender from './FileExplorerTableHeadRender';
 import FileExplorerTableEmptyRowRender from './FileExplorerTableBodyEmptyRender';
-import { DEVICES_TYPE_CONST } from '../../../constants';
 import FileExplorerTableBodyGridWrapperRender from './FileExplorerTableBodyGridWrapperRender';
 import FileExplorerTableBodyListWrapperRender from './FileExplorerTableBodyListWrapperRender';
 import { styles } from '../styles/FileExplorerTableBodyRender';
+import { DEVICE_TYPE, FILE_EXPLORER_VIEW_TYPE } from '../../../enums';
 
 class FileExplorerTableBodyRender extends PureComponent {
-  isSelected = path => {
+  isSelected = (path) => {
     const { directoryLists, deviceType } = this.props;
     const _directoryLists = directoryLists[deviceType].queue.selected;
 
     return _directoryLists.indexOf(path) !== -1;
   };
 
-  ListingSwitcher = (type = 'grid') => {
+  ListingSwitcher = (type = FILE_EXPLORER_VIEW_TYPE.grid) => {
     const { deviceType, directoryLists, tableSort } = this.props;
     const { nodes, order, orderBy } = directoryLists[deviceType];
     const _eventTarget = 'tableCellTarget';
@@ -28,7 +26,7 @@ class FileExplorerTableBodyRender extends PureComponent {
     const { classes, ...parentProps } = this.props;
 
     switch (type) {
-      case 'grid':
+      case FILE_EXPLORER_VIEW_TYPE.grid:
       default:
         return (
           <FileExplorerTableBodyGridWrapperRender
@@ -36,21 +34,21 @@ class FileExplorerTableBodyRender extends PureComponent {
             tableSort={tableSort({
               nodes,
               order,
-              orderBy
+              orderBy,
             })}
             _eventTarget={_eventTarget}
             isSelected={this.isSelected}
           />
         );
 
-      case 'list':
+      case FILE_EXPLORER_VIEW_TYPE.list:
         return (
           <FileExplorerTableBodyListWrapperRender
             {...parentProps}
             tableSort={tableSort({
               nodes,
               order,
-              orderBy
+              orderBy,
             })}
             _eventTarget={_eventTarget}
             isSelected={this.isSelected}
@@ -72,12 +70,12 @@ class FileExplorerTableBodyRender extends PureComponent {
       onRequestSort,
       onContextMenuClick,
       onIsDraggable,
-      onDragStart
+      onDragStart,
     } = this.props;
     const { nodes, order, orderBy, queue } = directoryLists[deviceType];
     const { selected } = queue;
     const emptyRows = nodes.length < 1;
-    const isMtp = deviceType === DEVICES_TYPE_CONST.mtp;
+    const isMtp = deviceType === DEVICE_TYPE.mtp;
 
     return (
       <Fragment>
@@ -93,9 +91,9 @@ class FileExplorerTableBodyRender extends PureComponent {
           />
           <TableBody
             draggable={onIsDraggable(deviceType)}
-            onDragStart={event => {
+            onDragStart={(event) => {
               onDragStart(event, {
-                sourceDeviceType: deviceType
+                sourceDeviceType: deviceType,
               });
             }}
           >

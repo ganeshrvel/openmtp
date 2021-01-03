@@ -1,5 +1,3 @@
-'use strict';
-
 import React, { PureComponent, Fragment } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -11,18 +9,29 @@ import Divider from '@material-ui/core/Divider';
 import FolderIcon from '@material-ui/icons/Folder';
 import { styles } from '../styles/SidebarAreaPaneLists';
 import { quickHash } from '../../../utils/funcs';
+import { analyticsService } from '../../../services/analytics';
+import { EVENT_TYPE } from '../../../enums/events';
 
 class SidebarAreaPaneLists extends PureComponent {
-  _handleFetchDirList({ ...args }) {
-    const { onClickHandler } = this.props;
+  _handleListDirectory({ ...args }) {
+    const { onClickHandler, deviceType } = this.props;
+
     onClickHandler({ ...args });
+
+    const deviceTypeUpperCase = deviceType.toUpperCase();
+
+    analyticsService.sendEvent(
+      EVENT_TYPE[`${deviceTypeUpperCase}_SIDEBAR_PATH_TAP`],
+      {}
+    );
   }
 
-  ListsRender = listData => {
+  ListsRender = (listData) => {
     const { classes: styles, deviceType, currentBrowsePath } = this.props;
+
     return (
       <List component="nav" dense className={styles.listsBottom}>
-        {listData.map(item => {
+        {listData.map((item) => {
           return (
             <ListItem
               key={quickHash(item.path)}
@@ -30,14 +39,14 @@ class SidebarAreaPaneLists extends PureComponent {
               selected={currentBrowsePath === item.path}
               disabled={!item.enabled}
               onClick={() =>
-                this._handleFetchDirList({
+                this._handleListDirectory({
                   filePath: item.path,
                   deviceType,
-                  isSidemenu: true
+                  isSidemenu: true,
                 })
               }
             >
-              <ListItemIcon>
+              <ListItemIcon className={styles.listIcon}>
                 {item.icon === 'folder' && <FolderIcon />}
               </ListItemIcon>
               <ListItemText primary={item.label} />
@@ -55,7 +64,7 @@ class SidebarAreaPaneLists extends PureComponent {
     return (
       <div className={styles.listsWrapper}>
         <Typography variant="caption" className={styles.listsCaption}>
-          Favourites
+          Favorites
         </Typography>
         {sidebarTop.length > 1 && this.ListsRender(sidebarTop)}
 

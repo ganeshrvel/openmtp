@@ -1,57 +1,43 @@
-'use strict';
+import dayjs from 'dayjs';
+import advancedFormat from 'dayjs/plugin/advancedFormat';
 
-import moment from 'moment';
-
-export const dateNow = ({ monthInletters = false }) => {
-  let monthFormat = `MM`;
-  if (monthInletters) {
-    monthFormat = `MMM`;
-  }
-
-  return moment().format(`YYYY-${monthFormat}-DD`);
-};
+dayjs.extend(advancedFormat);
 
 export const yearMonthNow = ({ monthInletters = false }) => {
   let monthFormat = `MM`;
+
   if (monthInletters) {
     monthFormat = `MMM`;
   }
 
-  return moment().format(`YYYY-${monthFormat}`);
-};
-
-export const dateTimeNow = ({ monthInletters = false }) => {
-  let monthFormat = `MM`;
-  if (monthInletters) {
-    monthFormat = `MMM`;
-  }
-
-  return moment().format(`YYYY-${monthFormat}-DD HH:mm:ss`);
-};
-
-export const dateConvertUkStyle = ({ date, monthInletters = false }) => {
-  let monthFormat = `MM`;
-  if (monthInletters) {
-    monthFormat = `MMM`;
-  }
-
-  return moment(date).format(`DD-${monthFormat}-YYYY`);
+  return dayjs().format(`YYYY-${monthFormat}`);
 };
 
 export const dateTimeUnixTimestampNow = ({ monthInletters = false }) => {
   let monthFormat = `MM`;
+
   if (monthInletters) {
     monthFormat = `MMM`;
   }
 
-  return moment().format(`YYYY-${monthFormat}-DD HH:mm:ss (x)`);
+  return dayjs().format(`YYYY-${monthFormat}-DD HH:mm:ss (x)`);
+};
+
+export const dateNow = ({ monthInletters = false }) => {
+  let monthFormat = `MM`;
+
+  if (monthInletters) {
+    monthFormat = `MMM`;
+  }
+
+  return dayjs().format(`YYYY-${monthFormat}-DD`);
 };
 
 export const unixTimestampNow = () => {
-  return moment().format(`x`);
+  return dayjs().format(`x`);
 };
 
-export const msToTime = milliseconds => {
+export const msToTime = (milliseconds) => {
   const hours = milliseconds / (1000 * 60 * 60);
   const absoluteHours = Math.floor(hours);
   const h = absoluteHours > 9 ? absoluteHours : `0${absoluteHours}`;
@@ -68,8 +54,12 @@ export const msToTime = milliseconds => {
 };
 
 export const daysDiff = (startDate, endDate) => {
-  const start = moment(startDate, 'YYYY-MM');
-  const end = moment(endDate, 'YYYY-MM');
+  const start = dayjs(startDate, 'YYYY-MM-DD');
+  const end = dayjs(endDate, 'YYYY-MM-DD');
 
-  return moment.duration(start.diff(end)).asDays();
+  return start.diff(end, 'day');
+};
+
+export const appDateFormat = (dateTime) => {
+  return dayjs(dateTime).format('YYYY-MM-DD HH:mm:ss');
 };

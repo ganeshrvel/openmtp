@@ -1,5 +1,3 @@
-'use strict';
-
 import React, { PureComponent, Fragment } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
@@ -7,19 +5,30 @@ import Paper from '@material-ui/core/Paper';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import Tooltip from '@material-ui/core/Tooltip';
-import { sanitizePath } from '../../utils/paths';
 import { quickHash } from '../../utils/funcs';
 import { styles } from './styles';
+import { sanitizePath } from '../../utils/files';
+import { analyticsService } from '../../services/analytics';
+import { EVENT_TYPE } from '../../enums/events';
 
 class Breadcrumb extends PureComponent {
   _handleClickPath = (enabled, value, event) => {
-    const { onBreadcrumbPathClick } = this.props;
+    const { onBreadcrumbPathClick, deviceType } = this.props;
+
     event.preventDefault();
 
     if (!enabled) {
       return null;
     }
+
     onBreadcrumbPathClick({ path: value });
+
+    const deviceTypeUpperCase = deviceType.toUpperCase();
+
+    analyticsService.sendEvent(
+      EVENT_TYPE[`${deviceTypeUpperCase}_BREADCRUMB_PATH_TAP`],
+      {}
+    );
   };
 
   tokenizeCurrentBrowsePath(currentBrowsePath) {
@@ -39,18 +48,21 @@ class Breadcrumb extends PureComponent {
     currentBrowsePathBroken.map((a, index) => {
       const label = a;
       let _isCompressed = false;
+
       if (index === currentBrowsePathBrokenLength - 1) {
         _bold = true;
         _enabled = false;
       }
+
       if (a === '' && index === 0) {
         _currentBrowsePath.push({
           label: 'Root',
           path: '/',
           isCompressed: _isCompressed,
           enabled: _enabled,
-          bold: _bold
+          bold: _bold,
         });
+
         return null;
       }
 
@@ -67,7 +79,7 @@ class Breadcrumb extends PureComponent {
         path: `${currentBrowsePathBroken.slice(0, index + 1).join('/')}`,
         isCompressed: _isCompressed,
         enabled: _enabled,
-        bold: _bold
+        bold: _bold,
       });
     });
 
@@ -80,15 +92,17 @@ class Breadcrumb extends PureComponent {
 
     return tokenizeCurrentBrowsePath.map((item, index) => {
       const { label, path, isCompressed, enabled, bold } = item;
+
       if (isCompressed) {
         compressedCounter += 1;
       }
+
       return (
         <Fragment key={quickHash(path)}>
           {isCompressed ? (
             this.CompressedBreadcrumbCellRender({
               isCompressed,
-              compressedCounter
+              compressedCounter,
             })
           ) : (
             <Fragment>
@@ -103,9 +117,9 @@ class Breadcrumb extends PureComponent {
                 <Tooltip title={label}>
                   <a
                     className={classNames(styles.breadcrumbLiA, {
-                      [`& bold`]: bold
+                      [`& bold`]: bold,
                     })}
-                    onClick={event => {
+                    onClick={(event) => {
                       this._handleClickPath(enabled, path, event);
                     }}
                   >
@@ -122,6 +136,7 @@ class Breadcrumb extends PureComponent {
 
   CompressedBreadcrumbCellRender({ compressedCounter }) {
     const { classes: styles } = this.props;
+
     return compressedCounter < 2 ? (
       <span>
         <KeyboardArrowRightIcon className={styles.breadcrumbSeperator} />

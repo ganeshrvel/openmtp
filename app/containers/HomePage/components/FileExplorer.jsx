@@ -1,9 +1,17 @@
-'use strict';
-
 /* eslint no-case-declarations: off */
 
 import React, { Component, Fragment } from 'react';
+import * as path from 'path';
+import classnames from 'classnames';
 import Typography from '@material-ui/core/Typography';
+import {
+  faGithub,
+  faTwitter,
+  faFacebook,
+  faReddit,
+  faPaypal,
+} from '@fortawesome/free-brands-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { withStyles } from '@material-ui/core/styles';
 import { remote, ipcRenderer, shell } from 'electron';
 import lodashSortBy from 'lodash/sortBy';
@@ -11,190 +19,235 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
-import { log } from '@Log';
 import { styles } from '../styles/FileExplorer';
 import {
   TextFieldEdit as TextFieldEditDialog,
   ProgressBar as ProgressBarDialog,
-  Confirm as ConfirmDialog
+  Confirm as ConfirmDialog,
 } from '../../../components/DialogBox';
 import { withReducer } from '../../../store/reducers/withReducer';
 import reducers from '../reducers';
 import {
   setSortingDirLists,
-  setSelectedDirLists,
-  fetchDirList,
-  processMtpOutput,
-  processLocalOutput,
-  setMtpStorageOptions,
-  getMtpStoragesListSelected,
+  actionSetSelectedDirLists,
+  listDirectory,
+  churnMtpBuffer,
+  churnLocalBuffer,
+  initializeMtp,
+  getSelectedStorageIdFromState,
   setFileTransferClipboard,
   setFilesDrag,
   clearFilesDrag,
-  setFocussedFileExplorerDeviceType
+  setFocussedFileExplorerDeviceType,
+  clearFileTransfer,
+  setFileTransferProgress,
+  disposeMtp,
+  actionSetMtpStatus,
+  reloadDirList,
 } from '../actions';
 import {
   makeDirectoryLists,
   makeCurrentBrowsePath,
   makeMtpDevice,
   makeContextMenuList,
-  makeMtpStoragesListSelected,
+  makeStorageId,
   makeFileTransferClipboard,
   makeFileTransferProgess,
   makeFilesDrag,
-  makeFocussedFileExplorerDeviceType
+  makeFocussedFileExplorerDeviceType,
 } from '../selectors';
 import {
+  makeAppThemeMode,
   makeEnableStatusBar,
+  makeEnableUsbHotplug,
   makeFileExplorerListingType,
-  makeHideHiddenFiles
+  makeHideHiddenFiles,
+  makeMtpMode,
+  makeShowDirectoriesFirst,
 } from '../../Settings/selectors';
 import {
+  BUY_ME_A_COFFEE_URL,
   DEVICES_LABEL,
-  DEVICES_TYPE_CONST,
-  DONATE_PAYPAL_URL
+  DONATE_PAYPAL_URL,
+  USB_HOTPLUG_MAX_ATTEMPTS,
+  USB_HOTPLUG_MAX_ATTEMPTS_TIMEOUT,
 } from '../../../constants';
 import {
-  renameLocalFiles,
-  checkFileExists,
-  newLocalFolder,
-  newMtpFolder,
-  pasteFiles,
-  renameMtpFiles
-} from '../../../api/sys';
-import { baseName, pathInfo, pathUp, sanitizePath } from '../../../utils/paths';
-import {
+  arrayAverage,
+  getPluralText,
   isArray,
+  isEmpty,
   isFloat,
   isInt,
   isNumber,
+  niceBytes,
   removeArrayDuplicates,
-  undefinedOrNull
+  springTruncate,
+  undefinedOrNull,
 } from '../../../utils/funcs';
-import { getMainWindowRendererProcess } from '../../../utils/windowHelper';
+import { getMainWindowRendererProcess } from '../../../helpers/windowHelper';
 import { throwAlert } from '../../Alerts/actions';
 import { imgsrc } from '../../../utils/imgsrc';
 import FileExplorerBodyRender from './FileExplorerBodyRender';
 import { openExternalUrl } from '../../../utils/url';
-import { APP_GITHUB_URL } from '../../../constants/meta';
+import { APP_GITHUB_URL, APP_NAME } from '../../../constants/meta';
 import {
   fbShareUrl,
   redditShareUrl,
-  twitterShareUrl
+  twitterShareUrl,
 } from '../../../templates/socialMediaShareBtns';
+import { baseName, pathInfo, pathUp, sanitizePath } from '../../../utils/files';
+import {
+  DEVICE_TYPE,
+  FILE_EXPLORER_VIEW_TYPE,
+  FILE_TRANSFER_DIRECTION,
+  MTP_MODE,
+  USB_HOTPLUG_EVENTS,
+} from '../../../enums';
+import { log } from '../../../utils/log';
+import fileExplorerController from '../../../data/file-explorer/controllers/FileExplorerController';
+import { checkIf } from '../../../utils/checkIf';
+import { COMMUNICATION_EVENTS } from '../../../enums/communicationEvents';
+import { reportBugsWindow } from '../../../helpers/createWindows';
+import { analyticsService } from '../../../services/analytics';
+import { EVENT_TYPE } from '../../../enums/events';
+import {
+  buyMeACoffeeText,
+  donateUsingPayPal,
+} from '../../../templates/fileExplorer';
 
 const { Menu, getCurrentWindow } = remote;
-const _mainWindowRendererProcess = getMainWindowRendererProcess();
-const filesDragGhostImg = new Image(0, 0);
-filesDragGhostImg.src = imgsrc('FileExplorer/copy.svg');
+
 let allowFileDropFlag = false;
 let multipleSelectDirection = null;
+
+const donationBtnsList = [
+  {
+    enabled: true,
+    label: donateUsingPayPal,
+    icon: faPaypal,
+    url: DONATE_PAYPAL_URL,
+    invert: false,
+  },
+  {
+    enabled: true,
+    label: buyMeACoffeeText,
+    url: BUY_ME_A_COFFEE_URL,
+    image: 'toolbar/buymeacoffee.png',
+    icon: null,
+    invert: false,
+  },
+];
 
 const socialMediaShareBtnsList = [
   {
     enabled: true,
     label: 'Find us on GitHub',
-    imgSrc: 'SocialMediaShare/github.svg',
+    icon: faGithub,
     url: APP_GITHUB_URL,
-    invert: false
+    invert: false,
   },
   {
     enabled: true,
     label: 'Share it on Twitter',
-    imgSrc: 'SocialMediaShare/twitter.svg',
+    icon: faTwitter,
     url: twitterShareUrl,
-    invert: false
+    invert: false,
   },
   {
     enabled: true,
     label: 'Share it on Facebook',
-    imgSrc: 'SocialMediaShare/facebook.svg',
+    icon: faFacebook,
     url: fbShareUrl,
-    invert: false
+    invert: false,
   },
   {
     enabled: true,
     label: 'Share it on Reddit',
-    imgSrc: 'SocialMediaShare/reddit.svg',
+    icon: faReddit,
     url: redditShareUrl,
-    invert: false
+    invert: false,
   },
-  {
-    enabled: true,
-    label: 'Buy me a Coffee',
-    imgSrc: 'SocialMediaShare/paypal.svg',
-    url: DONATE_PAYPAL_URL,
-    invert: false
-  }
 ];
 
 class FileExplorer extends Component {
   constructor(props) {
     super(props);
+
+    this.mainWindowRendererProcess = getMainWindowRendererProcess();
+    this.filesDragGhostImg = this._createDragIcon();
+
     this.initialState = {
       togglePasteConfirmDialog: false,
       toggleDialog: {
         rename: {
           errors: {
             toggle: false,
-            message: null
+            message: null,
           },
           toggle: false,
-          data: {}
+          data: {},
         },
         newFolder: {
           errors: {
             toggle: false,
-            message: null
+            message: null,
           },
           toggle: false,
-          data: {}
-        }
+          data: {},
+        },
       },
-      directoryGeneratedTime: Date.now()
+      directoryGeneratedTime: Date.now(),
     };
+
     this.state = {
-      ...this.initialState
+      ...this.initialState,
     };
 
     this.electronMenu = new Menu();
 
     this.keyedAcceleratorList = {
-      shift: false
+      shift: false,
+    };
+
+    this.usbHotplug = {
+      attempts: 0,
+      lastAttempted: Date.now(),
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const {
       currentBrowsePath,
       deviceType,
-      actionCreateFetchMtpStorageOptions,
-      hideHiddenFiles
+      actionCreateInitializeMtp,
+      hideHiddenFiles,
     } = this.props;
 
-    if (deviceType === DEVICES_TYPE_CONST.mtp) {
-      actionCreateFetchMtpStorageOptions(
-        {
-          filePath: currentBrowsePath[deviceType],
-          ignoreHidden: hideHiddenFiles[deviceType]
-        },
-        deviceType
-      );
+    if (deviceType === DEVICE_TYPE.mtp) {
+      actionCreateInitializeMtp({
+        filePath: currentBrowsePath[deviceType],
+        ignoreHidden: hideHiddenFiles[deviceType],
+        deviceType,
+      });
     } else {
-      this._handleFetchDirList({
+      this._handleListDirectory({
         path: currentBrowsePath[deviceType],
-        deviceType
+        deviceType,
       });
     }
-  }
 
-  componentDidMount() {
     this.registerAccelerators();
     this.registerAppUpdate();
+    this.registerGenerateErrorReport();
+    this.registerUsbHotplug();
   }
 
-  componentWillReceiveProps({ directoryLists: nextDirectoryLists }) {
-    const { deviceType, directoryLists } = this.props;
+  componentWillReceiveProps({
+    directoryLists: nextDirectoryLists,
+    showDirectoriesFirst: nextShowDirectoriesFirst,
+  }) {
+    const { deviceType, directoryLists, showDirectoriesFirst } = this.props;
 
     const { nodes: prevDirectoryNodes } = directoryLists[deviceType];
     const { nodes: nextDirectoryNodes } = nextDirectoryLists[deviceType];
@@ -202,17 +255,36 @@ class FileExplorer extends Component {
     if (nextDirectoryNodes !== prevDirectoryNodes) {
       this._handleDirectoryGeneratedTime();
     }
+
+    if (nextShowDirectoriesFirst !== showDirectoriesFirst) {
+      this._handleDirectoryGeneratedTime();
+    }
   }
 
   componentWillUnmount() {
+    const { actionCreatedDisposeMtp, deviceType } = this.props;
+
     this.deregisterAccelerators();
 
-    _mainWindowRendererProcess.webContents.removeListener(
+    this.mainWindowRendererProcess.webContents.removeListener(
       'fileExplorerToolbarActionCommunication',
       () => {}
     );
     ipcRenderer.removeListener('isFileTransferActiveSeek', () => {});
     ipcRenderer.removeListener('isFileTransferActiveReply', () => {});
+
+    if (deviceType === DEVICE_TYPE.mtp) {
+      ipcRenderer.removeListener(
+        COMMUNICATION_EVENTS.reportBugsDisposeMtp,
+        this._reportBugsDisposeMtpEvent
+      );
+      ipcRenderer.removeListener(
+        COMMUNICATION_EVENTS.usbHotplug,
+        this._handleUsbHotplugEvent
+      );
+    }
+
+    actionCreatedDisposeMtp({ deviceType });
   }
 
   registerAccelerators = () => {
@@ -241,13 +313,14 @@ class FileExplorer extends Component {
     const { deviceType } = this.props;
 
     /**
-     * check whether an active file trasfer window is available.
+     * check whether an active file trasnfer window is available.
      * This is to prevent race between file transfer and app update taskbar progressbar access
      */
 
-    if (deviceType === DEVICES_TYPE_CONST.local) {
+    if (deviceType === DEVICE_TYPE.local) {
       ipcRenderer.on('isFileTransferActiveSeek', (event, { ...args }) => {
         const { check: checkIsFileTransferActiveSeek } = args;
+
         if (!checkIsFileTransferActiveSeek) {
           return null;
         }
@@ -256,9 +329,184 @@ class FileExplorer extends Component {
         const { toggle: isActiveFileTransferProgess } = fileTransferProgess;
 
         ipcRenderer.send('isFileTransferActiveReply', {
-          isActive: isActiveFileTransferProgess
+          isActive: isActiveFileTransferProgess,
         });
       });
+    }
+  };
+
+  registerGenerateErrorReport = () => {
+    const { deviceType } = this.props;
+
+    if (deviceType === DEVICE_TYPE.mtp) {
+      ipcRenderer.on(
+        COMMUNICATION_EVENTS.reportBugsDisposeMtp,
+        this._reportBugsDisposeMtpEvent
+      );
+    }
+  };
+
+  registerUsbHotplug = () => {
+    const { deviceType } = this.props;
+
+    if (deviceType === DEVICE_TYPE.mtp) {
+      ipcRenderer.on(
+        COMMUNICATION_EVENTS.usbHotplug,
+        this._handleUsbHotplugEvent
+      );
+    }
+  };
+
+  _reportBugsDisposeMtpEvent = async (_, { logFileZippedPath }) => {
+    // dispose the mtp before generating the report
+    await fileExplorerController.dispose({ deviceType: DEVICE_TYPE.mtp });
+
+    await fileExplorerController.fetchDebugReport({
+      deviceType: DEVICE_TYPE.mtp,
+    });
+
+    const { error } = await fileExplorerController.deleteFiles({
+      deviceType: DEVICE_TYPE.local,
+      fileList: [logFileZippedPath],
+      storageId: null,
+    });
+
+    reportBugsWindow(
+      true,
+      false
+    )?.send(COMMUNICATION_EVENTS.reportBugsDisposeMtpReply, { error });
+  };
+
+  _handleUsbHotplugEvent = async (_, { device, eventName }) => {
+    const {
+      mtpDevice,
+      actionCreateReloadDirList,
+      currentBrowsePath,
+      deviceType,
+      hideHiddenFiles,
+      enableUsbHotplug,
+      mtpMode,
+    } = this.props;
+
+    checkIf(device, 'string');
+    checkIf(eventName, 'inObjectValues', USB_HOTPLUG_EVENTS);
+    checkIf(mtpMode, 'inObjectValues', MTP_MODE);
+
+    checkIf(actionCreateReloadDirList, 'function');
+    checkIf(currentBrowsePath, 'object');
+    checkIf(deviceType, 'inObjectValues', DEVICE_TYPE);
+    checkIf(hideHiddenFiles, 'object');
+
+    try {
+      if (isEmpty(device) || isEmpty(eventName)) {
+        return;
+      }
+
+      const _usbDeviceInfo = JSON.parse(device);
+
+      analyticsService.sendEvent(EVENT_TYPE.MTP_USB_HOTPLUG_RECEIVED, {
+        manufacturer: _usbDeviceInfo.manufacturer,
+        deviceName: _usbDeviceInfo.deviceName,
+        productId: _usbDeviceInfo.productId,
+        vendorId: _usbDeviceInfo.vendorId,
+        eventName,
+      });
+
+      // if the mtp mode is not kalam then dont proceed.
+      if (mtpMode !== MTP_MODE.kalam) {
+        return;
+      }
+
+      if (!enableUsbHotplug) {
+        return;
+      }
+
+      // if [this.usbHotplug] is null then set the object
+      if (!this.usbHotplug) {
+        this.usbHotplug = {
+          attempts: 1,
+          lastAttempted: Date.now(),
+        };
+      } else {
+        // if the last attempt to connect the device was made more than [USB_HOTPLUG_MAX_ATTEMPTS_TIMEOUT] milliseconds ago then reset the attempts counter
+        if (
+          Date.now() - this.usbHotplug.lastAttempted >=
+          USB_HOTPLUG_MAX_ATTEMPTS_TIMEOUT
+        ) {
+          this.usbHotplug = {
+            // update the number of attempts
+            attempts: 0,
+            lastAttempted: Date.now(),
+          };
+        }
+
+        // check for the number of connect attempts
+        // if the number of connect attempts are greater than [USB_HOTPLUG_MAX_ATTEMPTS]
+        // and if the [lastAttempted] and was made within [USB_HOTPLUG_MAX_ATTEMPTS_TIMEOUT] then don't connect
+        else if (
+          this.usbHotplug.attempts > USB_HOTPLUG_MAX_ATTEMPTS &&
+          Date.now() - this.usbHotplug.lastAttempted <
+            USB_HOTPLUG_MAX_ATTEMPTS_TIMEOUT
+        ) {
+          return;
+        }
+
+        // update the number of attempts
+        this.usbHotplug.attempts += 1;
+      }
+
+      switch (eventName) {
+        case USB_HOTPLUG_EVENTS.detach:
+          // if an usb device was detached and mtp device is disconnected then
+          // try to disconnect the mtp device
+          if (mtpDevice.isAvailable) {
+            // check to see if the detached usb device was the connected mtp device itself
+            if (
+              _usbDeviceInfo.serialNumber ===
+              mtpDevice?.info?.usbDeviceInfo?.SerialNumber
+            ) {
+              analyticsService.sendEvent(EVENT_TYPE.MTP_USB_HOTPLUG_DETTACHED, {
+                manufacturer: _usbDeviceInfo.manufacturer,
+                deviceName: _usbDeviceInfo.deviceName,
+                productId: _usbDeviceInfo.productId,
+                vendorId: _usbDeviceInfo.vendorId,
+                eventName,
+              });
+
+              actionCreateReloadDirList({
+                filePath: currentBrowsePath[deviceType],
+                ignoreHidden: hideHiddenFiles[deviceType],
+                deviceType,
+              });
+            }
+          }
+
+          break;
+
+        case USB_HOTPLUG_EVENTS.attach:
+        default:
+          // if an usb device was attached and mtp device is connected then
+          // try to connect the mtp device
+          if (!mtpDevice.isAvailable) {
+            analyticsService.sendEvent(EVENT_TYPE.MTP_USB_HOTPLUG_ATTACHED, {
+              manufacturer: _usbDeviceInfo.manufacturer,
+              deviceName: _usbDeviceInfo.deviceName,
+              productId: _usbDeviceInfo.productId,
+              vendorId: _usbDeviceInfo.vendorId,
+              eventName,
+            });
+
+            actionCreateReloadDirList({
+              filePath: currentBrowsePath[deviceType],
+              ignoreHidden: hideHiddenFiles[deviceType],
+              deviceType,
+            });
+          }
+
+          break;
+      }
+    } catch (e) {
+      log.error(e, 'FileExplorer._handleUsbHotplugEvent');
     }
   };
 
@@ -274,7 +522,7 @@ class FileExplorer extends Component {
       case 'meta':
         this.keyedAcceleratorList = {
           ...this.keyedAcceleratorList,
-          shift: pressed
+          shift: pressed,
         };
         break;
       default:
@@ -282,14 +530,14 @@ class FileExplorer extends Component {
     }
   };
 
-  _handleFetchDirList({ ...args }) {
-    const { actionCreateFetchDirList, hideHiddenFiles } = this.props;
+  _handleListDirectory({ ...args }) {
+    const { actionCreateListDirectory, hideHiddenFiles } = this.props;
     const { path, deviceType } = args;
 
-    actionCreateFetchDirList(
+    actionCreateListDirectory(
       {
         filePath: path,
-        ignoreHidden: hideHiddenFiles[deviceType]
+        ignoreHidden: hideHiddenFiles[deviceType],
       },
       deviceType
     );
@@ -298,7 +546,7 @@ class FileExplorer extends Component {
   lastSelectedNode = (nodes, selected) => {
     let _return = {
       index: -1,
-      item: []
+      item: [],
     };
 
     nodes.filter((item, index) => {
@@ -316,7 +564,7 @@ class FileExplorer extends Component {
 
       _return = {
         index,
-        item
+        item,
       };
 
       return _return;
@@ -328,7 +576,7 @@ class FileExplorer extends Component {
   lastSelectedNodeOfTableSort = (nodes, selected, reverse = false) => {
     let _return = {
       index: -1,
-      item: []
+      item: [],
     };
 
     nodes.filter((item, index) => {
@@ -346,14 +594,15 @@ class FileExplorer extends Component {
             if (_return.index < 0) {
               _return = {
                 index,
-                item
+                item,
               };
+
               return _return;
             }
           } else {
             _return = {
               index,
-              item
+              item,
             };
           }
         }
@@ -374,7 +623,7 @@ class FileExplorer extends Component {
       actionCreateCopy,
       fileTransferClipboard,
       currentBrowsePath,
-      fileExplorerListingType
+      fileExplorerListingType,
     } = this.props;
     const { tableData, deviceType, event } = data;
     const { queue, nodes, order, orderBy } = directoryLists[deviceType];
@@ -397,12 +646,14 @@ class FileExplorer extends Component {
     }
 
     if (
-      _focussedFileExplorerDeviceType === DEVICES_TYPE_CONST.mtp &&
+      _focussedFileExplorerDeviceType === DEVICE_TYPE.mtp &&
       !mtpDevice.isAvailable &&
       type !== 'refresh'
     ) {
       return null;
     }
+
+    const deviceTypeUpperCase = deviceType.toUpperCase();
 
     switch (type) {
       case 'navigationLeft':
@@ -416,7 +667,7 @@ class FileExplorer extends Component {
         _tableSort = this.tableSort({
           nodes,
           order,
-          orderBy
+          orderBy,
         });
 
         _lastSelectedNodeOfTableSort = this.lastSelectedNodeOfTableSort(
@@ -442,9 +693,14 @@ class FileExplorer extends Component {
           break;
         }
 
+        analyticsService.sendEvent(
+          EVENT_TYPE[`${deviceTypeUpperCase}_COPY_FILES`],
+          {}
+        );
+
         actionCreateCopy({
           selected,
-          deviceType
+          deviceType,
         });
         break;
 
@@ -453,10 +709,15 @@ class FileExplorer extends Component {
           break;
         }
 
+        analyticsService.sendEvent(
+          EVENT_TYPE[`${deviceTypeUpperCase}_COPY_TO_QUEUE_FILES`],
+          {}
+        );
+
         actionCreateCopy({
           selected,
           deviceType,
-          toQueue: true
+          toQueue: true,
         });
         break;
 
@@ -476,21 +737,21 @@ class FileExplorer extends Component {
           break;
         }
 
-        _mainWindowRendererProcess.webContents.send(
+        this.mainWindowRendererProcess.webContents.send(
           'fileExplorerToolbarActionCommunication',
           {
             type,
-            deviceType: _focussedFileExplorerDeviceType
+            deviceType: _focussedFileExplorerDeviceType,
           }
         );
         break;
 
       case 'refresh':
-        _mainWindowRendererProcess.webContents.send(
+        this.mainWindowRendererProcess.webContents.send(
           'fileExplorerToolbarActionCommunication',
           {
             type,
-            deviceType: _focussedFileExplorerDeviceType
+            deviceType: _focussedFileExplorerDeviceType,
           }
         );
         break;
@@ -500,11 +761,11 @@ class FileExplorer extends Component {
           break;
         }
 
-        _mainWindowRendererProcess.webContents.send(
+        this.mainWindowRendererProcess.webContents.send(
           'fileExplorerToolbarActionCommunication',
           {
             type,
-            deviceType: _focussedFileExplorerDeviceType
+            deviceType: _focussedFileExplorerDeviceType,
           }
         );
         break;
@@ -528,6 +789,7 @@ class FileExplorer extends Component {
         if (selected.length !== 1) {
           break;
         }
+
         this._handleTableDoubleClick(_lastSelectedNode.item, deviceType);
         break;
 
@@ -539,12 +801,12 @@ class FileExplorer extends Component {
 
         if (
           type === 'navigationLeft' &&
-          fileExplorerListingType[deviceType] === 'list'
+          fileExplorerListingType[deviceType] === FILE_EXPLORER_VIEW_TYPE.list
         ) {
           break;
         } else if (
           type === 'navigationUp' &&
-          fileExplorerListingType[deviceType] === 'grid'
+          fileExplorerListingType[deviceType] === FILE_EXPLORER_VIEW_TYPE.grid
         ) {
           break;
         }
@@ -575,12 +837,12 @@ class FileExplorer extends Component {
 
         if (
           type === 'navigationRight' &&
-          fileExplorerListingType[deviceType] === 'list'
+          fileExplorerListingType[deviceType] === FILE_EXPLORER_VIEW_TYPE.list
         ) {
           break;
         } else if (
           type === 'navigationDown' &&
-          fileExplorerListingType[deviceType] === 'grid'
+          fileExplorerListingType[deviceType] === FILE_EXPLORER_VIEW_TYPE.grid
         ) {
           break;
         }
@@ -606,12 +868,12 @@ class FileExplorer extends Component {
 
         if (
           type === 'multipleSelectLeft' &&
-          fileExplorerListingType[deviceType] === 'list'
+          fileExplorerListingType[deviceType] === FILE_EXPLORER_VIEW_TYPE.list
         ) {
           break;
         } else if (
           type === 'multipleSelectUp' &&
-          fileExplorerListingType[deviceType] === 'grid'
+          fileExplorerListingType[deviceType] === FILE_EXPLORER_VIEW_TYPE.grid
         ) {
           break;
         }
@@ -669,12 +931,12 @@ class FileExplorer extends Component {
 
         if (
           type === 'multipleSelectRight' &&
-          fileExplorerListingType[deviceType] === 'list'
+          fileExplorerListingType[deviceType] === FILE_EXPLORER_VIEW_TYPE.list
         ) {
           break;
         } else if (
           type === 'multipleSelectDown' &&
-          fileExplorerListingType[deviceType] === 'grid'
+          fileExplorerListingType[deviceType] === FILE_EXPLORER_VIEW_TYPE.grid
         ) {
           break;
         }
@@ -720,7 +982,7 @@ class FileExplorer extends Component {
   _handleFocussedFileExplorerDeviceType = (toggle, deviceType) => {
     const {
       actionCreateFocussedFileExplorerDeviceType,
-      focussedFileExplorerDeviceType
+      focussedFileExplorerDeviceType,
     } = this.props;
 
     if (focussedFileExplorerDeviceType.value === deviceType) {
@@ -732,17 +994,17 @@ class FileExplorer extends Component {
     if (toggle) {
       _focussedFileExplorerDeviceType = {
         accelerator: deviceType,
-        value: deviceType
+        value: deviceType,
       };
     } else {
       _focussedFileExplorerDeviceType = {
         onClick: deviceType,
-        value: deviceType
+        value: deviceType,
       };
     }
 
     actionCreateFocussedFileExplorerDeviceType({
-      ..._focussedFileExplorerDeviceType
+      ..._focussedFileExplorerDeviceType,
     });
   };
 
@@ -759,11 +1021,11 @@ class FileExplorer extends Component {
   ) => {
     const { deviceType, mtpDevice, fileExplorerListingType } = this.props;
     const allowContextMenuClickThrough =
-      fileExplorerListingType[deviceType] === 'grid' &&
+      fileExplorerListingType[deviceType] === FILE_EXPLORER_VIEW_TYPE.grid &&
       !undefinedOrNull(rowData) &&
       Object.keys(rowData).length < 1;
 
-    if (deviceType === DEVICES_TYPE_CONST.mtp && !mtpDevice.isAvailable) {
+    if (deviceType === DEVICE_TYPE.mtp && !mtpDevice.isAvailable) {
       return null;
     }
 
@@ -783,6 +1045,7 @@ class FileExplorer extends Component {
       );
 
       this.fireElectronMenu(contextMenuActiveList);
+
       return null;
     }
   };
@@ -791,14 +1054,15 @@ class FileExplorer extends Component {
     const {
       contextMenuList,
       fileTransferClipboard,
-      directoryLists
+      directoryLists,
     } = this.props;
     const { queue } = directoryLists[deviceType];
     const _contextMenuList = contextMenuList[deviceType];
     const contextMenuActiveList = [];
 
-    Object.keys(_contextMenuList).map(a => {
+    Object.keys(_contextMenuList).map((a) => {
       const item = _contextMenuList[a];
+
       switch (a) {
         case 'rename':
           contextMenuActiveList.push({
@@ -809,10 +1073,10 @@ class FileExplorer extends Component {
               this._handleContextMenuListActions({
                 [a]: {
                   ...item,
-                  data: rowData
-                }
+                  data: rowData,
+                },
               });
-            }
+            },
           });
           break;
 
@@ -825,10 +1089,10 @@ class FileExplorer extends Component {
               this._handleContextMenuListActions({
                 [a]: {
                   ...item,
-                  data: {}
-                }
+                  data: {},
+                },
               });
-            }
+            },
           });
           break;
 
@@ -842,10 +1106,10 @@ class FileExplorer extends Component {
               this._handleContextMenuListActions({
                 [a]: {
                   ...item,
-                  data: {}
-                }
+                  data: {},
+                },
               });
-            }
+            },
           });
 
           break;
@@ -858,10 +1122,10 @@ class FileExplorer extends Component {
               this._handleContextMenuListActions({
                 [a]: {
                   ...item,
-                  data: tableData
-                }
+                  data: tableData,
+                },
               });
-            }
+            },
           });
 
           break;
@@ -878,17 +1142,19 @@ class FileExplorer extends Component {
   /* activate actions using mouse */
   _handleContextMenuListActions = ({ ...args }) => {
     const { deviceType, directoryLists, actionCreateCopy } = this.props;
+    const deviceTypeUpperCase = deviceType.toUpperCase();
 
-    Object.keys(args).map(a => {
+    Object.keys(args).map((a) => {
       const item = args[a];
+
       switch (a) {
         case 'rename':
           this._handleToggleDialogBox(
             {
               toggle: true,
               data: {
-                ...item.data
-              }
+                ...item.data,
+              },
             },
             'rename'
           );
@@ -897,18 +1163,32 @@ class FileExplorer extends Component {
         case 'copy':
           // eslint-disable-next-line prefer-destructuring
           const selectedItemsToCopy = directoryLists[deviceType].queue.selected;
+
           actionCreateCopy({ selected: selectedItemsToCopy, deviceType });
+
+          analyticsService.sendEvent(
+            EVENT_TYPE[`${deviceTypeUpperCase}_COPY_FILES`],
+            {}
+          );
+
           break;
 
         case 'copyToQueue':
           // eslint-disable-next-line prefer-destructuring
           const selectedItemsToCopyToQueue =
             directoryLists[deviceType].queue.selected;
+
           actionCreateCopy({
             selected: selectedItemsToCopyToQueue,
             deviceType,
-            toQueue: true
+            toQueue: true,
           });
+
+          analyticsService.sendEvent(
+            EVENT_TYPE[`${deviceTypeUpperCase}_COPY_TO_QUEUE_FILES`],
+            {}
+          );
+
           break;
 
         case 'paste':
@@ -920,8 +1200,8 @@ class FileExplorer extends Component {
             {
               toggle: true,
               data: {
-                ...item.data
-              }
+                ...item.data,
+              },
             },
             'newFolder'
           );
@@ -946,9 +1226,22 @@ class FileExplorer extends Component {
         ...toggleDialog,
         [targetAction]: {
           ...toggleDialog[targetAction],
-          ...args
-        }
-      }
+          ...args,
+        },
+      },
+    });
+  };
+
+  _handleClearEditDialog = (targetAction) => {
+    const { toggleDialog } = this.state;
+
+    this.setState({
+      toggleDialog: {
+        ...toggleDialog,
+        [targetAction]: {
+          ...this.initialState.toggleDialog[targetAction],
+        },
+      },
     });
   };
 
@@ -958,61 +1251,108 @@ class FileExplorer extends Component {
       actionCreateRenameFile,
       hideHiddenFiles,
       currentBrowsePath,
-      mtpStoragesListSelected
+      storageId,
     } = this.props;
 
     // eslint-disable-next-line react/destructuring-assignment
     const { data } = this.state.toggleDialog.rename;
-    const { confirm, textFieldValue: newFileName } = args;
+    const { confirm, textFieldValue: newFilename } = args;
     const targetAction = 'rename';
+    const deviceTypeUpperCase = deviceType.toUpperCase();
 
-    if (!confirm || newFileName === null) {
+    analyticsService.sendEvent(
+      EVENT_TYPE[`${deviceTypeUpperCase}_RENAME_STARTED`],
+      {}
+    );
+
+    if (!confirm || newFilename === null) {
       this._handleClearEditDialog(targetAction);
+
+      analyticsService.sendEvent(
+        EVENT_TYPE[`${deviceTypeUpperCase}_RENAME_EXIT`],
+        {
+          Reason: 'EXIT',
+        }
+      );
+
       return null;
     }
 
-    if (newFileName.trim() === '' || /[/\\?%*:|"<>]/g.test(newFileName)) {
+    if (newFilename.trim() === '' || /[/\\?%*:|"<>]/g.test(newFilename)) {
       this._handleErrorsEditDialog(
         {
           toggle: true,
-          message: `Error: Illegal characters.`
+          message: `Error: Illegal characters.`,
         },
         targetAction
       );
-      return null;
-    }
 
-    // same file name; no change
-    const _pathUp = pathUp(data.path);
-    const newFilePath = sanitizePath(`${_pathUp}/${newFileName}`);
-    const oldFilePath = data.path;
-
-    if (newFilePath === data.path) {
-      this._handleClearEditDialog(targetAction);
-      return null;
-    }
-
-    if (
-      await checkFileExists(newFilePath, deviceType, mtpStoragesListSelected)
-    ) {
-      this._handleErrorsEditDialog(
+      analyticsService.sendEvent(
+        EVENT_TYPE[`${deviceTypeUpperCase}_RENAME_EXIT`],
         {
-          toggle: true,
-          message: `Error: The name "${newFileName}" is already taken.`
-        },
-        targetAction
+          Reason: 'ILLEGAL_CHARACTERS',
+        }
       );
+
       return null;
     }
+
+    const sanitizedNewFilename = sanitizePath(newFilename);
+    const filePath = data.path;
+    const filename = data.name;
+
+    const newFilepath = path.join(pathUp(filePath), sanitizedNewFilename);
+
+    if (newFilepath === data.path) {
+      this._handleClearEditDialog(targetAction);
+
+      analyticsService.sendEvent(
+        EVENT_TYPE[`${deviceTypeUpperCase}_RENAME_EXIT`],
+        {
+          Reason: 'NO_CHANGE',
+        }
+      );
+
+      return null;
+    }
+
+    // if the new filename and the existing filename are just case different then skip the edit dialog
+    if (sanitizedNewFilename.toLowerCase() !== filename.toLowerCase()) {
+      if (
+        await fileExplorerController.filesExist({
+          deviceType,
+          fileList: [newFilepath],
+          storageId,
+        })
+      ) {
+        this._handleErrorsEditDialog(
+          {
+            toggle: true,
+            message: `Error: The name "${sanitizedNewFilename}" is already taken.`,
+          },
+          targetAction
+        );
+
+        analyticsService.sendEvent(
+          EVENT_TYPE[`${deviceTypeUpperCase}_RENAME_EXIT`],
+          {
+            Reason: 'FILE_EXISTS',
+          }
+        );
+
+        return null;
+      }
+    }
+
     actionCreateRenameFile(
       {
-        oldFilePath,
-        newFilePath,
-        deviceType
+        filePath,
+        newFilename: sanitizedNewFilename,
+        deviceType,
       },
       {
         filePath: currentBrowsePath[deviceType],
-        ignoreHidden: hideHiddenFiles[deviceType]
+        ignoreHidden: hideHiddenFiles[deviceType],
       }
     );
 
@@ -1021,48 +1361,66 @@ class FileExplorer extends Component {
 
   _handleErrorsEditDialog = ({ ...args }, targetAction) => {
     const { toggleDialog } = this.state;
+
     this.setState({
       toggleDialog: {
         ...toggleDialog,
         [targetAction]: {
           ...toggleDialog[targetAction],
-          errors: { ...args }
-        }
-      }
+          errors: { ...args },
+        },
+      },
     });
   };
 
-  _handleClearEditDialog = targetAction => {
-    const { toggleDialog } = this.state;
+  _handleTogglePasteConfirmDialog = (status) => {
     this.setState({
-      toggleDialog: {
-        ...toggleDialog,
-        [targetAction]: {
-          ...this.initialState.toggleDialog[targetAction]
-        }
-      }
+      togglePasteConfirmDialog: status,
     });
   };
 
-  _handleTogglePasteConfirmDialog = status => {
-    this.setState({
-      togglePasteConfirmDialog: status
-    });
-  };
+  _createDragIcon() {
+    const dragIcon = document.createElement('img');
+
+    dragIcon.src = imgsrc(`FileExplorer/files-archive.svg`);
+    dragIcon.style.width = '100px';
+
+    const div = document.createElement('div');
+
+    div.appendChild(dragIcon);
+    div.style.position = 'absolute';
+    div.style.top = '0px';
+    div.style.left = '-500px';
+    document.querySelector('body').appendChild(div);
+
+    return div;
+  }
 
   _handleFilesDragStart = (e, { sourceDeviceType }) => {
+    const sourceDeviceTypeUpperCase = sourceDeviceType?.toUpperCase();
+
     this._handleSetFilesDrag({
       sourceDeviceType,
       destinationDeviceType: null,
       enter: false,
-      lock: false
+      lock: false,
     });
 
-    e.dataTransfer.setDragImage(filesDragGhostImg, 0, 0);
+    analyticsService.sendEvent(
+      EVENT_TYPE[`${sourceDeviceTypeUpperCase}_DRAG_FILES_STARTED`],
+      {}
+    );
+
+    e.dataTransfer.setDragImage(this.filesDragGhostImg, 0, 0);
+  };
+
+  _handleExternalFileDragLeave = (_) => {
+    this._handleClearFilesDrag();
   };
 
   _handleFilesDragOver = (e, { destinationDeviceType }) => {
     const { filesDrag } = this.props;
+
     e.preventDefault();
     e.stopPropagation();
 
@@ -1077,8 +1435,9 @@ class FileExplorer extends Component {
         destinationDeviceType,
         enter: false,
         lock: false,
-        sameSourceDestinationLock: true
+        sameSourceDestinationLock: true,
       });
+
       return null;
     }
 
@@ -1092,7 +1451,7 @@ class FileExplorer extends Component {
       destinationDeviceType,
       enter: true,
       lock: true,
-      sameSourceDestinationLock: false
+      sameSourceDestinationLock: false,
     });
   };
 
@@ -1100,21 +1459,63 @@ class FileExplorer extends Component {
     this._handleClearFilesDrag();
   };
 
-  _handleTableDrop = () => {
-    const { directoryLists, actionCreateCopy, filesDrag } = this.props;
+  _handleFilesDrop = ({ externalFiles }) => {
+    const { directoryLists, filesDrag } = this.props;
+    const { sourceDeviceType } = filesDrag;
+
+    const isExternalFiles = !isEmpty(externalFiles);
+    const sourceDeviceTypeUpperCase = isExternalFiles
+      ? 'EXTERNAL'
+      : sourceDeviceType?.toUpperCase();
+
+    analyticsService.sendEvent(
+      EVENT_TYPE[`${sourceDeviceTypeUpperCase}_DRAG_FILES_DROPPED`],
+      {
+        isExternalFiles,
+      }
+    );
+
+    // if files were dragged from the app pane itself
+    if (!isExternalFiles) {
+      return directoryLists[sourceDeviceType]?.queue?.selected ?? [];
+    }
+
+    // if files were dragged from the finder window then go here
+    return [...externalFiles].map((f) => f.path);
+  };
+
+  _handleTableDrop = async (_, { __, externalFiles }) => {
+    const { actionCreateCopy, filesDrag } = this.props;
     const { sourceDeviceType, destinationDeviceType } = filesDrag;
 
     if (
       !allowFileDropFlag ||
-      destinationDeviceType === null ||
-      destinationDeviceType === null ||
-      sourceDeviceType === destinationDeviceType
+      sourceDeviceType === destinationDeviceType ||
+      destinationDeviceType === null
     ) {
+      const isExternalFiles = !isEmpty(externalFiles);
+      const sourceDeviceTypeUpperCase = isExternalFiles
+        ? 'EXTERNAL'
+        : sourceDeviceType?.toUpperCase();
+
+      analyticsService.sendEvent(
+        EVENT_TYPE[`${sourceDeviceTypeUpperCase}_DRAG_FILES_CANCELLED`],
+        {
+          'Is file drop allowed': allowFileDropFlag,
+          Reason:
+            sourceDeviceType === destinationDeviceType
+              ? 'Source and destination are same'
+              : false,
+        }
+      );
+
       return null;
     }
 
-    // eslint-disable-next-line prefer-destructuring
-    const selected = directoryLists[sourceDeviceType].queue.selected;
+    const selected = this._handleFilesDrop({
+      externalFiles,
+    });
+
     actionCreateCopy({ selected, deviceType: sourceDeviceType });
 
     setTimeout(() => {
@@ -1123,7 +1524,7 @@ class FileExplorer extends Component {
     }, 200);
   };
 
-  _handleOnHoverDropZoneActivate = deviceType => {
+  _handleonHoverDropZoneActivate = (deviceType) => {
     const { filesDrag, mtpDevice } = this.props;
     const { sourceDeviceType, destinationDeviceType } = filesDrag;
 
@@ -1134,7 +1535,7 @@ class FileExplorer extends Component {
     return destinationDeviceType === deviceType;
   };
 
-  _handleIsDraggable = deviceType => {
+  _handleIsDraggable = (deviceType) => {
     const { directoryLists, mtpDevice } = this.props;
     const { queue } = directoryLists[deviceType];
     const { selected } = queue;
@@ -1142,17 +1543,17 @@ class FileExplorer extends Component {
     return selected.length > 0 && mtpDevice.isAvailable;
   };
 
-  _handleSetFilesDrag({ ...args }) {
+  _handleSetFilesDrag = ({ ...args }) => {
     const { actionCreateSetFilesDrag } = this.props;
 
     actionCreateSetFilesDrag({ ...args });
-  }
+  };
 
-  _handleClearFilesDrag() {
+  _handleClearFilesDrag = () => {
     const { actionCreateClearFilesDrag } = this.props;
 
     actionCreateClearFilesDrag();
-  }
+  };
 
   _handleNewFolderEditDialog = async ({ ...args }) => {
     const {
@@ -1160,16 +1561,30 @@ class FileExplorer extends Component {
       actionCreateNewFolder,
       hideHiddenFiles,
       currentBrowsePath,
-      mtpStoragesListSelected
+      storageId,
     } = this.props;
 
     // eslint-disable-next-line react/destructuring-assignment
     const { data } = this.state.toggleDialog.newFolder;
     const { confirm, textFieldValue: newFolderName } = args;
     const targetAction = 'newFolder';
+    const deviceTypeUpperCase = deviceType.toUpperCase();
+
+    analyticsService.sendEvent(
+      EVENT_TYPE[`${deviceTypeUpperCase}_NEW_FOLDER_STARTED`],
+      {}
+    );
 
     if (!confirm) {
       this._handleClearEditDialog(targetAction);
+
+      analyticsService.sendEvent(
+        EVENT_TYPE[`${deviceTypeUpperCase}_NEW_FOLDER_EXIT`],
+        {
+          Reason: 'NO_CHANGE',
+        }
+      );
+
       return null;
     }
 
@@ -1177,10 +1592,18 @@ class FileExplorer extends Component {
       this._handleErrorsEditDialog(
         {
           toggle: true,
-          message: `Error: Folder name cannot be empty.`
+          message: `Error: Folder name cannot be empty.`,
         },
         targetAction
       );
+
+      analyticsService.sendEvent(
+        EVENT_TYPE[`${deviceTypeUpperCase}_NEW_FOLDER_EXIT`],
+        {
+          Reason: 'EMPTY_FOLDER_NAME',
+        }
+      );
+
       return null;
     }
 
@@ -1188,36 +1611,56 @@ class FileExplorer extends Component {
       this._handleErrorsEditDialog(
         {
           toggle: true,
-          message: `Error: Illegal characters.`
+          message: `Error: Illegal characters.`,
         },
         targetAction
       );
+
+      analyticsService.sendEvent(
+        EVENT_TYPE[`${deviceTypeUpperCase}_NEW_FOLDER_EXIT`],
+        {
+          Reason: 'ILLEGAL_CHARACTERS',
+        }
+      );
+
       return null;
     }
 
     const newFolderPath = sanitizePath(`${data.path}/${newFolderName}`);
 
     if (
-      await checkFileExists(newFolderPath, deviceType, mtpStoragesListSelected)
+      await fileExplorerController.filesExist({
+        deviceType,
+        fileList: [newFolderPath],
+        storageId,
+      })
     ) {
       this._handleErrorsEditDialog(
         {
           toggle: true,
-          message: `Error: The name "${newFolderName}" is already taken.`
+          message: `Error: The name "${newFolderName}" is already taken.`,
         },
         targetAction
       );
+
+      analyticsService.sendEvent(
+        EVENT_TYPE[`${deviceTypeUpperCase}_RENAME_EXIT`],
+        {
+          Reason: 'FILE_EXISTS',
+        }
+      );
+
       return null;
     }
 
     actionCreateNewFolder(
       {
         newFolderPath,
-        deviceType
+        deviceType,
       },
       {
         filePath: currentBrowsePath[deviceType],
-        ignoreHidden: hideHiddenFiles[deviceType]
+        ignoreHidden: hideHiddenFiles[deviceType],
       }
     );
 
@@ -1228,18 +1671,20 @@ class FileExplorer extends Component {
     const {
       deviceType,
       currentBrowsePath,
-      mtpStoragesListSelected,
+      storageId,
       fileTransferClipboard,
-      actionCreateThrowError
+      actionCreateThrowError,
     } = this.props;
 
     let { queue } = fileTransferClipboard;
     const destinationFolder = currentBrowsePath[deviceType];
     let invalidFileNameFlag = false;
+    const deviceTypeUpperCase = deviceType.toUpperCase();
 
-    queue = queue.map(a => {
+    queue = queue.map((a) => {
       const _baseName = baseName(a);
       const fullPath = `${destinationFolder}/${_baseName}`;
+
       if (fullPath.trim() === '' || /[\\:]/g.test(fullPath)) {
         invalidFileNameFlag = true;
       }
@@ -1247,47 +1692,75 @@ class FileExplorer extends Component {
       return fullPath;
     });
 
+    analyticsService.sendEvent(
+      EVENT_TYPE[`${deviceTypeUpperCase}_PASTE_FILES`],
+      {}
+    );
+
     if (invalidFileNameFlag) {
       actionCreateThrowError({
-        message: `Invalid file name in the path. \\: characters are not allowed.`
+        message: `Invalid file name in the path. \\: characters are not allowed.`,
       });
+
       return null;
     }
 
-    if (await checkFileExists(queue, deviceType, mtpStoragesListSelected)) {
+    if (
+      await fileExplorerController.filesExist({
+        deviceType,
+        fileList: queue,
+        storageId,
+      })
+    ) {
+      analyticsService.sendEvent(
+        EVENT_TYPE[`${deviceTypeUpperCase}_PASTE_FILES_DIALOG_OPEN`],
+        {
+          Reason: 'FILES_EXIST',
+        }
+      );
+
       this._handleTogglePasteConfirmDialog(true);
+
       return null;
     }
 
-    this._handlePasteConfirmDialog(true);
+    this._handlePasteConfirm(true);
   };
 
-  _handlePasteConfirmDialog = confirm => {
+  _handlePasteConfirm = (confirm) => {
     const {
       deviceType,
       hideHiddenFiles,
       currentBrowsePath,
-      mtpStoragesListSelected,
+      storageId,
       actionCreatePaste,
-      fileTransferClipboard
+      fileTransferClipboard,
     } = this.props;
     const destinationFolder = currentBrowsePath[deviceType];
 
     this._handleTogglePasteConfirmDialog(false);
+    const deviceTypeUpperCase = deviceType.toUpperCase();
 
     if (!confirm) {
+      analyticsService.sendEvent(
+        EVENT_TYPE[`${deviceTypeUpperCase}_PASTE_FILES_DIALOG_CLOSE`],
+        {
+          Reason: 'REPLACE_FILES_DENIED',
+        }
+      );
+
       return null;
     }
 
     actionCreatePaste(
       {
         destinationFolder,
-        mtpStoragesListSelected,
-        fileTransferClipboard
+        storageId,
+        fileTransferClipboard,
       },
       {
         filePath: destinationFolder,
-        ignoreHidden: hideHiddenFiles[deviceType]
+        ignoreHidden: hideHiddenFiles[deviceType],
       },
       deviceType
     );
@@ -1295,16 +1768,16 @@ class FileExplorer extends Component {
 
   _handleBreadcrumbPathClick = ({ ...args }) => {
     const {
-      actionCreateFetchDirList,
+      actionCreateListDirectory,
       hideHiddenFiles,
-      deviceType
+      deviceType,
     } = this.props;
     const { path } = args;
 
-    actionCreateFetchDirList(
+    actionCreateListDirectory(
       {
         filePath: path,
-        ignoreHidden: hideHiddenFiles[deviceType]
+        ignoreHidden: hideHiddenFiles[deviceType],
       },
       deviceType
     );
@@ -1328,7 +1801,7 @@ class FileExplorer extends Component {
   _handleSelectAllClick = (deviceType, event) => {
     const { directoryLists, actionCreateSelectAllClick } = this.props;
     const selected =
-      directoryLists[deviceType].nodes.map(item => item.path) || [];
+      directoryLists[deviceType].nodes.map((item) => item.path) || [];
     let isChecked = true;
 
     if (event) {
@@ -1380,34 +1853,70 @@ class FileExplorer extends Component {
   _handleTableDoubleClick = (item, deviceType) => {
     const { isFolder, path } = item;
 
+    const deviceTypeUpperCase = deviceType.toUpperCase();
+
     if (!isFolder) {
-      if (deviceType === DEVICES_TYPE_CONST.local) {
-        shell.openItem(path);
+      if (deviceType === DEVICE_TYPE.local) {
+        shell.openPath(path);
+
+        analyticsService.sendEvent(
+          EVENT_TYPE[`${deviceTypeUpperCase}_OPEN_FILE`],
+          {}
+        );
       }
+
       return null;
     }
 
-    this._handleFetchDirList({
+    this._handleListDirectory({
       path,
-      deviceType
+      deviceType,
     });
+
+    analyticsService.sendEvent(
+      EVENT_TYPE[`${deviceTypeUpperCase}_OPEN_DIRECTORY`],
+      {}
+    );
   };
 
   tableSort = ({ ...args }) => {
+    const { showDirectoriesFirst } = this.props;
     const { nodes, order, orderBy } = args;
 
     if (typeof nodes === 'undefined' || !nodes.length < 0) {
       return [];
     }
 
+    let _sortedNode = [];
+
     if (order === 'asc') {
-      return lodashSortBy(nodes, [
-        value => this._lodashSortConstraints({ value, orderBy })
+      _sortedNode = lodashSortBy(nodes, [
+        (value) => this._lodashSortConstraints({ value, orderBy }),
       ]);
+    } else {
+      _sortedNode = lodashSortBy(nodes, [
+        (value) => this._lodashSortConstraints({ value, orderBy }),
+      ]).reverse();
     }
-    return lodashSortBy(nodes, [
-      value => this._lodashSortConstraints({ value, orderBy })
-    ]).reverse();
+
+    const _folders = [];
+    const _files = [];
+
+    if (showDirectoriesFirst) {
+      _sortedNode.forEach((a) => {
+        if (a.isFolder) {
+          _folders.push(a);
+
+          return a;
+        }
+
+        _files.push(a);
+      });
+
+      _sortedNode = [..._folders, ..._files];
+    }
+
+    return _sortedNode;
   };
 
   _lodashSortConstraints = ({ value, orderBy }) => {
@@ -1441,7 +1950,7 @@ class FileExplorer extends Component {
 
   _handleDirectoryGeneratedTime = () => {
     this.setState({
-      directoryGeneratedTime: Date.now()
+      directoryGeneratedTime: Date.now(),
     });
   };
 
@@ -1457,21 +1966,21 @@ class FileExplorer extends Component {
       filesDrag,
       fileExplorerListingType,
       isStatusBarEnabled,
-      fileTransferClipboard
+      fileTransferClipboard,
     } = this.props;
     const {
       toggleDialog,
       togglePasteConfirmDialog,
-      directoryGeneratedTime
+      directoryGeneratedTime,
     } = this.state;
     const { rename, newFolder } = toggleDialog;
     const togglePasteDialog =
-      deviceType === DEVICES_TYPE_CONST.mtp && fileTransferProgess.toggle;
+      deviceType === DEVICE_TYPE.mtp && fileTransferProgess.toggle;
     const renameSecondaryText =
-      deviceType === DEVICES_TYPE_CONST.mtp
-        ? `Not all ${
-            DEVICES_LABEL[DEVICES_TYPE_CONST.mtp]
-          } support the rename feature.`
+      deviceType === DEVICE_TYPE.mtp
+        ? `Not all ${DEVICES_LABEL[
+            DEVICE_TYPE.mtp
+          ].toLowerCase()}s will support the rename feature.`
         : ``;
 
     return (
@@ -1497,7 +2006,6 @@ class FileExplorer extends Component {
           btnNegativeText="Cancel"
           errors={rename.errors}
         />
-
         <TextFieldEditDialog
           titleText={`Create a new folder on your ${DEVICES_LABEL[deviceType]}`}
           bodyText={`Path: ${newFolder.data.path || ''}`}
@@ -1516,27 +2024,65 @@ class FileExplorer extends Component {
           btnNegativeText="Cancel"
           errors={newFolder.errors}
         />
-
         <ProgressBarDialog
-          titleText="Transferring files..."
-          bodyText1={`${
-            fileTransferProgess.bodyText1 ? fileTransferProgess.bodyText1 : ''
-          }`}
-          bodyText2={`${
-            fileTransferProgess.bodyText2 ? fileTransferProgess.bodyText2 : ''
-          }`}
+          values={fileTransferProgess.values}
+          titleText={fileTransferProgess.titleText ?? 'Transferring files...'}
           trigger={togglePasteDialog}
+          bottomText={fileTransferProgess.bottomText}
           fullWidthDialog
           maxWidthDialog="sm"
-          variant="determinate"
           helpText="If the progress bar freezes while transferring the files, restart the app and reconnect the device. This is a known Android MTP bug."
-          progressValue={fileTransferProgess.percentage}
         >
           <div className={styles.socialMediaShareContainer}>
+            <Typography className={styles.donationBtnsTitle}>
+              {`I've invested a significant amount of my time and energy into developing and maintaining this OpenSource application.`}
+              <span className={styles.donationBtnsTitleNewLine}>
+                {`I hate to run ads.`}&nbsp;Help me keep {APP_NAME}
+                &nbsp;
+                <span className={styles.donationBtnsBoldText}>Free</span>
+                &nbsp;and&nbsp;
+                <span className={styles.donationBtnsBoldText}>Open</span>,
+                forever!
+              </span>
+            </Typography>
+            <div className={styles.socialMediaShareBtnsContainer}>
+              {donationBtnsList.map((a, index) => (
+                // eslint-disable-next-line react/no-array-index-key
+                <Tooltip key={index} title={a.label}>
+                  <div>
+                    <IconButton
+                      aria-label={a.label}
+                      disabled={!a.enabled}
+                      onClick={() => openExternalUrl(a.url)}
+                      className={classnames(styles.socialMediaBtnWrapper, {
+                        [styles.socialMediaBtnWrapperForImage]: !!a.image,
+                      })}
+                    >
+                      {a.image && (
+                        <img
+                          alt={a.label}
+                          src={imgsrc(a.image, false)}
+                          className={styles.socialMediaShareBtnImages}
+                        />
+                      )}
+
+                      {a.icon && (
+                        <FontAwesomeIcon
+                          icon={a.icon}
+                          className={styles.socialMediaShareBtn}
+                          title={a.label}
+                        />
+                      )}
+                    </IconButton>
+                  </div>
+                </Tooltip>
+              ))}
+            </div>
+
             <Typography className={styles.socialMediaShareTitle}>
               Liked using the App?
             </Typography>
-            <div className={styles.socialMediaShareBtnsWrapper}>
+            <div className={styles.socialMediaShareBtnsContainer}>
               {socialMediaShareBtnsList.map((a, index) => (
                 // eslint-disable-next-line react/no-array-index-key
                 <Tooltip key={index} title={a.label}>
@@ -1545,12 +2091,25 @@ class FileExplorer extends Component {
                       aria-label={a.label}
                       disabled={!a.enabled}
                       onClick={() => openExternalUrl(a.url)}
+                      className={classnames(styles.socialMediaBtnWrapper, {
+                        [styles.socialMediaBtnWrapperForImage]: !!a.image,
+                      })}
                     >
-                      <img
-                        className={styles.socialMediaShareBtn}
-                        src={imgsrc(a.imgSrc)}
-                        alt={a.label}
-                      />
+                      {a.image && (
+                        <img
+                          alt={a.label}
+                          src={imgsrc(a.image, false)}
+                          className={styles.socialMediaShareBtnImages}
+                        />
+                      )}
+
+                      {a.icon && (
+                        <FontAwesomeIcon
+                          icon={a.icon}
+                          className={styles.socialMediaShareBtn}
+                          title={a.label}
+                        />
+                      )}
                     </IconButton>
                   </div>
                 </Tooltip>
@@ -1558,15 +2117,13 @@ class FileExplorer extends Component {
             </div>
           </div>
         </ProgressBarDialog>
-
         <ConfirmDialog
           fullWidthDialog
           maxWidthDialog="xs"
           bodyText="Replace and merge the existing items?"
           trigger={togglePasteConfirmDialog}
-          onClickHandler={this._handlePasteConfirmDialog}
+          onClickHandler={this._handlePasteConfirm}
         />
-
         <FileExplorerBodyRender
           deviceType={deviceType}
           fileExplorerListingType={fileExplorerListingType}
@@ -1579,10 +2136,11 @@ class FileExplorer extends Component {
           tableSort={this.tableSort}
           isStatusBarEnabled={isStatusBarEnabled}
           directoryGeneratedTime={directoryGeneratedTime}
-          OnHoverDropZoneActivate={this._handleOnHoverDropZoneActivate}
+          onHoverDropZoneActivate={this._handleonHoverDropZoneActivate}
           onFilesDragOver={this._handleFilesDragOver}
           onFilesDragEnd={this._handleFilesDragEnd}
-          onTableDrop={this._handleTableDrop}
+          onFilesDrop={this._handleTableDrop}
+          onDragStart={this._handleFilesDragStart}
           onBreadcrumbPathClick={this._handleBreadcrumbPathClick}
           onSelectAllClick={this._handleSelectAllClick}
           onRequestSort={this._handleRequestSort}
@@ -1590,142 +2148,172 @@ class FileExplorer extends Component {
           onTableDoubleClick={this._handleTableDoubleClick}
           onTableClick={this._handleTableClick}
           onIsDraggable={this._handleIsDraggable}
-          onDragStart={this._handleFilesDragStart}
+          onExternalFileDragLeave={this._handleExternalFileDragLeave}
           onFocussedFileExplorerDeviceType={
             this._handleFocussedFileExplorerDeviceType
           }
           onAcceleratorActivation={this._handleAcceleratorActivation}
         />
+        ;
       </Fragment>
     );
   }
 }
 
-const mapDispatchToProps = (dispatch, ownProps) =>
+const mapDispatchToProps = (dispatch, _) =>
   bindActionCreators(
     {
-      actionCreateThrowError: ({ ...args }) => (_, getState) => {
+      actionCreateThrowError: ({ ...args }) => (_, __) => {
         dispatch(throwAlert({ ...args }));
       },
 
-      actionCreateFocussedFileExplorerDeviceType: ({ ...args }) => (
-        _,
-        getState
-      ) => {
+      actionCreateFocussedFileExplorerDeviceType: ({ ...args }) => (_, __) => {
         dispatch(setFocussedFileExplorerDeviceType({ ...args }));
       },
 
-      actionCreateRequestSort: ({ ...args }, deviceType) => (_, getState) => {
+      actionCreateRequestSort: ({ ...args }, deviceType) => (_, __) => {
         dispatch(setSortingDirLists({ ...args }, deviceType));
       },
 
       actionCreateSelectAllClick: ({ selected }, isChecked, deviceType) => (
         _,
-        getState
+        __
       ) => {
         if (isChecked) {
           dispatch(
-            setSelectedDirLists(
+            actionSetSelectedDirLists(
               {
-                selected
+                selected,
               },
               deviceType
             )
           );
+
           return;
         }
 
-        dispatch(setSelectedDirLists({ selected: [] }, deviceType));
+        dispatch(actionSetSelectedDirLists({ selected: [] }, deviceType));
       },
 
-      actionCreateTableClick: ({ selected }, deviceType) => (_, getState) => {
-        dispatch(setSelectedDirLists({ selected }, deviceType));
+      actionCreateTableClick: ({ selected }, deviceType) => (_, __) => {
+        dispatch(actionSetSelectedDirLists({ selected }, deviceType));
       },
 
-      actionCreateFetchMtpStorageOptions: ({ ...args }, deviceType) => (
+      actionCreateInitializeMtp: ({ filePath, ignoreHidden, deviceType }) => (
         _,
         getState
       ) => {
         dispatch(
-          setMtpStorageOptions(
-            { ...args },
-            deviceType,
+          initializeMtp(
             {
-              changeMtpStorageIdsOnlyOnDeviceChange: false,
-              mtpStoragesList: {}
+              filePath,
+              ignoreHidden,
+              changeLegacyMtpStorageOnlyOnDeviceChange: false,
+              deviceType,
             },
             getState
           )
         );
       },
 
-      actionCreateFetchDirList: ({ ...args }, deviceType) => (_, getState) => {
-        dispatch(fetchDirList({ ...args }, deviceType, getState));
+      /**
+       *
+       * @param args {isAvailable, error, isLoading, info}
+       * @return {{payload: {}, type: *}}
+       */
+      actionCreateSetMtpStatus: ({ ...args }) => (_, __) => {
+        dispatch(actionSetMtpStatus(args));
+      },
+
+      actionCreateListDirectory: ({ ...args }, deviceType) => (_, getState) => {
+        dispatch(listDirectory({ ...args }, deviceType, getState));
+      },
+
+      actionCreateReloadDirList: ({ filePath, ignoreHidden, deviceType }) => (
+        _,
+        getState
+      ) => {
+        checkIf(deviceType, 'inObjectValues', DEVICE_TYPE);
+
+        dispatch(
+          reloadDirList(
+            {
+              filePath,
+              ignoreHidden,
+              deviceType,
+            },
+            getState
+          )
+        );
       },
 
       actionCreateRenameFile: (
-        { oldFilePath, newFilePath, deviceType },
-        { ...fetchDirListArgs }
+        { filePath, newFilename, deviceType },
+        { ...listDirectoryArgs }
       ) => async (_, getState) => {
+        const { mtpMode } = getState().Settings;
+
         try {
           switch (deviceType) {
-            case DEVICES_TYPE_CONST.local:
+            case DEVICE_TYPE.local:
               const {
                 error: localError,
                 stderr: localStderr,
-                data: localData
-              } = await renameLocalFiles({
-                oldFilePath,
-                newFilePath
+                data: localData,
+              } = await fileExplorerController.renameFile({
+                deviceType,
+                filePath,
+                newFilename,
+                storageId: null,
               });
 
               dispatch(
-                processLocalOutput({
+                churnLocalBuffer({
                   deviceType,
                   error: localError,
                   stderr: localStderr,
                   data: localData,
-                  callback: () => {
+                  onSuccess: () => {
                     dispatch(
-                      fetchDirList(
-                        { ...fetchDirListArgs },
+                      listDirectory(
+                        { ...listDirectoryArgs },
                         deviceType,
                         getState
                       )
                     );
-                  }
+                  },
                 })
               );
               break;
-            case DEVICES_TYPE_CONST.mtp:
-              const mtpStoragesListSelected = getMtpStoragesListSelected(
-                getState().Home
-              );
+            case DEVICE_TYPE.mtp:
+              const storageId = getSelectedStorageIdFromState(getState().Home);
               const {
                 error: mtpError,
                 stderr: mtpStderr,
-                data: mtpData
-              } = await renameMtpFiles({
-                oldFilePath,
-                newFilePath,
-                mtpStoragesListSelected
+                data: mtpData,
+              } = await fileExplorerController.renameFile({
+                deviceType,
+                filePath,
+                newFilename,
+                storageId,
               });
 
               dispatch(
-                processMtpOutput({
+                churnMtpBuffer({
                   deviceType,
                   error: mtpError,
                   stderr: mtpStderr,
                   data: mtpData,
-                  callback: () => {
+                  mtpMode,
+                  onSuccess: () => {
                     dispatch(
-                      fetchDirList(
-                        { ...fetchDirListArgs },
+                      listDirectory(
+                        { ...listDirectoryArgs },
                         deviceType,
                         getState
                       )
                     );
-                  }
+                  },
                 })
               );
               break;
@@ -1739,65 +2327,69 @@ const mapDispatchToProps = (dispatch, ownProps) =>
 
       actionCreateNewFolder: (
         { newFolderPath, deviceType },
-        { ...fetchDirListArgs }
+        { ...listDirectoryArgs }
       ) => async (_, getState) => {
         try {
+          const { mtpMode } = getState().Settings;
+
           switch (deviceType) {
-            case DEVICES_TYPE_CONST.local:
+            case DEVICE_TYPE.local:
               const {
                 error: localError,
                 stderr: localStderr,
-                data: localData
-              } = await newLocalFolder({
-                newFolderPath
+                data: localData,
+              } = await fileExplorerController.makeDirectory({
+                deviceType,
+                filePath: newFolderPath,
+                storageId: null,
               });
 
               dispatch(
-                processLocalOutput({
+                churnLocalBuffer({
                   deviceType,
                   error: localError,
                   stderr: localStderr,
                   data: localData,
-                  callback: () => {
+                  onSuccess: () => {
                     dispatch(
-                      fetchDirList(
-                        { ...fetchDirListArgs },
+                      listDirectory(
+                        { ...listDirectoryArgs },
                         deviceType,
                         getState
                       )
                     );
-                  }
+                  },
                 })
               );
               break;
-            case DEVICES_TYPE_CONST.mtp:
-              const mtpStoragesListSelected = getMtpStoragesListSelected(
-                getState().Home
-              );
+            case DEVICE_TYPE.mtp:
+              const storageId = getSelectedStorageIdFromState(getState().Home);
               const {
                 error: mtpError,
                 stderr: mtpStderr,
-                data: mtpData
-              } = await newMtpFolder({
-                newFolderPath,
-                mtpStoragesListSelected
+                data: mtpData,
+              } = await fileExplorerController.makeDirectory({
+                deviceType,
+                filePath: newFolderPath,
+                storageId,
               });
 
               dispatch(
-                processMtpOutput({
+                churnMtpBuffer({
                   deviceType,
                   error: mtpError,
                   stderr: mtpStderr,
                   data: mtpData,
-                  callback: () => {
+                  mtpMode,
+                  onSuccess: () => {
                     dispatch(
-                      fetchDirList(
-                        { ...fetchDirListArgs },
+                      listDirectory(
+                        { ...listDirectoryArgs },
                         deviceType,
                         getState
                       )
                     );
-                  }
+                  },
                 })
               );
               break;
@@ -1830,11 +2422,11 @@ const mapDispatchToProps = (dispatch, ownProps) =>
           dispatch(
             setFileTransferClipboard({
               queue,
-              source: deviceType
+              source: deviceType,
             })
           );
 
-          dispatch(setSelectedDirLists({ selected: [] }, deviceType));
+          dispatch(actionSetSelectedDirLists({ selected: [] }, deviceType));
         } catch (e) {
           log.error(e);
         }
@@ -1842,32 +2434,236 @@ const mapDispatchToProps = (dispatch, ownProps) =>
 
       actionCreatePaste: (
         { ...pasteArgs },
-        { ...fetchDirListArgs },
+        { ...listDirectoryArgs },
         deviceType
       ) => (_, getState) => {
+        let sessionElapsedTime = 0;
+        const sessionTransferSpeeds = [];
+        let sessionTotalFiles = 0;
+        let sessionTransferDirection;
+
         try {
+          const {
+            mtpMode,
+            filesPreprocessingBeforeTransfer,
+          } = getState().Settings;
+
+          const {
+            destinationFolder,
+            storageId,
+            fileTransferClipboard,
+          } = pasteArgs;
+
+          analyticsService.sendEvent(EVENT_TYPE.FILE_TRANSFER_STARTED, {});
+
+          // on pre process callback for file transfer
+          const onPreprocess = ({ fullPath }) => {
+            const bodyText1 = `Processing "${
+              springTruncate(fullPath, 45).truncatedText
+            }"`;
+
+            getCurrentWindow().setProgressBar(0);
+            dispatch(
+              setFileTransferProgress({
+                titleText: `Copying files to ${DEVICES_LABEL[deviceType]}...`,
+                bottomText: `If file processing is taking too much time, you may disable it from 'Settings' > 'FILE MANAGER' > 'Display overall progress on the file transfer screen'`,
+                toggle: true,
+                values: [
+                  {
+                    bodyText1,
+                    bodyText2: null,
+                    percentage: 0,
+                    variant: `indeterminate`,
+                  },
+                ],
+              })
+            );
+          };
+
+          // on progress callback for file transfer
+          const onProgress = ({
+            elapsedTime,
+            speed,
+            activeFileProgress,
+            currentFile,
+            activeFileSize,
+            activeFileSizeSent,
+            totalFiles,
+            filesSent,
+            totalFileSize,
+            totalFileSizeSent,
+            totalFileProgress,
+            direction,
+          }) => {
+            let windowProgressBar = 0;
+            let bodyText1 = 0;
+            let progressText = 0;
+
+            let progressInfo = [];
+
+            sessionElapsedTime = elapsedTime;
+            sessionTotalFiles = totalFiles;
+            sessionTransferDirection = direction;
+
+            /// file transfer progress on legacy mode
+            if (mtpMode === MTP_MODE.legacy) {
+              bodyText1 = `${Math.floor(activeFileProgress)}% complete of "${
+                springTruncate(currentFile, 45).truncatedText
+              }"`;
+              progressText = `${niceBytes(activeFileSizeSent)} / ${niceBytes(
+                activeFileSize
+              )}`;
+              windowProgressBar = activeFileProgress / 100;
+
+              sessionTransferSpeeds.push(parseFloat(speed) / 1000 / 1000);
+
+              const _speed = speed ? `${niceBytes(speed)}` : `--`;
+
+              progressInfo = [
+                {
+                  bodyText1,
+                  bodyText2: `Elapsed: ${elapsedTime} | Progress: ${progressText} @ ${_speed}/sec`,
+                  variant: `determinate`,
+                  percentage: activeFileProgress,
+                },
+              ];
+            } else {
+              checkIf(direction, 'string');
+              checkIf(direction, 'inObjectValues', FILE_TRANSFER_DIRECTION);
+
+              sessionTransferSpeeds.push(parseFloat(speed));
+
+              // active file progress
+              bodyText1 = `${Math.floor(activeFileProgress)}% complete of "${
+                springTruncate(currentFile, 45).truncatedText
+              }"`;
+              progressText = `${niceBytes(activeFileSizeSent)} / ${niceBytes(
+                activeFileSize
+              )}`;
+              const elapsedTimeText = `Elapsed: ${elapsedTime} | `;
+
+              progressInfo = [
+                {
+                  bodyText1,
+                  bodyText2: `${
+                    !filesPreprocessingBeforeTransfer[direction]
+                      ? elapsedTimeText
+                      : ''
+                  }Progress: ${progressText} @ ${speed} MB/sec`,
+                  variant: `determinate`,
+                  percentage: activeFileProgress,
+                },
+              ];
+              windowProgressBar = activeFileProgress / 100;
+
+              /// if preprocessing of file transfer is enabled then show total file transfer information as well
+              if (filesPreprocessingBeforeTransfer[direction]) {
+                // if preprocessing of file transfer is enabled then [windowProgressBar]
+                // progress value should be the [totalFileProgress] else [activeFileProgress] will be used
+                windowProgressBar = totalFileProgress / 100;
+
+                const bodyText1 = `${filesSent} of ${totalFiles} ${getPluralText(
+                  'file',
+                  totalFiles
+                )} copied | ${Math.floor(totalFileProgress)}% completed`;
+                const progressText = `${niceBytes(
+                  totalFileSizeSent
+                )} / ${niceBytes(totalFileSize)}`;
+
+                progressInfo.push({
+                  bodyText1,
+                  bodyText2: `${elapsedTimeText}Progress: ${progressText}`,
+                  variant: `determinate`,
+                  percentage: totalFileProgress,
+                });
+              }
+            }
+
+            getCurrentWindow().setProgressBar(windowProgressBar);
+            dispatch(
+              setFileTransferProgress({
+                titleText: `Copying files to ${DEVICES_LABEL[deviceType]}...`,
+                bottomText: null,
+                toggle: true,
+                values: progressInfo,
+              })
+            );
+          };
+
+          // on error callback for file transfer
+          const onError = ({ error, stderr, data }) => {
+            dispatch(
+              churnMtpBuffer({
+                deviceType: DEVICE_TYPE.mtp,
+                error,
+                stderr,
+                data,
+                mtpMode,
+                onSuccess: () => {
+                  getCurrentWindow().setProgressBar(-1);
+                  dispatch(clearFileTransfer());
+                  dispatch(
+                    listDirectory(
+                      { ...listDirectoryArgs },
+                      deviceType,
+                      getState
+                    )
+                  );
+                },
+              })
+            );
+
+            analyticsService.sendEvent(EVENT_TYPE.FILE_TRANSFER_ERROR, {});
+          };
+
+          // on completed callback for file transfer
+          const onCompleted = () => {
+            getCurrentWindow().setProgressBar(-1);
+            dispatch(clearFileTransfer());
+            dispatch(
+              listDirectory({ ...listDirectoryArgs }, deviceType, getState)
+            );
+
+            analyticsService.sendEvent(EVENT_TYPE.FILE_TRANSFER_COMPLETED, {
+              'Transfer direction': sessionTransferDirection,
+              'Total files': sessionTotalFiles,
+              'Average transfer speed': `${arrayAverage(
+                sessionTransferSpeeds
+              )} MB/s`,
+              'Elapsed time': sessionElapsedTime,
+              'Is files preprocessing enabled':
+                filesPreprocessingBeforeTransfer[sessionTransferDirection],
+            });
+          };
+
           switch (deviceType) {
-            case DEVICES_TYPE_CONST.local:
-              pasteFiles(
-                { ...pasteArgs },
-                { ...fetchDirListArgs },
-                'mtpToLocal',
-                deviceType,
-                dispatch,
-                getState,
-                getCurrentWindow
-              );
+            case DEVICE_TYPE.local:
+              fileExplorerController.transferFiles({
+                deviceType: DEVICE_TYPE.mtp,
+                destination: destinationFolder,
+                storageId,
+                fileList: fileTransferClipboard?.queue ?? [],
+                direction: FILE_TRANSFER_DIRECTION.download,
+                onCompleted,
+                onError,
+                onProgress,
+                onPreprocess,
+              });
+
               break;
-            case DEVICES_TYPE_CONST.mtp:
-              pasteFiles(
-                { ...pasteArgs },
-                { ...fetchDirListArgs },
-                'localtoMtp',
-                deviceType,
-                dispatch,
-                getState,
-                getCurrentWindow
-              );
+            case DEVICE_TYPE.mtp:
+              fileExplorerController.transferFiles({
+                deviceType: DEVICE_TYPE.mtp,
+                destination: destinationFolder,
+                storageId,
+                fileList: fileTransferClipboard?.queue ?? [],
+                direction: FILE_TRANSFER_DIRECTION.upload,
+                onCompleted,
+                onError,
+                onProgress,
+                onPreprocess,
+              });
+
               break;
             default:
               break;
@@ -1877,7 +2673,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         }
       },
 
-      actionCreateSetFilesDrag: ({ ...args }) => (_, getState) => {
+      actionCreateSetFilesDrag: ({ ...args }) => (_, __) => {
         try {
           dispatch(setFilesDrag({ ...args }));
         } catch (e) {
@@ -1885,18 +2681,38 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         }
       },
 
-      actionCreateClearFilesDrag: () => (_, getState) => {
+      actionCreateClearFilesDrag: () => (_, __) => {
         try {
           dispatch(clearFilesDrag());
         } catch (e) {
           log.error(e);
         }
-      }
+      },
+      actionCreatedDisposeMtp: ({ deviceType }) => (_, getState) => {
+        try {
+          if (deviceType === DEVICE_TYPE.local) {
+            return;
+          }
+
+          dispatch(
+            disposeMtp(
+              {
+                deviceType,
+                onError: () => {},
+                onSuccess: () => {},
+              },
+              getState
+            )
+          );
+        } catch (e) {
+          log.error(e);
+        }
+      },
     },
     dispatch
   );
 
-const mapStateToProps = (state, props) => {
+const mapStateToProps = (state, _) => {
   return {
     currentBrowsePath: makeCurrentBrowsePath(state),
     mtpDevice: makeMtpDevice(state),
@@ -1904,12 +2720,16 @@ const mapStateToProps = (state, props) => {
     hideHiddenFiles: makeHideHiddenFiles(state),
     isStatusBarEnabled: makeEnableStatusBar(state),
     contextMenuList: makeContextMenuList(state),
-    mtpStoragesListSelected: makeMtpStoragesListSelected(state),
+    storageId: makeStorageId(state),
     fileTransferClipboard: makeFileTransferClipboard(state),
     fileTransferProgess: makeFileTransferProgess(state),
     filesDrag: makeFilesDrag(state),
     fileExplorerListingType: makeFileExplorerListingType(state),
-    focussedFileExplorerDeviceType: makeFocussedFileExplorerDeviceType(state)
+    focussedFileExplorerDeviceType: makeFocussedFileExplorerDeviceType(state),
+    appThemeMode: makeAppThemeMode(state),
+    mtpMode: makeMtpMode(state),
+    enableUsbHotplug: makeEnableUsbHotplug(state),
+    showDirectoriesFirst: makeShowDirectoriesFirst(state),
   };
 };
 

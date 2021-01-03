@@ -1,3 +1,1 @@
-'use strict';
-
-export const latestUpdatePushVersion = '2.4.0-beta.1';
+export const latestUpdatePushVersion = '3.0.0-beta.3';

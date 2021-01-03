@@ -1,5 +1,3 @@
-'use strict';
-
 /* eslint global-require: off */
 
 const developmentEnvironments = ['development', 'test'];
@@ -8,10 +6,10 @@ const productionPlugins = [
   require('babel-plugin-dev-expression'),
   require('@babel/plugin-transform-react-constant-elements'),
   require('@babel/plugin-transform-react-inline-elements'),
-  require('babel-plugin-transform-react-remove-prop-types')
+  require('babel-plugin-transform-react-remove-prop-types'),
 ];
 
-module.exports = api => {
+module.exports = (api) => {
   const development = api.env(developmentEnvironments);
 
   return {
@@ -20,13 +18,13 @@ module.exports = api => {
         require('@babel/preset-env'),
         {
           targets: {
-            electron: require('electron/package.json').version
+            electron: 10,
           },
           useBuiltIns: 'usage',
-          corejs: '3.0.0'
-        }
+          corejs: '3.0.0',
+        },
       ],
-      [require('@babel/preset-react'), { development }]
+      [require('@babel/preset-react'), { development }],
     ],
     plugins: [
       // Stage 0
@@ -38,11 +36,11 @@ module.exports = api => {
       [require('@babel/plugin-proposal-optional-chaining'), { loose: false }],
       [
         require('@babel/plugin-proposal-pipeline-operator'),
-        { proposal: 'minimal' }
+        { proposal: 'minimal' },
       ],
       [
         require('@babel/plugin-proposal-nullish-coalescing-operator'),
-        { loose: false }
+        { loose: false },
       ],
       require('@babel/plugin-proposal-do-expressions'),
 
@@ -58,7 +56,11 @@ module.exports = api => {
       require('@babel/plugin-syntax-import-meta'),
       [require('@babel/plugin-proposal-class-properties'), { loose: true }],
       require('@babel/plugin-proposal-json-strings'),
-      ...(development ? developmentPlugins : productionPlugins)
-    ]
+
+      // proposals
+      [require('@babel/plugin-proposal-private-methods'), { loose: true }],
+
+      ...(development ? developmentPlugins : productionPlugins),
+    ],
   };
 };

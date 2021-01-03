@@ -1,10 +1,12 @@
-'use strict';
-
 import React, { PureComponent, Fragment } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMobile, faLaptop } from '@fortawesome/free-solid-svg-icons';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import { styles } from '../styles/FileExplorerTableFooterStatusBarRender';
 import { getPluralText } from '../../../utils/funcs';
+import { DEVICE_TYPE } from '../../../enums';
+import { DEVICES_LABEL } from '../../../constants';
 
 class FileExplorerTableFooterStatusBarRender extends PureComponent {
   getDirectoryListStats = () => {
@@ -13,7 +15,7 @@ class FileExplorerTableFooterStatusBarRender extends PureComponent {
     let directories = 0;
     let files = 0;
 
-    (directoryLists.nodes || []).map(a => {
+    (directoryLists.nodes || []).map((a) => {
       if (a.isFolder) {
         directories += 1;
       } else {
@@ -36,16 +38,47 @@ class FileExplorerTableFooterStatusBarRender extends PureComponent {
     return { total };
   };
 
+  RenderDeviceName = () => {
+    const { classes: styles, deviceType, mtpDevice } = this.props;
+
+    if (deviceType === DEVICE_TYPE.local) {
+      return (
+        <Fragment>
+          <FontAwesomeIcon icon={faLaptop} title={deviceType} />
+          <span className={styles.deviceTypeWrapper}>
+            {DEVICES_LABEL[deviceType]}
+            <span> - </span>
+          </span>
+        </Fragment>
+      );
+    }
+
+    return (
+      <Fragment>
+        <FontAwesomeIcon icon={faMobile} title={deviceType} />
+        <span className={styles.deviceTypeWrapper}>
+          {mtpDevice?.isAvailable && mtpDevice?.info?.mtpDeviceInfo
+            ? mtpDevice?.info?.mtpDeviceInfo?.Model
+            : DEVICES_LABEL[deviceType]}
+          <span> - </span>
+        </span>
+      </Fragment>
+    );
+  };
+
   render() {
     const { classes: styles, fileTransferClipboard } = this.props;
 
     const { directories, files, total } = this.getDirectoryListStats();
     const { total: selectedTotal } = this.getSelectedDirectoryStats();
     const fileTransferClipboardLength = fileTransferClipboard.queue.length;
+    const { RenderDeviceName } = this;
 
     return (
       <div className={styles.root}>
         <Typography variant="caption" className={styles.bodyWrapper}>
+          <RenderDeviceName />
+
           {selectedTotal > 0 ? (
             <Fragment>{`${selectedTotal} of ${total} selected`}</Fragment>
           ) : (

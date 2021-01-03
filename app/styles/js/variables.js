@@ -1,24 +1,32 @@
-'use strict';
-
-// eslint-disable-next-line no-unused-vars
-export default args => {
+// common styling variable object which can be imported by components
+export default (_) => {
   return {
     sizes: {
       toolbarHeight: 64,
       sidebarAreaPaneWidth: 300,
-      sidebarAreaPaddingTop: 40
-    },
-    styles: {
-      primaryColor: {
-        main: '#ffffff'
-      },
-      secondaryColor: {
-        main: '#007af5'
-      },
+      sidebarAreaPaddingTop: 40,
       regularFontSize: 14,
-      borderThinDividerColor:
-        'solid 1px var(--black-transparent-12,rgba(0,0,0,.12))',
-      textLightColor: `rgba(0, 0, 0, 0.64)`
-    }
+    },
+    //   styles: {
+    //     bgColor: APP_THEME_COLOR_VAR.bgColor,
+    //     primaryColor: {
+    //       main: APP_THEME_COLOR_VAR.primaryMainColor,
+    //     },
+    //     secondaryColor: {
+    //       main: APP_THEME_COLOR_VAR.secondaryMainColor,
+    //     },
+    //     background: {
+    //       paper: APP_THEME_COLOR_VAR.paperBgColor,
+    //     },
+    //     icons: {
+    //       navbarRegular: APP_THEME_COLOR_VAR.contrastPrimaryMainColor,
+    //       disabled: APP_THEME_COLOR_VAR.disabledBgColor,
+    //     },
+    //     nativeSystemColor: APP_THEME_COLOR_VAR.nativeSystemColor,
+    //     tableHeaderFooterBgColor: APP_THEME_COLOR_VAR.tableHeaderFooterBgColor,
+    //     fileExplorerThinLineDividerColor:
+    //       APP_THEME_COLOR_VAR.fileExplorerThinLineDividerColor,
+    //     lightText1Color: APP_THEME_COLOR_VAR.lightText1Color,
+    //   },
   };
 };

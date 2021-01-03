@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import { Switch, Route } from 'react-router';
 import { HashRouter } from 'react-router-dom';
@@ -11,53 +9,59 @@ import PrivacyPolicyPage from '../containers/PrivacyPolicyPage/Loadable';
 import AppFeaturesPage from '../containers/AppFeaturesPage/Loadable';
 import KeyboardShortcutsPage from '../containers/KeyboardShortcutsPage/Loadable';
 import NotFoundPage from '../containers/NotFoundPage/Loadable';
+import HelpFaqsPage from '../containers/HelpFaqsPage/Loadable';
 
 export const routes = {
   Home: {
     path: '/',
     exact: true,
-    component: HomePage
+    component: HomePage,
   },
   ReportBugsPage: {
     path: '/reportBugsPage',
     exact: true,
-    component: ReportBugsPage
+    component: ReportBugsPage,
   },
   AppUpdatePageUpdateProgress: {
     path: '/appUpdatePage/updateProgress',
     exact: true,
-    component: AppUpdatePageUpdateProgress
+    component: AppUpdatePageUpdateProgress,
   },
   AppUpdatePageUpdateAvailable: {
     path: '/appUpdatePage/updateAvailable',
     exact: true,
-    component: AppUpdatePageUpdateAvailable
+    component: AppUpdatePageUpdateAvailable,
   },
   PrivacyPolicyPage: {
     path: '/privacyPolicyPage',
     exact: true,
-    component: PrivacyPolicyPage
+    component: PrivacyPolicyPage,
+  },
+  HelpFaqsPage: {
+    path: '/helpFaqsPage',
+    exact: true,
+    component: HelpFaqsPage,
   },
   AppFeaturesPage: {
     path: '/appFeaturesPage',
     exact: true,
-    component: AppFeaturesPage
+    component: AppFeaturesPage,
   },
   KeyboardShortcutsPage: {
     path: '/keyboardShortcutsPage',
     exact: true,
-    component: KeyboardShortcutsPage
+    component: KeyboardShortcutsPage,
   },
   NotFound: {
     path: '*',
-    component: NotFoundPage
-  }
+    component: NotFoundPage,
+  },
 };
 
 export default () => (
   <HashRouter>
     <Switch>
-      {Object.keys(routes).map(a => {
+      {Object.keys(routes).map((a) => {
         const route = routes[a];
         const { component: Component, path, exact } = route;
 

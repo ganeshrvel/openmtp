@@ -1,18 +1,74 @@
-'use strict';
-
 import React, { PureComponent } from 'react';
 import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 import Checkbox from '@material-ui/core/Checkbox';
 import Typography from '@material-ui/core/Typography';
 import Tooltip from '@material-ui/core/Tooltip';
-import FolderIcon from '@material-ui/icons/Folder';
-import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
+import prettyFileIcons from '../../../vendors/pretty-file-icons';
 import { springTruncate } from '../../../utils/funcs';
 import { FILE_EXPLORER_GRID_TRUNCATE_MAX_CHARS } from '../../../constants';
 import { styles } from '../styles/FileExplorerTableBodyGridRender';
+import { imgsrc } from '../../../utils/imgsrc';
 
 class FileExplorerTableBodyGridRender extends PureComponent {
+  RenderFileIcon = () => {
+    const {
+      classes: styles,
+      item,
+      _eventTarget,
+      tableData,
+      onContextMenuClick,
+    } = this.props;
+
+    const fileIcon = prettyFileIcons.getIcon(item.name, 'svg');
+
+    return (
+      <div className={styles.fileTypeIconWrapper}>
+        <img
+          src={imgsrc(`file-types/${fileIcon}`)}
+          alt={item.name}
+          className={classNames(styles.fileTypeIcon)}
+          onContextMenu={(event) =>
+            onContextMenuClick(
+              event,
+              { ...item },
+              { ...tableData },
+              _eventTarget
+            )
+          }
+        />
+      </div>
+    );
+  };
+
+  RenderFolderIcon = () => {
+    const {
+      classes: styles,
+      item,
+      _eventTarget,
+      tableData,
+      onContextMenuClick,
+    } = this.props;
+
+    return (
+      <div className={styles.fileTypeIconWrapper}>
+        <img
+          src={imgsrc(`FileExplorer/folder-blue.svg`)}
+          alt={item.name}
+          className={classNames(styles.fileTypeIcon)}
+          onContextMenu={(event) =>
+            onContextMenuClick(
+              event,
+              { ...item },
+              { ...tableData },
+              _eventTarget
+            )
+          }
+        />
+      </div>
+    );
+  };
+
   render() {
     const {
       classes: styles,
@@ -23,8 +79,9 @@ class FileExplorerTableBodyGridRender extends PureComponent {
       tableData,
       onContextMenuClick,
       onTableClick,
-      onTableDoubleClick
+      onTableDoubleClick,
     } = this.props;
+    const { RenderFileIcon, RenderFolderIcon } = this;
 
     const fileName = springTruncate(
       item.name,
@@ -33,55 +90,34 @@ class FileExplorerTableBodyGridRender extends PureComponent {
 
     return (
       <div
+        draggable="true"
         className={classNames(styles.itemWrapper, {
-          [styles.itemSelected]: isSelected
+          [styles.itemSelected]: isSelected,
         })}
-        onDoubleClick={event => onTableDoubleClick(item, deviceType, event)}
-        onContextMenu={event =>
+        onDoubleClick={(event) => onTableDoubleClick(item, deviceType, event)}
+        onContextMenu={(event) =>
           onContextMenuClick(event, { ...item }, { ...tableData }, _eventTarget)
         }
+        onDragStart={(event) => {
+          if (!isSelected) {
+            onTableClick(item.path, deviceType, event, true, true);
+          }
+        }}
       >
         <label>
           <Checkbox
             className={styles.itemCheckBox}
             checked={isSelected}
-            onClick={event =>
+            onClick={(event) =>
               onTableClick(item.path, deviceType, event, true, true)
             }
           />
-          {item.isFolder ? (
-            <FolderIcon
-              color="secondary"
-              className={classNames(styles.itemIcon, `isFolder`)}
-              fontSize="small"
-              onContextMenu={event =>
-                onContextMenuClick(
-                  event,
-                  { ...item },
-                  { ...tableData },
-                  _eventTarget
-                )
-              }
-            />
-          ) : (
-            <InsertDriveFileIcon
-              className={classNames(styles.itemIcon, `isFile`)}
-              fontSize="small"
-              onContextMenu={event =>
-                onContextMenuClick(
-                  event,
-                  { ...item },
-                  { ...tableData },
-                  _eventTarget
-                )
-              }
-            />
-          )}
+          {item.isFolder ? <RenderFolderIcon /> : <RenderFileIcon />}
           <div className={styles.itemFileNameWrapper}>
             <Typography
               variant="caption"
               className={styles.itemFileName}
-              onContextMenu={event =>
+              onContextMenu={(event) =>
                 onContextMenuClick(
                   event,
                   { ...item },

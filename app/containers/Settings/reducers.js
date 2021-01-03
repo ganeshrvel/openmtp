@@ -1,32 +1,49 @@
-'use strict';
-
 import { actionTypes } from './actions';
-import { DEVICES_TYPE_CONST } from '../../constants';
+import {
+  DEVICE_TYPE,
+  FILE_EXPLORER_VIEW_TYPE,
+  APP_THEME_MODE_TYPE,
+  MTP_MODE,
+  FILE_TRANSFER_DIRECTION,
+} from '../../enums';
+import { checkIf } from '../../utils/checkIf';
+import { isPrereleaseVersion } from '../../utils/funcs';
 
 export const initialState = {
   freshInstall: 0,
   onboarding: {
-    lastFiredVersion: null
+    lastFiredVersion: null,
   },
   toggleSettings: false,
   enableAutoUpdateCheck: true,
   enableBackgroundAutoUpdate: true,
-  enablePrereleaseUpdates: false,
+  // if the freshly installed version is a prerelease version then save [enablePrereleaseUpdates] as true
+  enablePrereleaseUpdates: isPrereleaseVersion() || false,
   enableAnalytics: true,
   enableStatusBar: true,
+  enableUsbHotplug: true,
   hideHiddenFiles: {
-    [DEVICES_TYPE_CONST.local]: true,
-    [DEVICES_TYPE_CONST.mtp]: true
+    [DEVICE_TYPE.local]: true,
+    [DEVICE_TYPE.mtp]: true,
   },
-
   fileExplorerListingType: {
-    [DEVICES_TYPE_CONST.local]: 'grid',
-    [DEVICES_TYPE_CONST.mtp]: 'grid'
-  }
+    [DEVICE_TYPE.local]: FILE_EXPLORER_VIEW_TYPE.grid,
+    [DEVICE_TYPE.mtp]: FILE_EXPLORER_VIEW_TYPE.grid,
+  },
+  appThemeMode: APP_THEME_MODE_TYPE.auto,
+  showLocalPane: true,
+  showLocalPaneOnLeftSide: true,
+  showDirectoriesFirst: true,
+  mtpMode: MTP_MODE.kalam,
+  filesPreprocessingBeforeTransfer: {
+    [FILE_TRANSFER_DIRECTION.upload]: true,
+    [FILE_TRANSFER_DIRECTION.download]: true,
+  },
 };
 
 export default function Settings(state = initialState, action) {
   const { type, payload, deviceType = null } = action;
+
   switch (type) {
     case actionTypes.FRESH_INSTALL:
       return { ...state, freshInstall: payload };
@@ -36,8 +53,8 @@ export default function Settings(state = initialState, action) {
         ...state,
         onboarding: {
           ...state.onboarding,
-          ...payload
-        }
+          ...payload,
+        },
       };
 
     case actionTypes.TOGGLE_SETTINGS:
@@ -46,7 +63,10 @@ export default function Settings(state = initialState, action) {
     case actionTypes.HIDE_HIDDEN_FILES:
       return {
         ...state,
-        hideHiddenFiles: { ...state.hideHiddenFiles, [deviceType]: payload }
+        hideHiddenFiles: {
+          ...state.hideHiddenFiles,
+          [deviceType]: payload,
+        },
       };
 
     case actionTypes.FILE_EXPLORER_LISTING_TYPE:
@@ -54,27 +74,30 @@ export default function Settings(state = initialState, action) {
         ...state,
         fileExplorerListingType: {
           ...state.fileExplorerListingType,
-          [deviceType]: payload
-        }
+          [deviceType]: payload,
+        },
       };
 
-    case actionTypes.ENABLE_AUTO_UPDATE_CHECK:
-      return { ...state, enableAutoUpdateCheck: payload };
-
-    case actionTypes.ENABLE_BACKGROUND_AUTO_UPDATE:
-      return { ...state, enableBackgroundAutoUpdate: payload };
-
-    case actionTypes.ENABLE_PRERELEASE_UPDATES:
-      return { ...state, enablePrereleaseUpdates: payload };
-
-    case actionTypes.ENABLE_ANALYTICS:
-      return { ...state, enableAnalytics: payload };
-
-    case actionTypes.ENABLE_STATUS_BAR:
-      return { ...state, enableStatusBar: payload };
+    case actionTypes.COMMON_SETTINGS:
+      return {
+        ...state,
+        [payload.key]: payload.value,
+      };
 
     case actionTypes.COPY_JSON_FILE_TO_SETTINGS:
       return { ...state, ...payload };
+
+    case actionTypes.SET_FILES_PREPROCESSING_BEFORE_TRANSFER:
+      checkIf(payload.direction, 'string');
+      checkIf(payload.direction, 'inObjectValues', FILE_TRANSFER_DIRECTION);
+
+      return {
+        ...state,
+        filesPreprocessingBeforeTransfer: {
+          ...state.filesPreprocessingBeforeTransfer,
+          [payload.direction]: payload.value,
+        },
+      };
 
     default:
       return state;

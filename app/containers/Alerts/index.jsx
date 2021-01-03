@@ -1,5 +1,3 @@
-'use strict';
-
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -11,12 +9,14 @@ import Snackbars from '../../components/Snackbars';
 class Alerts extends Component {
   _handleClose = () => {
     const { actionCreateClearAlert } = this.props;
+
     actionCreateClearAlert();
   };
 
   render() {
     const { Alerts } = this.props;
     const { message, variant, autoHideDuration } = Alerts;
+
     return (
       message && (
         <Snackbars
@@ -30,19 +30,19 @@ class Alerts extends Component {
   }
 }
 
-const mapDispatchToProps = (dispatch, ownProps) =>
+const mapDispatchToProps = (dispatch, __) =>
   bindActionCreators(
     {
-      actionCreateClearAlert: () => (_, getState) => {
+      actionCreateClearAlert: () => (_, __) => {
         dispatch(clearAlert());
-      }
+      },
     },
     dispatch
   );
 
-const mapStateToProps = (state, props) => {
+const mapStateToProps = (state, __) => {
   return {
-    Alerts: state.Alerts
+    Alerts: state.Alerts,
   };
 };
 

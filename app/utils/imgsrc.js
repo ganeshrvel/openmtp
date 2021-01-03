@@ -1,5 +1,3 @@
-'use strict';
-
 /* eslint global-require: off, prefer-template: off */
 
 /**
@@ -11,11 +9,12 @@
  */
 export const imgsrc = (filePath, returnNoImageFound = true) => {
   try {
-    return require('../public/images/' + filePath);
+    return require('../public/images/' + filePath).default;
   } catch (e) {
     if (!returnNoImageFound) {
       return null;
     }
-    return require('../public/images/no-image.png');
+
+    return require('../public/images/no-image.png').default;
   }
 };

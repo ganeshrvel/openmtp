@@ -1,21 +1,116 @@
-'use strict';
-
 import { variables, mixins } from '../../../styles/js';
+import { commonThemes } from '../../../styles/js/mixins';
 
-// eslint-disable-next-line no-unused-vars
-export const theme = args => {
+// Styles for App/index.jsx component
+export const styles = (theme) => {
+  return {
+    root: {},
+    noProfileError: {
+      textAlign: `center`,
+      ...mixins({ theme }).center,
+      ...mixins({ theme }).absoluteCenter,
+    },
+  };
+};
+
+export const getColorPalette = () => {
+  const lightPrimaryColor = '#fff';
+  const lightSecondaryColor = '#007af5';
+
+  const darkPrimaryColor = '#242424';
+  const darkSecondaryColor = '#007af5';
+
+  const snackbarError = `#f33950`;
+
+  return {
+    get light() {
+      return {
+        primary: {
+          main: lightPrimaryColor,
+          contrastText: '#000',
+        },
+        secondary: {
+          main: lightSecondaryColor,
+          contrastText: '#fff',
+        },
+        background: {
+          default: darkPrimaryColor,
+          paper: lightPrimaryColor,
+        },
+        snackbar: {
+          error: snackbarError,
+        },
+        btnTextColor: '#fff',
+        fileColor: '#000',
+        tableHeaderFooterBgColor: `#fbfbfb`,
+        lightText1Color: `rgba(0, 0, 0, 0.50)`,
+        fileExplorerThinLineDividerColor: `rgba(0, 0, 0, 0.12)`,
+        fileDrop: `rgba(0, 122, 245, 0.08)`,
+        disabledBgColor: `#f3f3f3`,
+        nativeSystemColor: `#ececec`,
+        contrastPrimaryMainColor: darkPrimaryColor,
+      };
+    },
+    get dark() {
+      return {
+        primary: {
+          main: darkPrimaryColor,
+          contrastText: '#fff',
+        },
+        secondary: {
+          main: darkSecondaryColor,
+          contrastText: '#fff',
+        },
+        background: {
+          default: darkPrimaryColor,
+          paper: darkPrimaryColor,
+        },
+        text: {
+          primary: '#fff',
+          secondary: 'rgba(255, 255, 255, 0.65)',
+          disabled: 'rgba(255, 255, 255, 0.4)',
+        },
+        snackbar: {
+          error: snackbarError,
+        },
+        action: {
+          active: 'rgba(255, 255, 255, 0.65)',
+          hover: 'rgba(255, 255, 255, 0.2)',
+          selected: 'rgba(255, 255, 255, 0.16)',
+          disabled: 'rgba(255, 255, 255, 0.3)',
+          disabledBackground: 'rgba(255, 255, 255, 0.12)',
+        },
+        divider: `rgba(255, 255, 255, 0.12)`,
+        btnTextColor: '#fff',
+        fileColor: '#d5d5d5',
+        tableHeaderFooterBgColor: `#313131`,
+        lightText1Color: `rgba(255, 255, 255, 0.50)`,
+        fileExplorerThinLineDividerColor: `rgba(255, 255, 255, .12)`,
+        fileDrop: `rgba(0, 122, 245, 0.08)`,
+        disabledBgColor: `rgba(255, 255, 255, 0.15)`,
+        nativeSystemColor: `#323232`,
+        contrastPrimaryMainColor: lightPrimaryColor,
+      };
+    },
+  };
+};
+
+export const getCurrentThemePalette = (appThemeMode) => {
+  return getColorPalette()[appThemeMode];
+};
+
+export const materialUiTheme = ({ ...args }) => {
+  const { appThemeMode } = args;
+
+  const palette = getCurrentThemePalette(appThemeMode);
+
   return {
     palette: {
-      primary: {
-        ...variables().styles.primaryColor
-      },
-      secondary: {
-        ...variables().styles.secondaryColor
-      }
+      ...palette,
     },
     typography: {
       useNextVariants: true,
-      fontSize: variables().regularFontSize,
+      fontSize: variables().sizes.regularFontSize,
       fontFamily: [
         'Roboto',
         '-apple-system',
@@ -26,23 +121,21 @@ export const theme = args => {
         'sans-serif',
         '"Apple Color Emoji"',
         '"Segoe UI Emoji"',
-        '"Segoe UI Symbol"'
-      ].join(',')
+        '"Segoe UI Symbol"',
+      ].join(','),
     },
 
-    overrides: {}
-  };
-};
-
-// eslint-disable-next-line no-unused-vars
-export const styles = args => {
-  // eslint-disable-line no-unused-vars
-  return {
-    root: {},
-    noProfileError: {
-      textAlign: `center`,
-      ...mixins().center,
-      ...mixins().absoluteCenter
-    }
+    overrides: {
+      MuiCssBaseline: {
+        '@global': {
+          html: {
+            '--app-bg-color': palette.background.paper,
+            '--app-secondary-main-color': palette.secondary.main,
+            '--app-native-system-color': palette.nativeSystemColor,
+            ...commonThemes.noselect,
+          },
+        },
+      },
+    },
   };
 };

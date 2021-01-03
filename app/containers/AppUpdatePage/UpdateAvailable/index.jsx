@@ -1,5 +1,3 @@
-'use strict';
-
 import { ipcRenderer } from 'electron';
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
@@ -11,13 +9,16 @@ import { styles } from './styles';
 import releaseNotesStyles from './styles/release-notes.scss';
 import { undefinedOrNull } from '../../../utils/funcs';
 import { APP_NAME, APP_VERSION } from '../../../constants/meta';
+import { setStyle } from '../../../utils/styles';
+import { getAppThemeMode } from '../../../helpers/theme';
+import { getCurrentThemePalette } from '../../App/styles';
 
 class AppUpdatePage extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      releaseInfo: {}
+      releaseInfo: {},
     };
 
     this.sanitizeHtmlConfig = {
@@ -44,8 +45,8 @@ class AppUpdatePage extends Component {
         'br',
         'div',
         'caption',
-        'pre'
-      ]
+        'pre',
+      ],
     };
   }
 
@@ -56,7 +57,12 @@ class AppUpdatePage extends Component {
   }
 
   componentDidMount() {
-    document.body.setAttribute('style', 'background:#ececec !important');
+    const appThemeMode = getAppThemeMode();
+    const { nativeSystemColor } = getCurrentThemePalette(appThemeMode);
+
+    setStyle(document.body, {
+      background: `${nativeSystemColor} !important`,
+    });
   }
 
   componentWillUnmount() {
@@ -117,7 +123,7 @@ class AppUpdatePage extends Component {
           <div
             className={`${releaseNotesStyles.releaseNotes}`}
             dangerouslySetInnerHTML={{
-              __html: sanitizedReleaseNotesHtml
+              __html: sanitizedReleaseNotesHtml,
             }}
           />
           {/* eslint-enable react/no-danger */}

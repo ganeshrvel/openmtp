@@ -1,7 +1,7 @@
-'use strict';
-
 import { log } from '../utils/log';
-import { readFileSync, writeFileSync } from '../api/sys/fileOps';
+import { readFileSync, writeFileSync } from '../helpers/fileOps';
+import { checkIf } from '../utils/checkIf';
+import { isEmpty } from '../utils/funcs';
 
 export default class Storage {
   constructor(filePath) {
@@ -11,6 +11,7 @@ export default class Storage {
   getAll() {
     try {
       const _stream = readFileSync(this.filePath);
+
       if (
         typeof _stream === 'undefined' ||
         _stream === null ||
@@ -18,6 +19,7 @@ export default class Storage {
       ) {
         return {};
       }
+
       return JSON.parse(_stream);
     } catch (e) {
       log.error(e, `Storage -> getAll`);
@@ -25,15 +27,17 @@ export default class Storage {
   }
 
   getItems(keys) {
+    checkIf(keys, 'array');
+
     try {
-      if (typeof keys === 'undefined' || keys === null || keys.length < 0) {
+      if (isEmpty(keys)) {
         return {};
       }
 
       const allItem = this.getAll();
       const _return = {};
 
-      keys.map(a => {
+      keys.map((a) => {
         if (typeof allItem[a] === 'undefined' || allItem[a] === null) {
           return null;
         }

@@ -1,0 +1,592 @@
+import { BrowserWindow, remote } from 'electron';
+import { PATHS } from '../constants/paths';
+import { log } from '../utils/log';
+import { loadProfileErrorHtml } from '../templates/loadProfileError';
+import { APP_TITLE } from '../constants/meta';
+import { undefinedOrNull } from '../utils/funcs';
+import { PRIVACY_POLICY_PAGE_TITLE } from '../templates/privacyPolicyPage';
+import { HELP_FAQS_PAGE_TITLE } from '../templates/helpFaqsPage';
+import { APP_FEATURES_PAGE_TITLE } from '../templates/appFeaturesPage';
+import { KEYBOARD_SHORTCUTS_PAGE_TITLE } from '../templates/keyboardShortcutsPage';
+import { getWindowBackgroundColor } from './windowHelper';
+import { REPORT_BUGS_PAGE_TITLE } from '../templates/generateErrorReport';
+
+let _nonBootableDeviceWindow = null;
+let _reportBugsWindow = null;
+let _privacyPolicyWindow = null;
+let _helpFaqsWindow = null;
+let _appUpdateAvailableWindow = null;
+let _appFeaturesWindow = null;
+let _keyboardShortcutsWindow = null;
+
+/**
+ * Non Bootable Device Window
+ */
+
+const nonBootableDeviceCreateWindow = () => {
+  return new BrowserWindow({
+    title: `${APP_TITLE}`,
+    center: true,
+    show: false,
+    maximizable: false,
+    minimizable: false,
+    width: 480,
+    height: 320,
+    resizable: false,
+    webPreferences: {
+      nodeIntegration: true,
+      enableRemoteModule: true,
+    },
+    backgroundColor: getWindowBackgroundColor(),
+  });
+};
+
+export const nonBootableDeviceWindow = () => {
+  _nonBootableDeviceWindow = nonBootableDeviceCreateWindow();
+  _nonBootableDeviceWindow.loadURL(
+    `data:text/html;charset=utf-8, ${encodeURI(loadProfileErrorHtml)}`
+  );
+
+  _nonBootableDeviceWindow.webContents.on('did-finish-load', () => {
+    if (!_nonBootableDeviceWindow) {
+      throw new Error(`"nonBootableDeviceWindow" is not defined`);
+    }
+
+    if (process.env.START_MINIMIZED) {
+      _nonBootableDeviceWindow.minimize();
+    } else {
+      _nonBootableDeviceWindow.show();
+      _nonBootableDeviceWindow.focus();
+    }
+  });
+
+  _nonBootableDeviceWindow.on('closed', () => {
+    _nonBootableDeviceWindow = null;
+  });
+
+  return _nonBootableDeviceWindow;
+};
+
+/**
+ * Report Bugs Window
+ */
+
+const reportBugsCreateWindow = (isRenderedPage) => {
+  const config = {
+    height: 480,
+    width: 600,
+    show: false,
+    resizable: false,
+    title: `${APP_TITLE}`,
+    minimizable: false,
+    fullscreenable: false,
+    webPreferences: {
+      nodeIntegration: true,
+      enableRemoteModule: true,
+    },
+    backgroundColor: getWindowBackgroundColor(),
+  };
+
+  // incoming call from a rendered page
+  if (isRenderedPage) {
+    const allWindows = remote.BrowserWindow.getAllWindows();
+    const existingWindow = loadExistingWindow(
+      allWindows,
+      REPORT_BUGS_PAGE_TITLE
+    );
+
+    return {
+      windowObj: existingWindow ?? new remote.BrowserWindow(config),
+      isExisting: !!existingWindow,
+    };
+  }
+
+  // incoming call from the main process
+  const allWindows = BrowserWindow.getAllWindows();
+  const existingWindow = loadExistingWindow(allWindows, REPORT_BUGS_PAGE_TITLE);
+
+  return {
+    windowObj: existingWindow ?? new BrowserWindow(config),
+    isExisting: !!existingWindow,
+  };
+};
+
+export const reportBugsWindow = (isRenderedPage = false, focus = true) => {
+  try {
+    if (_reportBugsWindow) {
+      if (focus) {
+        _reportBugsWindow.focus();
+        _reportBugsWindow.show();
+      }
+
+      return _reportBugsWindow;
+    }
+
+    const { windowObj, isExisting } = reportBugsCreateWindow(isRenderedPage);
+
+    // return the existing windowObj object
+    if (isExisting) {
+      return windowObj;
+    }
+
+    _reportBugsWindow = windowObj;
+    _reportBugsWindow.loadURL(`${PATHS.loadUrlPath}#reportBugsPage`);
+    _reportBugsWindow.webContents.on('did-finish-load', () => {
+      if (focus) {
+        _reportBugsWindow.show();
+        _reportBugsWindow.focus();
+      }
+    });
+
+    _reportBugsWindow.onerror = (error) => {
+      log.error(error, `createWindows -> reportBugsWindow -> onerror`);
+    };
+
+    _reportBugsWindow.on('closed', () => {
+      _reportBugsWindow = null;
+    });
+
+    return _reportBugsWindow;
+  } catch (e) {
+    log.error(e, `createWindows -> reportBugsWindow`);
+  }
+};
+
+/**
+ * Privacy Policy Window
+ */
+
+const privacyPolicyCreateWindow = (isRenderedPage = false) => {
+  const config = {
+    width: 800,
+    height: 600,
+    minWidth: 600,
+    minHeight: 400,
+    show: false,
+    resizable: true,
+    title: `${APP_TITLE}`,
+    minimizable: true,
+    fullscreenable: true,
+    webPreferences: {
+      nodeIntegration: true,
+      enableRemoteModule: true,
+    },
+    backgroundColor: getWindowBackgroundColor(),
+  };
+
+  // incoming call from a rendered page
+  if (isRenderedPage) {
+    const allWindows = remote.BrowserWindow.getAllWindows();
+    const existingWindow = loadExistingWindow(
+      allWindows,
+      PRIVACY_POLICY_PAGE_TITLE
+    );
+
+    return {
+      windowObj: existingWindow ?? new remote.BrowserWindow(config),
+      isExisting: !!existingWindow,
+    };
+  }
+
+  // incoming call from the main process
+  const allWindows = BrowserWindow.getAllWindows();
+  const existingWindow = loadExistingWindow(
+    allWindows,
+    PRIVACY_POLICY_PAGE_TITLE
+  );
+
+  return {
+    windowObj: existingWindow ?? new BrowserWindow(config),
+    isExisting: !!existingWindow,
+  };
+};
+
+export const privacyPolicyWindow = (isRenderedPage = false, focus = true) => {
+  try {
+    if (_privacyPolicyWindow) {
+      if (focus) {
+        _privacyPolicyWindow.focus();
+        _privacyPolicyWindow.show();
+      }
+
+      return _privacyPolicyWindow;
+    }
+
+    // show the existing _privacyPolicyWindow
+    const { windowObj, isExisting } = privacyPolicyCreateWindow(isRenderedPage);
+
+    // return the existing windowObj object
+    if (isExisting) {
+      return windowObj;
+    }
+
+    _privacyPolicyWindow = windowObj;
+    _privacyPolicyWindow.loadURL(`${PATHS.loadUrlPath}#privacyPolicyPage`);
+    _privacyPolicyWindow.webContents.on('did-finish-load', () => {
+      if (focus) {
+        _privacyPolicyWindow.show();
+        _privacyPolicyWindow.focus();
+      }
+    });
+
+    _privacyPolicyWindow.onerror = (error) => {
+      log.error(error, `createWindows -> privacyPolicyWindow -> onerror`);
+    };
+
+    _privacyPolicyWindow.on('closed', () => {
+      _privacyPolicyWindow = null;
+    });
+
+    return _privacyPolicyWindow;
+  } catch (e) {
+    log.error(e, `createWindows -> privacyPolicyWindow`);
+  }
+};
+
+/**
+ * App Update Available Window
+ */
+const appUpdateAvailableCreateWindow = () => {
+  return new BrowserWindow({
+    width: 650,
+    height: 552,
+    show: false,
+    resizable: false,
+    title: `${APP_TITLE}`,
+    minimizable: true,
+    fullscreenable: false,
+    webPreferences: {
+      nodeIntegration: true,
+      enableRemoteModule: true,
+    },
+    backgroundColor: getWindowBackgroundColor(),
+  });
+};
+
+export const appUpdateAvailableWindow = () => {
+  try {
+    if (_appUpdateAvailableWindow) {
+      _appUpdateAvailableWindow.focus();
+      _appUpdateAvailableWindow.show();
+
+      return _appUpdateAvailableWindow;
+    }
+
+    // show the existing _appUpdateAvailableWindow
+    const _appUpdateAvailableWindowTemp = appUpdateAvailableCreateWindow();
+
+    if (!_appUpdateAvailableWindowTemp) {
+      return _appUpdateAvailableWindow;
+    }
+
+    _appUpdateAvailableWindow = _appUpdateAvailableWindowTemp;
+    _appUpdateAvailableWindow.loadURL(
+      `${PATHS.loadUrlPath}#appUpdatePage/updateAvailable`
+    );
+    _appUpdateAvailableWindow.webContents.on('did-finish-load', () => {
+      _appUpdateAvailableWindow.show();
+      _appUpdateAvailableWindow.focus();
+    });
+
+    _appUpdateAvailableWindow.onerror = (error) => {
+      log.error(error, `createWindows -> appUpdateAvailableWindow -> onerror`);
+    };
+
+    _appUpdateAvailableWindow.on('closed', () => {
+      _appUpdateAvailableWindow = null;
+    });
+
+    return _appUpdateAvailableWindow;
+  } catch (e) {
+    log.error(e, `createWindows -> appUpdateAvailableWindow`);
+  }
+};
+
+/**
+ * App Features Window
+ */
+const appFeaturesCreateWindow = (isRenderedPage) => {
+  const config = {
+    width: 800,
+    height: 630,
+    show: false,
+    resizable: false,
+    title: `${APP_TITLE}`,
+    minimizable: true,
+    fullscreenable: false,
+    webPreferences: {
+      nodeIntegration: true,
+      enableRemoteModule: true,
+    },
+    backgroundColor: getWindowBackgroundColor(),
+  };
+
+  // incoming call from a rendered page
+  if (isRenderedPage) {
+    const allWindows = remote.BrowserWindow.getAllWindows();
+    const existingWindow = loadExistingWindow(
+      allWindows,
+      APP_FEATURES_PAGE_TITLE
+    );
+
+    return {
+      windowObj: existingWindow ?? new remote.BrowserWindow(config),
+      isExisting: !!existingWindow,
+    };
+  }
+
+  // incoming call from the main process
+  const allWindows = BrowserWindow.getAllWindows();
+  const existingWindow = loadExistingWindow(
+    allWindows,
+    APP_FEATURES_PAGE_TITLE
+  );
+
+  return {
+    windowObj: existingWindow ?? new BrowserWindow(config),
+    isExisting: !!existingWindow,
+  };
+};
+
+export const appFeaturesWindow = (isRenderedPage = false, focus = true) => {
+  try {
+    if (_appFeaturesWindow) {
+      if (focus) {
+        _appFeaturesWindow.focus();
+        _appFeaturesWindow.show();
+      }
+
+      return _appFeaturesWindow;
+    }
+
+    // show the existing _appFeaturesWindow
+    const { windowObj, isExisting } = appFeaturesCreateWindow(isRenderedPage);
+
+    // return the existing windowObj object
+    if (isExisting) {
+      return windowObj;
+    }
+
+    _appFeaturesWindow = windowObj;
+    _appFeaturesWindow.loadURL(`${PATHS.loadUrlPath}#appFeaturesPage`);
+    _appFeaturesWindow.webContents.on('did-finish-load', () => {
+      if (focus) {
+        _appFeaturesWindow.show();
+        _appFeaturesWindow.focus();
+      }
+    });
+
+    _appFeaturesWindow.onerror = (error) => {
+      log.error(error, `createWindows -> appFeaturesWindow -> onerror`);
+    };
+
+    _appFeaturesWindow.on('closed', () => {
+      _appFeaturesWindow = null;
+    });
+
+    return _appFeaturesWindow;
+  } catch (e) {
+    log.error(e, `createWindows -> appFeaturesWindow`);
+  }
+};
+
+/**
+ * Keyboard Shortcuts Window
+ */
+
+const keyboardShortcutsCreateWindow = (isRenderedPage) => {
+  const config = {
+    width: 800,
+    height: 600,
+    minWidth: 600,
+    minHeight: 400,
+    show: false,
+    resizable: true,
+    title: `${APP_TITLE}`,
+    minimizable: true,
+    fullscreenable: true,
+    webPreferences: {
+      nodeIntegration: true,
+      enableRemoteModule: true,
+    },
+    backgroundColor: getWindowBackgroundColor(),
+  };
+
+  // incoming call from a rendered page
+  if (isRenderedPage) {
+    const allWindows = remote.BrowserWindow.getAllWindows();
+    const existingWindow = loadExistingWindow(
+      allWindows,
+      KEYBOARD_SHORTCUTS_PAGE_TITLE
+    );
+
+    return {
+      windowObj: existingWindow ?? new remote.BrowserWindow(config),
+      isExisting: !!existingWindow,
+    };
+  }
+
+  // incoming call from the main process
+  const allWindows = BrowserWindow.getAllWindows();
+  const existingWindow = loadExistingWindow(
+    allWindows,
+    KEYBOARD_SHORTCUTS_PAGE_TITLE
+  );
+
+  return {
+    windowObj: existingWindow ?? new BrowserWindow(config),
+    isExisting: !!existingWindow,
+  };
+};
+
+export const keyboardShortcutsWindow = (
+  isRenderedPage = false,
+  focus = true
+) => {
+  try {
+    if (_keyboardShortcutsWindow) {
+      if (focus) {
+        _keyboardShortcutsWindow.focus();
+        _keyboardShortcutsWindow.show();
+      }
+
+      return _keyboardShortcutsWindow;
+    }
+
+    // show the existing _keyboardShortcutsWindow
+    const { windowObj, isExisting } = keyboardShortcutsCreateWindow(
+      isRenderedPage
+    );
+
+    // return the existing windowObj object
+    if (isExisting) {
+      return windowObj;
+    }
+
+    _keyboardShortcutsWindow = windowObj;
+    _keyboardShortcutsWindow.loadURL(
+      `${PATHS.loadUrlPath}#keyboardShortcutsPage`
+    );
+    _keyboardShortcutsWindow.webContents.on('did-finish-load', () => {
+      if (focus) {
+        _keyboardShortcutsWindow.show();
+        _keyboardShortcutsWindow.focus();
+      }
+    });
+
+    _keyboardShortcutsWindow.onerror = (error) => {
+      log.error(error, `createWindows -> keyboardShortcutsWindow -> onerror`);
+    };
+
+    _keyboardShortcutsWindow.on('closed', () => {
+      _keyboardShortcutsWindow = null;
+    });
+
+    return _keyboardShortcutsWindow;
+  } catch (e) {
+    log.error(e, `createWindows -> keyboardShortcutsWindow`);
+  }
+};
+
+/**
+ * Help FAQs Policy Window
+ */
+
+const helpFaqsCreateWindow = (isRenderedPage = false) => {
+  const config = {
+    width: 920,
+    height: 800,
+    minWidth: 600,
+    minHeight: 400,
+    show: false,
+    resizable: true,
+    title: `${APP_TITLE}`,
+    minimizable: true,
+    fullscreenable: true,
+    webPreferences: {
+      nodeIntegration: true,
+      enableRemoteModule: true,
+    },
+    backgroundColor: getWindowBackgroundColor(),
+  };
+
+  // incoming call from a rendered page
+  if (isRenderedPage) {
+    const allWindows = remote.BrowserWindow.getAllWindows();
+    const existingWindow = loadExistingWindow(allWindows, HELP_FAQS_PAGE_TITLE);
+
+    return {
+      windowObj: existingWindow ?? new remote.BrowserWindow(config),
+      isExisting: !!existingWindow,
+    };
+  }
+
+  // incoming call from the main process
+  const allWindows = BrowserWindow.getAllWindows();
+  const existingWindow = loadExistingWindow(allWindows, HELP_FAQS_PAGE_TITLE);
+
+  return {
+    windowObj: existingWindow ?? new BrowserWindow(config),
+    isExisting: !!existingWindow,
+  };
+};
+
+export const helpFaqsWindow = (isRenderedPage = false, focus = true) => {
+  try {
+    if (_helpFaqsWindow) {
+      if (focus) {
+        _helpFaqsWindow.focus();
+        _helpFaqsWindow.show();
+      }
+
+      return _helpFaqsWindow;
+    }
+
+    // show the existing _helpFaqsWindow
+    const { windowObj, isExisting } = helpFaqsCreateWindow(isRenderedPage);
+
+    // return the existing windowObj object
+    if (isExisting) {
+      return windowObj;
+    }
+
+    _helpFaqsWindow = windowObj;
+    _helpFaqsWindow.loadURL(`${PATHS.loadUrlPath}#helpFaqsPage`);
+    _helpFaqsWindow.webContents.on('did-finish-load', () => {
+      if (focus) {
+        _helpFaqsWindow.show();
+        _helpFaqsWindow.focus();
+      }
+    });
+
+    _helpFaqsWindow.onerror = (error) => {
+      log.error(error, `createWindows -> helpFaqsWindow -> onerror`);
+    };
+
+    _helpFaqsWindow.on('closed', () => {
+      _helpFaqsWindow = null;
+    });
+
+    return _helpFaqsWindow;
+  } catch (e) {
+    log.error(e, `createWindows -> helpFaqsWindow`);
+  }
+};
+
+// Load an Existing Window
+export const loadExistingWindow = (allWindows, title) => {
+  if (!undefinedOrNull(allWindows)) {
+    for (let i = 0; i < allWindows.length; i += 1) {
+      const item = allWindows[i];
+
+      if (item.getTitle().indexOf(title) !== -1) {
+        item.focus();
+        item.show();
+
+        return item;
+      }
+    }
+  }
+
+  return null;
+};

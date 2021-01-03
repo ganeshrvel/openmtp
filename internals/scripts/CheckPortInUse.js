@@ -1,5 +1,3 @@
-'use strict';
-
 import chalk from 'chalk';
 import detectPort from 'detect-port';
 import { PORT } from '../../config/env';

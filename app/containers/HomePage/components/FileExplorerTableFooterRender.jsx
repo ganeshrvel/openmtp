@@ -1,5 +1,3 @@
-'use strict';
-
 import React, { PureComponent } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import TableFooter from '@material-ui/core/TableFooter';
@@ -16,19 +14,24 @@ class FileExplorerTableFooterRender extends PureComponent {
       onBreadcrumbPathClick,
       isStatusBarEnabled,
       directoryLists,
-      fileTransferClipboard
+      fileTransferClipboard,
+      mtpDevice,
     } = this.props;
+
     return (
       <TableFooter component="div" className={styles.tableFooter}>
         {isStatusBarEnabled && (
           <FileExplorerTableFooterStatusBarRender
             directoryLists={directoryLists}
             fileTransferClipboard={fileTransferClipboard}
+            deviceType={deviceType}
+            mtpDevice={mtpDevice}
           />
         )}
         <Breadcrumb
           onBreadcrumbPathClick={onBreadcrumbPathClick}
           currentBrowsePath={currentBrowsePath[deviceType]}
+          deviceType={deviceType}
         />
       </TableFooter>
     );

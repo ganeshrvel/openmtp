@@ -1,5 +1,3 @@
-'use strict';
-
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -11,12 +9,13 @@ import {
   APP_NAME,
   APP_TITLE,
   AUTHOR_EMAIL,
-  AUTHOR_NAME
+  AUTHOR_NAME,
 } from '../../constants/meta';
 import { openExternalUrl } from '../../utils/url';
 import { resetOverFlowY } from '../../utils/styleResets';
 import { PRIVACY_POLICY_PAGE_TITLE } from '../../templates/privacyPolicyPage';
 import { styles } from './styles';
+import { PATHS } from '../../constants/paths';
 
 class PrivacyPolicyPage extends Component {
   componentWillMount() {
@@ -25,6 +24,7 @@ class PrivacyPolicyPage extends Component {
 
   render() {
     const { classes: styles } = this.props;
+
     return (
       <div className={styles.root}>
         <Helmet titleTemplate={`%s - ${APP_TITLE}`}>
@@ -36,6 +36,9 @@ class PrivacyPolicyPage extends Component {
         <div className={styles.body}>
           <p>
             <span>Effective date: December 28, 2018</span>
+          </p>
+          <p>
+            <span>Updated date: January 3, 2021</span>
           </p>
           <p>
             <span>
@@ -142,7 +145,7 @@ class PrivacyPolicyPage extends Component {
             </span>
           </p>
           <p>
-            <span>Examples of LocalStorage files we use:</span>
+            <span>LocalStorage files we used in the app:</span>
           </p>
           <ul>
             <li>
@@ -315,7 +318,14 @@ class PrivacyPolicyPage extends Component {
           <p>
             <span>
               We may use third-party Service Providers to monitor and analyze
-              the use of our Service.
+              the use of our Service. These information will be help us squash
+              some bugs and improve the user experience.
+            </span>
+          </p>
+          <p>
+            <span>
+              {`We don't send any of your personal information to these third party services. We send an anonymized, hashed and irreversible token to these services to analyze
+              the use of our Service.`}
             </span>
           </p>
           <p>
@@ -334,10 +344,9 @@ class PrivacyPolicyPage extends Component {
           </p>
           <p>
             <span>
-              For more information on the privacy practices of Google, please
-              visit the Google Privacy &amp; Terms web page:&nbsp;
+              For more information visit:&nbsp;
               <a
-                onClick={events => {
+                onClick={(events) => {
                   openExternalUrl(
                     'https://policies.google.com/privacy?hl=en',
                     events
@@ -345,6 +354,52 @@ class PrivacyPolicyPage extends Component {
                 }}
               >
                 https://policies.google.com/privacy?hl=en
+              </a>
+            </span>
+          </p>
+          <p>
+            <span>Mixpanel</span>
+          </p>
+          <p>
+            <span>
+              Mixpanel is a web analytics service offered by Mixpanel Inc. that
+              tracks and reports website/app traffic. Mixpanel uses the data
+              collected to track and monitor the use of our Service.
+            </span>
+          </p>
+          <p>
+            <span>
+              For more information visit:&nbsp;
+              <a
+                onClick={(events) => {
+                  openExternalUrl(
+                    'https://mixpanel.com/legal/privacy-policy/',
+                    events
+                  );
+                }}
+              >
+                https://mixpanel.com/legal/privacy-policy/
+              </a>
+            </span>
+          </p>
+          <p>
+            <span>Sentry</span>
+          </p>
+          <p>
+            <span>
+              Sentry is a service that will help us to monitor and fix
+              bugs/crashes in the app.
+            </span>
+          </p>
+          <p>
+            <span>
+              For more information visit:&nbsp;
+              <a
+                onClick={(events) => {
+                  openExternalUrl('https://sentry.io/privacy/', events);
+                }}
+              >
+                https://sentry.io/privacy/
               </a>
             </span>
           </p>
@@ -391,7 +446,7 @@ class PrivacyPolicyPage extends Component {
             <span>
               Please refer to&nbsp;
               <a
-                onClick={events => {
+                onClick={(events) => {
                   openExternalUrl(
                     'https://help.github.com/articles/github-privacy-statement/',
                     events
@@ -424,11 +479,11 @@ class PrivacyPolicyPage extends Component {
               We have implemented a very powerful diagnostic tool to capture and
               report the Crash Reports and bug encountered by the application.
               The Crash Reports are stored inside your device as log files.
-              These log files can be accessed by navigating to
-              &quot;~/.io.ganeshrvel/{APP_NAME}/logs/&quot; folder. You may
-              choose to send us these log files by selecting the
-              &quot;Help&quot; menu &gt; &quot;Report Bugs&quot; and clicking on
-              the &quot;EMAIL ERROR LOGS&quot; buttons.
+              These log files can be accessed by navigating to &quot;
+              {PATHS.profileDir}/logs/&quot; folder. You may choose to send us
+              these log files by selecting the &quot;Help&quot; menu &gt;
+              &quot;Report Bugs&quot; and clicking on the &quot;EMAIL ERROR
+              LOGS&quot; buttons.
             </span>
           </p>
           <p>
@@ -486,7 +541,7 @@ class PrivacyPolicyPage extends Component {
             <span>
               By email:&nbsp;
               <a
-                onClick={events => {
+                onClick={(events) => {
                   openExternalUrl(`mailto:${AUTHOR_EMAIL}`, events);
                 }}
               >
@@ -498,7 +553,7 @@ class PrivacyPolicyPage extends Component {
             <span>
               By visiting this page on the website:&nbsp;
               <a
-                onClick={events => {
+                onClick={(events) => {
                   openExternalUrl(`${APP_GITHUB_URL}`, events);
                 }}
               >
@@ -512,10 +567,9 @@ class PrivacyPolicyPage extends Component {
   }
 }
 
-const mapDispatchToProps = (dispatch, ownProps) =>
-  bindActionCreators({}, dispatch);
+const mapDispatchToProps = (dispatch, __) => bindActionCreators({}, dispatch);
 
-const mapStateToProps = (state, props) => {
+const mapStateToProps = (_, __) => {
   return {};
 };
 

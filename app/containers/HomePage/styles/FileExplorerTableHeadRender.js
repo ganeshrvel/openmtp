@@ -1,13 +1,9 @@
-'use strict';
-
-import { variables, mixins } from '../../../styles/js';
-
-export const styles = theme => ({
+export const styles = (theme) => ({
   tableHeadCell: {
     border: `unset`,
-    backgroundColor: '#fbfbfb',
+    backgroundColor: theme.palette.tableHeaderFooterBgColor,
     position: 'sticky',
     top: 0,
-    zIndex: 10
-  }
+    zIndex: 10,
+  },
 });

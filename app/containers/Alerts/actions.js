@@ -1,6 +1,4 @@
-'use strict';
-
-import prefixer from '../../utils/reducerPrefixer';
+import prefixer from '../../helpers/reducerPrefixer';
 
 const prefix = '@@Alerts';
 const actionTypesList = ['THROW_ALERT', 'CLEAR_ALERT'];
@@ -11,12 +9,13 @@ export function throwAlert(data) {
   return {
     type: actionTypes.THROW_ALERT,
     payload: {
-      ...data
-    }
+      ...data,
+    },
   };
 }
+
 export function clearAlert() {
   return {
-    type: actionTypes.CLEAR_ALERT
+    type: actionTypes.CLEAR_ALERT,
   };
 }

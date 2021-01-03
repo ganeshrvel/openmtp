@@ -1,10 +1,8 @@
-'use strict';
-
 const path = require('path');
 const glob = require('glob');
 const fs = require('fs-extra');
 
-exports.default = async context => {
+exports.default = async (context) => {
   // clean the unnecessary locales from packed app
   const lprojRegEx = /(en)\.lproj/g;
   const APP_NAME = context.packager.appInfo.productFilename;
@@ -17,7 +15,7 @@ exports.default = async context => {
 
   switch (PLATFORM) {
     case 'mac':
-      lproj.forEach(dir => {
+      lproj.forEach((dir) => {
         if (!lprojRegEx.test(dir)) {
           _promises.push(fs.remove(path.join(cwd, dir)));
         }

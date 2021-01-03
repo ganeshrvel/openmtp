@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Build config for development electron renderer process that uses
  * Hot-Module-Replacement
@@ -14,8 +12,9 @@ import chalk from 'chalk';
 import merge from 'webpack-merge';
 import { spawn, execSync } from 'child_process';
 import baseConfig from './config.base';
-import { PATHS } from '../app/utils/paths';
+import { PATHS } from '../app/constants/paths';
 import { PORT } from '../config/env';
+import CheckNodeEnv from '../internals/scripts/CheckNodeEnv';
 
 const publicPath = `http://localhost:${PORT}/dist`;
 const dll = path.resolve(PATHS.root, 'dll');
@@ -23,6 +22,12 @@ const manifest = path.resolve(dll, 'renderer.json');
 const requiredByDLLConfig = module.parent.filename.includes(
   'config.renderer.dev.dll.babel'
 );
+
+// When an ESLint server is running, we can't set the NODE_ENV so we'll check if it's
+// at the dev webpack config is not accidentally run in a production environment
+if (process.env.NODE_ENV === 'production') {
+  CheckNodeEnv('development');
+}
 
 /**
  * Warn if the DLL is not built
@@ -36,105 +41,99 @@ if (!requiredByDLLConfig && !(fs.existsSync(dll) && fs.existsSync(manifest))) {
   execSync('yarn build-dll');
 }
 
-export default merge.smart(baseConfig, {
+export default merge(baseConfig, {
   devtool: 'inline-source-map',
   mode: 'development',
   target: 'electron-renderer',
   entry: [
-    'react-hot-loader/patch',
+    'core-js',
+    'regenerator-runtime/runtime',
+    ...(process.env.PLAIN_HMR ? [] : ['react-hot-loader/patch']),
     `webpack-dev-server/client?http://localhost:${PORT}/`,
     'webpack/hot/only-dev-server',
-    path.join(PATHS.app, 'index.js')
+    path.join(PATHS.app, 'index.js'),
   ],
 
   output: {
     publicPath: `http://localhost:${PORT}/dist/`,
-    filename: 'renderer.dev.js'
+    filename: 'renderer.dev.js',
   },
 
   module: {
     rules: [
-      {
-        test: /\.jsx?$/,
-        exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            cacheDirectory: true
-          }
-        }
-      },
       // Extract all .global.css to style.css as is
       {
         test: /\.global\.css$/,
         use: [
           {
-            loader: 'style-loader'
+            loader: 'style-loader',
           },
           {
             loader: 'css-loader',
             options: {
-              sourceMap: true
-            }
-          }
-        ]
+              sourceMap: true,
+            },
+          },
+        ],
       },
       // Pipe other styles through css modules and append to style.css
       {
         test: /^((?!\.global).)*\.css$/,
         use: [
           {
-            loader: 'style-loader'
+            loader: 'style-loader',
           },
           {
             loader: 'css-loader',
             options: {
-              modules: true,
+              modules: {
+                localIdentName: '[path][name]__[local]__[hash:base64:5]',
+              },
               sourceMap: true,
               importLoaders: 1,
-              localIdentName: '[path][name]__[local]__[hash:base64:5]'
-            }
-          }
-        ]
+            },
+          },
+        ],
       },
       // SASS support - compile all .global.scss files and pipe it to style.css
       {
         test: /\.global\.(scss|sass)$/,
         use: [
           {
-            loader: 'style-loader'
+            loader: 'style-loader',
           },
           {
             loader: 'css-loader',
             options: {
-              sourceMap: true
-            }
+              sourceMap: true,
+            },
           },
           {
-            loader: 'sass-loader'
-          }
-        ]
+            loader: 'sass-loader',
+          },
+        ],
       },
       // SASS support - compile all other .scss files and pipe it to style.css
       {
         test: /^((?!\.global).)*\.(scss|sass)$/,
         use: [
           {
-            loader: 'style-loader'
+            loader: 'style-loader',
           },
           {
             loader: 'css-loader',
             options: {
-              modules: true,
+              modules: {
+                localIdentName: '[path][name]__[local]__[hash:base64:5]',
+              },
               sourceMap: true,
               importLoaders: 1,
-              localIdentName: '[path][name]__[local]__[hash:base64:5]'
-            }
+            },
           },
           {
-            loader: 'sass-loader'
-          }
-        ]
+            loader: 'sass-loader',
+          },
+        ],
       },
       // WOFF Font
       {
@@ -143,9 +142,9 @@ export default merge.smart(baseConfig, {
           loader: 'url-loader',
           options: {
             limit: 10000,
-            mimetype: 'application/font-woff'
-          }
-        }
+            mimetype: 'application/font-woff',
+          },
+        },
       },
       // WOFF2 Font
       {
@@ -154,9 +153,9 @@ export default merge.smart(baseConfig, {
           loader: 'url-loader',
           options: {
             limit: 10000,
-            mimetype: 'application/font-woff'
-          }
-        }
+            mimetype: 'application/font-woff',
+          },
+        },
       },
       // TTF Font
       {
@@ -165,14 +164,14 @@ export default merge.smart(baseConfig, {
           loader: 'url-loader',
           options: {
             limit: 10000,
-            mimetype: 'application/octet-stream'
-          }
-        }
+            mimetype: 'application/octet-stream',
+          },
+        },
       },
       // EOT Font
       {
         test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-        use: 'file-loader'
+        use: 'file-loader',
       },
       // SVG Font
       {
@@ -181,9 +180,9 @@ export default merge.smart(baseConfig, {
           loader: 'url-loader',
           options: {
             limit: 10000,
-            mimetype: 'image/svg+xml'
-          }
-        }
+            mimetype: 'image/svg+xml',
+          },
+        },
       },
       // Common Image Formats
       {
@@ -193,12 +192,18 @@ export default merge.smart(baseConfig, {
             loader: 'url-loader',
             options: {
               limit: 10000,
-              name: 'images/[path][name].[hash].[ext]'
-            }
-          }
-        ]
-      }
-    ]
+              name: 'images/[path][name].[hash].[ext]',
+            },
+          },
+        ],
+      },
+    ],
+  },
+
+  resolve: {
+    alias: {
+      'react-dom': '@hot-loader/react-dom',
+    },
   },
 
   plugins: [
@@ -207,11 +212,11 @@ export default merge.smart(baseConfig, {
       : new webpack.DllReferencePlugin({
           context: PATHS.root,
           manifest: require(manifest), // eslint-disable-line
-          sourceType: 'var'
+          sourceType: 'var',
         }),
 
     new webpack.HotModuleReplacementPlugin({
-      multiStep: false
+      multiStep: false,
     }),
 
     new webpack.NoEmitOnErrorsPlugin(),
@@ -229,18 +234,17 @@ export default merge.smart(baseConfig, {
      * 'staging', for example, by changing the ENV variables in the npm scripts
      */
     new webpack.EnvironmentPlugin({
-      NODE_ENV: 'development'
+      NODE_ENV: 'development',
     }),
 
     new webpack.LoaderOptionsPlugin({
-      debug: true
-    })
+      debug: true,
+    }),
   ],
 
   node: {
     __dirname: false,
     __filename: false,
-    fs: 'empty'
   },
 
   devServer: {
@@ -253,15 +257,15 @@ export default merge.smart(baseConfig, {
     lazy: false,
     hot: true,
     headers: { 'Access-Control-Allow-Origin': '*' },
-    contentBase: path.join(PATHS.root, 'dist'),
+    contentBase: path.join(PATHS.dist),
     watchOptions: {
       aggregateTimeout: 300,
       ignored: /node_modules/,
-      poll: 100
+      poll: 100,
     },
     historyApiFallback: {
       verbose: true,
-      disableDotRule: false
+      disableDotRule: false,
     },
     before() {
       if (process.env.START_HOT) {
@@ -269,11 +273,11 @@ export default merge.smart(baseConfig, {
         spawn('npm', ['run', 'start-main-dev'], {
           shell: true,
           env: process.env,
-          stdio: 'inherit'
+          stdio: 'inherit',
         })
-          .on('close', code => process.exit(code))
-          .on('error', spawnError => console.error(spawnError));
+          .on('close', (code) => process.exit(code))
+          .on('error', (spawnError) => console.error(spawnError));
       }
-    }
-  }
+    },
+  },
 });

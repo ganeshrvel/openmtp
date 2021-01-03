@@ -1,21 +1,27 @@
-'use strict';
-
 /* eslint global-require: off */
 
-import { app, BrowserWindow, ipcMain } from 'electron';
+import './services/sentry/index';
+
+import { app, BrowserWindow, ipcMain, nativeTheme } from 'electron';
 import electronIs from 'electron-is';
+import usbDetect from 'usb-detection';
 import MenuBuilder from './menu';
 import { log } from './utils/log';
 import { DEBUG_PROD, IS_DEV, IS_PROD } from './constants/env';
 import AppUpdate from './classes/AppUpdate';
-import { PATHS } from './utils/paths';
-import { settingsStorage } from './utils/storageHelper';
+import { PATHS } from './constants/paths';
+import { settingsStorage } from './helpers/storageHelper';
 import { AUTO_UPDATE_CHECK_FIREUP_DELAY } from './constants';
 import { appEvents } from './utils/eventHandling';
-import { bootLoader } from './utils/bootHelper';
-import { nonBootableDeviceWindow } from './utils/createWindows';
+import { bootLoader } from './helpers/bootHelper';
+import { nonBootableDeviceWindow } from './helpers/createWindows';
 import { APP_TITLE } from './constants/meta';
 import { isPackaged } from './utils/isPackaged';
+import { getWindowBackgroundColor } from './helpers/windowHelper';
+import { APP_THEME_MODE_TYPE, DEVICE_TYPE, USB_HOTPLUG_EVENTS } from './enums';
+import fileExplorerController from './data/file-explorer/controllers/FileExplorerController';
+import { getEnablePrereleaseUpdatesSetting } from './helpers/settings';
+import { COMMUNICATION_EVENTS } from './enums/communicationEvents';
 
 const isSingleInstance = app.requestSingleInstanceLock();
 const isDeviceBootable = bootTheDevice();
@@ -24,6 +30,7 @@ let mainWindow = null;
 
 if (IS_PROD) {
   const sourceMapSupport = require('source-map-support');
+
   sourceMapSupport.install();
 }
 
@@ -40,6 +47,7 @@ async function bootTheDevice() {
 
     // For a fresh installation
     await bootLoader.init();
+
     return await bootLoader.verify();
   } catch (e) {
     throw new Error(e);
@@ -68,11 +76,11 @@ if (!isDeviceBootable) {
   });
 } else {
   if (IS_PROD) {
-    process.on('uncaughtException', error => {
+    process.on('uncaughtException', (error) => {
       log.error(error, `main.dev -> process -> uncaughtException`);
     });
 
-    appEvents.on('error', error => {
+    appEvents.on('error', (error) => {
       log.error(error, `main.dev -> appEvents -> error`);
     });
 
@@ -94,7 +102,7 @@ if (!isDeviceBootable) {
       const extensions = ['REACT_DEVELOPER_TOOLS', 'REDUX_DEVTOOLS'];
 
       return Promise.all(
-        extensions.map(name =>
+        extensions.map((name) =>
           installer.default(installer[name], forceDownload)
         )
       ).catch(console.error);
@@ -112,6 +120,7 @@ if (!isDeviceBootable) {
           if (mainWindow.isMinimized()) {
             mainWindow.restore();
           }
+
           mainWindow.focus();
         }
       });
@@ -132,20 +141,23 @@ if (!isDeviceBootable) {
         title: `${APP_TITLE}`,
         center: true,
         show: false,
-        minWidth: 854,
+        minWidth: 880,
         minHeight: 640,
         titleBarStyle: 'hidden',
         webPreferences: {
-          nodeIntegration: true
-        }
+          nodeIntegration: true,
+          enableRemoteModule: true,
+        },
+        backgroundColor: getWindowBackgroundColor(),
       });
 
-      mainWindow.loadURL(`${PATHS.loadUrlPath}`);
+      mainWindow?.loadURL(`${PATHS.loadUrlPath}`);
 
-      mainWindow.webContents.on('did-finish-load', () => {
+      mainWindow?.webContents?.on('did-finish-load', () => {
         if (!mainWindow) {
           throw new Error(`"mainWindow" is not defined`);
         }
+
         if (process.env.START_MINIMIZED) {
           mainWindow.minimize();
         } else {
@@ -155,7 +167,7 @@ if (!isDeviceBootable) {
         }
       });
 
-      mainWindow.onerror = error => {
+      mainWindow.onerror = (error) => {
         log.error(error, `main.dev -> mainWindow -> onerror`);
       };
 
@@ -184,6 +196,7 @@ if (!isDeviceBootable) {
       await createWindow();
 
       let appUpdaterEnable = true;
+
       if (isPackaged && process.platform === 'darwin') {
         appUpdaterEnable = !isMas && app.isInApplicationsFolder();
       }
@@ -191,26 +204,27 @@ if (!isDeviceBootable) {
       const autoUpdateCheckSettings = settingsStorage.getItems([
         'enableBackgroundAutoUpdate',
         'enableAutoUpdateCheck',
-        'enablePrereleaseUpdates'
       ]);
 
       const autoUpdateCheck =
         autoUpdateCheckSettings.enableAutoUpdateCheck !== false;
+      const isPrereleaseUpdatesEnabled = getEnablePrereleaseUpdatesSetting();
 
       const autoAppUpdate = new AppUpdate({
         autoUpdateCheck,
         autoDownload:
           autoUpdateCheckSettings.enableBackgroundAutoUpdate !== false,
-        allowPrerelease:
-          autoUpdateCheckSettings.enablePrereleaseUpdates === true
+        allowPrerelease: isPrereleaseUpdatesEnabled === true,
       });
+
       autoAppUpdate.init();
 
       const menuBuilder = new MenuBuilder({
         mainWindow,
         autoAppUpdate,
-        appUpdaterEnable
+        appUpdaterEnable,
       });
+
       menuBuilder.buildMenu();
 
       if (autoUpdateCheck && appUpdaterEnable) {
@@ -218,6 +232,31 @@ if (!isDeviceBootable) {
           autoAppUpdate.checkForUpdates();
         }, AUTO_UPDATE_CHECK_FIREUP_DELAY);
       }
+
+      // send attach and detach events to the renderer
+      usbDetect.startMonitoring();
+
+      usbDetect.on('add', (device) => {
+        if (!mainWindow) {
+          return;
+        }
+
+        mainWindow?.webContents?.send(COMMUNICATION_EVENTS.usbHotplug, {
+          device: JSON.stringify(device),
+          eventName: USB_HOTPLUG_EVENTS.attach,
+        });
+      });
+
+      usbDetect.on('remove', (device) => {
+        if (!mainWindow) {
+          return;
+        }
+
+        mainWindow?.webContents?.send(COMMUNICATION_EVENTS.usbHotplug, {
+          device: JSON.stringify(device),
+          eventName: USB_HOTPLUG_EVENTS.detach,
+        });
+      });
     } catch (e) {
       log.error(e, `main.dev -> ready`);
     }
@@ -233,5 +272,35 @@ if (!isDeviceBootable) {
     }
   });
 
-  app.on('before-quit', () => (app.quitting = true)); // eslint-disable-line no-return-assign
+  app.on('before-quit', async () => {
+    fileExplorerController
+      .dispose({
+        deviceType: DEVICE_TYPE.mtp,
+      })
+      .catch((e) => {
+        log.error(e, `main.dev -> before-quit`);
+      });
+
+    usbDetect.stopMonitoring();
+
+    app.quitting = true;
+  });
+
+  nativeTheme.on('updated', () => {
+    const setting = settingsStorage.getItems(['appThemeMode']);
+
+    // if the app theme is 'auto' and if the os theme has changed
+    // then refresh the app theme
+    if (setting.appThemeMode !== APP_THEME_MODE_TYPE.auto) {
+      return;
+    }
+
+    if (!mainWindow) {
+      return;
+    }
+
+    mainWindow?.webContents?.send('nativeThemeUpdated', {
+      shouldUseDarkColors: nativeTheme.shouldUseDarkColors,
+    });
+  });
 }

@@ -1,5 +1,3 @@
-'use strict';
-
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
@@ -12,21 +10,21 @@ const buildPath = path.join(__dirname, '..', '..', 'docs');
 module.exports = {
   plugins: [
     new CleanWebpackPlugin([`${buildPath}/bundle/*`], {
-      root: rootPath
+      root: rootPath,
     }),
     new MiniCssExtractPlugin({
-      filename: 'bundle/[name].[contenthash].css'
-    })
+      filename: 'bundle/[name].[contenthash].css',
+    }),
   ],
   optimization: {
     minimizer: [
       new TerserPlugin({
         cache: true,
         parallel: true,
-        sourceMap: true
+        sourceMap: true,
       }),
-      new OptimizeCSSAssetsPlugin({})
-    ]
+      new OptimizeCSSAssetsPlugin({}),
+    ],
   },
   module: {
     rules: [
@@ -37,9 +35,9 @@ module.exports = {
           'style-loader',
           MiniCssExtractPlugin.loader,
           'css-loader',
-          'sass-loader?sourceMap'
-        ]
-      }
-    ]
-  }
+          'sass-loader?sourceMap',
+        ],
+      },
+    ],
+  },
 };

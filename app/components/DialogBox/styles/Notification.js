@@ -1,14 +1,12 @@
-'use strict';
+import { mixins } from '../../../styles/js';
 
-import { variables, mixins } from '../../../styles/js';
-
-export const styles = theme => ({
+export const styles = (theme) => ({
   margin: {},
   root: {},
   btnPositive: {
-    ...mixins().btnPositive
+    ...mixins({ theme }).btnPositive,
   },
   btnNegative: {
-    ...mixins().btnNegative
-  }
+    ...mixins({ theme }).btnNegative,
+  },
 });

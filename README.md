@@ -227,7 +227,7 @@ If you are interested in fixing issues and contributing directly to the code bas
 
 ### Support OpenMTP
 Help me keep the app FREE and open for all.
-Paypal: [paypal.me/ganeshrvel](https://paypal.me/ganeshrvel "https://paypal.me/ganeshrvel")
+PayPal: [paypal.me/ganeshrvel](https://paypal.me/ganeshrvel "https://paypal.me/ganeshrvel")
 Buy Me A Coffee: [buymeacoffee.com/ganeshrvel](https://buymeacoffee.com/ganeshrvel "https://buymeacoffee.com/ganeshrvel")
 
 ### Contacts

@@ -1,5 +1,3 @@
-'use strict';
-
 import React, { PureComponent } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import TableCell from '@material-ui/core/TableCell';
@@ -19,6 +17,7 @@ import UsbIcon from '@material-ui/icons/Usb';
 import TouchAppIcon from '@material-ui/icons/TouchApp';
 import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
 import CachedIcon from '@material-ui/icons/Cached';
+import PermDeviceInformationIcon from '@material-ui/icons/PermDeviceInformation';
 import SettingsInputHdmiIcon from '@material-ui/icons/SettingsInputHdmi';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -27,9 +26,10 @@ import Button from '@material-ui/core/Button';
 import { styles } from '../styles/FileExplorerTableBodyEmptyRender';
 import KeyboadShortcuts from '../../KeyboardShortcutsPage/components/KeyboadShortcuts';
 import Features from '../../Onboarding/components/Features';
-import { Notification as NotificationDialog } from '../../../components/DialogBox';
-import FileExplorerTableBodyEmptyHelpPhoneNotRecognizedRender from './FileExplorerTableBodyEmptyHelpPhoneNotRecognizedRender';
 import { helpPhoneNotConnecting } from '../../../templates/fileExplorer';
+import { analyticsService } from '../../../services/analytics';
+import { EVENT_TYPE } from '../../../enums/events';
+import { helpFaqsWindow } from '../../../helpers/createWindows';
 
 class FileExplorerTableBodyEmptyRender extends PureComponent {
   constructor(props) {
@@ -39,29 +39,33 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
       expansionPanel: {
         noMtpInstructions: true,
         keyboardNavigation: false,
-        features: false
+        features: false,
       },
-      showHelpPhoneNotRecognizedDialog: false
     };
   }
 
   _handleExpansionPanel = ({ key }) => {
-    this.setState(prevState => {
+    this.setState((prevState) => {
       return {
         expansionPanel: {
           ...prevState.expansionPanel,
-          [key]: !prevState.expansionPanel[key]
-        }
+          [key]: !prevState.expansionPanel[key],
+        },
       };
     });
   };
 
-  _handleHelpPhoneNotRecognizedBtn = value => {
-    this.setState({ showHelpPhoneNotRecognizedDialog: value });
+  _handleHelpPhoneNotRecognizedBtn = () => {
+    helpFaqsWindow(true);
+
+    analyticsService.sendEvent(
+      EVENT_TYPE.MTP_HELP_PHONE_NOT_CONNECTED_DIALOG_OPEN,
+      {}
+    );
   };
 
   _handleHelpPhoneNotRecognizedDialog = () => {
-    this._handleHelpPhoneNotRecognizedBtn(false);
+    this._handleHelpPhoneNotRecognizedBtn();
   };
 
   render() {
@@ -72,16 +76,16 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
       currentBrowsePath,
       deviceType,
       directoryLists,
-      onContextMenuClick
+      onContextMenuClick,
     } = this.props;
 
-    const { expansionPanel, showHelpPhoneNotRecognizedDialog } = this.state;
+    const { expansionPanel } = this.state;
 
     const _eventTarget = 'emptyRowTarget';
 
     const tableData = {
       path: currentBrowsePath[deviceType],
-      directoryLists: directoryLists[deviceType]
+      directoryLists: directoryLists[deviceType],
     };
 
     if (isMtp && !mtpDevice.isAvailable) {
@@ -90,9 +94,10 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
           <TableCell colSpan={6} className={styles.tableCell}>
             <Paper style={{ height: `100%` }} elevation={0}>
               <Button
-                color="secondary"
                 className={styles.helpPhoneNotRecognized}
-                onClick={() => this._handleHelpPhoneNotRecognizedBtn(true)}
+                onClick={() => {
+                  this._handleHelpPhoneNotRecognizedBtn();
+                }}
               >
                 {helpPhoneNotConnecting}
               </Button>
@@ -102,7 +107,7 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
                   button
                   onClick={() =>
                     this._handleExpansionPanel({
-                      key: 'noMtpInstructions'
+                      key: 'noMtpInstructions',
                     })
                   }
                 >
@@ -171,16 +176,22 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
                         <ListItemIcon>
                           <CachedIcon />
                         </ListItemIcon>
-                        <ListItemText primary="Click Refresh Button above" />
+                        <ListItemText primary="Tap on the 'Refresh' button above" />
+                      </ListItem>
+                      <ListItem>
+                        <ListItemIcon>
+                          <PermDeviceInformationIcon />
+                        </ListItemIcon>
+                        <ListItemText
+                          primary="If you are trying to connect a SAMSUNG device then accept the 'Allow access to device data' confirmation pop up in your phone"
+                          secondary="Tap on the 'Refresh' button again. Reconnect your phone and repeat the above steps if it doesn't help"
+                        />
                       </ListItem>
                       <ListItem>
                         <ListItemIcon>
                           <SettingsInputHdmiIcon />
                         </ListItemIcon>
-                        <ListItemText
-                          primary="Reconnect the cable and repeat the above steps if you keep
-                  seeing this message"
-                        />
+                        <ListItemText primary="Reconnect the cable and repeat the above steps if you keep seeing this message" />
                       </ListItem>
                     </div>
                   </List>
@@ -192,7 +203,7 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
                   button
                   onClick={() =>
                     this._handleExpansionPanel({
-                      key: 'keyboardNavigation'
+                      key: 'keyboardNavigation',
                     })
                   }
                 >
@@ -233,7 +244,7 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
                   button
                   onClick={() =>
                     this._handleExpansionPanel({
-                      key: 'features'
+                      key: 'features',
                     })
                   }
                 >
@@ -264,28 +275,18 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
                   </div>
                 </Collapse>
               </List>
-
-              <NotificationDialog
-                fullWidthDialog
-                maxWidthDialog="sm"
-                titleText={helpPhoneNotConnecting}
-                bodyText={
-                  <FileExplorerTableBodyEmptyHelpPhoneNotRecognizedRender />
-                }
-                trigger={showHelpPhoneNotRecognizedDialog}
-                onClickHandler={this._handleHelpPhoneNotRecognizedDialog}
-              />
             </Paper>
           </TableCell>
         </TableRow>
       );
     }
+
     return (
       <TableRow className={styles.emptyTableRowWrapper}>
         <TableCell
           colSpan={6}
           className={styles.tableCell}
-          onContextMenu={event =>
+          onContextMenu={(event) =>
             onContextMenuClick(event, {}, { ...tableData }, _eventTarget)
           }
         />

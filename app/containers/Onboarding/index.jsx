@@ -22,7 +22,7 @@ class Onboarding extends PureComponent {
     super(props);
 
     this.state = {
-      fireOnboarding: false
+      fireOnboarding: false,
     };
   }
 
@@ -31,21 +31,22 @@ class Onboarding extends PureComponent {
     const { lastFiredVersion } = onboarding;
 
     this.setState({
-      fireOnboarding: latestUpdatePushVersion !== lastFiredVersion
+      fireOnboarding: latestUpdatePushVersion !== lastFiredVersion,
     });
   }
 
   _handleClose = () => {
     const { actionCreateOnboarding } = this.props;
+
     this.setState({
-      fireOnboarding: false
+      fireOnboarding: false,
     });
 
     actionCreateOnboarding({ lastFiredVersion: latestUpdatePushVersion });
   };
 
   render() {
-    const { classes: styles, freshInstall } = this.props;
+    const { classes: styles } = this.props;
     const { fireOnboarding } = this.state;
 
     return (
@@ -63,20 +64,11 @@ class Onboarding extends PureComponent {
         <DialogTitle>Release at a Glance!</DialogTitle>
         <DialogContent>
           <div className={styles.contentBox}>
-            {freshInstall ? (
-              <Fragment>
-                <Features hideTitle={false} />
-                <Divider className={styles.divider} />
-                <WhatsNew hideTitle={false} />
-              </Fragment>
-            ) : null}
-            {!freshInstall ? (
-              <Fragment>
-                <WhatsNew hideTitle={false} />
-                <Divider className={styles.divider} />
-                <Features hideTitle={false} />
-              </Fragment>
-            ) : null}
+            <Fragment>
+              <WhatsNew hideTitle={false} />
+              <Divider className={styles.divider} />
+              <Features hideTitle={false} />
+            </Fragment>
           </div>
         </DialogContent>
         <DialogActions>
@@ -93,20 +85,20 @@ class Onboarding extends PureComponent {
   }
 }
 
-const mapDispatchToProps = (dispatch, ownProps) =>
+const mapDispatchToProps = (dispatch, __) =>
   bindActionCreators(
     {
       actionCreateOnboarding: ({ ...data }) => (_, getState) => {
         dispatch(setOnboarding({ ...data }, getState));
-      }
+      },
     },
     dispatch
   );
 
-const mapStateToProps = (state, props) => {
+const mapStateToProps = (state, __) => {
   return {
     onboarding: makeOnboarding(state),
-    freshInstall: makeFreshInstall(state)
+    freshInstall: makeFreshInstall(state),
   };
 };
 

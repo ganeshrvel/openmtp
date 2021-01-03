@@ -1,5 +1,3 @@
-'use strict';
-
 /* eslint no-await-in-loop: off */
 
 /**
@@ -8,17 +6,18 @@
  */
 
 import { readdirSync } from 'fs';
-import { baseName, PATHS } from '../utils/paths';
+import { PATHS } from '../constants/paths';
 import {
   fileExistsSync,
   writeFileAsync,
   createDirSync,
-  deleteFilesSync
-} from '../api/sys/fileOps';
-import { daysDiff, yearMonthNow } from '../utils/date';
+  deleteFilesSync,
+} from '../helpers/fileOps';
+import { dateNow, daysDiff } from '../utils/date';
 import { LOG_FILE_ROTATION_CLEANUP_THRESHOLD } from '../constants';
+import { baseName } from '../utils/files';
 
-const { logFile, settingsFile, logDir } = PATHS;
+const { logFile, settingsFile, logDir, prevProfileDir } = PATHS;
 const logFileRotationCleanUpThreshold = LOG_FILE_ROTATION_CLEANUP_THRESHOLD;
 
 export default class Boot {
@@ -50,6 +49,12 @@ export default class Boot {
         }
       }
 
+      // if the previous version of the profile directory exists then remove it
+      // issue: https://github.com/ganeshrvel/openmtp/issues/143
+      if (await this.verifyDir(prevProfileDir)) {
+        await deleteFilesSync(prevProfileDir);
+      }
+
       return true;
     } catch (e) {
       console.error(e);
@@ -65,6 +70,7 @@ export default class Boot {
           return false;
         }
       }
+
       for (let i = 0; i < this.verifyFileList.length; i += 1) {
         const item = this.verifyFileList[i];
 
@@ -103,7 +109,7 @@ export default class Boot {
 
   async createDir(newFolderPath) {
     try {
-      createDirSync(newFolderPath);
+      await createDirSync(newFolderPath);
     } catch (e) {
       console.error(e);
     }
@@ -130,7 +136,7 @@ export default class Boot {
       const dirFileList = readdirSync(logDir);
       const pattern = `^\\${baseName(logFile)}`;
       const _regex = new RegExp(pattern, 'gi');
-      const filesList = dirFileList.filter(elm => {
+      const filesList = dirFileList.filter((elm) => {
         return !elm.match(_regex);
       });
 
@@ -138,8 +144,9 @@ export default class Boot {
         return null;
       }
 
-      filesList.map(async a => {
+      filesList.map(async (a) => {
         const dateMatch = a.match(/\d{4}-\d{2}/g);
+
         if (
           dateMatch === null ||
           dateMatch.length < 1 ||
@@ -149,7 +156,8 @@ export default class Boot {
           return null;
         }
 
-        const _diff = daysDiff(yearMonthNow({}), dateMatch[0]);
+        const _diff = daysDiff(dateNow({}), dateMatch[0]);
+
         if (_diff >= logFileRotationCleanUpThreshold) {
           deleteFilesSync(`${logDir}/${a}`);
         }

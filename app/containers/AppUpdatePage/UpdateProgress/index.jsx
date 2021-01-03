@@ -1,5 +1,3 @@
-'use strict';
-
 import { ipcRenderer } from 'electron';
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
@@ -15,11 +13,11 @@ class ProgressbarPage extends Component {
       progressTitle: `Progress...`,
       progressBodyText: `Progress...`,
       value: 0,
-      variant: `indeterminate`
+      variant: `indeterminate`,
     };
 
     this.state = {
-      ...this.initialState
+      ...this.initialState,
     };
   }
 
@@ -39,6 +37,7 @@ class ProgressbarPage extends Component {
   render() {
     const { classes: styles } = this.props;
     const { progressTitle, progressBodyText, value, variant } = this.state;
+
     return (
       <div className={styles.root}>
         <Typography variant="body1" className={styles.progressTitle}>

@@ -1,15 +1,13 @@
-'use strict';
-
 /* eslint global-require: off */
 
 /**
  * Base webpack config used across other specific configs
  */
 
-import path, { join } from 'path';
+import { join } from 'path';
 import webpack from 'webpack';
 import { rootPath } from 'electron-root-path';
-import { PATHS } from '../app/utils/paths';
+import { PATHS } from '../app/constants/paths';
 
 const pkg = require(join(rootPath, 'package.json'));
 
@@ -24,17 +22,17 @@ export default {
         use: {
           loader: 'babel-loader',
           options: {
-            cacheDirectory: true
-          }
-        }
-      }
-    ]
+            cacheDirectory: true,
+          },
+        },
+      },
+    ],
   },
 
   output: {
     path: PATHS.app,
     // https://github.com/webpack/webpack/issues/1114
-    libraryTarget: 'commonjs2'
+    libraryTarget: 'commonjs2',
   },
 
   /**
@@ -42,16 +40,12 @@ export default {
    */
   resolve: {
     extensions: ['.js', '.jsx', '.json'],
-    alias: {
-      'react-dom': '@hot-loader/react-dom',
-      '@Log': path.resolve(__dirname, '../app/utils/log.js'),
-      '@Alerts': path.resolve(__dirname, '../app/containers/Alerts/actions.js')
-    }
+    modules: [PATHS.nodeModules],
   },
 
   plugins: [
     new webpack.EnvironmentPlugin({
-      NODE_ENV: 'production'
+      NODE_ENV: 'production',
     }),
 
     new webpack.DefinePlugin({
@@ -63,12 +57,8 @@ export default {
         version: JSON.stringify(pkg.version),
         repository: JSON.stringify(pkg.repository),
         homepage: JSON.stringify(pkg.homepage),
-        bugs: JSON.stringify(pkg.bugs)
-      }
+        bugs: JSON.stringify(pkg.bugs),
+      },
     }),
-
-    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-
-    new webpack.NamedModulesPlugin()
-  ]
+  ],
 };

@@ -1,16 +1,14 @@
-'use strict';
-
 import { app, Menu } from 'electron';
 import {
   appFeaturesWindow,
   keyboardShortcutsWindow,
   privacyPolicyWindow,
-  reportBugsWindow
-} from './utils/createWindows';
+  reportBugsWindow,
+} from './helpers/createWindows';
 import { DEBUG_PROD, IS_DEV } from './constants/env';
 import { APP_NAME, APP_GITHUB_URL } from './constants/meta';
 import { openExternalUrl } from './utils/url';
-import { DONATE_PAYPAL_URL } from './constants';
+import { BUY_ME_A_COFFEE_URL } from './constants';
 import { inviteViaEmail } from './templates/menu';
 
 export default class MenuBuilder {
@@ -31,6 +29,7 @@ export default class MenuBuilder {
         : this.buildDefaultTemplate();
 
     const menu = Menu.buildFromTemplate(template);
+
     Menu.setApplicationMenu(menu);
 
     return menu;
@@ -45,8 +44,8 @@ export default class MenuBuilder {
           label: 'Inspect element',
           click: () => {
             this.mainWindow.inspectElement(x, y);
-          }
-        }
+          },
+        },
       ]).popup(this.mainWindow);
     });
 
@@ -59,7 +58,7 @@ export default class MenuBuilder {
       submenu: [
         {
           label: `About ${APP_NAME}`,
-          selector: 'orderFrontStandardAboutPanel:'
+          selector: 'orderFrontStandardAboutPanel:',
         },
         { type: 'separator' },
         {
@@ -67,18 +66,18 @@ export default class MenuBuilder {
           label: 'Check For Updates',
           click: () => {
             this.autoAppUpdate.forceCheck();
-          }
+          },
         },
         { type: 'separator' },
         {
           label: `Hide ${APP_NAME}`,
           accelerator: 'Command+H',
-          selector: 'hide:'
+          selector: 'hide:',
         },
         {
           label: 'Hide Others',
           accelerator: 'Command+Shift+H',
-          selector: 'hideOtherApplications:'
+          selector: 'hideOtherApplications:',
         },
         { label: 'Show All', selector: 'unhideAllApplications:' },
         { type: 'separator' },
@@ -87,9 +86,9 @@ export default class MenuBuilder {
           accelerator: 'Command+Q',
           click: () => {
             app.quit();
-          }
-        }
-      ]
+          },
+        },
+      ],
     };
     const subMenuEdit = {
       label: 'Edit',
@@ -98,40 +97,40 @@ export default class MenuBuilder {
           label: 'Undo',
           accelerator: 'Command+Z',
           selector: 'undo:',
-          role: 'undo'
+          role: 'undo',
         },
         {
           label: 'Redo',
           accelerator: 'Command+Y',
           selector: 'redo:',
-          role: 'redo'
+          role: 'redo',
         },
         { type: 'separator' },
         {
           label: 'Cut',
           accelerator: 'Command+X',
           selector: 'cut:',
-          role: 'cut'
+          role: 'cut',
         },
         {
           label: 'Copy',
           accelerator: 'Command+C',
           selector: 'copy:',
-          role: 'copy'
+          role: 'copy',
         },
         {
           label: 'Paste',
           accelerator: 'Command+V',
           selector: 'paste:',
-          role: 'paste'
+          role: 'paste',
         },
         {
           label: 'Select All',
           accelerator: 'Command+A',
           selector: 'selectAll:',
-          role: 'selectAll'
-        }
-      ]
+          role: 'selectAll',
+        },
+      ],
     };
     const subMenuViewDev = {
       label: 'View',
@@ -141,23 +140,23 @@ export default class MenuBuilder {
           accelerator: 'Command+R',
           click: () => {
             this.mainWindow.webContents.reload();
-          }
+          },
         },
         {
           label: 'Toggle Full Screen',
           accelerator: 'Ctrl+Command+F',
           click: () => {
             this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen());
-          }
+          },
         },
         {
           label: 'Toggle Developer Tools',
           accelerator: 'Alt+Command+I',
           click: () => {
             this.mainWindow.toggleDevTools();
-          }
-        }
-      ]
+          },
+        },
+      ],
     };
     const subMenuViewProd = {
       label: 'View',
@@ -167,9 +166,9 @@ export default class MenuBuilder {
           accelerator: 'Ctrl+Command+F',
           click: () => {
             this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen());
-          }
-        }
-      ]
+          },
+        },
+      ],
     };
     const subMenuWindow = {
       label: 'Window',
@@ -177,12 +176,12 @@ export default class MenuBuilder {
         {
           label: 'Minimize',
           accelerator: 'Command+M',
-          selector: 'performMiniaturize:'
+          selector: 'performMiniaturize:',
         },
         { label: 'Close', accelerator: 'Command+W', selector: 'performClose:' },
         { type: 'separator' },
-        { label: 'Bring All To Front', selector: 'arrangeInFront:' }
-      ]
+        { label: 'Bring All To Front', selector: 'arrangeInFront:' },
+      ],
     };
     const subMenuHelp = {
       label: 'Help',
@@ -191,45 +190,45 @@ export default class MenuBuilder {
           label: 'Report Bugs',
           click: () => {
             reportBugsWindow();
-          }
+          },
         },
         {
           label: 'Keyboard Shortcuts',
           click: () => {
             keyboardShortcutsWindow();
-          }
+          },
         },
         {
           label: 'New Features And Updates',
           click: () => {
             appFeaturesWindow();
-          }
+          },
         },
         {
           label: 'Privacy Policy',
           click: () => {
             privacyPolicyWindow();
-          }
+          },
         },
         {
           label: 'Buy Me A Coffee!',
           click: () => {
-            openExternalUrl(DONATE_PAYPAL_URL);
-          }
+            openExternalUrl(BUY_ME_A_COFFEE_URL);
+          },
         },
         {
           label: `Invite A Friend`,
           click: () => {
             openExternalUrl(`${inviteViaEmail}`);
-          }
+          },
         },
         {
           label: 'Find Us On GitHub',
           click: () => {
             openExternalUrl(APP_GITHUB_URL);
-          }
-        }
-      ]
+          },
+        },
+      ],
     };
 
     const subMenuView =
@@ -245,16 +244,16 @@ export default class MenuBuilder {
         submenu: [
           {
             label: '&Open',
-            accelerator: 'Ctrl+O'
+            accelerator: 'Ctrl+O',
           },
           {
             label: '&Close',
             accelerator: 'Ctrl+W',
             click: () => {
               this.mainWindow.close();
-            }
-          }
-        ]
+            },
+          },
+        ],
       },
       {
         label: '&View',
@@ -266,7 +265,7 @@ export default class MenuBuilder {
                   accelerator: 'Ctrl+R',
                   click: () => {
                     this.mainWindow.webContents.reload();
-                  }
+                  },
                 },
                 {
                   label: 'Toggle &Full Screen',
@@ -275,15 +274,15 @@ export default class MenuBuilder {
                     this.mainWindow.setFullScreen(
                       !this.mainWindow.isFullScreen()
                     );
-                  }
+                  },
                 },
                 {
                   label: 'Toggle &Developer Tools',
                   accelerator: 'Alt+Ctrl+I',
                   click: () => {
                     this.mainWindow.toggleDevTools();
-                  }
-                }
+                  },
+                },
               ]
             : [
                 {
@@ -293,9 +292,9 @@ export default class MenuBuilder {
                     this.mainWindow.setFullScreen(
                       !this.mainWindow.isFullScreen()
                     );
-                  }
-                }
-              ]
+                  },
+                },
+              ],
       },
       {
         label: 'Help',
@@ -305,52 +304,52 @@ export default class MenuBuilder {
             label: 'Check For Updates',
             click: () => {
               this.autoAppUpdate.forceCheck();
-            }
+            },
           },
           {
             label: 'Report Bugs',
             click: () => {
               reportBugsWindow();
-            }
+            },
           },
           {
             label: 'Keyboard Shortcuts',
             click: () => {
               keyboardShortcutsWindow();
-            }
+            },
           },
           {
             label: 'New Features And Updates',
             click: () => {
               appFeaturesWindow();
-            }
+            },
           },
           {
             label: 'Privacy Policy',
             click: () => {
               privacyPolicyWindow();
-            }
+            },
           },
           {
             label: 'Buy Me A Coffee!',
             click: () => {
-              openExternalUrl(DONATE_PAYPAL_URL);
-            }
+              openExternalUrl(BUY_ME_A_COFFEE_URL);
+            },
           },
           {
             label: `Invite A Friend`,
             click: () => {
               openExternalUrl(`${inviteViaEmail}`);
-            }
+            },
           },
           {
             label: 'Find Us On GitHub',
             click: () => {
               openExternalUrl(APP_GITHUB_URL);
-            }
-          }
-        ]
-      }
+            },
+          },
+        ],
+      },
     ];
   }
 }

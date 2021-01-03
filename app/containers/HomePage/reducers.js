@@ -1,19 +1,30 @@
-'use strict';
-
 import path from 'path';
+import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
+import {
+  faSync,
+  faSdCard,
+  faCog,
+  faPlug,
+  faArrowLeft,
+} from '@fortawesome/free-solid-svg-icons';
+import { faGithub, faPaypal } from '@fortawesome/free-brands-svg-icons';
 import { actionTypes } from './actions';
-import { PATHS } from '../../utils/paths';
+import { PATHS } from '../../constants/paths';
 import {
   DEVICES_DEFAULT_PATH,
-  DEVICES_TYPE_CONST,
-  FILE_EXPLORER_DEFAULT_FOCUSSED_DEVICE_TYPE
+  FILE_EXPLORER_DEFAULT_FOCUSSED_DEVICE_TYPE,
 } from '../../constants';
+import { DEVICE_TYPE } from '../../enums';
+import {
+  buyMeACoffeeText,
+  donateUsingPayPal,
+} from '../../templates/fileExplorer';
 
 export const initialState = {
   focussedFileExplorerDeviceType: {
     accelerator: FILE_EXPLORER_DEFAULT_FOCUSSED_DEVICE_TYPE,
     onClick: FILE_EXPLORER_DEFAULT_FOCUSSED_DEVICE_TYPE,
-    value: FILE_EXPLORER_DEFAULT_FOCUSSED_DEVICE_TYPE
+    value: FILE_EXPLORER_DEFAULT_FOCUSSED_DEVICE_TYPE,
   },
 
   sidebarFavouriteList: {
@@ -22,202 +33,238 @@ export const initialState = {
         label: 'Home',
         path: PATHS.homeDir,
         icon: 'folder',
-        enabled: true
+        enabled: true,
       },
       {
         label: 'Desktop',
         path: path.join(PATHS.homeDir, `/Desktop`),
         icon: 'folder',
-        enabled: true
+        enabled: true,
       },
       {
         label: 'Downloads',
         path: path.join(PATHS.homeDir, `/Downloads`),
         icon: 'folder',
-        enabled: true
+        enabled: true,
       },
       {
         label: 'Removable Disks',
         path: '/Volumes',
         icon: 'folder',
-        enabled: true
+        enabled: true,
       },
       {
         label: 'Root',
         path: '/',
         icon: 'folder',
-        enabled: true
-      }
+        enabled: true,
+      },
     ],
-    bottom: []
+    bottom: [],
   },
 
   toolbarList: {
-    [DEVICES_TYPE_CONST.local]: {
+    [DEVICE_TYPE.local]: {
       up: {
         enabled: true,
         label: 'Folder Up',
-        imgSrc: 'Toolbar/up.svg',
-        invert: false
+        icon: faArrowLeft,
       },
       refresh: {
         enabled: true,
         label: 'Refresh',
-        imgSrc: 'Toolbar/refresh.svg',
-        invert: false
+        icon: faSync,
       },
       delete: {
         enabled: true,
         label: 'Delete',
-        imgSrc: 'Toolbar/delete.svg',
-        invert: false
-      },
-      settings: {
-        enabled: true,
-        label: 'Settings',
-        imgSrc: 'Toolbar/settings.svg',
-        invert: false
+        icon: faTrashAlt,
       },
       gitHub: {
         enabled: true,
         label: 'GitHub',
-        imgSrc: 'Toolbar/github.svg',
-        invert: false
-      }
-    },
-    [DEVICES_TYPE_CONST.mtp]: {
-      up: {
-        enabled: true,
-        label: 'Folder Up',
-        imgSrc: 'Toolbar/up.svg',
-        invert: false
-      },
-      refresh: {
-        enabled: true,
-        label: 'Refresh',
-        imgSrc: 'Toolbar/refresh.svg',
-        invert: false
-      },
-      delete: {
-        enabled: true,
-        label: 'Delete',
-        imgSrc: 'Toolbar/delete.svg',
-        invert: false
-      },
-      storage: {
-        enabled: true,
-        label: 'Storage',
-        imgSrc: 'Toolbar/storage.svg',
-        invert: false
+        icon: faGithub,
       },
       settings: {
         enabled: true,
         label: 'Settings',
-        imgSrc: 'Toolbar/settings.svg',
-        invert: false
-      }
-    }
+        icon: faCog,
+      },
+    },
+    [DEVICE_TYPE.mtp]: {
+      up: {
+        enabled: true,
+        label: 'Folder Up',
+        icon: faArrowLeft,
+      },
+      refresh: {
+        enabled: true,
+        label: 'Refresh',
+        icon: faSync,
+      },
+      delete: {
+        enabled: true,
+        label: 'Delete',
+        icon: faTrashAlt,
+      },
+      storage: {
+        enabled: true,
+        label: 'Storage',
+        icon: faSdCard,
+      },
+      mtpMode: {
+        enabled: true,
+        label: 'MTP Mode',
+        icon: faPlug,
+      },
+      paypal: {
+        enabled: true,
+        label: donateUsingPayPal,
+        icon: faPaypal,
+      },
+      buyMeACoffee: {
+        enabled: true,
+        label: buyMeACoffeeText,
+        image: 'toolbar/buymeacoffee.png',
+        icon: null,
+      },
+      settings: {
+        enabled: true,
+        label: 'Settings',
+        icon: faCog,
+      },
+    },
   },
 
   directoryLists: {
-    [DEVICES_TYPE_CONST.local]: {
+    [DEVICE_TYPE.local]: {
       order: 'asc',
       orderBy: 'name',
       queue: {
-        selected: []
+        selected: [],
       },
       nodes: [],
-      isLoaded: false
+      isLoaded: false,
     },
-    [DEVICES_TYPE_CONST.mtp]: {
+    [DEVICE_TYPE.mtp]: {
       order: 'asc',
       orderBy: 'name',
       queue: {
-        selected: []
+        selected: [],
       },
       nodes: [],
-      isLoaded: false
-    }
+      isLoaded: false,
+    },
   },
 
   currentBrowsePath: {
-    [DEVICES_TYPE_CONST.local]: DEVICES_DEFAULT_PATH.local,
-    [DEVICES_TYPE_CONST.mtp]: DEVICES_DEFAULT_PATH.mtp
+    [DEVICE_TYPE.local]: DEVICES_DEFAULT_PATH.local,
+    [DEVICE_TYPE.mtp]: DEVICES_DEFAULT_PATH.mtp,
   },
 
   mtpDevice: {
-    isAvailable: false
-  },
-  contextMenuList: {
-    [DEVICES_TYPE_CONST.local]: {
-      rename: {
-        enabled: true,
-        label: 'Rename',
-        data: {}
-      },
-      copy: {
-        enabled: true,
-        label: 'Copy',
-        data: {}
-      },
-      copyToQueue: {
-        enabled: true,
-        label: 'Copy to Queue',
-        data: {}
-      },
-      paste: {
-        enabled: true,
-        label: 'Paste',
-        data: {}
-      },
-      newFolder: {
-        enabled: true,
-        label: 'New Folder',
-        data: {}
-      }
-    },
-    [DEVICES_TYPE_CONST.mtp]: {
-      rename: {
-        enabled: true,
-        label: 'Rename',
-        data: {}
-      },
-      copy: {
-        enabled: true,
-        label: 'Copy',
-        data: {}
-      },
-      copyToQueue: {
-        enabled: true,
-        label: 'Copy to Queue',
-        data: {}
-      },
-      paste: {
-        enabled: true,
-        label: 'Paste',
-        data: {}
-      },
-      newFolder: {
-        enabled: true,
-        label: 'New Folder',
-        data: {}
-      }
-    }
+    isAvailable: false,
+    error: null,
+    isLoading: false,
+
+    /**
+     * params: {mtpDeviceInfo, usbDeviceInfo} - info
+     *
+     */
+    info: {},
   },
 
+  contextMenuList: {
+    [DEVICE_TYPE.local]: {
+      rename: {
+        enabled: true,
+        label: 'Rename',
+        data: {},
+      },
+      copy: {
+        enabled: true,
+        label: 'Copy',
+        data: {},
+      },
+      copyToQueue: {
+        enabled: true,
+        label: 'Copy to Queue',
+        data: {},
+      },
+      paste: {
+        enabled: true,
+        label: 'Paste',
+        data: {},
+      },
+      newFolder: {
+        enabled: true,
+        label: 'New Folder',
+        data: {},
+      },
+    },
+    [DEVICE_TYPE.mtp]: {
+      rename: {
+        enabled: true,
+        label: 'Rename',
+        data: {},
+      },
+      copy: {
+        enabled: true,
+        label: 'Copy',
+        data: {},
+      },
+      copyToQueue: {
+        enabled: true,
+        label: 'Copy to Queue',
+        data: {},
+      },
+      paste: {
+        enabled: true,
+        label: 'Paste',
+        data: {},
+      },
+      newFolder: {
+        enabled: true,
+        label: 'New Folder',
+        data: {},
+      },
+    },
+  },
+
+  /**
+   * description - MTP Storage list
+   *
+   *    {
+   *      string: { <----- storageId
+   *        "name": string,
+   *        "selected": boolean,
+   *        "info": {} | undefined,
+   *      }
+   *    }
+   *
+   */
   mtpStoragesList: {},
 
   fileTransfer: {
     clipboard: {
       queue: [],
-      source: null
+      source: null,
     },
     progress: {
       toggle: false,
-      bodyText1: null,
-      bodyText2: null,
-      percentage: 0
-    }
+      titleText: null,
+      bottomText: null,
+
+      /**
+       *  [{
+       *    percentage,
+       *    variant,
+       *    bodyText1,
+       *    bodyText2,
+       *  }]
+       */
+      values: [],
+    },
   },
 
   filesDrag: {
@@ -225,20 +272,21 @@ export const initialState = {
     destinationDeviceType: null,
     enter: false,
     lock: false,
-    sameSourceDestinationLock: false
-  }
+    sameSourceDestinationLock: false,
+  },
 };
 
 export default function Home(state = initialState, action) {
   const { type, payload, deviceType = null } = action;
+
   switch (type) {
     case actionTypes.SET_FOCUSSED_FILE_EXPLORER_DEVICE_TYPE:
       return {
         ...state,
         focussedFileExplorerDeviceType: {
           ...state.focussedFileExplorerDeviceType,
-          ...payload
-        }
+          ...payload,
+        },
       };
 
     case actionTypes.SET_SORTING_DIR_LISTS:
@@ -248,9 +296,9 @@ export default function Home(state = initialState, action) {
           ...state.directoryLists,
           [deviceType]: {
             ...state.directoryLists[deviceType],
-            ...payload
-          }
-        }
+            ...payload,
+          },
+        },
       };
 
     case actionTypes.SET_SELECTED_DIR_LISTS:
@@ -261,10 +309,10 @@ export default function Home(state = initialState, action) {
           [deviceType]: {
             ...state.directoryLists[deviceType],
             queue: {
-              selected: payload.selected
-            }
-          }
-        }
+              selected: payload.selected,
+            },
+          },
+        },
       };
 
     case actionTypes.SET_CURRENT_BROWSE_PATH:
@@ -272,8 +320,8 @@ export default function Home(state = initialState, action) {
         ...state,
         currentBrowsePath: {
           ...state.currentBrowsePath,
-          [deviceType]: payload
-        }
+          [deviceType]: payload,
+        },
       };
 
     case actionTypes.SET_MTP_STATUS:
@@ -281,11 +329,11 @@ export default function Home(state = initialState, action) {
         ...state,
         mtpDevice: {
           ...state.mtpDevice,
-          isAvailable: payload
-        }
+          ...payload,
+        },
       };
 
-    case actionTypes.FETCH_DIR_LIST:
+    case actionTypes.LIST_DIRECTORY:
       return {
         ...state,
         directoryLists: {
@@ -293,9 +341,9 @@ export default function Home(state = initialState, action) {
           [deviceType]: {
             ...state.directoryLists[deviceType],
             nodes: [...payload.nodes],
-            isLoaded: payload.isLoaded
-          }
-        }
+            isLoaded: payload.isLoaded,
+          },
+        },
       };
 
     case actionTypes.CHANGE_MTP_STORAGE:
@@ -303,8 +351,8 @@ export default function Home(state = initialState, action) {
         ...state,
         mtpStoragesList: {
           ...initialState.mtpStoragesList,
-          ...payload
-        }
+          ...payload,
+        },
       };
 
     case actionTypes.SET_FILE_TRANSFER_CLIPBOARD:
@@ -313,9 +361,9 @@ export default function Home(state = initialState, action) {
         fileTransfer: {
           ...state.fileTransfer,
           clipboard: {
-            ...payload
-          }
-        }
+            ...payload,
+          },
+        },
       };
 
     case actionTypes.SET_FILE_TRANSFER_PROGRESS:
@@ -324,17 +372,17 @@ export default function Home(state = initialState, action) {
         fileTransfer: {
           ...state.fileTransfer,
           progress: {
-            ...payload
-          }
-        }
+            ...payload,
+          },
+        },
       };
 
     case actionTypes.CLEAR_FILE_TRANSFER:
       return {
         ...state,
         fileTransfer: {
-          ...initialState.fileTransfer
-        }
+          ...initialState.fileTransfer,
+        },
       };
 
     case actionTypes.SET_FILES_DRAG:
@@ -342,16 +390,16 @@ export default function Home(state = initialState, action) {
         ...state,
         filesDrag: {
           ...state.filesDrag,
-          ...payload
-        }
+          ...payload,
+        },
       };
 
     case actionTypes.CLEAR_FILES_DRAG:
       return {
         ...state,
         filesDrag: {
-          ...initialState.filesDrag
-        }
+          ...initialState.filesDrag,
+        },
       };
 
     default:

@@ -1,5 +1,3 @@
-'use strict';
-
 const path = require('path');
 const webpack = require('webpack');
 
@@ -16,13 +14,13 @@ module.exports = {
     watchOptions: {
       aggregateTimeout: 300,
       ignored: /node_modules/,
-      poll: 100
-    }
+      poll: 100,
+    },
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin({
-      multiStep: false
-    })
+      multiStep: false,
+    }),
   ],
   module: {
     rules: [
@@ -30,16 +28,16 @@ module.exports = {
         test: /\.(scss|css|sass)$/,
         use: [
           {
-            loader: 'style-loader'
+            loader: 'style-loader',
           },
           {
-            loader: 'css-loader'
+            loader: 'css-loader',
           },
           {
-            loader: 'sass-loader'
-          }
-        ]
-      }
-    ]
-  }
+            loader: 'sass-loader',
+          },
+        ],
+      },
+    ],
+  },
 };

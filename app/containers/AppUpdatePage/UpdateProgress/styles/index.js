@@ -1,19 +1,17 @@
-'use strict';
+import { mixins } from '../../../../styles/js';
 
-import { variables, mixins } from '../../../../styles/js';
-
-export const styles = theme => ({
+export const styles = (theme) => ({
   root: {
     textAlign: `left`,
-    ...mixins().center,
+    ...mixins({ theme }).center,
     width: 500,
-    marginTop: 10
+    marginTop: 10,
   },
   progressBodyText: {
-    marginBottom: 10
+    marginBottom: 10,
   },
   progressTitle: {
     fontWeight: 'bold',
-    marginBottom: 10
-  }
+    marginBottom: 10,
+  },
 });

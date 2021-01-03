@@ -1,5 +1,3 @@
-'use strict';
-
 import React, { PureComponent } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
@@ -12,13 +10,11 @@ import { fileExplorerKeymaps } from '../../../constants/keymaps';
 import {
   isFileExplorerOnFocus,
   toggleFileExplorerDeviceType,
-  undefinedOrNull
+  undefinedOrNull,
 } from '../../../utils/funcs';
-import {
-  DEVICES_TYPE_CONST,
-  FILE_EXPLORER_DEFAULT_FOCUSSED_DEVICE_TYPE
-} from '../../../constants';
+import { FILE_EXPLORER_DEFAULT_FOCUSSED_DEVICE_TYPE } from '../../../constants';
 import { FILE_EXPLORER_BODY_WRAPPER_ID } from '../../../constants/dom';
+import { DEVICE_TYPE } from '../../../enums';
 
 class FileExplorerBodyRender extends PureComponent {
   constructor(props) {
@@ -34,6 +30,10 @@ class FileExplorerBodyRender extends PureComponent {
   componentDidMount() {
     this.accelerators();
     this.focusItem();
+
+    this.fileExplorerBodyWrapper = document.getElementById(
+      this.fileExplorerBodyWrapperId
+    );
   }
 
   componentWillUnmount() {
@@ -68,15 +68,17 @@ class FileExplorerBodyRender extends PureComponent {
       multipleSelectLeft: this.acceleratorCreateAction,
       multipleSelectRight: this.acceleratorCreateAction,
       multipleSelectUp: this.acceleratorCreateAction,
-      multipleSelectDown: this.acceleratorCreateAction
+      multipleSelectDown: this.acceleratorCreateAction,
     };
 
     this.fileExplorerKeymapString = Object.keys(fileExplorerKeymaps).reduce(
       (accumulator, currentKey) => {
         const itemCurrentKey = fileExplorerKeymaps[currentKey].keys;
+
         if (this.acceleratorIgnoreList.indexOf(currentKey) !== -1) {
           return accumulator;
         }
+
         if (undefinedOrNull(accumulator) || accumulator.trim() === '') {
           return itemCurrentKey.join(', ');
         }
@@ -87,8 +89,9 @@ class FileExplorerBodyRender extends PureComponent {
     );
 
     hotkeys(this.fileExplorerKeymapString, (event, handler) => {
-      Object.keys(fileExplorerKeymaps).map(a => {
+      Object.keys(fileExplorerKeymaps).map((a) => {
         const item = fileExplorerKeymaps[a].keys;
+
         if (
           undefinedOrNull(keymapActionsList[a]) ||
           undefinedOrNull(item) ||
@@ -111,7 +114,7 @@ class FileExplorerBodyRender extends PureComponent {
     });
   };
 
-  acceleratorNewFolder = event => {
+  acceleratorNewFolder = (event) => {
     const { onAcceleratorActivation, deviceType } = this.props;
 
     onAcceleratorActivation({
@@ -119,12 +122,12 @@ class FileExplorerBodyRender extends PureComponent {
       data: {
         event,
         tableData: this.tableData(),
-        deviceType
-      }
+        deviceType,
+      },
     });
   };
 
-  acceleratorRename = event => {
+  acceleratorRename = (event) => {
     const { onAcceleratorActivation, deviceType } = this.props;
 
     onAcceleratorActivation({
@@ -132,8 +135,8 @@ class FileExplorerBodyRender extends PureComponent {
       data: {
         event,
         tableData: this.tableData(),
-        deviceType
-      }
+        deviceType,
+      },
     });
   };
 
@@ -144,7 +147,7 @@ class FileExplorerBodyRender extends PureComponent {
     if (toggle) {
       this.focussedFileExplorerDeviceTypeCached = toggleFileExplorerDeviceType(
         this.focussedFileExplorerDeviceTypeCached,
-        DEVICES_TYPE_CONST
+        DEVICE_TYPE
       );
 
       _focussedFileExplorerDeviceType = this
@@ -170,17 +173,99 @@ class FileExplorerBodyRender extends PureComponent {
       type,
       data: {
         event,
-        deviceType
-      }
+        deviceType,
+      },
     });
   };
 
   tableData = () => {
     const { deviceType, currentBrowsePath, directoryLists } = this.props;
+
     return {
       path: currentBrowsePath[deviceType],
-      directoryLists: directoryLists[deviceType]
+      directoryLists: directoryLists[deviceType],
     };
+  };
+
+  isExternalFileDragged = (event) => {
+    const dt = event.dataTransfer;
+
+    return (
+      dt.types &&
+      (dt.types.indexOf
+        ? dt.types.indexOf('Files') !== -1
+        : dt.types.contains('Files'))
+    );
+  };
+
+  _handleOnDragOver = (event) => {
+    const { deviceType, onFilesDragOver } = this.props;
+
+    // if an extenal file is being dragged into the screen
+    // then do not activate the local pane
+    // because local files can only to be transferred to a mtp device
+    if (this.isExternalFileDragged(event)) {
+      if (deviceType === DEVICE_TYPE.local) {
+        return false;
+      }
+    }
+
+    onFilesDragOver(event, {
+      destinationDeviceType: deviceType,
+    });
+  };
+
+  _handleOnDragEnd = (event) => {
+    const { deviceType, onFilesDragEnd } = this.props;
+
+    // if an extenal file is being dragged into the screen
+    // then do not activate the local pane
+    // because local files can only to be transferred to a mtp device
+    if (this.isExternalFileDragged(event)) {
+      if (deviceType === DEVICE_TYPE.local) {
+        return false;
+      }
+    }
+
+    onFilesDragEnd(event, {
+      destinationDeviceType: deviceType,
+    });
+  };
+
+  _handleOnDrop = (event) => {
+    event.preventDefault();
+
+    const { deviceType, onFilesDrop } = this.props;
+
+    onFilesDrop(event, {
+      destinationDeviceType: deviceType,
+      externalFiles: event?.dataTransfer?.files ?? [],
+    });
+  };
+
+  _handleExternalFileDragLeave = (event) => {
+    event.preventDefault();
+    const { deviceType, onExternalFileDragLeave } = this.props;
+
+    if (this.isExternalFileDragged(event)) {
+      if (deviceType === DEVICE_TYPE.local) {
+        return false;
+      }
+
+      // prevent dragleave being fired when hovering a child element
+      const rect = this.fileExplorerBodyWrapper.getBoundingClientRect();
+
+      if (
+        event.clientY < rect.top ||
+        event.clientY >= rect.bottom ||
+        event.clientX < rect.left ||
+        event.clientX >= rect.right
+      ) {
+        onExternalFileDragLeave(event, { deviceType });
+      }
+    }
+
+    return false;
   };
 
   render() {
@@ -188,15 +273,13 @@ class FileExplorerBodyRender extends PureComponent {
       classes: styles,
       deviceType,
       currentBrowsePath,
-      OnHoverDropZoneActivate,
+      onHoverDropZoneActivate,
       filesDrag, // eslint-disable-line no-unused-vars
       onContextMenuClick,
-      onFilesDragOver,
-      onFilesDragEnd,
-      onTableDrop,
       onBreadcrumbPathClick,
       isStatusBarEnabled,
       fileTransferClipboard,
+      mtpDevice,
       ...parentProps
     } = this.props;
     const { directoryLists } = this.props;
@@ -205,7 +288,7 @@ class FileExplorerBodyRender extends PureComponent {
 
     return (
       <Paper
-        onClick={event =>
+        onClick={(event) =>
           this.acceleratorFileExplorerTabSwitch(
             event,
             'fileExplorerTabSwitch',
@@ -220,29 +303,23 @@ class FileExplorerBodyRender extends PureComponent {
           tabIndex={-1}
           id={this.fileExplorerBodyWrapperId}
           className={classNames(styles.tableWrapper, {
-            [`onHoverDropZone`]: OnHoverDropZoneActivate(deviceType),
-            [`statusBarActive`]: isStatusBarEnabled
+            [`onHoverDropZone`]: onHoverDropZoneActivate(deviceType),
+            [`statusBarActive`]: isStatusBarEnabled,
           })}
-          onContextMenu={event =>
+          onContextMenu={(event) =>
             onContextMenuClick(event, {}, { ...this.tableData() }, _eventTarget)
           }
-          onDragOver={event => {
-            onFilesDragOver(event, {
-              destinationDeviceType: deviceType
-            });
-          }}
-          onDragEnd={event => {
-            onFilesDragEnd(event);
-          }}
-          onDrop={event => {
-            onTableDrop(event);
-          }}
+          onDragOver={this._handleOnDragOver}
+          onDragEnd={this._handleOnDragEnd}
+          onDrop={this._handleOnDrop}
+          onDragLeave={this._handleExternalFileDragLeave}
         >
           <FileExplorerTableBodyRender
             tableData={this.tableData()}
             deviceType={deviceType}
             currentBrowsePath={currentBrowsePath}
             onContextMenuClick={onContextMenuClick}
+            mtpDevice={mtpDevice}
             {...parentProps}
           />
         </div>
@@ -253,6 +330,7 @@ class FileExplorerBodyRender extends PureComponent {
           isStatusBarEnabled={isStatusBarEnabled}
           directoryLists={directoryLists[deviceType]}
           fileTransferClipboard={fileTransferClipboard}
+          mtpDevice={mtpDevice}
         />
       </Paper>
     );

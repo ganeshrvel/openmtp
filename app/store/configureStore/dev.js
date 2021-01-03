@@ -1,5 +1,3 @@
-'use strict';
-
 /* eslint global-require: off */
 
 import { createStore, applyMiddleware, compose } from 'redux';
@@ -11,7 +9,7 @@ import rootReducer from '../reducers';
 
 const history = createHashHistory();
 
-const configureStore = initialState => {
+const configureStore = (initialState) => {
   // Redux Configuration
   const middleware = [];
   const enhancers = [];
@@ -22,7 +20,7 @@ const configureStore = initialState => {
   // Logging Middleware
   const logger = createLogger({
     level: 'info',
-    collapsed: true
+    collapsed: true,
   });
 
   // Skip redux logs in console during the tests
@@ -32,6 +30,7 @@ const configureStore = initialState => {
 
   // Router Middleware
   const router = routerMiddleware(history);
+
   middleware.push(router);
 
   // If Redux DevTools Extension is installed use it, otherwise use Redux compose
@@ -51,6 +50,7 @@ const configureStore = initialState => {
   store.injectReducer = (key, reducer) => {
     store.asyncReducers[key] = reducer;
     store.replaceReducer(rootReducer(store.asyncReducers));
+
     return store;
   };
 

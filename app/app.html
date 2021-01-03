@@ -1,45 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no" />
-    <title>OpenMTP | Android File Transfer for macOS</title>
-    <script>
-      (function() {
-        if (!process.env.HOT) {
-          const link = document.createElement('link');
-          link.rel = 'stylesheet';
-          link.href = './dist/style.css';
-          document.getElementsByTagName('head')[0].appendChild(link);
-        }
-      })();
-    </script>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script>
-      (function() {
-        const scripts = [];
-        let PORT;
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no" />
+  <title>OpenMTP | Android File Transfer for macOS</title>
+  <script>
+    (() => {
+      if (typeof process === "object" && typeof process.env === "object" && typeof process.env.NODE_ENV === "undefined") {
+        process.env.NODE_ENV = "production";
+      }
 
-        // Dynamically insert the DLL script in development env in the
-        // renderer process
-        if (process.env.NODE_ENV === 'development') {
-          scripts.push('../dll/renderer.dev.dll.js');
-          PORT = require('../config/env').PORT;
-        }
+      if (
+        typeof process !== "object" ||
+        (typeof process === "object" && !process.env.START_HOT)
+      ) {
+        const link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.href = "./dist/style.css";
+        // HACK: Writing the script path should be done with webpack
+        document.getElementsByTagName("head")[0].appendChild(link);
+      }
+    })();
+  </script>
+</head>
+<body>
+<div id="root"></div>
+<script>
 
-        // Dynamically insert the bundled app script in the renderer process
-        scripts.push(
-                process.env.HOT
-                        ? 'http://localhost:' + PORT + '/dist/renderer.dev.js'
-                        : './dist/renderer.prod.js'
-        );
+  if (typeof process === "object") {
+    const scripts = [];
+    let PORT;
 
-        document.write(
-                scripts.map(script => `<script defer src="${script}"><\/script>`).join('')
-        );
-      })();
-    </script>
-  </body>
+    if (process.env.NODE_ENV === "development") {
+      // Dynamically insert the DLL script in development env in the
+      // renderer process
+      scripts.push("../dll/renderer.dev.dll.js");
+
+      PORT = require("../config/env").PORT;
+    }
+    if (process.env.START_HOT) {
+      // Dynamically insert the bundled app script in the renderer process
+      scripts.push(`http://localhost:${PORT}/dist/renderer.dev.js`);
+    } else {
+      scripts.push("./dist/renderer.prod.js");
+    }
+
+    if (scripts.length) {
+      document.write(
+        scripts
+          .map(script => `<script defer src="${script}"><\/script>`)
+          .join("")
+      );
+    }
+  }
+</script>
+</body>
 </html>

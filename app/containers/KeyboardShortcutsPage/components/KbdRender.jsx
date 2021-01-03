@@ -1,5 +1,3 @@
-'use strict';
-
 import React, { PureComponent } from 'react';
 import { quickHash } from '../../../utils/funcs';
 import { fileExplorerKeymaps } from '../../../constants/keymaps';
@@ -8,7 +6,7 @@ export default class KbdRender extends PureComponent {
   render() {
     const { styles } = this.props;
 
-    return Object.keys(fileExplorerKeymaps).map(a => {
+    return Object.keys(fileExplorerKeymaps).map((a) => {
       const item = fileExplorerKeymaps[a];
 
       return (

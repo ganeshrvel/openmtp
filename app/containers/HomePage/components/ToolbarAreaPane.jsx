@@ -1,5 +1,3 @@
-'use strict';
-
 /* eslint no-case-declarations: off */
 
 import React, { PureComponent, Fragment } from 'react';
@@ -8,17 +6,17 @@ import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { log } from '@Log';
 import { styles } from '../styles/ToolbarAreaPane';
 import { withReducer } from '../../../store/reducers/withReducer';
 import reducers from '../reducers';
 import {
-  fetchDirList,
-  processMtpOutput,
-  processLocalOutput,
-  changeMtpStorage,
-  getMtpStoragesListSelected,
-  reloadDirList
+  listDirectory,
+  churnMtpBuffer,
+  churnLocalBuffer,
+  actionChangeMtpStorage,
+  getSelectedStorageIdFromState,
+  reloadDirList,
+  getSelectedStorage,
 } from '../actions';
 import {
   makeDirectoryLists,
@@ -27,17 +25,31 @@ import {
   makeSidebarFavouriteList,
   makeToolbarList,
   makeCurrentBrowsePath,
-  makeFocussedFileExplorerDeviceType
+  makeFocussedFileExplorerDeviceType,
 } from '../selectors';
-import { makeHideHiddenFiles } from '../../Settings/selectors';
-import { delLocalFiles, delMtpFiles } from '../../../api/sys';
-import { DEVICES_DEFAULT_PATH, DEVICES_TYPE_CONST } from '../../../constants';
-import { pathUp } from '../../../utils/paths';
-import { toggleSettings } from '../../Settings/actions';
-import { toggleWindowSizeOnDoubleClick } from '../../../utils/titlebarDoubleClick';
+import {
+  makeAppThemeMode,
+  makeHideHiddenFiles,
+  makeMtpMode,
+  makeShowLocalPaneOnLeftSide,
+} from '../../Settings/selectors';
+import {
+  BUY_ME_A_COFFEE_URL,
+  DEVICES_DEFAULT_PATH,
+  DONATE_PAYPAL_URL,
+} from '../../../constants';
+import { selectMtpMode, toggleSettings } from '../../Settings/actions';
+import { toggleWindowSizeOnDoubleClick } from '../../../helpers/titlebarDoubleClick';
 import ToolbarBody from './ToolbarBody';
 import { openExternalUrl } from '../../../utils/url';
 import { APP_GITHUB_URL } from '../../../constants/meta';
+import { pathUp } from '../../../utils/files';
+import { DEVICE_TYPE } from '../../../enums';
+import { log } from '../../../utils/log';
+import fileExplorerController from '../../../data/file-explorer/controllers/FileExplorerController';
+import { checkIf } from '../../../utils/checkIf';
+import { analyticsService } from '../../../services/analytics';
+import { EVENT_TYPE } from '../../../enums/events';
 
 class ToolbarAreaPane extends PureComponent {
   constructor(props) {
@@ -45,36 +57,40 @@ class ToolbarAreaPane extends PureComponent {
     this.initialState = {
       toggleDrawer: false,
       toggleDeleteConfirmDialog: false,
-      toggleMtpStorageSelectionDialog: false
+      toggleMtpStorageSelectionDialog: false,
+      toggleMtpModeSelectionDialog: false,
     };
     this.state = {
-      ...this.initialState
+      ...this.initialState,
     };
   }
 
   componentWillMount() {
-    const { deviceType } = this.props;
     ipcRenderer.on(
       'fileExplorerToolbarActionCommunication',
-      (event, { ...args }) => {
-        const { type, deviceType: _focussedFileExplorerDeviceType } = args;
-        if (deviceType !== _focussedFileExplorerDeviceType) {
-          return null;
-        }
-
-        this._handleToolbarAction(type);
-      }
+      this.fileExplorerToolbarActionCommunicationEvent
     );
   }
 
   componentWillUnmount() {
     ipcRenderer.removeListener(
       'fileExplorerToolbarActionCommunication',
-      () => {}
+      this.fileExplorerToolbarActionCommunicationEvent
     );
   }
 
-  _handleDoubleClickToolBar = event => {
+  fileExplorerToolbarActionCommunicationEvent = (event, { ...args }) => {
+    const { deviceType } = this.props;
+    const { type, deviceType: _focussedFileExplorerDeviceType } = args;
+
+    if (deviceType !== _focussedFileExplorerDeviceType) {
+      return null;
+    }
+
+    this._handleToolbarAction(type, true);
+  };
+
+  _handleDoubleClickToolBar = (event) => {
     if (event.target !== event.currentTarget) {
       return null;
     }
@@ -82,22 +98,52 @@ class ToolbarAreaPane extends PureComponent {
     toggleWindowSizeOnDoubleClick();
   };
 
-  _handleToggleDrawer = status => () => {
+  _handleToggleDrawer = (status) => () => {
     this.setState({
-      toggleDrawer: status
+      toggleDrawer: status,
     });
   };
 
-  _handleToggleDeleteConfirmDialog = status => {
+  _handleToggleDeleteConfirmDialog = (status) => {
+    const { deviceType } = this.props;
+
+    const dialogStatus = status ? 'OPEN' : 'CLOSE';
+    const deviceTypeUpperCase = deviceType.toUpperCase();
+
     this.setState({
-      toggleDeleteConfirmDialog: status
+      toggleDeleteConfirmDialog: status,
     });
+
+    analyticsService.sendEvent(
+      EVENT_TYPE[`${deviceTypeUpperCase}_DELETE_DIALOG_${dialogStatus}`],
+      {}
+    );
   };
 
-  _handleToggleMtpStorageSelectionDialog = status => {
+  _handleToggleMtpStorageSelectionDialog = (status) => {
+    const dialogStatus = status ? 'OPEN' : 'CLOSE';
+
     this.setState({
-      toggleMtpStorageSelectionDialog: status
+      toggleMtpStorageSelectionDialog: status,
     });
+
+    analyticsService.sendEvent(
+      EVENT_TYPE[`MTP_TOOLBAR_STORAGE_DIALOG_${dialogStatus}`],
+      {}
+    );
+  };
+
+  _handleToggleMtpModeSelectionDialog = (status) => {
+    const dialogStatus = status ? 'OPEN' : 'CLOSE';
+
+    this.setState({
+      toggleMtpModeSelectionDialog: status,
+    });
+
+    analyticsService.sendEvent(
+      EVENT_TYPE[`MTP_TOOLBAR_MTP_MODE_DIALOG_${dialogStatus}`],
+      {}
+    );
   };
 
   _handleMtpStoragesListClick = ({ ...args }) => {
@@ -105,10 +151,18 @@ class ToolbarAreaPane extends PureComponent {
       actionCreateSetMtpStorage,
       mtpStoragesList,
       deviceType,
-      hideHiddenFiles
+      hideHiddenFiles,
     } = this.props;
 
     const { selectedValue, triggerChange } = args;
+
+    if (triggerChange) {
+      analyticsService.sendEvent(EVENT_TYPE.MTP_TOOLBAR_STORAGE_SELECTED, {
+        'Current Storage': getSelectedStorage(mtpStoragesList)?.data,
+        'Selected Storage': selectedValue,
+      });
+    }
+
     this._handleToggleMtpStorageSelectionDialog(false);
 
     if (!triggerChange) {
@@ -119,13 +173,33 @@ class ToolbarAreaPane extends PureComponent {
       { selectedValue, mtpStoragesList },
       {
         filePath: DEVICES_DEFAULT_PATH.mtp,
-        ignoreHidden: hideHiddenFiles[deviceType]
+        ignoreHidden: hideHiddenFiles[deviceType],
       },
       deviceType
     );
   };
 
-  _handleDeleteConfirmDialog = confirm => {
+  _handleMtpModeSelectionDialogClick = ({ ...args }) => {
+    const { actionCreateSelectMtpMode, deviceType, mtpMode } = this.props;
+    const { selectedValue, triggerChange } = args;
+
+    if (triggerChange) {
+      analyticsService.sendEvent(EVENT_TYPE.MTP_MODE_SELECTED, {
+        'Current MTP Mode': mtpMode,
+        'Selected MTP Mode': selectedValue,
+      });
+    }
+
+    this._handleToggleMtpModeSelectionDialog(false);
+
+    if (!triggerChange) {
+      return null;
+    }
+
+    actionCreateSelectMtpMode({ value: selectedValue }, deviceType);
+  };
+
+  _handleDeleteConfirmDialog = (confirm) => {
     const { deviceType } = this.props;
 
     this._handleToggleDeleteConfirmDialog(false);
@@ -138,6 +212,7 @@ class ToolbarAreaPane extends PureComponent {
 
   _handleToggleSettings = () => {
     const { actionCreateToggleSettings } = this.props;
+
     actionCreateToggleSettings(true);
   };
 
@@ -145,48 +220,94 @@ class ToolbarAreaPane extends PureComponent {
     openExternalUrl(APP_GITHUB_URL);
   };
 
-  _handleToolbarAction = itemType => {
+  _handleOpenBuyMeACoffee = () => {
+    openExternalUrl(BUY_ME_A_COFFEE_URL);
+  };
+
+  _handleOpenDonateUsingPaypal = () => {
+    openExternalUrl(DONATE_PAYPAL_URL);
+  };
+
+  _handleToolbarAction = (itemType, isAccelerator = false) => {
+    checkIf(isAccelerator, 'boolean');
+
     const {
       currentBrowsePath,
       deviceType,
       hideHiddenFiles,
       actionCreateReloadDirList,
-      mtpStoragesList
     } = this.props;
 
     let filePath = '/';
+    const deviceTypeUpperCase = deviceType.toUpperCase();
+    const actionOrigin = isAccelerator ? 'KEYMAP' : 'TOOLBAR';
+
     switch (itemType) {
       case 'up':
         filePath = pathUp(currentBrowsePath[deviceType]);
-        this._handleFetchDirList({ filePath, deviceType });
+        this._handleListDirectory({ filePath, deviceType });
+
+        analyticsService.sendEvent(
+          EVENT_TYPE[`${deviceTypeUpperCase}_${actionOrigin}_FOLDER_UP`],
+          {}
+        );
+
         break;
 
       case 'refresh':
         filePath = currentBrowsePath[deviceType];
-        actionCreateReloadDirList(
-          {
-            filePath,
-            ignoreHidden: hideHiddenFiles[deviceType]
-          },
+        actionCreateReloadDirList({
+          filePath,
+          ignoreHidden: hideHiddenFiles[deviceType],
           deviceType,
-          mtpStoragesList
+        });
+
+        analyticsService.sendEvent(
+          EVENT_TYPE[`${deviceTypeUpperCase}_${actionOrigin}_REFRESH`],
+          {}
         );
+
         break;
 
       case 'delete':
         this._handleToggleDeleteConfirmDialog(true);
+
         break;
 
       case 'storage':
         this._handleToggleMtpStorageSelectionDialog(true);
+
         break;
 
       case 'settings':
         this._handleToggleSettings(true);
+
         break;
 
       case 'gitHub':
         this._handleOpenGitHubRepo();
+
+        analyticsService.sendEvent(
+          EVENT_TYPE[`${deviceTypeUpperCase}_${actionOrigin}_GITHUB_TAP`],
+          {}
+        );
+        break;
+
+      case 'buyMeACoffee':
+        this._handleOpenBuyMeACoffee();
+        analyticsService.sendEvent(EVENT_TYPE.BUY_ME_A_COFFEE, {});
+
+        break;
+
+      case 'paypal':
+        this._handleOpenDonateUsingPaypal();
+        analyticsService.sendEvent(EVENT_TYPE.DONATE_USING_PAYPAL, {});
+
+        break;
+
+      case 'mtpMode':
+        this._handleToggleMtpModeSelectionDialog(true);
+
         break;
 
       default:
@@ -194,13 +315,13 @@ class ToolbarAreaPane extends PureComponent {
     }
   };
 
-  _handleFetchDirList = ({ filePath, deviceType, isSidemenu = false }) => {
-    const { actionCreateFetchDirList, hideHiddenFiles } = this.props;
+  _handleListDirectory = ({ filePath, deviceType, isSidemenu = false }) => {
+    const { actionCreateListDirectory, hideHiddenFiles } = this.props;
 
-    actionCreateFetchDirList(
+    actionCreateListDirectory(
       {
         filePath,
-        ignoreHidden: hideHiddenFiles[deviceType]
+        ignoreHidden: hideHiddenFiles[deviceType],
       },
       deviceType
     );
@@ -214,16 +335,17 @@ class ToolbarAreaPane extends PureComponent {
       directoryLists,
       actionCreateDelFiles,
       hideHiddenFiles,
-      currentBrowsePath
+      currentBrowsePath,
     } = this.props;
+
     actionCreateDelFiles(
       {
         fileList: directoryLists[deviceType].queue.selected,
-        deviceType
+        deviceType,
       },
       {
         filePath: currentBrowsePath[deviceType],
-        ignoreHidden: hideHiddenFiles[deviceType]
+        ignoreHidden: hideHiddenFiles[deviceType],
       }
     );
   };
@@ -234,13 +356,17 @@ class ToolbarAreaPane extends PureComponent {
       deviceType,
       directoryLists,
       focussedFileExplorerDeviceType,
+      appThemeMode,
+      showLocalPaneOnLeftSide,
+      mtpMode,
       ...parentProps
     } = this.props;
 
     const {
       toggleDrawer,
       toggleDeleteConfirmDialog,
-      toggleMtpStorageSelectionDialog
+      toggleMtpStorageSelectionDialog,
+      toggleMtpModeSelectionDialog,
     } = this.state;
 
     const { isLoaded: isLoadedDirectoryLists } = directoryLists[deviceType];
@@ -254,11 +380,18 @@ class ToolbarAreaPane extends PureComponent {
           isLoadedDirectoryLists={isLoadedDirectoryLists}
           toggleDeleteConfirmDialog={toggleDeleteConfirmDialog}
           toggleMtpStorageSelectionDialog={toggleMtpStorageSelectionDialog}
+          toggleMtpModeSelectionDialog={toggleMtpModeSelectionDialog}
           toggleDrawer={toggleDrawer}
+          appThemeMode={appThemeMode}
+          showLocalPaneOnLeftSide={showLocalPaneOnLeftSide}
+          mtpMode={mtpMode}
           onDeleteConfirmDialog={this._handleDeleteConfirmDialog}
           onMtpStoragesListClick={this._handleMtpStoragesListClick}
+          onMtpModeSelectionDialogClick={
+            this._handleMtpModeSelectionDialogClick
+          }
           onToggleDrawer={this._handleToggleDrawer}
-          onFetchDirList={this._handleFetchDirList}
+          onListDirectory={this._handleListDirectory}
           onDoubleClickToolBar={this._handleDoubleClickToolBar}
           onToolbarAction={this._handleToolbarAction}
           {...parentProps}
@@ -266,90 +399,104 @@ class ToolbarAreaPane extends PureComponent {
         <div
           className={classNames({
             [styles.focussedFileExplorer]:
-              focussedFileExplorerDeviceType.value === deviceType
+              focussedFileExplorerDeviceType.value === deviceType,
           })}
         />
       </Fragment>
     );
   }
 }
-const mapDispatchToProps = (dispatch, ownProps) =>
+
+const mapDispatchToProps = (dispatch, _) =>
   bindActionCreators(
     {
-      actionCreateFetchDirList: ({ ...args }, deviceType) => (_, getState) => {
-        dispatch(fetchDirList({ ...args }, deviceType, getState));
+      actionCreateListDirectory: ({ ...args }, deviceType) => (_, getState) => {
+        dispatch(listDirectory({ ...args }, deviceType, getState));
       },
 
-      actionCreateReloadDirList: ({ ...args }, deviceType, mtpStoragesList) => (
+      actionCreateReloadDirList: ({ filePath, ignoreHidden, deviceType }) => (
         _,
         getState
       ) => {
+        checkIf(deviceType, 'string');
+
         dispatch(
-          reloadDirList({ ...args }, deviceType, mtpStoragesList, getState)
+          reloadDirList(
+            {
+              filePath,
+              ignoreHidden,
+              deviceType,
+            },
+            getState
+          )
         );
       },
 
       actionCreateDelFiles: (
         { fileList, deviceType },
-        { ...fetchDirListArgs }
+        { ...listDirectoryArgs }
       ) => async (_, getState) => {
         try {
+          const { mtpMode } = getState().Settings;
+
           switch (deviceType) {
-            case DEVICES_TYPE_CONST.local:
+            case DEVICE_TYPE.local:
               const {
                 error: localError,
                 stderr: localStderr,
-                data: localData
-              } = await delLocalFiles({
-                fileList
+                data: localData,
+              } = await fileExplorerController.deleteFiles({
+                deviceType,
+                fileList,
+                storageId: null,
               });
 
               dispatch(
-                processLocalOutput({
+                churnLocalBuffer({
                   deviceType,
                   error: localError,
                   stderr: localStderr,
                   data: localData,
-                  callback: () => {
+                  onSuccess: () => {
                     dispatch(
-                      fetchDirList(
-                        { ...fetchDirListArgs },
+                      listDirectory(
+                        { ...listDirectoryArgs },
                         deviceType,
                         getState
                       )
                     );
-                  }
+                  },
                 })
               );
               break;
-            case DEVICES_TYPE_CONST.mtp:
-              const mtpStoragesListSelected = getMtpStoragesListSelected(
-                getState().Home
-              );
+            case DEVICE_TYPE.mtp:
+              const storageId = getSelectedStorageIdFromState(getState().Home);
               const {
                 error: mtpError,
                 stderr: mtpStderr,
-                data: mtpData
-              } = await delMtpFiles({
+                data: mtpData,
+              } = await fileExplorerController.deleteFiles({
+                deviceType,
                 fileList,
-                mtpStoragesListSelected
+                storageId,
               });
 
               dispatch(
-                processMtpOutput({
+                churnMtpBuffer({
                   deviceType,
                   error: mtpError,
                   stderr: mtpStderr,
                   data: mtpData,
-                  callback: () => {
+                  mtpMode,
+                  onSuccess: () => {
                     dispatch(
-                      fetchDirList(
-                        { ...fetchDirListArgs },
+                      listDirectory(
+                        { ...listDirectoryArgs },
                         deviceType,
                         getState
                       )
                     );
-                  }
+                  },
                 })
               );
               break;
@@ -363,7 +510,7 @@ const mapDispatchToProps = (dispatch, ownProps) =>
 
       actionCreateSetMtpStorage: (
         { selectedValue, mtpStoragesList },
-        { ...fetchDirArgs },
+        { ...listDirArgs },
         deviceType
       ) => (_, getState) => {
         if (Object.keys(mtpStoragesList).length < 1) {
@@ -371,9 +518,11 @@ const mapDispatchToProps = (dispatch, ownProps) =>
         }
 
         let _mtpStoragesList = {};
-        Object.keys(mtpStoragesList).map(a => {
+
+        Object.keys(mtpStoragesList).map((a) => {
           const item = mtpStoragesList[a];
           let _selectedValue = false;
+
           if (selectedValue === a) {
             _selectedValue = true;
           }
@@ -383,24 +532,33 @@ const mapDispatchToProps = (dispatch, ownProps) =>
             ..._mtpStoragesList,
             [a]: {
               ...item,
-              selected: _selectedValue
-            }
+              selected: _selectedValue,
+            },
           };
+
           return null;
         });
 
-        dispatch(changeMtpStorage({ ..._mtpStoragesList }));
-        dispatch(fetchDirList({ ...fetchDirArgs }, deviceType, getState));
+        dispatch(actionChangeMtpStorage({ ..._mtpStoragesList }));
+        dispatch(listDirectory({ ...listDirArgs }, deviceType, getState));
       },
 
-      actionCreateToggleSettings: data => (_, getState) => {
+      actionCreateSelectMtpMode: ({ value }, deviceType) => (_, getState) => {
+        checkIf(value, 'string');
+        checkIf(deviceType, 'string');
+
+        dispatch(
+          selectMtpMode({ value, reportEvent: false }, deviceType, getState)
+        );
+      },
+      actionCreateToggleSettings: (data) => (_, __) => {
         dispatch(toggleSettings(data));
-      }
+      },
     },
     dispatch
   );
 
-const mapStateToProps = (state, props) => {
+const mapStateToProps = (state, __) => {
   return {
     sidebarFavouriteList: makeSidebarFavouriteList(state),
     mtpDevice: makeMtpDevice(state),
@@ -409,7 +567,10 @@ const mapStateToProps = (state, props) => {
     hideHiddenFiles: makeHideHiddenFiles(state),
     directoryLists: makeDirectoryLists(state),
     mtpStoragesList: makeMtpStoragesList(state),
-    focussedFileExplorerDeviceType: makeFocussedFileExplorerDeviceType(state)
+    focussedFileExplorerDeviceType: makeFocussedFileExplorerDeviceType(state),
+    appThemeMode: makeAppThemeMode(state),
+    mtpMode: makeMtpMode(state),
+    showLocalPaneOnLeftSide: makeShowLocalPaneOnLeftSide(state),
   };
 };
 
