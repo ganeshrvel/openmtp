@@ -2030,7 +2030,8 @@ class FileExplorer extends Component {
             <Typography className={styles.donationBtnsTitle}>
               {`I've invested a significant amount of my time and energy into developing and maintaining this OpenSource application.`}
               <span className={styles.donationBtnsTitleNewLine}>
-                {`I hate running ads.`}&nbsp;Help me keep {APP_NAME}&nbsp;
+                {`I hate to run ads.`}&nbsp;Help me keep {APP_NAME}
+                &nbsp;
                 <span className={styles.donationBtnsBoldText}>Free</span>
                 &nbsp;and&nbsp;
                 <span className={styles.donationBtnsBoldText}>Open</span>,
