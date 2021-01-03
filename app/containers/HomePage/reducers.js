@@ -125,11 +125,6 @@ export const initialState = {
         image: 'toolbar/buymeacoffee.png',
         icon: null,
       },
-      settings: {
-        enabled: true,
-        label: 'Settings',
-        icon: faCog,
-      },
     },
   },
 
