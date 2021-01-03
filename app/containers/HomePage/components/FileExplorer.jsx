@@ -120,7 +120,7 @@ let multipleSelectDirection = null;
 const donationBtnsList = [
   {
     enabled: true,
-    label: 'Donate using Paypal',
+    label: 'Donate using PayPal',
     icon: faPaypal,
     url: DONATE_PAYPAL_URL,
     invert: false,
@@ -128,7 +128,7 @@ const donationBtnsList = [
   {
     enabled: true,
     label:
-      'Buy me a Coffee (using UPI, Paypal, Credit/Debit Cards, Internet Banking)',
+      'Buy me a Coffee (UPI, PayPal, Credit/Debit Cards, Internet Banking)',
     url: BUY_ME_A_COFFEE_URL,
     image: 'toolbar/buymeacoffee.png',
     icon: null,

@@ -7,7 +7,7 @@ import {
   faPlug,
   faArrowLeft,
 } from '@fortawesome/free-solid-svg-icons';
-import { faGithub } from '@fortawesome/free-brands-svg-icons';
+import { faGithub, faPaypal } from '@fortawesome/free-brands-svg-icons';
 import { actionTypes } from './actions';
 import { PATHS } from '../../constants/paths';
 import {
@@ -113,9 +113,15 @@ export const initialState = {
         label: 'MTP Mode',
         icon: faPlug,
       },
+      paypal: {
+        enabled: true,
+        label: 'Donate using PayPal',
+        icon: faPaypal,
+      },
       buyMeACoffee: {
         enabled: true,
-        label: 'Buy Me A Coffee',
+        label:
+          'Buy me a Coffee (UPI, PayPal, Credit/Debit Cards, Internet Banking)',
         image: 'toolbar/buymeacoffee.png',
         icon: null,
       },

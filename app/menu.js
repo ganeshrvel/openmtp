@@ -8,7 +8,7 @@ import {
 import { DEBUG_PROD, IS_DEV } from './constants/env';
 import { APP_NAME, APP_GITHUB_URL } from './constants/meta';
 import { openExternalUrl } from './utils/url';
-import { DONATE_PAYPAL_URL } from './constants';
+import { BUY_ME_A_COFFEE_URL } from './constants';
 import { inviteViaEmail } from './templates/menu';
 
 export default class MenuBuilder {
@@ -213,7 +213,7 @@ export default class MenuBuilder {
         {
           label: 'Buy Me A Coffee!',
           click: () => {
-            openExternalUrl(DONATE_PAYPAL_URL);
+            openExternalUrl(BUY_ME_A_COFFEE_URL);
           },
         },
         {
@@ -333,7 +333,7 @@ export default class MenuBuilder {
           {
             label: 'Buy Me A Coffee!',
             click: () => {
-              openExternalUrl(DONATE_PAYPAL_URL);
+              openExternalUrl(BUY_ME_A_COFFEE_URL);
             },
           },
           {

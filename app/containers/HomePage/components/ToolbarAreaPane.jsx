@@ -33,7 +33,11 @@ import {
   makeMtpMode,
   makeShowLocalPaneOnLeftSide,
 } from '../../Settings/selectors';
-import { BUY_ME_A_COFFEE_URL, DEVICES_DEFAULT_PATH } from '../../../constants';
+import {
+  BUY_ME_A_COFFEE_URL,
+  DEVICES_DEFAULT_PATH,
+  DONATE_PAYPAL_URL,
+} from '../../../constants';
 import { selectMtpMode, toggleSettings } from '../../Settings/actions';
 import { toggleWindowSizeOnDoubleClick } from '../../../helpers/titlebarDoubleClick';
 import ToolbarBody from './ToolbarBody';
@@ -220,6 +224,10 @@ class ToolbarAreaPane extends PureComponent {
     openExternalUrl(BUY_ME_A_COFFEE_URL);
   };
 
+  _handleOpenDonateUsingPaypal = () => {
+    openExternalUrl(DONATE_PAYPAL_URL);
+  };
+
   _handleToolbarAction = (itemType, isAccelerator = false) => {
     checkIf(isAccelerator, 'boolean');
 
@@ -287,8 +295,14 @@ class ToolbarAreaPane extends PureComponent {
 
       case 'buyMeACoffee':
         this._handleOpenBuyMeACoffee();
-
         analyticsService.sendEvent(EVENT_TYPE.BUY_ME_A_COFFEE, {});
+
+        break;
+
+      case 'paypal':
+        this._handleOpenDonateUsingPaypal();
+        analyticsService.sendEvent(EVENT_TYPE.DONATE_USING_PAYPAL, {});
+
         break;
 
       case 'mtpMode':
