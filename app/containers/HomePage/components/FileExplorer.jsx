@@ -90,7 +90,7 @@ import { throwAlert } from '../../Alerts/actions';
 import { imgsrc } from '../../../utils/imgsrc';
 import FileExplorerBodyRender from './FileExplorerBodyRender';
 import { openExternalUrl } from '../../../utils/url';
-import { APP_GITHUB_URL } from '../../../constants/meta';
+import { APP_GITHUB_URL, APP_NAME } from '../../../constants/meta';
 import {
   fbShareUrl,
   redditShareUrl,
@@ -116,6 +116,25 @@ const { Menu, getCurrentWindow } = remote;
 
 let allowFileDropFlag = false;
 let multipleSelectDirection = null;
+
+const donationBtnsList = [
+  {
+    enabled: true,
+    label: 'Donate using Paypal',
+    icon: faPaypal,
+    url: DONATE_PAYPAL_URL,
+    invert: false,
+  },
+  {
+    enabled: true,
+    label:
+      'Buy me a Coffee (using UPI, Paypal, Credit/Debit Cards, Internet Banking)',
+    url: BUY_ME_A_COFFEE_URL,
+    image: 'toolbar/buymeacoffee.png',
+    icon: null,
+    invert: false,
+  },
+];
 
 const socialMediaShareBtnsList = [
   {
@@ -144,21 +163,6 @@ const socialMediaShareBtnsList = [
     label: 'Share it on Reddit',
     icon: faReddit,
     url: redditShareUrl,
-    invert: false,
-  },
-  {
-    enabled: true,
-    label: 'Paypal',
-    icon: faPaypal,
-    url: DONATE_PAYPAL_URL,
-    invert: false,
-  },
-  {
-    enabled: true,
-    label: 'Buy me a Coffee',
-    url: BUY_ME_A_COFFEE_URL,
-    image: 'toolbar/buymeacoffee.png',
-    icon: null,
     invert: false,
   },
 ];
@@ -2020,6 +2024,50 @@ class FileExplorer extends Component {
           helpText="If the progress bar freezes while transferring the files, restart the app and reconnect the device. This is a known Android MTP bug."
         >
           <div className={styles.socialMediaShareContainer}>
+            <Typography className={styles.donationBtnsTitle}>
+              {`I've invested a significant amount of my time and energy into developing and maintaining this OpenSource application.`}
+              <span className={styles.donationBtnsTitleNewLine}>
+                {`I hate running ads.`}&nbsp;Help me keep {APP_NAME}&nbsp;
+                <span className={styles.donationBtnsBoldText}>Free</span>
+                &nbsp;and&nbsp;
+                <span className={styles.donationBtnsBoldText}>Open</span>,
+                forever!
+              </span>
+            </Typography>
+            <div className={styles.socialMediaShareBtnsContainer}>
+              {donationBtnsList.map((a, index) => (
+                // eslint-disable-next-line react/no-array-index-key
+                <Tooltip key={index} title={a.label}>
+                  <div>
+                    <IconButton
+                      aria-label={a.label}
+                      disabled={!a.enabled}
+                      onClick={() => openExternalUrl(a.url)}
+                      className={classnames(styles.socialMediaBtnWrapper, {
+                        [styles.socialMediaBtnWrapperForImage]: !!a.image,
+                      })}
+                    >
+                      {a.image && (
+                        <img
+                          alt={a.label}
+                          src={imgsrc(a.image, false)}
+                          className={styles.socialMediaShareBtnImages}
+                        />
+                      )}
+
+                      {a.icon && (
+                        <FontAwesomeIcon
+                          icon={a.icon}
+                          className={styles.socialMediaShareBtn}
+                          title={a.label}
+                        />
+                      )}
+                    </IconButton>
+                  </div>
+                </Tooltip>
+              ))}
+            </div>
+
             <Typography className={styles.socialMediaShareTitle}>
               Liked using the App?
             </Typography>

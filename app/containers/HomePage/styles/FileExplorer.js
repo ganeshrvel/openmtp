@@ -2,7 +2,19 @@ export const styles = (theme) => ({
   socialMediaShareContainer: {
     paddingTop: 5,
   },
+  donationBtnsTitle: {
+    marginBottom: 10,
+    fontSize: 12,
+    fontWeight: 500,
+  },
+  donationBtnsTitleNewLine: {
+    display: 'block',
+  },
+  donationBtnsBoldText: {
+    fontWeight: 'bold',
+  },
   socialMediaShareTitle: {
+    marginTop: 10,
     fontSize: 11,
     fontWeight: 500,
   },
@@ -28,8 +40,8 @@ export const styles = (theme) => ({
     color: theme.palette.contrastPrimaryMainColor,
   },
   socialMediaShareBtnImages: {
-    height: 27,
-    width: 27,
+    height: 23,
+    width: 23,
   },
   imageBtn: {
     padding: `7px !important`,
