@@ -29,6 +29,11 @@ Countless searches to find an app to solve these problems and failing to find on
 - No collection of personally identifiable information.
 
 
+### Kalam Kernel
+OpenMTP 3.0 features a new MTP kernel and it was written from the scratch. It promises a file copy speed of 30 to 40 MB/s on low and mid range devices and 100 to 120 MB/s on higher end devices. The all new and powerful MTP kernel is named after [Dr. A. P. J. Abdul Kalam](https://en.wikipedia.org/wiki/A._P._J._Abdul_Kalam "Dr. A. P. J. Abdul Kalam")
+
+Do checkout the Go package which I've written to build Kalam Kernel: [github.com/ganeshrvel/go-mtpx](https://github.com/ganeshrvel/go-mtpx "https://github.com/ganeshrvel/go-mtpx"). Feel free to raise PRs.
+
 ### Installation
 * Download the [Latest Version](https://openmtp.ganeshrvel.com/?downloadApp=github&release=stable&platform=mac 'Latest Version')
 
