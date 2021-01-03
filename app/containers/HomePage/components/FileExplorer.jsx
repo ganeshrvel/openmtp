@@ -385,10 +385,12 @@ class FileExplorer extends Component {
       deviceType,
       hideHiddenFiles,
       enableUsbHotplug,
+      mtpMode,
     } = this.props;
 
     checkIf(device, 'string');
     checkIf(eventName, 'inObjectValues', USB_HOTPLUG_EVENTS);
+    checkIf(mtpMode, 'inObjectValues', MTP_MODE);
 
     checkIf(actionCreateReloadDirList, 'function');
     checkIf(currentBrowsePath, 'object');
@@ -409,6 +411,11 @@ class FileExplorer extends Component {
         vendorId: _usbDeviceInfo.vendorId,
         eventName,
       });
+
+      // if the mtp mode is not kalam then dont proceed.
+      if (mtpMode !== MTP_MODE.kalam) {
+        return;
+      }
 
       if (!enableUsbHotplug) {
         return;
