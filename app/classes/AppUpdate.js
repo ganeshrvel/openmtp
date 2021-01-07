@@ -188,7 +188,11 @@ export default class AppUpdate {
 
           this.closeActiveUpdates(-1);
           this.initDownloadUpdatesProgress();
-          this.autoUpdater.downloadUpdate();
+
+          // this is to prevent race condition
+          if (!this.autoUpdater.autoDownload) {
+            this.autoUpdater.downloadUpdate();
+          }
         });
       });
 
