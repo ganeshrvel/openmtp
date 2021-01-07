@@ -50,9 +50,7 @@ import fileExplorerController from '../../../data/file-explorer/controllers/File
 import { checkIf } from '../../../utils/checkIf';
 import { analyticsService } from '../../../services/analytics';
 import { EVENT_TYPE } from '../../../enums/events';
-import {
-  faqsWindow,
-} from '../../../helpers/createWindows';
+import { faqsWindow } from '../../../helpers/createWindows';
 
 class ToolbarAreaPane extends PureComponent {
   constructor(props) {
