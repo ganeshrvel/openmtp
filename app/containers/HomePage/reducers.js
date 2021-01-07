@@ -201,9 +201,9 @@ export const initialState = {
         label: 'New Folder',
         data: {},
       },
-      openInFinder: {
+      showInEnclosingFolder: {
         enabled: true,
-        label: 'Open in Finder',
+        label: 'Show in Enclosing Folder',
         data: {},
       },
     },

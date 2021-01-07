@@ -40,7 +40,7 @@ class WhatsNew extends PureComponent {
             </ListItemIcon>
             <ListItemText
               primary="Fixed a bug which prevented the users from accessing the restricted user directories"
-              secondary={`Now users can access their Desktop, Downloads, Photos and Documents directories without any issue`}
+              secondary={`Now users can access their Desktop, Downloads, Photos, Documents and Removable Disks directories without any issue`}
             />
           </ListItem>
 
@@ -49,7 +49,7 @@ class WhatsNew extends PureComponent {
               <OpenInNewIcon />
             </ListItemIcon>
             <ListItemText
-              primary={`New - "Open in Finder" Context menu option in the Local Disk pane`}
+              primary={`New - "Show in Enclosing Folder" Context menu option in the Local Disk pane`}
             />
           </ListItem>
 

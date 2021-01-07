@@ -5,7 +5,10 @@ import { loadProfileErrorHtml } from '../templates/loadProfileError';
 import { APP_TITLE } from '../constants/meta';
 import { undefinedOrNull } from '../utils/funcs';
 import { PRIVACY_POLICY_PAGE_TITLE } from '../templates/privacyPolicyPage';
-import { HELP_FAQS_PAGE_TITLE } from '../templates/helpFaqsPage';
+import {
+  FAQS_PAGE_TITLE,
+  HELP_PHONE_IS_NOT_CONNECTING,
+} from '../templates/helpFaqsPage';
 import { APP_FEATURES_PAGE_TITLE } from '../templates/appFeaturesPage';
 import { KEYBOARD_SHORTCUTS_PAGE_TITLE } from '../templates/keyboardShortcutsPage';
 import { getWindowBackgroundColor } from './windowHelper';
@@ -14,7 +17,8 @@ import { REPORT_BUGS_PAGE_TITLE } from '../templates/generateErrorReport';
 let _nonBootableDeviceWindow = null;
 let _reportBugsWindow = null;
 let _privacyPolicyWindow = null;
-let _helpFaqsWindow = null;
+let _faqsWindow = null;
+let _helpPhoneIsNotConnectingWindow = null;
 let _appUpdateAvailableWindow = null;
 let _appFeaturesWindow = null;
 let _keyboardShortcutsWindow = null;
@@ -489,7 +493,7 @@ export const keyboardShortcutsWindow = (
 };
 
 /**
- * Help FAQs Policy Window
+ * FAQs Window
  */
 
 const helpFaqsCreateWindow = (isRenderedPage = false) => {
@@ -513,7 +517,7 @@ const helpFaqsCreateWindow = (isRenderedPage = false) => {
   // incoming call from a rendered page
   if (isRenderedPage) {
     const allWindows = remote.BrowserWindow.getAllWindows();
-    const existingWindow = loadExistingWindow(allWindows, HELP_FAQS_PAGE_TITLE);
+    const existingWindow = loadExistingWindow(allWindows, FAQS_PAGE_TITLE);
 
     return {
       windowObj: existingWindow ?? new remote.BrowserWindow(config),
@@ -523,7 +527,7 @@ const helpFaqsCreateWindow = (isRenderedPage = false) => {
 
   // incoming call from the main process
   const allWindows = BrowserWindow.getAllWindows();
-  const existingWindow = loadExistingWindow(allWindows, HELP_FAQS_PAGE_TITLE);
+  const existingWindow = loadExistingWindow(allWindows, FAQS_PAGE_TITLE);
 
   return {
     windowObj: existingWindow ?? new BrowserWindow(config),
@@ -531,18 +535,18 @@ const helpFaqsCreateWindow = (isRenderedPage = false) => {
   };
 };
 
-export const helpFaqsWindow = (isRenderedPage = false, focus = true) => {
+export const faqsWindow = (isRenderedPage = false, focus = true) => {
   try {
-    if (_helpFaqsWindow) {
+    if (_faqsWindow) {
       if (focus) {
-        _helpFaqsWindow.focus();
-        _helpFaqsWindow.show();
+        _faqsWindow.focus();
+        _faqsWindow.show();
       }
 
-      return _helpFaqsWindow;
+      return _faqsWindow;
     }
 
-    // show the existing _helpFaqsWindow
+    // show the existing _faqsWindow
     const { windowObj, isExisting } = helpFaqsCreateWindow(isRenderedPage);
 
     // return the existing windowObj object
@@ -550,26 +554,127 @@ export const helpFaqsWindow = (isRenderedPage = false, focus = true) => {
       return windowObj;
     }
 
-    _helpFaqsWindow = windowObj;
-    _helpFaqsWindow.loadURL(`${PATHS.loadUrlPath}#helpFaqsPage`);
-    _helpFaqsWindow.webContents.on('did-finish-load', () => {
+    _faqsWindow = windowObj;
+    _faqsWindow.loadURL(`${PATHS.loadUrlPath}#faqsPage`);
+    _faqsWindow.webContents.on('did-finish-load', () => {
       if (focus) {
-        _helpFaqsWindow.show();
-        _helpFaqsWindow.focus();
+        _faqsWindow.show();
+        _faqsWindow.focus();
       }
     });
 
-    _helpFaqsWindow.onerror = (error) => {
-      log.error(error, `createWindows -> helpFaqsWindow -> onerror`);
+    _faqsWindow.onerror = (error) => {
+      log.error(error, `createWindows -> faqsWindow -> onerror`);
     };
 
-    _helpFaqsWindow.on('closed', () => {
-      _helpFaqsWindow = null;
+    _faqsWindow.on('closed', () => {
+      _faqsWindow = null;
     });
 
-    return _helpFaqsWindow;
+    return _faqsWindow;
   } catch (e) {
-    log.error(e, `createWindows -> helpFaqsWindow`);
+    log.error(e, `createWindows -> faqsWindow`);
+  }
+};
+
+/**
+ * Help - my Phone is not connecting windoe
+ */
+
+const helpPhoneNotConnectingCreateWindow = (isRenderedPage = false) => {
+  const config = {
+    width: 920,
+    height: 800,
+    minWidth: 600,
+    minHeight: 400,
+    show: false,
+    resizable: true,
+    title: `${APP_TITLE}`,
+    minimizable: true,
+    fullscreenable: true,
+    webPreferences: {
+      nodeIntegration: true,
+      enableRemoteModule: true,
+    },
+    backgroundColor: getWindowBackgroundColor(),
+  };
+
+  // incoming call from a rendered page
+  if (isRenderedPage) {
+    const allWindows = remote.BrowserWindow.getAllWindows();
+    const existingWindow = loadExistingWindow(
+      allWindows,
+      HELP_PHONE_IS_NOT_CONNECTING
+    );
+
+    return {
+      windowObj: existingWindow ?? new remote.BrowserWindow(config),
+      isExisting: !!existingWindow,
+    };
+  }
+
+  // incoming call from the main process
+  const allWindows = BrowserWindow.getAllWindows();
+  const existingWindow = loadExistingWindow(
+    allWindows,
+    HELP_PHONE_IS_NOT_CONNECTING
+  );
+
+  return {
+    windowObj: existingWindow ?? new BrowserWindow(config),
+    isExisting: !!existingWindow,
+  };
+};
+
+export const helpPhoneNotConnectingWindow = (
+  isRenderedPage = false,
+  focus = true
+) => {
+  try {
+    if (_helpPhoneIsNotConnectingWindow) {
+      if (focus) {
+        _helpPhoneIsNotConnectingWindow.focus();
+        _helpPhoneIsNotConnectingWindow.show();
+      }
+
+      return _helpPhoneIsNotConnectingWindow;
+    }
+
+    // show the existing _helpPhoneIsNotConnectingWindow
+    const { windowObj, isExisting } = helpPhoneNotConnectingCreateWindow(
+      isRenderedPage
+    );
+
+    // return the existing windowObj object
+    if (isExisting) {
+      return windowObj;
+    }
+
+    _helpPhoneIsNotConnectingWindow = windowObj;
+    _helpPhoneIsNotConnectingWindow.loadURL(
+      `${PATHS.loadUrlPath}#helpPhoneNotConnectingPage`
+    );
+    _helpPhoneIsNotConnectingWindow.webContents.on('did-finish-load', () => {
+      if (focus) {
+        _helpPhoneIsNotConnectingWindow.show();
+        _helpPhoneIsNotConnectingWindow.focus();
+      }
+    });
+
+    _helpPhoneIsNotConnectingWindow.onerror = (error) => {
+      log.error(
+        error,
+        `createWindows -> helpPhoneNotConnectingWindow -> onerror`
+      );
+    };
+
+    _helpPhoneIsNotConnectingWindow.on('closed', () => {
+      _helpPhoneIsNotConnectingWindow = null;
+    });
+
+    return _helpPhoneIsNotConnectingWindow;
+  } catch (e) {
+    log.error(e, `createWindows -> helpPhoneIsNotConnectingWindow`);
   }
 };
 

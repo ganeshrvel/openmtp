@@ -29,7 +29,7 @@ import Features from '../../Onboarding/components/Features';
 import { helpPhoneNotConnecting } from '../../../templates/fileExplorer';
 import { analyticsService } from '../../../services/analytics';
 import { EVENT_TYPE } from '../../../enums/events';
-import { helpFaqsWindow } from '../../../helpers/createWindows';
+import { helpPhoneNotConnectingWindow } from '../../../helpers/createWindows';
 
 class FileExplorerTableBodyEmptyRender extends PureComponent {
   constructor(props) {
@@ -56,16 +56,12 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
   };
 
   _handleHelpPhoneNotRecognizedBtn = () => {
-    helpFaqsWindow(true);
+    helpPhoneNotConnectingWindow(true);
 
     analyticsService.sendEvent(
       EVENT_TYPE.MTP_HELP_PHONE_NOT_CONNECTED_DIALOG_OPEN,
       {}
     );
-  };
-
-  _handleHelpPhoneNotRecognizedDialog = () => {
-    this._handleHelpPhoneNotRecognizedBtn();
   };
 
   render() {

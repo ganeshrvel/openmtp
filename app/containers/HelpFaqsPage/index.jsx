@@ -7,27 +7,36 @@ import { Helmet } from 'react-helmet';
 import { APP_TITLE } from '../../constants/meta';
 import { resetOverFlowY } from '../../utils/styleResets';
 import { styles } from './styles';
-import { HELP_FAQS_PAGE_TITLE } from '../../templates/helpFaqsPage';
+import {
+  FAQS_PAGE_TITLE,
+  HELP_PHONE_IS_NOT_CONNECTING,
+} from '../../templates/helpFaqsPage';
 import HelpPhoneNotRecognized from './components/HelpPhoneNotRecognized';
 
-class HelpFaqsPage extends Component {
+class FaqsPage extends Component {
   componentWillMount() {
     resetOverFlowY();
   }
 
   render() {
-    const { classes: styles } = this.props;
+    const { classes: styles, showPhoneNotRecognizedNote } = this.props;
+
+    const title = showPhoneNotRecognizedNote
+      ? HELP_PHONE_IS_NOT_CONNECTING
+      : FAQS_PAGE_TITLE;
 
     return (
       <div className={styles.root}>
         <Helmet titleTemplate={`%s - ${APP_TITLE}`}>
-          <title>{HELP_FAQS_PAGE_TITLE}</title>
+          <title>{title}</title>
         </Helmet>
         <Typography variant="h5" className={styles.heading}>
-          {HELP_FAQS_PAGE_TITLE}
+          {title}
         </Typography>
         <div className={styles.body}>
-          <HelpPhoneNotRecognized />
+          <HelpPhoneNotRecognized
+            showPhoneNotRecognizedNote={showPhoneNotRecognizedNote}
+          />
         </div>
       </div>
     );
@@ -43,4 +52,4 @@ const mapStateToProps = (_, __) => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withStyles(styles)(HelpFaqsPage));
+)(withStyles(styles)(FaqsPage));

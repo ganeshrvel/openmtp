@@ -1130,7 +1130,7 @@ class FileExplorer extends Component {
           });
 
           break;
-        case 'openInFinder':
+        case 'showInEnclosingFolder':
           contextMenuActiveList.push({
             label: item.label,
             enabled: Object.keys(rowData).length > 0,
@@ -1224,8 +1224,8 @@ class FileExplorer extends Component {
           );
           break;
 
-        case 'openInFinder':
-          this._handleOpenInFinder({ ...item });
+        case 'showInEnclosingFolder':
+          this._handleShowInEnclosingFolder({ ...item });
 
           break;
 
@@ -1401,7 +1401,7 @@ class FileExplorer extends Component {
     });
   };
 
-  _handleOpenInFinder = async ({ data, enabled, label }) => {
+  _handleShowInEnclosingFolder = async ({ data, enabled, label }) => {
     checkIf(data, 'object');
     checkIf(enabled, 'boolean');
     checkIf(label, 'string');
@@ -1419,7 +1419,7 @@ class FileExplorer extends Component {
 
       shell.showItemInFolder(filePath);
     } catch (e) {
-      log.error(e, 'FileExplorer._handleOpenInFinder');
+      log.error(e, 'FileExplorer._handleShowInEnclosingFolder');
     }
   };
 
