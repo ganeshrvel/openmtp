@@ -17,6 +17,7 @@ import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import PowerIcon from '@material-ui/icons/Power';
 import { styles } from '../styles/HelpPhoneNotRecognized';
 import { openExternalUrl } from '../../../utils/url';
 import {
@@ -540,6 +541,31 @@ class HelpPhoneNotRecognized extends PureComponent {
                 </ListItem>
 
                 <RenderBasicConnection showUnplugPhone={false} />
+              </List>
+            </AccordionDetails>
+          </Accordion>
+
+          {/* <----- my phone is still not detected -----> */}
+          <Accordion className={styles.expansionRoot}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography className={styles.heading}>
+                {`My phone is still not connecting`}
+              </Typography>
+            </AccordionSummary>
+
+            <AccordionDetails>
+              <List component="div" disablePadding>
+                <ListItem>
+                  <ListItemIcon>
+                    <PowerIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary="Try changing the MTP mode"
+                    secondary={`Settings > Tab > Change the "MTP Mode"`}
+                  />
+                </ListItem>
+
+                <RenderBasicConnection />
               </List>
             </AccordionDetails>
           </Accordion>
