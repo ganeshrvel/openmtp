@@ -52,7 +52,6 @@ import { analyticsService } from '../../../services/analytics';
 import { EVENT_TYPE } from '../../../enums/events';
 import {
   faqsWindow,
-  helpPhoneNotConnectingWindow,
 } from '../../../helpers/createWindows';
 
 class ToolbarAreaPane extends PureComponent {

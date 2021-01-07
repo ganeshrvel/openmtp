@@ -582,25 +582,25 @@ export const _processLegacyMtpBuffer = async ({ error, stderr }) => {
   };
 };
 
+// Error output shown to the user as a snackbar.
+export const localErrorDictionary = {
+  noPerm: `Operation not permitted`,
+  commandFailed: `Could not complete! Try again.`,
+  common: `Oops.. Your device has gone crazy! Try again.`,
+  unResponsive: `Device is not responding! Reload`,
+  invalidPath: `Invalid path`,
+  fileNotFound: `File not found! Try again.`,
+};
+
 export const processLocalBuffer = ({ error, stderr }) => {
   // Partial error string used for matching the error
-  // this will be later used to pick the appropriate error out from the [errorDictionary]
+  // this will be later used to pick the appropriate error out from the [localErrorDictionary]
   const errorTpl = {
     noPerm1: `Operation not permitted`,
     noPerm2: `Permission denied`,
     commandFailed: `Command failed`,
     noSuchFiles: `No such file or directory`,
     resourceBusy: `resource busy or locked`,
-  };
-
-  // Error output shown to the user as a snackbar.
-  const errorDictionary = {
-    noPerm: `Operation not permitted.`,
-    commandFailed: `Could not complete! Try again.`,
-    common: `Oops.. Your device has gone crazy! Try again.`,
-    unResponsive: `Device is not responding! Reload`,
-    invalidPath: `Invalid path`,
-    fileNotFound: `File not found! Try again.`,
   };
 
   const errorStringified =
@@ -638,7 +638,7 @@ export const processLocalBuffer = ({ error, stderr }) => {
     checkError('noPerm2')
   ) {
     return {
-      error: errorDictionary.noPerm,
+      error: localErrorDictionary.noPerm,
       throwAlert: true,
       logError: true,
     };
@@ -649,7 +649,7 @@ export const processLocalBuffer = ({ error, stderr }) => {
     checkError('commandFailed')
   ) {
     return {
-      error: errorDictionary.commandFailed,
+      error: localErrorDictionary.commandFailed,
       throwAlert: true,
       logError: true,
     };
@@ -660,7 +660,7 @@ export const processLocalBuffer = ({ error, stderr }) => {
     checkError('noSuchFiles')
   ) {
     return {
-      error: errorDictionary.fileNotFound,
+      error: localErrorDictionary.fileNotFound,
       throwAlert: true,
       logError: true,
       mtpStatus: true,
@@ -672,7 +672,7 @@ export const processLocalBuffer = ({ error, stderr }) => {
     checkError('resourceBusy')
   ) {
     return {
-      error: errorDictionary.commandFailed,
+      error: localErrorDictionary.commandFailed,
       throwAlert: true,
       logError: true,
     };
@@ -680,7 +680,7 @@ export const processLocalBuffer = ({ error, stderr }) => {
 
   /* common errors */
   return {
-    error: errorDictionary.common,
+    error: localErrorDictionary.common,
     throwAlert: true,
     logError: true,
   };

@@ -39,8 +39,8 @@ class WhatsNew extends PureComponent {
               <BugReportIcon htmlColor="#fa4d0a" />
             </ListItemIcon>
             <ListItemText
-              primary="Fixed a bug which prevented the users from accessing the restricted user directories"
-              secondary={`Now users can access their Desktop, Downloads, Photos, Documents and Removable Disks directories without any issue`}
+              primary="Fixed a bug which prevented users from accessing the user directories"
+              secondary={`Now access your Documents, Desktop, Downloads, and Bin folders, iCloud Drive, the folders of third-party cloud storage providers, removable media, and external drives without any trouble`}
             />
           </ListItem>
 
