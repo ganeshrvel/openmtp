@@ -54,6 +54,70 @@ async function bootTheDevice() {
   }
 }
 
+async function installExtensions() {
+  try {
+    const installer = require('electron-devtools-installer');
+    const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
+    const extensions = ['REACT_DEVELOPER_TOOLS', 'REDUX_DEVTOOLS'];
+
+    return Promise.all(
+      extensions.map((name) =>
+        installer.default(installer[name], forceDownload)
+      )
+    ).catch(console.error);
+  } catch (e) {
+    log.error(e, `main.dev -> installExtensions`);
+  }
+}
+
+async function createWindow() {
+  try {
+    if (IS_DEV || DEBUG_PROD) {
+      await installExtensions();
+    }
+
+    mainWindow = new BrowserWindow({
+      title: `${APP_TITLE}`,
+      center: true,
+      show: false,
+      minWidth: 880,
+      minHeight: 640,
+      titleBarStyle: 'hidden',
+      webPreferences: {
+        nodeIntegration: true,
+        enableRemoteModule: true,
+      },
+      backgroundColor: getWindowBackgroundColor(),
+    });
+
+    mainWindow?.loadURL(`${PATHS.loadUrlPath}`);
+
+    mainWindow?.webContents?.on('did-finish-load', () => {
+      if (!mainWindow) {
+        throw new Error(`"mainWindow" is not defined`);
+      }
+
+      if (process.env.START_MINIMIZED) {
+        mainWindow.minimize();
+      } else {
+        mainWindow.maximize();
+        mainWindow.show();
+        mainWindow.focus();
+      }
+    });
+
+    mainWindow.onerror = (error) => {
+      log.error(error, `main.dev -> mainWindow -> onerror`);
+    };
+
+    mainWindow.on('closed', () => {
+      mainWindow = null;
+    });
+  } catch (e) {
+    log.error(e, `main.dev -> createWindow`);
+  }
+}
+
 /**
  * Checks whether device is ready to boot or not.
  * Here profile files are created if not found.
@@ -95,22 +159,6 @@ if (!isDeviceBootable) {
     });
   }
 
-  const installExtensions = async () => {
-    try {
-      const installer = require('electron-devtools-installer');
-      const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
-      const extensions = ['REACT_DEVELOPER_TOOLS', 'REDUX_DEVTOOLS'];
-
-      return Promise.all(
-        extensions.map((name) =>
-          installer.default(installer[name], forceDownload)
-        )
-      ).catch(console.error);
-    } catch (e) {
-      log.error(e, `main.dev -> installExtensions`);
-    }
-  };
-
   if (!isSingleInstance) {
     app.quit();
   } else {
@@ -130,54 +178,6 @@ if (!isDeviceBootable) {
       log.error(e, `main.dev -> second-instance`);
     }
   }
-
-  const createWindow = async () => {
-    try {
-      if (IS_DEV || DEBUG_PROD) {
-        await installExtensions();
-      }
-
-      mainWindow = new BrowserWindow({
-        title: `${APP_TITLE}`,
-        center: true,
-        show: false,
-        minWidth: 880,
-        minHeight: 640,
-        titleBarStyle: 'hidden',
-        webPreferences: {
-          nodeIntegration: true,
-          enableRemoteModule: true,
-        },
-        backgroundColor: getWindowBackgroundColor(),
-      });
-
-      mainWindow?.loadURL(`${PATHS.loadUrlPath}`);
-
-      mainWindow?.webContents?.on('did-finish-load', () => {
-        if (!mainWindow) {
-          throw new Error(`"mainWindow" is not defined`);
-        }
-
-        if (process.env.START_MINIMIZED) {
-          mainWindow.minimize();
-        } else {
-          mainWindow.maximize();
-          mainWindow.show();
-          mainWindow.focus();
-        }
-      });
-
-      mainWindow.onerror = (error) => {
-        log.error(error, `main.dev -> mainWindow -> onerror`);
-      };
-
-      mainWindow.on('closed', () => {
-        mainWindow = null;
-      });
-    } catch (e) {
-      log.error(e, `main.dev -> createWindow`);
-    }
-  };
 
   app.on('window-all-closed', () => {
     try {
