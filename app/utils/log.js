@@ -11,6 +11,7 @@ import { getDeviceInfo } from '../helpers/deviceInfo';
 import { isEmpty } from './funcs';
 import { getMtpModeSetting } from '../helpers/settings';
 import { redactHomeDirectory } from '../helpers/logs';
+import { isConsoleError } from './errors';
 
 const { logFile } = PATHS;
 
@@ -153,8 +154,4 @@ export const log = {
       await sentryService.report({ error: errorToReport, title, mtpMode });
     }
   },
-};
-
-const isConsoleError = (e) => {
-  return e && e.stack;
 };

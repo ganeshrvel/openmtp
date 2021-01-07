@@ -6,6 +6,7 @@ import {
   faCog,
   faPlug,
   faArrowLeft,
+  faQuestionCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { faGithub, faPaypal } from '@fortawesome/free-brands-svg-icons';
 import { actionTypes } from './actions';
@@ -89,6 +90,11 @@ export const initialState = {
         enabled: true,
         label: 'Settings',
         icon: faCog,
+      },
+      faqs: {
+        enabled: true,
+        label: 'Help - FAQs',
+        icon: faQuestionCircle,
       },
     },
     [DEVICE_TYPE.mtp]: {
@@ -199,6 +205,11 @@ export const initialState = {
       newFolder: {
         enabled: true,
         label: 'New Folder',
+        data: {},
+      },
+      showInEnclosingFolder: {
+        enabled: true,
+        label: 'Show in Enclosing Folder',
         data: {},
       },
     },

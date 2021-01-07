@@ -50,6 +50,9 @@ import fileExplorerController from '../../../data/file-explorer/controllers/File
 import { checkIf } from '../../../utils/checkIf';
 import { analyticsService } from '../../../services/analytics';
 import { EVENT_TYPE } from '../../../enums/events';
+import {
+  faqsWindow,
+} from '../../../helpers/createWindows';
 
 class ToolbarAreaPane extends PureComponent {
   constructor(props) {
@@ -310,6 +313,11 @@ class ToolbarAreaPane extends PureComponent {
 
         break;
 
+      case 'faqs':
+        this._handleFaqsBtn();
+
+        break;
+
       default:
         break;
     }
@@ -348,6 +356,12 @@ class ToolbarAreaPane extends PureComponent {
         ignoreHidden: hideHiddenFiles[deviceType],
       }
     );
+  };
+
+  _handleFaqsBtn = () => {
+    faqsWindow(true);
+
+    analyticsService.sendEvent(EVENT_TYPE.LOCAL_TOOLBAR_FAQS, {});
   };
 
   render() {

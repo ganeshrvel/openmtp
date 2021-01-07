@@ -632,23 +632,33 @@ export function listDirectory(
     switch (deviceType) {
       case DEVICE_TYPE.local:
         return async (dispatch) => {
-          const { error, data } = await fileExplorerController.listFiles({
+          const {
+            error: localError,
+            stderr: localStderr,
+            data: localData,
+          } = await fileExplorerController.listFiles({
             deviceType,
             filePath,
             ignoreHidden,
             storageId: null,
           });
 
-          if (error) {
-            log.error(error, 'listDirectory -> listFiles');
+          if (localError) {
+            log.error(localError, 'listDirectory -> listFiles');
+
             dispatch(
-              throwAlert({ message: `Unable fetch data from the Local disk.` })
+              churnLocalBuffer({
+                deviceType,
+                error: localError,
+                stderr: localStderr,
+                data: localData,
+              })
             );
 
             return;
           }
 
-          dispatch(actionListDirectory(data, deviceType), getState);
+          dispatch(actionListDirectory(localData, deviceType), getState);
           dispatch(setCurrentBrowsePath(filePath, deviceType));
           dispatch(actionSetSelectedDirLists({ selected: [] }, deviceType));
         };

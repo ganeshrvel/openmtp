@@ -9,7 +9,7 @@ import PrivacyPolicyPage from '../containers/PrivacyPolicyPage/Loadable';
 import AppFeaturesPage from '../containers/AppFeaturesPage/Loadable';
 import KeyboardShortcutsPage from '../containers/KeyboardShortcutsPage/Loadable';
 import NotFoundPage from '../containers/NotFoundPage/Loadable';
-import HelpFaqsPage from '../containers/HelpFaqsPage/Loadable';
+import FaqsPage from '../containers/HelpFaqsPage/Loadable';
 
 export const routes = {
   Home: {
@@ -37,10 +37,18 @@ export const routes = {
     exact: true,
     component: PrivacyPolicyPage,
   },
-  HelpFaqsPage: {
-    path: '/helpFaqsPage',
+  FaqsPage: {
+    path: '/faqsPage',
     exact: true,
-    component: HelpFaqsPage,
+    component: FaqsPage,
+  },
+  HelpPhoneNotConnectingPage: {
+    path: '/helpPhoneNotConnectingPage',
+    exact: true,
+    component: FaqsPage,
+    props: {
+      showPhoneNotRecognizedNote: true,
+    },
   },
   AppFeaturesPage: {
     path: '/appFeaturesPage',
@@ -63,14 +71,14 @@ export default () => (
     <Switch>
       {Object.keys(routes).map((a) => {
         const route = routes[a];
-        const { component: Component, path, exact } = route;
+        const { component: Component, path, exact, props } = route;
 
         return (
           <Route
             key={path || 'notfound'}
             path={path}
             exact={exact}
-            render={() => <Component />}
+            render={() => <Component {...props} />}
           />
         );
       })}

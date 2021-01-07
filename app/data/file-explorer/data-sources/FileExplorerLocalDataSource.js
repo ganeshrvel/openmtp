@@ -121,7 +121,7 @@ export class FileExplorerLocalDataSource {
       if (error) {
         log.error(error, `FileExplorerLocalDataSource.listFiles`);
 
-        return { error: true, data: null };
+        return { error, data: null };
       }
 
       let files = data;
