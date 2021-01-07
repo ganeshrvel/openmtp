@@ -91,8 +91,12 @@
     ],
     "mac": {
       "type": "distribution",
-      "category": "public.app-category.productivity",
       "icon": "build/icon.icns",
+      "category": "public.app-category.productivity",
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "./build/entitlements.mac.plist",
+      "entitlementsInherit": "./build/entitlements.mac.plist",
       "target": [
         "dmg",
         "zip"

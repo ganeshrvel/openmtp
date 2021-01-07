@@ -642,7 +642,9 @@ export function listDirectory(
           if (error) {
             log.error(error, 'listDirectory -> listFiles');
             dispatch(
-              throwAlert({ message: `Unable fetch data from the Local disk.` })
+              throwAlert({
+                message: `Unable to fetch data from the Local disk.`,
+              })
             );
 
             return;
