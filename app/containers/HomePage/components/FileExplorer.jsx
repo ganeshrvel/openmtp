@@ -115,6 +115,7 @@ import {
   buyMeACoffeeText,
   donateUsingPayPal,
 } from '../../../templates/fileExplorer';
+import { fileExistsSync } from '../../../helpers/fileOps';
 
 const { Menu, getCurrentWindow } = remote;
 
@@ -1129,6 +1130,22 @@ class FileExplorer extends Component {
           });
 
           break;
+        case 'openInFinder':
+          contextMenuActiveList.push({
+            label: item.label,
+            enabled: Object.keys(rowData).length > 0,
+            data: rowData,
+            click: () => {
+              this._handleContextMenuListActions({
+                [a]: {
+                  ...item,
+                  data: rowData,
+                },
+              });
+            },
+          });
+
+          break;
         default:
           break;
       }
@@ -1205,6 +1222,11 @@ class FileExplorer extends Component {
             },
             'newFolder'
           );
+          break;
+
+        case 'openInFinder':
+          this._handleOpenInFinder({ ...item });
+
           break;
 
         case 'cancel':
@@ -1377,6 +1399,28 @@ class FileExplorer extends Component {
     this.setState({
       togglePasteConfirmDialog: status,
     });
+  };
+
+  _handleOpenInFinder = async ({ data, enabled, label }) => {
+    checkIf(data, 'object');
+    checkIf(enabled, 'boolean');
+    checkIf(label, 'string');
+
+    try {
+      const filePath = data?.path;
+
+      if (isEmpty(filePath)) {
+        return;
+      }
+
+      if (!fileExistsSync(filePath)) {
+        return;
+      }
+
+      shell.showItemInFolder(filePath);
+    } catch (e) {
+      log.error(e, 'FileExplorer._handleOpenInFinder');
+    }
   };
 
   _createDragIcon() {

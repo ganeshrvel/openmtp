@@ -201,6 +201,11 @@ export const initialState = {
         label: 'New Folder',
         data: {},
       },
+      openInFinder: {
+        enabled: true,
+        label: 'Open in Finder',
+        data: {},
+      },
     },
     [DEVICE_TYPE.mtp]: {
       rename: {
