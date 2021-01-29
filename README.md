@@ -38,10 +38,12 @@ Do checkout the Go package which I've written to build Kalam Kernel: [github.com
 * Download the [Latest Version](https://openmtp.ganeshrvel.com/?downloadApp=github&release=stable&platform=mac 'Latest Version')
 
 * Using Homebrew Cask
-  * ```brew cask install openmtp```.
- Note: for older versions of HomeBrew, 
-  ```brew install openmtp --cask```
-
+```shell
+  # newer versions:
+  brew install openmtp --cask
+  # older versions:
+  brew cask install openmtp
+```
 
 
 * Find the latest *dmg* file from [GitHub Releases](https://github.com/ganeshrvel/openmtp/releases "GitHub Releases")
