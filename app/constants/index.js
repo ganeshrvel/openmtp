@@ -30,6 +30,8 @@ export const DONATE_PAYPAL_URL = `https://paypal.me/ganeshrvel`;
 
 export const BUY_ME_A_COFFEE_URL = `https://www.buymeacoffee.com/ganeshrvel`;
 
+export const DELETE_KEIS_SMARTSWITCH_URL = `https://farazfazli.medium.com/how-i-reverse-engineered-keis-and-sidesync-and-fixed-mtp-8949acbb1c29`;
+
 export const USB_HOTPLUG_MAX_ATTEMPTS = 6;
 
 export const USB_HOTPLUG_MAX_ATTEMPTS_TIMEOUT = 15000; // in ms
