@@ -203,6 +203,8 @@ $ set UPGRADE_EXTENSIONS=1 && npm run dev
 ### Troubleshooting
 #### Your device is not recognized
 - Raise an issue if your device is undetected: https://github.com/ganeshrvel/openmtp/issues/new?template=contribute.md
+#### The app goes blank while trying to connect a Samsung device
+- Uninstall Samsung SmartSwitch, if installed: [https://farazfazli.medium.com/how-i-reverse-engineered-keis-and-sidesync-and-fixed-mtp-8949acbb1c29](https://farazfazli.medium.com/how-i-reverse-engineered-keis-and-sidesync-and-fixed-mtp-8949acbb1c29 "https://farazfazli.medium.com/how-i-reverse-engineered-keis-and-sidesync-and-fixed-mtp-8949acbb1c29"), [https://github.com/ganeshrvel/openmtp/issues/212](https://github.com/ganeshrvel/openmtp/issues/212 "https://github.com/ganeshrvel/openmtp/issues/212").
 
 #### **Notarizing Electron apps throws - “You must first sign the relevant contracts online. (1048)” error**
 

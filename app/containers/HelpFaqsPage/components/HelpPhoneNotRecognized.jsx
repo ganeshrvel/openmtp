@@ -23,6 +23,7 @@ import AccordionDetails from '@material-ui/core/AccordionDetails';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import PowerIcon from '@material-ui/icons/Power';
+import ReplayIcon from '@material-ui/icons/Replay';
 import { styles } from '../styles/HelpPhoneNotRecognized';
 import { openExternalUrl } from '../../../utils/url';
 import {
@@ -35,6 +36,7 @@ import { analyticsService } from '../../../services/analytics';
 import { EVENT_TYPE } from '../../../enums/events';
 import {
   BUY_ME_A_COFFEE_URL,
+  DELETE_KEIS_SMARTSWITCH_URL,
   DEVICES_LABEL,
   DONATE_PAYPAL_URL,
 } from '../../../constants';
@@ -350,6 +352,47 @@ class HelpPhoneNotRecognized extends PureComponent {
             </AccordionDetails>
           </Accordion>
 
+          {/* <----- The app goes blank while trying to connect a Samsung device -----> */}
+
+          <Accordion className={styles.expansionRoot}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography className={styles.heading}>
+                {`The app goes blank while trying to connect a Samsung device`}
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <List component="div" disablePadding>
+                <ListItem>
+                  <ListItemIcon>
+                    <DeleteIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary="Uninstall Samsung SmartSwitch, if installed"
+                    secondary={
+                      <a
+                        onClick={(events) => {
+                          openExternalUrl(DELETE_KEIS_SMARTSWITCH_URL, events);
+                        }}
+                      >
+                        How to remove Samsung SmartSwitch and drivers from your
+                        MacBook
+                      </a>
+                    }
+                  />
+                </ListItem>
+
+                <ListItem>
+                  <ListItemIcon>
+                    <ReplayIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={`Restart ${APP_NAME}`} />
+                </ListItem>
+
+                <RenderBasicConnection />
+              </List>
+            </AccordionDetails>
+          </Accordion>
+
           {/* <----- i keep seeing setting up device -----> */}
 
           <Accordion className={styles.expansionRoot}>
@@ -563,6 +606,25 @@ class HelpPhoneNotRecognized extends PureComponent {
 
             <AccordionDetails>
               <List component="div" disablePadding>
+                <ListItem>
+                  <ListItemIcon>
+                    <DeleteIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary="Uninstall Samsung SmartSwitch, if installed"
+                    secondary={
+                      <a
+                        onClick={(events) => {
+                          openExternalUrl(DELETE_KEIS_SMARTSWITCH_URL, events);
+                        }}
+                      >
+                        How to remove Samsung SmartSwitch and drivers from your
+                        MacBook
+                      </a>
+                    }
+                  />
+                </ListItem>
+
                 <ListItem>
                   <ListItemIcon>
                     <PowerIcon />
