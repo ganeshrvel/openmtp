@@ -96,11 +96,14 @@
       "hardenedRuntime": true,
       "gatekeeperAssess": false,
       "entitlements": "./build/entitlements.mac.plist",
-      "entitlementsInherit": "./build/entitlements.mac.plist",
-      "target": [
-        "dmg",
-        "zip"
-      ]
+      "entitlementsInherit": "./build/entitlements.mac.plist",      
+      "target": {
+        "target": [
+          "dmg",
+          "zip"
+      ],
+        "arch": "universal"
+      },
     },
     "mas": {
       "type": "distribution",
