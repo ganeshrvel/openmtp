@@ -103,7 +103,7 @@
           "zip"
       ],
         "arch": "universal"
-      },
+      }
     },
     "mas": {
       "type": "distribution",
