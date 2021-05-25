@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>NSDesktopFolderUsageDescription</key>
+    <string>Desktop folder access</string>
+
+    <key>NSDocumentsFolderUsageDescription</key>
+    <string>Documents folder access</string>
+
+    <key>NSDownloadsFolderUsageDescription</key>
+    <string>Downloads folder access</string>
+
+    <key>NSRemovableVolumesUsageDescription</key>
+    <string>Removable folder access</string>
+
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Photo library access</string>
+</dict>
+</plist>

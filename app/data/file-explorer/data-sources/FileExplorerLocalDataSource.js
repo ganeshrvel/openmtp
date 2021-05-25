@@ -3,6 +3,7 @@ import junk from 'junk';
 import Promise from 'bluebird';
 import rimraf from 'rimraf';
 import mkdirp from 'mkdirp';
+import { askForFoldersAccess, askForPhotosAccess } from 'node-mac-permissions';
 import {
   readdir as fsReaddir,
   existsSync,
@@ -15,6 +16,8 @@ import { log } from '../../../utils/log';
 import { isArray, isEmpty, undefinedOrNull } from '../../../utils/funcs';
 import { pathUp } from '../../../utils/files';
 import { appDateFormat } from '../../../utils/date';
+import { checkIf } from '../../../utils/checkIf';
+import { PATHS } from '../../../constants/paths';
 
 export class FileExplorerLocalDataSource {
   constructor() {
@@ -95,6 +98,37 @@ export class FileExplorerLocalDataSource {
   };
 
   /**
+   * description - request the usage access of the protected directories in macos
+   * @private
+   *
+   * @param filePath {string}
+   * @return {Promise<boolean>}
+   */
+  _requestUsageAccess = async ({ filePath }) => {
+    checkIf(filePath, 'string');
+
+    const isGrantedString = 'authorized';
+
+    let result;
+
+    if (filePath.startsWith(PATHS.desktopDir)) {
+      result = await askForFoldersAccess('desktop');
+    } else if (filePath.startsWith(PATHS.downloadsDir)) {
+      result = await askForFoldersAccess('downloads');
+    } else if (filePath.startsWith(PATHS.documentsDir)) {
+      result = await askForFoldersAccess('documents');
+    } else if (filePath.startsWith(PATHS.picturesDir)) {
+      result = await askForPhotosAccess();
+    }
+
+    if (undefinedOrNull(result)) {
+      return true;
+    }
+
+    return result === isGrantedString;
+  };
+
+  /**
    * description - Fetch local files in the path
    *
    * @param filePath
@@ -103,6 +137,15 @@ export class FileExplorerLocalDataSource {
    */
   async listFiles({ filePath, ignoreHidden }) {
     try {
+      const _accessGranted = await this._requestUsageAccess({ filePath });
+
+      if (!_accessGranted) {
+        return {
+          data: null,
+          error: 'Permission denied',
+        };
+      }
+
       const response = [];
       const { error, data } = await this.readdir(filePath, 'utf8')
         .then((res) => {
@@ -180,6 +223,15 @@ export class FileExplorerLocalDataSource {
         return { error: `No files selected.`, stderr: null, data: null };
       }
 
+      const _accessGranted = await this._requestUsageAccess({ filePath });
+
+      if (!_accessGranted) {
+        return {
+          data: null,
+          error: 'Permission denied',
+        };
+      }
+
       const { error } = await this._rename({ filePath, newFilename });
 
       if (error) {
@@ -212,9 +264,20 @@ export class FileExplorerLocalDataSource {
       }
 
       for (let i = 0; i < fileList.length; i += 1) {
-        const item = fileList[i];
+        const filePath = fileList[i];
+
         // eslint-disable-next-line no-await-in-loop
-        const { error } = await this._delete(item);
+        const _accessGranted = await this._requestUsageAccess({ filePath });
+
+        if (!_accessGranted) {
+          return {
+            data: null,
+            error: 'Permission denied',
+          };
+        }
+
+        // eslint-disable-next-line no-await-in-loop
+        const { error } = await this._delete(filePath);
 
         if (error) {
           log.error(
@@ -244,6 +307,18 @@ export class FileExplorerLocalDataSource {
     try {
       if (undefinedOrNull(filePath)) {
         return { error: `Invalid path.`, stderr: null, data: null };
+      }
+
+      // eslint-disable-next-line no-await-in-loop
+      const _accessGranted = await this._requestUsageAccess({
+        filePath,
+      });
+
+      if (!_accessGranted) {
+        return {
+          data: null,
+          error: 'Permission denied',
+        };
       }
 
       const { error } = await this._mkdir({ filePath });
@@ -284,6 +359,18 @@ export class FileExplorerLocalDataSource {
       for (let i = 0; i < fileList.length; i += 1) {
         const item = fileList[i];
         const fullPath = path.resolve(item);
+
+        // eslint-disable-next-line no-await-in-loop
+        const _accessGranted = await this._requestUsageAccess({
+          filePath: fullPath,
+        });
+
+        if (!_accessGranted) {
+          return {
+            data: null,
+            error: 'Permission denied',
+          };
+        }
 
         // eslint-disable-next-line no-await-in-loop
         if (await existsSync(fullPath)) {

@@ -7566,6 +7566,14 @@ node-gyp@^3.8.0:
     util "^0.11.0"
     vm-browserify "^1.0.1"
 
+node-mac-permissions@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/node-mac-permissions/-/node-mac-permissions-2.2.0.tgz#9e30af329df86335a19882cb6c2e02ce4fc157ab"
+  integrity sha512-oLEZY46M47A/rcMacPEqo/5z6u7alXdMXhtE7xPDyMixZF35Grl9KGx3N2adE3//lEtGL6Tig98p+1gkonkwQg==
+  dependencies:
+    bindings "^1.5.0"
+    node-addon-api "^2.0.0"
+
 node-machine-id@^1.1.12, node-machine-id@^1.1.9:
   version "1.1.12"
   resolved "https://registry.yarnpkg.com/node-machine-id/-/node-machine-id-1.1.12.tgz#37904eee1e59b320bb9c5d6c0a59f3b469cb6267"

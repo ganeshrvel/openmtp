@@ -586,8 +586,6 @@ export function churnLocalBuffer({
   onSuccess,
   onError,
 }) {
-  checkIf(onSuccess, 'function');
-
   return (dispatch) => {
     try {
       const {
@@ -609,6 +607,8 @@ export function churnLocalBuffer({
 
         return false;
       }
+
+      checkIf(onSuccess, 'function');
 
       onSuccess({ error: null, stderr: null, data });
     } catch (e) {
@@ -652,6 +652,7 @@ export function listDirectory(
                 error: localError,
                 stderr: localStderr,
                 data: localData,
+                onSuccess: () => {},
               })
             );
 

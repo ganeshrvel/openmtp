@@ -1,4 +1,3 @@
-import path from 'path';
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import {
   faSync,
@@ -38,25 +37,25 @@ export const initialState = {
       },
       {
         label: 'Desktop',
-        path: path.join(PATHS.homeDir, `/Desktop`),
+        path: PATHS.desktopDir,
         icon: 'folder',
         enabled: true,
       },
       {
         label: 'Downloads',
-        path: path.join(PATHS.homeDir, `/Downloads`),
+        path: PATHS.downloadsDir,
         icon: 'folder',
         enabled: true,
       },
       {
         label: 'Removable Disks',
-        path: '/Volumes',
+        path: PATHS.volumesDir,
         icon: 'folder',
         enabled: true,
       },
       {
         label: 'Root',
-        path: '/',
+        path: PATHS.systemRootDir,
         icon: 'folder',
         enabled: true,
       },
