@@ -43,6 +43,12 @@ export const PATHS = {
   settingsFile: resolve(settingsFile),
   appUpdateFile: resolve(appUpdateFile),
   prevProfileDir: resolve(prevProfileDir),
+  desktopDir: join(homeDir, `/Desktop`),
+  documentsDir: join(homeDir, `/Documents`),
+  downloadsDir: join(homeDir, `/Downloads`),
+  picturesDir: join(homeDir, `/Pictures`),
+  volumesDir: '/Volumes',
+  systemRootDir: '/',
   loadUrlPath: url.format({
     protocol: 'file',
     slashes: true,

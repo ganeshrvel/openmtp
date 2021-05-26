@@ -1,7 +1,7 @@
 {
   "name": "openmtp",
   "productName": "OpenMTP",
-  "version": "3.1.5",
+  "version": "3.1.10",
   "description": "OpenMTP | Android File Transfer for macOS",
   "scripts": {
     "build": "yarn lint && concurrently \"yarn build-main\" \"yarn build-renderer\"",
@@ -97,6 +97,14 @@
       "gatekeeperAssess": false,
       "entitlements": "./build/entitlements.mac.plist",
       "entitlementsInherit": "./build/entitlements.mac.plist",
+      "extendInfo": {
+        "LSMinimumSystemVersion": "10.11.0",
+        "NSDesktopFolderUsageDescription": "Desktop folder access",
+        "NSDocumentsFolderUsageDescription": "Documents folder access",
+        "NSDownloadsFolderUsageDescription": "Downloads folder access",
+        "NSRemovableVolumesUsageDescription": "Removable Disk access",
+        "NSPhotoLibraryUsageDescription": "Photo library access"
+      },
       "target": [
         "dmg",
         "zip"
@@ -192,6 +200,7 @@
     "mixpanel-browser": "^2.40.0",
     "mkdirp": "^1.0.4",
     "nice-utils": "^1.0.3",
+    "node-mac-permissions": "^2.2.0",
     "node-machine-id": "^1.1.12",
     "normalize.css": "^8.0.1",
     "os": "^0.1.1",
