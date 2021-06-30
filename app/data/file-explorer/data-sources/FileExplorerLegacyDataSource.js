@@ -14,7 +14,7 @@ import { DEVICES_LABEL } from '../../../constants';
 import { DEVICE_TYPE, FILE_TRANSFER_DIRECTION } from '../../../enums';
 import { baseName, getExtension } from '../../../utils/files';
 import { mtpCliPath } from '../../../helpers/binaries';
-import { appDateFormat, msToTime, unixTimestampNow } from '../../../utils/date';
+import { msToTime, unixTimestampNow } from '../../../utils/date';
 import { checkIf } from '../../../utils/checkIf';
 
 export class FileExplorerLegacyDataSource {
@@ -524,7 +524,7 @@ export class FileExplorerLegacyDataSource {
           extension,
           size: null,
           isFolder,
-          dateAdded: appDateFormat(dateTime),
+          dateAdded: dateTime,
         });
       }
 

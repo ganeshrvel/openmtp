@@ -10,6 +10,8 @@ import {
   statSync,
   lstatSync,
   rename as fsRename,
+  readlink,
+  realpathSync,
 } from 'fs';
 import findLodash from 'lodash/find';
 import { log } from '../../../utils/log';
@@ -129,6 +131,42 @@ export class FileExplorerLocalDataSource {
   };
 
   /**
+   *
+   * description - returns file info needed for navigating through symlinks
+   * @private
+   *
+   * @param fullPath
+   * @returns {Promise<{isFolder: boolean, symlink: string|null}>}
+   * @private
+   */
+  _getSymlinkInfo = async ({ fullPath }) => {
+    const symlink = await new Promise((resolve) => {
+      try {
+        readlink(fullPath, (err, lnk) => {
+          if (err) {
+            return resolve(null);
+          }
+
+          if (!undefinedOrNull(lnk) && existsSync(lnk)) {
+            return resolve(realpathSync(lnk));
+          }
+
+          return resolve(null);
+        });
+      } catch (e) {
+        return resolve(null);
+      }
+    });
+
+    const isFolder = lstatSync(symlink ?? fullPath).isDirectory();
+
+    return {
+      isFolder,
+      symlink,
+    };
+  };
+
+  /**
    * description - Fetch local files in the path
    *
    * @param filePath
@@ -177,14 +215,19 @@ export class FileExplorerLocalDataSource {
 
       for (let i = 0; i < files.length; i += 1) {
         const file = files[i];
+
         const fullPath = path.resolve(filePath, file);
+
+        // eslint-disable-next-line no-await-in-loop
+        const { isFolder, symlink } = await this._getSymlinkInfo({
+          fullPath,
+        });
 
         if (!existsSync(fullPath)) {
           continue; // eslint-disable-line no-continue
         }
 
         const stat = statSync(fullPath);
-        const isFolder = lstatSync(fullPath).isDirectory();
         const extension = path.extname(fullPath);
         const { size, atime: dateTime } = stat;
 
@@ -199,6 +242,7 @@ export class FileExplorerLocalDataSource {
           size,
           isFolder,
           dateAdded: appDateFormat(dateTime),
+          symlink,
         });
       }
 

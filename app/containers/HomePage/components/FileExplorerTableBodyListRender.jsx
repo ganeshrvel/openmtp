@@ -10,6 +10,7 @@ import { FILE_EXPLORER_TABLE_TRUNCATE_MAX_CHARS } from '../../../constants';
 import { styles } from '../styles/FileExplorerTableBodyListRender';
 import prettyFileIcons from '../../../vendors/pretty-file-icons';
 import { imgsrc } from '../../../utils/imgsrc';
+import { appDateFormat } from '../../../utils/date';
 
 class FileExplorerTableBodyListRender extends PureComponent {
   RenderFileIcon = () => {
@@ -162,7 +163,7 @@ class FileExplorerTableBodyListRender extends PureComponent {
               onTableDoubleClick(item, deviceType, event)
             }
           >
-            {item.dateAdded}
+            {appDateFormat(item.dateAdded)}
           </TableCell>
         )}
       </TableRow>
