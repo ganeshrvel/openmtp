@@ -11,6 +11,7 @@ import {
   lstatSync,
   rename as fsRename,
   readlink,
+  realpathSync,
 } from 'fs';
 import findLodash from 'lodash/find';
 import { log } from '../../../utils/log';
@@ -140,13 +141,21 @@ export class FileExplorerLocalDataSource {
    */
   _getSymlinkInfo = async ({ fullPath }) => {
     const symlink = await new Promise((resolve) => {
-      readlink(fullPath, (err, symlink) => {
-        if (err) {
-          return resolve(null);
-        }
+      try {
+        readlink(fullPath, (err, lnk) => {
+          if (err) {
+            return resolve(null);
+          }
 
-        return resolve(symlink ?? null);
-      });
+          if (!undefinedOrNull(lnk) && existsSync(lnk)) {
+            return resolve(realpathSync(lnk));
+          }
+
+          return resolve(null);
+        });
+      } catch (e) {
+        return resolve(null);
+      }
     });
 
     const isFolder = lstatSync(symlink ?? fullPath).isDirectory();
@@ -219,7 +228,6 @@ export class FileExplorerLocalDataSource {
         }
 
         const stat = statSync(fullPath);
-
         const extension = path.extname(fullPath);
         const { size, atime: dateTime } = stat;
 
