@@ -6,10 +6,10 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import SpeedIcon from '@material-ui/icons/Speed';
-import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import WhatshotIcon from '@material-ui/icons/Whatshot';
-import BugReportIcon from '@material-ui/icons/BugReport';
 import BuildIcon from '@material-ui/icons/Build';
+import DateRangeIcon from '@material-ui/icons/DateRange';
+import LinkIcon from '@material-ui/icons/Link';
 import { styles } from '../styles/WhatsNew';
 import { APP_NAME, APP_VERSION } from '../../../constants/meta';
 import { MTP_MODE } from '../../../enums';
@@ -36,20 +36,17 @@ class WhatsNew extends PureComponent {
         <List>
           <ListItem>
             <ListItemIcon>
-              <BugReportIcon htmlColor="#fa4d0a" />
+              <DateRangeIcon htmlColor="#fa4d0a" />
             </ListItemIcon>
-            <ListItemText
-              primary="Fixed a bug which prevented users from accessing the user directories"
-              secondary={`Now access your Documents, Desktop, Downloads, and Bin folders, iCloud Drive, the folders of third-party cloud storage providers, removable media, and external drives without any trouble`}
-            />
+            <ListItemText primary="Fixed a bug which resetted the file timestamp on transfer" />
           </ListItem>
 
           <ListItem>
             <ListItemIcon>
-              <OpenInNewIcon />
+              <LinkIcon />
             </ListItemIcon>
             <ListItemText
-              primary={`New - "Show in Enclosing Folder" Context menu option in the Local Disk pane`}
+              primary={`Local disk pane will now resolve and follow the symlinks`}
             />
           </ListItem>
 
