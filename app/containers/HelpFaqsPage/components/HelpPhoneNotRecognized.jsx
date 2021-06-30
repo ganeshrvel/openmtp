@@ -681,7 +681,7 @@ class HelpPhoneNotRecognized extends PureComponent {
                     <FiberManualRecordIcon />
                   </ListItemIcon>
                   <ListItemText
-                    primary={`If you keep getting the "${localErrorDictionary.noPerm}" error then you may need to give access to these folders by going to Security and Privacy in System Preferences`}
+                    primary={`If you keep getting the "${localErrorDictionary.noPerm}" error then you may need to give access to these folders by going to "Security and Privacy" in "System Preferences"`}
                   />
                 </ListItem>
                 <ListItem>
@@ -689,7 +689,8 @@ class HelpPhoneNotRecognized extends PureComponent {
                     <SettingsIcon />
                   </ListItemIcon>
                   <ListItemText
-                    primary={`Open macOS System Preferences > Security and Privacy > Privacy Tab`}
+                    primary={`Open macOS "System Preferences" > "Security and Privacy" > "Privacy Tab"`}
+                    secondary={`Tap on the "Click the lock to make changes" button and authenticate yourself`}
                   />
                 </ListItem>
 
@@ -714,6 +715,81 @@ class HelpPhoneNotRecognized extends PureComponent {
                           src={imgsrc(
                             `help/privacy-restricted-folder-access.png`
                           )}
+                          alt="Files and Folders"
+                          className={styles.imagePlaceholder}
+                        />
+                      </>
+                    }
+                  />
+                </ListItem>
+              </List>
+            </AccordionDetails>
+          </Accordion>
+
+          {/* <----- Full disk access -----> */}
+          <Accordion className={styles.expansionRoot}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography className={styles.heading}>
+                {`I am still being denied access to some of the folders in the Local Disk pane`}
+              </Typography>
+            </AccordionSummary>
+
+            <AccordionDetails>
+              <List component="div" disablePadding>
+                <ListItem>
+                  <ListItemIcon>
+                    <FolderSpecialIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={`macOS requires that you provide access to your Documents, Desktop, Downloads, and Bin folders, iCloud Drive, the folders of third-party cloud storage providers, removable media, and external drives`}
+                  />
+                </ListItem>
+                <ListItem>
+                  <ListItemIcon>
+                    <FiberManualRecordIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={`If you still keep getting the "${localErrorDictionary.noPerm}" error then you may grant "Full Disk Access" by going to "Security and Privacy" in "System Preferences"`}
+                  />
+                </ListItem>
+                <ListItem>
+                  <ListItemIcon>
+                    <SettingsIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={`Open macOS "System Preferences" > "Security and Privacy" > "Privacy Tab"`}
+                    secondary={`Tap on the "Click the lock to make changes" button and authenticate yourself`}
+                  />
+                </ListItem>
+
+                <ListItem>
+                  <ListItemIcon>
+                    <ListAltIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={`In the left hand side pane find the "Full Disk Access" option, select it. In the right hand side pane find "${APP_NAME}"`}
+                    secondary={
+                      <>
+                        <img
+                          src={imgsrc(`help/full-disk-access.png`)}
+                          alt="Files and Folders"
+                          className={styles.imagePlaceholder}
+                        />
+                      </>
+                    }
+                  />
+                </ListItem>
+
+                <ListItem>
+                  <ListItemIcon>
+                    <CheckIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={`If you didn't find ${APP_NAME} in the list, then tap on the "+" button and select "${APP_NAME}" by navigating to the "Application" folder`}
+                    secondary={
+                      <>
+                        <img
+                          src={imgsrc(`help/full-disk-access-file-picker.jpeg`)}
                           alt="Files and Folders"
                           className={styles.imagePlaceholder}
                         />
