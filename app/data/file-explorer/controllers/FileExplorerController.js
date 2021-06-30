@@ -364,3 +364,5 @@ class FileExplorerController {
 const fileExplorerController = new FileExplorerController();
 
 export default fileExplorerController;
+
+console.log('date fmt in grid/list is wrong')
