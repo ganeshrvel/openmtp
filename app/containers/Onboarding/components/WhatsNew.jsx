@@ -38,7 +38,7 @@ class WhatsNew extends PureComponent {
             <ListItemIcon>
               <DateRangeIcon htmlColor="#fa4d0a" />
             </ListItemIcon>
-            <ListItemText primary="Fixed a bug which resetted the file timestamp on transfer" />
+            <ListItemText primary="Fixed a bug which resets the file timestamp on transfer" />
           </ListItem>
 
           <ListItem>
