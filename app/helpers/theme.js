@@ -1,7 +1,10 @@
-import { nativeTheme, remote } from 'electron';
+import { nativeTheme } from 'electron';
 import { APP_THEME_MODE_TYPE } from '../enums';
 import { undefinedOrNull } from '../utils/funcs';
 import { getAppThemeModeSetting } from './settings';
+import { getRemoteWindow } from './remoteWindowHelpers';
+
+const remote = getRemoteWindow();
 
 // [appThemeModeSettings] is optional
 // if [appThemeModeSettings] is not provided then fetch the theme value from the settings

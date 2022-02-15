@@ -49,7 +49,11 @@ export default class MenuBuilder {
       ]).popup(this.mainWindow);
     });
 
-    this.mainWindow.openDevTools();
+    /// todo fix this crash
+    return;
+    console.log('todo');
+
+    // this.mainWindow.openDevTools();
   }
 
   buildDarwinTemplate() {

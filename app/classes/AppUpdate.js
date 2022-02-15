@@ -1,4 +1,4 @@
-import { dialog, BrowserWindow, ipcMain } from 'electron';
+import { BrowserWindow, dialog, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import { isConnected } from '../utils/isOnline';
 import { log } from '../utils/log';
@@ -12,10 +12,15 @@ import {
 } from '../helpers/windowHelper';
 import { appUpdateAvailableWindow } from '../helpers/createWindows';
 import { UPDATER_STATUS } from '../enums/appUpdater';
+import { getRemoteWindow } from '../helpers/remoteWindowHelpers';
 
 let progressbarWindow = null;
 let isFileTransferActiveFlag = false;
 let mainWindow = null;
+
+const remote = getRemoteWindow();
+
+remote.initialize();
 
 const createChildWindow = () => {
   try {
@@ -33,6 +38,7 @@ const createChildWindow = () => {
       movable: false,
       webPreferences: {
         nodeIntegration: true,
+        contextIsolation: false,
         enableRemoteModule: true,
       },
       backgroundColor: getWindowBackgroundColor(),
@@ -62,6 +68,8 @@ const fireProgressbar = () => {
     });
 
     progressbarWindow = createChildWindow();
+    remote.enable(progressbarWindow.webContents);
+
     progressbarWindow.loadURL(
       `${PATHS.loadUrlPath}#appUpdatePage/updateProgress`
     );

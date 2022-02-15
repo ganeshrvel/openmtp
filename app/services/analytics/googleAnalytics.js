@@ -37,6 +37,11 @@ export class GoogleAnalytics {
       // this is a hashed value (sha-256)
       this.machineId = await machineId();
 
+      // todo `TypeError: Cannot read properties of undefined (reading 'app')`
+      // this could cause google analytics failure
+      console.log(
+        `todo fix TypeError: Cannot read properties of undefined (reading 'app')`
+      );
       this.analytics = new Analytics(SERVICE_KEYS.googleAnalytics, {
         appName: APP_NAME,
         appVersion: APP_VERSION,

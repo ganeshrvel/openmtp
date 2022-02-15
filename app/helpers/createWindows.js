@@ -1,4 +1,4 @@
-import { BrowserWindow, remote } from 'electron';
+import { BrowserWindow } from 'electron';
 import { PATHS } from '../constants/paths';
 import { log } from '../utils/log';
 import { loadProfileErrorHtml } from '../templates/loadProfileError';
@@ -13,6 +13,9 @@ import { APP_FEATURES_PAGE_TITLE } from '../templates/appFeaturesPage';
 import { KEYBOARD_SHORTCUTS_PAGE_TITLE } from '../templates/keyboardShortcutsPage';
 import { getWindowBackgroundColor } from './windowHelper';
 import { REPORT_BUGS_PAGE_TITLE } from '../templates/generateErrorReport';
+import { getRemoteWindow } from './remoteWindowHelpers';
+
+const remote = getRemoteWindow();
 
 let _nonBootableDeviceWindow = null;
 let _reportBugsWindow = null;
@@ -39,6 +42,7 @@ const nonBootableDeviceCreateWindow = () => {
     resizable: false,
     webPreferences: {
       nodeIntegration: true,
+      contextIsolation: false,
       enableRemoteModule: true,
     },
     backgroundColor: getWindowBackgroundColor(),
@@ -47,6 +51,8 @@ const nonBootableDeviceCreateWindow = () => {
 
 export const nonBootableDeviceWindow = () => {
   _nonBootableDeviceWindow = nonBootableDeviceCreateWindow();
+  remote.enable(_nonBootableDeviceWindow.webContents);
+
   _nonBootableDeviceWindow.loadURL(
     `data:text/html;charset=utf-8, ${encodeURI(loadProfileErrorHtml)}`
   );
@@ -86,6 +92,7 @@ const reportBugsCreateWindow = (isRenderedPage) => {
     fullscreenable: false,
     webPreferences: {
       nodeIntegration: true,
+      contextIsolation: false,
       enableRemoteModule: true,
     },
     backgroundColor: getWindowBackgroundColor(),
@@ -109,8 +116,12 @@ const reportBugsCreateWindow = (isRenderedPage) => {
   const allWindows = BrowserWindow.getAllWindows();
   const existingWindow = loadExistingWindow(allWindows, REPORT_BUGS_PAGE_TITLE);
 
+  const bWindow = new BrowserWindow(config);
+
+  remote.enable(bWindow.webContents);
+
   return {
-    windowObj: existingWindow ?? new BrowserWindow(config),
+    windowObj: existingWindow ?? bWindow,
     isExisting: !!existingWindow,
   };
 };
@@ -173,6 +184,7 @@ const privacyPolicyCreateWindow = (isRenderedPage = false) => {
     fullscreenable: true,
     webPreferences: {
       nodeIntegration: true,
+      contextIsolation: false,
       enableRemoteModule: true,
     },
     backgroundColor: getWindowBackgroundColor(),
@@ -199,8 +211,12 @@ const privacyPolicyCreateWindow = (isRenderedPage = false) => {
     PRIVACY_POLICY_PAGE_TITLE
   );
 
+  const bWindow = new BrowserWindow(config);
+
+  remote.enable(bWindow.webContents);
+
   return {
-    windowObj: existingWindow ?? new BrowserWindow(config),
+    windowObj: existingWindow ?? bWindow,
     isExisting: !!existingWindow,
   };
 };
@@ -261,6 +277,7 @@ const appUpdateAvailableCreateWindow = () => {
     fullscreenable: false,
     webPreferences: {
       nodeIntegration: true,
+      contextIsolation: false,
       enableRemoteModule: true,
     },
     backgroundColor: getWindowBackgroundColor(),
@@ -278,6 +295,8 @@ export const appUpdateAvailableWindow = () => {
 
     // show the existing _appUpdateAvailableWindow
     const _appUpdateAvailableWindowTemp = appUpdateAvailableCreateWindow();
+
+    remote.enable(_appUpdateAvailableWindowTemp.webContents);
 
     if (!_appUpdateAvailableWindowTemp) {
       return _appUpdateAvailableWindow;
@@ -320,6 +339,7 @@ const appFeaturesCreateWindow = (isRenderedPage) => {
     fullscreenable: false,
     webPreferences: {
       nodeIntegration: true,
+      contextIsolation: false,
       enableRemoteModule: true,
     },
     backgroundColor: getWindowBackgroundColor(),
@@ -346,8 +366,12 @@ const appFeaturesCreateWindow = (isRenderedPage) => {
     APP_FEATURES_PAGE_TITLE
   );
 
+  const bWindow = new BrowserWindow(config);
+
+  remote.enable(bWindow.webContents);
+
   return {
-    windowObj: existingWindow ?? new BrowserWindow(config),
+    windowObj: existingWindow ?? bWindow,
     isExisting: !!existingWindow,
   };
 };
@@ -411,6 +435,7 @@ const keyboardShortcutsCreateWindow = (isRenderedPage) => {
     fullscreenable: true,
     webPreferences: {
       nodeIntegration: true,
+      contextIsolation: false,
       enableRemoteModule: true,
     },
     backgroundColor: getWindowBackgroundColor(),
@@ -437,8 +462,12 @@ const keyboardShortcutsCreateWindow = (isRenderedPage) => {
     KEYBOARD_SHORTCUTS_PAGE_TITLE
   );
 
+  const bWindow = new BrowserWindow(config);
+
+  remote.enable(bWindow.webContents);
+
   return {
-    windowObj: existingWindow ?? new BrowserWindow(config),
+    windowObj: existingWindow ?? bWindow,
     isExisting: !!existingWindow,
   };
 };
@@ -458,9 +487,8 @@ export const keyboardShortcutsWindow = (
     }
 
     // show the existing _keyboardShortcutsWindow
-    const { windowObj, isExisting } = keyboardShortcutsCreateWindow(
-      isRenderedPage
-    );
+    const { windowObj, isExisting } =
+      keyboardShortcutsCreateWindow(isRenderedPage);
 
     // return the existing windowObj object
     if (isExisting) {
@@ -509,6 +537,7 @@ const helpFaqsCreateWindow = (isRenderedPage = false) => {
     fullscreenable: true,
     webPreferences: {
       nodeIntegration: true,
+      contextIsolation: false,
       enableRemoteModule: true,
     },
     backgroundColor: getWindowBackgroundColor(),
@@ -529,8 +558,12 @@ const helpFaqsCreateWindow = (isRenderedPage = false) => {
   const allWindows = BrowserWindow.getAllWindows();
   const existingWindow = loadExistingWindow(allWindows, FAQS_PAGE_TITLE);
 
+  const bWindow = new BrowserWindow(config);
+
+  remote.enable(bWindow.webContents);
+
   return {
-    windowObj: existingWindow ?? new BrowserWindow(config),
+    windowObj: existingWindow ?? bWindow,
     isExisting: !!existingWindow,
   };
 };
@@ -594,6 +627,7 @@ const helpPhoneNotConnectingCreateWindow = (isRenderedPage = false) => {
     fullscreenable: true,
     webPreferences: {
       nodeIntegration: true,
+      contextIsolation: false,
       enableRemoteModule: true,
     },
     backgroundColor: getWindowBackgroundColor(),
@@ -620,8 +654,12 @@ const helpPhoneNotConnectingCreateWindow = (isRenderedPage = false) => {
     HELP_PHONE_IS_NOT_CONNECTING
   );
 
+  const bWindow = new BrowserWindow(config);
+
+  remote.enable(bWindow.webContents);
+
   return {
-    windowObj: existingWindow ?? new BrowserWindow(config),
+    windowObj: existingWindow ?? bWindow,
     isExisting: !!existingWindow,
   };
 };
@@ -641,9 +679,8 @@ export const helpPhoneNotConnectingWindow = (
     }
 
     // show the existing _helpPhoneIsNotConnectingWindow
-    const { windowObj, isExisting } = helpPhoneNotConnectingCreateWindow(
-      isRenderedPage
-    );
+    const { windowObj, isExisting } =
+      helpPhoneNotConnectingCreateWindow(isRenderedPage);
 
     // return the existing windowObj object
     if (isExisting) {

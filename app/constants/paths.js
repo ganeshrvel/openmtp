@@ -30,6 +30,8 @@ const logFile = join(logDir, `./${APP_NAME}-${logFileName}`);
 const settingsFile = join(profileDir, `./settings.json`);
 const appUpdateFile = join(configDir, `./dev-app-update.yml`);
 
+
+
 export const PATHS = {
   root: resolve(root),
   app: resolve(appPath),

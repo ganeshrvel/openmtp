@@ -22,6 +22,9 @@ import { APP_THEME_MODE_TYPE, DEVICE_TYPE, USB_HOTPLUG_EVENTS } from './enums';
 import fileExplorerController from './data/file-explorer/controllers/FileExplorerController';
 import { getEnablePrereleaseUpdatesSetting } from './helpers/settings';
 import { COMMUNICATION_EVENTS } from './enums/communicationEvents';
+import { getRemoteWindow } from './helpers/remoteWindowHelpers';
+
+const remote = getRemoteWindow();
 
 const isSingleInstance = app.requestSingleInstanceLock();
 const isDeviceBootable = bootTheDevice();
@@ -84,11 +87,14 @@ async function createWindow() {
       minHeight: 640,
       titleBarStyle: 'hidden',
       webPreferences: {
-        nodeIntegration: true,
         enableRemoteModule: true,
+        nodeIntegration: true,
+        contextIsolation: false,
       },
       backgroundColor: getWindowBackgroundColor(),
     });
+
+    remote.enable(mainWindow.webContents);
 
     mainWindow?.loadURL(`${PATHS.loadUrlPath}`);
 
@@ -191,86 +197,174 @@ if (!isDeviceBootable) {
     }
   });
 
-  app.on('ready', async () => {
-    try {
-      await createWindow();
-
-      let appUpdaterEnable = true;
-
-      if (isPackaged && process.platform === 'darwin') {
-        appUpdaterEnable = !isMas && app.isInApplicationsFolder();
-      }
-
-      const autoUpdateCheckSettings = settingsStorage.getItems([
-        'enableBackgroundAutoUpdate',
-        'enableAutoUpdateCheck',
-      ]);
-
-      const autoUpdateCheck =
-        autoUpdateCheckSettings.enableAutoUpdateCheck !== false;
-      const isPrereleaseUpdatesEnabled = getEnablePrereleaseUpdatesSetting();
-
-      const autoAppUpdate = new AppUpdate({
-        autoUpdateCheck,
-        autoDownload:
-          autoUpdateCheckSettings.enableBackgroundAutoUpdate !== false,
-        allowPrerelease: isPrereleaseUpdatesEnabled === true,
-      });
-
-      autoAppUpdate.init();
-
-      const menuBuilder = new MenuBuilder({
-        mainWindow,
-        autoAppUpdate,
-        appUpdaterEnable,
-      });
-
-      menuBuilder.buildMenu();
-
-      if (autoUpdateCheck && appUpdaterEnable) {
-        setTimeout(() => {
-          autoAppUpdate.checkForUpdates();
-        }, AUTO_UPDATE_CHECK_FIREUP_DELAY);
-      }
-
-      // send attach and detach events to the renderer
-      usbDetect.startMonitoring();
-
-      usbDetect.on('add', (device) => {
-        if (!mainWindow) {
-          return;
-        }
-
-        mainWindow?.webContents?.send(COMMUNICATION_EVENTS.usbHotplug, {
-          device: JSON.stringify(device),
-          eventName: USB_HOTPLUG_EVENTS.attach,
-        });
-      });
-
-      usbDetect.on('remove', (device) => {
-        if (!mainWindow) {
-          return;
-        }
-
-        mainWindow?.webContents?.send(COMMUNICATION_EVENTS.usbHotplug, {
-          device: JSON.stringify(device),
-          eventName: USB_HOTPLUG_EVENTS.detach,
-        });
-      });
-    } catch (e) {
-      log.error(e, `main.dev -> ready`);
-    }
-  });
-
-  app.on('activate', async () => {
-    try {
-      if (mainWindow === null) {
+  app
+    .whenReady()
+    .then(async () => {
+      try {
         await createWindow();
+
+        let appUpdaterEnable = true;
+
+        if (isPackaged && process.platform === 'darwin') {
+          appUpdaterEnable = !isMas && app.isInApplicationsFolder();
+        }
+
+        const autoUpdateCheckSettings = settingsStorage.getItems([
+          'enableBackgroundAutoUpdate',
+          'enableAutoUpdateCheck',
+        ]);
+
+        const autoUpdateCheck =
+          autoUpdateCheckSettings.enableAutoUpdateCheck !== false;
+        const isPrereleaseUpdatesEnabled = getEnablePrereleaseUpdatesSetting();
+
+        const autoAppUpdate = new AppUpdate({
+          autoUpdateCheck,
+          autoDownload:
+            autoUpdateCheckSettings.enableBackgroundAutoUpdate !== false,
+          allowPrerelease: isPrereleaseUpdatesEnabled === true,
+        });
+
+        autoAppUpdate.init();
+
+        const menuBuilder = new MenuBuilder({
+          mainWindow,
+          autoAppUpdate,
+          appUpdaterEnable,
+        });
+
+        menuBuilder.buildMenu();
+
+        if (autoUpdateCheck && appUpdaterEnable) {
+          setTimeout(() => {
+            autoAppUpdate.checkForUpdates();
+          }, AUTO_UPDATE_CHECK_FIREUP_DELAY);
+        }
+
+        // send attach and detach events to the renderer
+        usbDetect.startMonitoring();
+
+        usbDetect.on('add', (device) => {
+          if (!mainWindow) {
+            return;
+          }
+
+          mainWindow?.webContents?.send(COMMUNICATION_EVENTS.usbHotplug, {
+            device: JSON.stringify(device),
+            eventName: USB_HOTPLUG_EVENTS.attach,
+          });
+        });
+
+        usbDetect.on('remove', (device) => {
+          if (!mainWindow) {
+            return;
+          }
+
+          mainWindow?.webContents?.send(COMMUNICATION_EVENTS.usbHotplug, {
+            device: JSON.stringify(device),
+            eventName: USB_HOTPLUG_EVENTS.detach,
+          });
+        });
+      } catch (e) {
+        log.error(e, `main.dev -> whenReady`);
       }
-    } catch (e) {
-      log.error(e, `main.dev -> activate`);
-    }
-  });
+
+      app.on('activate', async () => {
+        // On macOS it's common to re-create a window in the app when the
+        // dock icon is clicked and there are no other windows open.
+        try {
+          if (mainWindow === null) {
+            await createWindow();
+          }
+        } catch (e) {
+          log.error(e, `main.dev -> activate`);
+        }
+      });
+    })
+    .catch((e) => {
+      log.error(e, `main.dev -> whenReady`);
+    });
+
+  // app.on('ready', async () => {
+  //   try {
+  //     await createWindow();
+  //
+  //     let appUpdaterEnable = true;
+  //
+  //     if (isPackaged && process.platform === 'darwin') {
+  //       appUpdaterEnable = !isMas && app.isInApplicationsFolder();
+  //     }
+  //
+  //     const autoUpdateCheckSettings = settingsStorage.getItems([
+  //       'enableBackgroundAutoUpdate',
+  //       'enableAutoUpdateCheck',
+  //     ]);
+  //
+  //     const autoUpdateCheck =
+  //       autoUpdateCheckSettings.enableAutoUpdateCheck !== false;
+  //     const isPrereleaseUpdatesEnabled = getEnablePrereleaseUpdatesSetting();
+  //
+  //     const autoAppUpdate = new AppUpdate({
+  //       autoUpdateCheck,
+  //       autoDownload:
+  //         autoUpdateCheckSettings.enableBackgroundAutoUpdate !== false,
+  //       allowPrerelease: isPrereleaseUpdatesEnabled === true,
+  //     });
+  //
+  //     autoAppUpdate.init();
+  //
+  //     const menuBuilder = new MenuBuilder({
+  //       mainWindow,
+  //       autoAppUpdate,
+  //       appUpdaterEnable,
+  //     });
+  //
+  //     menuBuilder.buildMenu();
+  //
+  //     if (autoUpdateCheck && appUpdaterEnable) {
+  //       setTimeout(() => {
+  //         autoAppUpdate.checkForUpdates();
+  //       }, AUTO_UPDATE_CHECK_FIREUP_DELAY);
+  //     }
+  //
+  //     // send attach and detach events to the renderer
+  //     usbDetect.startMonitoring();
+  //
+  //     usbDetect.on('add', (device) => {
+  //       if (!mainWindow) {
+  //         return;
+  //       }
+  //
+  //       mainWindow?.webContents?.send(COMMUNICATION_EVENTS.usbHotplug, {
+  //         device: JSON.stringify(device),
+  //         eventName: USB_HOTPLUG_EVENTS.attach,
+  //       });
+  //     });
+  //
+  //     usbDetect.on('remove', (device) => {
+  //       if (!mainWindow) {
+  //         return;
+  //       }
+  //
+  //       mainWindow?.webContents?.send(COMMUNICATION_EVENTS.usbHotplug, {
+  //         device: JSON.stringify(device),
+  //         eventName: USB_HOTPLUG_EVENTS.detach,
+  //       });
+  //     });
+  //   } catch (e) {
+  //     log.error(e, `main.dev -> ready`);
+  //   }
+  // });
+
+  // app.on('activate', async () => {
+  //   try {
+  //     if (mainWindow === null) {
+  //       await createWindow();
+  //     }
+  //   } catch (e) {
+  //     log.error(e, `main.dev -> activate`);
+  //   }
+  // });
 
   app.on('before-quit', async () => {
     fileExplorerController

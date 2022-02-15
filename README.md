@@ -85,7 +85,7 @@ Requirements: [Node.js v10](https://nodejs.org/en/download/ "Install Node.js v10
 
 ### Clone
 ```shell
-$ git clone --depth 1 --single-branch --branch master https://github.com/ganeshrvel/openmtp.git
+$ git clone https://github.com/ganeshrvel/openmtp.git
 
 $ cd openmtp
 ```

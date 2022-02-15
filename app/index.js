@@ -1,6 +1,6 @@
 /* eslint global-require: off */
 
-import './services/sentry/index';
+import './services/sentry';
 
 import React from 'react';
 import { render } from 'react-dom';

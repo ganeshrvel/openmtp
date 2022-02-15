@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { shell, remote, ipcRenderer } from 'electron';
+import { shell, ipcRenderer } from 'electron';
 import path from 'path';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -22,6 +22,9 @@ import { getMainWindowRendererProcess } from '../../../helpers/windowHelper';
 import { COMMUNICATION_EVENTS } from '../../../enums/communicationEvents';
 import fileExplorerController from '../../../data/file-explorer/controllers/FileExplorerController';
 import { DEVICE_TYPE } from '../../../enums';
+import { getRemoteWindow } from '../../../helpers/remoteWindowHelpers';
+
+const remote = getRemoteWindow();
 
 const { logFile } = PATHS;
 const { getPath } = remote.app;
@@ -144,9 +147,11 @@ class GenerateErrorReport extends PureComponent {
 const mapDispatchToProps = (dispatch, __) =>
   bindActionCreators(
     {
-      actionCreateThrowError: ({ ...args }) => (_, __) => {
-        dispatch(throwAlert({ ...args }));
-      },
+      actionCreateThrowError:
+        ({ ...args }) =>
+        (_, __) => {
+          dispatch(throwAlert({ ...args }));
+        },
     },
     dispatch
   );
