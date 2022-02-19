@@ -197,6 +197,7 @@
     "hotkeys-js": "^3.8.7",
     "junk": "^3.1.0",
     "lodash": "^4.17.21",
+    "macos-version": "5.2.1",
     "milligram": "^1.4.1",
     "mixpanel-browser": "^2.43.0",
     "mkdirp": "^1.0.4",
@@ -294,9 +295,11 @@
     "node-abi": "^3.8.0",
     "node-sass": "^7.0.1",
     "optimize-css-assets-webpack-plugin": "^6.0.1",
+    "pkg-dir": "^6.0.1",
     "prettier": "^2.5.1",
     "react-hot-loader": "^4.13.0",
     "redux-logger": "^3.0.6",
+    "replace": "^1.2.1",
     "rimraf": "^3.0.2",
     "sass-loader": "^12.4.0",
     "style-loader": "^3.3.1",
@@ -310,10 +313,11 @@
     "webpack-cli": "^4.0.0",
     "webpack-dev-server": "^3.11.0",
     "webpack-merge": "^5.3.0",
-    "yarn": "^1.22.17"
+    "yarn": "^1.22.17",
+    "zx": "^5.0.0"
   },
   "devEngines": {
-    "node": ">=10.x",
+    "node": ">=16.x",
     "npm": ">=6.x",
     "yarn": ">=0.21.3"
   }

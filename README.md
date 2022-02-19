@@ -34,6 +34,9 @@ OpenMTP 3.0 features a new MTP kernel and it was written from the scratch. It pr
 
 Do checkout the Go package which I've written to build Kalam Kernel: [github.com/ganeshrvel/go-mtpx](https://github.com/ganeshrvel/go-mtpx "https://github.com/ganeshrvel/go-mtpx"). Feel free to raise PRs.
 
+### System Requirements
+Although OpenMTP will continue running on a machine which has macOS 10.11 (OS X El Capitan) or higher installed, the `Kalam` Kernel will only get the latest updates for the past 3 versions of macOS. We will continue releasing the OpenMTP kernels for both `Intel` and `ARM64` machines.
+
 ### Installation
 * Download the [Latest Version](https://openmtp.ganeshrvel.com/?downloadApp=github&release=stable&platform=mac 'Latest Version')
 

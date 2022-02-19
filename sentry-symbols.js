@@ -14,7 +14,8 @@ try {
   process.exit(1);
 }
 
-const VERSION = /\bv?(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:-[\da-z-]+(?:\.[\da-z-]+)*)?(?:\+[\da-z-]+(?:\.[\da-z-]+)*)?\b/i;
+const VERSION =
+  /\bv?(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:-[\da-z-]+(?:\.[\da-z-]+)*)?(?:\+[\da-z-]+(?:\.[\da-z-]+)*)?\b/i;
 const SYMBOL_CACHE_FOLDER = '.electron-symbols';
 const _package = require('./package.json');
 
@@ -36,10 +37,12 @@ async function main() {
   );
   console.info('Just call this script again it should do everything for you.');
 
+  // todo
+  console.log('fix this');
   let zipPath = await downloadSymbols({
     version,
     platform: 'darwin',
-    arch: 'x64',
+    arch: 'x64', // todo
     dsym: true,
   });
 

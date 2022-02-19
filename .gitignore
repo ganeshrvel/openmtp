@@ -66,3 +66,4 @@ build/entitlements.mas.plist
 extras/*
 mtp-mock-files/*
 resources
+tmp/*
