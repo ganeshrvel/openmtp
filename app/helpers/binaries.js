@@ -11,9 +11,21 @@ import { KALAM_MINIMUM_SUPPORTED_MACOS_VERSION } from '../constants';
 
 const { root } = PATHS;
 
-const binariesPath = () => {
+const binariesPath = ({ includeArchDirectory = true }) => {
+  const binDir = path.join(root, './build', getPlatform(), './bin');
+
+  // todo fix
+  console.log('fix this');
+  /// release build binaries path
   if (IS_PROD && isPackaged) {
     return path.join(root, './Contents', './Resources', './bin');
+  }
+
+  /// debug build binaries path
+
+  /// if [includeArchDirectory] is true then dont include the architecture directories
+  if (!includeArchDirectory) {
+    return binDir;
   }
 
   const supportedSystemArchitecture = getBinariesSupportedSystemArchitecture();
@@ -33,18 +45,20 @@ const binariesPath = () => {
     );
   }
 
-  return path.join(root, './build', getPlatform(), './bin', binariesDir);
+  return path.join(binDir, binariesDir);
 };
 
-// todo fix
-console.log('fix this');
-export const mtpCliPath = path.resolve(path.join(binariesPath(), './mtp-cli'));
-
-export const kalamDebugReportCli = path.resolve(
-  path.join(binariesPath(), './kalam-debug-report')
+export const mtpCliPath = path.resolve(
+  path.join(binariesPath({ includeArchDirectory: false }), './mtp-cli')
 );
 
-console.log(binariesPath());
+export const kalamDebugReportCli = path.resolve(
+  path.join(
+    binariesPath({ includeArchDirectory: true }),
+    './kalam-debug-report'
+  )
+);
+
 export const kalamLibPath = path.resolve(
-  path.join(binariesPath(), './kalam.dylib')
+  path.join(binariesPath({ includeArchDirectory: true }), './kalam.dylib')
 );
