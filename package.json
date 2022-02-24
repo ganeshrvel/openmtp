@@ -54,9 +54,7 @@
       "git add"
     ]
   },
-  "browserslist": [
-    "node 16"
-  ],
+  "browserslist": [],
   "main": "./app/main.prod.js",
   "build": {
     "productName": "OpenMTP",
@@ -105,10 +103,13 @@
         "NSRemovableVolumesUsageDescription": "Removable Disk access",
         "NSPhotoLibraryUsageDescription": "Photo library access"
       },
-      "target": [
-        "dmg",
-        "zip"
-      ]
+      "target": {
+        "target": "default",
+        "arch": [
+          "arm64",
+          "x64"
+        ]
+      }
     },
     "mas": {
       "type": "distribution",
@@ -261,7 +262,7 @@
     "babel-loader": "^8.1.0",
     "babel-plugin-dev-expression": "^0.2.2",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
-    "browserslist": "^4.19.1",
+    "browserslist-config-erb": "^0.0.3",
     "chalk": "^4.1.0",
     "clean-webpack-plugin": "^3.0.0",
     "concurrently": "^5.3.0",

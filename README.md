@@ -125,7 +125,7 @@ Setup the *code signing* to build, package and publish the app.
 - Rename *sample.env* file as *.env*
 - Update APPLEID in *.env* file
 - Log into your [Apple Account](https://appleid.apple.com/account/manage "Apple Account")
-- Goto **Security > App-Specific Passwords**
+- Goto **Sign-In and Security > App-Specific Passwords**
 - Click on **Generate Password...**, enter a password label and click *Create*
 - Copy the displayed *app-specific-password*
 - Run
@@ -166,7 +166,7 @@ $ yarn package-all
 
 
 ### Technical Features
-- Built using Electron v11 and React v17
+- Built using Electron v17 and React v18
 - Loadables, Dynamic Reducer Injection, Selectors for code splitting and performance optimization
 - Hot module reload (HMR) for instant feedback
 - Inbuilt error logging and profile/settings management

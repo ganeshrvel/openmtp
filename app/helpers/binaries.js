@@ -12,21 +12,8 @@ import { KALAM_MINIMUM_SUPPORTED_MACOS_VERSION } from '../constants';
 const { root } = PATHS;
 
 const binariesPath = ({ includeArchDirectory = true }) => {
-  const binDir = path.join(root, './build', getPlatform(), './bin');
-
-  // todo fix
-  console.log('fix this');
-  /// release build binaries path
-  if (IS_PROD && isPackaged) {
-    return path.join(root, './Contents', './Resources', './bin');
-  }
-
-  /// debug build binaries path
-
-  /// if [includeArchDirectory] is true then dont include the architecture directories
-  if (!includeArchDirectory) {
-    return binDir;
-  }
+  const isPackagedBuild = IS_PROD && isPackaged;
+  const debugBinDir = path.join(root, './build', getPlatform(), './bin');
 
   const supportedSystemArchitecture = getBinariesSupportedSystemArchitecture();
   const doesCurrentOsSupportLatestBinaries =
@@ -34,18 +21,42 @@ const binariesPath = ({ includeArchDirectory = true }) => {
       KALAM_MINIMUM_SUPPORTED_MACOS_VERSION[supportedSystemArchitecture]
     );
 
-  let binariesDir;
+  let binariesArchDir;
 
   if (doesCurrentOsSupportLatestBinaries) {
-    binariesDir = getBinariesSupportedSystemArchitecture();
+    binariesArchDir = getBinariesSupportedSystemArchitecture();
   } else {
-    binariesDir = path.join(
+    binariesArchDir = path.join(
       'historic',
       getBinariesSupportedSystemArchitecture()
     );
   }
 
-  return path.join(binDir, binariesDir);
+  /// release build binaries path
+  if (isPackagedBuild) {
+    const packagedBinDir = path.join(
+      root,
+      './Contents',
+      './Resources',
+      './bin'
+    );
+
+    /// if [includeArchDirectory] is true then dont include the architecture directories
+    if (!includeArchDirectory) {
+      return packagedBinDir;
+    }
+
+    return path.join(packagedBinDir, binariesArchDir);
+  }
+
+  /// debug build binaries path
+
+  /// if [includeArchDirectory] is true then dont include the architecture directories
+  if (!includeArchDirectory) {
+    return debugBinDir;
+  }
+
+  return path.join(debugBinDir, binariesArchDir);
 };
 
 export const mtpCliPath = path.resolve(
