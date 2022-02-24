@@ -36,7 +36,7 @@ Do checkout the Go package which I've written to build Kalam Kernel: [github.com
 
 ### Installation
 * Download the [Latest Version](https://openmtp.ganeshrvel.com/?downloadApp=github&release=stable&platform=mac 'Latest Version')
-* Download the **ALPHA Version** of the [Macbook M1 Apple silicon Version](https://github.com/ganeshrvel/openmtp/issues/220#issuecomment-1050236345 'Macbook M1 Apple silicon Version') (**Unstable**)
+* Download the [Macbook M1 Apple silicon Version](https://github.com/ganeshrvel/openmtp/issues/220#issuecomment-1050236345 'Macbook M1 Apple silicon Version') (**ALPHA Version**)
   
 * Using Homebrew Cask
 ```shell
