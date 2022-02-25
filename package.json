@@ -63,6 +63,7 @@
     "copyright": "© Ganesh Rathinavel",
     "afterPack": "./internals/scripts/AfterPack.js",
     "afterSign": "./internals/scripts/Notarize.js",
+    "npmRebuild": false,
     "publish": [
       {
         "provider": "github",
@@ -104,10 +105,10 @@
         "NSPhotoLibraryUsageDescription": "Photo library access"
       },
       "target": {
-        "target": "default",
+        "target": "dmg",
         "arch": [
-          "arm64",
-          "x64"
+          "x64",
+          "arm64"
         ]
       }
     },
@@ -274,7 +275,6 @@
     "electron-devtools-installer": "^3.2.0",
     "electron-download": "^4.1.1",
     "electron-notarize": "^1.1.1",
-    "electron-rebuild": "^3.2.7",
     "eslint": "^8.9.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "^6.15.0",
