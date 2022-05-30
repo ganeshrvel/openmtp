@@ -35,7 +35,7 @@ const LIBUSB_BREW_BOTTLES = {
 };
 
 async function getCmd(cmd) {
-  const op = await $`pwd`;
+  const op = await $`${cmd}`;
 
   return op.stdout.trimEnd();
 }

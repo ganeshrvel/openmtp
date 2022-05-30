@@ -34,6 +34,13 @@ export class GoogleAnalytics {
 
   async init() {
     try {
+      /// todo delete this block
+      // return;
+      console.log('todo');
+      return ;
+      //////
+
+
       // this is a hashed value (sha-256)
       this.machineId = await machineId();
 
@@ -72,6 +79,13 @@ export class GoogleAnalytics {
   }
 
   async sendDeviceInfo({ deviceInfo, mtpMode }) {
+    /// todo delete this block
+    // return;
+    console.log('todo');
+    return ;
+    //////
+
+
     checkIf(deviceInfo, 'object');
     checkIf(mtpMode, 'inObjectValues', MTP_MODE);
 

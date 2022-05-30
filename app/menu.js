@@ -54,6 +54,12 @@ export default class MenuBuilder {
     console.log('todo');
 
     // this.mainWindow.openDevTools();
+
+
+    // todo to fix the `ld: warning: ignoring file` issue.
+    //https://github.com/prebuild/prebuildify
+    // https://github.com/nodejs/node-gyp/issues/2586
+    // https://medium.com/mkdir-awesome/how-to-install-x86-64-homebrew-packages-on-apple-m1-macbook-54ba295230f
   }
 
   buildDarwinTemplate() {

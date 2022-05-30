@@ -1,7 +1,7 @@
 {
   "name": "openmtp",
   "productName": "OpenMTP",
-  "version": "3.2.0-alpha.1",
+  "version": "3.2.0-alpha.2",
   "description": "OpenMTP | Android File Transfer for macOS",
   "scripts": {
     "build": "yarn lint && concurrently \"yarn build-main\" \"yarn build-renderer\"",
@@ -56,6 +56,9 @@
   },
   "browserslist": [],
   "main": "./app/main.prod.js",
+  "resolutions": {
+    "node-abi": "^3.8.0"
+  },
   "build": {
     "productName": "OpenMTP",
     "appId": "io.ganeshrvel.openmtp",
@@ -105,11 +108,7 @@
         "NSPhotoLibraryUsageDescription": "Photo library access"
       },
       "target": {
-        "target": "dmg",
-        "arch": [
-          "x64",
-          "arm64"
-        ]
+        "target": "dmg"
       }
     },
     "mas": {
@@ -256,7 +255,7 @@
     "@babel/preset-env": "^7.12.1",
     "@babel/preset-react": "^7.12.1",
     "@babel/register": "^7.12.1",
-    "@sentry/cli": "^1.60.1",
+    "@sentry/cli": "2.1.0",
     "@sentry/webpack-plugin": "^1.14.0",
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "^10.1.0",
