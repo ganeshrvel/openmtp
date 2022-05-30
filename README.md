@@ -91,6 +91,12 @@ Requirements: [Node.js v10](https://nodejs.org/en/download/ "Install Node.js v10
 $ git clone https://github.com/ganeshrvel/openmtp.git
 
 $ cd openmtp
+
+# install yarn
+npm install -g yarn
+
+# install sentry cli
+npm -g i @sentry/cli
 ```
 
 ```shell
@@ -130,13 +136,15 @@ Setup the *code signing* to build, package and publish the app.
 - Copy the displayed *app-specific-password*
 - Run
 ```shell
-security add-generic-password -a "<apple-developer-account-username>" -w <app-specific-password*> -s "ELECTRON_NOTORIZE_PASSWORD"
+security add-generic-password -a "<apple-developer-account-username>" -w <app-specific-password> -s "ELECTRON_NOTORIZE_PASSWORD"
 ```
 
 - Log into your [Apple App Store Connect Account](https://appstoreconnect.apple.com/agreements/# "Apple App Store Connect Account") and accept the presented terms and conditions
 - The statuses shall turn *Active*
 
 **Sentry**
+
+- Auth Tokens Settings page: [https://sentry.io/settings/account/api/auth-tokens/](https://sentry.io/settings/account/api/auth-tokens/)
 
 ```shell
 npm install -g @sentry/wizard
@@ -148,6 +156,7 @@ node sentry-symbols.js
 
 sentry-cli login
 ```
+
 
 **Packaging**
 Instructions: [https://www.electron.build/code-signing](https://www.electron.build/code-signing "https://www.electron.build/code-signing")

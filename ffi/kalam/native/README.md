@@ -42,12 +42,6 @@ nvm use 16
 
 #install zx globally
 npm -g i zx
-
-# install yarn
-npm install -g yarn
-
-# install sentry cli
-npm -g i @sentry/cli
 ```
 
 - In case of permission error with sentry follow this url: https://docs.npmjs.com/resolving-eacces-permissions-errors-when-installing-packages-globally#manually-change-npms-default-directory
@@ -55,9 +49,6 @@ npm -g i @sentry/cli
 ```shell
 zx ./ffi/kalam/native/scripts/build.mjs
 ```
-
-##<! -- end here -- >##
-
 
 ## Do not follow the sections below anymore. These commands are just for the documentation
 

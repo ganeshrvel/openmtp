@@ -23,6 +23,7 @@
     "start-main-dev": "cross-env START_HOT=1 NODE_ENV=development run-electron -r @babel/register ./app/main.dev.js",
     "start-renderer-dev": "cross-env NODE_ENV=development webpack serve --config webpack/config.renderer.dev.babel.js",
     "publish-mac": "yarn build && electron-builder build --mac --publish always",
+    "publish-mac-no-verify": "yarn build-no-verify && cross-env electron-builder build --mac --publish always",
     "dev-docs": "cross-env NODE_ENV=development webpack-dev-server --config docs-sources/webpack/webpack.config.base.js",
     "build-docs": "cross-env NODE_ENV=production webpack --config docs-sources/webpack/webpack.config.base.js && git add .",
     "lint": "cross-env NODE_ENV=development eslint --cache --format=pretty --ext .js --ext .jsx .",

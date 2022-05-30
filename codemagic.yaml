@@ -1,0 +1,27 @@
+workflows:
+  macos-build:
+    name: macOS Build
+    instance_type: mac_mini
+    environment:
+      groups:
+        - macos_release
+      node: 16.15.0
+
+    scripts:
+      - name: Injecting env vars
+        script: echo "APPLEID=$APPLEID" >> .env
+      - name: Injecting sentry token vars
+        script: echo "[auth]\ntoken=$SENTRY_TOKEN_ID" >> ~/.sentryclirc
+      - name: Adding Apple app specific password to the keychain
+        script: security add-generic-password -a "$APPLEID" -w $APPLE_APP_SPECIFIC_PASSWORD -s "ELECTRON_NOTORIZE_PASSWORD"
+      - name: Installing yarn
+        script: npm install -g yarn
+      - name: Sentry CLI
+        script: npm -g i @sentry/cli
+      - name: Installing packages
+        script: yarn
+      - name: Publishing Package to Github
+        script: GH_TOKEN=$CODEMAGIC_GH_TOKEN yarn publish-mac-no-verify
+
+    artifacts:
+      - dist/*.dmg
