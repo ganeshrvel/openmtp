@@ -19,7 +19,7 @@ workflows:
       - name: Installing yarn
         script: npm install -g yarn --force
       - name: Sentry CLI
-        script: npm -g i @sentry/cli
+        script: npm -g i @sentry/cli --force
       - name: Installing packages
         script: yarn
       - name: Publishing Package to Github
