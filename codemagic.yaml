@@ -6,14 +6,16 @@ workflows:
       groups:
         - macos_release
       node: 16.15.0
+      npm: latest
+      xcode: 13.2.1
 
     scripts:
       - name: Injecting env vars
-        script: echo "APPLEID=$APPLEID" >> .env
+        script: echo "APPLEID=$APPLEID\nELECTRON_NOTORIZE_PASSWORD=$APPLE_APP_SPECIFIC_PASSWORD" >> .env
       - name: Injecting sentry token vars
         script: echo "[auth]\ntoken=$SENTRY_TOKEN_ID" >> ~/.sentryclirc
-      - name: Adding Apple app specific password to the keychain
-        script: security add-generic-password -a "$APPLEID" -w $APPLE_APP_SPECIFIC_PASSWORD -s "ELECTRON_NOTORIZE_PASSWORD"
+#      - name: Adding Apple app specific password to the keychain
+#        script: security add-generic-password -a "$APPLEID" -w $APPLE_APP_SPECIFIC_PASSWORD -s "ELECTRON_NOTORIZE_PASSWORD"
       - name: Installing yarn
         script: npm install -g yarn
       - name: Sentry CLI
@@ -25,3 +27,4 @@ workflows:
 
     artifacts:
       - dist/*.dmg
+

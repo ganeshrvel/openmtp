@@ -21,7 +21,9 @@ exports.default = async (context) => {
   const appName = context.packager.appInfo.productFilename;
   const appPath = path.join(appOutDir, `${appName}.app`);
   const appleId = process.env.APPLEID;
-  const appleIdPassword = `@keychain:ELECTRON_NOTORIZE_PASSWORD`;
+  //todo remove this
+  //const appleIdPassword = `@keychain:ELECTRON_NOTORIZE_PASSWORD`;
+  const appleIdPassword = process.env.ELECTRON_NOTORIZE_PASSWORD;
 
   if (!fs.existsSync(appPath)) {
     throw new Error(`Cannot find application at: ${appPath}`);
