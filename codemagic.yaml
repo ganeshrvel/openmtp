@@ -15,9 +15,13 @@ workflows:
       - name: Connecting to the app store
         script: |
           app-store-connect fetch-signing-files $BUNDLE_ID \
+          --platform MAC_OS \
           --type MAC_APP_DIRECT \
-          --certificate-key=@file:/tmp/mac-direct-cert \
           --create
+      - name: Fetch Mac Installer Distribution certificates
+        script: |
+          app-store-connect create-certificate --type MAC_INSTALLER_DISTRIBUTION --save || \
+            app-store-connect list-certificates --type MAC_INSTALLER_DISTRIBUTION --save
       - name: Adding certificates to the keychain
         script: keychain add-certificates
       - name: Update the Xcode project settings
