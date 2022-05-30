@@ -17,7 +17,7 @@ workflows:
 #      - name: Adding Apple app specific password to the keychain
 #        script: security add-generic-password -a "$APPLEID" -w $APPLE_APP_SPECIFIC_PASSWORD -s "ELECTRON_NOTORIZE_PASSWORD"
       - name: Installing yarn
-        script: npm install -g yarn
+        script: npm install -g yarn --force
       - name: Sentry CLI
         script: npm -g i @sentry/cli
       - name: Installing packages
