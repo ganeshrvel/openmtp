@@ -5,8 +5,6 @@ workflows:
     environment:
       groups:
         - mac_release
-        - app_store_key_properties
-        - certificate
       node: 16.15.0
       npm: latest
       xcode: 13.2.1
