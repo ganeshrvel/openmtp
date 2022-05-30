@@ -4,7 +4,7 @@ workflows:
     instance_type: mac_mini
     environment:
       groups:
-        - macos_release
+        - mac_release
       node: 16.15.0
       npm: latest
       xcode: 13.2.1
