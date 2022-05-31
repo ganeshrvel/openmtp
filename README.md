@@ -123,13 +123,48 @@ $ yarn start
 
 ```
 
+### CI/CD Setup:
+- CodeMagic.io
+  - Create a new App (Choose others -> Enter Electron)
+  - Environment variables:
+    - `APPLEID`: `<Apple developer account username>`
+    - `APPLE_APP_SPECIFIC_PASSWORD`: `<App-Specific Password>`
+      - Log into your [Apple Account](https://appleid.apple.com/account/manage "Apple Account")
+      - Goto **Sign-In and Security > App-Specific Passwords**
+      - Click on **Generate Password...**, enter a password label and click *Create*
+      - Copy the displayed *app-specific-password*
+    - `SENTRY_URL`: `https://sentry.io/`
+    - `SENTRY_ORG`: `<Sentry Organization Name>`
+    - `SENTRY_PROJECT`: `<Sentry Project>`
+    - `SENTRY_TOKEN_ID`: `<Sentry Auth Token>`
+      - Find it from here: [Auth Tokens](https://sentry.io/settings/account/api/auth-tokens/)
+      - Scopes: `event:admin, event:read, member:read, org:read, project:read, project:releases, team:read`
+    - `CODEMAGIC_GH_TOKEN`: `Personal access token`
+      - Find it from here: [Personal access tokens](https://github.com/settings/tokens)
+      - Scopes: `admin:gpg_key, admin:public_key, repo, user, workflow`
+    - `BUNDLE_ID`: `io.ganeshrvel.openmtp`
+    - `CSC_LINK`:
+      - Keychain -> Login (Default Keychains)
+      - Expand `Developer ID Application: <User Name> (XXXYYYZZZ)`
+      - Right Click -> `Mac Developer ID Application: <User Name>`
+      - Export `Mac Developer ID Application: <User Name>`
+      - File name: `CERTIFICATE_PRIVATE_KEY.p12`
+      - Enter Password. This is the `CSC_KEY_PASSWORD`, note this down
+      - Run: `base64 -i CERTIFICATE_PRIVATE_KEY.p12 -o CERTIFICATE_PRIVATE_KEY.txt`
+      - Copy the whole content of the file `CERTIFICATE_PRIVATE_KEY.txt`
+      - Paste the content as the value for the field `CSC_LINK`
+    - `CSC_KEY_PASSWORD` is the password from the above step
+    - References: 
+      - [https://www.electron.build/code-signing.html](https://www.electron.build/code-signing.html)
+      - [https://docs.codemagic.io/yaml-code-signing/signing-macos/#saving-the-api-key-to-environment-variables](https://docs.codemagic.io/yaml-code-signing/signing-macos/#saving-the-api-key-to-environment-variables)
+
 ### Package
 
 Setup the *code signing* to build, package and publish the app.
 
 **App Notarization for macOS** (skip this section for non macOS builds)
 - Rename *sample.env* file as *.env*
-- Update APPLEID in *.env* file
+- To update `APPLEID` and `ELECTRON_NOTORIZE_PASSWORD` in *.env* file
 - Log into your [Apple Account](https://appleid.apple.com/account/manage "Apple Account")
 - Goto **Sign-In and Security > App-Specific Passwords**
 - Click on **Generate Password...**, enter a password label and click *Create*
