@@ -25,9 +25,6 @@ exports.default = async (context) => {
   //const appleIdPassword = `@keychain:ELECTRON_NOTORIZE_PASSWORD`;
   const appleIdPassword = process.env.ELECTRON_NOTORIZE_PASSWORD;
 
-  console.log("process.env", JSON.stringify(process.env))
-  console.log("appleIdPassword", appleIdPassword)
-
   if (!fs.existsSync(appPath)) {
     throw new Error(`Cannot find application at: ${appPath}`);
   }
