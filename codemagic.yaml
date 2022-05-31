@@ -1,7 +1,7 @@
 workflows:
   macos-build:
     name: macOS Build
-    instance_type: mac_mini_m1
+    instance_type: mac_mini
     environment:
       groups:
         - mac_release
