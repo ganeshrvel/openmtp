@@ -16,7 +16,7 @@ workflows:
         script: |
           app-store-connect fetch-signing-files $BUNDLE_ID \
           --platform MAC_OS \
-          --type MAC_APP_DEVELOPMENT \
+          --type MAC_APP_STORE \
           --create
       - name: Fetch Mac Installer Distribution certificates
         script: |
