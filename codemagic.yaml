@@ -10,30 +10,12 @@ workflows:
       xcode: 13.2.1
 
     scripts:
-#      - name: Keychain initialize
-#        script: keychain initialize
-#      - name: Connecting to the app store
-#        script: |
-#          app-store-connect fetch-signing-files $BUNDLE_ID \
-#          --platform MAC_OS \
-#          --type MAC_APP_STORE \
-#          --create
-#      - name: Fetch Mac Installer Distribution certificates
-#        script: |
-#          app-store-connect create-certificate --type MAC_INSTALLER_DISTRIBUTION --save || \
-#            app-store-connect list-certificates --type MAC_INSTALLER_DISTRIBUTION --save
-#      - name: Adding certificates to the keychain
-#        script: keychain add-certificates
-#      - name: Update the Xcode project settings
-#        script: xcode-project use-profiles
       - name: Creating `.env` file
         script: printf "APPLEID=$APPLEID\r\nELECTRON_NOTORIZE_PASSWORD=$APPLE_APP_SPECIFIC_PASSWORD" >> .env
       - name: Creating `~/.sentryclirc` file
         script: printf "[auth]\ntoken=$SENTRY_TOKEN_ID" >> ~/.sentryclirc
       - name: Creating `sentry.properties` file
         script: printf "defaults.url=$SENTRY_URL\ndefaults.org=$SENTRY_ORG\ndefaults.project=$SENTRY_PROJECT\nauth.token=$SENTRY_TOKEN_ID" >> sentry.properties
-      #      - name: Adding Apple app specific password to the keychain
-      #        script: security add-generic-password -a "$APPLEID" -w $APPLE_APP_SPECIFIC_PASSWORD -s "ELECTRON_NOTORIZE_PASSWORD"
       - name: Installing yarn
         script: npm install -g yarn --force
       - name: Sentry CLI
@@ -42,9 +24,3 @@ workflows:
         script: yarn
       - name: Publishing Package to Github
         script: GH_TOKEN=$CODEMAGIC_GH_TOKEN yarn publish-mac-no-verify
-#      - name: Restoring the default Keychain
-#        script: keychain use-login
-
-#    artifacts:
-#      - dist/*.dmg
-

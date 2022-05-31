@@ -108,9 +108,10 @@
         "NSRemovableVolumesUsageDescription": "Removable Disk access",
         "NSPhotoLibraryUsageDescription": "Photo library access"
       },
-      "target": {
-        "target": "dmg"
-      }
+      "target": [
+        "dmg",
+        "zip"
+      ]
     },
     "mas": {
       "type": "distribution",
