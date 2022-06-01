@@ -1,7 +1,35 @@
 workflows:
-  macos-build:
-    name: macOS Build
+  macos-m1-arm64-build:
+    name: macOS M1 arm64 Build
     instance_type: mac_mini_m1
+    environment:
+      groups:
+        - mac_release
+      node: 16.15.0
+      npm: latest
+      xcode: latest
+
+    scripts:
+      - name: Creating `.env` file
+        script: printf "APPLEID=$APPLEID\r\nELECTRON_NOTORIZE_PASSWORD=$APPLE_APP_SPECIFIC_PASSWORD" >> .env
+      - name: Creating `~/.sentryclirc` file
+        script: printf "[auth]\ntoken=$SENTRY_TOKEN_ID" >> ~/.sentryclirc
+      - name: Creating `sentry.properties` file
+        script: printf "defaults.url=$SENTRY_URL\ndefaults.org=$SENTRY_ORG\ndefaults.project=$SENTRY_PROJECT\nauth.token=$SENTRY_TOKEN_ID" >> sentry.properties
+#      - name: Installing yarn
+#        script: npm install -g yarn --force
+#      - name: Installing Sentry CLI
+#        script: npm -g i @sentry/cli --force
+#      - name: Installing node-gyp
+#        script: npm -g i node-gyp --force
+#      - name: Installing packages
+#        script: yarn
+#      - name: Publishing Package to Github
+#        script: GH_TOKEN=$CODEMAGIC_GH_TOKEN yarn publish-mac-no-verify
+
+  macos-intel-x64-build:
+    name: macOS Intel x64 Build
+    instance_type: mac_mini
     environment:
       groups:
         - mac_release
