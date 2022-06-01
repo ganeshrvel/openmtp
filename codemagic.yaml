@@ -7,7 +7,7 @@ workflows:
         - mac_release
       node: 16.15.0
       npm: latest
-      xcode: 13.2.1
+      xcode: latest
 
     scripts:
       - name: Creating `.env` file
