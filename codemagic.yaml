@@ -18,8 +18,10 @@ workflows:
         script: printf "defaults.url=$SENTRY_URL\ndefaults.org=$SENTRY_ORG\ndefaults.project=$SENTRY_PROJECT\nauth.token=$SENTRY_TOKEN_ID" >> sentry.properties
       - name: Installing yarn
         script: npm install -g yarn --force
-      - name: Sentry CLI
+      - name: Installing Sentry CLI
         script: npm -g i @sentry/cli --force
+      - name: Installing node-gyp
+        script: npm -g i node-gyp --force
       - name: Installing packages
         script: yarn
       - name: Publishing Package to Github
