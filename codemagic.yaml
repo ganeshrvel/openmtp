@@ -25,7 +25,9 @@ workflows:
       - name: Creating `sentry.properties` file
         script: printf "defaults.url=$SENTRY_URL\ndefaults.org=$SENTRY_ORG\ndefaults.project=$SENTRY_PROJECT\nauth.token=$SENTRY_TOKEN_ID" >> sentry.properties
       - name: Installing global packages
-        script: npm install -g yarn @sentry/cli node-gyp zx yarn concurrently --force
+        script: npm install -g yarn @sentry/cli node-gyp zx yarn --force
+      - name: Installing app packages
+        script: yarn
       - name: Building the Package
         # todo replace package-mac-without-notarize-no-verify with package-mac
         script: GH_TOKEN=$CODEMAGIC_GH_TOKEN yarn package-mac-without-notarize-no-verify
@@ -66,7 +68,9 @@ workflows:
       - name: Creating `sentry.properties` file
         script: printf "defaults.url=$SENTRY_URL\ndefaults.org=$SENTRY_ORG\ndefaults.project=$SENTRY_PROJECT\nauth.token=$SENTRY_TOKEN_ID" >> sentry.properties
       - name: Installing global packages
-        script: npm install -g yarn @sentry/cli node-gyp zx yarn concurrently --force
+        script: npm install -g yarn @sentry/cli node-gyp zx yarn --force
+      - name: Installing app packages
+        script: yarn
       - name: Building the Package
         # todo replace package-mac-without-notarize-no-verify with package-mac
         script: GH_TOKEN=$CODEMAGIC_GH_TOKEN yarn package-mac-without-notarize-no-verify
