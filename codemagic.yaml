@@ -38,7 +38,7 @@ workflows:
           touch ~/ARTIFACT_BUILD_SUCCESS
 
     artifacts:
-      - dist/mac_m1_arm64_artifacts.tar.gz
+      - dist/mac_m1_arm64_artifacts.zip
 
     publishing:
       scripts:

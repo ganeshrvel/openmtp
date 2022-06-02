@@ -5,6 +5,7 @@ import { packageDirectory } from "pkg-dir";
 import axiosPackage from "axios";
 import process from "process";
 import { spawn } from "child_process";
+import { ensureDirSync } from "fs-extra";
 
 require("dotenv").config();
 
@@ -14,10 +15,16 @@ $.shell = "/bin/zsh";
 await $`export LANG=en_US.UTF-8`;
 await $`export LC_ALL=en_US.UTF-8`;
 
+const DIR_MODE = 0o2775;
 const PKG_ROOT_DIR = await packageDirectory();
+const TEMP_ROOT_DIR = `${PKG_ROOT_DIR}/tmp`;
 
 console.log("=== process.env.CM_ARTIFACT_LINKS_M1_ARM64", process.env.CM_ARTIFACT_LINKS_M1_ARM64);
+console.log("=== JSON.parse process.env.CM_ARTIFACT_LINKS_M1_ARM64", JSON.parse(process.env.CM_ARTIFACT_LINKS_M1_ARM64));
 console.log("=== typeof process.env.CM_ARTIFACT_LINKS_M1_ARM64", typeof process.env.CM_ARTIFACT_LINKS_M1_ARM64);
+
+console.info(`creating the temp directory in ${TEMP_ROOT_DIR}...\n`);
+await ensureDirSync(TEMP_ROOT_DIR, DIR_MODE);
 
 // const cliArgs = basicArgs({
 //   name: 'codemagic-start-mac-intel-x64-vm',
