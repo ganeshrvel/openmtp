@@ -109,11 +109,7 @@
         "NSPhotoLibraryUsageDescription": "Photo library access"
       },
       "target": {
-        "target": "default",
-        "arch": [
-          "x64",
-          "arm64"
-        ]
+        "target": "default"
       }
     },
     "mas": {
