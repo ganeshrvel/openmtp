@@ -44,7 +44,7 @@ console.log("=== process.env.CM_ARTIFACT_LINKS", process.env.CM_ARTIFACT_LINKS)
 
 const buildResponse = await axios.post("/builds", {
   "appId": `${process.env.CODEMAGIC_APP_ID}`,
-  "workflowId": `${process.env.CODEMAGIC_WORKFLOW_ID}`,
+  "workflowId": `${process.env.CODEMAGIC_INTEL_X64_WORKFLOW_ID}`,
   "branch": `${process.env.CODEMAGIC_GIT_BRANCH}`
 });
 
