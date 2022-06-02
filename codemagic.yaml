@@ -16,16 +16,21 @@ workflows:
         script: printf "[auth]\ntoken=$SENTRY_TOKEN_ID" >> ~/.sentryclirc
       - name: Creating `sentry.properties` file
         script: printf "defaults.url=$SENTRY_URL\ndefaults.org=$SENTRY_ORG\ndefaults.project=$SENTRY_PROJECT\nauth.token=$SENTRY_TOKEN_ID" >> sentry.properties
-#      - name: Installing yarn
-#        script: npm install -g yarn --force
-#      - name: Installing Sentry CLI
-#        script: npm -g i @sentry/cli --force
-#      - name: Installing node-gyp
-#        script: npm -g i node-gyp --force
-#      - name: Installing packages
-#        script: yarn
-#      - name: Publishing Package to Github
-#        script: GH_TOKEN=$CODEMAGIC_GH_TOKEN yarn publish-mac-no-verify
+      - name: Installing global packages
+        script: npm install -g yarn @sentry/cli node-gyp zx yarn --force
+      - name: Building the Package
+        # todo replace package-mac-without-notarize-no-verify with package-mac
+        script: GH_TOKEN=$CODEMAGIC_GH_TOKEN yarn package-mac-without-notarize-no-verify
+
+    artifacts:
+      - dist/*.dmg
+      - dist/*.zip
+      - dist/*.blockmap
+      - dist/*.yml
+
+    publishing:
+      scripts:
+        - ./scripts/codemagic-start-mac-intel-x64-vm.mjs
 
   macos-intel-x64-build:
     name: macOS Intel x64 Build
@@ -44,13 +49,8 @@ workflows:
         script: printf "[auth]\ntoken=$SENTRY_TOKEN_ID" >> ~/.sentryclirc
       - name: Creating `sentry.properties` file
         script: printf "defaults.url=$SENTRY_URL\ndefaults.org=$SENTRY_ORG\ndefaults.project=$SENTRY_PROJECT\nauth.token=$SENTRY_TOKEN_ID" >> sentry.properties
-      - name: Installing yarn
-        script: npm install -g yarn --force
-      - name: Installing Sentry CLI
-        script: npm -g i @sentry/cli --force
-      - name: Installing node-gyp
-        script: npm -g i node-gyp --force
-      - name: Installing packages
-        script: yarn
-      - name: Publishing Package to Github
-        script: GH_TOKEN=$CODEMAGIC_GH_TOKEN yarn publish-mac-no-verify
+      - name: Installing global packages
+        script: npm install -g yarn @sentry/cli node-gyp zx yarn --force
+      - name: Building the Package
+        # todo replace package-mac-without-notarize-no-verify with package-mac
+        script: GH_TOKEN=$CODEMAGIC_GH_TOKEN yarn package-mac-without-notarize-no-verify
