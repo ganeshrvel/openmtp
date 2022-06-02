@@ -83,7 +83,8 @@ workflows:
         # todo replace package-mac-without-notarize-no-verify with package-mac
         script: GH_TOKEN=$CODEMAGIC_GH_TOKEN yarn package-mac-without-notarize-no-verify
       - name: Build finished successfully
-        script: export ARTIFACT_BUILD_SUCCESS=true
+        script: |
+          touch ~/ARTIFACT_BUILD_SUCCESS
 
     publishing:
       scripts:
