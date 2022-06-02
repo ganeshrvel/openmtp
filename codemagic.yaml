@@ -32,21 +32,21 @@ workflows:
         # todo replace package-mac-without-notarize-no-verify with package-mac
         script: GH_TOKEN=$CODEMAGIC_GH_TOKEN yarn package-mac-without-notarize-no-verify
       - name: Build finished successfully
-        script: export ARTIFACT_BUILD_SUCCESS=true
+        script: |
+          tar -zcvf mac_m1_arm64_artifacts.tar.gz *.dmg *.zip *.yml
+          touch ~/ARTIFACT_BUILD_SUCCESS
 
     artifacts:
-      - dist/*.dmg
-      - dist/*.zip
-      - dist/*.yml
+      - dist/mac_m1_arm64_artifacts.tar.gz
 
     publishing:
       scripts:
         - name: Starting post build scripts
           script: |
-            if [[ -z "${ARTIFACT_BUILD_SUCCESS}" ]]; then
-              echo "Build was unsuccessful. Skipping the launch of post build scripts"
-            else
+            if [ -e ~/ARTIFACT_BUILD_SUCCESS ]; then
               ./scripts/codemagic-start-mac-intel-x64-vm.mjs
+            else
+              echo "Build was unsuccessful. Skipping the launch of post build scripts"
             fi
 
   macos-intel-x64-build:
@@ -88,8 +88,8 @@ workflows:
       scripts:
         - name: Starting post build scripts
           script: |
-            if [[ -z "${ARTIFACT_BUILD_SUCCESS}" ]]; then
-              echo "Build was unsuccessful. Skipping the launch of post build scripts"
-            else
+            if [ -e ~/ARTIFACT_BUILD_SUCCESS ]; then
               ./scripts/codemagic-process-mac-m1-arm64-build.mjs
+            else
+              echo "Build was unsuccessful. Skipping the launch of post build scripts"
             fi
