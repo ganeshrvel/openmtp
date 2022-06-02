@@ -52,7 +52,15 @@ workflows:
 
     scripts:
       - name: Creating `.env` file
-        script: printf "APPLEID=$APPLEID\r\nELECTRON_NOTORIZE_PASSWORD=$APPLE_APP_SPECIFIC_PASSWORD" >> .env
+        script: |
+          sh -c "cat >> text.txt << 'EOL'
+            APPLEID=$APPLEID
+            ELECTRON_NOTORIZE_PASSWORD=$APPLE_APP_SPECIFIC_PASSWORD
+            CODEMAGIC_AUTH_TOKEN_ID=$CODEMAGIC_AUTH_TOKEN_ID
+            CODEMAGIC_APP_ID=$CODEMAGIC_APP_ID
+            CODEMAGIC_INTEL_X64_WORKFLOW_ID=$CODEMAGIC_INTEL_X64_WORKFLOW_ID
+            CODEMAGIC_GIT_BRANCH=$CODEMAGIC_GIT_BRANCH
+          EOL"
       - name: Creating `~/.sentryclirc` file
         script: printf "[auth]\ntoken=$SENTRY_TOKEN_ID" >> ~/.sentryclirc
       - name: Creating `sentry.properties` file
