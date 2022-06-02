@@ -33,6 +33,7 @@ workflows:
         script: GH_TOKEN=$CODEMAGIC_GH_TOKEN yarn package-mac-without-notarize-no-verify
       - name: Build finished successfully
         script: |
+          cd dist
           tar -zcvf mac_m1_arm64_artifacts.tar.gz *.dmg *.zip *.yml
           touch ~/ARTIFACT_BUILD_SUCCESS
 
