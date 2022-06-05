@@ -22,14 +22,16 @@ axios.defaults.headers.common["Content-Type"] = "application/json";
 axios.defaults.headers.common["x-auth-token"] = process.env.CODEMAGIC_AUTH_TOKEN_ID;
 axios.defaults.timeout = 15000;
 
+// starting a new codemagic `macos-intel-x64-build` instance
+console.info(`starting a new CodeMagic 'macos-intel-x64-build' instance...\n`);
 try {
-  await axios.post("/build", {
-    "appId": `${process.env.CODEMAGIC_APP_ID}`,
-    "workflowId": `${process.env.CODEMAGIC_INTEL_X64_WORKFLOW_ID}`,
-    "branch": `${process.env.CODEMAGIC_GIT_BRANCH}`,
-    "environment": {
-      "variables": {
-        "CM_ARTIFACT_LINKS_M1_ARM64": process.env.CM_ARTIFACT_LINKS
+  await axios.post("/builds", {
+    appId: `${process.env.CODEMAGIC_APP_ID}`,
+    workflowId: `${process.env.CODEMAGIC_INTEL_X64_WORKFLOW_ID}`,
+    branch: `${process.env.CODEMAGIC_GIT_BRANCH}`,
+    environment: {
+      variables: {
+        CM_ARTIFACT_LINKS_M1_ARM64: process.env.CM_ARTIFACT_LINKS
       }
     }
   });
