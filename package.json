@@ -293,6 +293,7 @@
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^4.5.0",
     "husky": "^4.3.8",
+    "js-yaml": "^4.1.0",
     "lint-staged": "^12.3.3",
     "mini-css-extract-plugin": "^2.5.3",
     "node-abi": "^3.8.0",

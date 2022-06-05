@@ -1,7 +1,6 @@
 #!/usr/bin/env zx
 
 import "zx/globals";
-import { packageDirectory } from "pkg-dir";
 import axiosPackage from "axios";
 import process from "process";
 
@@ -24,7 +23,7 @@ axios.defaults.headers.common["x-auth-token"] = process.env.CODEMAGIC_AUTH_TOKEN
 axios.defaults.timeout = 15000;
 
 try {
-  await axios.post("/bui", {
+  await axios.post("/build", {
     "appId": `${process.env.CODEMAGIC_APP_ID}`,
     "workflowId": `${process.env.CODEMAGIC_INTEL_X64_WORKFLOW_ID}`,
     "branch": `${process.env.CODEMAGIC_GIT_BRANCH}`,
@@ -35,5 +34,5 @@ try {
     }
   });
 } catch (e) {
-  throw Error(e);
+  throw new Error(e);
 }
