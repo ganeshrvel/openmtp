@@ -12,7 +12,7 @@ workflows:
     scripts:
       - name: Creating `.env` file
         script: |
-          sh -c "cat >> text.txt << 'EOL'
+          sh -c "cat >> .env << 'EOL'
             APPLEID=$APPLEID
             ELECTRON_NOTORIZE_PASSWORD=$APPLE_APP_SPECIFIC_PASSWORD
             CODEMAGIC_AUTH_TOKEN_ID=$CODEMAGIC_AUTH_TOKEN_ID
@@ -21,9 +21,20 @@ workflows:
             CODEMAGIC_GIT_BRANCH=$CODEMAGIC_GIT_BRANCH
           EOL"
       - name: Creating `~/.sentryclirc` file
-        script: printf "[auth]\ntoken=$SENTRY_TOKEN_ID" >> ~/.sentryclirc
+        script: |
+          sh -c "cat >> .sentryclirc << 'EOL'
+            [auth]
+            token=$SENTRY_TOKEN_ID
+          EOL"
       - name: Creating `sentry.properties` file
-        script: printf "defaults.url=$SENTRY_URL\ndefaults.org=$SENTRY_ORG\ndefaults.project=$SENTRY_PROJECT\nauth.token=$SENTRY_TOKEN_ID" >> sentry.properties
+        script: |
+          sh -c "cat >> sentry.properties << 'EOL'
+            [auth]
+            defaults.url=$SENTRY_URL
+            defaults.org=$SENTRY_ORG
+            defaults.project=$SENTRY_PROJECT
+            auth.token=$SENTRY_TOKEN_ID
+          EOL"
       - name: Installing global packages
         script: npm install -g yarn @sentry/cli node-gyp zx yarn --force
       - name: Installing app packages
@@ -64,7 +75,7 @@ workflows:
     scripts:
       - name: Creating `.env` file
         script: |
-          sh -c "cat >> text.txt << 'EOL'
+          sh -c "cat >> .env << 'EOL'
             APPLEID=$APPLEID
             ELECTRON_NOTORIZE_PASSWORD=$APPLE_APP_SPECIFIC_PASSWORD
             CODEMAGIC_AUTH_TOKEN_ID=$CODEMAGIC_AUTH_TOKEN_ID
@@ -73,9 +84,20 @@ workflows:
             CODEMAGIC_GIT_BRANCH=$CODEMAGIC_GIT_BRANCH
           EOL"
       - name: Creating `~/.sentryclirc` file
-        script: printf "[auth]\ntoken=$SENTRY_TOKEN_ID" >> ~/.sentryclirc
+        script: |
+          sh -c "cat >> .sentryclirc << 'EOL'
+            [auth]
+            token=$SENTRY_TOKEN_ID
+          EOL"
       - name: Creating `sentry.properties` file
-        script: printf "defaults.url=$SENTRY_URL\ndefaults.org=$SENTRY_ORG\ndefaults.project=$SENTRY_PROJECT\nauth.token=$SENTRY_TOKEN_ID" >> sentry.properties
+        script: |
+          sh -c "cat >> sentry.properties << 'EOL'
+            [auth]
+            defaults.url=$SENTRY_URL
+            defaults.org=$SENTRY_ORG
+            defaults.project=$SENTRY_PROJECT
+            auth.token=$SENTRY_TOKEN_ID
+          EOL"
       - name: Installing global packages
         script: npm install -g yarn @sentry/cli node-gyp zx yarn --force
       - name: Installing app packages
