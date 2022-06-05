@@ -137,9 +137,9 @@ $ yarn start
     - `SENTRY_ORG`: `<Sentry Organization Name>`
     - `SENTRY_PROJECT`: `<Sentry Project>`
     - `SENTRY_TOKEN_ID`: `<Sentry Auth Token>`
-      - Find it from here: [Auth Tokens](https://sentry.io/settings/account/api/auth-tokens/)
+      - Find it from here: [Auth Tokens](https://sentry.io/settings/account/api/auth-tokens)
       - Scopes: `event:admin, event:read, member:read, org:read, project:read, project:releases, team:read`
-    - `CODEMAGIC_GH_TOKEN`: `Personal access token`
+    - `GITHUB_TOKEN`: `Personal access token`
       - Find it from here: [Personal access tokens](https://github.com/settings/tokens)
       - Scopes: `admin:gpg_key, admin:public_key, repo, user, workflow`
     - `BUNDLE_ID`: `io.ganeshrvel.openmtp`
@@ -154,6 +154,14 @@ $ yarn start
       - Copy the whole content of the file `CERTIFICATE_PRIVATE_KEY.txt`
       - Paste the content as the value for the field `CSC_LINK`
     - `CSC_KEY_PASSWORD` is the password from the above step
+    - `CODEMAGIC_AUTH_TOKEN_ID`: `<CodeMagic API Token>`
+      - Find it from here: [Settings -> Integrations -> Codemagic API](https://codemagic.io/settings)
+    - `CODEMAGIC_APP_ID`: `<CodeMagic App id>`
+      - Find it from here: [Apps](https://codemagic.io/apps)
+    - `CODEMAGIC_INTEL_X64_WORKFLOW_ID`: `<CodeMagic workflow id>`
+      - Find the relevant workflow if from `codemagic.yaml`
+    - `CODEMAGIC_GIT_BRANCH`: `<Git Branch to use>`
+      - Mostly `master`
     - References: 
       - [https://www.electron.build/code-signing.html](https://www.electron.build/code-signing.html)
       - [https://docs.codemagic.io/yaml-code-signing/signing-macos/#saving-the-api-key-to-environment-variables](https://docs.codemagic.io/yaml-code-signing/signing-macos/#saving-the-api-key-to-environment-variables)
