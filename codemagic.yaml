@@ -40,8 +40,8 @@ workflows:
       - name: Installing app packages
         script: yarn
       - name: Building the Package
-        # todo: replace `yarn package-mac-without-notarize` with `yarn package-mac` after testing
-        script: yarn package-mac-without-notarize
+        # todo: replace `yarn build-no-verify` with `yarn package-mac` after testing
+        script: yarn build-no-verify
       - name: Build finished successfully
         script: |
           cd dist
@@ -107,8 +107,8 @@ workflows:
       - name: Installing app packages
         script: yarn
       - name: Building the Package
-        # todo: replace `yarn package-mac-without-notarize` with `yarn package-mac` after testing
-        script: yarn package-mac-without-notarize
+        # todo: replace `yarn build-no-verify` with `yarn package-mac` after testing
+        script: yarn build-no-verify
       - name: Build finished successfully
         script: |
           cd dist
