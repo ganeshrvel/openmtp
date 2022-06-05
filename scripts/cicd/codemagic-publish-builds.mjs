@@ -61,7 +61,7 @@ const TEMP_MERGED_MAC_ARTIFACTS_YAML_PATH = path.resolve(TEMP_MERGED_ARTIFACTS_P
 const cmArtifactLinksM1Arm64 = process.env.CM_ARTIFACT_LINKS_M1_ARM64;
 
 if (undefinedOrNull(cmArtifactLinksM1Arm64)) {
-  throw new Error(`the env variable 'CM_ARTIFACT_LINKS_M1_ARM64' shouldn't be empty: ${e}`);
+  throw new Error(`'CM_ARTIFACT_LINKS_M1_ARM64' env variable shouldn't be empty.\nNote: 'macos-intel-x64-build' instance shouldn't be executed directly.\n Start the 'macos-m1-arm64-build' instance first.`);
 }
 
 let cmArtifactLinksM1Arm64Json;
