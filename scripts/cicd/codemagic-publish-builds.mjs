@@ -155,7 +155,7 @@ outputFileSync(TEMP_MERGED_MAC_ARTIFACTS_YAML_PATH, yamlIntelX64Dump);
 
 // listing merged artifacts directory for files
 console.info(`listing merged artifacts directory for files...\n`);
-const TEMP_MERGED_ARTIFACTS = readdirSync(TEMP_MERGED_ARTIFACTS_PATH).filter(junk.not).map(file => {
+const tempMergedArtifacts = readdirSync(TEMP_MERGED_ARTIFACTS_PATH).filter(junk.not).map(file => {
   return path.resolve(TEMP_MERGED_ARTIFACTS_PATH, file);
 }).filter(a => a);
 
@@ -171,7 +171,7 @@ try {
     `${packageName}-${packageVersion}`,
     "--notes", // IMP: this is required to disable the interactive cli
     `# About ${packageName}-${packageVersion}`,
-    ...TEMP_MERGED_ARTIFACTS
+    ...tempMergedArtifacts
   ]);
 } catch (e) {
   throw new Error(`Github release failed: ${e}`);
