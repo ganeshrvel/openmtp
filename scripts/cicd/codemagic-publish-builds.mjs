@@ -166,6 +166,7 @@ try {
   await runSpawn("gh", ["release",
     "create",
     gitReleaseTag,
+    "--draft",
     "--title",
     `${packageName}-${packageVersion}`,
     "--notes", // IMP: this is required to disable the interactive cli
