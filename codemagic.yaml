@@ -40,8 +40,7 @@ workflows:
       - name: Installing app packages
         script: yarn
       - name: Building the Package
-        # todo replace package-mac-without-notarize-no-verify with package-mac
-        script: yarn package-mac-without-notarize-no-verify
+        script: yarn package-mac
       - name: Build finished successfully
         script: |
           cd dist
@@ -107,8 +106,7 @@ workflows:
       - name: Installing app packages
         script: yarn
       - name: Building the Package
-        # todo replace package-mac-without-notarize-no-verify with package-mac
-        script: yarn package-mac-without-notarize-no-verify
+        script: yarn package-mac
       - name: Build finished successfully
         script: |
           cd dist
