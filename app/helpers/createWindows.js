@@ -27,6 +27,23 @@ let _appFeaturesWindow = null;
 let _keyboardShortcutsWindow = null;
 
 /**
+ * Enable remote main since it has been explicitly disabled by electron.
+ */
+function enableRemoteMainForRenderer({ existingWindow, windowConfig }) {
+  let windowObj = existingWindow;
+
+  if (!windowObj) {
+    windowObj = new remote.BrowserWindow(windowConfig);
+
+    const remoteMain = remote.require('@electron/remote/main');
+
+    remoteMain.enable(windowObj.webContents);
+  }
+
+  return windowObj;
+}
+
+/**
  * Non Bootable Device Window
  */
 
@@ -107,7 +124,10 @@ const reportBugsCreateWindow = (isRenderedPage) => {
     );
 
     return {
-      windowObj: existingWindow ?? new remote.BrowserWindow(config),
+      windowObj: enableRemoteMainForRenderer({
+        existingWindow,
+        windowConfig: config,
+      }),
       isExisting: !!existingWindow,
     };
   }
@@ -199,7 +219,10 @@ const privacyPolicyCreateWindow = (isRenderedPage = false) => {
     );
 
     return {
-      windowObj: existingWindow ?? new remote.BrowserWindow(config),
+      windowObj: enableRemoteMainForRenderer({
+        existingWindow,
+        windowConfig: config,
+      }),
       isExisting: !!existingWindow,
     };
   }
@@ -354,7 +377,10 @@ const appFeaturesCreateWindow = (isRenderedPage) => {
     );
 
     return {
-      windowObj: existingWindow ?? new remote.BrowserWindow(config),
+      windowObj: enableRemoteMainForRenderer({
+        existingWindow,
+        windowConfig: config,
+      }),
       isExisting: !!existingWindow,
     };
   }
@@ -450,7 +476,10 @@ const keyboardShortcutsCreateWindow = (isRenderedPage) => {
     );
 
     return {
-      windowObj: existingWindow ?? new remote.BrowserWindow(config),
+      windowObj: enableRemoteMainForRenderer({
+        existingWindow,
+        windowConfig: config,
+      }),
       isExisting: !!existingWindow,
     };
   }
@@ -549,7 +578,10 @@ const helpFaqsCreateWindow = (isRenderedPage = false) => {
     const existingWindow = loadExistingWindow(allWindows, FAQS_PAGE_TITLE);
 
     return {
-      windowObj: existingWindow ?? new remote.BrowserWindow(config),
+      windowObj: enableRemoteMainForRenderer({
+        existingWindow,
+        windowConfig: config,
+      }),
       isExisting: !!existingWindow,
     };
   }
@@ -642,7 +674,10 @@ const helpPhoneNotConnectingCreateWindow = (isRenderedPage = false) => {
     );
 
     return {
-      windowObj: existingWindow ?? new remote.BrowserWindow(config),
+      windowObj: enableRemoteMainForRenderer({
+        existingWindow,
+        windowConfig: config,
+      }),
       isExisting: !!existingWindow,
     };
   }

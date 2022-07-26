@@ -50,10 +50,10 @@ export default class MenuBuilder {
     });
 
     /// todo fix this crash
-    return;
+
     console.log('todo');
 
-    // this.mainWindow.openDevTools();
+    this.mainWindow.openDevTools();
 
 
     // todo to fix the `ld: warning: ignoring file` issue.

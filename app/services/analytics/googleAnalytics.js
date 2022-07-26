@@ -36,8 +36,8 @@ export class GoogleAnalytics {
     try {
       /// todo delete this block
       // return;
-      console.log('todo');
-      return ;
+      //console.log('todo');
+      //return ;
       //////
 
 
@@ -49,11 +49,13 @@ export class GoogleAnalytics {
       console.log(
         `todo fix TypeError: Cannot read properties of undefined (reading 'app')`
       );
+
       this.analytics = new Analytics(SERVICE_KEYS.googleAnalytics, {
         appName: APP_NAME,
         appVersion: APP_VERSION,
         userId: this.machineId,
       });
+      return;
 
       const hashName = getCurrentWindowHash();
       let pageName = '/home';

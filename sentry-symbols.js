@@ -4,7 +4,9 @@ let SentryCli;
 let download;
 
 try {
+  // eslint-disable-next-line global-require
   SentryCli = require('@sentry/cli');
+  // eslint-disable-next-line global-require
   download = require('electron-download');
 } catch (e) {
   console.error('ERROR: Missing required packages, please run:');
@@ -16,21 +18,24 @@ const VERSION =
   /\bv?(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:-[\da-z-]+(?:\.[\da-z-]+)*)?(?:\+[\da-z-]+(?:\.[\da-z-]+)*)?\b/i;
 const SYMBOL_CACHE_FOLDER = '.electron-symbols';
 const packageJson = require('./package.json');
+
 const sentryCli = new SentryCli('./sentry.properties');
 
 async function main() {
-  let version = getElectronVersion();
+  const version = getElectronVersion();
+
   if (!version) {
     console.error('Cannot detect electron version, check package.json');
+
     return;
   }
 
-  console.log('We are starting to download all possible electron symbols');
-  console.log('We need it in order to symbolicate native crashes');
-  console.log(
+  console.error('We are starting to download all possible electron symbols');
+  console.error('We need it in order to symbolicate native crashes');
+  console.error(
     'This step is only needed once whenever you update your electron version'
   );
-  console.log('Just call this script again it should do everything for you.');
+  console.error('Just call this script again it should do everything for you.');
 
   let zipPath = await downloadSymbols({
     version,
@@ -38,6 +43,7 @@ async function main() {
     arch: 'x64',
     dsym: true,
   });
+
   await sentryCli.execute(['upload-dif', '-t', 'dsym', zipPath], true);
 
   zipPath = await downloadSymbols({
@@ -64,8 +70,8 @@ async function main() {
   });
   await sentryCli.execute(['upload-dif', '-t', 'breakpad', zipPath], true);
 
-  console.log('Finished downloading and uploading to Sentry');
-  console.log(`Feel free to delete the ${SYMBOL_CACHE_FOLDER}`);
+  console.error('Finished downloading and uploading to Sentry');
+  console.error(`Feel free to delete the ${SYMBOL_CACHE_FOLDER}`);
 }
 
 function getElectronVersion() {
@@ -73,7 +79,7 @@ function getElectronVersion() {
     return false;
   }
 
-  let electronVersion =
+  const electronVersion =
     (packageJson.dependencies && packageJson.dependencies.electron) ||
     (packageJson.devDependencies && packageJson.devDependencies.electron);
 
@@ -82,6 +88,7 @@ function getElectronVersion() {
   }
 
   const matches = VERSION.exec(electronVersion);
+
   return matches ? matches[0] : false;
 }
 
