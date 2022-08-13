@@ -7,9 +7,11 @@ function logWarning(...warnings) {
   let showWarning = true;
 
   warnings.forEach((warning) => {
-    if (warning.includes('UNSAFE_')) showWarning = false;
-    else if (warning.includes('SourceMap')) showWarning = false;
-    else if (warning.includes('DevTools')) showWarning = false;
+    const msg = warning?.toString();
+
+    if (msg.includes('UNSAFE_')) showWarning = false;
+    else if (msg.includes('SourceMap')) showWarning = false;
+    else if (msg.includes('DevTools')) showWarning = false;
   });
 
   if (showWarning) {

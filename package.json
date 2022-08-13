@@ -1,7 +1,7 @@
 {
   "name": "openmtp",
   "productName": "OpenMTP",
-  "version": "3.2.0-alpha.2",
+  "version": "3.2.0-alpha.3",
   "description": "OpenMTP | Android File Transfer for macOS",
   "scripts": {
     "build": "yarn lint && concurrently \"yarn build-main\" \"yarn build-renderer\"",
@@ -14,6 +14,7 @@
     "package": "yarn build && electron-builder build --publish never",
     "package-all": "yarn build && electron-builder build -mwl --publish never",
     "package-mac": "yarn build && electron-builder build --mac --publish never",
+    "package-mac-no-verify": "yarn build-no-verify && electron-builder build --mac --publish never",
     "package-mac-without-notarize": "yarn build && cross-env ELECTRON_NOTARIZE=NO electron-builder build --mac --publish never",
     "package-mac-without-notarize-no-verify": "yarn build-no-verify && cross-env ELECTRON_NOTARIZE=NO electron-builder build --mac --publish never",
     "package-linux": "yarn build && electron-builder build --linux --publish never",
@@ -58,95 +59,7 @@
   "browserslist": [],
   "main": "./app/main.prod.js",
   "resolutions": {
-    "node-abi": "^3.8.0"
-  },
-  "build": {
-    "productName": "OpenMTP",
-    "appId": "io.ganeshrvel.openmtp",
-    "forceCodeSigning": true,
-    "copyright": "© Ganesh Rathinavel",
-    "afterPack": "./internals/scripts/AfterPack.js",
-    "afterSign": "./internals/scripts/Notarize.js",
-    "npmRebuild": false,
-    "publish": [
-      {
-        "provider": "github",
-        "owner": "ganeshrvel",
-        "repo": "openmtp",
-        "private": false
-      }
-    ],
-    "files": [
-      "app/dist/",
-      "app/app.html",
-      "app/main.prod.js",
-      "app/main.prod.js.map",
-      "package.json"
-    ],
-    "extraFiles": [
-      {
-        "from": "build/mac/bin",
-        "to": "Resources/bin",
-        "filter": [
-          "**/*"
-        ]
-      }
-    ],
-    "mac": {
-      "type": "distribution",
-      "icon": "build/icon.icns",
-      "category": "public.app-category.productivity",
-      "hardenedRuntime": true,
-      "gatekeeperAssess": false,
-      "entitlements": "./build/entitlements.mac.plist",
-      "entitlementsInherit": "./build/entitlements.mac.plist",
-      "extendInfo": {
-        "LSMinimumSystemVersion": "10.11.0",
-        "NSDesktopFolderUsageDescription": "Desktop folder access",
-        "NSDocumentsFolderUsageDescription": "Documents folder access",
-        "NSDownloadsFolderUsageDescription": "Downloads folder access",
-        "NSRemovableVolumesUsageDescription": "Removable Disk access",
-        "NSPhotoLibraryUsageDescription": "Photo library access"
-      },
-      "target": {
-        "target": "default"
-      }
-    },
-    "mas": {
-      "type": "distribution",
-      "category": "public.app-category.productivity",
-      "entitlements": "build/entitlements.mas.plist",
-      "icon": "build/icon.icns",
-      "binaries": [
-        "dist/mas/OpenMTP.app/Contents/Resources/bin/mtp-cli"
-      ]
-    },
-    "dmg": {
-      "contents": [
-        {
-          "x": 130,
-          "y": 220
-        },
-        {
-          "x": 410,
-          "y": 220,
-          "type": "link",
-          "path": "/Applications"
-        }
-      ]
-    },
-    "win": {
-      "target": [
-        "nsis"
-      ]
-    },
-    "linux": {
-      "target": [
-        "deb",
-        "AppImage"
-      ],
-      "category": "public.app-category.productivity"
-    }
+    "node-abi": "^3.24.0"
   },
   "repository": {
     "type": "git",
@@ -190,10 +103,10 @@
     "electron-is": "^3.0.0",
     "electron-is-packaged": "^1.0.2",
     "electron-root-path": "^1.0.16",
-    "electron-updater": "^4.6.5",
+    "electron-updater": "^5.2.1",
     "events": "^3.3.0",
     "ffi-napi": "^4.0.3",
-    "fs-extra": "^10.0.0",
+    "fs-extra": "^10.1.0",
     "glob": "^7.2.0",
     "history": "^5.2.0",
     "hotkeys-js": "^3.8.7",
@@ -204,7 +117,7 @@
     "mixpanel-browser": "^2.43.0",
     "mkdirp": "^1.0.4",
     "nice-utils": "^1.0.3",
-    "node-mac-permissions": "^2.2.0",
+    "node-mac-permissions": "^2.2.1",
     "node-machine-id": "^1.1.12",
     "normalize.css": "^8.0.1",
     "os": "^0.1.2",
@@ -228,7 +141,7 @@
     "source-map-support": "^0.5.21",
     "styled-components": "^4.4.1",
     "url": "^0.11.0",
-    "usb-detection": "^4.13.0",
+    "usb-detection": "^4.14.1",
     "util": "^0.12.4",
     "zlib": "^1.0.5"
   },
@@ -257,7 +170,7 @@
     "@babel/preset-env": "^7.12.1",
     "@babel/preset-react": "^7.12.1",
     "@babel/register": "^7.12.1",
-    "@sentry/cli": "2.1.0",
+    "@sentry/cli": "2.5.0",
     "@sentry/webpack-plugin": "^1.14.0",
     "axios": "^0.27.2",
     "babel-core": "7.0.0-bridge.0",
@@ -268,15 +181,15 @@
     "browserslist-config-erb": "^0.0.3",
     "chalk": "^4.1.0",
     "clean-webpack-plugin": "^3.0.0",
-    "concurrently": "^5.3.0",
-    "cross-env": "^7.0.2",
+    "concurrently": "^7.3.0",
+    "cross-env": "^7.0.3",
     "css-loader": "^6.6.0",
     "detect-port": "^1.3.0",
-    "electron": "^17.0.0",
+    "electron": "^18.3.8",
     "electron-builder": "^23.0.3",
     "electron-devtools-installer": "^3.2.0",
     "electron-download": "^4.1.1",
-    "electron-notarize": "^1.1.1",
+    "electron-notarize": "^1.2.1",
     "eslint": "^8.9.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "^6.15.0",
@@ -296,8 +209,8 @@
     "js-yaml": "^4.1.0",
     "lint-staged": "^12.3.3",
     "mini-css-extract-plugin": "^2.5.3",
-    "node-abi": "^3.8.0",
-    "node-sass": "^7.0.1",
+    "node-abi": "^3.24.0",
+    "sass": "^1.54.4",
     "optimize-css-assets-webpack-plugin": "^6.0.1",
     "pkg-dir": "^6.0.1",
     "prettier": "^2.5.1",
@@ -305,7 +218,7 @@
     "redux-logger": "^3.0.6",
     "replace": "^1.2.1",
     "rimraf": "^3.0.2",
-    "sass-loader": "^12.4.0",
+    "sass-loader": "^13.0.2",
     "style-loader": "^3.3.1",
     "stylelint": "^14.5.0",
     "stylelint-config-prettier": "^9.0.3",

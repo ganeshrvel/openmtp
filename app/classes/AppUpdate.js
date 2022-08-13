@@ -95,7 +95,7 @@ export default class AppUpdate {
   constructor({ autoUpdateCheck, autoDownload, allowPrerelease }) {
     this.autoUpdater = autoUpdater;
     if (!isPackaged) {
-      this.autoUpdater.updateConfigPath = PATHS.appUpdateFile;
+      this.autoUpdater.updateConfigPath = PATHS.devAppUpdateFile;
     }
 
     this.autoUpdater.autoDownload = autoUpdateCheck && autoDownload;

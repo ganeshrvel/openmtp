@@ -123,7 +123,7 @@ $ yarn start
 
 ```
 
-### CI/CD Setup:
+### Publishing using CI/CD:
 - CodeMagic.io
   - Create a new App (Choose others -> Enter Electron)
   - Environment variables:
@@ -161,14 +161,18 @@ $ yarn start
     - `CODEMAGIC_INTEL_X64_WORKFLOW_ID`: `<CodeMagic workflow id>`
       - Find the relevant workflow if from `codemagic.yaml`
     - `CODEMAGIC_GIT_BRANCH`: `<Git Branch to use>`
-      - Mostly `master`
+      - Mostly `master`   
+    - `PUBLISH_MAIN_REPOSITORY`: `<Repository to publish the production app>`
+      - `openmtp`
+    - `PUBLISH_DEV_REPOSITORY`: `<Repository to publish the dev app>`
+      - `openmtp-testflight`
     - References: 
       - [https://www.electron.build/code-signing.html](https://www.electron.build/code-signing.html)
       - [https://docs.codemagic.io/yaml-code-signing/signing-macos/#saving-the-api-key-to-environment-variables](https://docs.codemagic.io/yaml-code-signing/signing-macos/#saving-the-api-key-to-environment-variables)
 
-### Package
+### Packaging (locally) and Publishing
 
-Setup the *code signing* to build, package and publish the app.
+Setup the *code signing* to build, package (locally) and publish the app.
 
 **App Notarization for macOS** (skip this section for non macOS builds)
 - Rename *sample.env* file as *.env*

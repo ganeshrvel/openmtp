@@ -21,6 +21,12 @@ module.exports = {
     },
   },
   rules: {
+    'import/no-import-module-exports': [
+      'error',
+      {
+        exceptions: ['**/*/webpack/**/*'],
+      },
+    ],
     'arrow-body-style': 'off',
     'arrow-parens': 'off',
     'class-methods-use-this': 'off',
