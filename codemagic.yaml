@@ -152,7 +152,7 @@ workflows:
 
   # prod - macOS Intel x64 build
   macos-intel-x64-build-prod:
-    name: (Dont directly run this) Prod - macOS Intel x64 build
+    name: (Do not run this directly) Prod - macOS Intel x64 build
     <<: *instance_mac_intel_x64
 
     environment:
@@ -194,7 +194,7 @@ workflows:
 
   # dev - macOS Intel x64 build
   macos-intel-x64-build-dev:
-    name: (Dont directly run this) Dev - macOS Intel x64 build
+    name: (Do not run this directly) Dev - macOS Intel x64 build
     <<: *instance_mac_intel_x64
 
     environment:
