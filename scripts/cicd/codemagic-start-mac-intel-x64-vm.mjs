@@ -12,6 +12,9 @@ $.shell = "/bin/zsh";
 await $`export LANG=en_US.UTF-8`;
 await $`export LC_ALL=en_US.UTF-8`;
 
+console.log("process.env.CODEMAGIC_INTEL_X64_WORKFLOW_ID", process.env.CODEMAGIC_INTEL_X64_WORKFLOW_ID)
+console.log("process.env", JSON.stringify(process.env))
+
 const CODEMAGIC_BASE_URL = `https://api.codemagic.io`;
 
 const axios = axiosPackage.create({
