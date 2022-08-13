@@ -14,10 +14,9 @@ definitions:
     artifacts:
       - dist/mac_m1_arm64_artifacts.zip
 
-  environment:
-    env_mac_signing: &env_mac_signing
-      groups:
-        - mac_release
+  env_mac_signing: &env_mac_signing
+    groups:
+      - mac_release
 
   scripts:
     - &create_env_file
