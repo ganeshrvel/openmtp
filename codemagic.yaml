@@ -105,6 +105,31 @@ definitions:
           exit 1;
         fi
 
+  email_recipients: &email_recipients
+    email:
+      recipients:
+        - $PUBLISH_EMAIL
+
+  scripts_instance_mac_mini_m1: &scripts_instance_mac_mini_m1
+    scripts:
+      - *create_env_file
+      - *create_sentry_cli_rc_file
+      - *create_sentry_properties_file
+      - *install_global_packages
+      - *install_app_packages
+      - *build_package
+      - *finalize_build_instance_mac_mini_m1
+
+  scripts_instance_mac_intel_x64: &scripts_instance_mac_intel_x64
+    scripts:
+      - *create_env_file
+      - *create_sentry_cli_rc_file
+      - *create_sentry_properties_file
+      - *install_global_packages
+      - *install_app_packages
+      - *build_package
+      - *finalize_build_instance_mac_intel_x64
+
 workflows:
   # prod - macOS M1 arm64 build
   macos-m1-arm64-build-prod:
@@ -115,14 +140,7 @@ workflows:
       <<: *env_mac_signing
       <<: *env_versions
 
-    scripts:
-      - *create_env_file
-      - *create_sentry_cli_rc_file
-      - *create_sentry_properties_file
-      - *install_global_packages
-      - *install_app_packages
-      - *build_package
-      - *finalize_build_instance_mac_mini_m1
+    <<: *scripts_instance_mac_mini_m1
 
     <<: *mac_m1_arm64_artifacts
 
@@ -141,16 +159,10 @@ workflows:
       vars:
         PUBLISH_REPOSITORY: $PUBLISH_MAIN_REPOSITORY
 
-    scripts:
-      - *create_env_file
-      - *create_sentry_cli_rc_file
-      - *create_sentry_properties_file
-      - *install_global_packages
-      - *install_app_packages
-      - *build_package
-      - *finalize_build_instance_mac_intel_x64
+    <<: *scripts_instance_mac_intel_x64
 
     publishing:
+      <<: *email_recipients
       scripts:
         - *start_post_build_scripts_from_mac_intel_x64
 
@@ -165,14 +177,7 @@ workflows:
       <<: *env_mac_signing
       <<: *env_versions
 
-    scripts:
-      - *create_env_file
-      - *create_sentry_cli_rc_file
-      - *create_sentry_properties_file
-      - *install_global_packages
-      - *install_app_packages
-      - *build_package
-      - *finalize_build_instance_mac_mini_m1
+    <<: *scripts_instance_mac_mini_m1
 
     <<: *mac_m1_arm64_artifacts
 
@@ -191,15 +196,9 @@ workflows:
       vars:
         PUBLISH_REPOSITORY: $PUBLISH_DEV_REPOSITORY
 
-    scripts:
-      - *create_env_file
-      - *create_sentry_cli_rc_file
-      - *create_sentry_properties_file
-      - *install_global_packages
-      - *install_app_packages
-      - *build_package
-      - *finalize_build_instance_mac_intel_x64
+    <<: *scripts_instance_mac_intel_x64
 
     publishing:
+      <<: *email_recipients
       scripts:
         - *start_post_build_scripts_from_mac_intel_x64

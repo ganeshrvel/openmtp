@@ -163,9 +163,8 @@ $ yarn start
     - `CODEMAGIC_GIT_BRANCH`: `<Git Branch to use>`
       - Mostly `master`   
     - `PUBLISH_MAIN_REPOSITORY`: `<Repository to publish the production app>`
-      - `github.com/ganeshrvel/openmtp`
     - `PUBLISH_DEV_REPOSITORY`: `<Repository to publish the dev app>`
-      - `github.com/ganeshrvel/openmtp-testflight`
+    - `PUBLISH_EMAIL`: `Email address to receive the updates on publish`
     - References: 
       - [https://www.electron.build/code-signing.html](https://www.electron.build/code-signing.html)
       - [https://docs.codemagic.io/yaml-code-signing/signing-macos/#saving-the-api-key-to-environment-variables](https://docs.codemagic.io/yaml-code-signing/signing-macos/#saving-the-api-key-to-environment-variables)
