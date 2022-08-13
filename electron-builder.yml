@@ -2,7 +2,6 @@ productName: OpenMTP
 appId: io.ganeshrvel.openmtp
 forceCodeSigning: true
 
-
 artifactName: ${name}-${version}-${os}-${arch}.${ext}
 
 copyright: '© Ganesh Rathinavel'
@@ -11,11 +10,11 @@ afterSign: './internals/scripts/Notarize.js'
 
 npmRebuild: false
 
-publish:
-  - provider: github
-    owner: ganeshrvel
-    repo: openmtp
-    private: false
+#publish:
+#  - provider: github
+#    owner: ganeshrvel
+#    repo: openmtp-testflight
+#    private: false
 
 files:
   - app/dist/
