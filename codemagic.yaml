@@ -184,8 +184,10 @@ workflows:
         CODEMAGIC_INTEL_X64_WORKFLOW_ID: $CODEMAGIC_INTEL_X64_WORKFLOW_ID_DEV
 
     scripts:
-      - *start_mac_intel_x64_post_build_scripts_from_mac_m1
-#    <<: *scripts_instance_mac_mini_m1
+      - script: |
+          ./scripts/cicd/codemagic-start-mac-intel-x64-vm.mjs
+
+        #    <<: *scripts_instance_mac_mini_m1
 
     <<: *mac_m1_arm64_artifacts
 
