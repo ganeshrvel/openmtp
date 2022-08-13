@@ -28,7 +28,6 @@ definitions:
           ELECTRON_NOTORIZE_PASSWORD=$APPLE_APP_SPECIFIC_PASSWORD
           CODEMAGIC_AUTH_TOKEN_ID=$CODEMAGIC_AUTH_TOKEN_ID
           CODEMAGIC_APP_ID=$CODEMAGIC_APP_ID
-          CODEMAGIC_INTEL_X64_WORKFLOW_ID=$CODEMAGIC_INTEL_X64_WORKFLOW_ID
           CODEMAGIC_GIT_BRANCH=$CODEMAGIC_GIT_BRANCH
         EOL"
 
@@ -139,6 +138,9 @@ workflows:
     environment:
       <<: *env_mac_signing
       <<: *env_versions
+      vars:
+        WORKFLOW_ENV: 'prod'
+        CODEMAGIC_INTEL_X64_WORKFLOW: $CODEMAGIC_INTEL_X64_WORKFLOW_ID_PROD
 
     <<: *scripts_instance_mac_mini_m1
 
@@ -157,7 +159,9 @@ workflows:
       <<: *env_mac_signing
       <<: *env_versions
       vars:
-        PUBLISH_REPOSITORY: $PUBLISH_MAIN_REPOSITORY
+        WORKFLOW_ENV: 'prod'
+        CODEMAGIC_INTEL_X64_WORKFLOW: $CODEMAGIC_INTEL_X64_WORKFLOW_ID_DEV
+        PUBLISH_REPOSITORY: $PUBLISH_PROD_REPOSITORY
 
     <<: *scripts_instance_mac_intel_x64
 
@@ -176,6 +180,9 @@ workflows:
     environment:
       <<: *env_mac_signing
       <<: *env_versions
+      vars:
+        WORKFLOW_ENV: 'dev'
+        CODEMAGIC_INTEL_X64_WORKFLOW: $CODEMAGIC_INTEL_X64_WORKFLOW_ID_PROD
 
     <<: *scripts_instance_mac_mini_m1
 
@@ -194,6 +201,8 @@ workflows:
       <<: *env_mac_signing
       <<: *env_versions
       vars:
+        WORKFLOW_ENV: 'dev'
+        CODEMAGIC_INTEL_X64_WORKFLOW: $CODEMAGIC_INTEL_X64_WORKFLOW_ID_DEV
         PUBLISH_REPOSITORY: $PUBLISH_DEV_REPOSITORY
 
     <<: *scripts_instance_mac_intel_x64

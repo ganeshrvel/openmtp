@@ -158,11 +158,13 @@ $ yarn start
       - Find it from here: [Settings -> Integrations -> Codemagic API](https://codemagic.io/settings)
     - `CODEMAGIC_APP_ID`: `<CodeMagic App id>`
       - Find it from here: [Apps](https://codemagic.io/apps)
-    - `CODEMAGIC_INTEL_X64_WORKFLOW_ID`: `<CodeMagic workflow id>`
-      - Find the relevant workflow if from `codemagic.yaml`
+    - `CODEMAGIC_INTEL_X64_WORKFLOW_ID_PROD`: `<Prod codeMagic workflow id>`
+      - Find the relevant workflow id from `codemagic.yaml`    
+    - `CODEMAGIC_INTEL_X64_WORKFLOW_ID_DEV`: `<Dev codeMagic workflow id>`
+      - Find the relevant workflow id from `codemagic.yaml`
     - `CODEMAGIC_GIT_BRANCH`: `<Git Branch to use>`
       - Mostly `master`   
-    - `PUBLISH_MAIN_REPOSITORY`: `<Repository to publish the production app>`
+    - `PUBLISH_PROD_REPOSITORY`: `<Repository to publish the production app>`
     - `PUBLISH_DEV_REPOSITORY`: `<Repository to publish the dev app>`
     - `PUBLISH_EMAIL`: `Email address to receive the updates on publish`
     - References: 
