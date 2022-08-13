@@ -28,6 +28,7 @@ definitions:
           CODEMAGIC_AUTH_TOKEN_ID=$CODEMAGIC_AUTH_TOKEN_ID
           CODEMAGIC_APP_ID=$CODEMAGIC_APP_ID
           CODEMAGIC_GIT_BRANCH=$CODEMAGIC_GIT_BRANCH
+          CODEMAGIC_INTEL_X64_WORKFLOW_ID_DEV=$CODEMAGIC_INTEL_X64_WORKFLOW_ID_DEV
         EOL"
 
     - &create_sentry_cli_rc_file
@@ -185,7 +186,18 @@ workflows:
         WORKFLOW_ENV: 'dev'
         CODEMAGIC_INTEL_X64_WORKFLOW_ID: $CODEMAGIC_INTEL_X64_WORKFLOW_ID_DEV
 
-    <<: *scripts_instance_mac_mini_m1
+
+    scripts:
+      - *create_env_file
+      - *create_sentry_cli_rc_file
+      - *create_sentry_properties_file
+      - *install_global_packages
+      - *install_app_packages
+      - script: |
+          ./scripts/cicd/codemagic-start-mac-intel-x64-vm.mjs
+
+        #    <<: *scripts_instance_mac_mini_m1
+
 
     <<: *mac_m1_arm64_artifacts
 
@@ -201,7 +213,6 @@ workflows:
     environment:
       <<: *env_mac_signing
       <<: *env_versions
-
       vars:
         WORKFLOW_ENV: 'dev'
         PUBLISH_REPOSITORY: $PUBLISH_DEV_REPOSITORY
