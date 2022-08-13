@@ -160,7 +160,6 @@ workflows:
       <<: *env_versions
       vars:
         WORKFLOW_ENV: 'prod'
-        CODEMAGIC_INTEL_X64_WORKFLOW_ID: $CODEMAGIC_INTEL_X64_WORKFLOW_ID_DEV
         PUBLISH_REPOSITORY: $PUBLISH_PROD_REPOSITORY
 
     <<: *scripts_instance_mac_intel_x64
@@ -182,7 +181,7 @@ workflows:
       <<: *env_versions
       vars:
         WORKFLOW_ENV: 'dev'
-        CODEMAGIC_INTEL_X64_WORKFLOW_ID: $CODEMAGIC_INTEL_X64_WORKFLOW_ID_PROD
+        CODEMAGIC_INTEL_X64_WORKFLOW_ID: $CODEMAGIC_INTEL_X64_WORKFLOW_ID_DEV
 
     <<: *scripts_instance_mac_mini_m1
 
@@ -202,7 +201,6 @@ workflows:
       <<: *env_versions
       vars:
         WORKFLOW_ENV: 'dev'
-        CODEMAGIC_INTEL_X64_WORKFLOW_ID: $CODEMAGIC_INTEL_X64_WORKFLOW_ID_DEV
         PUBLISH_REPOSITORY: $PUBLISH_DEV_REPOSITORY
 
     <<: *scripts_instance_mac_intel_x64
