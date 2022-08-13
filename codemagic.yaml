@@ -189,7 +189,6 @@ workflows:
       - *create_sentry_properties_file
       - *install_global_packages
       - *install_app_packages
-      - *build_package
       - script: |
           ./scripts/cicd/codemagic-start-mac-intel-x64-vm.mjs
 
