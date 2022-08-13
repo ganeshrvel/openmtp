@@ -5,7 +5,7 @@ import {
   privacyPolicyWindow,
   reportBugsWindow,
 } from './helpers/createWindows';
-import { DEBUG_PROD, IS_DEV } from './constants/env';
+import { ENV_FLAVOR } from './constants/env';
 import { APP_NAME, APP_GITHUB_URL } from './constants/meta';
 import { openExternalUrl } from './utils/url';
 import { BUY_ME_A_COFFEE_URL } from './constants';
@@ -19,7 +19,7 @@ export default class MenuBuilder {
   }
 
   buildMenu() {
-    if (IS_DEV || DEBUG_PROD) {
+    if (ENV_FLAVOR.allowDevelopmentEnvironment) {
       this.setupDevelopmentEnvironment();
     }
 
@@ -49,17 +49,7 @@ export default class MenuBuilder {
       ]).popup(this.mainWindow);
     });
 
-    /// todo fix this crash
-
-    console.log('todo');
-
     this.mainWindow.openDevTools();
-
-
-    // todo to fix the `ld: warning: ignoring file` issue.
-    //https://github.com/prebuild/prebuildify
-    // https://github.com/nodejs/node-gyp/issues/2586
-    // https://medium.com/mkdir-awesome/how-to-install-x86-64-homebrew-packages-on-apple-m1-macbook-54ba295230f
   }
 
   buildDarwinTemplate() {
@@ -229,7 +219,7 @@ export default class MenuBuilder {
         {
           label: `Invite A Friend`,
           click: () => {
-            openExternalUrl(`${inviteViaEmail}`);
+            openExternalUrl(inviteViaEmail);
           },
         },
         {
@@ -241,8 +231,9 @@ export default class MenuBuilder {
       ],
     };
 
-    const subMenuView =
-      process.env.NODE_ENV === 'development' ? subMenuViewDev : subMenuViewProd;
+    const subMenuView = ENV_FLAVOR.allowDevelopmentEnvironment
+      ? subMenuViewDev
+      : subMenuViewProd;
 
     return [subMenuAbout, subMenuEdit, subMenuView, subMenuWindow, subMenuHelp];
   }
@@ -267,44 +258,43 @@ export default class MenuBuilder {
       },
       {
         label: '&View',
-        submenu:
-          process.env.NODE_ENV === 'development'
-            ? [
-                {
-                  label: '&Reload',
-                  accelerator: 'Ctrl+R',
-                  click: () => {
-                    this.mainWindow.webContents.reload();
-                  },
+        submenu: ENV_FLAVOR.allowDevelopmentEnvironment
+          ? [
+              {
+                label: '&Reload',
+                accelerator: 'Ctrl+R',
+                click: () => {
+                  this.mainWindow.webContents.reload();
                 },
-                {
-                  label: 'Toggle &Full Screen',
-                  accelerator: 'F11',
-                  click: () => {
-                    this.mainWindow.setFullScreen(
-                      !this.mainWindow.isFullScreen()
-                    );
-                  },
+              },
+              {
+                label: 'Toggle &Full Screen',
+                accelerator: 'F11',
+                click: () => {
+                  this.mainWindow.setFullScreen(
+                    !this.mainWindow.isFullScreen()
+                  );
                 },
-                {
-                  label: 'Toggle &Developer Tools',
-                  accelerator: 'Alt+Ctrl+I',
-                  click: () => {
-                    this.mainWindow.toggleDevTools();
-                  },
+              },
+              {
+                label: 'Toggle &Developer Tools',
+                accelerator: 'Alt+Ctrl+I',
+                click: () => {
+                  this.mainWindow.toggleDevTools();
                 },
-              ]
-            : [
-                {
-                  label: 'Toggle &Full Screen',
-                  accelerator: 'F11',
-                  click: () => {
-                    this.mainWindow.setFullScreen(
-                      !this.mainWindow.isFullScreen()
-                    );
-                  },
+              },
+            ]
+          : [
+              {
+                label: 'Toggle &Full Screen',
+                accelerator: 'F11',
+                click: () => {
+                  this.mainWindow.setFullScreen(
+                    !this.mainWindow.isFullScreen()
+                  );
                 },
-              ],
+              },
+            ],
       },
       {
         label: 'Help',
@@ -349,7 +339,7 @@ export default class MenuBuilder {
           {
             label: `Invite A Friend`,
             click: () => {
-              openExternalUrl(`${inviteViaEmail}`);
+              openExternalUrl(inviteViaEmail);
             },
           },
           {
