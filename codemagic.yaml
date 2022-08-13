@@ -184,6 +184,12 @@ workflows:
         CODEMAGIC_INTEL_X64_WORKFLOW_ID: $CODEMAGIC_INTEL_X64_WORKFLOW_ID_DEV
 
     scripts:
+      - *create_env_file
+      - *create_sentry_cli_rc_file
+      - *create_sentry_properties_file
+      - *install_global_packages
+      - *install_app_packages
+      - *build_package
       - script: |
           ./scripts/cicd/codemagic-start-mac-intel-x64-vm.mjs
 
