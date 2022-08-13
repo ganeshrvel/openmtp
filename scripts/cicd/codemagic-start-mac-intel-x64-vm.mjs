@@ -18,6 +18,7 @@ console.log("process.env.CODEMAGIC_INTEL_X64_WORKFLOW_ID_PROD", process.env.CODE
 console.log("process.env.PUBLISH_DEV_REPOSITORY", process.env.PUBLISH_DEV_REPOSITORY)
 console.log("process.env.WORKFLOW_ENV", process.env.WORKFLOW_ENV)
 console.log("process.env.PUBLISH_EMAIL", process.env.PUBLISH_EMAIL)
+console.log("process.env.PUBLISH_REPOSITORY", process.env.PUBLISH_REPOSITORY)
 console.log("process.env", JSON.stringify(process.env))
 
 
