@@ -108,7 +108,7 @@ definitions:
 workflows:
   # prod - macOS M1 arm64 build
   macos-m1-arm64-build-prod:
-    name: Prod - macOS M1 arm64 build
+    name: (1st script, Run this) Prod - macOS M1 arm64 build
     <<: *instance_mac_mini_m1
 
     environment:
@@ -132,7 +132,7 @@ workflows:
 
   # prod - macOS Intel x64 build
   macos-intel-x64-build-prod:
-    name: Prod - macOS Intel x64 build
+    name: (Dont directly run this) Prod - macOS Intel x64 build
     <<: *instance_mac_intel_x64
 
     environment:
@@ -158,7 +158,7 @@ workflows:
 
   # dev - macOS M1 arm64 build
   macos-m1-arm64-build-dev:
-    name: Dev - macOS M1 arm64 build
+    name: (1st script, Run this) Dev - macOS M1 arm64 build
     <<: *instance_mac_mini_m1
 
     environment:
@@ -182,7 +182,7 @@ workflows:
 
   # dev - macOS Intel x64 build
   macos-intel-x64-build-dev:
-    name: Dev - macOS Intel x64 build
+    name: (Dont directly run this) Dev - macOS Intel x64 build
     <<: *instance_mac_intel_x64
 
     environment:
