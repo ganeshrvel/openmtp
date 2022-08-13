@@ -159,9 +159,9 @@ $ yarn start
     - `CODEMAGIC_APP_ID`: `<CodeMagic App id>`
       - Find it from here: [Apps](https://codemagic.io/apps)
     - `CODEMAGIC_INTEL_X64_WORKFLOW_ID_PROD`: `<Prod codeMagic workflow id>`
-      - Find the relevant workflow id from `codemagic.yaml`    
+      - Find the relevant workflow id from `codemagic.yaml`, (mostly `macos-intel-x64-build-prod`) 
     - `CODEMAGIC_INTEL_X64_WORKFLOW_ID_DEV`: `<Dev codeMagic workflow id>`
-      - Find the relevant workflow id from `codemagic.yaml`
+      - Find the relevant workflow id from `codemagic.yaml`, (mostly `macos-intel-x64-build-dev`)
     - `CODEMAGIC_GIT_BRANCH`: `<Git Branch to use>`
       - Mostly `master`   
     - `PUBLISH_PROD_REPOSITORY`: `<Repository to publish the production app>`
