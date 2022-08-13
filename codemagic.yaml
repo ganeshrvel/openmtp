@@ -1,131 +1,205 @@
-workflows:
-  macos-m1-arm64-build:
-    name: macOS M1 arm64 Build
+definitions:
+  instance_mac_mini_m1: &instance_mac_mini_m1
     instance_type: mac_mini_m1
-    environment:
-      groups:
-        - mac_release
-      node: 16.15.0
-      npm: latest
-      xcode: latest
 
-    scripts:
-      - name: Creating `.env` file
-        script: |
-          sh -c "cat >> .env << 'EOL'
-            APPLEID=$APPLEID
-            ELECTRON_NOTORIZE_PASSWORD=$APPLE_APP_SPECIFIC_PASSWORD
-            CODEMAGIC_AUTH_TOKEN_ID=$CODEMAGIC_AUTH_TOKEN_ID
-            CODEMAGIC_APP_ID=$CODEMAGIC_APP_ID
-            CODEMAGIC_INTEL_X64_WORKFLOW_ID=$CODEMAGIC_INTEL_X64_WORKFLOW_ID
-            CODEMAGIC_GIT_BRANCH=$CODEMAGIC_GIT_BRANCH
-          EOL"
-      - name: Creating `~/.sentryclirc` file
-        script: |
-          sh -c "cat >> .sentryclirc << 'EOL'
-            [auth]
-            token=$SENTRY_TOKEN_ID
-          EOL"
-      - name: Creating `sentry.properties` file
-        script: |
-          sh -c "cat >> sentry.properties << 'EOL'
-            [auth]
-            defaults.url=$SENTRY_URL
-            defaults.org=$SENTRY_ORG
-            defaults.project=$SENTRY_PROJECT
-            auth.token=$SENTRY_TOKEN_ID
-          EOL"
-      - name: Installing global packages
-        script: npm install -g yarn @sentry/cli node-gyp zx yarn --force
-      - name: Installing app packages
-        script: yarn
-      - name: Building the Package
-        # todo: replace `yarn package-mac-no-verify` with `yarn package-mac` after testing
-        script: yarn package-mac-no-verify
-      - name: Build finished successfully
-        script: |
-          cd dist
-          
-          # remove the M1 arm64 artifacts zip file if it exists. This is to clean the files on the local machine. This command is redundant on the VM.
-          [ -e mac_m1_arm64_artifacts.zip ] && rm mac_m1_arm64_artifacts.zip
-          
-          find . -name '*.dmg' -or -name '*.zip' -or -name 'latest-*.yml' -or -name 'latest-*.yaml' | zip mac_m1_arm64_artifacts.zip -@
-          touch ~/ARTIFACT_BUILD_SUCCESS
+  instance_mac_intel_x64: &instance_mac_intel_x64
+    instance_type: mac_mini
 
+  env_versions: &env_versions
+    node: 16.15.0
+    npm: latest
+    xcode: latest
+
+  mac_m1_arm64_artifacts: &mac_m1_arm64_artifacts
     artifacts:
       - dist/mac_m1_arm64_artifacts.zip
 
-    publishing:
-      scripts:
-        - name: Starting post build scripts
-          script: |
-            if [ -e ~/ARTIFACT_BUILD_SUCCESS ]; then
-              ./scripts/cicd/codemagic-start-mac-intel-x64-vm.mjs
-            else
-              echo "Build was unsuccessful. Skipping the launch of post build scripts";
-              exit 1;
-            fi
-
-  macos-intel-x64-build:
-    name: macOS Intel x64 Build
-    instance_type: mac_mini
-    environment:
+  environment:
+    env_mac_signing: &env_mac_signing
       groups:
         - mac_release
-      node: 16.15.0
-      npm: latest
-      xcode: latest
+
+  scripts:
+    - &create_env_file
+      name: Creating `.env` file
+      script: |
+        sh -c "cat >> .env << 'EOL'
+          APPLEID=$APPLEID
+          ELECTRON_NOTORIZE_PASSWORD=$APPLE_APP_SPECIFIC_PASSWORD
+          CODEMAGIC_AUTH_TOKEN_ID=$CODEMAGIC_AUTH_TOKEN_ID
+          CODEMAGIC_APP_ID=$CODEMAGIC_APP_ID
+          CODEMAGIC_INTEL_X64_WORKFLOW_ID=$CODEMAGIC_INTEL_X64_WORKFLOW_ID
+          CODEMAGIC_GIT_BRANCH=$CODEMAGIC_GIT_BRANCH
+        EOL"
+
+    - &create_sentry_cli_rc_file
+      name: Creating `~/.sentryclirc` file
+      script: |
+        sh -c "cat >> .sentryclirc << 'EOL'
+          [auth]
+          token=$SENTRY_TOKEN_ID
+        EOL"
+
+    - &create_sentry_properties_file
+      script: |
+        sh -c "cat >> sentry.properties << 'EOL'
+          [auth]
+          defaults.url=$SENTRY_URL
+          defaults.org=$SENTRY_ORG
+          defaults.project=$SENTRY_PROJECT
+          auth.token=$SENTRY_TOKEN_ID
+        EOL"
+
+    - &install_global_packages
+      name: Installing global packages
+      script: npm install -g yarn @sentry/cli node-gyp zx yarn --force
+
+    - &install_app_packages
+      name: Installing app packages
+      script: yarn
+
+    - &build_package
+      name: Building the Package
+      # todo: replace `yarn package-mac-no-verify` with `yarn package-mac` after testing
+      script: yarn package-mac-without-notarize-no-verify
+
+    - &finalize_build_instance_mac_mini_m1
+      name: Build finished mac mini M1 successfully
+      script: |
+        cd dist
+
+        # remove the M1 arm64 artifacts zip file if it exists. This is to clean the files on the local machine. This command is redundant on the VM.
+        [ -e mac_m1_arm64_artifacts.zip ] && rm mac_m1_arm64_artifacts.zip
+
+        find . -name '*.dmg' -or -name '*.zip' -or -name 'latest-*.yml' -or -name 'latest-*.yaml' | zip mac_m1_arm64_artifacts.zip -@
+        touch ~/ARTIFACT_BUILD_SUCCESS
+
+    - &finalize_build_instance_mac_intel_x64
+      name: Build finished mac intel x64 successfully
+      script: |
+        cd dist
+
+        # remove the intel x64 artifacts zip file if it exists. This is to clean the files on the local machine. This command is redundant on the VM.
+        [ -e mac_intel_x64_artifacts.zip ] && rm mac_intel_x64_artifacts.zip
+
+        find . -name '*.dmg' -or -name '*.zip' -or -name 'latest-*.yml' -or -name 'latest-*.yaml' | zip mac_intel_x64_artifacts.zip -@
+        touch ~/ARTIFACT_BUILD_SUCCESS
+
+    - &start_mac_intel_x64_post_build_scripts_from_mac_m1
+      name: Starting intel x64 post build scripts from mac m1
+      script: |
+        if [ -e ~/ARTIFACT_BUILD_SUCCESS ]; then
+          ./scripts/cicd/codemagic-start-mac-intel-x64-vm.mjs
+        else
+          echo "Build was unsuccessful. Skipping the launch of post build scripts";
+          exit 1;
+        fi
+
+    - &start_post_build_scripts_from_mac_intel_x64
+      name: Starting post build scripts from intel x64
+      script: |
+        if [ -e ~/ARTIFACT_BUILD_SUCCESS ]; then
+          ./scripts/cicd/codemagic-publish-builds.mjs
+        else
+          echo "Build was unsuccessful. Skipping the launch of post build scripts";
+          exit 1;
+        fi
+
+workflows:
+  # prod - macOS M1 arm64 build
+  macos-m1-arm64-build-prod:
+    name: Prod - macOS M1 arm64 build
+    <<: *instance_mac_mini_m1
+
+    environment:
+      <<: *env_mac_signing
+      <<: *env_versions
 
     scripts:
-      - name: Creating `.env` file
-        script: |
-          sh -c "cat >> .env << 'EOL'
-            APPLEID=$APPLEID
-            ELECTRON_NOTORIZE_PASSWORD=$APPLE_APP_SPECIFIC_PASSWORD
-            CODEMAGIC_AUTH_TOKEN_ID=$CODEMAGIC_AUTH_TOKEN_ID
-            CODEMAGIC_APP_ID=$CODEMAGIC_APP_ID
-            CODEMAGIC_INTEL_X64_WORKFLOW_ID=$CODEMAGIC_INTEL_X64_WORKFLOW_ID
-            CODEMAGIC_GIT_BRANCH=$CODEMAGIC_GIT_BRANCH
-          EOL"
-      - name: Creating `~/.sentryclirc` file
-        script: |
-          sh -c "cat >> .sentryclirc << 'EOL'
-            [auth]
-            token=$SENTRY_TOKEN_ID
-          EOL"
-      - name: Creating `sentry.properties` file
-        script: |
-          sh -c "cat >> sentry.properties << 'EOL'
-            [auth]
-            defaults.url=$SENTRY_URL
-            defaults.org=$SENTRY_ORG
-            defaults.project=$SENTRY_PROJECT
-            auth.token=$SENTRY_TOKEN_ID
-          EOL"
-      - name: Installing global packages
-        script: npm install -g yarn @sentry/cli node-gyp zx yarn --force
-      - name: Installing app packages
-        script: yarn
-      - name: Building the Package
-        # todo: replace `yarn package-mac-no-verify` with `yarn package-mac` after testing
-        script: yarn package-mac-no-verify
-      - name: Build finished successfully
-        script: |
-          cd dist
-          
-          # remove the intel x64 artifacts zip file if it exists. This is to clean the files on the local machine. This command is redundant on the VM.
-          [ -e mac_intel_x64_artifacts.zip ] && rm mac_intel_x64_artifacts.zip
-          
-          find . -name '*.dmg' -or -name '*.zip' -or -name 'latest-*.yml' -or -name 'latest-*.yaml' | zip mac_intel_x64_artifacts.zip -@
-          touch ~/ARTIFACT_BUILD_SUCCESS
+      - *create_env_file
+      - *create_sentry_cli_rc_file
+      - *create_sentry_properties_file
+      - *install_global_packages
+      - *install_app_packages
+      - *build_package
+      - *finalize_build_instance_mac_mini_m1
+
+    <<: *mac_m1_arm64_artifacts
 
     publishing:
       scripts:
-        - name: Starting post build scripts
-          script: |
-            if [ -e ~/ARTIFACT_BUILD_SUCCESS ]; then
-              ./scripts/cicd/codemagic-publish-builds.mjs
-            else
-              echo "Build was unsuccessful. Skipping the launch of post build scripts";
-              exit 1;
-            fi
+        - *start_mac_intel_x64_post_build_scripts_from_mac_m1
+
+  # prod - macOS Intel x64 build
+  macos-intel-x64-build-prod:
+    name: Prod - macOS Intel x64 build
+    <<: *instance_mac_intel_x64
+
+    environment:
+      <<: *env_mac_signing
+      <<: *env_versions
+      vars:
+        PUBLISH_REPOSITORY: $PUBLISH_MAIN_REPOSITORY
+
+    scripts:
+      - *create_env_file
+      - *create_sentry_cli_rc_file
+      - *create_sentry_properties_file
+      - *install_global_packages
+      - *install_app_packages
+      - *build_package
+      - *finalize_build_instance_mac_intel_x64
+
+    publishing:
+      scripts:
+        - *start_post_build_scripts_from_mac_intel_x64
+
+  ###################
+
+  # dev - macOS M1 arm64 build
+  macos-m1-arm64-build-dev:
+    name: Dev - macOS M1 arm64 build
+    <<: *instance_mac_mini_m1
+
+    environment:
+      <<: *env_mac_signing
+      <<: *env_versions
+
+    scripts:
+      - *create_env_file
+      - *create_sentry_cli_rc_file
+      - *create_sentry_properties_file
+      - *install_global_packages
+      - *install_app_packages
+      - *build_package
+      - *finalize_build_instance_mac_mini_m1
+
+    <<: *mac_m1_arm64_artifacts
+
+    publishing:
+      scripts:
+        - *start_mac_intel_x64_post_build_scripts_from_mac_m1
+
+  # dev - macOS Intel x64 build
+  macos-intel-x64-build-dev:
+    name: Dev - macOS Intel x64 build
+    <<: *instance_mac_intel_x64
+
+    environment:
+      <<: *env_mac_signing
+      <<: *env_versions
+      vars:
+        PUBLISH_REPOSITORY: $PUBLISH_DEV_REPOSITORY
+
+    scripts:
+      - *create_env_file
+      - *create_sentry_cli_rc_file
+      - *create_sentry_properties_file
+      - *install_global_packages
+      - *install_app_packages
+      - *build_package
+      - *finalize_build_instance_mac_intel_x64
+
+    publishing:
+      scripts:
+        - *start_post_build_scripts_from_mac_intel_x64
