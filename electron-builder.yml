@@ -10,11 +10,11 @@ afterSign: './internals/scripts/Notarize.js'
 
 npmRebuild: false
 
-#publish:
-#  - provider: github
-#    owner: ganeshrvel
-#    repo: openmtp-testflight
-#    private: false
+publish:
+  - provider: github
+    owner: ganeshrvel
+    repo: openmtp
+    private: false
 
 files:
   - app/dist/

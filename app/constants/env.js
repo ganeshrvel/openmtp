@@ -20,7 +20,7 @@ const config = {
     enableGoogleAnalytics: true,
     enableMixpanelAnalytics: true,
     disableReactWarnings: false,
-    allowDevelopmentEnvironment: false,
+    allowDevelopmentEnvironment: true, //todo fix this to false
   },
   debug: {
     reportToSenty: true,

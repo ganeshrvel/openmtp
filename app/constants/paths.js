@@ -29,7 +29,6 @@ const logDir = join(profileDir, `./logs`);
 const logFile = join(logDir, `./${APP_NAME}-${logFileName}`);
 const settingsFile = join(profileDir, `./settings.json`);
 const devAppUpdateFile = join(configDir, `./dev-app-update.yml`);
-const prodAppUpdateFile = join(configDir, `./prod-app-update.yml`);
 
 export const PATHS = {
   root: resolve(root),
@@ -43,7 +42,6 @@ export const PATHS = {
   logFile: resolve(logFile),
   settingsFile: resolve(settingsFile),
   devAppUpdateFile: resolve(devAppUpdateFile),
-  prodAppUpdateFile: resolve(prodAppUpdateFile),
   prevProfileDir: resolve(prevProfileDir),
   desktopDir: join(homeDir, `/Desktop`),
   documentsDir: join(homeDir, `/Documents`),
