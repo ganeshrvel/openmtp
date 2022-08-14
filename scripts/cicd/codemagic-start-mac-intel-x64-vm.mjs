@@ -37,7 +37,7 @@ try {
   await axios.post('/builds', {
     appId: `${process.env.CODEMAGIC_APP_ID}`,
     workflowId,
-    branch: `${process.env.CODEMAGIC_GIT_BRANCH}`,
+    branch: `${process.env.CM_BRANCH}`,
     environment: {
       variables: {
         CM_ARTIFACT_LINKS_M1_ARM64: process.env.CM_ARTIFACT_LINKS,

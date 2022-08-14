@@ -162,8 +162,6 @@ $ yarn start
       - Find the relevant workflow id from `codemagic.yaml`, (mostly `macos-intel-x64-build-prod`) 
     - `CODEMAGIC_INTEL_X64_WORKFLOW_ID_DEV`: `<Dev codeMagic workflow id>`
       - Find the relevant workflow id from `codemagic.yaml`, (mostly `macos-intel-x64-build-dev`)
-    - `CODEMAGIC_GIT_BRANCH`: `<Git Branch to use>`
-      - Mostly `master`   
     - `PUBLISH_PROD_REPOSITORY`: `<Repository to publish the production app>`
     - `PUBLISH_DEV_REPOSITORY`: `<Repository to publish the dev app>`
     - `PUBLISH_EMAIL`: `Email address to receive the updates on publish`
