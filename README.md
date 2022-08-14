@@ -158,14 +158,15 @@ $ yarn start
       - Find it from here: [Settings -> Integrations -> Codemagic API](https://codemagic.io/settings)
     - `CODEMAGIC_APP_ID`: `<CodeMagic App id>`
       - Find it from here: [Apps](https://codemagic.io/apps)
-    - `CODEMAGIC_INTEL_X64_WORKFLOW_ID`: `<CodeMagic workflow id>`
-      - Find the relevant workflow if from `codemagic.yaml`
+    - `CODEMAGIC_INTEL_X64_WORKFLOW_ID_PROD`: `<Prod codeMagic workflow id>`
+      - Find the relevant workflow id from `codemagic.yaml`, (mostly `macos-intel-x64-build-prod`) 
+    - `CODEMAGIC_INTEL_X64_WORKFLOW_ID_DEV`: `<Dev codeMagic workflow id>`
+      - Find the relevant workflow id from `codemagic.yaml`, (mostly `macos-intel-x64-build-dev`)
     - `CODEMAGIC_GIT_BRANCH`: `<Git Branch to use>`
       - Mostly `master`   
-    - `PUBLISH_MAIN_REPOSITORY`: `<Repository to publish the production app>`
-      - `openmtp`
+    - `PUBLISH_PROD_REPOSITORY`: `<Repository to publish the production app>`
     - `PUBLISH_DEV_REPOSITORY`: `<Repository to publish the dev app>`
-      - `openmtp-testflight`
+    - `PUBLISH_EMAIL`: `Email address to receive the updates on publish`
     - References: 
       - [https://www.electron.build/code-signing.html](https://www.electron.build/code-signing.html)
       - [https://docs.codemagic.io/yaml-code-signing/signing-macos/#saving-the-api-key-to-environment-variables](https://docs.codemagic.io/yaml-code-signing/signing-macos/#saving-the-api-key-to-environment-variables)
@@ -176,14 +177,14 @@ Setup the *code signing* to build, package (locally) and publish the app.
 
 **App Notarization for macOS** (skip this section for non macOS builds)
 - Rename *sample.env* file as *.env*
-- To update `APPLEID` and `ELECTRON_NOTORIZE_PASSWORD` in *.env* file
+- To update `APPLEID` and `APPLE_APP_SPECIFIC_PASSWORD` in *.env* file
 - Log into your [Apple Account](https://appleid.apple.com/account/manage "Apple Account")
 - Goto **Sign-In and Security > App-Specific Passwords**
 - Click on **Generate Password...**, enter a password label and click *Create*
 - Copy the displayed *app-specific-password*
 - Run
 ```shell
-security add-generic-password -a "<apple-developer-account-username>" -w <app-specific-password> -s "ELECTRON_NOTORIZE_PASSWORD"
+security add-generic-password -a "<apple-developer-account-username>" -w <app-specific-password> -s "APPLE_APP_SPECIFIC_PASSWORD"
 ```
 
 - Log into your [Apple App Store Connect Account](https://appstoreconnect.apple.com/agreements/# "Apple App Store Connect Account") and accept the presented terms and conditions
