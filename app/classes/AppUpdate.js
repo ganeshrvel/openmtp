@@ -96,6 +96,8 @@ export default class AppUpdate {
     this.autoUpdater = autoUpdater;
     if (!isPackaged) {
       this.autoUpdater.updateConfigPath = PATHS.devAppUpdateFile;
+    } else {
+      this.autoUpdater.updateConfigPath = PATHS.prodAppUpdateFile;
     }
 
     this.autoUpdater.autoDownload = autoUpdateCheck && autoDownload;
