@@ -94,7 +94,7 @@ const cmArtifactLinksM1Arm64 = process.env.CM_ARTIFACT_LINKS_M1_ARM64;
 
 if (undefinedOrNull(cmArtifactLinksM1Arm64)) {
   throw new Error(
-    `'CM_ARTIFACT_LINKS_M1_ARM64' env variable shouldn't be empty.\nNote: 'macos-intel-x64-build' instance shouldn't be executed directly.\n Start the 'macos-m1-arm64-build' instance first.`
+    `'CM_ARTIFACT_LINKS_M1_ARM64' env variable shouldn't be empty.\nNote: 'macos-intel-x64-build' instance shouldn't be executed directly.\n Start the 'macos-m1-arm64-build-*' instance first.`
   );
 }
 
