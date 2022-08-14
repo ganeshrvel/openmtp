@@ -3,7 +3,7 @@
 import 'zx/globals';
 import axiosPackage from 'axios';
 import process from 'process';
-import { IS_PROD_WORKFLOW } from './constants.js';
+import { IS_PROD_WORKFLOW } from './constants.mjs';
 
 require('dotenv').config();
 

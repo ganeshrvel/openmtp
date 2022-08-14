@@ -10,7 +10,7 @@ import niceUtils from 'nice-utils';
 import yaml from 'js-yaml';
 import path from 'path';
 import junk from 'junk';
-import { IS_PROD_WORKFLOW } from './constants.js';
+import { IS_PROD_WORKFLOW } from './constants.mjs';
 
 require('dotenv').config();
 const { removeSync, outputFileSync, readJsonSync } = fsExtra;
