@@ -177,14 +177,14 @@ Setup the *code signing* to build, package (locally) and publish the app.
 
 **App Notarization for macOS** (skip this section for non macOS builds)
 - Rename *sample.env* file as *.env*
-- To update `APPLEID` and `ELECTRON_NOTORIZE_PASSWORD` in *.env* file
+- To update `APPLEID` and `APPLE_APP_SPECIFIC_PASSWORD` in *.env* file
 - Log into your [Apple Account](https://appleid.apple.com/account/manage "Apple Account")
 - Goto **Sign-In and Security > App-Specific Passwords**
 - Click on **Generate Password...**, enter a password label and click *Create*
 - Copy the displayed *app-specific-password*
 - Run
 ```shell
-security add-generic-password -a "<apple-developer-account-username>" -w <app-specific-password> -s "ELECTRON_NOTORIZE_PASSWORD"
+security add-generic-password -a "<apple-developer-account-username>" -w <app-specific-password> -s "APPLE_APP_SPECIFIC_PASSWORD"
 ```
 
 - Log into your [Apple App Store Connect Account](https://appstoreconnect.apple.com/agreements/# "Apple App Store Connect Account") and accept the presented terms and conditions

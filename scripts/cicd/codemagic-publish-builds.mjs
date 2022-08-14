@@ -10,6 +10,7 @@ import niceUtils from 'nice-utils';
 import yaml from 'js-yaml';
 import path from 'path';
 import junk from 'junk';
+import { IS_PROD_WORKFLOW } from './constants.js';
 
 require('dotenv').config();
 const { removeSync, outputFileSync, readJsonSync } = fsExtra;
@@ -27,7 +28,13 @@ const PKG_ROOT_DIR = await packageDirectory();
 const TEMP_ROOT_DIR = `${PKG_ROOT_DIR}/tmp/cicd`;
 const DIST_DIR = `${PKG_ROOT_DIR}/dist`;
 const PACKAGE_JSON_PATH = `${PKG_ROOT_DIR}/${PACKAGE_JSON_FILENAME}`;
-const PUBLISH_REPOSITORY = process.env.PUBLISH_REPOSITORY;
+
+let publishRepository;
+if (IS_PROD_WORKFLOW) {
+  publishRepository = process.env.PUBLISH_PROD_REPOSITORY;
+} else {
+  publishRepository = process.env.PUBLISH_DEV_REPOSITORY;
+}
 
 // M1 arm64 artifacts
 const MAC_M1_ARM64_ARTIFACTS_ZIP_FILENAME = `mac_m1_arm64_artifacts.zip`;
@@ -221,7 +228,7 @@ try {
     '--title',
     `${packageName}-${packageVersion}`,
     '--repo',
-    `${PUBLISH_REPOSITORY}`,
+    `${publishRepository}`,
     '--notes', // IMP: this is required to disable the interactive cli
     `# About ${packageName}-${packageVersion}`,
     ...tempMergedArtifacts,
