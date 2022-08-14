@@ -49,9 +49,9 @@ class GenerateErrorReport extends PureComponent {
     );
   }
 
-  compressLog = () => {
+  compressLog = async () => {
     try {
-      compressFile(logFile, logFileZippedPath);
+      await compressFile(logFile, logFileZippedPath);
     } catch (e) {
       log.error(e, `GenerateErrorReport -> compressLog`);
     }
@@ -108,15 +108,19 @@ class GenerateErrorReport extends PureComponent {
         message: reportGenerateError,
       });
 
+      log.error(error, reportGenerateError);
+
       return null;
     }
 
-    this.compressLog();
+    await this.compressLog();
 
     if (!fileExistsSync(logFileZippedPath)) {
       actionCreateThrowError({
         message: reportGenerateError,
       });
+
+      log.error(`${logFileZippedPath} doesn't exist`, reportGenerateError);
 
       return null;
     }
