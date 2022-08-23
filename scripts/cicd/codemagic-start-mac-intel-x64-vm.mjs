@@ -35,7 +35,7 @@ if (IS_PROD_WORKFLOW) {
 console.info(`starting a new CodeMagic 'macos-intel-x64-build' instance...\n`);
 try {
   await axios.post('/builds', {
-    appId: `${process.env.CODEMAGIC_APP_ID}`,
+    appId: `${process.env.CM_PROJECT_ID}`,
     workflowId,
     branch: `${process.env.CM_BRANCH}`,
     environment: {
