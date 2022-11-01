@@ -3,7 +3,7 @@
 package main
 
 import (
-	"./send_to_js"
+	"kalam/send_to_js"
 	"fmt"
 	"github.com/ganeshrvel/go-mtpx"
 	jsoniter "github.com/json-iterator/go"
