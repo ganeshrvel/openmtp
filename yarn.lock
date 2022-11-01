@@ -4071,10 +4071,9 @@ electron-debug@^3.2.0:
     electron-is-dev "^1.1.0"
     electron-localshortcut "^3.1.0"
 
-electron-devtools-installer@^3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/electron-devtools-installer/-/electron-devtools-installer-3.2.0.tgz#acc48d24eb7033fe5af284a19667e73b78d406d0"
-  integrity sha512-t3UczsYugm4OAbqvdImMCImIMVdFzJAHgbwHpkl5jmfu1izVgUcP/mnrPqJIpEeCK1uZGpt+yHgWEN+9EwoYhQ==
+"electron-devtools-installer@git+https://github.com/ganeshrvel/electron-devtools-installer.git#fix/electron-18":
+  version "0.0.1"
+  resolved "git+https://github.com/ganeshrvel/electron-devtools-installer.git#cfbfb8639c7a8adc68a9f76d8ea0e984bb434975"
   dependencies:
     rimraf "^3.0.2"
     semver "^7.2.1"
@@ -4175,10 +4174,10 @@ electron-publish@23.3.3:
     lazy-val "^1.0.5"
     mime "^2.5.2"
 
-electron-root-path@^1.0.16:
-  version "1.0.16"
-  resolved "https://registry.yarnpkg.com/electron-root-path/-/electron-root-path-1.0.16.tgz#2e18086665303993859e5f9f501cfbcb5cab9351"
-  integrity sha512-5HVw3k5crnbezyPCdkY3wLsbOfCKIrRtbq2IPl5Ocs7FA86b9JxAIESqEXm1YD5MaZq07HOCl2DNOQZl/IWebw==
+electron-root-path@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/electron-root-path/-/electron-root-path-1.1.0.tgz#a413b1ad50cbe09cb2b723ea1aacdebad47622f8"
+  integrity sha512-hx9BU0cS36XV4EmIrHhYObADq2gMPB96dPjZ71ROfIbVp56KC058dDR38YY2xaB3M94ATa0w6bWyDBBYrKsYKw==
   dependencies:
     electron-is-packaged "^1.0.2"
 

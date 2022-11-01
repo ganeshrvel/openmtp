@@ -66,3 +66,4 @@ extras/*
 mtp-mock-files/*
 resources
 tmp/*
+*.prod.js

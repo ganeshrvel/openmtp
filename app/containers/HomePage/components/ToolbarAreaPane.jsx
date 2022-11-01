@@ -422,147 +422,149 @@ class ToolbarAreaPane extends PureComponent {
 const mapDispatchToProps = (dispatch, _) =>
   bindActionCreators(
     {
-      actionCreateListDirectory: ({ ...args }, deviceType) => (_, getState) => {
-        dispatch(listDirectory({ ...args }, deviceType, getState));
-      },
+      actionCreateListDirectory:
+        ({ ...args }, deviceType) =>
+        (_, getState) => {
+          dispatch(listDirectory({ ...args }, deviceType, getState));
+        },
 
-      actionCreateReloadDirList: ({ filePath, ignoreHidden, deviceType }) => (
-        _,
-        getState
-      ) => {
-        checkIf(deviceType, 'string');
+      actionCreateReloadDirList:
+        ({ filePath, ignoreHidden, deviceType }) =>
+        (_, getState) => {
+          checkIf(deviceType, 'string');
 
-        dispatch(
-          reloadDirList(
-            {
-              filePath,
-              ignoreHidden,
-              deviceType,
-            },
-            getState
-          )
-        );
-      },
-
-      actionCreateDelFiles: (
-        { fileList, deviceType },
-        { ...listDirectoryArgs }
-      ) => async (_, getState) => {
-        try {
-          const { mtpMode } = getState().Settings;
-
-          switch (deviceType) {
-            case DEVICE_TYPE.local:
-              const {
-                error: localError,
-                stderr: localStderr,
-                data: localData,
-              } = await fileExplorerController.deleteFiles({
+          dispatch(
+            reloadDirList(
+              {
+                filePath,
+                ignoreHidden,
                 deviceType,
-                fileList,
-                storageId: null,
-              });
+              },
+              getState
+            )
+          );
+        },
 
-              dispatch(
-                churnLocalBuffer({
-                  deviceType,
+      actionCreateDelFiles:
+        ({ fileList, deviceType }, { ...listDirectoryArgs }) =>
+        async (_, getState) => {
+          try {
+            const { mtpMode } = getState().Settings;
+
+            switch (deviceType) {
+              case DEVICE_TYPE.local:
+                const {
                   error: localError,
                   stderr: localStderr,
                   data: localData,
-                  onSuccess: () => {
-                    dispatch(
-                      listDirectory(
-                        { ...listDirectoryArgs },
-                        deviceType,
-                        getState
-                      )
-                    );
-                  },
-                })
-              );
-              break;
-            case DEVICE_TYPE.mtp:
-              const storageId = getSelectedStorageIdFromState(getState().Home);
-              const {
-                error: mtpError,
-                stderr: mtpStderr,
-                data: mtpData,
-              } = await fileExplorerController.deleteFiles({
-                deviceType,
-                fileList,
-                storageId,
-              });
-
-              dispatch(
-                churnMtpBuffer({
+                } = await fileExplorerController.deleteFiles({
                   deviceType,
+                  fileList,
+                  storageId: null,
+                });
+
+                dispatch(
+                  churnLocalBuffer({
+                    deviceType,
+                    error: localError,
+                    stderr: localStderr,
+                    data: localData,
+                    onSuccess: () => {
+                      dispatch(
+                        listDirectory(
+                          { ...listDirectoryArgs },
+                          deviceType,
+                          getState
+                        )
+                      );
+                    },
+                  })
+                );
+                break;
+              case DEVICE_TYPE.mtp:
+                const storageId = getSelectedStorageIdFromState(
+                  getState().Home
+                );
+                const {
                   error: mtpError,
                   stderr: mtpStderr,
                   data: mtpData,
-                  mtpMode,
-                  onSuccess: () => {
-                    dispatch(
-                      listDirectory(
-                        { ...listDirectoryArgs },
-                        deviceType,
-                        getState
-                      )
-                    );
-                  },
-                })
-              );
-              break;
-            default:
-              break;
+                } = await fileExplorerController.deleteFiles({
+                  deviceType,
+                  fileList,
+                  storageId,
+                });
+
+                dispatch(
+                  churnMtpBuffer({
+                    deviceType,
+                    error: mtpError,
+                    stderr: mtpStderr,
+                    data: mtpData,
+                    mtpMode,
+                    onSuccess: () => {
+                      dispatch(
+                        listDirectory(
+                          { ...listDirectoryArgs },
+                          deviceType,
+                          getState
+                        )
+                      );
+                    },
+                  })
+                );
+                break;
+              default:
+                break;
+            }
+          } catch (e) {
+            log.error(e);
           }
-        } catch (e) {
-          log.error(e);
-        }
-      },
+        },
 
-      actionCreateSetMtpStorage: (
-        { selectedValue, mtpStoragesList },
-        { ...listDirArgs },
-        deviceType
-      ) => (_, getState) => {
-        if (Object.keys(mtpStoragesList).length < 1) {
-          return null;
-        }
-
-        let _mtpStoragesList = {};
-
-        Object.keys(mtpStoragesList).map((a) => {
-          const item = mtpStoragesList[a];
-          let _selectedValue = false;
-
-          if (selectedValue === a) {
-            _selectedValue = true;
+      actionCreateSetMtpStorage:
+        ({ selectedValue, mtpStoragesList }, { ...listDirArgs }, deviceType) =>
+        (_, getState) => {
+          if (Object.keys(mtpStoragesList).length < 1) {
+            return null;
           }
 
-          _mtpStoragesList = {
-            ...mtpStoragesList,
-            ..._mtpStoragesList,
-            [a]: {
-              ...item,
-              selected: _selectedValue,
-            },
-          };
+          let _mtpStoragesList = {};
 
-          return null;
-        });
+          Object.keys(mtpStoragesList).map((a) => {
+            const item = mtpStoragesList[a];
+            let _selectedValue = false;
 
-        dispatch(actionChangeMtpStorage({ ..._mtpStoragesList }));
-        dispatch(listDirectory({ ...listDirArgs }, deviceType, getState));
-      },
+            if (selectedValue === a) {
+              _selectedValue = true;
+            }
 
-      actionCreateSelectMtpMode: ({ value }, deviceType) => (_, getState) => {
-        checkIf(value, 'string');
-        checkIf(deviceType, 'string');
+            _mtpStoragesList = {
+              ...mtpStoragesList,
+              ..._mtpStoragesList,
+              [a]: {
+                ...item,
+                selected: _selectedValue,
+              },
+            };
 
-        dispatch(
-          selectMtpMode({ value, reportEvent: false }, deviceType, getState)
-        );
-      },
+            return null;
+          });
+
+          dispatch(actionChangeMtpStorage({ ..._mtpStoragesList }));
+          dispatch(listDirectory({ ...listDirArgs }, deviceType, getState));
+        },
+
+      actionCreateSelectMtpMode:
+        ({ value }, deviceType) =>
+        (_, getState) => {
+          checkIf(value, 'string');
+          checkIf(deviceType, 'string');
+
+          dispatch(
+            selectMtpMode({ value, reportEvent: false }, deviceType, getState)
+          );
+        },
       actionCreateToggleSettings: (data) => (_, __) => {
         dispatch(toggleSettings(data));
       },

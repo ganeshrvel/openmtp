@@ -5,9 +5,10 @@ import './services/sentry/index';
 import { app, BrowserWindow, ipcMain, nativeTheme } from 'electron';
 import electronIs from 'electron-is';
 import usbDetect from 'usb-detection';
+import process from 'process';
 import MenuBuilder from './menu';
 import { log } from './utils/log';
-import { DEBUG_PROD, IS_DEV, IS_PROD } from './constants/env';
+import { DEBUG_PROD, ENV_FLAVOR, IS_DEV, IS_PROD } from './constants/env';
 import AppUpdate from './classes/AppUpdate';
 import { PATHS } from './constants/paths';
 import { settingsStorage } from './helpers/storageHelper';
@@ -58,24 +59,28 @@ async function bootTheDevice() {
 }
 
 async function installExtensions() {
-  try {
-    const installer = require('electron-devtools-installer');
-    const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
-    const extensions = ['REACT_DEVELOPER_TOOLS', 'REDUX_DEVTOOLS'];
+  const {
+    default: installExtension,
+    REDUX_DEVTOOLS,
+    REACT_DEVELOPER_TOOLS,
+  } = await import('electron-devtools-installer');
 
-    return Promise.all(
-      extensions.map((name) =>
-        installer.default(installer[name], forceDownload)
-      )
-    ).catch(console.error);
-  } catch (e) {
-    log.error(e, `main.dev -> installExtensions`);
-  }
+  const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
+  const extensions = [REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS];
+
+  return installExtension(extensions, {
+    forceDownload,
+  }).catch((err) =>
+    log.error(
+      `An extension error occurred: ${err}`,
+      `main.dev -> installExtensions`
+    )
+  );
 }
 
 async function createWindow() {
   try {
-    if (IS_DEV || DEBUG_PROD) {
+    if (ENV_FLAVOR.allowDevelopmentEnvironment) {
       await installExtensions();
     }
 
@@ -264,6 +269,12 @@ if (!isDeviceBootable) {
             device: JSON.stringify(device),
             eventName: USB_HOTPLUG_EVENTS.detach,
           });
+        });
+
+        process.stdout.on('error', (err) => {
+          if (err.code === 'EPIPE') {
+            process.exit(0);
+          }
         });
       } catch (e) {
         log.error(e, `main.dev -> whenReady`);

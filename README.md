@@ -142,32 +142,37 @@ $ yarn start
     - `GITHUB_TOKEN`: `Personal access token`
       - Find it from here: [Personal access tokens](https://github.com/settings/tokens)
       - Scopes: `admin:gpg_key, admin:public_key, repo, user, workflow`
-    - `BUNDLE_ID`: `io.ganeshrvel.openmtp`
     - `CSC_LINK`:
-      - Keychain -> Login (Default Keychains)
+      - Keychain -> `Default Keychains` menu in the left -> Login -> My Certificates
+      - Search for `Developer ID Application` in the top search bar
+        - If there are no results for the `Developer ID Application`, for the organization, create one from here: [Apple Developer Certificates](https://developer.apple.com/account/resources/certificates/add)
+        - Follow these steps to get the Apple Developer certificated installed in the local machine [Obtaining-an-Apple-Developer-ID-Certificate-for-macOS-Provisioning](https://forums.ivanti.com/s/article/Obtaining-an-Apple-Developer-ID-Certificate-for-macOS-Provisioning?language=en_US&ui-force-components-controllers-recordGlobalValueProvider.RecordGvp.getRecord=1)
+      - Search for `Developer ID Application` in the top search bar
       - Expand `Developer ID Application: <User Name> (XXXYYYZZZ)`
-      - Right Click -> `Mac Developer ID Application: <User Name>`
+      - See if the private key's name matches this: `Mac Developer ID Application: <User Name>`
+        - Else rename the private key as (right click -> get info) `Mac Developer ID Application: <User Name>`
+        - Close the window
+      - Right Click on the private key -> `Mac Developer ID Application: <User Name>`
       - Export `Mac Developer ID Application: <User Name>`
       - File name: `CERTIFICATE_PRIVATE_KEY.p12`
       - Enter Password. This is the `CSC_KEY_PASSWORD`, note this down
-      - Run: `base64 -i CERTIFICATE_PRIVATE_KEY.p12 -o CERTIFICATE_PRIVATE_KEY.txt`
+      - Run (this step doesnt work if you are using fig or ohmyzsh, use raw terminal):
+        - `base64 -i CERTIFICATE_PRIVATE_KEY.p12 -o CERTIFICATE_PRIVATE_KEY.txt`
       - Copy the whole content of the file `CERTIFICATE_PRIVATE_KEY.txt`
       - Paste the content as the value for the field `CSC_LINK`
-    - `CSC_KEY_PASSWORD` is the password from the above step
-    - `CODEMAGIC_AUTH_TOKEN_ID`: `<CodeMagic API Token>`
-      - Find it from here: [Settings -> Integrations -> Codemagic API](https://codemagic.io/settings)
-    - `CODEMAGIC_APP_ID`: `<CodeMagic App id>`
-      - Find it from here: [Apps](https://codemagic.io/apps)
-    - `CODEMAGIC_INTEL_X64_WORKFLOW_ID_PROD`: `<Prod codeMagic workflow id>`
-      - Find the relevant workflow id from `codemagic.yaml`, (mostly `macos-intel-x64-build-prod`) 
-    - `CODEMAGIC_INTEL_X64_WORKFLOW_ID_DEV`: `<Dev codeMagic workflow id>`
-      - Find the relevant workflow id from `codemagic.yaml`, (mostly `macos-intel-x64-build-dev`)
-    - `PUBLISH_PROD_REPOSITORY`: `<Repository to publish the production app>`
-    - `PUBLISH_DEV_REPOSITORY`: `<Repository to publish the dev app>`
-    - `PUBLISH_EMAIL`: `Email address to receive the updates on publish`
-    - References: 
-      - [https://www.electron.build/code-signing.html](https://www.electron.build/code-signing.html)
-      - [https://docs.codemagic.io/yaml-code-signing/signing-macos/#saving-the-api-key-to-environment-variables](https://docs.codemagic.io/yaml-code-signing/signing-macos/#saving-the-api-key-to-environment-variables)
+        - `CSC_KEY_PASSWORD` is the password from the above step
+        - `CODEMAGIC_AUTH_TOKEN_ID`: `<CodeMagic API Token>`
+          - Find it from here: [Settings -> Integrations -> Codemagic API](https://codemagic.io/settings)
+        - `CODEMAGIC_INTEL_X64_WORKFLOW_ID_PROD`: `<Prod codeMagic workflow id>`
+          - Find the relevant workflow id from `codemagic.yaml`, (mostly `macos-intel-x64-build-prod`) 
+        - `CODEMAGIC_INTEL_X64_WORKFLOW_ID_DEV`: `<Dev codeMagic workflow id>`
+          - Find the relevant workflow id from `codemagic.yaml`, (mostly `macos-intel-x64-build-dev`)
+        - `PUBLISH_PROD_REPOSITORY`: `<Repository to publish the production app>`
+        - `PUBLISH_DEV_REPOSITORY`: `<Repository to publish the dev app>`
+        - `PUBLISH_EMAIL`: `Email address to receive the updates on publish`
+        - References: 
+          - [https://www.electron.build/code-signing.html](https://www.electron.build/code-signing.html)
+          - [https://docs.codemagic.io/yaml-code-signing/signing-macos/#saving-the-api-key-to-environment-variables](https://docs.codemagic.io/yaml-code-signing/signing-macos/#saving-the-api-key-to-environment-variables)
 
 ### Packaging (locally) and Publishing
 
