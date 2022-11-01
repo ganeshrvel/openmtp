@@ -8,6 +8,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CloseIcon from '@material-ui/icons/Close';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
+import ToggleOffIcon from '@material-ui/icons/ToggleOff';
 import CheckIcon from '@material-ui/icons/Check';
 import ListAltIcon from '@material-ui/icons/ListAlt';
 import SettingsIcon from '@material-ui/icons/Settings';
@@ -348,6 +349,75 @@ class HelpPhoneNotRecognized extends PureComponent {
                   />
                 </ListItem>
 
+                <ListItem>
+                  <ListItemIcon>
+                    <ToggleOffIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={`If you face frequent device disconnections, turn off 'USB Hotplug'`}
+                    secondary={`Settings > General Tab`}
+                  />
+                </ListItem>
+
+                <RenderBasicConnection />
+              </List>
+            </AccordionDetails>
+          </Accordion>
+
+          {/* <----- Google drive is interfering with OpenMTP-----> */}
+          <Accordion className={styles.expansionRoot}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography className={styles.heading}>
+                {`I have Google drive installed on my ${
+                  DEVICES_LABEL[DEVICE_TYPE.local]
+                }`}
+              </Typography>
+            </AccordionSummary>
+
+            <AccordionDetails>
+              <List component="div" disablePadding>
+                <ListItem>
+                  <ListItemIcon>
+                    <DeleteIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={`The most recent versions of Google drive is known to interfere with ${APP_NAME}. Simply quiting Google drive may fix this issue`}
+                    secondary={
+                      <img
+                        src={imgsrc(`help/google-drive-not-connecting.png`)}
+                        alt="Files and Folders"
+                        className={styles.imagePlaceholder}
+                      />
+                    }
+                  />
+                </ListItem>
+
+                <RenderBasicConnection />
+              </List>
+            </AccordionDetails>
+          </Accordion>
+
+          {/* <----- Dropbox is interfering with OpenMTP-----> */}
+          <Accordion className={styles.expansionRoot}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography className={styles.heading}>
+                {`I have Dropbox installed on my ${
+                  DEVICES_LABEL[DEVICE_TYPE.local]
+                }`}
+              </Typography>
+            </AccordionSummary>
+
+            <AccordionDetails>
+              <List component="div" disablePadding>
+                <ListItem>
+                  <ListItemIcon>
+                    <DeleteIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={`The most recent versions of Dropbox is known to interfere with ${APP_NAME}. Simply quiting Dropbox may fix this issue`}
+                  />
+                </ListItem>
+
                 <RenderBasicConnection />
               </List>
             </AccordionDetails>
@@ -589,37 +659,6 @@ class HelpPhoneNotRecognized extends PureComponent {
                 </ListItem>
 
                 <RenderBasicConnection showUnplugPhone={false} />
-              </List>
-            </AccordionDetails>
-          </Accordion>
-
-          {/* <----- Google drive is interfering with OpenMTP-----> */}
-          <Accordion className={styles.expansionRoot}>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography className={styles.heading}>
-                {`Google drive is interfering with ${APP_NAME}`}
-              </Typography>
-            </AccordionSummary>
-
-            <AccordionDetails>
-              <List component="div" disablePadding>
-                <ListItem>
-                  <ListItemIcon>
-                    <DeleteIcon />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={`The most recent versions of Google drive is known to interfere with ${APP_NAME}. Simply quiting the Google drive app may fix this issue`}
-                    secondary={
-                      <img
-                        src={imgsrc(`help/google-drive-not-connecting.png`)}
-                        alt="Files and Folders"
-                        className={styles.imagePlaceholder}
-                      />
-                    }
-                  />
-                </ListItem>
-
-                <RenderBasicConnection />
               </List>
             </AccordionDetails>
           </Accordion>

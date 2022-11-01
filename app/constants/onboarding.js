@@ -1,3 +1,3 @@
 // most recently used version number to show the onboarding screen
 // search keywords: new, next, update, onboarding
-export const latestUpdatePushVersion = '3.2.0-alpha.2';
+export const latestUpdatePushVersion = '3.2.0-beta.1';

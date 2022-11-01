@@ -6,6 +6,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Collapse from '@material-ui/core/Collapse';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
+import ToggleOffIcon from '@material-ui/icons/ToggleOff';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
@@ -142,6 +143,17 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
                           secondary={`Uninstall 'Android File Transfer' by Google if it keeps popping up everytime you connect your Android device. The most recent versions of Google drive and Dropbox are known to interfere with ${APP_NAME}. Completely quiting these app may fix this issue.`}
                         />
                       </ListItem>
+
+                      <ListItem>
+                        <ListItemIcon>
+                          <ToggleOffIcon />
+                        </ListItemIcon>
+                        <ListItemText
+                          primary={`If you face frequent device disconnections, turn off 'USB Hotplug'`}
+                          secondary={`Settings > General Tab`}
+                        />
+                      </ListItem>
+
                       <ListItem>
                         <ListItemIcon>
                           <LockOpenIcon />
