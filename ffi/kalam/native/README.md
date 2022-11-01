@@ -1,6 +1,6 @@
 ```shell script
 xcode-select --install
-brew install llvm
+brew install llvm gcc pkg-config
 nano ~/.zshrc
 ```
 
