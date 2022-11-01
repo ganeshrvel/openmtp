@@ -39,7 +39,8 @@ Although OpenMTP will continue working on a machine which has macOS 10.11 (OS X 
 
 ### Installation
 * Download the [Latest Version](https://openmtp.ganeshrvel.com/?downloadApp=github&release=stable&platform=mac 'Latest Version')
-
+* Download the [Macbook M1 Apple silicon Version](https://github.com/ganeshrvel/openmtp/issues/220#issuecomment-1050236345 'Macbook M1 Apple silicon Version') (**ALPHA Version**)
+  
 * Using Homebrew Cask
 ```shell
   # newer versions:
@@ -280,6 +281,7 @@ $ set UPGRADE_EXTENSIONS=1 && npm run dev
 - [Tutorial Series by Ganesh Rathinavel](https://github.com/ganeshrvel/tutorial-series-ganesh-rathinavel "Tutorial Series by Ganesh Rathinavel")
 
 ### Credits
+- A special thanks to [CodeMagic](http://codemagic.io/ "Codemagic - CI/CD") and [Kevin Suhajda](https://www.linkedin.com/in/kevinsuhajda "Kevin Suhajda") for sponsoring their CI/CD VMs, thus making the app releases more streamlined and much easier now. 🎊🎊 Do checkout their [products](https://codemagic.io/integrations "Codemagic - integrations") section for more.
 
 - Thanks to Ms [Ayushi Bothra](https://www.linkedin.com/in/ayushi-bothra-3103/ "Ayushi Bothra") for contributing to the documentation and pages.
 
