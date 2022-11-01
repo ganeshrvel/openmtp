@@ -283,13 +283,13 @@ $ set UPGRADE_EXTENSIONS=1 && npm run dev
 ### Credits
 - A special thanks to [CodeMagic](http://codemagic.io/ "Codemagic - CI/CD") and [Kevin Suhajda](https://www.linkedin.com/in/kevinsuhajda "Kevin Suhajda") for sponsoring their CI/CD VMs, thus making the app releases more streamlined and much easier now. 🎊🎊 Do checkout their [products](https://codemagic.io/integrations "Codemagic - integrations") section for more.
 
+- Special shoutout to [@CodyJung](https://github.com/CodyJung "CodyJung") for adding the [Fujifilm](https://github.com/ganeshrvel/go-mtpfs/pull/2) and [Garmin](https://github.com/ganeshrvel/go-mtpfs/pull/1) devices support. 🔥🔥
+
 - Thanks to Ms [Ayushi Bothra](https://www.linkedin.com/in/ayushi-bothra-3103/ "Ayushi Bothra") for contributing to the documentation and pages.
 
 - App logo was contributed by [Shubhendu Mitra](https://www.linkedin.com/in/shubhendum/ "Shubhendu Mitra - LinkedIn"). Make sure to check out more of his works on [Behance](https://www.behance.net/soponhara "Shubhendu Mitra - Behance").
 
 - Thanks to [Vladimir Menshakov](https://github.com/whoozle "Vladimir Menshakov") for [android-file-transfer-linux](https://github.com/whoozle/android-file-transfer-linux "android-file-transfer-linux") (the MTP legacy Kernel)
-
-- Special shoutout to [@CodyJung](https://github.com/CodyJung "CodyJung") for adding the [Fujifilm](https://github.com/ganeshrvel/go-mtpfs/pull/2) and [Garmin](https://github.com/ganeshrvel/go-mtpfs/pull/1) devices support. 🔥🔥
 
 - Shoutout to [@yennsarah](https://github.com/yennsarah "yennsarah"), [@h0tk3y](https://github.com/h0tk3y), [@riginoommen](https://github.com/riginoommen "riginoommen"), [@AjithKumarvm](https://github.com/AjithKumarvm "AjithKumarvm"), [@kiranshaji555](https://github.com/kiranshaji555), Dick Cowan, Kjell Dankert, Thorolf E.R. Weißhuhn and to all other community members who helped me test the application.
 
