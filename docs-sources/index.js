@@ -73,10 +73,8 @@ class Docs {
       const { json, status } = res;
 
       return json.then((data) => {
-        this.gitHubLatestReleaseData = this._generateDownloadLatestGitHubReleaseUrl(
-          data,
-          status
-        );
+        this.gitHubLatestReleaseData =
+          this._generateDownloadLatestGitHubReleaseUrl(data, status);
 
         return this._releaseInformationSet({ ...this.gitHubLatestReleaseData });
       });

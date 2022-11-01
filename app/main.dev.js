@@ -208,6 +208,7 @@ if (!isDeviceBootable) {
   app
     .whenReady()
     .then(async () => {
+      // eslint-disable-next-line promise/always-return
       try {
         await createWindow();
 

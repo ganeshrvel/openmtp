@@ -8,6 +8,7 @@ import classNames from 'classnames';
 import { niceBytes, springTruncate } from '../../../utils/funcs';
 import { FILE_EXPLORER_TABLE_TRUNCATE_MAX_CHARS } from '../../../constants';
 import { styles } from '../styles/FileExplorerTableBodyListRender';
+// eslint-disable-next-line import/no-relative-packages
 import prettyFileIcons from '../../../vendors/pretty-file-icons';
 import { imgsrc } from '../../../utils/imgsrc';
 import { appDateFormat } from '../../../utils/date';

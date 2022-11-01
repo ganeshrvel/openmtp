@@ -326,12 +326,12 @@ export default class AppUpdate {
         });
 
         switch (buttonIndex) {
-          case 0:
-          default:
-            break;
           case 1:
             this.autoUpdater.checkForUpdates();
             this.updateStatus = UPDATER_STATUS.updateInProgress;
+            break;
+          case 0:
+          default:
             break;
         }
 
@@ -491,8 +491,12 @@ export default class AppUpdate {
     };
 
     switch (type) {
-      default:
+      case 'error':
+        dialog.showErrorBox(title, message);
+        break;
+
       case 'message':
+      default:
         // eslint-disable-next-line no-case-declarations
         const { response: buttonIndex } = await dialog.showMessageBox({
           title,
@@ -506,9 +510,6 @@ export default class AppUpdate {
             break;
         }
 
-        break;
-      case 'error':
-        dialog.showErrorBox(title, message);
         break;
     }
   }

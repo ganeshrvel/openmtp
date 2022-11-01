@@ -1,4 +1,4 @@
-import React, { PureComponent, Fragment } from 'react';
+import React, { PureComponent } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -26,10 +26,9 @@ class FileExplorerTableBodyRender extends PureComponent {
     const { classes, ...parentProps } = this.props;
 
     switch (type) {
-      case FILE_EXPLORER_VIEW_TYPE.grid:
-      default:
+      case FILE_EXPLORER_VIEW_TYPE.list:
         return (
-          <FileExplorerTableBodyGridWrapperRender
+          <FileExplorerTableBodyListWrapperRender
             {...parentProps}
             tableSort={tableSort({
               nodes,
@@ -41,9 +40,10 @@ class FileExplorerTableBodyRender extends PureComponent {
           />
         );
 
-      case FILE_EXPLORER_VIEW_TYPE.list:
+      case FILE_EXPLORER_VIEW_TYPE.grid:
+      default:
         return (
-          <FileExplorerTableBodyListWrapperRender
+          <FileExplorerTableBodyGridWrapperRender
             {...parentProps}
             tableSort={tableSort({
               nodes,
@@ -78,40 +78,38 @@ class FileExplorerTableBodyRender extends PureComponent {
     const isMtp = deviceType === DEVICE_TYPE.mtp;
 
     return (
-      <Fragment>
-        <Table className={styles.table}>
-          <FileExplorerTableHeadRender
-            numSelected={selected.length}
-            order={order}
-            orderBy={orderBy}
-            onSelectAllClick={onSelectAllClick.bind(this, deviceType)}
-            onRequestSort={onRequestSort.bind(this, deviceType)}
-            rowCount={nodes ? nodes.length : 0}
-            hideColList={hideColList}
-          />
-          <TableBody
-            draggable={onIsDraggable(deviceType)}
-            onDragStart={(event) => {
-              onDragStart(event, {
-                sourceDeviceType: deviceType,
-              });
-            }}
-          >
-            {emptyRows ? (
-              <FileExplorerTableEmptyRowRender
-                mtpDevice={mtpDevice}
-                isMtp={isMtp}
-                currentBrowsePath={currentBrowsePath}
-                deviceType={deviceType}
-                directoryLists={directoryLists}
-                onContextMenuClick={onContextMenuClick}
-              />
-            ) : (
-              this.ListingSwitcher(fileExplorerListingType[deviceType])
-            )}
-          </TableBody>
-        </Table>
-      </Fragment>
+      <Table className={styles.table}>
+        <FileExplorerTableHeadRender
+          numSelected={selected.length}
+          order={order}
+          orderBy={orderBy}
+          onSelectAllClick={onSelectAllClick.bind(this, deviceType)}
+          onRequestSort={onRequestSort.bind(this, deviceType)}
+          rowCount={nodes ? nodes.length : 0}
+          hideColList={hideColList}
+        />
+        <TableBody
+          draggable={onIsDraggable(deviceType)}
+          onDragStart={(event) => {
+            onDragStart(event, {
+              sourceDeviceType: deviceType,
+            });
+          }}
+        >
+          {emptyRows ? (
+            <FileExplorerTableEmptyRowRender
+              mtpDevice={mtpDevice}
+              isMtp={isMtp}
+              currentBrowsePath={currentBrowsePath}
+              deviceType={deviceType}
+              directoryLists={directoryLists}
+              onContextMenuClick={onContextMenuClick}
+            />
+          ) : (
+            this.ListingSwitcher(fileExplorerListingType[deviceType])
+          )}
+        </TableBody>
+      </Table>
     );
   }
 }

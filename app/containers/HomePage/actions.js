@@ -672,16 +672,13 @@ export function listDirectory(
             return;
           }
 
-          const {
-            error,
-            stderr,
-            data,
-          } = await fileExplorerController.listFiles({
-            deviceType,
-            filePath,
-            ignoreHidden,
-            storageId,
-          });
+          const { error, stderr, data } =
+            await fileExplorerController.listFiles({
+              deviceType,
+              filePath,
+              ignoreHidden,
+              storageId,
+            });
 
           dispatch(
             churnMtpBuffer({

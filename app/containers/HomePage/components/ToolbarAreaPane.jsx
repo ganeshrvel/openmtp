@@ -522,9 +522,12 @@ const mapDispatchToProps = (dispatch, _) =>
           }
         },
 
-      actionCreateSetMtpStorage:
-        ({ selectedValue, mtpStoragesList }, { ...listDirArgs }, deviceType) =>
-        (_, getState) => {
+      actionCreateSetMtpStorage: (
+        { selectedValue, mtpStoragesList },
+        { ...listDirArgs },
+        deviceType
+      ) =>
+        function (_, getState) {
           if (Object.keys(mtpStoragesList).length < 1) {
             return null;
           }

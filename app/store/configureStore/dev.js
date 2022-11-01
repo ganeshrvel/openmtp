@@ -1,4 +1,5 @@
 /* eslint global-require: off */
+/* eslint-disable import/no-import-module-exports */
 
 import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
