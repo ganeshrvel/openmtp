@@ -146,7 +146,15 @@ const reportBugsCreateWindow = (isRenderedPage) => {
   };
 };
 
+// todo move all create window methods to IpcEventService and all window create methods from renderer should be event-driven (aka via IpcEventService). The main process windows could be directly invoked.
+//  This is done to avoid issues with 'electron/remote' (in the packaged builds the electron/remote enable doesn't work)
 export const reportBugsWindow = (isRenderedPage = false, focus = true) => {
+  if (isRenderedPage) {
+    throw new Error(
+      `'isRenderedPage' param is deprecated. Use ipcRenderer.send(IpcEvents.OPEN_<***>_WINDOW) to open a window from a renderer`
+    );
+  }
+
   try {
     if (_reportBugsWindow) {
       if (focus) {
@@ -244,7 +252,15 @@ const privacyPolicyCreateWindow = (isRenderedPage = false) => {
   };
 };
 
+// todo move all create window methods to IpcEventService and all window create methods from renderer should be event-driven (aka via IpcEventService). The main process windows could be directly invoked.
+//  This is done to avoid issues with 'electron/remote' (in the packaged builds the electron/remote enable doesn't work)
 export const privacyPolicyWindow = (isRenderedPage = false, focus = true) => {
+  if (isRenderedPage) {
+    throw new Error(
+      `'isRenderedPage' param is deprecated. Use ipcRenderer.send(IpcEvents.OPEN_<***>_WINDOW) to open a window from a renderer`
+    );
+  }
+
   try {
     if (_privacyPolicyWindow) {
       if (focus) {
@@ -307,6 +323,8 @@ const appUpdateAvailableCreateWindow = () => {
   });
 };
 
+// todo move all create window methods to IpcEventService and all window create methods from renderer should be event-driven (aka via IpcEventService). The main process windows could be directly invoked.
+//  This is done to avoid issues with 'electron/remote' (in the packaged builds the electron/remote enable doesn't work)
 export const appUpdateAvailableWindow = () => {
   try {
     if (_appUpdateAvailableWindow) {
@@ -402,7 +420,15 @@ const appFeaturesCreateWindow = (isRenderedPage) => {
   };
 };
 
+// todo move all create window methods to IpcEventService and all window create methods from renderer should be event-driven (aka via IpcEventService). The main process windows could be directly invoked.
+//  This is done to avoid issues with 'electron/remote' (in the packaged builds the electron/remote enable doesn't work)
 export const appFeaturesWindow = (isRenderedPage = false, focus = true) => {
+  if (isRenderedPage) {
+    throw new Error(
+      `'isRenderedPage' param is deprecated. Use ipcRenderer.send(IpcEvents.OPEN_<***>_WINDOW) to open a window from a renderer`
+    );
+  }
+
   try {
     if (_appFeaturesWindow) {
       if (focus) {
@@ -501,10 +527,18 @@ const keyboardShortcutsCreateWindow = (isRenderedPage) => {
   };
 };
 
+// todo move all create window methods to IpcEventService and all window create methods from renderer should be event-driven (aka via IpcEventService). The main process windows could be directly invoked.
+//  This is done to avoid issues with 'electron/remote' (in the packaged builds the electron/remote enable doesn't work)
 export const keyboardShortcutsWindow = (
   isRenderedPage = false,
   focus = true
 ) => {
+  if (isRenderedPage) {
+    throw new Error(
+      `'isRenderedPage' param is deprecated. Use ipcRenderer.send(IpcEvents.OPEN_<***>_WINDOW) to open a window from a renderer`
+    );
+  }
+
   try {
     if (_keyboardShortcutsWindow) {
       if (focus) {
@@ -600,7 +634,15 @@ const helpFaqsCreateWindow = (isRenderedPage = false) => {
   };
 };
 
+// todo move all create window methods to IpcEventService and all window create methods from renderer should be event-driven (aka via IpcEventService). The main process windows could be directly invoked.
+//  This is done to avoid issues with 'electron/remote' (in the packaged builds the electron/remote enable doesn't work)
 export const faqsWindow = (isRenderedPage = false, focus = true) => {
+  if (isRenderedPage) {
+    throw new Error(
+      `'isRenderedPage' param is deprecated. Use ipcRenderer.send(IpcEvents.OPEN_<***>_WINDOW) to open a window from a renderer`
+    );
+  }
+
   try {
     if (_faqsWindow) {
       if (focus) {
@@ -699,10 +741,18 @@ const helpPhoneNotConnectingCreateWindow = (isRenderedPage = false) => {
   };
 };
 
+// todo move all create window methods to IpcEventService and all window create methods from renderer should be event-driven (aka via IpcEventService). The main process windows could be directly invoked.
+//  This is done to avoid issues with 'electron/remote' (in the packaged builds the electron/remote enable doesn't work)
 export const helpPhoneNotConnectingWindow = (
   isRenderedPage = false,
   focus = true
 ) => {
+  if (isRenderedPage) {
+    throw new Error(
+      `'isRenderedPage' param is deprecated. Use ipcRenderer.send(IpcEvents.OPEN_<***>_WINDOW) to open a window from a renderer`
+    );
+  }
+
   try {
     if (_helpPhoneIsNotConnectingWindow) {
       if (focus) {

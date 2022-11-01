@@ -6,6 +6,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import DeleteIcon from '@material-ui/icons/Delete';
+import CloseIcon from '@material-ui/icons/Close';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import CheckIcon from '@material-ui/icons/Check';
 import ListAltIcon from '@material-ui/icons/ListAlt';
@@ -282,7 +283,7 @@ class HelpPhoneNotRecognized extends PureComponent {
               </Typography>
               <Typography component="p" variant="body2" paragraph>
                 Some of you have been telling me that there are issues with
-                connecting certain mobile phones (<i>mostly Samsung</i>) to
+                connecting certain mobile phones (<i>mostly Samsung</i>) to{' '}
                 {APP_NAME}. I have been working hard to fix this issue by
                 migrating the existing MTP Kernel to a better one.
               </Typography>
@@ -337,6 +338,16 @@ class HelpPhoneNotRecognized extends PureComponent {
             </AccordionSummary>
             <AccordionDetails>
               <List component="div" disablePadding>
+                <ListItem>
+                  <ListItemIcon>
+                    <CloseIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={`Quit Google drive, Android File Transfer, Dropbox, OneDrive or any other app that might be using USB`}
+                    secondary={`The most recent versions of Google drive and Dropbox are known to interfere with ${APP_NAME}. Completely quiting these app may fix this issue. Uninstall 'Android File Transfer' by Google if it keeps popping up everytime you connect your Android device`}
+                  />
+                </ListItem>
+
                 <RenderBasicConnection />
               </List>
             </AccordionDetails>

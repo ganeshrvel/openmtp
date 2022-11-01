@@ -107,8 +107,6 @@ import {
 import { log } from '../../../utils/log';
 import fileExplorerController from '../../../data/file-explorer/controllers/FileExplorerController';
 import { checkIf } from '../../../utils/checkIf';
-import { COMMUNICATION_EVENTS } from '../../../enums/communicationEvents';
-import { reportBugsWindow } from '../../../helpers/createWindows';
 import { analyticsService } from '../../../services/analytics';
 import { EVENT_TYPE } from '../../../enums/events';
 import {
@@ -117,6 +115,7 @@ import {
 } from '../../../templates/fileExplorer';
 import { fileExistsSync } from '../../../helpers/fileOps';
 import { getRemoteWindow } from '../../../helpers/remoteWindowHelpers';
+import { IpcEvents } from '../../../services/ipc-events/IpcEventType';
 
 const remote = getRemoteWindow();
 const { Menu, getCurrentWindow } = remote;
@@ -278,11 +277,11 @@ class FileExplorer extends Component {
 
     if (deviceType === DEVICE_TYPE.mtp) {
       ipcRenderer.removeListener(
-        COMMUNICATION_EVENTS.reportBugsDisposeMtp,
+        IpcEvents.REPORT_BUGS_DISPOSE_MTP,
         this._reportBugsDisposeMtpEvent
       );
       ipcRenderer.removeListener(
-        COMMUNICATION_EVENTS.usbHotplug,
+        IpcEvents.USB_HOTPLUG,
         this._handleUsbHotplugEvent
       );
     }
@@ -343,7 +342,7 @@ class FileExplorer extends Component {
 
     if (deviceType === DEVICE_TYPE.mtp) {
       ipcRenderer.on(
-        COMMUNICATION_EVENTS.reportBugsDisposeMtp,
+        IpcEvents.REPORT_BUGS_DISPOSE_MTP,
         this._reportBugsDisposeMtpEvent
       );
     }
@@ -353,10 +352,7 @@ class FileExplorer extends Component {
     const { deviceType } = this.props;
 
     if (deviceType === DEVICE_TYPE.mtp) {
-      ipcRenderer.on(
-        COMMUNICATION_EVENTS.usbHotplug,
-        this._handleUsbHotplugEvent
-      );
+      ipcRenderer.on(IpcEvents.USB_HOTPLUG, this._handleUsbHotplugEvent);
     }
   };
 
@@ -374,10 +370,7 @@ class FileExplorer extends Component {
       storageId: null,
     });
 
-    reportBugsWindow(true, false)?.send(
-      COMMUNICATION_EVENTS.reportBugsDisposeMtpReply,
-      { error }
-    );
+    ipcRenderer.send(IpcEvents.REPORT_BUGS_DISPOSE_MTP_REPLY, { error });
   };
 
   _handleUsbHotplugEvent = async (_, { device, eventName }) => {

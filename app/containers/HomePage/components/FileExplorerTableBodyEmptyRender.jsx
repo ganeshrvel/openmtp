@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import { ipcRenderer } from 'electron';
 import { withStyles } from '@material-ui/core/styles';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
@@ -29,7 +30,8 @@ import Features from '../../Onboarding/components/Features';
 import { helpPhoneNotConnecting } from '../../../templates/fileExplorer';
 import { analyticsService } from '../../../services/analytics';
 import { EVENT_TYPE } from '../../../enums/events';
-import { helpPhoneNotConnectingWindow } from '../../../helpers/createWindows';
+import { IpcEvents } from '../../../services/ipc-events/IpcEventType';
+import { APP_NAME } from '../../../constants/meta';
 
 class FileExplorerTableBodyEmptyRender extends PureComponent {
   constructor(props) {
@@ -56,7 +58,7 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
   };
 
   _handleHelpPhoneNotRecognizedBtn = () => {
-    helpPhoneNotConnectingWindow(true);
+    ipcRenderer.send(IpcEvents.OPEN_HELP_PHONE_NOT_CONNECTING_WINDOW);
 
     analyticsService.sendEvent(
       EVENT_TYPE.MTP_HELP_PHONE_NOT_CONNECTED_DIALOG_OPEN,
@@ -136,9 +138,8 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
                           <CloseIcon />
                         </ListItemIcon>
                         <ListItemText
-                          primary="Quit other Android File Transfer applications"
-                          secondary="eg: 'Android File Transfer' by Google. Uninstall it if it keeps popping up everytime you connect your
-                  Android device"
+                          primary="Quit Google drive, Android File Transfer, Dropbox, OneDrive or any other app that might be using USB"
+                          secondary={`Uninstall 'Android File Transfer' by Google if it keeps popping up everytime you connect your Android device. The most recent versions of Google drive and Dropbox are known to interfere with ${APP_NAME}. Completely quiting these app may fix this issue.`}
                         />
                       </ListItem>
                       <ListItem>

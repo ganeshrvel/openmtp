@@ -50,7 +50,7 @@ import fileExplorerController from '../../../data/file-explorer/controllers/File
 import { checkIf } from '../../../utils/checkIf';
 import { analyticsService } from '../../../services/analytics';
 import { EVENT_TYPE } from '../../../enums/events';
-import { faqsWindow } from '../../../helpers/createWindows';
+import { IpcEvents } from '../../../services/ipc-events/IpcEventType';
 
 class ToolbarAreaPane extends PureComponent {
   constructor(props) {
@@ -357,7 +357,7 @@ class ToolbarAreaPane extends PureComponent {
   };
 
   _handleFaqsBtn = () => {
-    faqsWindow(true);
+    ipcRenderer.send(IpcEvents.OPEN_FAQS_WINDOW);
 
     analyticsService.sendEvent(EVENT_TYPE.LOCAL_TOOLBAR_FAQS, {});
   };

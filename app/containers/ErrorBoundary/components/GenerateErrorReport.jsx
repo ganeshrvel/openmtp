@@ -19,10 +19,10 @@ import GenerateErrorReportBody from './GenerateErrorReportBody';
 import { baseName } from '../../../utils/files';
 import { log } from '../../../utils/log';
 import { getMainWindowRendererProcess } from '../../../helpers/windowHelper';
-import { COMMUNICATION_EVENTS } from '../../../enums/communicationEvents';
 import fileExplorerController from '../../../data/file-explorer/controllers/FileExplorerController';
 import { DEVICE_TYPE } from '../../../enums';
 import { getRemoteWindow } from '../../../helpers/remoteWindowHelpers';
+import { IpcEvents } from '../../../services/ipc-events/IpcEventType';
 
 const remote = getRemoteWindow();
 
@@ -44,7 +44,7 @@ class GenerateErrorReport extends PureComponent {
 
   componentWillUnmount() {
     ipcRenderer.removeListener(
-      COMMUNICATION_EVENTS.reportBugsDisposeMtpReply,
+      IpcEvents.REPORT_BUGS_DISPOSE_MTP_REPLY_FROM_MAIN,
       this._reportBugsDisposeMtpReplyEvent
     );
   }
@@ -69,12 +69,12 @@ class GenerateErrorReport extends PureComponent {
       // else use direct method click
       if (isReportBugsPage) {
         this.mainWindowRendererProcess.webContents.send(
-          COMMUNICATION_EVENTS.reportBugsDisposeMtp,
+          IpcEvents.REPORT_BUGS_DISPOSE_MTP,
           { logFileZippedPath }
         );
 
         ipcRenderer.once(
-          COMMUNICATION_EVENTS.reportBugsDisposeMtpReply,
+          IpcEvents.REPORT_BUGS_DISPOSE_MTP_REPLY_FROM_MAIN,
           this._reportBugsDisposeMtpReplyEvent
         );
 

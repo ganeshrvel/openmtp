@@ -22,8 +22,9 @@ import { getWindowBackgroundColor } from './helpers/windowHelper';
 import { APP_THEME_MODE_TYPE, DEVICE_TYPE, USB_HOTPLUG_EVENTS } from './enums';
 import fileExplorerController from './data/file-explorer/controllers/FileExplorerController';
 import { getEnablePrereleaseUpdatesSetting } from './helpers/settings';
-import { COMMUNICATION_EVENTS } from './enums/communicationEvents';
 import { getRemoteWindow } from './helpers/remoteWindowHelpers';
+import { IpcEvents } from './services/ipc-events/IpcEventType';
+import IpcEventService from './services/ipc-events/IpcEventHandler';
 
 const remote = getRemoteWindow();
 
@@ -202,6 +203,8 @@ if (!isDeviceBootable) {
     }
   });
 
+  IpcEventService.shared.start();
+
   app
     .whenReady()
     .then(async () => {
@@ -254,7 +257,7 @@ if (!isDeviceBootable) {
             return;
           }
 
-          mainWindow?.webContents?.send(COMMUNICATION_EVENTS.usbHotplug, {
+          mainWindow?.webContents?.send(IpcEvents.USB_HOTPLUG, {
             device: JSON.stringify(device),
             eventName: USB_HOTPLUG_EVENTS.attach,
           });
@@ -265,7 +268,7 @@ if (!isDeviceBootable) {
             return;
           }
 
-          mainWindow?.webContents?.send(COMMUNICATION_EVENTS.usbHotplug, {
+          mainWindow?.webContents?.send(IpcEvents.USB_HOTPLUG, {
             device: JSON.stringify(device),
             eventName: USB_HOTPLUG_EVENTS.detach,
           });

@@ -1,4 +1,4 @@
 owner: ganeshrvel
-repo: openmtp-testflight #todo fix this
+repo: openmtp-testflight
 provider: github
 private: false

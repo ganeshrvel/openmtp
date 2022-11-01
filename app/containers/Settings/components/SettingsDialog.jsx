@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import { ipcRenderer } from 'electron';
 import electronIs from 'electron-is';
 import classNames from 'classnames';
 import Tabs from '@material-ui/core/Tabs';
@@ -15,7 +16,6 @@ import Switch from '@material-ui/core/Switch';
 import FormControl from '@material-ui/core/FormControl';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import { privacyPolicyWindow } from '../../../helpers/createWindows';
 import { DEVICES_LABEL } from '../../../constants';
 import SettingsDialogTabContainer from './SettingsDialogTabContainer';
 import {
@@ -26,6 +26,7 @@ import {
   FILE_TRANSFER_DIRECTION,
 } from '../../../enums';
 import { capitalize, isPrereleaseVersion } from '../../../utils/funcs';
+import { IpcEvents } from '../../../services/ipc-events/IpcEventType';
 
 const isMas = electronIs.mas();
 
@@ -594,7 +595,9 @@ export default class SettingsDialog extends PureComponent {
                       <a
                         className={styles.a}
                         onClick={() => {
-                          privacyPolicyWindow(true);
+                          ipcRenderer.send(
+                            IpcEvents.OPEN_HELP_PRIVACY_POLICY_WINDOW
+                          );
                         }}
                       >
                         Learn more...
