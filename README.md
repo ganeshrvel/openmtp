@@ -287,6 +287,8 @@ $ set UPGRADE_EXTENSIONS=1 && npm run dev
 
 - Thanks to [Vladimir Menshakov](https://github.com/whoozle "Vladimir Menshakov") for [android-file-transfer-linux](https://github.com/whoozle/android-file-transfer-linux "android-file-transfer-linux") (the MTP legacy Kernel)
 
+- Special shoutout to [@CodyJung](https://github.com/CodyJung "CodyJung") for adding the [Fujifilm](https://github.com/ganeshrvel/go-mtpfs/pull/2) and [Garmin](https://github.com/ganeshrvel/go-mtpfs/pull/1) devices support. 🔥🔥
+
 - Shoutout to [@yennsarah](https://github.com/yennsarah "yennsarah"), [@h0tk3y](https://github.com/h0tk3y), [@riginoommen](https://github.com/riginoommen "riginoommen"), [@AjithKumarvm](https://github.com/AjithKumarvm "AjithKumarvm"), [@kiranshaji555](https://github.com/kiranshaji555), Dick Cowan, Kjell Dankert, Thorolf E.R. Weißhuhn and to all other community members who helped me test the application.
 
 - This app was built upon [https://github.com/ganeshrvel/electron-react-redux-advanced-boilerplate](https://github.com/ganeshrvel/electron-react-redux-advanced-boilerplate "https://github.com/ganeshrvel/electron-react-redux-advanced-boilerplate") which is a heavily modified fork of [https://github.com/electron-react-boilerplate/electron-react-boilerplate](https://github.com/electron-react-boilerplate/electron-react-boilerplate "https://github.com/electron-react-boilerplate/electron-react-boilerplate").
