@@ -47,8 +47,7 @@ definitions:
 
     - &build_package
       name: Building the Package
-      # todo: replace `yarn package-mac-no-verify` with `yarn package-mac` after testing
-      script: yarn package-mac-without-notarize-no-verify
+      script: yarn package-mac
 
     - &finalize_build_instance_mac_mini_m1
       name: Build finished mac mini M1 successfully
