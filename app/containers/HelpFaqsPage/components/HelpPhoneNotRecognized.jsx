@@ -345,7 +345,7 @@ class HelpPhoneNotRecognized extends PureComponent {
                   </ListItemIcon>
                   <ListItemText
                     primary={`Quit Google drive, Android File Transfer, Dropbox, OneDrive or any other app that might be using USB`}
-                    secondary={`The most recent versions of Google drive and Dropbox are known to interfere with ${APP_NAME}. Completely quiting these app may fix this issue. Uninstall 'Android File Transfer' by Google if it keeps popping up everytime you connect your Android device`}
+                    secondary={`The most recent versions of Google drive and Dropbox are known to interfere with ${APP_NAME}. Completely quiting these apps may fix this issue. Uninstall 'Android File Transfer' by Google if it keeps popping up everytime you connect your Android device`}
                   />
                 </ListItem>
 

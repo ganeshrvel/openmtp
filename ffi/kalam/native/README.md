@@ -1,10 +1,22 @@
+### Initial setup
+```shell
+#install node 16 or above
+npm -g i nvm
+
+#use node 16 or above
+nvm use 16
+
+#install zx globally
+npm -g i zx
+```
+
 ```shell script
 xcode-select --install
-brew install llvm gcc pkg-config
+brew install llvm gcc pkg-config libusb
 nano ~/.zshrc
 ```
 
-Add these line to the ~/.zshrc file
+- Add these line to the ~/.zshrc file
 
 ```shell
 export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
@@ -16,9 +28,24 @@ export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
 source ~/.zshrc
 ```
 
+
+### Build
+
+- Add the required changes to the kalam kernel (./openmtp/ffi/kalam/native)
+
 ```shell script
-go get
+cd ffi/kalam/native
+go get -u
 ```
+
+
+```shell
+# cd  to the project root (ie ./openmtp)
+cd </path/to/openmtp/>
+zx ./ffi/kalam/native/scripts/build.mjs
+```
+
+
 
 **Troubleshooting**
 
@@ -33,27 +60,15 @@ export SDKROOT=$(xcrun --sdk macosx --show-sdk-path)
 source ~/.zshrc
 ```
 
-```shell
-#install node 16 or above
-npm -g i nvm
 
-#use node 16 or above
-nvm use 16
-
-#install zx globally
-npm -g i zx
-```
 
 - In case of permission error with sentry follow this url: https://docs.npmjs.com/resolving-eacces-permissions-errors-when-installing-packages-globally#manually-change-npms-default-directory
 
-```shell
-zx ./ffi/kalam/native/scripts/build.mjs
-```
 
-## Do not follow the sections below anymore. These commands are just for the documentation
+# Do not follow the instructions below. These are old commands are they are maintained just for the sake of documentation
 
 - Remove libusb `brew remove libusb`
-- Download the required versions of the `libusb`. 
+- Download the required versions of the `libusb`.
   - Refer `Brew download for another OS version` for more
 - Copy the `/path/to/libusb/arm64_big_sur/1.0.25/lib/libusb-1.0.0.dylib` to the `build/mac/bin/libusb.dylib`
 - Make a backup copy of `/path/to/libusb/arm64_big_sur/1.0.25/lib/libusb-1.0.0.dylib`
@@ -89,7 +104,7 @@ zx ./ffi/kalam/native/scripts/build.mjs
 ```
 
 
-## Do not follow the sections below anymore. These commands are depreciated 
+## Do not follow the sections below anymore. These commands are deprecated
 ### libusb otool commands:
 
 Build:
