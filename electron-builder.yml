@@ -13,7 +13,7 @@ npmRebuild: false
 publish:
   - provider: github
     owner: ganeshrvel
-    repo: openmtp
+    repo: openmtp # use openmtp-testflight for publish to the test-flight account
     private: false
 
 files:

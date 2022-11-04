@@ -1,4 +1,4 @@
 owner: ganeshrvel
-repo: openmtp-testflight
+repo: openmtp-testflight # use openmtp for testing the live release
 provider: github
 private: false

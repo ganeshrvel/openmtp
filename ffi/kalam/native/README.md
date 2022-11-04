@@ -38,6 +38,15 @@ cd ffi/kalam/native
 go get -u
 ```
 
+- Upgrade a go package
+```shell
+cd ffi/kalam/native
+
+# go get github.com/<org-name>/<package-name>@<git-commit-hash>
+
+#example: go get github.com/ganeshrvel/go-mtpfs@<git-commit-hash>
+#example: go get github.com/ganeshrvel/go-mtpx@<git-commit-hash>
+```
 
 ```shell
 # cd  to the project root (ie ./openmtp)
