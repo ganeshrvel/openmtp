@@ -5,8 +5,12 @@ github.com/ganeshrvel/go-mtpfs v1.0.4-0.20221101152421-27ccd6f3da48 h1:uvKKig6Co
 github.com/ganeshrvel/go-mtpfs v1.0.4-0.20221101152421-27ccd6f3da48/go.mod h1:9YMioQ4ZX91bgYt9kW1tsQAUDhwAulrU18TN2w1VRYo=
 github.com/ganeshrvel/go-mtpfs v1.0.4-0.20221104074511-0d40588840c5 h1:IRPH3s7zrSi0Gs+gaUHtiLThFj4FnsRMga6l0kBS93U=
 github.com/ganeshrvel/go-mtpfs v1.0.4-0.20221104074511-0d40588840c5/go.mod h1:9YMioQ4ZX91bgYt9kW1tsQAUDhwAulrU18TN2w1VRYo=
+github.com/ganeshrvel/go-mtpfs v1.0.4-0.20221105040909-77ef22eca9ca h1:MsSczxpTwIEht0zsQ+FAW3CTMP06icGRrWTFerfBofs=
+github.com/ganeshrvel/go-mtpfs v1.0.4-0.20221105040909-77ef22eca9ca/go.mod h1:9YMioQ4ZX91bgYt9kW1tsQAUDhwAulrU18TN2w1VRYo=
 github.com/ganeshrvel/go-mtpx v0.0.0-20221101160947-74b5217d9caa h1:wMJSiUPxkJVRWX82UECTMJDycQK6lWslKum9EmwxQH8=
 github.com/ganeshrvel/go-mtpx v0.0.0-20221101160947-74b5217d9caa/go.mod h1:RuxddC8oT612m/f0o9ugTsU0nrovnTmoA3HWf8JkBjQ=
+github.com/ganeshrvel/go-mtpx v0.0.0-20221105041206-b8aa8311a1ed h1:QohyXSzrk1ICh1M3fuNL2IKV0pss+fowek/R5zcU1zo=
+github.com/ganeshrvel/go-mtpx v0.0.0-20221105041206-b8aa8311a1ed/go.mod h1:yURXLWISiTh2hQdQ7quNJZaZB0eN/Z/VB0fDGISMaGE=
 github.com/ganeshrvel/usb v0.0.0-20210103155855-14d96f5ae403 h1:TV7BaPjblLxwKn0pv5d9xDEMp0KrP+KT4DeoNPK8npk=
 github.com/ganeshrvel/usb v0.0.0-20210103155855-14d96f5ae403/go.mod h1:2UUL4RuHDu1vhgX8t/QkPZqj2GaW/SCtTYdhx+Gxv5c=
 github.com/google/gofuzz v1.0.0/go.mod h1:dBl0BpW6vV/+mYPU4Po3pmUjxk6FQPldtuIdl/M65Eg=
