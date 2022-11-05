@@ -60,5 +60,6 @@
   ".xml": "xml",
 
   ".dbf": "dbf",
-  ".exe": "exe"
+  ".exe": "exe",
+  ".fit": "fit"
 }
