@@ -1451,9 +1451,6 @@ class FileExplorer extends Component {
   _handleFilesDragOver = (e, { destinationDeviceType }) => {
     const { filesDrag } = this.props;
 
-    e.preventDefault();
-    e.stopPropagation();
-
     if (destinationDeviceType === filesDrag.sourceDeviceType) {
       if (filesDrag.sameSourceDestinationLock) {
         return null;
@@ -1470,6 +1467,11 @@ class FileExplorer extends Component {
 
       return null;
     }
+
+    /* Beyond this point we want to allow dropping */
+    /* so prevent the default behavior */
+    e.preventDefault();
+    e.stopPropagation();
 
     if (filesDrag.lock) {
       return null;
