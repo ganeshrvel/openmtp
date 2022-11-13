@@ -43,7 +43,9 @@ definitions:
 
     - &install_app_packages
       name: Installing app packages
-      script: yarn
+      script: |
+        export NODE_OPTIONS=--max_old_space_size=8096
+        yarn
 
     - &build_package
       name: Building the Package
