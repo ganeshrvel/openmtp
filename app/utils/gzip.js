@@ -1,14 +1,20 @@
-import zlib from 'zlib';
+import { createGzip } from 'zlib';
 import { createReadStream, createWriteStream } from 'fs';
 import { log } from './log';
 
-export const compressFile = (_input, _output) => {
+export const compressFile = async (_input, _output) => {
   try {
-    const gzip = zlib.createGzip();
-    const input = createReadStream(_input);
-    const output = createWriteStream(_output);
+    await new Promise((resolve, reject) => {
+      const stream = createReadStream(_input);
 
-    input.pipe(gzip).pipe(output);
+      stream
+        .pipe(createGzip())
+        .pipe(createWriteStream(_output))
+        .on('finish', () => resolve(true))
+        .on('error', (err) => {
+          reject(err);
+        });
+    });
 
     return true;
   } catch (e) {

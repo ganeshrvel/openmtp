@@ -124,7 +124,8 @@ export const _processKalamMtpBuffer = async ({ stderr }) => {
   switch (stderr) {
     case MTP_ERROR.ErrorMtpDetectFailed:
     case MTP_ERROR.ErrorDeviceSetup:
-      const _isGoogleAndroidFileTransferActive = await isGoogleAndroidFileTransferActive();
+      const _isGoogleAndroidFileTransferActive =
+        await isGoogleAndroidFileTransferActive();
 
       if (_isGoogleAndroidFileTransferActive) {
         return {
@@ -416,7 +417,8 @@ export const _processLegacyMtpBuffer = async ({ error, stderr }) => {
     /* No MTP device found */
     noMtpError
   ) {
-    const _isGoogleAndroidFileTransferActive = await isGoogleAndroidFileTransferActive();
+    const _isGoogleAndroidFileTransferActive =
+      await isGoogleAndroidFileTransferActive();
 
     if (_isGoogleAndroidFileTransferActive) {
       return {

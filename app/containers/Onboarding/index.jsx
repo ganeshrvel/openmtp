@@ -1,4 +1,4 @@
-import React, { PureComponent, Fragment } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withStyles } from '@material-ui/core/styles';
@@ -64,11 +64,9 @@ class Onboarding extends PureComponent {
         <DialogTitle>Release at a Glance!</DialogTitle>
         <DialogContent>
           <div className={styles.contentBox}>
-            <Fragment>
-              <WhatsNew hideTitle={false} />
-              <Divider className={styles.divider} />
-              <Features hideTitle={false} />
-            </Fragment>
+            <WhatsNew hideTitle={false} />
+            <Divider className={styles.divider} />
+            <Features hideTitle={false} />
           </div>
         </DialogContent>
         <DialogActions>
@@ -88,9 +86,11 @@ class Onboarding extends PureComponent {
 const mapDispatchToProps = (dispatch, __) =>
   bindActionCreators(
     {
-      actionCreateOnboarding: ({ ...data }) => (_, getState) => {
-        dispatch(setOnboarding({ ...data }, getState));
-      },
+      actionCreateOnboarding:
+        ({ ...data }) =>
+        (_, getState) => {
+          dispatch(setOnboarding({ ...data }, getState));
+        },
     },
     dispatch
   );

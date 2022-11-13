@@ -16,7 +16,7 @@ const variantIcon = {
   info: InfoIcon,
 };
 
-const SnackbarThemeWrapper = (props) => {
+function SnackbarThemeWrapper(props) {
   const { classes: styles, message, onClose, variant, ...other } = props;
   const Icon = variantIcon[variant];
 
@@ -44,6 +44,6 @@ const SnackbarThemeWrapper = (props) => {
       {...other}
     />
   );
-};
+}
 
 export default withStyles(styles)(SnackbarThemeWrapper);

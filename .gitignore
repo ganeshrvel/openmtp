@@ -56,7 +56,6 @@ sentry.properties
 
 app/certs/*.pem
 certs/*
-*electron-builder.yml
 todo.txt
 *yarn-error.log
 eslint-common-rules.txt
@@ -65,3 +64,6 @@ build/entitlements.mas.plist
 *embedded.provisionprofile
 extras/*
 mtp-mock-files/*
+resources
+tmp/*
+*.prod.js

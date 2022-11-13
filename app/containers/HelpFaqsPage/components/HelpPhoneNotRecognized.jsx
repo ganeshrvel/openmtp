@@ -6,7 +6,9 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import DeleteIcon from '@material-ui/icons/Delete';
+import CloseIcon from '@material-ui/icons/Close';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
+import ToggleOffIcon from '@material-ui/icons/ToggleOff';
 import CheckIcon from '@material-ui/icons/Check';
 import ListAltIcon from '@material-ui/icons/ListAlt';
 import SettingsIcon from '@material-ui/icons/Settings';
@@ -75,13 +77,11 @@ class HelpPhoneNotRecognized extends PureComponent {
             primary="On your device, tap the 'Charging this device via
                   USB' notification"
             secondary={
-              <>
-                <img
-                  src={imgsrc(`help/usb-notification-charging-via-usb.png`)}
-                  alt="Use USB for"
-                  className={styles.imagePlaceholder}
-                />
-              </>
+              <img
+                src={imgsrc(`help/usb-notification-charging-via-usb.png`)}
+                alt="Use USB for"
+                className={styles.imagePlaceholder}
+              />
             }
           />
         </ListItem>
@@ -92,13 +92,11 @@ class HelpPhoneNotRecognized extends PureComponent {
           <ListItemText
             primary="Under 'Use USB for' select File Transfer"
             secondary={
-              <>
-                <img
-                  src={imgsrc(`help/transfer-media-permission.png`)}
-                  alt="Allow access to the device data"
-                  className={styles.imagePlaceholder}
-                />
-              </>
+              <img
+                src={imgsrc(`help/transfer-media-permission.png`)}
+                alt="Allow access to the device data"
+                className={styles.imagePlaceholder}
+              />
             }
           />
         </ListItem>
@@ -137,13 +135,11 @@ class HelpPhoneNotRecognized extends PureComponent {
           <ListItemText
             primary="On your device, tap the 'Transferring media files' notification"
             secondary={
-              <>
-                <img
-                  src={imgsrc(`help/usb-notification-transferring-media.png`)}
-                  alt="Transferring media files"
-                  className={styles.imagePlaceholder}
-                />
-              </>
+              <img
+                src={imgsrc(`help/usb-notification-transferring-media.png`)}
+                alt="Transferring media files"
+                className={styles.imagePlaceholder}
+              />
             }
           />
         </ListItem>
@@ -154,13 +150,11 @@ class HelpPhoneNotRecognized extends PureComponent {
           <ListItemText
             primary="Under 'Use USB for' select 'Charging'"
             secondary={
-              <>
-                <img
-                  src={imgsrc(`help/charge-only-permission.png`)}
-                  alt="Charging"
-                  className={styles.imagePlaceholder}
-                />
-              </>
+              <img
+                src={imgsrc(`help/charge-only-permission.png`)}
+                alt="Charging"
+                className={styles.imagePlaceholder}
+              />
             }
           />
         </ListItem>
@@ -193,13 +187,11 @@ class HelpPhoneNotRecognized extends PureComponent {
           <ListItemText
             primary={`Tap on the "Allow" button, if you see the "Allow access to the device data" pop up`}
             secondary={
-              <>
-                <img
-                  src={imgsrc(`help/allow-data-access.png`)}
-                  alt="Allow access to the device data"
-                  className={styles.imagePlaceholder}
-                />
-              </>
+              <img
+                src={imgsrc(`help/allow-data-access.png`)}
+                alt="Allow access to the device data"
+                className={styles.imagePlaceholder}
+              />
             }
           />
         </ListItem>
@@ -292,7 +284,7 @@ class HelpPhoneNotRecognized extends PureComponent {
               </Typography>
               <Typography component="p" variant="body2" paragraph>
                 Some of you have been telling me that there are issues with
-                connecting certain mobile phones (<i>mostly Samsung</i>) to
+                connecting certain mobile phones (<i>mostly Samsung</i>) to{' '}
                 {APP_NAME}. I have been working hard to fix this issue by
                 migrating the existing MTP Kernel to a better one.
               </Typography>
@@ -347,6 +339,103 @@ class HelpPhoneNotRecognized extends PureComponent {
             </AccordionSummary>
             <AccordionDetails>
               <List component="div" disablePadding>
+                <ListItem>
+                  <ListItemIcon>
+                    <CloseIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={`Quit Google drive, Android File Transfer, Dropbox, OneDrive, Preview (for macOS ventura) or any other app that might be reading USB`}
+                    secondary={
+                      <span>
+                        {`Uninstall 'Android File Transfer' by Google if it
+                              keeps popping up everytime you connect your
+                              Android device. The most recent versions of Google
+                              drive and Dropbox are known to interfere with ${APP_NAME}. Completely quiting these apps may fix
+                              this issue. `}
+                        <a
+                          onClick={(events) => {
+                            openExternalUrl(
+                              'https://github.com/ganeshrvel/openmtp/issues/276',
+                              events
+                            );
+                          }}
+                        >
+                          Read more...
+                        </a>
+                      </span>
+                    }
+                  />
+                </ListItem>
+
+                <ListItem>
+                  <ListItemIcon>
+                    <ToggleOffIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={`If you face frequent device disconnections, turn off 'USB Hotplug'`}
+                    secondary={`Settings > General Tab`}
+                  />
+                </ListItem>
+
+                <RenderBasicConnection />
+              </List>
+            </AccordionDetails>
+          </Accordion>
+
+          {/* <----- Google drive is interfering with OpenMTP-----> */}
+          <Accordion className={styles.expansionRoot}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography className={styles.heading}>
+                {`I have Google drive installed on my ${
+                  DEVICES_LABEL[DEVICE_TYPE.local]
+                }`}
+              </Typography>
+            </AccordionSummary>
+
+            <AccordionDetails>
+              <List component="div" disablePadding>
+                <ListItem>
+                  <ListItemIcon>
+                    <DeleteIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={`The most recent versions of Google drive is known to interfere with ${APP_NAME}. Simply quiting Google drive may fix this issue`}
+                    secondary={
+                      <img
+                        src={imgsrc(`help/google-drive-not-connecting.png`)}
+                        alt="Files and Folders"
+                        className={styles.imagePlaceholder}
+                      />
+                    }
+                  />
+                </ListItem>
+
+                <RenderBasicConnection />
+              </List>
+            </AccordionDetails>
+          </Accordion>
+
+          {/* <----- Dropbox is interfering with OpenMTP-----> */}
+          <Accordion className={styles.expansionRoot}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography className={styles.heading}>
+                {`I have Dropbox installed on my ${
+                  DEVICES_LABEL[DEVICE_TYPE.local]
+                }`}
+              </Typography>
+            </AccordionSummary>
+
+            <AccordionDetails>
+              <List component="div" disablePadding>
+                <ListItem>
+                  <ListItemIcon>
+                    <DeleteIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={`The most recent versions of Dropbox is known to interfere with ${APP_NAME}. Simply quiting Dropbox may fix this issue`}
+                  />
+                </ListItem>
+
                 <RenderBasicConnection />
               </List>
             </AccordionDetails>
@@ -433,13 +522,11 @@ class HelpPhoneNotRecognized extends PureComponent {
                   <ListItemText
                     primary={`Tap on the "Allow" button, if you see the "Allow access to the device data" pop up`}
                     secondary={
-                      <>
-                        <img
-                          src={imgsrc(`help/allow-data-access.png`)}
-                          alt="Allow access to the device data"
-                          className={styles.imagePlaceholder}
-                        />
-                      </>
+                      <img
+                        src={imgsrc(`help/allow-data-access.png`)}
+                        alt="Allow access to the device data"
+                        className={styles.imagePlaceholder}
+                      />
                     }
                   />
                 </ListItem>
@@ -558,13 +645,11 @@ class HelpPhoneNotRecognized extends PureComponent {
                   <ListItemText
                     primary={`Open ${deviceLabel.toLowerCase()}'s Settings > Display > Sleep and set it as 30 minutes or whatever is the highest`}
                     secondary={
-                      <>
-                        <img
-                          src={imgsrc(`help/sleep-setting.jpg`)}
-                          alt="Sleep settings"
-                          className={styles.imagePlaceholder}
-                        />
-                      </>
+                      <img
+                        src={imgsrc(`help/sleep-setting.jpg`)}
+                        alt="Sleep settings"
+                        className={styles.imagePlaceholder}
+                      />
                     }
                   />
                 </ListItem>
@@ -574,7 +659,7 @@ class HelpPhoneNotRecognized extends PureComponent {
             </AccordionDetails>
           </Accordion>
 
-          {/* <----- i keep seeing multiple devices error -----> */}
+          {/* <----- i keep seeing quit android file transfer error -----> */}
           <Accordion className={styles.expansionRoot}>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography className={styles.heading}>
@@ -666,13 +751,11 @@ class HelpPhoneNotRecognized extends PureComponent {
                   <ListItemText
                     primary={`Tap on the "Ok" button, if you see a "${APP_NAME} would like to access files in your..." pop up while trying to open a folder`}
                     secondary={
-                      <>
-                        <img
-                          src={imgsrc(`help/macos-directory-access.jpg`)}
-                          alt="Directory access permission prompt"
-                          className={styles.imagePlaceholder}
-                        />
-                      </>
+                      <img
+                        src={imgsrc(`help/macos-directory-access.jpg`)}
+                        alt="Directory access permission prompt"
+                        className={styles.imagePlaceholder}
+                      />
                     }
                   />
                 </ListItem>
@@ -710,15 +793,13 @@ class HelpPhoneNotRecognized extends PureComponent {
                   <ListItemText
                     primary={`Mark all the folders to which you want to provide ${APP_NAME} access`}
                     secondary={
-                      <>
-                        <img
-                          src={imgsrc(
-                            `help/privacy-restricted-folder-access.png`
-                          )}
-                          alt="Files and Folders"
-                          className={styles.imagePlaceholder}
-                        />
-                      </>
+                      <img
+                        src={imgsrc(
+                          `help/privacy-restricted-folder-access.png`
+                        )}
+                        alt="Files and Folders"
+                        className={styles.imagePlaceholder}
+                      />
                     }
                   />
                 </ListItem>
@@ -769,13 +850,11 @@ class HelpPhoneNotRecognized extends PureComponent {
                   <ListItemText
                     primary={`In the left hand side pane find the "Full Disk Access" option, select it. In the right hand side pane find "${APP_NAME}"`}
                     secondary={
-                      <>
-                        <img
-                          src={imgsrc(`help/full-disk-access.png`)}
-                          alt="Files and Folders"
-                          className={styles.imagePlaceholder}
-                        />
-                      </>
+                      <img
+                        src={imgsrc(`help/full-disk-access.png`)}
+                        alt="Files and Folders"
+                        className={styles.imagePlaceholder}
+                      />
                     }
                   />
                 </ListItem>
@@ -787,13 +866,11 @@ class HelpPhoneNotRecognized extends PureComponent {
                   <ListItemText
                     primary={`If you didn't find ${APP_NAME} in the list, then tap on the "+" button and select "${APP_NAME}" by navigating to the "Application" folder`}
                     secondary={
-                      <>
-                        <img
-                          src={imgsrc(`help/full-disk-access-file-picker.jpeg`)}
-                          alt="Files and Folders"
-                          className={styles.imagePlaceholder}
-                        />
-                      </>
+                      <img
+                        src={imgsrc(`help/full-disk-access-file-picker.jpeg`)}
+                        alt="Files and Folders"
+                        className={styles.imagePlaceholder}
+                      />
                     }
                   />
                 </ListItem>

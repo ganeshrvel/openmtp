@@ -69,7 +69,7 @@ export const niceBytes = (a, b) => {
   const e = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
   const f = Math.floor(Math.log(a) / Math.log(c));
 
-  return `${parseFloat((a / Math.pow(c, f)).toFixed(d))} ${e[f]}`; // eslint-disable-line no-restricted-properties
+  return `${parseFloat((a / c ** f).toFixed(d))} ${e[f]}`; // eslint-disable-line no-restricted-properties
 };
 
 export const replaceBulk = (str, findArray, replaceArray) => {

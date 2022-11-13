@@ -1,10 +1,12 @@
 import React, { PureComponent } from 'react';
+import { ipcRenderer } from 'electron';
 import { withStyles } from '@material-ui/core/styles';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import Collapse from '@material-ui/core/Collapse';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
+import ToggleOffIcon from '@material-ui/icons/ToggleOff';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
@@ -29,7 +31,9 @@ import Features from '../../Onboarding/components/Features';
 import { helpPhoneNotConnecting } from '../../../templates/fileExplorer';
 import { analyticsService } from '../../../services/analytics';
 import { EVENT_TYPE } from '../../../enums/events';
-import { helpPhoneNotConnectingWindow } from '../../../helpers/createWindows';
+import { IpcEvents } from '../../../services/ipc-events/IpcEventType';
+import { APP_NAME } from '../../../constants/meta';
+import { openExternalUrl } from '../../../utils/url';
 
 class FileExplorerTableBodyEmptyRender extends PureComponent {
   constructor(props) {
@@ -56,7 +60,7 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
   };
 
   _handleHelpPhoneNotRecognizedBtn = () => {
-    helpPhoneNotConnectingWindow(true);
+    ipcRenderer.send(IpcEvents.OPEN_HELP_PHONE_NOT_CONNECTING_WINDOW);
 
     analyticsService.sendEvent(
       EVENT_TYPE.MTP_HELP_PHONE_NOT_CONNECTED_DIALOG_OPEN,
@@ -136,11 +140,39 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
                           <CloseIcon />
                         </ListItemIcon>
                         <ListItemText
-                          primary="Quit other Android File Transfer applications"
-                          secondary="eg: 'Android File Transfer' by Google. Uninstall it if it keeps popping up everytime you connect your
-                  Android device"
+                          primary="Quit Google drive, Android File Transfer, Dropbox, OneDrive, Preview (for macOS ventura) or any other app that might be reading USB"
+                          secondary={
+                            <span>
+                              {`Uninstall 'Android File Transfer' by Google if it
+                              keeps popping up everytime you connect your
+                              Android device. The most recent versions of Google
+                              drive and Dropbox are known to interfere with ${APP_NAME}. Completely quiting these apps may fix
+                              this issue. `}
+                              <a
+                                onClick={(events) => {
+                                  openExternalUrl(
+                                    'https://github.com/ganeshrvel/openmtp/issues/276',
+                                    events
+                                  );
+                                }}
+                              >
+                                Read more...
+                              </a>
+                            </span>
+                          }
                         />
                       </ListItem>
+
+                      <ListItem>
+                        <ListItemIcon>
+                          <ToggleOffIcon />
+                        </ListItemIcon>
+                        <ListItemText
+                          primary={`If you face frequent device disconnections, turn off 'USB Hotplug'`}
+                          secondary={`Settings > General Tab`}
+                        />
+                      </ListItem>
+
                       <ListItem>
                         <ListItemIcon>
                           <LockOpenIcon />

@@ -5,21 +5,16 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import SpeedIcon from '@material-ui/icons/Speed';
-import WhatshotIcon from '@material-ui/icons/Whatshot';
 import BuildIcon from '@material-ui/icons/Build';
-import DateRangeIcon from '@material-ui/icons/DateRange';
-import LinkIcon from '@material-ui/icons/Link';
+import SmartphoneIcon from '@material-ui/icons/Smartphone';
+import CameraRollIcon from '@material-ui/icons/CameraRoll';
+import MemoryIcon from '@material-ui/icons/Memory';
 import { styles } from '../styles/WhatsNew';
 import { APP_NAME, APP_VERSION } from '../../../constants/meta';
-import { MTP_MODE } from '../../../enums';
-import { capitalize } from '../../../utils/funcs';
 
 class WhatsNew extends PureComponent {
   render() {
     const { classes: styles, hideTitle } = this.props;
-
-    const kalamLabel = capitalize(MTP_MODE.kalam);
 
     return (
       <div className={styles.root}>
@@ -36,38 +31,23 @@ class WhatsNew extends PureComponent {
         <List>
           <ListItem>
             <ListItemIcon>
-              <DateRangeIcon htmlColor="#fa4d0a" />
+              <MemoryIcon htmlColor="#fa4d0a" />
             </ListItemIcon>
-            <ListItemText primary="Fixed a bug which resets the file timestamp on transfer" />
+            <ListItemText primary="Much awaited Apple Silicon support" />
           </ListItem>
 
           <ListItem>
             <ListItemIcon>
-              <LinkIcon />
+              <SmartphoneIcon />
             </ListItemIcon>
-            <ListItemText
-              primary={`Local disk pane will now resolve and follow the symlinks`}
-            />
+            <ListItemText primary={`Garmin device support`} />
           </ListItem>
 
           <ListItem>
             <ListItemIcon>
-              <SpeedIcon />
+              <CameraRollIcon />
             </ListItemIcon>
-            <ListItemText
-              primary={`New and Super performant '${kalamLabel}' MTP kernel`}
-              secondary={`Settings > 'General' Tab > 'MTP Mode' > Select '${kalamLabel} Mode'`}
-            />
-          </ListItem>
-
-          <ListItem>
-            <ListItemIcon>
-              <WhatshotIcon />
-            </ListItemIcon>
-            <ListItemText
-              primary="Much awaited Samsung phone support"
-              secondary={`Settings > 'General' Tab > 'MTP Mode' > Select '${kalamLabel} Mode'`}
-            />
+            <ListItemText primary={`Fujifilm device support`} />
           </ListItem>
 
           <ListItem>

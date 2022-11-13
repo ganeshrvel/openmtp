@@ -66,22 +66,24 @@ export const routes = {
   },
 };
 
-export default () => (
-  <HashRouter>
-    <Switch>
-      {Object.keys(routes).map((a) => {
-        const route = routes[a];
-        const { component: Component, path, exact, props } = route;
+export default function () {
+  return (
+    <HashRouter>
+      <Switch>
+        {Object.keys(routes).map((a) => {
+          const route = routes[a];
+          const { component: Component, path, exact, props } = route;
 
-        return (
-          <Route
-            key={path || 'notfound'}
-            path={path}
-            exact={exact}
-            render={() => <Component {...props} />}
-          />
-        );
-      })}
-    </Switch>
-  </HashRouter>
-);
+          return (
+            <Route
+              key={path || 'notfound'}
+              path={path}
+              exact={exact}
+              render={() => <Component {...props} />}
+            />
+          );
+        })}
+      </Switch>
+    </HashRouter>
+  );
+}

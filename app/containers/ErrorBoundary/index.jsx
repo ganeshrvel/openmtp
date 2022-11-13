@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { remote } from 'electron';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
@@ -7,6 +6,9 @@ import { styles } from './styles';
 import { imgsrc } from '../../utils/imgsrc';
 import GenerateErrorReport from './components/GenerateErrorReport';
 import { log } from '../../utils/log';
+import { getRemoteWindow } from '../../helpers/remoteWindowHelpers';
+
+const remote = getRemoteWindow();
 
 class ErrorBoundary extends Component {
   constructor(props) {

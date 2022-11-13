@@ -1,9 +1,12 @@
-import { BrowserWindow, remote } from 'electron';
+import { BrowserWindow } from 'electron';
 import { urls } from 'nice-utils';
 import { getAppThemeMode } from './theme';
 import { getCurrentThemePalette } from '../containers/App/styles';
 import { undefinedOrNull } from '../utils/funcs';
 import { IS_RENDERER } from '../constants/env';
+import { getRemoteWindow } from './remoteWindowHelpers';
+
+const remote = getRemoteWindow();
 
 export const getMainWindowMainProcess = () => {
   const _mainWindow = BrowserWindow.getAllWindows();

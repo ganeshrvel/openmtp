@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
-/* eslint-disable global-require */
-
 let SentryCli;
 let download;
 
 try {
+  // eslint-disable-next-line global-require
   SentryCli = require('@sentry/cli');
+  // eslint-disable-next-line global-require
   download = require('electron-download');
 } catch (e) {
   console.error('ERROR: Missing required packages, please run:');
@@ -14,9 +14,10 @@ try {
   process.exit(1);
 }
 
-const VERSION = /\bv?(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:-[\da-z-]+(?:\.[\da-z-]+)*)?(?:\+[\da-z-]+(?:\.[\da-z-]+)*)?\b/i;
+const VERSION =
+  /\bv?(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:-[\da-z-]+(?:\.[\da-z-]+)*)?(?:\+[\da-z-]+(?:\.[\da-z-]+)*)?\b/i;
 const SYMBOL_CACHE_FOLDER = '.electron-symbols';
-const _package = require('./package.json');
+const packageJson = require('./package.json');
 
 const sentryCli = new SentryCli('./sentry.properties');
 
@@ -29,12 +30,12 @@ async function main() {
     return;
   }
 
-  console.info('We are starting to download all possible electron symbols');
-  console.info('We need it in order to symbolicate native crashes');
-  console.info(
+  console.error('We are starting to download all possible electron symbols');
+  console.error('We need it in order to symbolicate native crashes');
+  console.error(
     'This step is only needed once whenever you update your electron version'
   );
-  console.info('Just call this script again it should do everything for you.');
+  console.error('Just call this script again it should do everything for you.');
 
   let zipPath = await downloadSymbols({
     version,
@@ -69,18 +70,18 @@ async function main() {
   });
   await sentryCli.execute(['upload-dif', '-t', 'breakpad', zipPath], true);
 
-  console.info('Finished downloading and uploading to Sentry');
-  console.info(`Feel free to delete the ${SYMBOL_CACHE_FOLDER}`);
+  console.error('Finished downloading and uploading to Sentry');
+  console.error(`Feel free to delete the ${SYMBOL_CACHE_FOLDER}`);
 }
 
 function getElectronVersion() {
-  if (!_package) {
+  if (!packageJson) {
     return false;
   }
 
   const electronVersion =
-    (_package.dependencies && _package.dependencies.electron) ||
-    (_package.devDependencies && _package.devDependencies.electron);
+    (packageJson.dependencies && packageJson.dependencies.electron) ||
+    (packageJson.devDependencies && packageJson.devDependencies.electron);
 
   if (!electronVersion) {
     return false;

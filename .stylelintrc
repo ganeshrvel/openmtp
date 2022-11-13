@@ -1,6 +1,20 @@
 {
   "extends": ["stylelint-config-standard", "stylelint-config-prettier"],
   "rules": {
+    "color-function-notation": null,
+    "value-no-vendor-prefix": null,
+    "property-no-vendor-prefix": null,
+    "font-family-name-quotes": null,
+    "rule-empty-line-before": null,
+    "at-rule-no-vendor-prefix": null,
+    "shorthand-property-no-redundant-values": null,
+    "selector-class-pattern": null,
+    "annotation-no-unknown": null,
+    "value-keyword-case": null,
+    "function-no-unknown": null,
+    "selector-no-vendor-prefix": null,
+    "media-feature-name-no-vendor-prefix": null,
+    "alpha-value-notation": null,
     "at-rule-no-unknown": null,
     "no-descending-specificity": null
   }

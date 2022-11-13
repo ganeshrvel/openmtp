@@ -99,11 +99,8 @@ export class FileExplorerLegacyDataSource {
     try {
       return new Promise((resolve) => {
         this.execPromise(command, (error, stdout, stderr) => {
-          const {
-            filteredStderr,
-            filteredError,
-            filteredStdout,
-          } = this._cleanJunkMtpError({ error, stdout, stderr });
+          const { filteredStderr, filteredError, filteredStdout } =
+            this._cleanJunkMtpError({ error, stdout, stderr });
 
           if (
             (undefinedOrNull(filteredStderr) || filteredStderr.length < 1) &&
@@ -131,11 +128,8 @@ export class FileExplorerLegacyDataSource {
   async _execNoCatch(command) {
     return new Promise((resolve) => {
       this.execPromise(command, (error, stdout, stderr) => {
-        const {
-          filteredStderr,
-          filteredError,
-          filteredStdout,
-        } = this._cleanJunkMtpError({ error, stdout, stderr });
+        const { filteredStderr, filteredError, filteredStdout } =
+          this._cleanJunkMtpError({ error, stdout, stderr });
 
         if (
           (undefinedOrNull(filteredStderr) || filteredStderr.length < 1) &&

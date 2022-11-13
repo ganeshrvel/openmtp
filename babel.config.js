@@ -18,7 +18,7 @@ module.exports = (api) => {
         require('@babel/preset-env'),
         {
           targets: {
-            electron: 10,
+            node: 16,
           },
           useBuiltIns: 'usage',
           corejs: '3.0.0',
@@ -59,6 +59,8 @@ module.exports = (api) => {
 
       // proposals
       [require('@babel/plugin-proposal-private-methods'), { loose: true }],
+
+      ['@babel/plugin-proposal-private-property-in-object', { loose: true }],
 
       ...(development ? developmentPlugins : productionPlugins),
     ],

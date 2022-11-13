@@ -1,4 +1,4 @@
-import { dialog, BrowserWindow, ipcMain } from 'electron';
+import { BrowserWindow, dialog, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import { isConnected } from '../utils/isOnline';
 import { log } from '../utils/log';
@@ -12,10 +12,15 @@ import {
 } from '../helpers/windowHelper';
 import { appUpdateAvailableWindow } from '../helpers/createWindows';
 import { UPDATER_STATUS } from '../enums/appUpdater';
+import { getRemoteWindow } from '../helpers/remoteWindowHelpers';
 
 let progressbarWindow = null;
 let isFileTransferActiveFlag = false;
 let mainWindow = null;
+
+const remote = getRemoteWindow();
+
+remote.initialize();
 
 const createChildWindow = () => {
   try {
@@ -33,6 +38,7 @@ const createChildWindow = () => {
       movable: false,
       webPreferences: {
         nodeIntegration: true,
+        contextIsolation: false,
         enableRemoteModule: true,
       },
       backgroundColor: getWindowBackgroundColor(),
@@ -62,6 +68,8 @@ const fireProgressbar = () => {
     });
 
     progressbarWindow = createChildWindow();
+    remote.enable(progressbarWindow.webContents);
+
     progressbarWindow.loadURL(
       `${PATHS.loadUrlPath}#appUpdatePage/updateProgress`
     );
@@ -87,7 +95,7 @@ export default class AppUpdate {
   constructor({ autoUpdateCheck, autoDownload, allowPrerelease }) {
     this.autoUpdater = autoUpdater;
     if (!isPackaged) {
-      this.autoUpdater.updateConfigPath = PATHS.appUpdateFile;
+      this.autoUpdater.updateConfigPath = PATHS.devAppUpdateFile;
     }
 
     this.autoUpdater.autoDownload = autoUpdateCheck && autoDownload;
@@ -318,12 +326,12 @@ export default class AppUpdate {
         });
 
         switch (buttonIndex) {
-          case 0:
-          default:
-            break;
           case 1:
             this.autoUpdater.checkForUpdates();
             this.updateStatus = UPDATER_STATUS.updateInProgress;
+            break;
+          case 0:
+          default:
             break;
         }
 
@@ -483,8 +491,12 @@ export default class AppUpdate {
     };
 
     switch (type) {
-      default:
+      case 'error':
+        dialog.showErrorBox(title, message);
+        break;
+
       case 'message':
+      default:
         // eslint-disable-next-line no-case-declarations
         const { response: buttonIndex } = await dialog.showMessageBox({
           title,
@@ -498,9 +510,6 @@ export default class AppUpdate {
             break;
         }
 
-        break;
-      case 'error':
-        dialog.showErrorBox(title, message);
         break;
     }
   }

@@ -4,6 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Checkbox from '@material-ui/core/Checkbox';
 import Typography from '@material-ui/core/Typography';
 import Tooltip from '@material-ui/core/Tooltip';
+// eslint-disable-next-line import/no-relative-packages
 import prettyFileIcons from '../../../vendors/pretty-file-icons';
 import { springTruncate } from '../../../utils/funcs';
 import { FILE_EXPLORER_GRID_TRUNCATE_MAX_CHARS } from '../../../constants';

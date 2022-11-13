@@ -22,7 +22,8 @@ class FileExplorerBodyRender extends PureComponent {
     const { deviceType } = this.props;
 
     this.fileExplorerKeymapString = null;
-    this.focussedFileExplorerDeviceTypeCached = FILE_EXPLORER_DEFAULT_FOCUSSED_DEVICE_TYPE;
+    this.focussedFileExplorerDeviceTypeCached =
+      FILE_EXPLORER_DEFAULT_FOCUSSED_DEVICE_TYPE;
     this.fileExplorerBodyWrapperId = `${FILE_EXPLORER_BODY_WRAPPER_ID}-${deviceType}`;
     this.acceleratorIgnoreList = ['multipleSelectClick'];
   }
@@ -150,8 +151,8 @@ class FileExplorerBodyRender extends PureComponent {
         DEVICE_TYPE
       );
 
-      _focussedFileExplorerDeviceType = this
-        .focussedFileExplorerDeviceTypeCached;
+      _focussedFileExplorerDeviceType =
+        this.focussedFileExplorerDeviceTypeCached;
     } else {
       _focussedFileExplorerDeviceType = deviceType;
     }

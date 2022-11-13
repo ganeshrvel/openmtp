@@ -9,7 +9,7 @@ module.exports = {
     node: true,
   },
   plugins: ['import', 'promise', 'compat', 'react'],
-  extends: ['airbnb', 'plugin:prettier/recommended', 'prettier/react'],
+  extends: ['airbnb', 'plugin:prettier/recommended'],
   settings: {
     react: {
       version: '16.7',
@@ -21,12 +21,20 @@ module.exports = {
     },
   },
   rules: {
+    'import/no-import-module-exports': [
+      'error',
+      {
+        exceptions: ['**/*/webpack/**/*'],
+      },
+    ],
     'arrow-body-style': 'off',
     'arrow-parens': 'off',
     'class-methods-use-this': 'off',
-    'compat/compat': 'error',
+    'compat/compat': 'off',
     'consistent-return': 'off',
     'comma-dangle': 'off',
+    'default-param-last': 'off',
+    'func-names': 'off',
     'generator-star-spacing': 'off',
     'no-nested-ternary': 'off',
     'import/no-cycle': 'off',
@@ -40,6 +48,7 @@ module.exports = {
     'jsx-a11y/label-has-associated-control': 'off',
     'jsx-a11y/no-static-element-interactions': 'off',
     'jsx-a11y/click-events-have-key-events': 'off',
+    'react/jsx-no-useless-fragment': 'off',
     'react/jsx-curly-brace-presence': 'off',
     'no-console': [
       'error',
@@ -49,6 +58,7 @@ module.exports = {
     ],
     'no-use-before-define': 'off',
     'no-multi-assign': 'off',
+    'no-promise-executor-return': 'off',
     'no-shadow': 'off',
     'no-underscore-dangle': 'off',
     'no-throw-literal': 'off',

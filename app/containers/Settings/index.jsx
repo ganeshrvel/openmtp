@@ -244,63 +244,60 @@ const mapDispatchToProps = (dispatch, _) =>
         dispatch(freshInstall({ ...data }, getState));
       },
 
-      actionCreateHideHiddenFiles: ({ ...data }, deviceType) => (
-        _,
-        getState
-      ) => {
-        dispatch(hideHiddenFiles({ ...data }, deviceType, getState));
-      },
+      actionCreateHideHiddenFiles:
+        ({ ...data }, deviceType) =>
+        (_, getState) => {
+          dispatch(hideHiddenFiles({ ...data }, deviceType, getState));
+        },
 
-      actionCreateSetFilesPreprocessingBeforeTransfer: ({ ...data }) => (
-        _,
-        getState
-      ) => {
-        dispatch(setFilesPreprocessingBeforeTransfer({ ...data }, getState));
-      },
+      actionCreateSetFilesPreprocessingBeforeTransfer:
+        ({ ...data }) =>
+        (_, getState) => {
+          dispatch(setFilesPreprocessingBeforeTransfer({ ...data }, getState));
+        },
 
-      actionCreateFileExplorerListingType: ({ ...data }, deviceType) => (
-        _,
-        getState
-      ) => {
-        dispatch(fileExplorerListingType({ ...data }, deviceType, getState));
-      },
+      actionCreateFileExplorerListingType:
+        ({ ...data }, deviceType) =>
+        (_, getState) => {
+          dispatch(fileExplorerListingType({ ...data }, deviceType, getState));
+        },
 
-      actionCreateSelectMtpMode: ({ value }, deviceType) => (_, getState) => {
-        checkIf(value, 'string');
-        checkIf(deviceType, 'string');
+      actionCreateSelectMtpMode:
+        ({ value }, deviceType) =>
+        (_, getState) => {
+          checkIf(value, 'string');
+          checkIf(deviceType, 'string');
 
-        dispatch(
-          selectMtpMode({ value, reportEvent: true }, deviceType, getState)
-        );
-      },
+          dispatch(
+            selectMtpMode({ value, reportEvent: true }, deviceType, getState)
+          );
+        },
 
-      actionSetCommonSettings: ({ key, value }, deviceType) => (
-        _,
-        getState
-      ) => {
-        dispatch(setCommonSettings({ key, value }, deviceType, getState));
-      },
+      actionSetCommonSettings:
+        ({ key, value }, deviceType) =>
+        (_, getState) => {
+          dispatch(setCommonSettings({ key, value }, deviceType, getState));
+        },
 
-      actionCreateReloadDirList: ({ filePath, ignoreHidden, deviceType }) => (
-        _,
-        getState
-      ) => {
-        checkIf(filePath, 'string');
-        checkIf(ignoreHidden, 'boolean');
-        checkIf(getState, 'function');
-        checkIf(deviceType, 'string');
+      actionCreateReloadDirList:
+        ({ filePath, ignoreHidden, deviceType }) =>
+        (_, getState) => {
+          checkIf(filePath, 'string');
+          checkIf(ignoreHidden, 'boolean');
+          checkIf(getState, 'function');
+          checkIf(deviceType, 'string');
 
-        dispatch(
-          reloadDirList(
-            {
-              filePath,
-              ignoreHidden,
-              deviceType,
-            },
-            getState
-          )
-        );
-      },
+          dispatch(
+            reloadDirList(
+              {
+                filePath,
+                ignoreHidden,
+                deviceType,
+              },
+              getState
+            )
+          );
+        },
     },
     dispatch
   );

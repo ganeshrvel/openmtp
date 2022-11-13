@@ -3,7 +3,7 @@ import path from 'path';
 import chalk from 'chalk';
 import fs from 'fs';
 
-function CheckBuildsExist() {
+function CheckBuildExist() {
   const mainPath = path.join(__dirname, '..', '..', 'app', 'main.prod.js');
   const rendererPath = path.join(
     __dirname,
@@ -31,4 +31,4 @@ function CheckBuildsExist() {
   }
 }
 
-CheckBuildsExist();
+CheckBuildExist();

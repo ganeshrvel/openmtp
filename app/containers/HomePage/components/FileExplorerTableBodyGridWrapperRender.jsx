@@ -38,12 +38,8 @@ class FileExplorerTableBodyGridWrapperRender extends PureComponent {
     directoryLists: nextDirectoryLists,
     ...nextParentProps
   }) {
-    const {
-      directoryGeneratedTime,
-      directoryLists,
-      deviceType,
-      isSelected,
-    } = this.props;
+    const { directoryGeneratedTime, directoryLists, deviceType, isSelected } =
+      this.props;
     const prevSelectedDirectoryLists =
       directoryLists[deviceType].queue.selected;
     const nextSelectedDirectoryLists =

@@ -5,9 +5,10 @@ import './services/sentry/index';
 import { app, BrowserWindow, ipcMain, nativeTheme } from 'electron';
 import electronIs from 'electron-is';
 import usbDetect from 'usb-detection';
+import process from 'process';
 import MenuBuilder from './menu';
 import { log } from './utils/log';
-import { DEBUG_PROD, IS_DEV, IS_PROD } from './constants/env';
+import { DEBUG_PROD, ENV_FLAVOR, IS_DEV, IS_PROD } from './constants/env';
 import AppUpdate from './classes/AppUpdate';
 import { PATHS } from './constants/paths';
 import { settingsStorage } from './helpers/storageHelper';
@@ -21,7 +22,11 @@ import { getWindowBackgroundColor } from './helpers/windowHelper';
 import { APP_THEME_MODE_TYPE, DEVICE_TYPE, USB_HOTPLUG_EVENTS } from './enums';
 import fileExplorerController from './data/file-explorer/controllers/FileExplorerController';
 import { getEnablePrereleaseUpdatesSetting } from './helpers/settings';
-import { COMMUNICATION_EVENTS } from './enums/communicationEvents';
+import { getRemoteWindow } from './helpers/remoteWindowHelpers';
+import { IpcEvents } from './services/ipc-events/IpcEventType';
+import IpcEventService from './services/ipc-events/IpcEventHandler';
+
+const remote = getRemoteWindow();
 
 const isSingleInstance = app.requestSingleInstanceLock();
 const isDeviceBootable = bootTheDevice();
@@ -55,24 +60,28 @@ async function bootTheDevice() {
 }
 
 async function installExtensions() {
-  try {
-    const installer = require('electron-devtools-installer');
-    const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
-    const extensions = ['REACT_DEVELOPER_TOOLS', 'REDUX_DEVTOOLS'];
+  const {
+    default: installExtension,
+    REDUX_DEVTOOLS,
+    REACT_DEVELOPER_TOOLS,
+  } = await import('electron-devtools-installer');
 
-    return Promise.all(
-      extensions.map((name) =>
-        installer.default(installer[name], forceDownload)
-      )
-    ).catch(console.error);
-  } catch (e) {
-    log.error(e, `main.dev -> installExtensions`);
-  }
+  const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
+  const extensions = [REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS];
+
+  return installExtension(extensions, {
+    forceDownload,
+  }).catch((err) =>
+    log.error(
+      `An extension error occurred: ${err}`,
+      `main.dev -> installExtensions`
+    )
+  );
 }
 
 async function createWindow() {
   try {
-    if (IS_DEV || DEBUG_PROD) {
+    if (ENV_FLAVOR.allowDevelopmentEnvironment) {
       await installExtensions();
     }
 
@@ -84,11 +93,14 @@ async function createWindow() {
       minHeight: 640,
       titleBarStyle: 'hidden',
       webPreferences: {
-        nodeIntegration: true,
         enableRemoteModule: true,
+        nodeIntegration: true,
+        contextIsolation: false,
       },
       backgroundColor: getWindowBackgroundColor(),
     });
+
+    remote.enable(mainWindow.webContents);
 
     mainWindow?.loadURL(`${PATHS.loadUrlPath}`);
 
@@ -191,86 +203,102 @@ if (!isDeviceBootable) {
     }
   });
 
-  app.on('ready', async () => {
-    try {
-      await createWindow();
+  IpcEventService.shared.start();
 
-      let appUpdaterEnable = true;
-
-      if (isPackaged && process.platform === 'darwin') {
-        appUpdaterEnable = !isMas && app.isInApplicationsFolder();
-      }
-
-      const autoUpdateCheckSettings = settingsStorage.getItems([
-        'enableBackgroundAutoUpdate',
-        'enableAutoUpdateCheck',
-      ]);
-
-      const autoUpdateCheck =
-        autoUpdateCheckSettings.enableAutoUpdateCheck !== false;
-      const isPrereleaseUpdatesEnabled = getEnablePrereleaseUpdatesSetting();
-
-      const autoAppUpdate = new AppUpdate({
-        autoUpdateCheck,
-        autoDownload:
-          autoUpdateCheckSettings.enableBackgroundAutoUpdate !== false,
-        allowPrerelease: isPrereleaseUpdatesEnabled === true,
-      });
-
-      autoAppUpdate.init();
-
-      const menuBuilder = new MenuBuilder({
-        mainWindow,
-        autoAppUpdate,
-        appUpdaterEnable,
-      });
-
-      menuBuilder.buildMenu();
-
-      if (autoUpdateCheck && appUpdaterEnable) {
-        setTimeout(() => {
-          autoAppUpdate.checkForUpdates();
-        }, AUTO_UPDATE_CHECK_FIREUP_DELAY);
-      }
-
-      // send attach and detach events to the renderer
-      usbDetect.startMonitoring();
-
-      usbDetect.on('add', (device) => {
-        if (!mainWindow) {
-          return;
-        }
-
-        mainWindow?.webContents?.send(COMMUNICATION_EVENTS.usbHotplug, {
-          device: JSON.stringify(device),
-          eventName: USB_HOTPLUG_EVENTS.attach,
-        });
-      });
-
-      usbDetect.on('remove', (device) => {
-        if (!mainWindow) {
-          return;
-        }
-
-        mainWindow?.webContents?.send(COMMUNICATION_EVENTS.usbHotplug, {
-          device: JSON.stringify(device),
-          eventName: USB_HOTPLUG_EVENTS.detach,
-        });
-      });
-    } catch (e) {
-      log.error(e, `main.dev -> ready`);
-    }
-  });
-
-  app.on('activate', async () => {
-    try {
-      if (mainWindow === null) {
+  app
+    .whenReady()
+    .then(async () => {
+      // eslint-disable-next-line promise/always-return
+      try {
         await createWindow();
+
+        let appUpdaterEnable = true;
+
+        if (isPackaged && process.platform === 'darwin') {
+          appUpdaterEnable = !isMas && app.isInApplicationsFolder();
+        }
+
+        const autoUpdateCheckSettings = settingsStorage.getItems([
+          'enableBackgroundAutoUpdate',
+          'enableAutoUpdateCheck',
+        ]);
+
+        const autoUpdateCheck =
+          autoUpdateCheckSettings.enableAutoUpdateCheck !== false;
+        const isPrereleaseUpdatesEnabled = getEnablePrereleaseUpdatesSetting();
+
+        const autoAppUpdate = new AppUpdate({
+          autoUpdateCheck,
+          autoDownload:
+            autoUpdateCheckSettings.enableBackgroundAutoUpdate !== false,
+          allowPrerelease: isPrereleaseUpdatesEnabled === true,
+        });
+
+        autoAppUpdate.init();
+
+        const menuBuilder = new MenuBuilder({
+          mainWindow,
+          autoAppUpdate,
+          appUpdaterEnable,
+        });
+
+        menuBuilder.buildMenu();
+
+        if (autoUpdateCheck && appUpdaterEnable) {
+          setTimeout(() => {
+            autoAppUpdate.checkForUpdates();
+          }, AUTO_UPDATE_CHECK_FIREUP_DELAY);
+        }
+
+        // send attach and detach events to the renderer
+        usbDetect.startMonitoring();
+
+        usbDetect.on('add', (device) => {
+          if (!mainWindow) {
+            return;
+          }
+
+          mainWindow?.webContents?.send(IpcEvents.USB_HOTPLUG, {
+            device: JSON.stringify(device),
+            eventName: USB_HOTPLUG_EVENTS.attach,
+          });
+        });
+
+        usbDetect.on('remove', (device) => {
+          if (!mainWindow) {
+            return;
+          }
+
+          mainWindow?.webContents?.send(IpcEvents.USB_HOTPLUG, {
+            device: JSON.stringify(device),
+            eventName: USB_HOTPLUG_EVENTS.detach,
+          });
+        });
+
+        process.stdout.on('error', (err) => {
+          if (err.code === 'EPIPE') {
+            process.exit(0);
+          }
+        });
+      } catch (e) {
+        log.error(e, `main.dev -> whenReady`);
       }
-    } catch (e) {
-      log.error(e, `main.dev -> activate`);
-    }
-  });
+
+      app.on('activate', async () => {
+        // On macOS it's common to re-create a window in the app when the
+        // dock icon is clicked and there are no other windows open.
+        try {
+          if (mainWindow === null) {
+            await createWindow();
+          }
+        } catch (e) {
+          log.error(e, `main.dev -> activate`);
+        }
+      });
+    })
+    .catch((e) => {
+      log.error(e, `main.dev -> whenReady`);
+    });
 
   app.on('before-quit', async () => {
     fileExplorerController

@@ -1,4 +1,4 @@
-import { BrowserWindow, remote } from 'electron';
+import { BrowserWindow } from 'electron';
 import { PATHS } from '../constants/paths';
 import { log } from '../utils/log';
 import { loadProfileErrorHtml } from '../templates/loadProfileError';
@@ -13,6 +13,9 @@ import { APP_FEATURES_PAGE_TITLE } from '../templates/appFeaturesPage';
 import { KEYBOARD_SHORTCUTS_PAGE_TITLE } from '../templates/keyboardShortcutsPage';
 import { getWindowBackgroundColor } from './windowHelper';
 import { REPORT_BUGS_PAGE_TITLE } from '../templates/generateErrorReport';
+import { getRemoteWindow } from './remoteWindowHelpers';
+
+const remote = getRemoteWindow();
 
 let _nonBootableDeviceWindow = null;
 let _reportBugsWindow = null;
@@ -22,6 +25,23 @@ let _helpPhoneIsNotConnectingWindow = null;
 let _appUpdateAvailableWindow = null;
 let _appFeaturesWindow = null;
 let _keyboardShortcutsWindow = null;
+
+/**
+ * Enable remote main since it has been explicitly disabled by electron.
+ */
+function enableRemoteMainForRenderer({ existingWindow, windowConfig }) {
+  let windowObj = existingWindow;
+
+  if (!windowObj) {
+    windowObj = new remote.BrowserWindow(windowConfig);
+
+    const remoteMain = remote.require('@electron/remote/main');
+
+    remoteMain.enable(windowObj.webContents);
+  }
+
+  return windowObj;
+}
 
 /**
  * Non Bootable Device Window
@@ -39,6 +59,7 @@ const nonBootableDeviceCreateWindow = () => {
     resizable: false,
     webPreferences: {
       nodeIntegration: true,
+      contextIsolation: false,
       enableRemoteModule: true,
     },
     backgroundColor: getWindowBackgroundColor(),
@@ -47,6 +68,8 @@ const nonBootableDeviceCreateWindow = () => {
 
 export const nonBootableDeviceWindow = () => {
   _nonBootableDeviceWindow = nonBootableDeviceCreateWindow();
+  remote.enable(_nonBootableDeviceWindow.webContents);
+
   _nonBootableDeviceWindow.loadURL(
     `data:text/html;charset=utf-8, ${encodeURI(loadProfileErrorHtml)}`
   );
@@ -86,6 +109,7 @@ const reportBugsCreateWindow = (isRenderedPage) => {
     fullscreenable: false,
     webPreferences: {
       nodeIntegration: true,
+      contextIsolation: false,
       enableRemoteModule: true,
     },
     backgroundColor: getWindowBackgroundColor(),
@@ -100,7 +124,10 @@ const reportBugsCreateWindow = (isRenderedPage) => {
     );
 
     return {
-      windowObj: existingWindow ?? new remote.BrowserWindow(config),
+      windowObj: enableRemoteMainForRenderer({
+        existingWindow,
+        windowConfig: config,
+      }),
       isExisting: !!existingWindow,
     };
   }
@@ -109,13 +136,25 @@ const reportBugsCreateWindow = (isRenderedPage) => {
   const allWindows = BrowserWindow.getAllWindows();
   const existingWindow = loadExistingWindow(allWindows, REPORT_BUGS_PAGE_TITLE);
 
+  const bWindow = new BrowserWindow(config);
+
+  remote.enable(bWindow.webContents);
+
   return {
-    windowObj: existingWindow ?? new BrowserWindow(config),
+    windowObj: existingWindow ?? bWindow,
     isExisting: !!existingWindow,
   };
 };
 
+// todo move all create window methods to IpcEventService and all window create methods from renderer should be event-driven (aka via IpcEventService). The main process windows could be directly invoked.
+//  This is done to avoid issues with 'electron/remote' (in the packaged builds the electron/remote enable doesn't work)
 export const reportBugsWindow = (isRenderedPage = false, focus = true) => {
+  if (isRenderedPage) {
+    throw new Error(
+      `'isRenderedPage' param is deprecated. Use ipcRenderer.send(IpcEvents.OPEN_<***>_WINDOW) to open a window from a renderer`
+    );
+  }
+
   try {
     if (_reportBugsWindow) {
       if (focus) {
@@ -173,6 +212,7 @@ const privacyPolicyCreateWindow = (isRenderedPage = false) => {
     fullscreenable: true,
     webPreferences: {
       nodeIntegration: true,
+      contextIsolation: false,
       enableRemoteModule: true,
     },
     backgroundColor: getWindowBackgroundColor(),
@@ -187,7 +227,10 @@ const privacyPolicyCreateWindow = (isRenderedPage = false) => {
     );
 
     return {
-      windowObj: existingWindow ?? new remote.BrowserWindow(config),
+      windowObj: enableRemoteMainForRenderer({
+        existingWindow,
+        windowConfig: config,
+      }),
       isExisting: !!existingWindow,
     };
   }
@@ -199,13 +242,25 @@ const privacyPolicyCreateWindow = (isRenderedPage = false) => {
     PRIVACY_POLICY_PAGE_TITLE
   );
 
+  const bWindow = new BrowserWindow(config);
+
+  remote.enable(bWindow.webContents);
+
   return {
-    windowObj: existingWindow ?? new BrowserWindow(config),
+    windowObj: existingWindow ?? bWindow,
     isExisting: !!existingWindow,
   };
 };
 
+// todo move all create window methods to IpcEventService and all window create methods from renderer should be event-driven (aka via IpcEventService). The main process windows could be directly invoked.
+//  This is done to avoid issues with 'electron/remote' (in the packaged builds the electron/remote enable doesn't work)
 export const privacyPolicyWindow = (isRenderedPage = false, focus = true) => {
+  if (isRenderedPage) {
+    throw new Error(
+      `'isRenderedPage' param is deprecated. Use ipcRenderer.send(IpcEvents.OPEN_<***>_WINDOW) to open a window from a renderer`
+    );
+  }
+
   try {
     if (_privacyPolicyWindow) {
       if (focus) {
@@ -261,12 +316,15 @@ const appUpdateAvailableCreateWindow = () => {
     fullscreenable: false,
     webPreferences: {
       nodeIntegration: true,
+      contextIsolation: false,
       enableRemoteModule: true,
     },
     backgroundColor: getWindowBackgroundColor(),
   });
 };
 
+// todo move all create window methods to IpcEventService and all window create methods from renderer should be event-driven (aka via IpcEventService). The main process windows could be directly invoked.
+//  This is done to avoid issues with 'electron/remote' (in the packaged builds the electron/remote enable doesn't work)
 export const appUpdateAvailableWindow = () => {
   try {
     if (_appUpdateAvailableWindow) {
@@ -278,6 +336,8 @@ export const appUpdateAvailableWindow = () => {
 
     // show the existing _appUpdateAvailableWindow
     const _appUpdateAvailableWindowTemp = appUpdateAvailableCreateWindow();
+
+    remote.enable(_appUpdateAvailableWindowTemp.webContents);
 
     if (!_appUpdateAvailableWindowTemp) {
       return _appUpdateAvailableWindow;
@@ -320,6 +380,7 @@ const appFeaturesCreateWindow = (isRenderedPage) => {
     fullscreenable: false,
     webPreferences: {
       nodeIntegration: true,
+      contextIsolation: false,
       enableRemoteModule: true,
     },
     backgroundColor: getWindowBackgroundColor(),
@@ -334,7 +395,10 @@ const appFeaturesCreateWindow = (isRenderedPage) => {
     );
 
     return {
-      windowObj: existingWindow ?? new remote.BrowserWindow(config),
+      windowObj: enableRemoteMainForRenderer({
+        existingWindow,
+        windowConfig: config,
+      }),
       isExisting: !!existingWindow,
     };
   }
@@ -346,13 +410,25 @@ const appFeaturesCreateWindow = (isRenderedPage) => {
     APP_FEATURES_PAGE_TITLE
   );
 
+  const bWindow = new BrowserWindow(config);
+
+  remote.enable(bWindow.webContents);
+
   return {
-    windowObj: existingWindow ?? new BrowserWindow(config),
+    windowObj: existingWindow ?? bWindow,
     isExisting: !!existingWindow,
   };
 };
 
+// todo move all create window methods to IpcEventService and all window create methods from renderer should be event-driven (aka via IpcEventService). The main process windows could be directly invoked.
+//  This is done to avoid issues with 'electron/remote' (in the packaged builds the electron/remote enable doesn't work)
 export const appFeaturesWindow = (isRenderedPage = false, focus = true) => {
+  if (isRenderedPage) {
+    throw new Error(
+      `'isRenderedPage' param is deprecated. Use ipcRenderer.send(IpcEvents.OPEN_<***>_WINDOW) to open a window from a renderer`
+    );
+  }
+
   try {
     if (_appFeaturesWindow) {
       if (focus) {
@@ -411,6 +487,7 @@ const keyboardShortcutsCreateWindow = (isRenderedPage) => {
     fullscreenable: true,
     webPreferences: {
       nodeIntegration: true,
+      contextIsolation: false,
       enableRemoteModule: true,
     },
     backgroundColor: getWindowBackgroundColor(),
@@ -425,7 +502,10 @@ const keyboardShortcutsCreateWindow = (isRenderedPage) => {
     );
 
     return {
-      windowObj: existingWindow ?? new remote.BrowserWindow(config),
+      windowObj: enableRemoteMainForRenderer({
+        existingWindow,
+        windowConfig: config,
+      }),
       isExisting: !!existingWindow,
     };
   }
@@ -437,16 +517,28 @@ const keyboardShortcutsCreateWindow = (isRenderedPage) => {
     KEYBOARD_SHORTCUTS_PAGE_TITLE
   );
 
+  const bWindow = new BrowserWindow(config);
+
+  remote.enable(bWindow.webContents);
+
   return {
-    windowObj: existingWindow ?? new BrowserWindow(config),
+    windowObj: existingWindow ?? bWindow,
     isExisting: !!existingWindow,
   };
 };
 
+// todo move all create window methods to IpcEventService and all window create methods from renderer should be event-driven (aka via IpcEventService). The main process windows could be directly invoked.
+//  This is done to avoid issues with 'electron/remote' (in the packaged builds the electron/remote enable doesn't work)
 export const keyboardShortcutsWindow = (
   isRenderedPage = false,
   focus = true
 ) => {
+  if (isRenderedPage) {
+    throw new Error(
+      `'isRenderedPage' param is deprecated. Use ipcRenderer.send(IpcEvents.OPEN_<***>_WINDOW) to open a window from a renderer`
+    );
+  }
+
   try {
     if (_keyboardShortcutsWindow) {
       if (focus) {
@@ -458,9 +550,8 @@ export const keyboardShortcutsWindow = (
     }
 
     // show the existing _keyboardShortcutsWindow
-    const { windowObj, isExisting } = keyboardShortcutsCreateWindow(
-      isRenderedPage
-    );
+    const { windowObj, isExisting } =
+      keyboardShortcutsCreateWindow(isRenderedPage);
 
     // return the existing windowObj object
     if (isExisting) {
@@ -509,6 +600,7 @@ const helpFaqsCreateWindow = (isRenderedPage = false) => {
     fullscreenable: true,
     webPreferences: {
       nodeIntegration: true,
+      contextIsolation: false,
       enableRemoteModule: true,
     },
     backgroundColor: getWindowBackgroundColor(),
@@ -520,7 +612,10 @@ const helpFaqsCreateWindow = (isRenderedPage = false) => {
     const existingWindow = loadExistingWindow(allWindows, FAQS_PAGE_TITLE);
 
     return {
-      windowObj: existingWindow ?? new remote.BrowserWindow(config),
+      windowObj: enableRemoteMainForRenderer({
+        existingWindow,
+        windowConfig: config,
+      }),
       isExisting: !!existingWindow,
     };
   }
@@ -529,13 +624,25 @@ const helpFaqsCreateWindow = (isRenderedPage = false) => {
   const allWindows = BrowserWindow.getAllWindows();
   const existingWindow = loadExistingWindow(allWindows, FAQS_PAGE_TITLE);
 
+  const bWindow = new BrowserWindow(config);
+
+  remote.enable(bWindow.webContents);
+
   return {
-    windowObj: existingWindow ?? new BrowserWindow(config),
+    windowObj: existingWindow ?? bWindow,
     isExisting: !!existingWindow,
   };
 };
 
+// todo move all create window methods to IpcEventService and all window create methods from renderer should be event-driven (aka via IpcEventService). The main process windows could be directly invoked.
+//  This is done to avoid issues with 'electron/remote' (in the packaged builds the electron/remote enable doesn't work)
 export const faqsWindow = (isRenderedPage = false, focus = true) => {
+  if (isRenderedPage) {
+    throw new Error(
+      `'isRenderedPage' param is deprecated. Use ipcRenderer.send(IpcEvents.OPEN_<***>_WINDOW) to open a window from a renderer`
+    );
+  }
+
   try {
     if (_faqsWindow) {
       if (focus) {
@@ -594,6 +701,7 @@ const helpPhoneNotConnectingCreateWindow = (isRenderedPage = false) => {
     fullscreenable: true,
     webPreferences: {
       nodeIntegration: true,
+      contextIsolation: false,
       enableRemoteModule: true,
     },
     backgroundColor: getWindowBackgroundColor(),
@@ -608,7 +716,10 @@ const helpPhoneNotConnectingCreateWindow = (isRenderedPage = false) => {
     );
 
     return {
-      windowObj: existingWindow ?? new remote.BrowserWindow(config),
+      windowObj: enableRemoteMainForRenderer({
+        existingWindow,
+        windowConfig: config,
+      }),
       isExisting: !!existingWindow,
     };
   }
@@ -620,16 +731,28 @@ const helpPhoneNotConnectingCreateWindow = (isRenderedPage = false) => {
     HELP_PHONE_IS_NOT_CONNECTING
   );
 
+  const bWindow = new BrowserWindow(config);
+
+  remote.enable(bWindow.webContents);
+
   return {
-    windowObj: existingWindow ?? new BrowserWindow(config),
+    windowObj: existingWindow ?? bWindow,
     isExisting: !!existingWindow,
   };
 };
 
+// todo move all create window methods to IpcEventService and all window create methods from renderer should be event-driven (aka via IpcEventService). The main process windows could be directly invoked.
+//  This is done to avoid issues with 'electron/remote' (in the packaged builds the electron/remote enable doesn't work)
 export const helpPhoneNotConnectingWindow = (
   isRenderedPage = false,
   focus = true
 ) => {
+  if (isRenderedPage) {
+    throw new Error(
+      `'isRenderedPage' param is deprecated. Use ipcRenderer.send(IpcEvents.OPEN_<***>_WINDOW) to open a window from a renderer`
+    );
+  }
+
   try {
     if (_helpPhoneIsNotConnectingWindow) {
       if (focus) {
@@ -641,9 +764,8 @@ export const helpPhoneNotConnectingWindow = (
     }
 
     // show the existing _helpPhoneIsNotConnectingWindow
-    const { windowObj, isExisting } = helpPhoneNotConnectingCreateWindow(
-      isRenderedPage
-    );
+    const { windowObj, isExisting } =
+      helpPhoneNotConnectingCreateWindow(isRenderedPage);
 
     // return the existing windowObj object
     if (isExisting) {

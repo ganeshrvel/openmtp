@@ -166,13 +166,17 @@ class App extends Component {
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
-      actionCreateCopyJsonFileToSettings: ({ ...data }) => (_, __) => {
-        dispatch(copyJsonFileToSettings({ ...data }));
-      },
+      actionCreateCopyJsonFileToSettings:
+        ({ ...data }) =>
+        (_, __) => {
+          dispatch(copyJsonFileToSettings({ ...data }));
+        },
 
-      actionCreateFreshInstall: ({ ...data }) => (_, getState) => {
-        dispatch(freshInstall({ ...data }, getState));
-      },
+      actionCreateFreshInstall:
+        ({ ...data }) =>
+        (_, getState) => {
+          dispatch(freshInstall({ ...data }, getState));
+        },
     },
     dispatch
   );

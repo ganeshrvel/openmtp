@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { shell, remote, ipcRenderer } from 'electron';
+import { shell, ipcRenderer } from 'electron';
 import path from 'path';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -19,9 +19,12 @@ import GenerateErrorReportBody from './GenerateErrorReportBody';
 import { baseName } from '../../../utils/files';
 import { log } from '../../../utils/log';
 import { getMainWindowRendererProcess } from '../../../helpers/windowHelper';
-import { COMMUNICATION_EVENTS } from '../../../enums/communicationEvents';
 import fileExplorerController from '../../../data/file-explorer/controllers/FileExplorerController';
 import { DEVICE_TYPE } from '../../../enums';
+import { getRemoteWindow } from '../../../helpers/remoteWindowHelpers';
+import { IpcEvents } from '../../../services/ipc-events/IpcEventType';
+
+const remote = getRemoteWindow();
 
 const { logFile } = PATHS;
 const { getPath } = remote.app;
@@ -41,14 +44,14 @@ class GenerateErrorReport extends PureComponent {
 
   componentWillUnmount() {
     ipcRenderer.removeListener(
-      COMMUNICATION_EVENTS.reportBugsDisposeMtpReply,
+      IpcEvents.REPORT_BUGS_DISPOSE_MTP_REPLY_FROM_MAIN,
       this._reportBugsDisposeMtpReplyEvent
     );
   }
 
-  compressLog = () => {
+  compressLog = async () => {
     try {
-      compressFile(logFile, logFileZippedPath);
+      await compressFile(logFile, logFileZippedPath);
     } catch (e) {
       log.error(e, `GenerateErrorReport -> compressLog`);
     }
@@ -66,12 +69,12 @@ class GenerateErrorReport extends PureComponent {
       // else use direct method click
       if (isReportBugsPage) {
         this.mainWindowRendererProcess.webContents.send(
-          COMMUNICATION_EVENTS.reportBugsDisposeMtp,
+          IpcEvents.REPORT_BUGS_DISPOSE_MTP,
           { logFileZippedPath }
         );
 
         ipcRenderer.once(
-          COMMUNICATION_EVENTS.reportBugsDisposeMtpReply,
+          IpcEvents.REPORT_BUGS_DISPOSE_MTP_REPLY_FROM_MAIN,
           this._reportBugsDisposeMtpReplyEvent
         );
 
@@ -105,15 +108,19 @@ class GenerateErrorReport extends PureComponent {
         message: reportGenerateError,
       });
 
+      log.error(error, reportGenerateError);
+
       return null;
     }
 
-    this.compressLog();
+    await this.compressLog();
 
     if (!fileExistsSync(logFileZippedPath)) {
       actionCreateThrowError({
         message: reportGenerateError,
       });
+
+      log.error(`${logFileZippedPath} doesn't exist`, reportGenerateError);
 
       return null;
     }
@@ -144,9 +151,11 @@ class GenerateErrorReport extends PureComponent {
 const mapDispatchToProps = (dispatch, __) =>
   bindActionCreators(
     {
-      actionCreateThrowError: ({ ...args }) => (_, __) => {
-        dispatch(throwAlert({ ...args }));
-      },
+      actionCreateThrowError:
+        ({ ...args }) =>
+        (_, __) => {
+          dispatch(throwAlert({ ...args }));
+        },
     },
     dispatch
   );

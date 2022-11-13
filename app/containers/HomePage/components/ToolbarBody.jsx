@@ -162,8 +162,7 @@ export default class ToolbarAreaPane extends PureComponent {
         name: `${capitalize(MTP_MODE.kalam)} Mode`,
         icon: faBolt,
         selected: mtpMode === MTP_MODE.kalam,
-        hint:
-          'The all new and powerful MTP kernel — named after Dr. A. P. J. Abdul Kalam - Statesman, Scientist and Poet',
+        hint: 'The all new and powerful MTP kernel — named after Dr. A. P. J. Abdul Kalam - Statesman, Scientist and Poet',
       },
       {
         value: MTP_MODE.legacy,

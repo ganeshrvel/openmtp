@@ -208,7 +208,7 @@ export const initialState = {
       },
       showInEnclosingFolder: {
         enabled: true,
-        label: 'Show in Enclosing Folder',
+        label: 'Open in Finder',
         data: {},
       },
     },
