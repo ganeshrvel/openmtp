@@ -33,7 +33,7 @@ class WhatsNew extends PureComponent {
             <ListItemIcon>
               <MemoryIcon htmlColor="#fa4d0a" />
             </ListItemIcon>
-            <ListItemText primary="Much awaited Apple Silicone support" />
+            <ListItemText primary="Much awaited Apple Silicon support" />
           </ListItem>
 
           <ListItem>

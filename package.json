@@ -25,10 +25,10 @@
     "start-renderer-dev": "cross-env NODE_ENV=development webpack serve --config webpack/config.renderer.dev.babel.js",
     "publish-mac": "yarn build && electron-builder build --mac --publish always",
     "publish-mac-no-verify": "yarn build-no-verify && cross-env electron-builder build --mac --publish always",
-    "dev-docs": "cross-env NODE_ENV=development webpack-dev-server --config docs-sources/webpack/webpack.config.base.js",
+    "dev-docs": "cross-env NODE_ENV=development webpack serve --config docs-sources/webpack/webpack.config.base.js",
     "build-docs": "cross-env NODE_ENV=production webpack --config docs-sources/webpack/webpack.config.base.js && git add .",
     "lint": "cross-env NODE_ENV=development eslint --cache --format=pretty --ext .js --ext .jsx .",
-    "lint-styles": "stylelint --ignore-path .eslintignore '**/*.*(css|scss)' --syntax scss",
+    "lint-styles": "stylelint --ignore-path .eslintignore '**/*.*(css|scss)' --custom-syntax postcss-scss",
     "lint-fix": "yarn --silent lint --fix; exit 0",
     "lint-styles-fix": "yarn --silent lint-styles --fix; exit 0",
     "postlint-fix": "prettier --ignore-path .eslintignore --single-quote --write '**/*.*{js,jsx,json}'",
@@ -36,27 +36,6 @@
     "preinstall": "node ./internals/scripts/CheckYarn.js",
     "postinstall": "yarn build-dll && electron-builder install-app-deps"
   },
-  "lint-staged": {
-    "*.{js,jsx}": [
-      "yarn lint",
-      "yarn postlint-fix",
-      "git add"
-    ],
-    "{*.json,.{babelrc,eslintrc,prettierrc,stylelintrc}}": [
-      "prettier --ignore-path .eslintignore --parser json --write",
-      "git add"
-    ],
-    "*.{css,scss}": [
-      "yarn lint-styles",
-      "yarn postlint-styles-fix",
-      "git add"
-    ],
-    "*.{yml}": [
-      "prettier --ignore-path .eslintignore --single-quote --write",
-      "git add"
-    ]
-  },
-  "browserslist": [],
   "main": "./app/main.prod.js",
   "resolutions": {
     "node-abi": "^3.24.0"
@@ -204,15 +183,17 @@
     "eslint-plugin-react": "^7.28.0",
     "eslint-plugin-react-hooks": "^4.3.0",
     "file-loader": "^6.2.0",
-    "html-webpack-plugin": "^4.5.0",
+    "html-webpack-plugin": "^5.5.0",
     "husky": "^4.3.8",
     "js-yaml": "^4.1.0",
     "lint-staged": "^12.3.3",
-    "mini-css-extract-plugin": "^2.5.3",
+    "mini-css-extract-plugin": "^2.6.1",
     "node-abi": "^3.24.0",
     "optimize-css-assets-webpack-plugin": "^6.0.1",
     "pkg-dir": "^6.0.1",
+    "postcss": "8",
     "prettier": "^2.5.1",
+    "prettier-stylelint": "https://github.com/ganeshrvel/prettier-stylelint.git",
     "react-hot-loader": "^4.13.0",
     "redux-logger": "^3.0.6",
     "replace": "^1.2.1",
@@ -220,9 +201,9 @@
     "sass": "^1.54.4",
     "sass-loader": "^13.0.2",
     "style-loader": "^3.3.1",
-    "stylelint": "^14.5.0",
+    "stylelint": "^14.11.0",
     "stylelint-config-prettier": "^9.0.3",
-    "stylelint-config-standard": "^25.0.0",
+    "stylelint-config-standard": "^28.0.0",
     "terser-webpack-plugin": "^5.0.3",
     "url-loader": "^4.1.1",
     "webpack": "^5.3.2",

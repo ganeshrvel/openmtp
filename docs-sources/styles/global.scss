@@ -359,7 +359,8 @@ section.first {
             width: 100%;
           }
           @media (min-width: #{$nonMobileMinWidth}px) {
-            width: 130px;
+            display: block;
+            width: 100%;
           }
         }
       }
@@ -488,6 +489,7 @@ section.second {
           position: relative;
           font-size: 15px;
           transition: background-color 1.5s ease;
+          margin-bottom: 0;
         }
 
         span {

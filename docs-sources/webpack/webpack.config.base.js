@@ -1,6 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const merge = require('webpack-merge');
+const { merge } = require('webpack-merge');
 const devConfig = require('./webpack.config.dev');
 const prodConfig = require('./webpack.config.prod');
 
@@ -15,6 +15,7 @@ const baseConfig = {
   output: {
     filename: 'bundle/[name].[hash:20].js',
     path: buildPath,
+    assetModuleFilename: 'bundle/[name].[hash:20][ext]',
   },
 
   plugins: [
@@ -66,18 +67,10 @@ const baseConfig = {
       },
       {
         test: /\.(?:ico|jpe?g|png|gif|webp)$/i,
-        use: [
-          {
-            loader: 'url-loader',
-            options: {
-              limit: 10000,
-              name: 'bundle/[name].[hash:20].[ext]',
-            },
-          },
-        ],
+        type: 'asset/resource',
       },
     ],
   },
 };
 
-module.exports = merge.smart(baseConfig, IS_PROD ? prodConfig : devConfig);
+module.exports = merge(baseConfig, IS_PROD ? prodConfig : devConfig);

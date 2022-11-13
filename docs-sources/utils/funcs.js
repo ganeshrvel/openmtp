@@ -17,6 +17,7 @@ export const undefinedOrNull = (_var) => {
 };
 
 export const fetchUrl = ({ url }) => {
+  // eslint-disable-next-line compat/compat
   return fetch(`${url}`)
     .then((res) => {
       if (ALLOWED_GITHUB_FETCH_STATUSES.indexOf(res.status) !== -1) {
@@ -32,6 +33,7 @@ export const fetchUrl = ({ url }) => {
 };
 
 export const imageLoaded = (src) => {
+  // eslint-disable-next-line compat/compat
   return new Promise((resolve) => {
     const img = new Image();
 
@@ -138,4 +140,34 @@ export const urls = {
   getUrlPath() {
     return window.location.pathname;
   },
+};
+
+export const setStyle = (selector, styles) => {
+  let elem;
+
+  if (isString(selector)) {
+    elem = document.querySelector(selector);
+  } else {
+    elem = selector;
+  }
+
+  if (!elem) {
+    return;
+  }
+
+  let styleString = '';
+
+  Object.keys(styles).map((a) => {
+    const item = styles[a];
+
+    styleString += `${a}:${item};`;
+
+    return a;
+  });
+
+  elem.setAttribute('style', styleString);
+};
+
+export const isString = (variable) => {
+  return typeof variable === 'string' || variable instanceof String;
 };
