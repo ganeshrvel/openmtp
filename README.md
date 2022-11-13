@@ -40,8 +40,8 @@ Although OpenMTP will continue working on a machine which has macOS 10.11 (OS X 
 
 ### Installation
 
-- Download the [Latest Version](https://openmtp.ganeshrvel.com/?downloadApp=github&release=stable&platform=mac 'Latest Version')
-- Download the [Macbook M1 Apple silicon Version](https://github.com/ganeshrvel/openmtp/issues/220#issuecomment-1050236345 'Macbook M1 Apple silicon Version') (**ALPHA Version**)
+- Download the [Mac Intel Silicon](https://openmtp.ganeshrvel.com/?downloadApp=github&release=stable&platform=mac&arch=x64 'Mac Intel Silicon') version
+- Download the [Mac Apple Silicon](https://openmtp.ganeshrvel.com/?downloadApp=github&release=stable&platform=mac&arch=arm64 'Mac Apple Silicon') version
 - Using Homebrew Cask
 
 ```shell
