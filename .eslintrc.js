@@ -9,7 +9,7 @@ module.exports = {
     node: true,
   },
   plugins: ['import', 'promise', 'compat', 'react'],
-  extends: ['airbnb', 'plugin:prettier/recommended', 'prettier/react'],
+  extends: ['airbnb', 'plugin:prettier/recommended'],
   settings: {
     react: {
       version: '16.7',
@@ -30,7 +30,7 @@ module.exports = {
     'arrow-body-style': 'off',
     'arrow-parens': 'off',
     'class-methods-use-this': 'off',
-    'compat/compat': 'error',
+    'compat/compat': 'off',
     'consistent-return': 'off',
     'comma-dangle': 'off',
     'default-param-last': 'off',
