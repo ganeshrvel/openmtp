@@ -37,9 +37,6 @@
     "postinstall": "yarn build-dll && electron-builder install-app-deps"
   },
   "main": "./app/main.prod.js",
-  "resolutions": {
-    "node-abi": "^3.24.0"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ganeshrvel/openmtp.git"
@@ -213,6 +210,15 @@
     "webpack-merge": "^5.3.0",
     "yarn": "^1.22.17",
     "zx": "^5.0.0"
+  },
+  "resolutions": {
+    "node-abi": "^3.24.0"
+  },
+  "overrides": {
+    "semver-regex": "^3.1.4",
+    "minimist": "^1.2.7",
+    "node-fetch": "^2.6.7",
+    "jszip": "^3.10.1"
   },
   "devEngines": {
     "node": ">=16.x",
