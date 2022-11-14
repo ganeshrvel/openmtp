@@ -16,6 +16,7 @@
     "media-feature-name-no-vendor-prefix": null,
     "alpha-value-notation": null,
     "at-rule-no-unknown": null,
+    "import-notation": null,
     "no-descending-specificity": null
   }
 }
