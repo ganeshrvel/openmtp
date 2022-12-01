@@ -66,7 +66,7 @@ export const mtpCliPath = path.resolve(
 export const kalamDebugReportCli = path.resolve(
   path.join(
     binariesPath({ includeArchDirectory: true }),
-    './kalam-debug-report'
+    './kalam_debug_report'
   )
 );
 
