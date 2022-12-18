@@ -1,7 +1,7 @@
 {
   "name": "openmtp",
   "productName": "OpenMTP",
-  "version": "3.2.1",
+  "version": "3.2.10",
   "description": "OpenMTP | Android File Transfer for macOS",
   "scripts": {
     "build": "yarn lint && concurrently \"yarn build-main\" \"yarn build-renderer\"",
@@ -58,6 +58,9 @@
     "mtp"
   ],
   "homepage": "https://openmtp.ganeshrvel.com/",
+  "optionalDependencies": {
+    "node-mac-permissions": "^2.2.1"
+  },
   "dependencies": {
     "@electron/remote": "^2.0.4",
     "@fortawesome/fontawesome-svg-core": "^1.2.32",
@@ -93,7 +96,6 @@
     "mixpanel-browser": "^2.43.0",
     "mkdirp": "^1.0.4",
     "nice-utils": "^1.0.3",
-    "node-mac-permissions": "^2.2.1",
     "node-machine-id": "^1.1.12",
     "normalize.css": "^8.0.1",
     "os": "^0.1.2",

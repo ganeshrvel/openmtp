@@ -6,16 +6,31 @@ import 'zx/globals';
 import fs from 'fs-extra';
 import { packageDirectory } from 'pkg-dir';
 import replace from 'replace';
+import macosVersion from 'macos-version';
 
 await $`export LANG=en_US.UTF-8`;
 await $`export LC_ALL=en_US.UTF-8`;
+
+// To support macOS version below Big Sur the Kalam kernel needs to be compiled on an older macOS machine everytime there is an update, which is practically very difficult.
+// So any version included in the [KALAM_HISTORIC_VERSION_TYPE] will not receive the latest Kalam Kernel updates
+export const KALAM_HISTORIC_VERSION_TYPE = {
+  paleolithic: 'paleolithic', // very old OSes. macOS 10.11 (OS X El Capitan) to 10.13 (High Sierra). libusb support is limited in this. So practically discontinued kernel
+  medieval: 'medieval', // macOS 10.14 (Mojave) and 10.15 (Catalina). libusb support is still available but since it requires Mojave or lower to compile the kernel, it is being deprecated.
+};
+
+// if the user's os version is higher than the ones listed here then latest kalam kernel binaies will be used
+// reference: https://github.com/npm/node-semver#ranges
+export const KALAM_HISTORIC_MACOS_VERSION_RANGE = {
+  [KALAM_HISTORIC_VERSION_TYPE.paleolithic]: `>=10.11.0 <10.14`,
+  [KALAM_HISTORIC_VERSION_TYPE.medieval]: `>=10.14 <=10.15.999`,
+};
 
 const DIR_MODE = 0o2775;
 const PKG_ROOT_DIR = await packageDirectory();
 const TEMP_ROOT_DIR = `${PKG_ROOT_DIR}/tmp`;
 const LIBUSB_BOTTLE_TEMP_DIR = `${TEMP_ROOT_DIR}/libusb_cache`;
-const BUILD_BASE_DIR = `${PKG_ROOT_DIR}/build`;
 const KALAM_NATIVE_DIR = `${PKG_ROOT_DIR}/ffi/kalam/native`;
+const BUILD_BASE_DIR = `${PKG_ROOT_DIR}/build`;
 
 // find the brew bottle hashes here: https://github.com/Homebrew/homebrew-core/blob/master/Formula/libusb.rb
 const LIBUSB_BREW_BOTTLES = {
@@ -36,6 +51,35 @@ const LIBUSB_BREW_BOTTLES = {
     libusbVersion: `1.0.24`,
   },
 };
+
+let ifHistoricPath = '';
+
+function buildCompatibilityChecks() {
+  for (const [key, value] of Object.entries(
+    KALAM_HISTORIC_MACOS_VERSION_RANGE
+  )) {
+    if (macosVersion.is(value)) {
+      ifHistoricPath = `${key}/`;
+      break;
+    }
+  }
+
+  const doesCurrentOsSupportArm64Compilation =
+    ifHistoricPath === null ||
+    ifHistoricPath === undefined ||
+    ifHistoricPath.trim() === '';
+
+  // remove the arm64 cross compilation on older intel silicon machine
+  if (!doesCurrentOsSupportArm64Compilation) {
+    for (const [key, value] of Object.entries(LIBUSB_BREW_BOTTLES)) {
+      if (value.arch === 'arm64') {
+        delete LIBUSB_BREW_BOTTLES[key];
+      }
+    }
+  }
+}
+
+buildCompatibilityChecks();
 
 async function getCmd(cmd) {
   const op = await $`${cmd}`;
@@ -60,7 +104,7 @@ function getLibusbBottleCachePath({ bottle }) {
   const pkgconfig = `${pkgconfigBaseDir}/libusb-1.0.pc`;
   const pkgConfigPrefix = `${extracted}`;
   const libusbDylib = `${extracted}/libusb/${bottle.libusbVersion}/lib/${libusbFullFileName}`;
-  const buildDir = `${BUILD_BASE_DIR}/${bottle.osName}/bin/${bottle.arch}`;
+  const buildDir = `${BUILD_BASE_DIR}/${bottle.osName}/bin/${ifHistoricPath}${bottle.arch}`;
   const libusbDylibInBuildDir = `${buildDir}/${libusbCleanedFileName}`;
   const kalamDylibInBuildDir = `${buildDir}/${kalamFileName}`;
   const kalamDebugReportInBuildDir = `${buildDir}/${kalamDebugReportFileName}`;

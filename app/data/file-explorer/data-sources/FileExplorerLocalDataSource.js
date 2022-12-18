@@ -3,7 +3,7 @@ import junk from 'junk';
 import Promise from 'bluebird';
 import rimraf from 'rimraf';
 import mkdirp from 'mkdirp';
-import { askForFoldersAccess, askForPhotosAccess } from 'node-mac-permissions';
+import macosVersion from 'macos-version';
 import {
   readdir as fsReaddir,
   existsSync,
@@ -20,6 +20,7 @@ import { pathUp } from '../../../utils/files';
 import { appDateFormat } from '../../../utils/date';
 import { checkIf } from '../../../utils/checkIf';
 import { PATHS } from '../../../constants/paths';
+import { NODE_MAC_PERMISSIONS_MIN_OS } from '../../../constants';
 
 export class FileExplorerLocalDataSource {
   constructor() {
@@ -107,6 +108,20 @@ export class FileExplorerLocalDataSource {
    * @return {Promise<boolean>}
    */
   _requestUsageAccess = async ({ filePath }) => {
+    const doesCurrentOsSupportNodeMacPermission =
+      macosVersion.isGreaterThanOrEqualTo(NODE_MAC_PERMISSIONS_MIN_OS);
+
+    if (!doesCurrentOsSupportNodeMacPermission) {
+      return true;
+    }
+
+    console.log('todo test node-mac-permissions bundling on mac m1');
+
+    const { askForFoldersAccess, askForPhotosAccess } = await import(
+      // eslint-disable-next-line import/no-unresolved
+      'node-mac-permissions'
+    );
+
     checkIf(filePath, 'string');
 
     const isGrantedString = 'authorized';

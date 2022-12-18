@@ -34,9 +34,11 @@ OpenMTP 3.0 features a new MTP kernel and it was written from the scratch. It pr
 
 Do checkout the Go package which I've written to build Kalam Kernel: [github.com/ganeshrvel/go-mtpx](https://github.com/ganeshrvel/go-mtpx 'https://github.com/ganeshrvel/go-mtpx'). Feel free to raise PRs.
 
-### System Requirements
-
-Although OpenMTP will continue working on a machine which has macOS 10.11 (OS X El Capitan) or higher installed, the `Kalam` Kernel will only get the latest updates for the past 3 versions of macOS. We will continue releasing the OpenMTP updates for both `Intel` and `ARM64` machines.
+### System Requirements and Support
+- To support macOS version below Big Sur the Kalam kernel needs to be compiled on an older macOS machine everytime there is an update, which is practically very difficult
+- The latest 3 versions of macOS will receive the `Kalam` Kernel updates, which includes new device support, fixes, stability improvements. macOS Big Sur (11.0) or above will receive the above said updates
+- OpenMTP will continue working on a machine which has macOS 10.11 (OS X El Capitan) or higher installed but won't receive the MTP Kernel updates
+- We will continue releasing the updates for both `Intel` and `ARM64` machines
 
 ### Installation
 
@@ -273,6 +275,14 @@ $ set UPGRADE_EXTENSIONS=1 && npm run dev
 ### Troubleshooting
 
 #### Your device is not recognized
+
+#### **node-mac-permissions** throws `Speech framework is not compatible with macOS < 10.15`
+- On macOS <= 10.14.x (mojave) the `yarn install` should throw a npm-rebuild error
+- Since the module `node-mac-permissions` has been made an optional dependecy the installation won't not fail.
+- the `NODE_MAC_PERMISSIONS_MIN_OS` defines the minimum os that is required to show the macos usage access permission popup
+- For distribution make sure to build the app on a machine which is at least 10.15 (Catalina)
+
+[https://stackoverflow.com/questions/58358449/notarizing-electron-apps-throws-you-must-first-sign-the-relevant-contracts-on](https://stackoverflow.com/questions/58358449/notarizing-electron-apps-throws-you-must-first-sign-the-relevant-contracts-on 'https://stackoverflow.com/questions/58358449/notarizing-electron-apps-throws-you-must-first-sign-the-relevant-contracts-on')
 
 - Raise an issue if your device is undetected: https://github.com/ganeshrvel/openmtp/issues/new?template=contribute.md
 
