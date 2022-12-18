@@ -2,7 +2,7 @@
 
 - Author: [Ganesh Rathinavel](https://www.linkedin.com/in/ganeshrvel 'Ganesh Rathinavel')
 - License: [MIT](https://github.com/ganeshrvel/openmtp/blob/master/LICENSE 'MIT')
-- System Requirements: macOS 10.11 or higher
+- System Requirements: macOS 11.0 (Big Sur) or higher
 - Website URL: [https://openmtp.ganeshrvel.com](https://openmtp.ganeshrvel.com/ 'https://openmtp.ganeshrvel.com')
 - Repo URL: [https://github.com/ganeshrvel/openmtp](https://github.com/ganeshrvel/openmtp/ 'https://github.com/ganeshrvel/openmtp')
 - Contacts: ganeshrvel@outlook.com
@@ -35,6 +35,7 @@ OpenMTP 3.0 features a new MTP kernel and it was written from the scratch. It pr
 Do checkout the Go package which I've written to build Kalam Kernel: [github.com/ganeshrvel/go-mtpx](https://github.com/ganeshrvel/go-mtpx 'https://github.com/ganeshrvel/go-mtpx'). Feel free to raise PRs.
 
 ### System Requirements and Support
+
 - To support macOS version below Big Sur the Kalam kernel needs to be compiled on an older macOS machine everytime there is an update, which is practically very difficult
 - The latest 3 versions of macOS will receive the `Kalam` Kernel updates, which includes new device support, fixes, stability improvements. macOS Big Sur (11.0) or above will receive the above said updates
 - OpenMTP will continue working on a machine which has macOS 10.11 (OS X El Capitan) or higher installed but won't receive the MTP Kernel updates
@@ -277,9 +278,14 @@ $ set UPGRADE_EXTENSIONS=1 && npm run dev
 #### Your device is not recognized
 
 #### **node-mac-permissions** throws `Speech framework is not compatible with macOS < 10.15`
-- On macOS <= 10.14.x (mojave) the `yarn install` should throw a npm-rebuild error
-- Since the module `node-mac-permissions` has been made an optional dependecy the installation won't not fail.
-- the `NODE_MAC_PERMISSIONS_MIN_OS` defines the minimum os that is required to show the macos usage access permission popup
+
+- On macOS <= 10.14.x (mojave) the `yarn install` will throw a npm-rebuild error
+- To "test" or "debug" the app on macOS mojave:
+  - remove the `node-mac-permissions` dependency from `package.json`
+  - Add the ignorePlugin line to `default.plugins` in the file `webpack/config.base.js`
+    - `new webpack.IgnorePlugin({ resourceRegExp: /^(node-mac-permissions)$/u }),`
+  - WARNING: **DO NOT commit** these changes to the upstream!!
+- The `NODE_MAC_PERMISSIONS_MIN_OS` constant defines the minimum os version that is required to show the macos usage access permission popup
 - For distribution make sure to build the app on a machine which is at least 10.15 (Catalina)
 
 [https://stackoverflow.com/questions/58358449/notarizing-electron-apps-throws-you-must-first-sign-the-relevant-contracts-on](https://stackoverflow.com/questions/58358449/notarizing-electron-apps-throws-you-must-first-sign-the-relevant-contracts-on 'https://stackoverflow.com/questions/58358449/notarizing-electron-apps-throws-you-must-first-sign-the-relevant-contracts-on')

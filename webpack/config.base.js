@@ -44,8 +44,6 @@ export default {
   },
 
   plugins: [
-    new webpack.IgnorePlugin({ resourceRegExp: /^(node-mac-permissions)$/u }),
-
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'production',
     }),
