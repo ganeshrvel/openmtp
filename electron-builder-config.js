@@ -1,12 +1,53 @@
-const path = require('path');
-const { rootPath } = require('electron-root-path');
-// const { PATHS } = require('./src/constants/paths');
+const OS_ARCH_TYPE = {
+  amd64: 'amd64',
+  arm64: 'arm64',
+};
+
+const getBinariesSupportedSystemArchitecture = () => {
+  if (process.arch === 'arm64') {
+    return OS_ARCH_TYPE.arm64;
+  }
+
+  return OS_ARCH_TYPE.amd64;
+};
 
 module.exports = () => {
+  const getExtraFiles = () => {
+    const currentSystemArch = getBinariesSupportedSystemArchitecture();
+
+    let macResourceBinFilter;
+
+    switch (currentSystemArch) {
+      case OS_ARCH_TYPE.arm64:
+        macResourceBinFilter = [`${OS_ARCH_TYPE.arm64}/**/*`, `mtp-cli`];
+        break;
+
+      case OS_ARCH_TYPE.amd64:
+      default:
+        macResourceBinFilter = [
+          `${OS_ARCH_TYPE.amd64}/**/*`,
+          `medieval/${OS_ARCH_TYPE.amd64}/**/*`,
+          `paleolithic/${OS_ARCH_TYPE.amd64}/**/*`,
+          `mtp-cli`,
+        ];
+
+        break;
+    }
+
+    return [
+      {
+        from: 'build/mac/bin',
+        to: 'Resources/bin',
+        filter: macResourceBinFilter,
+      },
+    ];
+  };
+
   return {
     productName: 'OpenMTP',
     appId: 'io.ganeshrvel.openmtp',
     forceCodeSigning: true,
+    // eslint-disable-next-line no-template-curly-in-string
     artifactName: '${name}-${version}-${os}-${arch}.${ext}',
     copyright: '© Ganesh Rathinavel',
     afterPack: './internals/scripts/AfterPack.js',
@@ -27,26 +68,7 @@ module.exports = () => {
       'app/main.prod.js.map',
       'package.json',
     ],
-    extraFiles: [
-      {
-        from: 'build/mac/bin',
-        to: 'Resources/bin',
-        filter: ['**/*'],
-      },
-    ],
-
-    ///extraResources: ['resources/**'],
-    //     extraFiles: [
-    //       {
-    //         from: PATHS.tempPackagedDir,
-    //         to: `Resources`,
-    //         filter: ['**/*'],
-    //       },
-    //       {
-    //         from: PATHS.splashScreenDistBundledHtml,
-    //         to: `Resources`,
-    //       },
-    //     ],
+    extraFiles: getExtraFiles(),
     mac: {
       type: 'distribution',
       icon: 'build/icon.icns',

@@ -86,3 +86,4 @@ mtp-mock-files/*
 resources
 tmp/*
 *.prod.js
+*.js.map

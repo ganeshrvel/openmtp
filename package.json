@@ -58,6 +58,14 @@
     "mtp"
   ],
   "homepage": "https://openmtp.ganeshrvel.com/",
+  "browserslist": {
+    "production": [
+      "last 2 Chrome versions"
+    ],
+    "development": [
+      "last 2 Chrome versions"
+    ]
+  },
   "dependencies": {
     "@electron/remote": "^2.0.4",
     "@fortawesome/fontawesome-svg-core": "^1.2.32",
