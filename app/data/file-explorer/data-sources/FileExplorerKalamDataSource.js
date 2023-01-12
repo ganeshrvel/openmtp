@@ -1,5 +1,5 @@
 import { exec } from 'child_process';
-import Promise from 'bluebird';
+import { promisify } from 'node:util';
 import { log } from '../../../utils/log';
 import { Kalam } from '../../../../ffi/kalam/src/Kalam';
 import { checkIf } from '../../../utils/checkIf';
@@ -11,7 +11,7 @@ import { kalamDebugReportCli } from '../../../helpers/binaries';
 export class FileExplorerKalamDataSource {
   constructor() {
     this.kalamFfi = new Kalam();
-    this.execPromise = Promise.promisify(exec);
+    this.execPromise = promisify(exec);
   }
 
   /**

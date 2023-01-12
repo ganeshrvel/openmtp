@@ -1,6 +1,6 @@
 import path from 'path';
+import { promisify } from 'node:util';
 import junk from 'junk';
-import Promise from 'bluebird';
 import rimraf from 'rimraf';
 import mkdirp from 'mkdirp';
 import macosVersion from 'macos-version';
@@ -24,7 +24,7 @@ import { NODE_MAC_PERMISSIONS_MIN_OS } from '../../../constants';
 
 export class FileExplorerLocalDataSource {
   constructor() {
-    this.readdir = Promise.promisify(fsReaddir);
+    this.readdir = promisify(fsReaddir);
   }
 
   /**
@@ -114,8 +114,6 @@ export class FileExplorerLocalDataSource {
     if (!doesCurrentOsSupportNodeMacPermission) {
       return true;
     }
-
-    console.log('todo test node-mac-permissions bundling on mac m1');
 
     const { askForFoldersAccess, askForPhotosAccess } = await import(
       // eslint-disable-next-line import/no-unresolved
