@@ -228,7 +228,10 @@
     "jszip": "^3.10.1",
     "plist": "^3.0.6",
     "loader-utils": "^1.4.2",
-    "terser": "^5.15.1"
+    "terser": "^5.15.1",
+    "decode-uri-component": "^0.2.2",
+    "qs": "^6.5.3",
+    "json5": "^1.0.2"
   },
   "devEngines": {
     "node": ">=16.x",

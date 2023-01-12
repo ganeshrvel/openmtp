@@ -2,18 +2,18 @@ name: CI
 
 on:
   push:
-    branches: [ master, development ]
+    branches: [ master ]
   pull_request:
-    branches: [ master, development ]
+    branches: [ master ]
 
 jobs:
   build:
-    runs-on: macOS-10.15
+    runs-on: macOS-11.00
     steps:
       - name: Setup build environment
         uses: actions/setup-node@v1
         with:
-          node-version: '10.x'
+          node-version: '16.x'
       - run: npm install -g cross-env create-dmg
       - name: Cloning Git repository
         uses: actions/checkout@v1
@@ -24,7 +24,7 @@ jobs:
       - name: Attempt to generate unsigned macOS app
         run: |
           export CSC_IDENTITY_AUTO_DISCOVERY=false
-          yarn package-mac 2>&1 || true
+          yarn package-mac-without-notarize 2>&1 || true
       - name: Check if macOS app was generated
         run: test -e dist/mac/OpenMTP.app
       - name: Attempt to create disk image for generated macOS app
