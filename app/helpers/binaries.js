@@ -7,7 +7,10 @@ import {
 import { IS_PROD } from '../constants/env';
 import { PATHS } from '../constants/paths';
 import { isPackaged } from '../utils/isPackaged';
-import { KALAM_HISTORIC_MACOS_VERSION_RANGE } from '../constants';
+import {
+  KALAM_HISTORIC_MACOS_VERSION_RANGE,
+  KALAM_MODE_MIN_MACOS_VERSION,
+} from '../constants';
 import { undefinedOrNull } from '../utils/funcs';
 
 const { root } = PATHS;
@@ -83,3 +86,8 @@ export const kalamDebugReportCli = path.resolve(
 export const kalamLibPath = path.resolve(
   path.join(binariesPath({ includeArchDirectory: true }), './kalam.dylib')
 );
+
+// We have now officially retired the support for `Kalam` Kernel on macOS 10.13 (OS X El High Sierra) and lower. Only the "Legacy" MTP mode will continue working on these outdated machines.
+export function isKalamModeSupported() {
+  return macosVersion.is(KALAM_MODE_MIN_MACOS_VERSION);
+}

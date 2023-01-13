@@ -60,4 +60,17 @@ export default class Storage {
       log.error(e, `Storage -> setAll`);
     }
   }
+
+  setItems({ ...data }) {
+    try {
+      const currentSettings = this.getAll();
+
+      writeFileSync(
+        this.filePath,
+        JSON.stringify({ ...currentSettings, ...data })
+      );
+    } catch (e) {
+      log.error(e, `Storage -> setAll`);
+    }
+  }
 }

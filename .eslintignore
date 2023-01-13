@@ -87,3 +87,5 @@ resources
 tmp/*
 *.prod.js
 *.js.map
+*.js.LICENSE.txt
+*.prod.js.LICENSE.txt

@@ -37,8 +37,8 @@ Do checkout the Go package which I've written to build Kalam Kernel: [github.com
 ### System Requirements and Support
 
 - To support macOS version below Big Sur the Kalam kernel needs to be compiled on an older macOS machine everytime there is an update, which is practically very difficult
-- The latest 3 versions of macOS will receive the `Kalam` Kernel updates, which includes new device support, fixes, stability improvements. macOS Big Sur (11.0) or above will receive the above said updates
-- OpenMTP will continue working on a machine which has macOS 10.11 (OS X El Capitan) or higher installed but won't receive the MTP Kernel updates
+- Only the latest 3 versions of macOS will receive the `Kalam` Kernel updates, which includes new device supports, fixes, stability improvements. macOS Big Sur (11.0) or above will receive the above said updates
+- We have now officially retired the support for `Kalam` Kernel on macOS 10.13 (OS X El High Sierra) and lower. Only the "Legacy" MTP mode will continue working on these outdated machines.
 - We will continue releasing the updates for both `Intel` and `ARM64` machines
 
 ### Installation

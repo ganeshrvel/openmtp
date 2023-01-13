@@ -27,7 +27,6 @@ module.exports = () => {
         macResourceBinFilter = [
           `${OS_ARCH_TYPE.amd64}/**/*`,
           `medieval/${OS_ARCH_TYPE.amd64}/**/*`,
-          `paleolithic/${OS_ARCH_TYPE.amd64}/**/*`,
           `mtp-cli`,
         ];
 

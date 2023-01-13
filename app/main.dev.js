@@ -19,12 +19,18 @@ import { nonBootableDeviceWindow } from './helpers/createWindows';
 import { APP_TITLE } from './constants/meta';
 import { isPackaged } from './utils/isPackaged';
 import { getWindowBackgroundColor } from './helpers/windowHelper';
-import { APP_THEME_MODE_TYPE, DEVICE_TYPE, USB_HOTPLUG_EVENTS } from './enums';
+import {
+  APP_THEME_MODE_TYPE,
+  DEVICE_TYPE,
+  MTP_MODE,
+  USB_HOTPLUG_EVENTS,
+} from './enums';
 import fileExplorerController from './data/file-explorer/controllers/FileExplorerController';
 import { getEnablePrereleaseUpdatesSetting } from './helpers/settings';
 import { getRemoteWindow } from './helpers/remoteWindowHelpers';
 import { IpcEvents } from './services/ipc-events/IpcEventType';
 import IpcEventService from './services/ipc-events/IpcEventHandler';
+import { isKalamModeSupported } from './helpers/binaries';
 
 const remote = getRemoteWindow();
 
@@ -56,6 +62,32 @@ async function bootTheDevice() {
     return await bootLoader.verify();
   } catch (e) {
     throw new Error(e);
+  }
+}
+
+function fixSettings() {
+  const settings = settingsStorage.getItems([
+    'mtpMode',
+    'wasForcedToToggleMtpModeForMinOsRequirement',
+  ]);
+
+  const shouldEnableKalamMode = isKalamModeSupported();
+
+  // Since we have now officially retired the support for `Kalam` Kernel on macOS 10.13 (OS X El High Sierra) and lower. Only the "Legacy" MTP mode will continue working on the outdated machines.
+  // Here we toggle the MTP mode to legacy mode for the older macOSes and will mark it as a forceful toggle.
+  // And once the user upgrades their OS and the [wasForcedToToggleMtpModeForMinOsRequirement] was true then we toggle the user back to Kalam MTP mode.
+  if (settings.wasForcedToToggleMtpModeForMinOsRequirement === true) {
+    if (shouldEnableKalamMode && settings.mtpMode === MTP_MODE.legacy) {
+      settingsStorage.setItems({
+        mtpMode: MTP_MODE.kalam,
+        wasForcedToToggleMtpModeForMinOsRequirement: false,
+      });
+    }
+  } else if (!shouldEnableKalamMode && settings.mtpMode === MTP_MODE.kalam) {
+    settingsStorage.setItems({
+      mtpMode: MTP_MODE.legacy,
+      wasForcedToToggleMtpModeForMinOsRequirement: true,
+    });
   }
 }
 
@@ -151,6 +183,8 @@ if (!isDeviceBootable) {
     }
   });
 } else {
+  fixSettings();
+
   if (IS_PROD) {
     process.on('uncaughtException', (error) => {
       log.error(error, `main.dev -> process -> uncaughtException`);

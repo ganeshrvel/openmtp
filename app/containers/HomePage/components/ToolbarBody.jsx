@@ -22,6 +22,7 @@ import {
 import { DEVICE_TYPE, MTP_MODE } from '../../../enums';
 import { capitalize, isEmpty } from '../../../utils/funcs';
 import { imgsrc } from '../../../utils/imgsrc';
+import { isKalamModeSupported } from '../../../helpers/binaries';
 
 export default class ToolbarAreaPane extends PureComponent {
   activeToolbarList = ({ ...args }) => {
@@ -173,6 +174,9 @@ export default class ToolbarAreaPane extends PureComponent {
       },
     ];
 
+    // We have now officially retired the support for `Kalam` Kernel on macOS 10.13 (OS X El High Sierra) and lower. Only the "Legacy" MTP mode will continue working on these outdated machines.
+    const showMtpModeSelection = isKalamModeSupported();
+
     return (
       <div className={styles.root}>
         <ConfirmDialog
@@ -192,14 +196,19 @@ export default class ToolbarAreaPane extends PureComponent {
           }
           onClose={onMtpStoragesListClick}
         />
-        <SelectionDialog
-          titleText="Select MTP Mode"
-          list={mtpModeList}
-          id="selectionDialog"
-          showAvatar
-          open={deviceType === DEVICE_TYPE.mtp && toggleMtpModeSelectionDialog}
-          onClose={onMtpModeSelectionDialogClick}
-        />
+
+        {showMtpModeSelection && (
+          <SelectionDialog
+            titleText="Select MTP Mode"
+            list={mtpModeList}
+            id="selectionDialog"
+            showAvatar
+            open={
+              deviceType === DEVICE_TYPE.mtp && toggleMtpModeSelectionDialog
+            }
+            onClose={onMtpModeSelectionDialogClick}
+          />
+        )}
         <Drawer
           open={toggleDrawer}
           onClose={onToggleDrawer(false)}

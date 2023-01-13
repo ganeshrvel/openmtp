@@ -35,6 +35,7 @@ export const initialState = {
   showLocalPaneOnLeftSide: true,
   showDirectoriesFirst: true,
   mtpMode: MTP_MODE.kalam,
+  wasForcedToToggleMtpModeForMinOsRequirement: false,
   filesPreprocessingBeforeTransfer: {
     [FILE_TRANSFER_DIRECTION.upload]: true,
     [FILE_TRANSFER_DIRECTION.download]: true,
