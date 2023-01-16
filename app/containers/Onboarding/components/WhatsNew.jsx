@@ -33,7 +33,7 @@ class WhatsNew extends PureComponent {
         )}
 
         <List>
-          {!isKalamModeDisabled && (
+          {isKalamModeDisabled && (
             <ListItem>
               <ListItemIcon>
                 <SystemUpdate htmlColor="#fa4d0a" />

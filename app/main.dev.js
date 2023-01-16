@@ -31,6 +31,7 @@ import { getRemoteWindow } from './helpers/remoteWindowHelpers';
 import { IpcEvents } from './services/ipc-events/IpcEventType';
 import IpcEventService from './services/ipc-events/IpcEventHandler';
 import { isKalamModeSupported } from './helpers/binaries';
+import { fileExistsSync } from './helpers/fileOps';
 
 const remote = getRemoteWindow();
 
@@ -66,10 +67,20 @@ async function bootTheDevice() {
 }
 
 function fixSettings() {
+  const { settingsFile } = PATHS;
+
+  if (!fileExistsSync(settingsFile)) {
+    return;
+  }
+
   const settings = settingsStorage.getItems([
     'mtpMode',
     'wasForcedToToggleMtpModeForMinOsRequirement',
   ]);
+
+  if (!settings) {
+    return;
+  }
 
   const shouldEnableKalamMode = isKalamModeSupported();
 
