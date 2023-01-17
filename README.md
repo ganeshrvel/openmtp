@@ -180,19 +180,19 @@ $ "/path/to/OpenMTP.app/Contents/MacOS/OpenMTP" --remote-debugging-port=6363
         - `base64 -i CERTIFICATE_PRIVATE_KEY.p12 -o CERTIFICATE_PRIVATE_KEY.txt`
       - Copy the whole content of the file `CERTIFICATE_PRIVATE_KEY.txt`
       - Paste the content as the value for the field `CSC_LINK`
-        - `CSC_KEY_PASSWORD` is the password from the above step
-        - `CODEMAGIC_AUTH_TOKEN_ID`: `<CodeMagic API Token>`
-          - Find it from here: [Settings -> Integrations -> Codemagic API](https://codemagic.io/settings)
-        - `CODEMAGIC_INTEL_X64_WORKFLOW_ID_PROD`: `<Prod codeMagic workflow id>`
-          - Find the relevant workflow id from `codemagic.yaml`, (mostly `macos-intel-x64-build-prod`)
-        - `CODEMAGIC_INTEL_X64_WORKFLOW_ID_DEV`: `<Dev codeMagic workflow id>`
-          - Find the relevant workflow id from `codemagic.yaml`, (mostly `macos-intel-x64-build-dev`)
-        - `PUBLISH_PROD_REPOSITORY`: `<Repository to publish the production app>`
-        - `PUBLISH_DEV_REPOSITORY`: `<Repository to publish the dev app>`
-        - `PUBLISH_EMAIL`: `Email address to receive the updates on publish`
-        - References:
-          - [https://www.electron.build/code-signing.html](https://www.electron.build/code-signing.html)
-          - [https://docs.codemagic.io/yaml-code-signing/signing-macos/#saving-the-api-key-to-environment-variables](https://docs.codemagic.io/yaml-code-signing/signing-macos/#saving-the-api-key-to-environment-variables)
+    - `CSC_KEY_PASSWORD` is the password from the above step
+    - `CODEMAGIC_AUTH_TOKEN_ID`: `<CodeMagic API Token>`
+      - Find it from here: [Sidebar -> Teams -> Personal Account -> Integrations -> Codemagic API](https://codemagic.io/teams)
+    - `CODEMAGIC_INTEL_X64_WORKFLOW_ID_PROD`: `<Prod codeMagic workflow id>`
+      - Find the relevant workflow id from `codemagic.yaml`, (mostly `macos-intel-x64-build-prod`)
+    - `CODEMAGIC_INTEL_X64_WORKFLOW_ID_DEV`: `<Dev codeMagic workflow id>`
+      - Find the relevant workflow id from `codemagic.yaml`, (mostly `macos-intel-x64-build-dev`)
+    - `PUBLISH_PROD_REPOSITORY`: `<Repository to publish the production app>`
+    - `PUBLISH_DEV_REPOSITORY`: `<Repository to publish the dev app>`
+    - `PUBLISH_EMAIL`: `Email address to receive the updates on publish`
+    - References:
+      - [https://www.electron.build/code-signing.html](https://www.electron.build/code-signing.html)
+      - [https://docs.codemagic.io/yaml-code-signing/signing-macos/#saving-the-api-key-to-environment-variables](https://docs.codemagic.io/yaml-code-signing/signing-macos/#saving-the-api-key-to-environment-variables)
 
 ### Packaging (locally) and Publishing
 
