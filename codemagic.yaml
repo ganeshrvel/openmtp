@@ -3,7 +3,7 @@ definitions:
     instance_type: mac_mini_m1
 
   instance_mac_intel_x64: &instance_mac_intel_x64
-    instance_type: mac_mini
+    instance_type: mac_pro
 
   env_versions: &env_versions
     node: 16.15.0
