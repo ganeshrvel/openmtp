@@ -2,8 +2,8 @@ require('dotenv').config();
 
 const path = require('path');
 const fs = require('fs');
-const yaml = require('js-yaml');
 const { notarize: electronNotarize } = require('electron-notarize');
+const electronBuilderYml = require('../../electron-builder-config');
 
 const { ELECTRON_NOTARIZE } = process.env;
 
@@ -17,12 +17,6 @@ exports.default = async (context) => {
   if (electronPlatformName !== 'darwin') {
     return;
   }
-
-  const electronBuilderYmlContents = fs.readFileSync(
-    './electron-builder.yml',
-    'utf8'
-  );
-  const electronBuilderYml = yaml.load(electronBuilderYmlContents);
 
   const appBundleId = electronBuilderYml.appId;
   const appName = context.packager.appInfo.productFilename;
