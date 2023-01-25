@@ -189,6 +189,7 @@ $ "/path/to/OpenMTP.app/Contents/MacOS/OpenMTP" --remote-debugging-port=6363
       - Find the relevant workflow id from `codemagic.yaml`, (mostly `macos-intel-x64-build-dev`)
     - `PUBLISH_PROD_REPOSITORY`: `<Repository to publish the production app>`
     - `PUBLISH_DEV_REPOSITORY`: `<Repository to publish the dev app>`
+    - `CODEMAGIC_PUBLISH_PROJECT_ID`: `<Codemagic intel project id>`
     - `PUBLISH_EMAIL`: `Email address to receive the updates on publish`
     - References:
       - [https://www.electron.build/code-signing.html](https://www.electron.build/code-signing.html)
