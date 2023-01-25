@@ -164,7 +164,7 @@
 
 @mixin flex-flow(
   $values: (
-    row nowrap
+    row nowrap,
   )
 ) {
   // No Webkit Box fallback.
