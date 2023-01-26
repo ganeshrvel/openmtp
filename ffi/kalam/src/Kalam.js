@@ -28,7 +28,7 @@ export class Kalam {
         'void RenameFile(char* renameFileInputJson, on_cb_result_t* onDonePtr)',
       Walk: 'void Walk(char* walkInputJson, on_cb_result_t* onDonePtr)',
       DownloadFiles:
-        'void DownloadFiles(char* downloadFilesInputJson, on_cb_result_t* onPreprocessPtr, on_cb_result_t* onProgressPtr, on_cb_result_t* onDonePtr',
+        'void DownloadFiles(char* downloadFilesInputJson, on_cb_result_t* onPreprocessPtr, on_cb_result_t* onProgressPtr, on_cb_result_t* onDonePtr)',
       UploadFiles:
         'void UploadFiles(char* uploadFilesInputJson, on_cb_result_t* onPreprocessPtr, on_cb_result_t* onProgressPtr, on_cb_result_t* onDonePtr)',
       Dispose: 'void Dispose(on_cb_result_t* onDonePtr)',
