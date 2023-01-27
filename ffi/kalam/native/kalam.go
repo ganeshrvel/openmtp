@@ -1,92 +1,98 @@
-// +build !go1.17
-
 package main
 
 import (
-	"kalam/send_to_js"
 	"fmt"
 	"github.com/ganeshrvel/go-mtpx"
 	jsoniter "github.com/json-iterator/go"
+	"kalam/send_to_js"
 	"log"
 	"os"
 	"strings"
 	"time"
 )
 
-//	#include "stdint.h"
+/*	#include "stdint.h"
+	typedef void (* on_cb_result_t)(char*);
+*/
 import "C"
 
 var container deviceContainer
 
 //export Initialize
-func Initialize(ptr int64) {
+func Initialize(onDonePtr *C.on_cb_result_t) {
+	sendToJsOnDonePtr := (*send_to_js.SendCbResult)(onDonePtr)
+
 	if err := lockMtp(); err != nil {
-		send_to_js.SendError(ptr, err)
+		send_to_js.SendError(sendToJsOnDonePtr, err)
 
 		return
 	}
 
 	_, err := _initialize(mtpx.Init{DebugMode: false})
 	if err != nil {
-		send_to_js.SendError(ptr, err)
+		send_to_js.SendError(sendToJsOnDonePtr, err)
 
 		return
 	}
 
 	dInfo, err := _fetchDeviceInfo()
 	if err != nil {
-		send_to_js.SendError(ptr, err)
+		send_to_js.SendError(sendToJsOnDonePtr, err)
 
 		return
 	}
 
 	usbDesc, err := container.dev.GetUsbInfo()
 	if err != nil {
-		send_to_js.SendError(ptr, err)
+		send_to_js.SendError(sendToJsOnDonePtr, err)
 
 		return
 	}
 
-	send_to_js.SendInitialize(ptr, dInfo, usbDesc)
+	send_to_js.SendInitialize(sendToJsOnDonePtr, dInfo, usbDesc)
 }
 
 //export FetchDeviceInfo
-func FetchDeviceInfo(ptr int64) {
+func FetchDeviceInfo(onDonePtr *C.on_cb_result_t) {
+	sendToJsOnDonePtr := (*send_to_js.SendCbResult)(onDonePtr)
+
 	if err := lockMtp(); err != nil {
-		send_to_js.SendError(ptr, err)
+		send_to_js.SendError(sendToJsOnDonePtr, err)
 
 		return
 	}
 
 	dInfo, err := _fetchDeviceInfo()
 	if err != nil {
-		send_to_js.SendError(ptr, err)
+		send_to_js.SendError(sendToJsOnDonePtr, err)
 
 		return
 	}
 
 	usbDesc, err := container.dev.GetUsbInfo()
 	if err != nil {
-		send_to_js.SendError(ptr, err)
+		send_to_js.SendError(sendToJsOnDonePtr, err)
 
 		return
 	}
 
-	send_to_js.SendDeviceInfo(ptr, dInfo, usbDesc)
+	send_to_js.SendDeviceInfo(sendToJsOnDonePtr, dInfo, usbDesc)
 }
 
 //export FetchStorages
-func FetchStorages(ptr int64) {
+func FetchStorages(onDonePtr *C.on_cb_result_t) {
+	sendToJsOnDonePtr := (*send_to_js.SendCbResult)(onDonePtr)
+
 	if err := lockMtp(); err != nil {
-		send_to_js.SendError(ptr, err)
+		send_to_js.SendError(sendToJsOnDonePtr, err)
 
 		return
 	}
 
-	_sendFetchStorages(ptr, true)
+	_sendFetchStorages(true, sendToJsOnDonePtr)
 }
 
-func _sendFetchStorages(ptr int64, retry bool) {
+func _sendFetchStorages(retry bool, onDonePtr *send_to_js.SendCbResult) {
 	storages, err := _fetchStorages()
 
 	if err != nil {
@@ -99,18 +105,20 @@ func _sendFetchStorages(ptr int64, retry bool) {
 			}
 		}
 
-		send_to_js.SendError(ptr, err)
+		send_to_js.SendError(onDonePtr, err)
 
 		return
 	}
 
-	send_to_js.SendStorages(ptr, storages)
+	send_to_js.SendStorages(onDonePtr, storages)
 }
 
 //export MakeDirectory
-func MakeDirectory(ptr int64, json *C.char) {
+func MakeDirectory(makeDirectoryInputJson *C.char, onDonePtr *C.on_cb_result_t) {
+	sendToJsOnDonePtr := (*send_to_js.SendCbResult)(onDonePtr)
+
 	if err := lockMtp(); err != nil {
-		send_to_js.SendError(ptr, err)
+		send_to_js.SendError(sendToJsOnDonePtr, err)
 
 		return
 	}
@@ -118,26 +126,28 @@ func MakeDirectory(ptr int64, json *C.char) {
 	i := MakeDirectoryInput{}
 
 	var j = jsoniter.ConfigFastest
-	err := j.UnmarshalFromString(C.GoString(json), &i)
+	err := j.UnmarshalFromString(C.GoString(makeDirectoryInputJson), &i)
 	if err != nil {
-		send_to_js.SendError(ptr, fmt.Errorf("error occured while Unmarshalling MakeDirectory input data %+v: ", err))
+		send_to_js.SendError(sendToJsOnDonePtr, fmt.Errorf("error occured while Unmarshalling MakeDirectory input data %+v: ", err))
 
 		return
 	}
 
 	if err := _makeDirectory(i.StorageId, i.FullPath); err != nil {
-		send_to_js.SendError(ptr, err)
+		send_to_js.SendError(sendToJsOnDonePtr, err)
 
 		return
 	}
 
-	send_to_js.SendMakeDirectory(ptr)
+	send_to_js.SendMakeDirectory(sendToJsOnDonePtr)
 }
 
 //export FileExists
-func FileExists(ptr int64, json *C.char) {
+func FileExists(fileExistsInputJson *C.char, onDonePtr *C.on_cb_result_t) {
+	sendToJsOnDonePtr := (*send_to_js.SendCbResult)(onDonePtr)
+
 	if err := lockMtp(); err != nil {
-		send_to_js.SendError(ptr, err)
+		send_to_js.SendError(sendToJsOnDonePtr, err)
 
 		return
 	}
@@ -145,9 +155,9 @@ func FileExists(ptr int64, json *C.char) {
 	i := FileExistsInput{}
 
 	var j = jsoniter.ConfigFastest
-	err := j.UnmarshalFromString(C.GoString(json), &i)
+	err := j.UnmarshalFromString(C.GoString(fileExistsInputJson), &i)
 	if err != nil {
-		send_to_js.SendError(ptr, fmt.Errorf("error occured while Unmarshalling FileExists input data %+v: ", err))
+		send_to_js.SendError(sendToJsOnDonePtr, fmt.Errorf("error occured while Unmarshalling FileExists input data %+v: ", err))
 
 		return
 	}
@@ -161,18 +171,20 @@ func FileExists(ptr int64, json *C.char) {
 
 	fc, err := _fileExists(i.StorageId, fProps)
 	if err != nil {
-		send_to_js.SendError(ptr, err)
+		send_to_js.SendError(sendToJsOnDonePtr, err)
 
 		return
 	}
 
-	send_to_js.SendFileExists(ptr, fc, i.Files)
+	send_to_js.SendFileExists(sendToJsOnDonePtr, fc, i.Files)
 }
 
 //export DeleteFile
-func DeleteFile(ptr int64, json *C.char) {
+func DeleteFile(deleteFileInputJson *C.char, onDonePtr *C.on_cb_result_t) {
+	sendToJsOnDonePtr := (*send_to_js.SendCbResult)(onDonePtr)
+
 	if err := lockMtp(); err != nil {
-		send_to_js.SendError(ptr, err)
+		send_to_js.SendError(sendToJsOnDonePtr, err)
 
 		return
 	}
@@ -180,9 +192,9 @@ func DeleteFile(ptr int64, json *C.char) {
 	i := DeleteFileInput{}
 
 	var j = jsoniter.ConfigFastest
-	err := j.UnmarshalFromString(C.GoString(json), &i)
+	err := j.UnmarshalFromString(C.GoString(deleteFileInputJson), &i)
 	if err != nil {
-		send_to_js.SendError(ptr, fmt.Errorf("error occured while Unmarshalling DeleteFile input data %+v: ", err))
+		send_to_js.SendError(sendToJsOnDonePtr, fmt.Errorf("error occured while Unmarshalling DeleteFile input data %+v: ", err))
 
 		return
 	}
@@ -196,18 +208,20 @@ func DeleteFile(ptr int64, json *C.char) {
 
 	err = _deleteFile(i.StorageId, fProps)
 	if err != nil {
-		send_to_js.SendError(ptr, err)
+		send_to_js.SendError(sendToJsOnDonePtr, err)
 
 		return
 	}
 
-	send_to_js.SendDeleteFile(ptr)
+	send_to_js.SendDeleteFile(sendToJsOnDonePtr)
 }
 
 //export RenameFile
-func RenameFile(ptr int64, json *C.char) {
+func RenameFile(renameFileInputJson *C.char, onDonePtr *C.on_cb_result_t) {
+	sendToJsOnDonePtr := (*send_to_js.SendCbResult)(onDonePtr)
+
 	if err := lockMtp(); err != nil {
-		send_to_js.SendError(ptr, err)
+		send_to_js.SendError(sendToJsOnDonePtr, err)
 
 		return
 	}
@@ -215,9 +229,9 @@ func RenameFile(ptr int64, json *C.char) {
 	i := RenameFileInput{}
 
 	var j = jsoniter.ConfigFastest
-	err := j.UnmarshalFromString(C.GoString(json), &i)
+	err := j.UnmarshalFromString(C.GoString(renameFileInputJson), &i)
 	if err != nil {
-		send_to_js.SendError(ptr, fmt.Errorf("error occured while Unmarshalling RenameFile input data %+v: ", err))
+		send_to_js.SendError(sendToJsOnDonePtr, fmt.Errorf("error occured while Unmarshalling RenameFile input data %+v: ", err))
 
 		return
 	}
@@ -228,18 +242,20 @@ func RenameFile(ptr int64, json *C.char) {
 
 	err = _renameFile(i.StorageId, fProp, i.NewFileName)
 	if err != nil {
-		send_to_js.SendError(ptr, err)
+		send_to_js.SendError(sendToJsOnDonePtr, err)
 
 		return
 	}
 
-	send_to_js.SendRenameFile(ptr)
+	send_to_js.SendRenameFile(sendToJsOnDonePtr)
 }
 
 //export Walk
-func Walk(ptr int64, json *C.char) {
+func Walk(walkInputJson *C.char, onDonePtr *C.on_cb_result_t) {
+	sendToJsOnDonePtr := (*send_to_js.SendCbResult)(onDonePtr)
+
 	if err := lockMtp(); err != nil {
-		send_to_js.SendError(ptr, err)
+		send_to_js.SendError(sendToJsOnDonePtr, err)
 
 		return
 	}
@@ -247,27 +263,31 @@ func Walk(ptr int64, json *C.char) {
 	i := WalkInput{}
 
 	var j = jsoniter.ConfigFastest
-	err := j.UnmarshalFromString(C.GoString(json), &i)
+	err := j.UnmarshalFromString(C.GoString(walkInputJson), &i)
 	if err != nil {
-		send_to_js.SendError(ptr, fmt.Errorf("error occured while Unmarshalling Walk input data %+v: ", err))
+		send_to_js.SendError(sendToJsOnDonePtr, fmt.Errorf("error occured while Unmarshalling Walk input data %+v: ", err))
 
 		return
 	}
 
 	files, err := _walk(i.StorageId, i.FullPath, i.Recursive, i.SkipDisallowedFiles, i.SkipHiddenFiles)
 	if err != nil {
-		send_to_js.SendError(ptr, err)
+		send_to_js.SendError(sendToJsOnDonePtr, err)
 
 		return
 	}
 
-	send_to_js.SendWalk(ptr, files)
+	send_to_js.SendWalk(sendToJsOnDonePtr, files)
 }
 
 //export UploadFiles
-func UploadFiles(onPreprocessPtr, onProgressPtr, onDonePtr int64, json *C.char) {
+func UploadFiles(uploadFilesInputJson *C.char, onPreprocessPtr, onProgressPtr, onDonePtr *C.on_cb_result_t) {
+	sendToJsOnPreprocessPtr := (*send_to_js.SendCbResult)(onPreprocessPtr)
+	sendToJsOnProgressPtr := (*send_to_js.SendCbResult)(onProgressPtr)
+	sendToJsOnDonePtr := (*send_to_js.SendCbResult)(onDonePtr)
+
 	if err := lockMtp(); err != nil {
-		send_to_js.SendError(onDonePtr, err)
+		send_to_js.SendError(sendToJsOnDonePtr, err)
 
 		return
 	}
@@ -275,9 +295,9 @@ func UploadFiles(onPreprocessPtr, onProgressPtr, onDonePtr int64, json *C.char) 
 	i := UploadFilesInput{}
 
 	var j = jsoniter.ConfigFastest
-	err := j.UnmarshalFromString(C.GoString(json), &i)
+	err := j.UnmarshalFromString(C.GoString(uploadFilesInputJson), &i)
 	if err != nil {
-		send_to_js.SendError(onDonePtr, fmt.Errorf("error occured while Unmarshalling UploadFiles input data %+v: ", err))
+		send_to_js.SendError(sendToJsOnDonePtr, fmt.Errorf("error occured while Unmarshalling UploadFiles input data %+v: ", err))
 
 		return
 	}
@@ -296,10 +316,10 @@ func UploadFiles(onPreprocessPtr, onProgressPtr, onDonePtr int64, json *C.char) 
 				if pInterface != nil {
 					switch v := pInterface.(type) {
 					case UploadPreprocessContainer:
-						send_to_js.SendUploadFilesPreprocess(onPreprocessPtr, v.fi, v.fullPath)
+						send_to_js.SendUploadFilesPreprocess(sendToJsOnPreprocessPtr, v.fi, v.fullPath)
 
 					case ProgressContainer:
-						send_to_js.SendTransferFilesProgress(onProgressPtr, v.pInfo)
+						send_to_js.SendTransferFilesProgress(sendToJsOnProgressPtr, v.pInfo)
 
 					default:
 						log.Panicln("unimplemented UploadFiles.pInterface type")
@@ -336,7 +356,7 @@ func UploadFiles(onPreprocessPtr, onProgressPtr, onDonePtr int64, json *C.char) 
 			return nil
 		})
 	if err != nil {
-		send_to_js.SendError(onDonePtr, err)
+		send_to_js.SendError(sendToJsOnDonePtr, err)
 
 		ch <- true
 
@@ -345,13 +365,17 @@ func UploadFiles(onPreprocessPtr, onProgressPtr, onDonePtr int64, json *C.char) 
 
 	ch <- true
 
-	send_to_js.SendTransferFilesDone(onDonePtr)
+	send_to_js.SendTransferFilesDone(sendToJsOnDonePtr)
 }
 
 //export DownloadFiles
-func DownloadFiles(onPreprocessPtr, onProgressPtr, onDonePtr int64, json *C.char) {
+func DownloadFiles(downloadFilesInputJson *C.char, onPreprocessPtr, onProgressPtr, onDonePtr *C.on_cb_result_t) {
+	sendToJsOnPreprocessPtr := (*send_to_js.SendCbResult)(onPreprocessPtr)
+	sendToJsOnProgressPtr := (*send_to_js.SendCbResult)(onProgressPtr)
+	sendToJsOnDonePtr := (*send_to_js.SendCbResult)(onDonePtr)
+
 	if err := lockMtp(); err != nil {
-		send_to_js.SendError(onDonePtr, err)
+		send_to_js.SendError(sendToJsOnDonePtr, err)
 
 		return
 	}
@@ -359,9 +383,9 @@ func DownloadFiles(onPreprocessPtr, onProgressPtr, onDonePtr int64, json *C.char
 	i := DownloadFilesInput{}
 
 	var j = jsoniter.ConfigFastest
-	err := j.UnmarshalFromString(C.GoString(json), &i)
+	err := j.UnmarshalFromString(C.GoString(downloadFilesInputJson), &i)
 	if err != nil {
-		send_to_js.SendError(onDonePtr, fmt.Errorf("error occured while Unmarshalling DownloadFiles input data %+v: ", err))
+		send_to_js.SendError(sendToJsOnDonePtr, fmt.Errorf("error occured while Unmarshalling DownloadFiles input data %+v: ", err))
 
 		return
 	}
@@ -380,10 +404,10 @@ func DownloadFiles(onPreprocessPtr, onProgressPtr, onDonePtr int64, json *C.char
 				if pInterface != nil {
 					switch v := pInterface.(type) {
 					case DownloadPreprocessContainer:
-						send_to_js.SendDownloadFilesPreprocess(onPreprocessPtr, v.fi)
+						send_to_js.SendDownloadFilesPreprocess(sendToJsOnPreprocessPtr, v.fi)
 
 					case ProgressContainer:
-						send_to_js.SendTransferFilesProgress(onProgressPtr, v.pInfo)
+						send_to_js.SendTransferFilesProgress(sendToJsOnProgressPtr, v.pInfo)
 
 					default:
 						log.Panicln("unimplemented DownloadFiles.pInterface type")
@@ -419,7 +443,7 @@ func DownloadFiles(onPreprocessPtr, onProgressPtr, onDonePtr int64, json *C.char
 			return nil
 		})
 	if err != nil {
-		send_to_js.SendError(onDonePtr, err)
+		send_to_js.SendError(sendToJsOnDonePtr, err)
 
 		ch <- true
 
@@ -428,19 +452,21 @@ func DownloadFiles(onPreprocessPtr, onProgressPtr, onDonePtr int64, json *C.char
 
 	ch <- true
 
-	send_to_js.SendTransferFilesDone(onDonePtr)
+	send_to_js.SendTransferFilesDone(sendToJsOnDonePtr)
 }
 
 //export Dispose
-func Dispose(ptr int64) {
+func Dispose(onDonePtr *C.on_cb_result_t) {
+	sendToJsOnDonePtr := (*send_to_js.SendCbResult)(onDonePtr)
+
 	if err := lockMtp(); err != nil {
-		send_to_js.SendError(ptr, err)
+		send_to_js.SendError(sendToJsOnDonePtr, err)
 
 		return
 	}
 
 	if err := _dispose(); err != nil {
-		send_to_js.SendError(ptr, err)
+		send_to_js.SendError(sendToJsOnDonePtr, err)
 
 		return
 	}
@@ -448,7 +474,7 @@ func Dispose(ptr int64) {
 	container.dev = nil
 	container.deviceInfo = nil
 
-	send_to_js.SendDispose(ptr)
+	send_to_js.SendDispose(sendToJsOnDonePtr)
 }
 
 func main() {}

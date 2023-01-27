@@ -2,8 +2,10 @@ require('dotenv').config();
 
 const path = require('path');
 const fs = require('fs');
-const yaml = require('js-yaml');
 const { notarize: electronNotarize } = require('electron-notarize');
+const electronBuilderConfig = require('../../electron-builder-config');
+
+const electronBuilderData = electronBuilderConfig();
 
 const { ELECTRON_NOTARIZE } = process.env;
 
@@ -18,13 +20,7 @@ exports.default = async (context) => {
     return;
   }
 
-  const electronBuilderYmlContents = fs.readFileSync(
-    './electron-builder.yml',
-    'utf8'
-  );
-  const electronBuilderYml = yaml.load(electronBuilderYmlContents);
-
-  const appBundleId = electronBuilderYml.appId;
+  const appBundleId = electronBuilderData.appId;
   const appName = context.packager.appInfo.productFilename;
   const appPath = path.join(appOutDir, `${appName}.app`);
   const appleId = process.env.APPLEID;

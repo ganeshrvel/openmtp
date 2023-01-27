@@ -1,27 +1,37 @@
+import koffi from 'koffi';
 import { kalamLibPath } from '../../../app/helpers/binaries';
 import { log } from '../../../app/utils/log';
 import { undefinedOrNull } from '../../../app/utils/funcs';
 import { checkIf } from '../../../app/utils/checkIf';
 import { FILE_TRANSFER_DIRECTION } from '../../../app/enums';
 
-const ffi = require('ffi-napi');
-
 export class Kalam {
   constructor() {
     this.libPath = kalamLibPath;
+    this.lib = koffi.load(this.libPath);
 
-    this.lib = ffi.Library(this.libPath, {
-      Initialize: ['void', ['pointer']],
-      FetchDeviceInfo: ['void', ['pointer']],
-      FetchStorages: ['void', ['pointer']],
-      MakeDirectory: ['void', ['pointer', 'string']],
-      FileExists: ['void', ['pointer', 'string']],
-      DeleteFile: ['void', ['pointer', 'string']],
-      RenameFile: ['void', ['pointer', 'string']],
-      Walk: ['void', ['pointer', 'string']],
-      UploadFiles: ['void', ['pointer', 'pointer', 'pointer', 'string']],
-      DownloadFiles: ['void', ['pointer', 'pointer', 'pointer', 'string']],
-      Dispose: ['void', ['pointer']],
+    this.callbackDictionary = Object.freeze({
+      onCbResult: koffi.callback('void on_cb_result_t(char*)'),
+    });
+
+    this.fnDictionary = Object.freeze({
+      Initialize: 'void Initialize(on_cb_result_t* onDonePtr)',
+      FetchDeviceInfo: 'void FetchDeviceInfo(on_cb_result_t* onDonePtr)',
+      FetchStorages: 'void FetchStorages(on_cb_result_t* onDonePtr)',
+      FileExists:
+        'void FileExists(char* fileExistsInputJson, on_cb_result_t* onDonePtr)',
+      DeleteFile:
+        'void DeleteFile(char* deleteFileInputJson, on_cb_result_t* onDonePtr)',
+      MakeDirectory:
+        'void MakeDirectory(char* makeDirectoryInputJson, on_cb_result_t* onDonePtr)',
+      RenameFile:
+        'void RenameFile(char* renameFileInputJson, on_cb_result_t* onDonePtr)',
+      Walk: 'void Walk(char* walkInputJson, on_cb_result_t* onDonePtr)',
+      DownloadFiles:
+        'void DownloadFiles(char* downloadFilesInputJson, on_cb_result_t* onPreprocessPtr, on_cb_result_t* onProgressPtr, on_cb_result_t* onDonePtr)',
+      UploadFiles:
+        'void UploadFiles(char* uploadFilesInputJson, on_cb_result_t* onPreprocessPtr, on_cb_result_t* onProgressPtr, on_cb_result_t* onDonePtr)',
+      Dispose: 'void Dispose(on_cb_result_t* onDonePtr)',
     });
   }
 
@@ -50,13 +60,18 @@ export class Kalam {
   async initialize() {
     return new Promise((resolve) => {
       try {
-        const onDone = ffi.Callback('void', ['string'], (result) => {
+        const onDonePtr = this.callbackDictionary.onCbResult;
+        const rawOnDonePtr = koffi.register((result) => {
           const json = JSON.parse(result);
 
           return resolve(this._getData(json));
-        });
+        }, koffi.pointer(onDonePtr));
 
-        this.lib.Initialize.async(onDone, (err, _) => {
+        const Initialize = this.lib.func(this.fnDictionary.Initialize);
+
+        Initialize.async(rawOnDonePtr, (err, _) => {
+          koffi.unregister(rawOnDonePtr);
+
           if (!undefinedOrNull(err)) {
             log.error(err, 'Kalam.Initialize.async');
 
@@ -80,13 +95,20 @@ export class Kalam {
   async fetchDeviceInfo() {
     return new Promise((resolve) => {
       try {
-        const onDone = ffi.Callback('void', ['string'], (result) => {
+        const onDonePtr = this.callbackDictionary.onCbResult;
+        const rawOnDonePtr = koffi.register((result) => {
           const json = JSON.parse(result);
 
           return resolve(this._getData(json));
-        });
+        }, koffi.pointer(onDonePtr));
 
-        this.lib.FetchDeviceInfo.async(onDone, (err, _) => {
+        const FetchDeviceInfo = this.lib.func(
+          this.fnDictionary.FetchDeviceInfo
+        );
+
+        FetchDeviceInfo.async(rawOnDonePtr, (err, _) => {
+          koffi.unregister(rawOnDonePtr);
+
           if (!undefinedOrNull(err)) {
             log.error(err, 'Kalam.FetchDeviceInfo.async');
 
@@ -110,13 +132,18 @@ export class Kalam {
   async listStorages() {
     return new Promise((resolve) => {
       try {
-        const onDone = ffi.Callback('void', ['string'], (result) => {
+        const onDonePtr = this.callbackDictionary.onCbResult;
+        const rawOnDonePtr = koffi.register((result) => {
           const json = JSON.parse(result);
 
           return resolve(this._getData(json));
-        });
+        }, koffi.pointer(onDonePtr));
 
-        this.lib.FetchStorages.async(onDone, (err, _) => {
+        const FetchStorages = this.lib.func(this.fnDictionary.FetchStorages);
+
+        FetchStorages.async(rawOnDonePtr, (err, _) => {
+          koffi.unregister(rawOnDonePtr);
+
           if (!undefinedOrNull(err)) {
             log.error(err, 'Kalam.FetchStorages.async');
 
@@ -137,18 +164,22 @@ export class Kalam {
 
     return new Promise((resolve) => {
       try {
-        const onDone = ffi.Callback('void', ['string'], (result) => {
+        const onDonePtr = this.callbackDictionary.onCbResult;
+        const rawOnDonePtr = koffi.register((result) => {
           const json = JSON.parse(result);
 
           return resolve(this._getData(json));
-        });
+        }, koffi.pointer(onDonePtr));
+
+        const MakeDirectory = this.lib.func(this.fnDictionary.MakeDirectory);
 
         const _storageId = parseInt(storageId, 10);
-
         const args = { storageId: _storageId, fullPath };
         const json = JSON.stringify(args);
 
-        this.lib.MakeDirectory.async(onDone, json, (err, _) => {
+        MakeDirectory.async(json, rawOnDonePtr, (err, _) => {
+          koffi.unregister(rawOnDonePtr);
+
           if (!undefinedOrNull(err)) {
             log.error(err, 'Kalam.MakeDirectory.async');
 
@@ -169,18 +200,23 @@ export class Kalam {
 
     return new Promise((resolve) => {
       try {
-        const onDone = ffi.Callback('void', ['string'], (result) => {
+        const onDonePtr = this.callbackDictionary.onCbResult;
+        const rawOnDonePtr = koffi.register((result) => {
           const json = JSON.parse(result);
 
           return resolve(this._getData(json));
-        });
+        }, koffi.pointer(onDonePtr));
+
+        const FileExists = this.lib.func(this.fnDictionary.FileExists);
 
         const _storageId = parseInt(storageId, 10);
 
         const args = { storageId: _storageId, files };
         const json = JSON.stringify(args);
 
-        this.lib.FileExists.async(onDone, json, (err, _) => {
+        FileExists.async(json, rawOnDonePtr, (err, _) => {
+          koffi.unregister(rawOnDonePtr);
+
           if (!undefinedOrNull(err)) {
             log.error(err, 'Kalam.FileExists.async');
 
@@ -201,18 +237,23 @@ export class Kalam {
 
     return new Promise((resolve) => {
       try {
-        const onDone = ffi.Callback('void', ['string'], (result) => {
+        const onDonePtr = this.callbackDictionary.onCbResult;
+        const rawOnDonePtr = koffi.register((result) => {
           const json = JSON.parse(result);
 
           return resolve(this._getData(json));
-        });
+        }, koffi.pointer(onDonePtr));
+
+        const DeleteFile = this.lib.func(this.fnDictionary.DeleteFile);
 
         const _storageId = parseInt(storageId, 10);
 
         const args = { storageId: _storageId, files };
         const json = JSON.stringify(args);
 
-        this.lib.DeleteFile.async(onDone, json, (err, _) => {
+        DeleteFile.async(json, rawOnDonePtr, (err, _) => {
+          koffi.unregister(rawOnDonePtr);
+
           if (!undefinedOrNull(err)) {
             log.error(err, 'Kalam.DeleteFile.async');
 
@@ -234,11 +275,14 @@ export class Kalam {
 
     return new Promise((resolve) => {
       try {
-        const onDone = ffi.Callback('void', ['string'], (result) => {
+        const onDonePtr = this.callbackDictionary.onCbResult;
+        const rawOnDonePtr = koffi.register((result) => {
           const json = JSON.parse(result);
 
           return resolve(this._getData(json));
-        });
+        }, koffi.pointer(onDonePtr));
+
+        const RenameFile = this.lib.func(this.fnDictionary.RenameFile);
 
         const _storageId = parseInt(storageId, 10);
 
@@ -249,7 +293,9 @@ export class Kalam {
         };
         const json = JSON.stringify(args);
 
-        this.lib.RenameFile.async(onDone, json, (err, _) => {
+        RenameFile.async(json, rawOnDonePtr, (err, _) => {
+          koffi.unregister(rawOnDonePtr);
+
           if (!undefinedOrNull(err)) {
             log.error(err, 'Kalam.RenameFile.async');
 
@@ -277,11 +323,14 @@ export class Kalam {
 
     return new Promise((resolve) => {
       try {
-        const onDone = ffi.Callback('void', ['string'], (result) => {
+        const onDonePtr = this.callbackDictionary.onCbResult;
+        const rawOnDonePtr = koffi.register((result) => {
           const json = JSON.parse(result);
 
           return resolve(this._getData(json));
-        });
+        }, koffi.pointer(onDonePtr));
+
+        const Walk = this.lib.func(this.fnDictionary.Walk);
 
         const _storageId = parseInt(storageId, 10);
 
@@ -294,7 +343,9 @@ export class Kalam {
         };
         const json = JSON.stringify(args);
 
-        this.lib.Walk.async(onDone, json, (err, _) => {
+        Walk.async(json, rawOnDonePtr, (err, _) => {
+          koffi.unregister(rawOnDonePtr);
+
           if (!undefinedOrNull(err)) {
             log.error(err, 'Kalam.Walk.async');
 
@@ -332,28 +383,26 @@ export class Kalam {
 
     return new Promise((resolve) => {
       try {
-        const onFfiPreprocessPtr = ffi.Callback(
-          'void',
-          ['string'],
-          (result) => {
-            const json = JSON.parse(result);
-            const { error, data, stderr } = this._getData(json);
+        const onFfiPreprocessPtr = this.callbackDictionary.onCbResult;
+        const rawOnFfiPreprocessPtr = koffi.register((result) => {
+          const json = JSON.parse(result);
+          const { error, data, stderr } = this._getData(json);
 
-            if (!undefinedOrNull(error)) {
-              onError({ error, data: null, stderr });
+          if (!undefinedOrNull(error)) {
+            onError({ error, data: null, stderr });
 
-              return resolve({ error, stderr, data: null });
-            }
-
-            if (onPreprocess && data) {
-              const { fullPath, size, name } = data;
-
-              onPreprocess({ fullPath, size, name });
-            }
+            return resolve({ error, stderr, data: null });
           }
-        );
 
-        const onFfiProgressPtr = ffi.Callback('void', ['string'], (result) => {
+          if (onPreprocess && data) {
+            const { fullPath, size, name } = data;
+
+            onPreprocess({ fullPath, size, name });
+          }
+        }, koffi.pointer(onFfiPreprocessPtr));
+
+        const onFfiProgressPtr = this.callbackDictionary.onCbResult;
+        const rawOnFfiProgressPtr = koffi.register((result) => {
           const json = JSON.parse(result);
           const { error, data, stderr } = this._getData(json);
 
@@ -366,9 +415,10 @@ export class Kalam {
           if (onProgress && data) {
             onProgress({ ...data });
           }
-        });
+        }, koffi.pointer(onFfiProgressPtr));
 
-        const onFfiDonePtr = ffi.Callback('void', ['string'], (result) => {
+        const onDonePtr = this.callbackDictionary.onCbResult;
+        const rawOnDonePtr = koffi.register((result) => {
           const json = JSON.parse(result);
 
           if (onCompleted) {
@@ -376,7 +426,27 @@ export class Kalam {
           }
 
           return resolve(this._getData(json));
-        });
+        }, koffi.pointer(onDonePtr));
+
+        let TransferFiles;
+
+        switch (direction) {
+          case FILE_TRANSFER_DIRECTION.download:
+            TransferFiles = this.lib.func(this.fnDictionary.DownloadFiles);
+
+            break;
+          case FILE_TRANSFER_DIRECTION.upload:
+            TransferFiles = this.lib.func(this.fnDictionary.UploadFiles);
+
+            break;
+
+          default:
+            return resolve(
+              this._getNapiError(
+                `unsupported 'direction' in Kalam.transferFiles`
+              )
+            );
+        }
 
         const _storageId = parseInt(storageId, 10);
 
@@ -388,28 +458,16 @@ export class Kalam {
         };
         const json = JSON.stringify(args);
 
-        let ffiFunc;
-
-        switch (direction) {
-          case FILE_TRANSFER_DIRECTION.download:
-            ffiFunc = this.lib.DownloadFiles;
-
-            break;
-          case FILE_TRANSFER_DIRECTION.upload:
-            ffiFunc = this.lib.UploadFiles;
-
-            break;
-
-          default:
-            throw `unsupported 'direction' in Kalam.transferFiles`;
-        }
-
-        ffiFunc.async(
-          onFfiPreprocessPtr,
-          onFfiProgressPtr,
-          onFfiDonePtr,
+        TransferFiles.async(
           json,
+          rawOnFfiPreprocessPtr,
+          rawOnFfiProgressPtr,
+          rawOnDonePtr,
           (err, _) => {
+            koffi.unregister(rawOnFfiPreprocessPtr);
+            koffi.unregister(rawOnFfiProgressPtr);
+            koffi.unregister(rawOnDonePtr);
+
             if (!undefinedOrNull(err)) {
               log.error(
                 err,
@@ -434,13 +492,18 @@ export class Kalam {
   async dispose() {
     return new Promise((resolve) => {
       try {
-        const onDone = ffi.Callback('void', ['string'], (result) => {
+        const onDonePtr = this.callbackDictionary.onCbResult;
+        const rawOnDonePtr = koffi.register((result) => {
           const json = JSON.parse(result);
 
           return resolve(this._getData(json));
-        });
+        }, koffi.pointer(onDonePtr));
 
-        this.lib.Dispose.async(onDone, (err, _) => {
+        const Dispose = this.lib.func(this.fnDictionary.Dispose);
+
+        Dispose.async(rawOnDonePtr, (err, _) => {
+          koffi.unregister(rawOnDonePtr);
+
           if (!undefinedOrNull(err)) {
             log.error(err, 'Kalam.Dispose.async');
 

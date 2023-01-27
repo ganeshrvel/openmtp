@@ -57,6 +57,7 @@ module.exports = {
       },
     ],
     'no-use-before-define': 'off',
+    'no-restricted-syntax': 'off',
     'no-multi-assign': 'off',
     'no-promise-executor-return': 'off',
     'no-shadow': 'off',

@@ -1,5 +1,5 @@
 import path from 'path';
-import { Promise } from 'bluebird';
+import { promisify } from 'node:util';
 import findLodash from 'lodash/find';
 import { exec, spawn } from 'child_process';
 import { log } from '../../../utils/log';
@@ -20,7 +20,7 @@ import { checkIf } from '../../../utils/checkIf';
 export class FileExplorerLegacyDataSource {
   constructor() {
     this.mtpCli = `"${this._escapeShellMtp(mtpCliPath)}"`;
-    this.execPromise = Promise.promisify(exec);
+    this.execPromise = promisify(exec);
   }
 
   _escapeShellMtp(cmd) {

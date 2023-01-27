@@ -19,6 +19,7 @@ import {
   buyMeACoffeeText,
   donateUsingPayPal,
 } from '../../templates/fileExplorer';
+import { isKalamModeSupported } from '../../helpers/binaries';
 
 export const initialState = {
   focussedFileExplorerDeviceType: {
@@ -118,7 +119,7 @@ export const initialState = {
         icon: faSdCard,
       },
       mtpMode: {
-        enabled: true,
+        enabled: isKalamModeSupported(),
         label: 'MTP Mode',
         icon: faPlug,
       },

@@ -2,7 +2,7 @@
 
 - Author: [Ganesh Rathinavel](https://www.linkedin.com/in/ganeshrvel 'Ganesh Rathinavel')
 - License: [MIT](https://github.com/ganeshrvel/openmtp/blob/master/LICENSE 'MIT')
-- System Requirements: macOS 10.11 or higher
+- System Requirements: macOS 11.0 (Big Sur) or higher
 - Website URL: [https://openmtp.ganeshrvel.com](https://openmtp.ganeshrvel.com/ 'https://openmtp.ganeshrvel.com')
 - Repo URL: [https://github.com/ganeshrvel/openmtp](https://github.com/ganeshrvel/openmtp/ 'https://github.com/ganeshrvel/openmtp')
 - Contacts: ganeshrvel@outlook.com
@@ -34,9 +34,12 @@ OpenMTP 3.0 features a new MTP kernel and it was written from the scratch. It pr
 
 Do checkout the Go package which I've written to build Kalam Kernel: [github.com/ganeshrvel/go-mtpx](https://github.com/ganeshrvel/go-mtpx 'https://github.com/ganeshrvel/go-mtpx'). Feel free to raise PRs.
 
-### System Requirements
+### System Requirements and Support
 
-Although OpenMTP will continue working on a machine which has macOS 10.11 (OS X El Capitan) or higher installed, the `Kalam` Kernel will only get the latest updates for the past 3 versions of macOS. We will continue releasing the OpenMTP updates for both `Intel` and `ARM64` machines.
+- To support macOS version below Big Sur the Kalam kernel needs to be compiled on an older macOS machine everytime there is an update, which is practically very difficult
+- Only the latest 3 versions of macOS will receive the `Kalam` Kernel updates, which includes new device supports, fixes, stability improvements. macOS Big Sur (11.0) or above will receive the above said updates
+- We have now officially retired the support for `Kalam` Kernel on macOS 10.13 (OS X El High Sierra) and lower. Only the "Legacy" MTP mode will continue working on these outdated machines.
+- We will continue releasing the updates for both `Intel` and `ARM64` machines
 
 ### Installation
 
@@ -127,6 +130,18 @@ $ yarn start
 
 ```
 
+### Debugging a Packaged app
+
+```shell
+# On terminal run
+$ "/path/to/OpenMTP.app/Contents/MacOS/OpenMTP" --remote-debugging-port=6363
+```
+
+- Open a Chromium browser
+- Input "about://inpsect" into the URL bar
+- Add a new connection `localhost:6363`
+- Inpect OpenMTP @ port `6363`
+
 ### Publishing using CI/CD:
 
 - CodeMagic.io
@@ -165,19 +180,20 @@ $ yarn start
         - `base64 -i CERTIFICATE_PRIVATE_KEY.p12 -o CERTIFICATE_PRIVATE_KEY.txt`
       - Copy the whole content of the file `CERTIFICATE_PRIVATE_KEY.txt`
       - Paste the content as the value for the field `CSC_LINK`
-        - `CSC_KEY_PASSWORD` is the password from the above step
-        - `CODEMAGIC_AUTH_TOKEN_ID`: `<CodeMagic API Token>`
-          - Find it from here: [Settings -> Integrations -> Codemagic API](https://codemagic.io/settings)
-        - `CODEMAGIC_INTEL_X64_WORKFLOW_ID_PROD`: `<Prod codeMagic workflow id>`
-          - Find the relevant workflow id from `codemagic.yaml`, (mostly `macos-intel-x64-build-prod`)
-        - `CODEMAGIC_INTEL_X64_WORKFLOW_ID_DEV`: `<Dev codeMagic workflow id>`
-          - Find the relevant workflow id from `codemagic.yaml`, (mostly `macos-intel-x64-build-dev`)
-        - `PUBLISH_PROD_REPOSITORY`: `<Repository to publish the production app>`
-        - `PUBLISH_DEV_REPOSITORY`: `<Repository to publish the dev app>`
-        - `PUBLISH_EMAIL`: `Email address to receive the updates on publish`
-        - References:
-          - [https://www.electron.build/code-signing.html](https://www.electron.build/code-signing.html)
-          - [https://docs.codemagic.io/yaml-code-signing/signing-macos/#saving-the-api-key-to-environment-variables](https://docs.codemagic.io/yaml-code-signing/signing-macos/#saving-the-api-key-to-environment-variables)
+    - `CSC_KEY_PASSWORD` is the password from the above step
+    - `CODEMAGIC_AUTH_TOKEN_ID`: `<CodeMagic API Token>`
+      - Find it from here: [Sidebar -> Teams -> Personal Account -> Integrations -> Codemagic API](https://codemagic.io/teams)
+    - `CODEMAGIC_INTEL_X64_WORKFLOW_ID_PROD`: `<Prod codeMagic workflow id>`
+      - Find the relevant workflow id from `codemagic.yaml`, (mostly `macos-intel-x64-build-prod`)
+    - `CODEMAGIC_INTEL_X64_WORKFLOW_ID_DEV`: `<Dev codeMagic workflow id>`
+      - Find the relevant workflow id from `codemagic.yaml`, (mostly `macos-intel-x64-build-dev`)
+    - `PUBLISH_PROD_REPOSITORY`: `<Repository to publish the production app>`
+    - `PUBLISH_DEV_REPOSITORY`: `<Repository to publish the dev app>`
+    - `CODEMAGIC_PUBLISH_PROJECT_ID`: `<Codemagic intel project id>`
+    - `PUBLISH_EMAIL`: `Email address to receive the updates on publish`
+    - References:
+      - [https://www.electron.build/code-signing.html](https://www.electron.build/code-signing.html)
+      - [https://docs.codemagic.io/yaml-code-signing/signing-macos/#saving-the-api-key-to-environment-variables](https://docs.codemagic.io/yaml-code-signing/signing-macos/#saving-the-api-key-to-environment-variables)
 
 ### Packaging (locally) and Publishing
 
@@ -273,6 +289,19 @@ $ set UPGRADE_EXTENSIONS=1 && npm run dev
 ### Troubleshooting
 
 #### Your device is not recognized
+
+#### **node-mac-permissions** throws `Speech framework is not compatible with macOS < 10.15`
+
+- On macOS <= 10.14.x (mojave) the `yarn install` will throw a npm-rebuild error
+- To "test" or "debug" the app on macOS mojave:
+  - remove the `node-mac-permissions` dependency from `package.json`
+  - Add the ignorePlugin line to `default.plugins` in the file `webpack/config.base.js`
+    - `new webpack.IgnorePlugin({ resourceRegExp: /^(node-mac-permissions)$/u }),`
+  - WARNING: **DO NOT commit** these changes to the upstream!!
+- The `NODE_MAC_PERMISSIONS_MIN_OS` constant defines the minimum os version that is required to show the macos usage access permission popup
+- For distribution make sure to build the app on a machine which is at least 10.15 (Catalina)
+
+[https://stackoverflow.com/questions/58358449/notarizing-electron-apps-throws-you-must-first-sign-the-relevant-contracts-on](https://stackoverflow.com/questions/58358449/notarizing-electron-apps-throws-you-must-first-sign-the-relevant-contracts-on 'https://stackoverflow.com/questions/58358449/notarizing-electron-apps-throws-you-must-first-sign-the-relevant-contracts-on')
 
 - Raise an issue if your device is undetected: https://github.com/ganeshrvel/openmtp/issues/new?template=contribute.md
 

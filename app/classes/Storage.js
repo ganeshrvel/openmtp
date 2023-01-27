@@ -14,6 +14,7 @@ export default class Storage {
 
       if (
         typeof _stream === 'undefined' ||
+        _stream === '' ||
         _stream === null ||
         Object.keys(_stream).length < 1
       ) {
@@ -37,6 +38,10 @@ export default class Storage {
       const allItem = this.getAll();
       const _return = {};
 
+      if (!allItem) {
+        return _return;
+      }
+
       keys.map((a) => {
         if (typeof allItem[a] === 'undefined' || allItem[a] === null) {
           return null;
@@ -56,6 +61,19 @@ export default class Storage {
   setAll({ ...data }) {
     try {
       writeFileSync(this.filePath, JSON.stringify({ ...data }));
+    } catch (e) {
+      log.error(e, `Storage -> setAll`);
+    }
+  }
+
+  setItems({ ...data }) {
+    try {
+      const currentSettings = this.getAll();
+
+      writeFileSync(
+        this.filePath,
+        JSON.stringify({ ...currentSettings, ...data })
+      );
     } catch (e) {
       log.error(e, `Storage -> setAll`);
     }
