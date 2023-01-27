@@ -7,6 +7,7 @@ $nonMobileMinWidth: 640;
 $minHeightFor100vh: 480;
 
 /* Colors */
+$docsAppSecondaryColor: #007af5 !default;
 $whiteColor: #fff;
 $blackColor: #000;
 $macWindowDarkBgColor: #292a2b;
@@ -22,17 +23,17 @@ $btn-names-list: download-btn navigate-to-github;
 
 //btns for light mode
 $background-color-list: transparent transparent;
-$color-list: $appSecondaryColor $blackColor;
-$border-color-list: $appSecondaryColor $blackColor;
+$color-list: $docsAppSecondaryColor $blackColor;
+$border-color-list: $docsAppSecondaryColor $blackColor;
 
 $background-color-active-hover-list: transparent transparent;
 $border-color-active-hover-list: #606c76 #606c76;
 $color-active-hover-list: #606c76 #606c76;
 
 //btns for dark mode
-$background-color-list-dark: $appSecondaryColor $whiteColor;
-$color-list-dark: $whiteColor $appSecondaryColor;
-$border-color-list-dark: $appSecondaryColor $whiteColor;
+$background-color-list-dark: $docsAppSecondaryColor $whiteColor;
+$color-list-dark: $whiteColor $docsAppSecondaryColor;
+$border-color-list-dark: $docsAppSecondaryColor $whiteColor;
 
 $background-color-active-hover-list-dark: rgba(255, 255, 255, 0.32)
   rgba(255, 255, 255, 0.32);
@@ -46,7 +47,7 @@ body {
 }
 
 a {
-  color: $appSecondaryColor;
+  color: $docsAppSecondaryColor;
 }
 
 pre {
@@ -194,7 +195,7 @@ pre {
 
     a:hover,
     a:active {
-      color: $appSecondaryColor;
+      color: $docsAppSecondaryColor;
     }
   }
 
@@ -211,7 +212,7 @@ pre {
 }
 
 section.first {
-  background: linear-gradient(45deg, $appSecondaryColor 0%, #0080ff 100%);
+  background: linear-gradient(45deg, $docsAppSecondaryColor 0%, #0080ff 100%);
 
   .item-left {
     position: relative;
@@ -300,7 +301,7 @@ section.first {
         h1.heading {
           margin-bottom: 10px;
           font-weight: 500;
-          color: $appSecondaryColor;
+          color: $docsAppSecondaryColor;
         }
 
         p.latest-version-link {
@@ -495,7 +496,7 @@ section.second {
         span {
           padding: 6px 60px 6px 20px;
           line-height: 20px;
-          background: $appSecondaryColor;
+          background: $docsAppSecondaryColor;
           color: $whiteColor;
           text-decoration: none;
           @include border-radius(0 8px 8px 0);
@@ -522,7 +523,7 @@ section.second {
           }
 
           &:hover::before {
-            border-color: transparent $appSecondaryColor transparent transparent;
+            border-color: transparent $docsAppSecondaryColor transparent transparent;
           }
         }
       }
