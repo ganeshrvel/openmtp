@@ -64,28 +64,29 @@ Do checkout the Go package which I've written to build Kalam Kernel: [github.com
 
 ### Keyboard Shortcuts
 
-| Command                                           | Keyboard Shortcut                                                            |
-| ------------------------------------------------- | ---------------------------------------------------------------------------- |
-| Delete                                            | <kbd>backspace</kbd>                                                         |
-| New Folder                                        | <kbd>command (⌘)</kbd>+<kbd>n</kbd>                                          |
-| Copy                                              | <kbd>command (⌘)</kbd>+<kbd>c</kbd>                                          |
-| Copy to Queue                                     | <kbd>command (⌘)</kbd>+<kbd>shift</kbd>+<kbd>c</kbd>                         |
-| Paste                                             | <kbd>command (⌘)</kbd>+<kbd>v</kbd>                                          |
-| Refresh                                           | <kbd>command (⌘)</kbd> +<kbd>r</kbd>                                         |
-| Folder Up                                         | <kbd>command (⌘)</kbd>+<kbd>b</kbd>                                          |
-| Select All                                        | <kbd>command (⌘)</kbd>+<kbd>a</kbd>                                          |
-| Rename                                            | <kbd>command (⌘)</kbd>+<kbd>d</kbd>                                          |
-| Switch Tab                                        | <kbd>command(⌘)</kbd>+<kbd>1</kbd>                                           |
-| Open                                              | <kbd>enter</kbd>                                                             |
-| Navigate Left                                     | <kbd>left</kbd>                                                              |
-| Navigate Right                                    | <kbd>right</kbd>                                                             |
-| Navigate Up                                       | <kbd>up</kbd>                                                                |
-| Navigate Down                                     | <kbd>down</kbd>                                                              |
-| Select Multiple Items Forward **(in Grid View)**  | <kbd>shift</kbd>+<kbd>left</kbd>                                             |
-| Select Multiple Items Backward **(in Grid View)** | <kbd>shift</kbd>+<kbd>right</kbd>                                            |
-| Select Multiple Items Forward **(in List View)**  | <kbd>shift</kbd>+<kbd>up</kbd>                                               |
-| Select Multiple Items Backward **(in List View)** | <kbd>shift</kbd>+<kbd>down</kbd>                                             |
-| Select Multiple Items **(with mouse)**            | <kbd>command (⌘)</kbd>+<kbd>click</kbd> or <kbd>shift</kbd>+<kbd>click</kbd> |
+| Command                                           | Keyboard Shortcut                                    |
+| ------------------------------------------------- | ---------------------------------------------------- |
+| Delete                                            | <kbd>backspace</kbd>                                 |
+| New Folder                                        | <kbd>command (⌘)</kbd>+<kbd>n</kbd>                  |
+| Copy                                              | <kbd>command (⌘)</kbd>+<kbd>c</kbd>                  |
+| Copy to Queue                                     | <kbd>command (⌘)</kbd>+<kbd>shift</kbd>+<kbd>c</kbd> |
+| Paste                                             | <kbd>command (⌘)</kbd>+<kbd>v</kbd>                  |
+| Refresh                                           | <kbd>command (⌘)</kbd> +<kbd>r</kbd>                 |
+| Folder Up                                         | <kbd>command (⌘)</kbd>+<kbd>b</kbd>                  |
+| Select All                                        | <kbd>command (⌘)</kbd>+<kbd>a</kbd>                  |
+| Rename                                            | <kbd>command (⌘)</kbd>+<kbd>d</kbd>                  |
+| Switch Tab                                        | <kbd>command(⌘)</kbd>+<kbd>1</kbd>                   |
+| Open                                              | <kbd>enter</kbd>                                     |
+| Navigate Left                                     | <kbd>left</kbd>                                      |
+| Navigate Right                                    | <kbd>right</kbd>                                     |
+| Navigate Up                                       | <kbd>up</kbd>                                        |
+| Navigate Down                                     | <kbd>down</kbd>                                      |
+| Select Multiple Files Forward **(in Grid View)**  | <kbd>shift</kbd>+<kbd>left</kbd>                     |
+| Select Multiple Files Backward **(in Grid View)** | <kbd>shift</kbd>+<kbd>right</kbd>                    |
+| Select Multiple Files Forward **(in List View)**  | <kbd>shift</kbd>+<kbd>up</kbd>                       |
+| Select Multiple Files Backward **(in List View)** | <kbd>shift</kbd>+<kbd>down</kbd>                     |
+| Select Range of Files **(using mouse)**           | <kbd>shift</kbd>+<kbd>click</kbd>                    |
+| Select Multiple Files **(using mouse)**           | <kbd>command (⌘)</kbd>+<kbd>click</kbd>              |
 
 ## Building from Source
 

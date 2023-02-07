@@ -63,23 +63,27 @@ export const fileExplorerKeymaps = {
     keys: ['down'],
   },
   multipleSelectLeft: {
-    label: `Select Multiple Items Forward (for Grid view)`,
+    label: `Select Multiple Files Forward (for Grid view)`,
     keys: ['shift+left'],
   },
   multipleSelectRight: {
-    label: `Select Multiple Items Backward (for Grid view)`,
+    label: `Select Multiple Files Backward (for Grid view)`,
     keys: ['shift+right'],
   },
   multipleSelectUp: {
-    label: `Select Multiple Items Forward (for List view)`,
+    label: `Select Multiple Files Forward (for List view)`,
     keys: ['shift+up'],
   },
   multipleSelectDown: {
-    label: `Select Multiple Items Backward (for List view)`,
+    label: `Select Multiple Files Backward (for List view)`,
     keys: ['shift+down'],
   },
+  multipleRangeSelectClick: {
+    label: `Select Range of Files (using mouse)`,
+    keys: ['shift+click'],
+  },
   multipleSelectClick: {
-    label: `Select Multiple Items (using mouse)`,
-    keys: ['command+click', 'shift+click'],
+    label: `Select Multiple Files (using mouse)`,
+    keys: ['command+click'],
   },
 };
