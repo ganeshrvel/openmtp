@@ -10,17 +10,12 @@ import niceUtils from 'nice-utils';
 import yaml from 'js-yaml';
 import path from 'path';
 import junk from 'junk';
+import dayjs from 'dayjs';
 import { IS_PROD_WORKFLOW } from './constants.mjs';
+import { axios } from './axios.mjs';
 
-require('dotenv').config();
 const { removeSync, outputFileSync, readJsonSync } = fsExtra;
 const { undefinedOrNull } = niceUtils;
-
-process.env.FORCE_COLOR = 3;
-$.shell = '/bin/zsh';
-
-await $`export LANG=en_US.UTF-8`;
-await $`export LC_ALL=en_US.UTF-8`;
 
 const PACKAGE_JSON_FILENAME = 'package.json';
 const DIR_MODE = 0o2775;
@@ -134,9 +129,21 @@ await ensureDirSync(TEMP_MERGED_ARTIFACTS_PATH, DIR_MODE);
 
 // find the artifact `mac_m1_arm64_artifacts.zip` from the `CM_ARTIFACT_LINKS_M1_ARM64` env JSON
 let macM1Arm64ArtifactsZipUrl;
-for (let artifact of cmArtifactLinksM1Arm64Json) {
+for (const artifact of cmArtifactLinksM1Arm64Json) {
   if (artifact.name === MAC_M1_ARM64_ARTIFACTS_ZIP_FILENAME) {
-    macM1Arm64ArtifactsZipUrl = artifact.url;
+    const day = dayjs();
+    const cmArtifactExpiry = day.add(12, 'hour').unix();
+
+    console.info(`Fetching public url of the Artifact\n`);
+    try {
+      const response = await axios.post(`${artifact.url}/public-url`, {
+        expiresAt: cmArtifactExpiry,
+      });
+
+      macM1Arm64ArtifactsZipUrl = response.data.url;
+    } catch (e) {
+      throw new Error(`Fetching of public url of the Artifact failed: ${e}`);
+    }
 
     break;
   }
@@ -144,7 +151,7 @@ for (let artifact of cmArtifactLinksM1Arm64Json) {
 
 if (undefinedOrNull(macM1Arm64ArtifactsZipUrl)) {
   throw new Error(
-    `invalid artifact url in the 'CM_ARTIFACT_LINKS_M1_ARM64' env variable: ${e}`
+    `invalid artifact url in the 'CM_ARTIFACT_LINKS_M1_ARM64' env`
   );
 }
 
@@ -195,7 +202,7 @@ const artifactsPaths = [
   TEMP_MAC_INTEL_X64_ARTIFACTS_DIR,
 ];
 
-for await (let artifactsDir of artifactsPaths) {
+for await (const artifactsDir of artifactsPaths) {
   await $`cp -r ${artifactsDir}/**/* ${TEMP_MERGED_ARTIFACTS_PATH}`;
 }
 
