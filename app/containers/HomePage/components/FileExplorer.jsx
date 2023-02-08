@@ -210,7 +210,6 @@ class FileExplorer extends Component {
 
     this.keyedAcceleratorList = {
       shift: false,
-      meta: false,
     };
 
     this.usbHotplug = {
@@ -512,25 +511,18 @@ class FileExplorer extends Component {
       return;
     }
 
-    if (event.type === 'keydown') {
-      if (['shift'].includes(event.key.toLowerCase())) {
+    switch (event.key) {
+      case 'Shift':
+      case 'shift':
+      case 'Meta':
+      case 'meta':
         this.keyedAcceleratorList = {
           ...this.keyedAcceleratorList,
-          shift: true,
+          shift: pressed,
         };
-      }
-
-      if (['meta'].includes(event.key.toLowerCase())) {
-        this.keyedAcceleratorList = {
-          ...this.keyedAcceleratorList,
-          meta: true,
-        };
-      }
-    } else {
-      this.keyedAcceleratorList = {
-        shift: false,
-        meta: false,
-      };
+        break;
+      default:
+        break;
     }
   };
 
@@ -583,13 +575,13 @@ class FileExplorer extends Component {
       item: [],
     };
 
-    for (const [index, item] of nodes.entries()) {
+    nodes.filter((item, index) => {
       if (
         undefinedOrNull(selected) ||
         !isArray(selected) ||
         selected.length < 1
       ) {
-        return _return;
+        return null;
       }
 
       for (let i = 0; i < selected.length; i += 1) {
@@ -608,12 +600,12 @@ class FileExplorer extends Component {
               index,
               item,
             };
-
-            return _return;
           }
         }
       }
-    }
+
+      return _return;
+    });
 
     return _return;
   };
@@ -1861,97 +1853,28 @@ class FileExplorer extends Component {
 
     const { directoryLists, actionCreateTableClick } = this.props;
     const { selected } = directoryLists[deviceType].queue;
-    const { nodes, order, orderBy } = directoryLists[deviceType];
+    const selectedIndex = selected.indexOf(path);
     let _dontAppend = dontAppend;
     let newSelected = [];
 
-    if (
-      shiftKeyAcceleratorEnable &&
-      (this.keyedAcceleratorList.shift || this.keyedAcceleratorList.meta)
-    ) {
+    if (shiftKeyAcceleratorEnable && this.keyedAcceleratorList.shift) {
       _dontAppend = false;
     }
 
-    const selectionToggle = () => {
-      const itemIndexInPreviousSelectedList = selected.indexOf(path);
-      let _newSelected = [];
-
-      // if the file path was already selected we fetch it's `selectedIndex` and then try to unselect it
-      if (itemIndexInPreviousSelectedList === -1) {
-        _newSelected = _newSelected.concat(selected, path);
-      } else if (itemIndexInPreviousSelectedList === 0) {
-        _newSelected = _newSelected.concat(selected.slice(1));
-      } else if (itemIndexInPreviousSelectedList === selected.length - 1) {
-        _newSelected = _newSelected.concat(selected.slice(0, -1));
-      } else if (itemIndexInPreviousSelectedList > 0) {
-        _newSelected = _newSelected.concat(
-          selected.slice(0, itemIndexInPreviousSelectedList),
-          selected.slice(itemIndexInPreviousSelectedList + 1)
-        );
-      }
-
-      return _newSelected;
-    };
-
     if (_dontAppend) {
       newSelected = [path];
-    } else {
-      // eslint-disable-next-line no-lonely-if
-      if (this.keyedAcceleratorList.shift) {
-        let selectedItemIndexInNodes = 0;
-
-        const tableSortedNodes = this.tableSort({
-          nodes,
-          order,
-          orderBy,
-        });
-
-        const _lastSelectedNodeOfTableSort = this.lastSelectedNodeOfTableSort(
-          tableSortedNodes,
-          selected
-        );
-
-        for (const [index, node] of tableSortedNodes.entries()) {
-          if (node.path === path) {
-            selectedItemIndexInNodes = index;
-
-            break;
-          }
-        }
-
-        let nodesBetweenLastSelectedNodeAndCurrentSelection = [];
-
-        if (selectedItemIndexInNodes === _lastSelectedNodeOfTableSort.index) {
-          newSelected = selectionToggle();
-        } else {
-          if (selectedItemIndexInNodes > _lastSelectedNodeOfTableSort.index) {
-            nodesBetweenLastSelectedNodeAndCurrentSelection =
-              tableSortedNodes.slice(
-                _lastSelectedNodeOfTableSort.index + 1,
-                selectedItemIndexInNodes + 1
-              );
-          } else if (
-            selectedItemIndexInNodes < _lastSelectedNodeOfTableSort.index
-          ) {
-            nodesBetweenLastSelectedNodeAndCurrentSelection =
-              tableSortedNodes.slice(
-                selectedItemIndexInNodes,
-                _lastSelectedNodeOfTableSort.index + 1
-              );
-          }
-
-          newSelected = selected.concat(
-            ...nodesBetweenLastSelectedNodeAndCurrentSelection.map(
-              (a) => a.path
-            )
-          );
-        }
-      } else {
-        newSelected = selectionToggle();
-      }
+    } else if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selected, path);
+    } else if (selectedIndex === 0) {
+      newSelected = newSelected.concat(selected.slice(1));
+    } else if (selectedIndex === selected.length - 1) {
+      newSelected = newSelected.concat(selected.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelected = newSelected.concat(
+        selected.slice(0, selectedIndex),
+        selected.slice(selectedIndex + 1)
+      );
     }
-
-    newSelected = [...new Set(newSelected)];
 
     actionCreateTableClick({ selected: newSelected }, deviceType);
   };

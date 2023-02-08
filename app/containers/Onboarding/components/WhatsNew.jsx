@@ -6,7 +6,6 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import BuildIcon from '@material-ui/icons/Build';
-import KeyboardIcon from '@material-ui/icons/Keyboard';
 import SmartphoneIcon from '@material-ui/icons/Smartphone';
 import CameraRollIcon from '@material-ui/icons/CameraRoll';
 import MemoryIcon from '@material-ui/icons/Memory';
@@ -65,13 +64,6 @@ class WhatsNew extends PureComponent {
               <CameraRollIcon />
             </ListItemIcon>
             <ListItemText primary={`Fujifilm device support`} />
-          </ListItem>
-
-          <ListItem>
-            <ListItemIcon>
-              <KeyboardIcon />
-            </ListItemIcon>
-            <ListItemText primary="Shortcut improvements: Select a range of files using shift+click" />
           </ListItem>
 
           <ListItem>
