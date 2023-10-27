@@ -1,7 +1,14 @@
+---
+name: Bug report
+about: Create a report to help us improve
+labels: 'bug'
+
+---
+
 **Prerequisites**
 
 - [ ] Have you reviewed the steps in the following link to see if they address your issue? 
-   - https://github.com/ganeshrvel/openmtp/issues/276
+  - https://github.com/ganeshrvel/openmtp/issues/276
 
 **Describe the bug**
 A clear and concise description of what the bug is.
