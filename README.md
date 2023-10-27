@@ -89,7 +89,7 @@ Do checkout the Go package which I've written to build Kalam Kernel: [github.com
 
 ## Building from Source
 
-Requirements: [Node.js v10](https://nodejs.org/en/download/ 'Install Node.js v10'), [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git 'Install Git') and [Yarn package manager](https://yarnpkg.com/lang/en/docs/install/ 'Install Yarn package manager')
+Requirements: [Node.js v16](https://nodejs.org/en/download/ 'Install Node.js v16'), [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git 'Install Git') and [Yarn package manager](https://yarnpkg.com/lang/en/docs/install/ 'Install Yarn package manager')
 
 ### Clone
 
