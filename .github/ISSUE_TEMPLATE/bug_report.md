@@ -1,3 +1,11 @@
+---
+name: Bug report
+about: Create a report to help us improve
+labels: 'bug'
+
+---
+
+
 **Prerequisites**
 
 - [ ] Have you reviewed the steps in the following link to see if they address your issue? 
