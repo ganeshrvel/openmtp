@@ -13,7 +13,7 @@ definitions:
   mac_intel_x64_env_versions: &mac_intel_x64_env_versions
     node: 16.19.0
     npm: 8
-    xcode: 15.0
+    xcode: 14.3.1
 
   mac_m1_arm64_artifacts: &mac_m1_arm64_artifacts
     artifacts:
