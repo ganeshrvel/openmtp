@@ -163,8 +163,13 @@ $ "/path/to/OpenMTP.app/Contents/MacOS/OpenMTP" --remote-debugging-port=6363
       - Find it from here: [Auth Tokens](https://sentry.io/settings/account/api/auth-tokens)
       - Scopes: `event:admin, event:read, member:read, org:read, project:read, project:releases, team:read`
     - `GITHUB_TOKEN`: `Personal access token`
-      - Find it from here: [Personal access tokens](https://github.com/settings/tokens)
-      - Scopes: `admin:gpg_key, admin:public_key, repo, user, workflow`
+      - There are two options available:
+        1. **Fine-grained personal access tokens**
+        - https://github.com/settings/tokens?type=beta
+        - Permissions: `Contents - (Read and Write access to code)`
+        2. **Personal access tokens (classic)**
+        - https://github.com/settings/tokens
+        - Scopes: `admin:gpg_key, admin:public_key, repo, user, workflow`
     - `CSC_LINK`:
       - Keychain -> `Default Keychains` menu in the left -> Login -> My Certificates
       - Search for `Developer ID Application` in the top search bar
