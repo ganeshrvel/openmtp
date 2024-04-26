@@ -168,7 +168,7 @@ workflows:
 
     environment:
       <<: *env_mac_signing
-      <<: *env_versions
+      <<: *mac_m1_env_versions
       vars:
         WORKFLOW_ENV: 'dev'
 
@@ -187,7 +187,7 @@ workflows:
 
     environment:
       <<: *env_mac_signing
-      <<: *env_versions
+      <<: *mac_intel_x64_env_versions
       vars:
         WORKFLOW_ENV: 'dev'
 
