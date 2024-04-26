@@ -1,28 +1,10 @@
 #!/usr/bin/env zx
 
 import 'zx/globals';
-import axiosPackage from 'axios';
 import process from 'process';
+import './base.mjs';
 import { IS_PROD_WORKFLOW } from './constants.mjs';
-
-require('dotenv').config();
-
-process.env.FORCE_COLOR = 3;
-$.shell = '/bin/zsh';
-
-await $`export LANG=en_US.UTF-8`;
-await $`export LC_ALL=en_US.UTF-8`;
-
-const CODEMAGIC_BASE_URL = `https://api.codemagic.io`;
-
-const axios = axiosPackage.create({
-  baseURL: CODEMAGIC_BASE_URL,
-});
-
-axios.defaults.headers.common['Content-Type'] = 'application/json';
-axios.defaults.headers.common['x-auth-token'] =
-  process.env.CODEMAGIC_AUTH_TOKEN_ID;
-axios.defaults.timeout = 15000;
+import { axios } from './axios.mjs';
 
 let workflowId;
 if (IS_PROD_WORKFLOW) {
