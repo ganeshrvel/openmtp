@@ -25,6 +25,7 @@ exports.default = async (context) => {
   const appPath = path.join(appOutDir, `${appName}.app`);
   const appleId = process.env.APPLEID;
   const appleIdPassword = process.env.APPLE_APP_SPECIFIC_PASSWORD;
+  const appleTeamId = process.env.APPLE_TEAM_ID;
 
   if (!fs.existsSync(appPath)) {
     throw new Error(`Cannot find application at: ${appPath}`);
@@ -38,5 +39,6 @@ exports.default = async (context) => {
     appPath,
     appleId,
     appleIdPassword,
+    teamId: appleTeamId,
   });
 };

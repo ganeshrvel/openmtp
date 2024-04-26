@@ -153,6 +153,9 @@ $ "/path/to/OpenMTP.app/Contents/MacOS/OpenMTP" --remote-debugging-port=6363
       - Goto **Sign-In and Security > App-Specific Passwords**
       - Click on **Generate Password...**, enter a password label and click _Create_
       - Copy the displayed _app-specific-password_
+    - `APPLE_TEAM_ID`: `<Apple Team ID>`
+      - To get Team ID, go to your [Apple Developer Account](https://developer.apple.com/account#MembershipDetailsCard)
+      - Then click on "Membership details", and there you will find your Team ID.
     - `SENTRY_URL`: `https://sentry.io/`
     - `SENTRY_ORG`: `<Sentry Organization Name>`
     - `SENTRY_PROJECT`: `<Sentry Project>`
