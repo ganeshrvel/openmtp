@@ -11,7 +11,7 @@ export class Kalam {
     this.lib = koffi.load(this.libPath);
 
     this.callbackDictionary = Object.freeze({
-      onCbResult: koffi.callback('void on_cb_result_t(char*)'),
+      onCbResult: koffi.proto('void on_cb_result_t(char*)'),
     });
 
     this.fnDictionary = Object.freeze({

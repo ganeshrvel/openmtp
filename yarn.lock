@@ -3558,11 +3558,6 @@ clsx@^1.0.4:
   resolved "https://registry.yarnpkg.com/clsx/-/clsx-1.1.1.tgz#98b3134f9abbdf23b2663491ace13c5c03a73188"
   integrity sha512-6/bPho624p3S2pMyvP5kKBPXnI3ufHLObBFCfgx+LkeR5lg2XYy2hqZqUf45ypD8COn2bhgGJSUE+l5dhNBieA==
 
-cnoke@^3.2.2:
-  version "3.2.2"
-  resolved "https://registry.yarnpkg.com/cnoke/-/cnoke-3.2.2.tgz#6b5ae2821fb6b664aa0e27aeb8cf5c5bd18d0bac"
-  integrity sha512-Es4088cuipByJltWVhFvQpieIszfBhH6smblFGdZYYm7+mObcaelo9TtGedwX7iSlBwkP4B5ofu+TlrXNXG4Ng==
-
 code-point-at@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
@@ -7964,12 +7959,10 @@ known-css-properties@^0.5.0:
   resolved "https://registry.yarnpkg.com/known-css-properties/-/known-css-properties-0.5.0.tgz#6ff66943ed4a5b55657ee095779a91f4536f8084"
   integrity sha512-LOS0CoS8zcZnB1EjLw4LLqDXw8nvt3AGH5dXLQP3D9O1nLLA+9GC5GnPl5mmF+JiQAtSX4VyZC7KvEtcA4kUtA==
 
-koffi@^2.2.5:
-  version "2.2.5"
-  resolved "https://registry.yarnpkg.com/koffi/-/koffi-2.2.5.tgz#5ff131d90221f6d26406d50530dd65797ddc1df7"
-  integrity sha512-RY86h3OPSXGuQ8eYy9yah08OIPueJi/n+DR842V/bgcrw91U+OAath2eutkIq+xEV3Em7DiYH3RNR1rUyUka4w==
-  dependencies:
-    cnoke "^3.2.2"
+koffi@^2.8.7:
+  version "2.8.7"
+  resolved "https://registry.yarnpkg.com/koffi/-/koffi-2.8.7.tgz#46a76aeaca4e06cc75fe03e998d538984fdce88a"
+  integrity sha512-U9hvx1dFNLKeTEZ4HYDIfLZvcMI+nn6tpdtylhE6vPK61O0bAAEjPlGgLUN2rqXeYsRtL6dmLZePLiADPdIOgw==
 
 language-subtag-registry@~0.3.2:
   version "0.3.21"
