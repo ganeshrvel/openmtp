@@ -5,10 +5,15 @@ definitions:
   instance_mac_intel_x64: &instance_mac_intel_x64
     instance_type: mac_pro
 
-  env_versions: &env_versions
+  mac_m1_env_versions: &mac_m1_env_versions
     node: 16.19.0
     npm: 8
-    xcode: latest
+    xcode: 15.3
+
+  mac_intel_x64_env_versions: &mac_intel_x64_env_versions
+    node: 16.19.0
+    npm: 8
+    xcode: 15.0
 
   mac_m1_arm64_artifacts: &mac_m1_arm64_artifacts
     artifacts:
@@ -124,7 +129,7 @@ workflows:
 
     environment:
       <<: *env_mac_signing
-      <<: *env_versions
+      <<: *mac_m1_env_versions
       vars:
         WORKFLOW_ENV: 'prod'
 
@@ -143,7 +148,7 @@ workflows:
 
     environment:
       <<: *env_mac_signing
-      <<: *env_versions
+      <<: *mac_intel_x64_env_versions
       vars:
         WORKFLOW_ENV: 'prod'
 
