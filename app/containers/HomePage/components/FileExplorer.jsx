@@ -68,7 +68,7 @@ import {
 import {
   BUY_ME_A_COFFEE_URL,
   DEVICES_LABEL,
-  DONATE_PAYPAL_URL,
+  SUPPORT_PAYPAL_URL,
   USB_HOTPLUG_MAX_ATTEMPTS,
   USB_HOTPLUG_MAX_ATTEMPTS_TIMEOUT,
 } from '../../../constants';
@@ -111,7 +111,7 @@ import { analyticsService } from '../../../services/analytics';
 import { EVENT_TYPE } from '../../../enums/events';
 import {
   buyMeACoffeeText,
-  donateUsingPayPal,
+  supportUsingPayPal,
 } from '../../../templates/fileExplorer';
 import { fileExistsSync } from '../../../helpers/fileOps';
 import { getRemoteWindow } from '../../../helpers/remoteWindowHelpers';
@@ -126,9 +126,9 @@ let multipleSelectDirection = null;
 const donationBtnsList = [
   {
     enabled: true,
-    label: donateUsingPayPal,
+    label: supportUsingPayPal,
     icon: faPaypal,
-    url: DONATE_PAYPAL_URL,
+    url: SUPPORT_PAYPAL_URL,
     invert: false,
   },
   {

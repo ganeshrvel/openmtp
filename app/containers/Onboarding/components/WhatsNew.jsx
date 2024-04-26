@@ -6,10 +6,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import BuildIcon from '@material-ui/icons/Build';
-import KeyboardIcon from '@material-ui/icons/Keyboard';
-import SmartphoneIcon from '@material-ui/icons/Smartphone';
-import CameraRollIcon from '@material-ui/icons/CameraRoll';
-import MemoryIcon from '@material-ui/icons/Memory';
+import BugReportIcon from '@material-ui/icons/BugReport';
 import SystemUpdate from '@material-ui/icons/SystemUpdate';
 import { styles } from '../styles/WhatsNew';
 import { APP_NAME, APP_VERSION } from '../../../constants/meta';
@@ -34,6 +31,13 @@ class WhatsNew extends PureComponent {
         )}
 
         <List>
+          <ListItem>
+            <ListItemIcon>
+              <BugReportIcon htmlColor="#FF0000" />
+            </ListItemIcon>
+            <ListItemText primary="Fixes a bug which caused slow data transfer speed" />
+          </ListItem>
+
           {isKalamModeDisabled && (
             <ListItem>
               <ListItemIcon>
@@ -45,34 +49,6 @@ class WhatsNew extends PureComponent {
               />
             </ListItem>
           )}
-
-          <ListItem>
-            <ListItemIcon>
-              <MemoryIcon htmlColor="#fa4d0a" />
-            </ListItemIcon>
-            <ListItemText primary="Much awaited Apple Silicon support" />
-          </ListItem>
-
-          <ListItem>
-            <ListItemIcon>
-              <SmartphoneIcon />
-            </ListItemIcon>
-            <ListItemText primary={`Garmin device support`} />
-          </ListItem>
-
-          <ListItem>
-            <ListItemIcon>
-              <CameraRollIcon />
-            </ListItemIcon>
-            <ListItemText primary={`Fujifilm device support`} />
-          </ListItem>
-
-          <ListItem>
-            <ListItemIcon>
-              <KeyboardIcon />
-            </ListItemIcon>
-            <ListItemText primary="Shortcut improvements: Select a range of files using shift+click" />
-          </ListItem>
 
           <ListItem>
             <ListItemIcon>
