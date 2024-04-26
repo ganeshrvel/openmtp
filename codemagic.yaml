@@ -6,8 +6,8 @@ definitions:
     instance_type: mac_pro
 
   env_versions: &env_versions
-    node: 16.15.0
-    npm: latest
+    node: 16.19.0
+    npm: 8
     xcode: latest
 
   mac_m1_arm64_artifacts: &mac_m1_arm64_artifacts
