@@ -41,7 +41,7 @@ import {
   BUY_ME_A_COFFEE_URL,
   DELETE_KEIS_SMARTSWITCH_URL,
   DEVICES_LABEL,
-  DONATE_PAYPAL_URL,
+  SUPPORT_PAYPAL_URL,
 } from '../../../constants';
 import { DEVICE_TYPE, MTP_MODE } from '../../../enums';
 import {
@@ -308,13 +308,13 @@ class HelpPhoneNotRecognized extends PureComponent {
               </Typography>
               <Typography component="p" variant="body2" paragraph>
                 If you&apos;d like to support my work or buy me up a cup of
-                coffee, donate via&nbsp;Paypal:&nbsp;
+                coffee, you can contribute via&nbsp;Paypal:&nbsp;
                 <a
                   onClick={(events) => {
-                    openExternalUrl(DONATE_PAYPAL_URL, events);
+                    openExternalUrl(SUPPORT_PAYPAL_URL, events);
                   }}
                 >
-                  {DONATE_PAYPAL_URL}
+                  {SUPPORT_PAYPAL_URL}
                 </a>
                 &nbsp;or Buy me a coffee:&nbsp;
                 <a

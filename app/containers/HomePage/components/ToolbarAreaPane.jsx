@@ -36,7 +36,7 @@ import {
 import {
   BUY_ME_A_COFFEE_URL,
   DEVICES_DEFAULT_PATH,
-  DONATE_PAYPAL_URL,
+  SUPPORT_PAYPAL_URL,
 } from '../../../constants';
 import { selectMtpMode, toggleSettings } from '../../Settings/actions';
 import { toggleWindowSizeOnDoubleClick } from '../../../helpers/titlebarDoubleClick';
@@ -225,8 +225,8 @@ class ToolbarAreaPane extends PureComponent {
     openExternalUrl(BUY_ME_A_COFFEE_URL);
   };
 
-  _handleOpenDonateUsingPaypal = () => {
-    openExternalUrl(DONATE_PAYPAL_URL);
+  _handleOpenSupportUsingPaypal = () => {
+    openExternalUrl(SUPPORT_PAYPAL_URL);
   };
 
   _handleToolbarAction = (itemType, isAccelerator = false) => {
@@ -301,8 +301,8 @@ class ToolbarAreaPane extends PureComponent {
         break;
 
       case 'paypal':
-        this._handleOpenDonateUsingPaypal();
-        analyticsService.sendEvent(EVENT_TYPE.DONATE_USING_PAYPAL, {});
+        this._handleOpenSupportUsingPaypal();
+        analyticsService.sendEvent(EVENT_TYPE.SUPPORT_USING_PAYPAL, {});
 
         break;
 

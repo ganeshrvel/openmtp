@@ -347,7 +347,7 @@ If you are interested in fixing issues and contributing directly to the code bas
 
 Help me keep the app FREE and open for all.
 
-- Donate Via PayPal: [paypal.me/ganeshrvel](https://paypal.me/ganeshrvel 'https://paypal.me/ganeshrvel')
+- Support us via PayPal: [paypal.me/ganeshrvel](https://paypal.me/ganeshrvel 'https://paypal.me/ganeshrvel')
 - Buy Me A Coffee (UPI, PayPal, Credit/Debit Cards, Internet Banking): [buymeacoffee.com/ganeshrvel](https://buymeacoffee.com/ganeshrvel 'https://buymeacoffee.com/ganeshrvel')
 
 ### Contacts

@@ -17,7 +17,7 @@ import {
 import { DEVICE_TYPE } from '../../enums';
 import {
   buyMeACoffeeText,
-  donateUsingPayPal,
+  supportUsingPayPal,
 } from '../../templates/fileExplorer';
 import { isKalamModeSupported } from '../../helpers/binaries';
 
@@ -125,7 +125,7 @@ export const initialState = {
       },
       paypal: {
         enabled: true,
-        label: donateUsingPayPal,
+        label: supportUsingPayPal,
         icon: faPaypal,
       },
       buyMeACoffee: {

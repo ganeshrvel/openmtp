@@ -20,6 +20,9 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import SettingsOverscanIcon from '@material-ui/icons/SettingsOverscan';
 import HourglassFullIcon from '@material-ui/icons/HourglassFull';
 import TabIcon from '@material-ui/icons/Tab';
+import MemoryIcon from '@material-ui/icons/Memory';
+import SmartphoneIcon from '@material-ui/icons/Smartphone';
+import CameraRollIcon from '@material-ui/icons/CameraRoll';
 import KeyboadShortcuts from '../../KeyboardShortcutsPage/components/KeyboadShortcuts';
 import { styles } from '../styles/Features';
 import { capitalize } from '../../../utils/funcs';
@@ -105,6 +108,28 @@ class Features extends PureComponent {
             </ListItemIcon>
             <ListItemText primary="Transfer multiple files which are larger than 4GB in one go." />
           </ListItem>
+
+          <ListItem>
+            <ListItemIcon>
+              <MemoryIcon />
+            </ListItemIcon>
+            <ListItemText primary="Apple Silicon support" />
+          </ListItem>
+
+          <ListItem>
+            <ListItemIcon>
+              <SmartphoneIcon />
+            </ListItemIcon>
+            <ListItemText primary={`Garmin device support`} />
+          </ListItem>
+
+          <ListItem>
+            <ListItemIcon>
+              <CameraRollIcon />
+            </ListItemIcon>
+            <ListItemText primary={`Fujifilm device support`} />
+          </ListItem>
+
           <ListItem>
             <ListItemIcon>
               <ViewListIcon />
@@ -149,6 +174,16 @@ class Features extends PureComponent {
             <ListItemText primary="Auto device detection (USB Hotplug)" />
           </ListItem>
 
+          <ListItem>
+            <ListItemIcon>
+              <HourglassFullIcon />
+            </ListItemIcon>
+            <ListItemText
+              primary="Display Overall Progress on the File Transfer Screen"
+              secondary="Settings > File Manager Tab > Enable 'Display overall progress on the file transfer screen'"
+            />
+          </ListItem>
+
           <ListItem
             button
             onClick={() =>
@@ -174,15 +209,7 @@ class Features extends PureComponent {
               <ExpandMoreIcon />
             )}
           </ListItem>
-          <ListItem>
-            <ListItemIcon>
-              <HourglassFullIcon />
-            </ListItemIcon>
-            <ListItemText
-              primary="Overall progress on the file transfer screen"
-              secondary="Settings > 'File Manager' Tab > 'Display overall progress on the file transfer screen'"
-            />
-          </ListItem>
+
           <Collapse
             in={expansionPanel.keyboardNavigation}
             timeout="auto"
