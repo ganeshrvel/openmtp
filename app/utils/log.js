@@ -1,6 +1,5 @@
 import clp from 'console-log-plus';
 import os, { EOL } from 'os';
-import { machineId } from 'node-machine-id';
 import { IS_PROD } from '../constants/env';
 import { APP_NAME, APP_VERSION } from '../constants/meta';
 import { PATHS } from '../constants/paths';
@@ -12,6 +11,7 @@ import { isEmpty } from './funcs';
 import { getMtpModeSetting } from '../helpers/settings';
 import { redactHomeDirectory } from '../helpers/logs';
 import { isConsoleError } from './errors';
+import { getMachineId } from '../helpers/identifiers';
 
 const { logFile } = PATHS;
 
@@ -121,7 +121,7 @@ export const log = {
     let _deviceInfoStrigified = '';
     const deviceInfo = getDeviceInfo();
     const mtpMode = getMtpModeSetting();
-    const uuid = await machineId();
+    const uuid = await getMachineId();
 
     if (!isEmpty(deviceInfo)) {
       Object.keys(deviceInfo).forEach((a) => {

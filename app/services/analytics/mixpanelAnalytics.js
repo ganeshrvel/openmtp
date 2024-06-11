@@ -1,6 +1,5 @@
 import { isObject } from 'nice-utils';
 import mixpanel from 'mixpanel-browser';
-import { machineId } from 'node-machine-id';
 import { release } from 'os';
 import { log } from '../../utils/log';
 import { isEmpty } from '../../utils/funcs';
@@ -15,6 +14,7 @@ import { unixTimestampNow } from '../../utils/date';
 import { getCurrentWindowHash } from '../../helpers/windowHelper';
 import { getPlatform } from '../../utils/getPlatform';
 import { APP_VERSION } from '../../constants/meta';
+import { getMachineId } from '../../helpers/identifiers';
 
 export class MixpanelAnalytics {
   constructor() {
@@ -48,7 +48,7 @@ export class MixpanelAnalytics {
       }
 
       // this is a hashed value (sha-256)
-      this.machineId = await machineId();
+      this.machineId = await getMachineId();
 
       if (ENV_FLAVOR.enableMixpanelAnalytics) {
         mixpanel.init(SERVICE_KEYS.mixpanelAnalytics);

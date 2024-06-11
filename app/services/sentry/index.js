@@ -1,5 +1,4 @@
 import * as Sentry from '@sentry/electron';
-import { machineId } from 'node-machine-id';
 import { ENV_FLAVOR } from '../../constants/env';
 import { SERVICE_KEYS } from '../../constants/serviceKeys';
 import { getDeviceInfo } from '../../helpers/deviceInfo';
@@ -7,6 +6,7 @@ import { isEmpty } from '../../utils/funcs';
 import { pkginfo } from '../../utils/pkginfo';
 import { checkIf } from '../../utils/checkIf';
 import { MTP_MODE } from '../../enums';
+import { getMachineId } from '../../helpers/identifiers';
 
 class SentryService {
   constructor() {
@@ -25,7 +25,7 @@ class SentryService {
       release: pkginfo.version,
     });
 
-    this.machineId = await machineId();
+    this.machineId = await getMachineId();
   }
 
   async report({ error, title, mtpMode }) {
