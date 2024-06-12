@@ -1,7 +1,7 @@
 {
   "name": "openmtp",
   "productName": "OpenMTP",
-  "version": "3.2.22",
+  "version": "3.2.21",
   "description": "OpenMTP | Android File Transfer for macOS",
   "scripts": {
     "build": "yarn lint && concurrently \"yarn build-main\" \"yarn build-renderer\"",
@@ -124,6 +124,7 @@
     "source-map-support": "^0.5.21",
     "styled-components": "^4.4.1",
     "url": "^0.11.0",
+    "usb-detection": "^4.14.1",
     "util": "^0.12.4",
     "zlib": "^1.0.5"
   },
@@ -234,7 +235,7 @@
   },
   "devEngines": {
     "node": ">=16.x",
-    "npm": ">=6.x",
+    "npm": ">=6.x <=8.16.0",
     "yarn": ">=0.21.3"
   }
 }
