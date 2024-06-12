@@ -4,6 +4,7 @@ import './services/sentry/index';
 
 import { app, BrowserWindow, ipcMain, nativeTheme } from 'electron';
 import electronIs from 'electron-is';
+import usbDetect from 'usb-detection';
 import process from 'process';
 import MenuBuilder from './menu';
 import { log } from './utils/log';
@@ -18,10 +19,16 @@ import { nonBootableDeviceWindow } from './helpers/createWindows';
 import { APP_TITLE } from './constants/meta';
 import { isPackaged } from './utils/isPackaged';
 import { getWindowBackgroundColor } from './helpers/windowHelper';
-import { APP_THEME_MODE_TYPE, DEVICE_TYPE, MTP_MODE } from './enums';
+import {
+  APP_THEME_MODE_TYPE,
+  DEVICE_TYPE,
+  MTP_MODE,
+  USB_HOTPLUG_EVENTS,
+} from './enums';
 import fileExplorerController from './data/file-explorer/controllers/FileExplorerController';
 import { getEnablePrereleaseUpdatesSetting } from './helpers/settings';
 import { getRemoteWindow } from './helpers/remoteWindowHelpers';
+import { IpcEvents } from './services/ipc-events/IpcEventType';
 import IpcEventService from './services/ipc-events/IpcEventHandler';
 import { isKalamModeSupported } from './helpers/binaries';
 import { fileExistsSync } from './helpers/fileOps';
@@ -289,29 +296,29 @@ if (!isDeviceBootable) {
         }
 
         // send attach and detach events to the renderer
-        // usbDetect.startMonitoring();
+        usbDetect.startMonitoring();
 
-        // usbDetect.on('add', (device) => {
-        //   if (!mainWindow) {
-        //     return;
-        //   }
-        //
-        //   mainWindow?.webContents?.send(IpcEvents.USB_HOTPLUG, {
-        //     device: JSON.stringify(device),
-        //     eventName: USB_HOTPLUG_EVENTS.attach,
-        //   });
-        // });
+        usbDetect.on('add', (device) => {
+          if (!mainWindow) {
+            return;
+          }
 
-        // usbDetect.on('remove', (device) => {
-        //   if (!mainWindow) {
-        //     return;
-        //   }
-        //
-        //   mainWindow?.webContents?.send(IpcEvents.USB_HOTPLUG, {
-        //     device: JSON.stringify(device),
-        //     eventName: USB_HOTPLUG_EVENTS.detach,
-        //   });
-        // });
+          mainWindow?.webContents?.send(IpcEvents.USB_HOTPLUG, {
+            device: JSON.stringify(device),
+            eventName: USB_HOTPLUG_EVENTS.attach,
+          });
+        });
+
+        usbDetect.on('remove', (device) => {
+          if (!mainWindow) {
+            return;
+          }
+
+          mainWindow?.webContents?.send(IpcEvents.USB_HOTPLUG, {
+            device: JSON.stringify(device),
+            eventName: USB_HOTPLUG_EVENTS.detach,
+          });
+        });
 
         process.stdout.on('error', (err) => {
           if (err.code === 'EPIPE') {
@@ -347,7 +354,7 @@ if (!isDeviceBootable) {
         log.error(e, `main.dev -> before-quit`);
       });
 
-    // usbDetect.stopMonitoring();
+    usbDetect.stopMonitoring();
 
     app.quitting = true;
   });
