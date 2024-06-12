@@ -96,8 +96,6 @@ export default class SettingsDialog extends PureComponent {
       onShowDirectoriesFirstChange,
       onMtpModeChange,
       onFilesPreprocessingBeforeTransferChange,
-      onEnableUsbHotplug,
-      enableUsbHotplug,
     } = this.props;
 
     const { tabIndex } = this.state;
@@ -215,24 +213,24 @@ export default class SettingsDialog extends PureComponent {
                       </>
                     )}
 
-                    <Typography
-                      variant="subtitle2"
-                      className={`${styles.subtitle} ${styles.fmSettingsStylesFix}`}
-                    >
-                      Enable auto device detection (USB Hotplug)
-                    </Typography>
-                    <FormControlLabel
-                      className={styles.switch}
-                      control={
-                        <Switch
-                          checked={enableUsbHotplug}
-                          onChange={(e) =>
-                            onEnableUsbHotplug(e, !enableUsbHotplug)
-                          }
-                        />
-                      }
-                      label={enableUsbHotplug ? `Enabled` : `Disabled`}
-                    />
+                    {/* <Typography */}
+                    {/*  variant="subtitle2" */}
+                    {/*  className={`${styles.subtitle} ${styles.fmSettingsStylesFix}`} */}
+                    {/* > */}
+                    {/*  Enable auto device detection (USB Hotplug) */}
+                    {/* </Typography> */}
+                    {/* <FormControlLabel */}
+                    {/*  className={styles.switch} */}
+                    {/*  control={ */}
+                    {/*    <Switch */}
+                    {/*      checked={enableUsbHotplug} */}
+                    {/*      onChange={(e) => */}
+                    {/*        onEnableUsbHotplug(e, !enableUsbHotplug) */}
+                    {/*      } */}
+                    {/*    /> */}
+                    {/*  } */}
+                    {/*  label={enableUsbHotplug ? `Enabled` : `Disabled`} */}
+                    {/* /> */}
                   </FormGroup>
                 </div>
               </SettingsDialogTabContainer>
