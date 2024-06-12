@@ -6,6 +6,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Collapse from '@material-ui/core/Collapse';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
+import ToggleOffIcon from '@material-ui/icons/ToggleOff';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
@@ -162,7 +163,7 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
                         />
                       </ListItem>
 
-                      {/*                      <ListItem>
+                      <ListItem>
                         <ListItemIcon>
                           <ToggleOffIcon />
                         </ListItemIcon>
@@ -170,7 +171,7 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
                           primary={`If you face frequent device disconnections, turn off 'USB Hotplug'`}
                           secondary={`Settings > General Tab`}
                         />
-                      </ListItem> */}
+                      </ListItem>
 
                       <ListItem>
                         <ListItemIcon>
