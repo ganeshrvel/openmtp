@@ -8,7 +8,6 @@ import ListItemText from '@material-ui/core/ListItemText';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CloseIcon from '@material-ui/icons/Close';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
-import ToggleOffIcon from '@material-ui/icons/ToggleOff';
 import CheckIcon from '@material-ui/icons/Check';
 import ListAltIcon from '@material-ui/icons/ListAlt';
 import SettingsIcon from '@material-ui/icons/Settings';
@@ -53,7 +52,7 @@ import { imgsrc } from '../../../utils/imgsrc';
 import { helpPhoneNotConnecting } from '../../../templates/fileExplorer';
 import { isKalamModeSupported } from '../../../helpers/binaries';
 
-const hotplugSettingText = `Check if 'Enable auto device detection (USB Hotplug)' is enabled under Settings > General Tab`;
+// const hotplugSettingText = `Check if 'Enable auto device detection (USB Hotplug)' is enabled under Settings > General Tab`;
 const deviceLabel = DEVICES_LABEL[DEVICE_TYPE.mtp];
 
 class HelpPhoneNotRecognized extends PureComponent {
@@ -169,7 +168,7 @@ class HelpPhoneNotRecognized extends PureComponent {
           </ListItemIcon>
           <ListItemText
             primary="It should connect automatically"
-            secondary={hotplugSettingText}
+            // secondary={hotplugSettingText}
           />
         </ListItem>
         <ListItem>
@@ -178,7 +177,7 @@ class HelpPhoneNotRecognized extends PureComponent {
           </ListItemIcon>
           <ListItemText
             primary={`Tap on the 'Refresh' button in the app if the ${deviceLabel.toLowerCase()} doesn't get connected automatically`}
-            secondary={hotplugSettingText}
+            // secondary={hotplugSettingText}
           />
         </ListItem>
 
@@ -237,7 +236,7 @@ class HelpPhoneNotRecognized extends PureComponent {
           </ListItemIcon>
           <ListItemText
             primary="It should connect automatically"
-            secondary={hotplugSettingText}
+            // secondary={hotplugSettingText}
           />
         </ListItem>
         <ListItem>
@@ -246,7 +245,7 @@ class HelpPhoneNotRecognized extends PureComponent {
           </ListItemIcon>
           <ListItemText
             primary={`Tap on the 'Refresh' button in the app if the ${deviceLabel.toLowerCase()} doesn't get connected automatically`}
-            secondary={hotplugSettingText}
+            // secondary={hotplugSettingText}
           />
         </ListItem>
       </>
@@ -403,15 +402,15 @@ class HelpPhoneNotRecognized extends PureComponent {
                   />
                 </ListItem>
 
-                <ListItem>
-                  <ListItemIcon>
-                    <ToggleOffIcon />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={`If you face frequent device disconnections, turn off 'USB Hotplug'`}
-                    secondary={`Settings > General Tab`}
-                  />
-                </ListItem>
+                {/* <ListItem> */}
+                {/*  <ListItemIcon> */}
+                {/*    <ToggleOffIcon /> */}
+                {/*  </ListItemIcon> */}
+                {/*  <ListItemText */}
+                {/*    primary={`If you face frequent device disconnections, turn off 'USB Hotplug'`} */}
+                {/*    secondary={`Settings > General Tab`} */}
+                {/*  /> */}
+                {/* </ListItem> */}
 
                 <RenderBasicConnection />
               </List>

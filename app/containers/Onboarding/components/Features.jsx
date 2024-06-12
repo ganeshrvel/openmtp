@@ -8,7 +8,6 @@ import ListItemText from '@material-ui/core/ListItemText';
 import UsbIcon from '@material-ui/icons/Usb';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import Brightness4Icon from '@material-ui/icons/Brightness4';
-import FlashOnIcon from '@material-ui/icons/FlashOn';
 import ViewListIcon from '@material-ui/icons/ViewList';
 import SdStorageIcon from '@material-ui/icons/SdStorage';
 import FlipToBackIcon from '@material-ui/icons/FlipToBack';
@@ -167,12 +166,12 @@ class Features extends PureComponent {
             <ListItemText primary="Choose between Internal Memory and SD Card" />
           </ListItem>
 
-          <ListItem>
-            <ListItemIcon>
-              <FlashOnIcon />
-            </ListItemIcon>
-            <ListItemText primary="Auto device detection (USB Hotplug)" />
-          </ListItem>
+          {/* <ListItem> */}
+          {/*  <ListItemIcon> */}
+          {/*    <FlashOnIcon /> */}
+          {/*  </ListItemIcon> */}
+          {/*  <ListItemText primary="Auto device detection (USB Hotplug)" /> */}
+          {/* </ListItem> */}
 
           <ListItem>
             <ListItemIcon>
