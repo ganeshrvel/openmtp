@@ -44,7 +44,9 @@ definitions:
 
     - &install_global_packages
       name: Installing global packages
-      script: npm install -g semver@7.6.0 yarn @sentry/cli node-gyp zx yarn --force
+      script: |
+        npm install -g semver@7.6.0 yarn @sentry/cli node-gyp zx yarn --force
+        yarn global add semver@7.6.0
 
     - &install_app_packages
       name: Installing app packages
