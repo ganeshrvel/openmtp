@@ -1,6 +1,8 @@
 import { PATHS } from '../constants/paths';
 import Storage from '../classes/Storage';
 
-const { settingsFile } = PATHS;
+const { settingsFile, identifierFile } = PATHS;
 
-export const settingsStorage = new Storage(settingsFile);
+export const identifierStorage = new Storage(identifierFile, true);
+
+export const settingsStorage = new Storage(settingsFile, false);
