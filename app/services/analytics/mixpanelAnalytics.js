@@ -48,7 +48,7 @@ export class MixpanelAnalytics {
       }
 
       // this is a hashed value (sha-256)
-      this.machineId = await getMachineId();
+      this.machineId = getMachineId();
 
       if (ENV_FLAVOR.enableMixpanelAnalytics) {
         mixpanel.init(SERVICE_KEYS.mixpanelAnalytics);

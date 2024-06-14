@@ -121,7 +121,7 @@ export const log = {
     let _deviceInfoStrigified = '';
     const deviceInfo = getDeviceInfo();
     const mtpMode = getMtpModeSetting();
-    const uuid = await getMachineId();
+    const uuid = getMachineId();
 
     if (!isEmpty(deviceInfo)) {
       Object.keys(deviceInfo).forEach((a) => {

@@ -4,8 +4,9 @@ import { checkIf } from '../utils/checkIf';
 import { isEmpty } from '../utils/funcs';
 
 export default class Storage {
-  constructor(filePath) {
+  constructor(filePath, doNotLog = false) {
     this.filePath = filePath;
+    this.doNotLog = doNotLog;
   }
 
   getAll() {
@@ -23,7 +24,11 @@ export default class Storage {
 
       return JSON.parse(_stream);
     } catch (e) {
-      log.error(e, `Storage -> getAll`);
+      if (this.doNotLog) {
+        console.error(e, `Storage -> getAll`);
+      } else {
+        log.error(e, `Storage -> getAll`);
+      }
     }
   }
 
@@ -54,7 +59,11 @@ export default class Storage {
 
       return _return;
     } catch (e) {
-      log.error(e, `Storage -> getItems`);
+      if (this.doNotLog) {
+        console.error(e, `Storage -> getItems`);
+      } else {
+        log.error(e, `Storage -> getItems`);
+      }
     }
   }
 
@@ -62,7 +71,11 @@ export default class Storage {
     try {
       writeFileSync(this.filePath, JSON.stringify({ ...data }));
     } catch (e) {
-      log.error(e, `Storage -> setAll`);
+      if (this.doNotLog) {
+        console.error(e, `Storage -> setAll`);
+      } else {
+        log.error(e, `Storage -> setAll`);
+      }
     }
   }
 
@@ -75,7 +88,11 @@ export default class Storage {
         JSON.stringify({ ...currentSettings, ...data })
       );
     } catch (e) {
-      log.error(e, `Storage -> setAll`);
+      if (this.doNotLog) {
+        console.error(e, `Storage -> setItems`);
+      } else {
+        log.error(e, `Storage -> setItems`);
+      }
     }
   }
 }

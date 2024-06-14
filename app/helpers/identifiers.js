@@ -1,18 +1,24 @@
-import { machineId } from 'node-machine-id';
-import { settingsStorage } from './storageHelper';
+import { v6 as uuidv6 } from 'uuid';
 
-export async function getMachineId() {
-  const settings = settingsStorage.getItems(['machineId']);
+import { identifierStorage } from './storageHelper';
+import { isEmpty } from '../utils/funcs';
 
-  if (!settings?.machineId) {
-    const _machineId = await machineId();
+export function getMachineId() {
+  try {
+    const settings = identifierStorage.getItems(['machineId']);
 
-    settingsStorage.setItems({
-      machineId: _machineId,
-    });
+    if (!settings?.machineId || isEmpty(settings?.machineId)) {
+      const _machineId = uuidv6();
 
-    return _machineId;
+      identifierStorage.setItems({
+        machineId: _machineId,
+      });
+
+      return _machineId;
+    }
+
+    return settings.machineId;
+  } catch (e) {
+    console.error(`Unable to find machineId. Error: ${e}`);
   }
-
-  return settings.machineId;
 }

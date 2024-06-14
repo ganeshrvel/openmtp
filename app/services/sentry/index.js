@@ -25,7 +25,7 @@ class SentryService {
       release: pkginfo.version,
     });
 
-    this.machineId = await getMachineId();
+    this.machineId = getMachineId();
   }
 
   async report({ error, title, mtpMode }) {
