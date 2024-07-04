@@ -9,7 +9,6 @@ import {
   faTwitter,
   faFacebook,
   faReddit,
-  faPaypal,
 } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { withStyles } from '@material-ui/core/styles';
@@ -123,21 +122,24 @@ const { Menu, getCurrentWindow } = remote;
 let allowFileDropFlag = false;
 let multipleSelectDirection = null;
 
-const donationBtnsList = [
-  {
-    enabled: true,
-    label: supportUsingPayPal,
-    icon: faPaypal,
-    url: SUPPORT_PAYPAL_URL,
-    invert: false,
-  },
+const supportBtnsList = [
   {
     enabled: true,
     label: buyMeACoffeeText,
     url: BUY_ME_A_COFFEE_URL,
-    image: 'toolbar/buymeacoffee.png',
+    image: 'FileExplorer/buymeacoffee-button.png',
     icon: null,
     invert: false,
+    name: 'buymeacoffee',
+  },
+  {
+    enabled: true,
+    label: supportUsingPayPal,
+    image: 'FileExplorer/paypal-logo.png',
+    icon: null,
+    url: SUPPORT_PAYPAL_URL,
+    invert: false,
+    name: 'paypal',
   },
 ];
 
@@ -2060,46 +2062,46 @@ class FileExplorer extends Component {
           helpText="If the progress bar freezes while transferring the files, restart the app and reconnect the device. This is a known Android MTP bug."
         >
           <div className={styles.socialMediaShareContainer}>
-            <Typography className={styles.donationBtnsTitle}>
+            <Typography className={styles.supportBtnsTitle}>
               {`I've invested a significant amount of my time and energy into developing and maintaining this OpenSource application.`}
-              <span className={styles.donationBtnsTitleNewLine}>
+              <span className={styles.supportBtnsTitleNewLine}>
                 {`I hate to run ads.`}&nbsp;Help me keep {APP_NAME}
                 &nbsp;
-                <span className={styles.donationBtnsBoldText}>Free</span>
+                <span className={styles.supportBtnsBoldText}>Free</span>
                 &nbsp;and&nbsp;
-                <span className={styles.donationBtnsBoldText}>Open</span>,
-                forever!
+                <span className={styles.supportBtnsBoldText}>Open</span>!
               </span>
             </Typography>
-            <div className={styles.socialMediaShareBtnsContainer}>
-              {donationBtnsList.map((a, index) => (
+            <div className={styles.supportBtnsContainer}>
+              {supportBtnsList.map((a, index) => (
                 // eslint-disable-next-line react/no-array-index-key
                 <Tooltip key={index} title={a.label}>
                   <div>
-                    <IconButton
+                    <div
                       aria-label={a.label}
-                      disabled={!a.enabled}
-                      onClick={() => openExternalUrl(a.url)}
-                      className={classnames(styles.socialMediaBtnWrapper, {
-                        [styles.socialMediaBtnWrapperForImage]: !!a.image,
+                      onClick={() => {
+                        analyticsService.sendEvent(
+                          EVENT_TYPE.SUPPORT_CTAS_DURING_TRANSFERRING,
+                          {
+                            name: a.name,
+                          }
+                        );
+                        openExternalUrl(a.url);
+                      }}
+                      className={classnames(styles.supportBtnWrapper, {
+                        [styles.supportBtnWrapperForImage]: !!a.image,
                       })}
                     >
                       {a.image && (
                         <img
                           alt={a.label}
                           src={imgsrc(a.image, false)}
-                          className={styles.socialMediaShareBtnImages}
+                          className={classnames(styles.supportBtnImages, {
+                            [`${a.name}`]: true,
+                          })}
                         />
                       )}
-
-                      {a.icon && (
-                        <FontAwesomeIcon
-                          icon={a.icon}
-                          className={styles.socialMediaShareBtn}
-                          title={a.label}
-                        />
-                      )}
-                    </IconButton>
+                    </div>
                   </div>
                 </Tooltip>
               ))}
