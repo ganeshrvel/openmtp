@@ -100,6 +100,7 @@ export default class AppUpdate {
 
     this.autoUpdater.autoDownload = autoUpdateCheck && autoDownload;
     this.autoUpdater.allowPrerelease = allowPrerelease;
+    this.autoUpdater.autoInstallOnAppQuit = true;
     this.autoUpdateCheck = autoUpdateCheck;
 
     this.progressbarWindowDomReadyFlag = null;
@@ -220,14 +221,17 @@ export default class AppUpdate {
 
         const { response: buttonIndex } = await dialog.showMessageBox({
           title: 'Install Updates',
-          message: 'Updates downloaded. Application will quit now...',
-          buttons: ['Install and Relaunch'],
+          message: 'Updates downloaded. Install and relaunch?',
+          buttons: ['Install Now', 'Install on Quit'],
         });
 
         switch (buttonIndex) {
           case 0:
-          default:
             this.autoUpdater.quitAndInstall();
+            break;
+          case 1:
+          default:
+            // autoInstallOnAppQuit will trigger the update later
             break;
         }
       });
