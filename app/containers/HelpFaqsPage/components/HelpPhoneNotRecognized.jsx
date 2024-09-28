@@ -380,7 +380,7 @@ class HelpPhoneNotRecognized extends PureComponent {
                     <CloseIcon />
                   </ListItemIcon>
                   <ListItemText
-                    primary={`Quit Google drive, Android File Transfer, Dropbox, OneDrive, Preview (for macOS ventura) or any other app that might be reading USB`}
+                    primary={`Quit Google drive, Android File Transfer, Dropbox, OneDrive, Preview (for macOS ventura) or any other app that might be reading from USB`}
                     secondary={
                       <span>
                         {`Uninstall 'Android File Transfer' by Google if it
