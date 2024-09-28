@@ -380,13 +380,13 @@ class HelpPhoneNotRecognized extends PureComponent {
                     <CloseIcon />
                   </ListItemIcon>
                   <ListItemText
-                    primary={`Quit Google drive, Android File Transfer, Dropbox, OneDrive, Preview (for macOS ventura) or any other app that might be reading USB`}
+                    primary={`Quit Google drive, Android File Transfer, Dropbox, OneDrive, Preview (for macOS ventura) or any other app that might be reading from USB`}
                     secondary={
                       <span>
                         {`Uninstall 'Android File Transfer' by Google if it
                               keeps popping up everytime you connect your
                               Android device. The most recent versions of Google
-                              drive and Dropbox are known to interfere with ${APP_NAME}. Completely quiting these apps may fix
+                              drive and Dropbox are known to interfere with ${APP_NAME}. Completely quitting these apps may fix
                               this issue. `}
                         <a
                           onClick={(events) => {
@@ -435,7 +435,7 @@ class HelpPhoneNotRecognized extends PureComponent {
                     <DeleteIcon />
                   </ListItemIcon>
                   <ListItemText
-                    primary={`The most recent versions of Google drive is known to interfere with ${APP_NAME}. Simply quiting Google drive may fix this issue`}
+                    primary={`The most recent versions of Google drive are known to interfere with ${APP_NAME}. Simply quitting Google drive may fix this issue`}
                     secondary={
                       <img
                         src={imgsrc(`help/google-drive-not-connecting.png`)}
@@ -468,7 +468,7 @@ class HelpPhoneNotRecognized extends PureComponent {
                     <DeleteIcon />
                   </ListItemIcon>
                   <ListItemText
-                    primary={`The most recent versions of Dropbox is known to interfere with ${APP_NAME}. Simply quiting Dropbox may fix this issue`}
+                    primary={`The most recent versions of Dropbox are known to interfere with ${APP_NAME}. Simply quitting Dropbox may fix this issue`}
                   />
                 </ListItem>
 
