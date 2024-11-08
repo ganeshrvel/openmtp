@@ -67,6 +67,7 @@ import {
 import {
   BUY_ME_A_COFFEE_URL,
   DEVICES_LABEL,
+  GANESHR_PORTFOLIO_URL,
   SUPPORT_PAYPAL_URL,
   USB_HOTPLUG_MAX_ATTEMPTS,
   USB_HOTPLUG_MAX_ATTEMPTS_TIMEOUT,
@@ -1985,6 +1986,11 @@ class FileExplorer extends Component {
     });
   };
 
+  _handlePortfolioUrlTap = () => {
+    analyticsService.sendEvent(EVENT_TYPE.GANESHR_PORTFOLIO_URL, {});
+    openExternalUrl(GANESHR_PORTFOLIO_URL);
+  };
+
   render() {
     const {
       classes: styles,
@@ -2061,6 +2067,17 @@ class FileExplorer extends Component {
           maxWidthDialog="sm"
           helpText="If the progress bar freezes while transferring the files, restart the app and reconnect the device. This is a known Android MTP bug."
         >
+          <Typography className={styles.buildProduct}>
+            {`Are you building a product and looking for expert tech talent to drive it forward? `}
+            <span
+              onClick={this._handlePortfolioUrlTap}
+              className={classnames(styles.connectPortfolioUrl)}
+            >
+              Let’s connect
+            </span>
+            !
+          </Typography>
+
           <div className={styles.socialMediaShareContainer}>
             <Typography className={styles.supportBtnsTitle}>
               {`I've invested a significant amount of my time and energy into developing and maintaining this OpenSource application.`}
