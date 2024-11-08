@@ -56,3 +56,5 @@ export const DELETE_KEIS_SMARTSWITCH_URL = `https://farazfazli.medium.com/how-i-
 export const USB_HOTPLUG_MAX_ATTEMPTS = 6;
 
 export const USB_HOTPLUG_MAX_ATTEMPTS_TIMEOUT = 15000; // in ms
+
+export const GANESHR_PORTFOLIO_URL = 'https://www.ganeshrvel.com/?c=openmtp'; // in ms
