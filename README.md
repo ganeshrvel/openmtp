@@ -296,53 +296,7 @@ $ set UPGRADE_EXTENSIONS=1 && npm run dev
 
 ### Troubleshooting
 
-#### Error while building the app - `No module named 'distutils'`
-
-To resolve this issue, install Python setuptools:
-
-```shell
-brew install python-setuptools
-```
-
-#### Error: npm version issue due to node-gyp bug
-
-If you encounter an error message like:
-
-```txt
-Error: This project requires npm version >=6.x <=8.16.0. You have version 10.24.0.
-Please downgrade your npm, this is due to a bug in node-gyp.
-GitHub issue: https://github.com/ganeshrvel/openmtp/issues/367.
-command: npm install -g npm@8.16.0
-```
-
-Follow these steps:
-
-1. If you use `nvm`, switch to Node.js version `16.19.0`:
-
-   ```shell
-   nvm install 16.19.0
-   nvm use 16.19.0
-   ```
-
-2. Then, install the compatible npm version:
-
-   ```shell
-   npm install -g npm@8.16.0
-   ```
-
-#### For non-nvm users
-
-If you don't use `nvm`, you can directly install Node.js version `16.19.0` from the [official website](https://nodejs.org/en/download/releases/), or you can use a package manager like `brew` to install the correct version:
-
-```shell
-brew install node@16
-```
-
-After installation, ensure npm is downgraded to the required version:
-
-```shell
-npm install -g npm@8.16.0
-```
+#### Your device is not recognized
 
 #### **node-mac-permissions** throws `Speech framework is not compatible with macOS < 10.15`
 

@@ -13,15 +13,6 @@ export const styles = (theme) => ({
   supportBtnsBoldText: {
     fontWeight: 'bold',
   },
-  buildProduct: {
-    marginTop: 10,
-    fontSize: 13,
-    fontWeight: 500,
-  },
-  connectPortfolioUrl: {
-    cursor: `pointer`,
-    color: theme.palette.secondary.main,
-  },
   socialMediaShareTitle: {
     marginTop: 10,
     fontSize: 11,
