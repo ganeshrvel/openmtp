@@ -95,7 +95,7 @@ import {
   redditShareUrl,
   twitterShareUrl,
 } from '../../../templates/socialMediaShareBtns';
-import { baseName, pathInfo, pathUp, sanitizePath } from '../../../utils/files';
+import { baseName, pathInfo, pathUp, sanitizePath, calculateFolderSize } from '../../../utils/files';
 import {
   DEVICE_TYPE,
   FILE_EXPLORER_VIEW_TYPE,
@@ -202,6 +202,7 @@ class FileExplorer extends Component {
         },
       },
       directoryGeneratedTime: Date.now(),
+      folderSizes: {}, // Add state for folder sizes
     };
 
     this.state = {
@@ -258,6 +259,7 @@ class FileExplorer extends Component {
 
     if (nextDirectoryNodes !== prevDirectoryNodes) {
       this._handleDirectoryGeneratedTime();
+      this.calculateFolderSizes(nextDirectoryNodes); // Calculate folder sizes when directory changes
     }
 
     if (nextShowDirectoriesFirst !== showDirectoriesFirst) {
@@ -1985,6 +1987,19 @@ class FileExplorer extends Component {
     });
   };
 
+  calculateFolderSizes = async (nodes) => {
+    const folderSizes = {};
+
+    for (const node of nodes) {
+      if (node.isFolder) {
+        const size = await calculateFolderSize(node.path);
+        folderSizes[node.path] = size;
+      }
+    }
+
+    this.setState({ folderSizes });
+  };
+
   render() {
     const {
       classes: styles,
@@ -1999,7 +2014,7 @@ class FileExplorer extends Component {
       isStatusBarEnabled,
       fileTransferClipboard,
     } = this.props;
-    const { toggleDialog, togglePasteConfirmDialog, directoryGeneratedTime } =
+    const { toggleDialog, togglePasteConfirmDialog, directoryGeneratedTime, folderSizes } =
       this.state;
     const { rename, newFolder } = toggleDialog;
     const togglePasteDialog =
@@ -2181,6 +2196,7 @@ class FileExplorer extends Component {
             this._handleFocussedFileExplorerDeviceType
           }
           onAcceleratorActivation={this._handleAcceleratorActivation}
+          folderSizes={folderSizes} // Pass folder sizes to FileExplorerBodyRender
         />
         ;
       </Fragment>
