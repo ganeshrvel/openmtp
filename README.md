@@ -138,9 +138,9 @@ $ "/path/to/OpenMTP.app/Contents/MacOS/OpenMTP" --remote-debugging-port=6363
 ```
 
 - Open a Chromium browser
-- Input "about://inpsect" into the URL bar
+- Input "about://inspect" into the URL bar
 - Add a new connection `localhost:6363`
-- Inpect OpenMTP @ port `6363`
+- Inspect OpenMTP @ port `6363`
 
 ### Publishing using CI/CD:
 
