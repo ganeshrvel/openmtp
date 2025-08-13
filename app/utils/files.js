@@ -1,6 +1,7 @@
 import { join, parse } from 'path';
 import { homedir as homedirOs } from 'os';
 import { APP_BUNDLE_ID } from '../constants/meta';
+import fs from 'fs';
 
 const homeDir = homedirOs();
 
@@ -51,4 +52,45 @@ export const getExtension = (fileName, isFolder) => {
 
 export const pathInfo = (filePath) => {
   return parse(filePath);
+};
+
+export const calculateFolderSize = (folderPath) => {
+  return new Promise((resolve, reject) => {
+    let totalSize = 0;
+
+    fs.readdir(folderPath, (err, files) => {
+      if (err) {
+        return reject(err);
+      }
+
+      let pending = files.length;
+      if (!pending) {
+        return resolve(totalSize);
+      }
+
+      files.forEach((file) => {
+        const filePath = join(folderPath, file);
+
+        fs.stat(filePath, (err, stats) => {
+          if (err) {
+            return reject(err);
+          }
+
+          if (stats.isDirectory()) {
+            calculateFolderSize(filePath).then((size) => {
+              totalSize += size;
+              if (!--pending) {
+                resolve(totalSize);
+              }
+            }).catch(reject);
+          } else {
+            totalSize += stats.size;
+            if (!--pending) {
+              resolve(totalSize);
+            }
+          }
+        });
+      });
+    });
+  });
 };

@@ -8,10 +8,10 @@ import classNames from 'classnames';
 import { niceBytes, springTruncate } from '../../../utils/funcs';
 import { FILE_EXPLORER_TABLE_TRUNCATE_MAX_CHARS } from '../../../constants';
 import { styles } from '../styles/FileExplorerTableBodyListRender';
-// eslint-disable-next-line import/no-relative-packages
 import prettyFileIcons from '../../../vendors/pretty-file-icons';
 import { imgsrc } from '../../../utils/imgsrc';
 import { appDateFormat } from '../../../utils/date';
+import { calculateFolderSize } from '../../../utils/files';
 
 class FileExplorerTableBodyListRender extends PureComponent {
   RenderFileIcon = () => {
@@ -56,6 +56,7 @@ class FileExplorerTableBodyListRender extends PureComponent {
       onContextMenuClick,
       onTableClick,
       onTableDoubleClick,
+      folderSizes,
     } = this.props;
 
     const { RenderFileIcon, RenderFolderIcon } = this;
@@ -64,6 +65,8 @@ class FileExplorerTableBodyListRender extends PureComponent {
       item.name,
       FILE_EXPLORER_TABLE_TRUNCATE_MAX_CHARS
     );
+
+    const folderSize = item.isFolder ? folderSizes[item.path] : null;
 
     return (
       <TableRow
@@ -144,7 +147,7 @@ class FileExplorerTableBodyListRender extends PureComponent {
               onTableDoubleClick(item, deviceType, event)
             }
           >
-            {item.isFolder ? `--` : `${niceBytes(item.size)}`}
+            {item.isFolder ? (folderSize ? niceBytes(folderSize) : '--') : `${niceBytes(item.size)}`}
           </TableCell>
         )}
         {hideColList.indexOf('dateAdded') < 0 && (
