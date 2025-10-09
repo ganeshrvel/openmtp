@@ -70,3 +70,10 @@ tmp/*
 *.js.map
 *.js.LICENSE.txt
 *.prod.js.LICENSE.txt
+
+# Testing and internal documentation files
+APP_LAUNCH_NOTES.md
+BUILD_SUCCESS.md
+FIXES_SUMMARY.md
+TESTING_COMPLETE.md
+VERIFICATION_RESULTS.md

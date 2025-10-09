@@ -16,7 +16,7 @@ import {
 import findLodash from 'lodash/find';
 import { log } from '../../../utils/log';
 import { isArray, isEmpty, undefinedOrNull } from '../../../utils/funcs';
-import { pathUp } from '../../../utils/files';
+import { pathUp, isMacOSHiddenFile } from '../../../utils/files';
 import { appDateFormat } from '../../../utils/date';
 import { checkIf } from '../../../utils/checkIf';
 import { PATHS } from '../../../constants/paths';
@@ -218,12 +218,12 @@ export class FileExplorerLocalDataSource {
         return { error, data: null };
       }
 
-      let files = data;
+      // First filter out junk files
+      let files = data.filter(junk.not);
 
-      files = data.filter(junk.not);
+      // Then filter hidden files if requested (Fix #328)
       if (ignoreHidden) {
-        // eslint-disable-next-line no-useless-escape
-        files = data.filter((item) => !/(^|\/)\.[^\/\.]/g.test(item));
+        files = files.filter((item) => !isMacOSHiddenFile(item));
       }
 
       for (let i = 0; i < files.length; i += 1) {

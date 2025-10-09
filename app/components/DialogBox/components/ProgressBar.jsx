@@ -73,6 +73,7 @@ class ProgressBar extends PureComponent {
                 </DialogContentText>
 
                 <LinearProgress
+                  className={styles.linearProgress}
                   color="secondary"
                   variant={a.variant ?? 'determinate'}
                   value={a.percentage}

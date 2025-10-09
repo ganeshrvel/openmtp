@@ -52,3 +52,38 @@ export const getExtension = (fileName, isFolder) => {
 export const pathInfo = (filePath) => {
   return parse(filePath);
 };
+
+/**
+ * Check if a filename should be considered hidden on macOS
+ * @param {string} fileName - The file name (not full path)
+ * @returns {boolean} - True if the file should be hidden
+ */
+export const isMacOSHiddenFile = (fileName) => {
+  if (!fileName) {
+    return false;
+  }
+
+  // Unix-style hidden files (start with .)
+  if (fileName.startsWith('.')) {
+    return true;
+  }
+
+  // macOS-specific hidden files
+  const macOSHiddenFiles = [
+    'Icon\r', // Custom folder icon file (Icon followed by carriage return)
+    'Icon?', // Alternative representation
+    '.DS_Store', // Already caught by dot check, but explicit
+    '.localized', // Localized folder names
+    '.VolumeIcon.icns', // Volume icons
+    'Desktop DB',
+    'Desktop DF',
+    '.Spotlight-V100',
+    '.Trashes',
+    '.fseventsd',
+    '.TemporaryItems',
+    '.DocumentRevisions-V100',
+    '.PKInstallSandboxManager',
+  ];
+
+  return macOSHiddenFiles.includes(fileName);
+};

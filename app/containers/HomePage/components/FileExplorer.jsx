@@ -2464,7 +2464,8 @@ const mapDispatchToProps = (dispatch, _) =>
               })
             );
 
-            dispatch(actionSetSelectedDirLists({ selected: [] }, deviceType));
+            // Don't clear selection immediately - preserve it in case paste is cancelled
+            // Selection will be cleared on successful paste completion instead
           } catch (e) {
             log.error(e);
           }
@@ -2654,6 +2655,15 @@ const mapDispatchToProps = (dispatch, _) =>
               dispatch(
                 listDirectory({ ...listDirectoryArgs }, deviceType, getState)
               );
+
+              // Clear selection on successful paste completion (Fix #325)
+              const sourceDeviceType = fileTransferClipboard?.source;
+
+              if (sourceDeviceType) {
+                dispatch(
+                  actionSetSelectedDirLists({ selected: [] }, sourceDeviceType)
+                );
+              }
 
               analyticsService.sendEvent(EVENT_TYPE.FILE_TRANSFER_COMPLETED, {
                 'Transfer direction': sessionTransferDirection,
