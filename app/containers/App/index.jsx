@@ -129,6 +129,21 @@ class App extends Component {
       const { actionCreateCopyJsonFileToSettings } = this.props;
       const settingsFromStorage = settingsStorage.getAll();
 
+      // Migration: Change analytics to opt-in for all users (Issue #248)
+      // Previously analytics was opt-out by default, which is a privacy concern.
+      // This migration ensures all users (new and existing) have analytics disabled by default.
+      if (typeof settingsFromStorage.enableAnalytics === 'undefined') {
+        // New installation - use the new default (false) from initialState
+        settingsFromStorage.enableAnalytics = false;
+      } else if (settingsFromStorage.enableAnalytics === true) {
+        // Existing installation with analytics enabled - disable it for privacy
+        // Users can re-enable if they choose to opt-in
+        settingsFromStorage.enableAnalytics = false;
+
+        // Persist this change immediately
+        settingsStorage.setAll({ ...settingsFromStorage });
+      }
+
       actionCreateCopyJsonFileToSettings({ ...settingsFromStorage });
     } catch (e) {
       log.error(e, `App -> writeJsonToSettings`);
