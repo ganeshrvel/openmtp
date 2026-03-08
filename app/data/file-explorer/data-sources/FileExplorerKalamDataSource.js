@@ -209,6 +209,70 @@ export class FileExplorerKalamDataSource {
   }
 
   /**
+   * description - Check if a single file exists and return its metadata
+   *
+   * @param {string} filePath
+   * @param {number} storageId
+   * @return {Promise<{exists: boolean, size: number|null, dateAdded: string|null, isFolder: boolean|null}>}
+   */
+  async fileExistsWithMetadata({ filePath, storageId }) {
+    checkIf(filePath, 'string');
+    checkIf(storageId, 'number');
+
+    try {
+      const { error, stderr, data } = await this.kalamFfi.fileExist({
+        storageId,
+        files: [filePath],
+      });
+
+      if (error || stderr || isEmpty(data)) {
+        return { exists: false, size: null, dateAdded: null, isFolder: null };
+      }
+
+      const fileEntry = data[0];
+
+      if (!fileEntry || !fileEntry.exists) {
+        return { exists: false, size: null, dateAdded: null, isFolder: null };
+      }
+
+      // Get metadata by listing the parent directory and finding the file
+      const parentPath =
+        filePath.substring(0, filePath.lastIndexOf('/')) || '/';
+      const fileName = filePath.substring(filePath.lastIndexOf('/') + 1);
+
+      const listResult = await this.kalamFfi.walk({
+        storageId,
+        fullPath: parentPath,
+        recursive: false,
+        skipDisallowedFiles: false,
+        skipHiddenFiles: false,
+      });
+
+      if (listResult.error || listResult.stderr || isEmpty(listResult.data)) {
+        // File exists but we can't get metadata
+        return { exists: true, size: null, dateAdded: null, isFolder: null };
+      }
+
+      const matchedFile = listResult.data.find((f) => f.name === fileName);
+
+      if (!matchedFile) {
+        return { exists: true, size: null, dateAdded: null, isFolder: null };
+      }
+
+      return {
+        exists: true,
+        size: matchedFile.size ?? null,
+        dateAdded: matchedFile.dateAdded ?? null,
+        isFolder: matchedFile.isFolder ?? false,
+      };
+    } catch (e) {
+      log.error(e);
+
+      return { exists: false, size: null, dateAdded: null, isFolder: null };
+    }
+  }
+
+  /**
    * description - Create a device directory
    *
    * @param filePath

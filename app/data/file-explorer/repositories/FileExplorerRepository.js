@@ -266,6 +266,41 @@ export class FileExplorerRepository {
   }
 
   /**
+   * description - Check if a single file exists and return its metadata
+   *
+   * @param {string} deviceType
+   * @param {string} filePath
+   * @param {string} storageId
+   * @return {Promise<{exists: boolean, size: number|null, dateAdded: string|null, isFolder: boolean|null}>}
+   */
+  async fileExistsWithMetadata({ deviceType, filePath, storageId }) {
+    if (deviceType === DEVICE_TYPE.mtp) {
+      checkIf(storageId, 'number');
+
+      const selectedMtpMode = getMtpModeSetting();
+
+      switch (selectedMtpMode) {
+        case MTP_MODE.legacy:
+          return this.legacyMtpDataSource.fileExistsWithMetadata({
+            filePath,
+            storageId,
+          });
+
+        case MTP_MODE.kalam:
+        default:
+          return this.kalamMtpDataSource.fileExistsWithMetadata({
+            filePath,
+            storageId,
+          });
+      }
+    }
+
+    return this.localDataSource.fileExistsWithMetadata({
+      filePath,
+    });
+  }
+
+  /**
    * description - Upload or download files from MTP device to local or vice versa
    *
    * @param {string} deviceType

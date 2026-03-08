@@ -442,4 +442,42 @@ export class FileExplorerLocalDataSource {
       return false;
     }
   }
+
+  /**
+   * description - Check if a single file exists and return its metadata
+   *
+   * @param {string} filePath
+   * @return {Promise<{exists: boolean, size: number|null, dateAdded: string|null, isFolder: boolean|null}>}
+   */
+  async fileExistsWithMetadata({ filePath }) {
+    try {
+      const fullPath = path.resolve(filePath);
+
+      const _accessGranted = await this._requestUsageAccess({
+        filePath: fullPath,
+      });
+
+      if (!_accessGranted) {
+        return { exists: false, size: null, dateAdded: null, isFolder: null };
+      }
+
+      if (!existsSync(fullPath)) {
+        return { exists: false, size: null, dateAdded: null, isFolder: null };
+      }
+
+      const stat = statSync(fullPath);
+      const { isFolder } = await this._getSymlinkInfo({ fullPath });
+
+      return {
+        exists: true,
+        size: stat.size,
+        dateAdded: appDateFormat(stat.atime),
+        isFolder,
+      };
+    } catch (e) {
+      log.error(e);
+
+      return { exists: false, size: null, dateAdded: null, isFolder: null };
+    }
+  }
 }

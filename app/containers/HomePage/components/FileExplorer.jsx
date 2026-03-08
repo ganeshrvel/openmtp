@@ -22,7 +22,7 @@ import { styles } from '../styles/FileExplorer';
 import {
   TextFieldEdit as TextFieldEditDialog,
   ProgressBar as ProgressBarDialog,
-  Confirm as ConfirmDialog,
+  Conflict as ConflictDialog,
 } from '../../../components/DialogBox';
 import { withReducer } from '../../../store/reducers/withReducer';
 import reducers from '../reducers';
@@ -182,7 +182,15 @@ class FileExplorer extends Component {
     this.filesDragGhostImg = this._createDragIcon();
 
     this.initialState = {
-      togglePasteConfirmDialog: false,
+      conflictDialog: {
+        open: false,
+        conflictType: 'file', // 'file' | 'directory'
+        fileName: '',
+        sourceSize: null,
+        destSize: null,
+        sourceDate: null,
+        destDate: null,
+      },
       toggleDialog: {
         rename: {
           errors: {
@@ -1383,12 +1391,6 @@ class FileExplorer extends Component {
     });
   };
 
-  _handleTogglePasteConfirmDialog = (status) => {
-    this.setState({
-      togglePasteConfirmDialog: status,
-    });
-  };
-
   _handleShowInEnclosingFolder = async ({ data, enabled, label }) => {
     checkIf(data, 'object');
     checkIf(enabled, 'boolean');
@@ -1701,29 +1703,46 @@ class FileExplorer extends Component {
     this._handleClearEditDialog(targetAction);
   };
 
+  _getSourceFileMetadata = (sourcePath) => {
+    const { directoryLists, fileTransferClipboard } = this.props;
+    const sourceDeviceType = fileTransferClipboard.source;
+    const sourceNodes = directoryLists[sourceDeviceType]?.nodes ?? [];
+
+    const matched = sourceNodes.find((node) => node.path === sourcePath);
+
+    if (matched) {
+      return {
+        size: matched.size ?? null,
+        dateAdded: matched.dateAdded ?? null,
+        isFolder: matched.isFolder ?? false,
+      };
+    }
+
+    return { size: null, dateAdded: null, isFolder: false };
+  };
+
   _handlePaste = async () => {
     const {
       deviceType,
       currentBrowsePath,
-      storageId,
       fileTransferClipboard,
       actionCreateThrowError,
     } = this.props;
 
-    let { queue } = fileTransferClipboard;
+    const { queue } = fileTransferClipboard;
     const destinationFolder = currentBrowsePath[deviceType];
     let invalidFileNameFlag = false;
     const deviceTypeUpperCase = deviceType.toUpperCase();
 
-    queue = queue.map((a) => {
-      const _baseName = baseName(a);
-      const fullPath = `${destinationFolder}/${_baseName}`;
+    const sourceDestMap = queue.map((sourcePath) => {
+      const _baseName = baseName(sourcePath);
+      const destPath = `${destinationFolder}/${_baseName}`;
 
-      if (fullPath.trim() === '' || /[\\:]/g.test(fullPath)) {
+      if (destPath.trim() === '' || /[\\:]/g.test(destPath)) {
         invalidFileNameFlag = true;
       }
 
-      return fullPath;
+      return { sourcePath, destPath, fileName: _baseName };
     });
 
     analyticsService.sendEvent(
@@ -1739,61 +1758,354 @@ class FileExplorer extends Component {
       return null;
     }
 
-    if (
-      await fileExplorerController.filesExist({
-        deviceType,
-        fileList: queue,
-        storageId,
-      })
-    ) {
-      analyticsService.sendEvent(
-        EVENT_TYPE[`${deviceTypeUpperCase}_PASTE_FILES_DIALOG_OPEN`],
-        {
-          Reason: 'FILES_EXIST',
-        }
-      );
-
-      this._handleTogglePasteConfirmDialog(true);
-
-      return null;
-    }
-
-    this._handlePasteConfirm(true);
+    await this._handleTransferWithConflicts(sourceDestMap);
   };
 
-  _handlePasteConfirm = (confirm) => {
+  _handleTransferWithConflicts = async (sourceDestMap) => {
+    const {
+      deviceType,
+      currentBrowsePath,
+      storageId,
+      actionSetFileTransferProgress,
+    } = this.props;
+
+    const destinationFolder = currentBrowsePath[deviceType];
+    const totalFiles = sourceDestMap.length;
+
+    // Show the transfer progress dialog
+    actionSetFileTransferProgress({
+      titleText: `Copying files to ${DEVICES_LABEL[deviceType]}...`,
+      bottomText: null,
+      toggle: true,
+      values: [
+        {
+          bodyText1: `Preparing to transfer ${totalFiles} ${getPluralText(
+            'file',
+            totalFiles
+          )}...`,
+          bodyText2: null,
+          percentage: 0,
+          variant: 'indeterminate',
+        },
+      ],
+    });
+
+    // Reset conflict memory for this paste operation
+    const conflictMemory = {
+      sameSize: null, // null | 'skip' | 'replace'
+      differentSize: null, // null | 'skip' | 'replace'
+      directory: null, // null | 'skip' | 'merge'
+    };
+
+    let filesTransferred = 0;
+
+    for (let i = 0; i < sourceDestMap.length; i += 1) {
+      const { sourcePath, destPath, fileName } = sourceDestMap[i];
+
+      // Check if destination file/directory exists
+      // eslint-disable-next-line no-await-in-loop
+      const destMeta = await fileExplorerController.fileExistsWithMetadata({
+        deviceType,
+        filePath: destPath,
+        storageId,
+      });
+
+      if (!destMeta.exists) {
+        // No conflict — transfer directly
+        this._updateTransferProgress(fileName, filesTransferred, totalFiles);
+        // eslint-disable-next-line no-await-in-loop
+        await this._transferSingleFile(sourcePath, destinationFolder);
+        filesTransferred += 1;
+        continue; // eslint-disable-line no-continue
+      }
+
+      // Conflict detected — determine type
+      const sourceMeta = this._getSourceFileMetadata(sourcePath);
+      const isDirectory = destMeta.isFolder || sourceMeta.isFolder;
+
+      if (isDirectory) {
+        // Directory conflict
+        // eslint-disable-next-line no-await-in-loop
+        const action = await this._resolveConflict({
+          conflictMemory,
+          memoryKey: 'directory',
+          conflictType: 'directory',
+          fileName,
+          sourceMeta,
+          destMeta,
+        });
+
+        if (action === 'skip') {
+          continue; // eslint-disable-line no-continue
+        }
+
+        // Merge: list the source directory contents and recurse
+        // eslint-disable-next-line no-await-in-loop
+        const sourceContents = await this._listSourceDirectoryContents(
+          sourcePath
+        );
+
+        if (sourceContents && sourceContents.length > 0) {
+          const nestedMap = sourceContents.map((child) => ({
+            sourcePath: child.path,
+            destPath: `${destPath}/${child.name}`,
+            fileName: child.name,
+          }));
+
+          // eslint-disable-next-line no-await-in-loop
+          await this._handleTransferWithConflictsRecursive(
+            nestedMap,
+            destPath,
+            conflictMemory
+          );
+        }
+      } else {
+        // File conflict
+        const sizesMatch = sourceMeta.size === destMeta.size;
+        const memoryKey = sizesMatch ? 'sameSize' : 'differentSize';
+
+        // eslint-disable-next-line no-await-in-loop
+        const action = await this._resolveConflict({
+          conflictMemory,
+          memoryKey,
+          conflictType: 'file',
+          fileName,
+          sourceMeta,
+          destMeta,
+        });
+
+        if (action === 'skip') {
+          continue; // eslint-disable-line no-continue
+        }
+
+        // Replace: transfer the file (overwrite)
+        this._updateTransferProgress(fileName, filesTransferred, totalFiles);
+        // eslint-disable-next-line no-await-in-loop
+        await this._transferSingleFile(sourcePath, destinationFolder);
+        filesTransferred += 1;
+      }
+    }
+
+    // Refresh directory listing after all transfers complete
+    this._refreshDirectoryListing();
+  };
+
+  _handleTransferWithConflictsRecursive = async (
+    sourceDestMap,
+    destinationFolder,
+    conflictMemory
+  ) => {
+    const { deviceType, storageId } = this.props;
+
+    for (let i = 0; i < sourceDestMap.length; i += 1) {
+      const { sourcePath, destPath, fileName } = sourceDestMap[i];
+
+      // eslint-disable-next-line no-await-in-loop
+      const destMeta = await fileExplorerController.fileExistsWithMetadata({
+        deviceType,
+        filePath: destPath,
+        storageId,
+      });
+
+      if (!destMeta.exists) {
+        // eslint-disable-next-line no-await-in-loop
+        await this._transferSingleFile(sourcePath, destinationFolder);
+        continue; // eslint-disable-line no-continue
+      }
+
+      const sourceMeta = this._getSourceFileMetadata(sourcePath);
+      const isDirectory = destMeta.isFolder || sourceMeta.isFolder;
+
+      if (isDirectory) {
+        // eslint-disable-next-line no-await-in-loop
+        const action = await this._resolveConflict({
+          conflictMemory,
+          memoryKey: 'directory',
+          conflictType: 'directory',
+          fileName,
+          sourceMeta,
+          destMeta,
+        });
+
+        if (action === 'skip') {
+          continue; // eslint-disable-line no-continue
+        }
+
+        // eslint-disable-next-line no-await-in-loop
+        const sourceContents = await this._listSourceDirectoryContents(
+          sourcePath
+        );
+
+        if (sourceContents && sourceContents.length > 0) {
+          const nestedMap = sourceContents.map((child) => ({
+            sourcePath: child.path,
+            destPath: `${destPath}/${child.name}`,
+            fileName: child.name,
+          }));
+
+          // eslint-disable-next-line no-await-in-loop
+          await this._handleTransferWithConflictsRecursive(
+            nestedMap,
+            destPath,
+            conflictMemory
+          );
+        }
+      } else {
+        const sizesMatch = sourceMeta.size === destMeta.size;
+        const memoryKey = sizesMatch ? 'sameSize' : 'differentSize';
+
+        // eslint-disable-next-line no-await-in-loop
+        const action = await this._resolveConflict({
+          conflictMemory,
+          memoryKey,
+          conflictType: 'file',
+          fileName,
+          sourceMeta,
+          destMeta,
+        });
+
+        if (action === 'skip') {
+          continue; // eslint-disable-line no-continue
+        }
+
+        // eslint-disable-next-line no-await-in-loop
+        await this._transferSingleFile(sourcePath, destinationFolder);
+      }
+    }
+  };
+
+  _resolveConflict = ({
+    conflictMemory,
+    memoryKey,
+    conflictType,
+    fileName,
+    sourceMeta,
+    destMeta,
+  }) => {
+    // Check if we already have a remembered decision
+    if (conflictMemory[memoryKey] !== null) {
+      return Promise.resolve(conflictMemory[memoryKey]);
+    }
+
+    // Show dialog and wait for user response
+    return new Promise((resolve) => {
+      this._conflictResolveCallback = ({ action, applyToAll }) => {
+        if (applyToAll) {
+          conflictMemory[memoryKey] = action; // eslint-disable-line no-param-reassign
+        }
+
+        this.setState(
+          {
+            conflictDialog: {
+              ...this.initialState.conflictDialog,
+              open: false,
+            },
+          },
+          () => resolve(action)
+        );
+      };
+
+      this.setState({
+        conflictDialog: {
+          open: true,
+          conflictType,
+          fileName,
+          sourceSize: sourceMeta.size,
+          destSize: destMeta.size,
+          sourceDate: sourceMeta.dateAdded,
+          destDate: destMeta.dateAdded,
+        },
+      });
+    });
+  };
+
+  _handleConflictDialogAction = ({ action, applyToAll }) => {
+    if (this._conflictResolveCallback) {
+      this._conflictResolveCallback({ action, applyToAll });
+      this._conflictResolveCallback = null;
+    }
+  };
+
+  _listSourceDirectoryContents = async (sourcePath) => {
+    const { fileTransferClipboard, storageId } = this.props;
+    const sourceDeviceType = fileTransferClipboard.source;
+
+    const result = await fileExplorerController.listFiles({
+      deviceType: sourceDeviceType,
+      filePath: sourcePath,
+      ignoreHidden: false,
+      storageId,
+    });
+
+    if (result?.error || !result?.data) {
+      return [];
+    }
+
+    return result.data;
+  };
+
+  _transferSingleFile = (sourcePath, destinationFolder) => {
+    const { deviceType, storageId, fileTransferClipboard, actionCreatePaste } =
+      this.props;
+
+    return new Promise((resolve) => {
+      actionCreatePaste(
+        {
+          destinationFolder,
+          storageId,
+          fileTransferClipboard: {
+            ...fileTransferClipboard,
+            queue: [sourcePath],
+          },
+        },
+        {
+          filePath: destinationFolder,
+          ignoreHidden: false,
+        },
+        deviceType,
+        resolve
+      );
+    });
+  };
+
+  _updateTransferProgress = (fileName, filesTransferred, totalFiles) => {
+    const { deviceType, actionSetFileTransferProgress } = this.props;
+    const overallProgress = Math.round((filesTransferred / totalFiles) * 100);
+
+    actionSetFileTransferProgress({
+      titleText: `Copying files to ${DEVICES_LABEL[deviceType]}...`,
+      bottomText: null,
+      toggle: true,
+      values: [
+        {
+          bodyText1: `${filesTransferred + 1} of ${totalFiles} ${getPluralText(
+            'file',
+            totalFiles
+          )}: "${springTruncate(fileName, 45).truncatedText}"`,
+          bodyText2: null,
+          percentage: overallProgress,
+          variant: 'determinate',
+        },
+      ],
+    });
+  };
+
+  _refreshDirectoryListing = () => {
     const {
       deviceType,
       hideHiddenFiles,
       currentBrowsePath,
-      storageId,
-      actionCreatePaste,
-      fileTransferClipboard,
+      actionCreateListDirectory,
+      actionClearFileTransfer,
     } = this.props;
-    const destinationFolder = currentBrowsePath[deviceType];
 
-    this._handleTogglePasteConfirmDialog(false);
-    const deviceTypeUpperCase = deviceType.toUpperCase();
+    // Reset progress bar and transfer state after all files are done
+    getCurrentWindow().setProgressBar(-1);
+    actionClearFileTransfer();
 
-    if (!confirm) {
-      analyticsService.sendEvent(
-        EVENT_TYPE[`${deviceTypeUpperCase}_PASTE_FILES_DIALOG_CLOSE`],
-        {
-          Reason: 'REPLACE_FILES_DENIED',
-        }
-      );
-
-      return null;
-    }
-
-    actionCreatePaste(
+    actionCreateListDirectory(
       {
-        destinationFolder,
-        storageId,
-        fileTransferClipboard,
-      },
-      {
-        filePath: destinationFolder,
+        filePath: currentBrowsePath[deviceType],
         ignoreHidden: hideHiddenFiles[deviceType],
       },
       deviceType
@@ -1999,8 +2311,7 @@ class FileExplorer extends Component {
       isStatusBarEnabled,
       fileTransferClipboard,
     } = this.props;
-    const { toggleDialog, togglePasteConfirmDialog, directoryGeneratedTime } =
-      this.state;
+    const { toggleDialog, conflictDialog, directoryGeneratedTime } = this.state;
     const { rename, newFolder } = toggleDialog;
     const togglePasteDialog =
       deviceType === DEVICE_TYPE.mtp && fileTransferProgess.toggle;
@@ -2145,12 +2456,15 @@ class FileExplorer extends Component {
             </div>
           </div>
         </ProgressBarDialog>
-        <ConfirmDialog
-          fullWidthDialog
-          maxWidthDialog="xs"
-          bodyText="Replace and merge the existing items?"
-          trigger={togglePasteConfirmDialog}
-          onClickHandler={this._handlePasteConfirm}
+        <ConflictDialog
+          trigger={conflictDialog.open}
+          conflictType={conflictDialog.conflictType}
+          fileName={conflictDialog.fileName}
+          sourceSize={conflictDialog.sourceSize}
+          destSize={conflictDialog.destSize}
+          sourceDate={conflictDialog.sourceDate}
+          destDate={conflictDialog.destDate}
+          onAction={this._handleConflictDialogAction}
         />
         <FileExplorerBodyRender
           deviceType={deviceType}
@@ -2191,6 +2505,16 @@ class FileExplorer extends Component {
 const mapDispatchToProps = (dispatch, _) =>
   bindActionCreators(
     {
+      actionClearFileTransfer: () => (_, __) => {
+        dispatch(clearFileTransfer());
+      },
+
+      actionSetFileTransferProgress:
+        ({ ...args }) =>
+        (_, __) => {
+          dispatch(setFileTransferProgress({ ...args }));
+        },
+
       actionCreateThrowError:
         ({ ...args }) =>
         (_, __) => {
@@ -2471,7 +2795,12 @@ const mapDispatchToProps = (dispatch, _) =>
         },
 
       actionCreatePaste:
-        ({ ...pasteArgs }, { ...listDirectoryArgs }, deviceType) =>
+        (
+          { ...pasteArgs },
+          { ...listDirectoryArgs },
+          deviceType,
+          onSingleFileComplete
+        ) =>
         (_, getState) => {
           let sessionElapsedTime = 0;
           const sessionTransferSpeeds = [];
@@ -2631,24 +2960,47 @@ const mapDispatchToProps = (dispatch, _) =>
                   data,
                   mtpMode,
                   onSuccess: () => {
-                    getCurrentWindow().setProgressBar(-1);
-                    dispatch(clearFileTransfer());
-                    dispatch(
-                      listDirectory(
-                        { ...listDirectoryArgs },
-                        deviceType,
-                        getState
-                      )
-                    );
+                    if (!onSingleFileComplete) {
+                      getCurrentWindow().setProgressBar(-1);
+                      dispatch(clearFileTransfer());
+                      dispatch(
+                        listDirectory(
+                          { ...listDirectoryArgs },
+                          deviceType,
+                          getState
+                        )
+                      );
+                    }
                   },
                 })
               );
 
               analyticsService.sendEvent(EVENT_TYPE.FILE_TRANSFER_ERROR, {});
+
+              if (onSingleFileComplete) {
+                onSingleFileComplete();
+              }
             };
 
             // on completed callback for file transfer
             const onCompleted = () => {
+              if (onSingleFileComplete) {
+                // Single-file mode: don't reset progress bar between files
+                analyticsService.sendEvent(EVENT_TYPE.FILE_TRANSFER_COMPLETED, {
+                  'Transfer direction': sessionTransferDirection,
+                  'Total files': sessionTotalFiles,
+                  'Average transfer speed': `${arrayAverage(
+                    sessionTransferSpeeds
+                  )} MB/s`,
+                  'Elapsed time': sessionElapsedTime,
+                  'Is files preprocessing enabled':
+                    filesPreprocessingBeforeTransfer[sessionTransferDirection],
+                });
+                onSingleFileComplete();
+
+                return;
+              }
+
               getCurrentWindow().setProgressBar(-1);
               dispatch(clearFileTransfer());
               dispatch(
