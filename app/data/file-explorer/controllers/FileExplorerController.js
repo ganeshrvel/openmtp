@@ -293,25 +293,6 @@ class FileExplorerController {
   }
 
   /**
-   * description - Check if a single file exists and return its metadata
-   *
-   * @param {string} deviceType
-   * @param {string} filePath
-   * @param {string} storageId
-   * @return {Promise<{exists: boolean, size: number|null, dateAdded: string|null, isFolder: boolean|null}>}
-   */
-  async fileExistsWithMetadata({ deviceType, filePath, storageId }) {
-    checkIf(deviceType, 'string');
-    checkIf(filePath, 'string');
-
-    return this.repository.fileExistsWithMetadata({
-      deviceType,
-      filePath,
-      storageId,
-    });
-  }
-
-  /**
    * description - Upload or download files from MTP device to local or vice versa
    *
    * @param {string} deviceType

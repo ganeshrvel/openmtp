@@ -1797,137 +1797,25 @@ class FileExplorer extends Component {
     };
 
     try {
-      // Pre-fetch destination directory listing once (avoids N MTP calls)
-      const destFilesMap = await this._getDestinationFilesMap(
-        destinationFolder
+      await this._processFileQueue(
+        sourceDestMap,
+        destinationFolder,
+        conflictMemory,
+        progressState
       );
-
-      for (let i = 0; i < sourceDestMap.length; i += 1) {
-        const { sourcePath, destPath, fileName } = sourceDestMap[i];
-
-        // Look up destination file from cached listing
-        const destMeta = destFilesMap[fileName]
-          ? { ...destFilesMap[fileName] }
-          : { exists: false, size: null, dateAdded: null, isFolder: null };
-
-        if (!destMeta.exists) {
-          // No conflict — transfer directly
-          this._updateTransferProgress(fileName, progressState);
-          // eslint-disable-next-line no-await-in-loop
-          const result = await this._transferSingleFile(
-            sourcePath,
-            destinationFolder
-          );
-
-          if (result.success) {
-            progressState.transferred += 1;
-          } else {
-            progressState.skipped += 1;
-          }
-
-          continue; // eslint-disable-line no-continue
-        }
-
-        // Conflict detected — determine type
-        const sourceMeta = this._getSourceFileMetadata(sourcePath);
-        const isDirectory = destMeta.isFolder || sourceMeta.isFolder;
-
-        if (isDirectory) {
-          // Directory conflict
-          // eslint-disable-next-line no-await-in-loop
-          const action = await this._resolveConflict({
-            conflictMemory,
-            memoryKey: 'directory',
-            conflictType: 'directory',
-            fileName,
-            sourceMeta,
-            destMeta,
-          });
-
-          if (action === 'skip') {
-            progressState.skipped += 1;
-            this._updateTransferProgress(fileName, progressState);
-            continue; // eslint-disable-line no-continue
-          }
-
-          // Merge: list the source directory contents and recurse
-          // eslint-disable-next-line no-await-in-loop
-          const sourceContents = await this._listSourceDirectoryContents(
-            sourcePath
-          );
-
-          if (sourceContents && sourceContents.length > 0) {
-            // Expand total to include nested files
-            progressState.total += sourceContents.length;
-
-            const nestedMap = sourceContents.map((child) => ({
-              sourcePath: child.path,
-              destPath: `${destPath}/${child.name}`,
-              fileName: child.name,
-              sourceMeta: {
-                size: child.size ?? null,
-                dateAdded: child.dateAdded ?? null,
-                isFolder: child.isFolder ?? false,
-              },
-            }));
-
-            // eslint-disable-next-line no-await-in-loop
-            await this._handleTransferWithConflictsRecursive(
-              nestedMap,
-              destPath,
-              conflictMemory,
-              progressState
-            );
-          }
-        } else {
-          // File conflict
-          const sizesMatch = sourceMeta.size === destMeta.size;
-          const memoryKey = sizesMatch ? 'sameSize' : 'differentSize';
-
-          // eslint-disable-next-line no-await-in-loop
-          const action = await this._resolveConflict({
-            conflictMemory,
-            memoryKey,
-            conflictType: 'file',
-            fileName,
-            sourceMeta,
-            destMeta,
-          });
-
-          if (action === 'skip') {
-            progressState.skipped += 1;
-            this._updateTransferProgress(fileName, progressState);
-            continue; // eslint-disable-line no-continue
-          }
-
-          // Replace: transfer the file (overwrite)
-          this._updateTransferProgress(fileName, progressState);
-          // eslint-disable-next-line no-await-in-loop
-          const replaceResult = await this._transferSingleFile(
-            sourcePath,
-            destinationFolder
-          );
-
-          if (replaceResult.success) {
-            progressState.transferred += 1;
-          } else {
-            progressState.skipped += 1;
-          }
-        }
-      }
     } finally {
       // Always clean up — refresh directory listing even if an error occurred
       this._refreshDirectoryListing();
     }
   };
 
-  _handleTransferWithConflictsRecursive = async (
+  _processFileQueue = async (
     sourceDestMap,
     destinationFolder,
     conflictMemory,
     progressState
   ) => {
-    // Pre-fetch destination directory listing once
+    // Pre-fetch destination directory listing once (avoids N MTP calls)
     const destFilesMap = await this._getDestinationFilesMap(destinationFolder);
 
     for (let i = 0; i < sourceDestMap.length; i += 1) {
@@ -1944,7 +1832,7 @@ class FileExplorer extends Component {
         : { exists: false, size: null, dateAdded: null, isFolder: null };
 
       if (!destMeta.exists) {
-        this._updateTransferProgress(fileName, progressState);
+        // No conflict — transfer directly
         // eslint-disable-next-line no-await-in-loop
         const result = await this._transferSingleFile(
           sourcePath,
@@ -1957,10 +1845,11 @@ class FileExplorer extends Component {
           progressState.skipped += 1; // eslint-disable-line no-param-reassign
         }
 
+        this._updateTransferProgress(fileName, progressState);
         continue; // eslint-disable-line no-continue
       }
 
-      // Use metadata from the parent listing (not Redux state)
+      // Conflict detected — determine type
       const sourceMeta =
         entrySourceMeta || this._getSourceFileMetadata(sourcePath);
       const isDirectory = destMeta.isFolder || sourceMeta.isFolder;
@@ -1982,6 +1871,7 @@ class FileExplorer extends Component {
           continue; // eslint-disable-line no-continue
         }
 
+        // Merge: list the source directory contents and recurse
         // eslint-disable-next-line no-await-in-loop
         const sourceContents = await this._listSourceDirectoryContents(
           sourcePath
@@ -2003,7 +1893,7 @@ class FileExplorer extends Component {
           }));
 
           // eslint-disable-next-line no-await-in-loop
-          await this._handleTransferWithConflictsRecursive(
+          await this._processFileQueue(
             nestedMap,
             destPath,
             conflictMemory,
@@ -2011,6 +1901,7 @@ class FileExplorer extends Component {
           );
         }
       } else {
+        // File conflict
         const sizesMatch = sourceMeta.size === destMeta.size;
         const memoryKey = sizesMatch ? 'sameSize' : 'differentSize';
 
@@ -2030,7 +1921,7 @@ class FileExplorer extends Component {
           continue; // eslint-disable-line no-continue
         }
 
-        this._updateTransferProgress(fileName, progressState);
+        // Replace: transfer the file (overwrite)
         // eslint-disable-next-line no-await-in-loop
         const replaceResult = await this._transferSingleFile(
           sourcePath,
@@ -2042,6 +1933,8 @@ class FileExplorer extends Component {
         } else {
           progressState.skipped += 1; // eslint-disable-line no-param-reassign
         }
+
+        this._updateTransferProgress(fileName, progressState);
       }
     }
   };

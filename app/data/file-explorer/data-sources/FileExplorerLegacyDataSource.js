@@ -163,54 +163,6 @@ export class FileExplorerLegacyDataSource {
   }
 
   /**
-   * description - Check if a single file exists and return its metadata
-   *
-   * @param {string} filePath
-   * @param {number} storageId
-   * @return {Promise<{exists: boolean, size: number|null, dateAdded: string|null, isFolder: boolean|null}>}
-   */
-  async fileExistsWithMetadata({ filePath, storageId }) {
-    try {
-      const exists = await this._checkMtpFileExists(filePath, storageId);
-
-      if (!exists) {
-        return { exists: false, size: null, dateAdded: null, isFolder: null };
-      }
-
-      // List parent directory to get file metadata
-      const parentPath = path.dirname(filePath);
-      const fileName = path.basename(filePath);
-
-      const { data } = await this.listFiles({
-        filePath: parentPath,
-        ignoreHidden: false,
-        storageId,
-      });
-
-      if (!data) {
-        return { exists: true, size: null, dateAdded: null, isFolder: null };
-      }
-
-      const matchedFile = data.find((f) => f.name === fileName);
-
-      if (!matchedFile) {
-        return { exists: true, size: null, dateAdded: null, isFolder: null };
-      }
-
-      return {
-        exists: true,
-        size: matchedFile.size,
-        dateAdded: matchedFile.dateAdded,
-        isFolder: matchedFile.isFolder,
-      };
-    } catch (e) {
-      log.error(e);
-
-      return { exists: false, size: null, dateAdded: null, isFolder: null };
-    }
-  }
-
-  /**
    * description - file transfer helper
    *
    * @param {[string]} cmdArgs - command line strings in an array
