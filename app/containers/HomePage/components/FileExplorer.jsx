@@ -1814,8 +1814,17 @@ class FileExplorer extends Component {
           // No conflict — transfer directly
           this._updateTransferProgress(fileName, progressState);
           // eslint-disable-next-line no-await-in-loop
-          await this._transferSingleFile(sourcePath, destinationFolder);
-          progressState.transferred += 1;
+          const result = await this._transferSingleFile(
+            sourcePath,
+            destinationFolder
+          );
+
+          if (result.success) {
+            progressState.transferred += 1;
+          } else {
+            progressState.skipped += 1;
+          }
+
           continue; // eslint-disable-line no-continue
         }
 
@@ -1894,8 +1903,16 @@ class FileExplorer extends Component {
           // Replace: transfer the file (overwrite)
           this._updateTransferProgress(fileName, progressState);
           // eslint-disable-next-line no-await-in-loop
-          await this._transferSingleFile(sourcePath, destinationFolder);
-          progressState.transferred += 1;
+          const replaceResult = await this._transferSingleFile(
+            sourcePath,
+            destinationFolder
+          );
+
+          if (replaceResult.success) {
+            progressState.transferred += 1;
+          } else {
+            progressState.skipped += 1;
+          }
         }
       }
     } finally {
@@ -1929,8 +1946,17 @@ class FileExplorer extends Component {
       if (!destMeta.exists) {
         this._updateTransferProgress(fileName, progressState);
         // eslint-disable-next-line no-await-in-loop
-        await this._transferSingleFile(sourcePath, destinationFolder);
-        progressState.transferred += 1; // eslint-disable-line no-param-reassign
+        const result = await this._transferSingleFile(
+          sourcePath,
+          destinationFolder
+        );
+
+        if (result.success) {
+          progressState.transferred += 1; // eslint-disable-line no-param-reassign
+        } else {
+          progressState.skipped += 1; // eslint-disable-line no-param-reassign
+        }
+
         continue; // eslint-disable-line no-continue
       }
 
@@ -2006,8 +2032,16 @@ class FileExplorer extends Component {
 
         this._updateTransferProgress(fileName, progressState);
         // eslint-disable-next-line no-await-in-loop
-        await this._transferSingleFile(sourcePath, destinationFolder);
-        progressState.transferred += 1; // eslint-disable-line no-param-reassign
+        const replaceResult = await this._transferSingleFile(
+          sourcePath,
+          destinationFolder
+        );
+
+        if (replaceResult.success) {
+          progressState.transferred += 1; // eslint-disable-line no-param-reassign
+        } else {
+          progressState.skipped += 1; // eslint-disable-line no-param-reassign
+        }
       }
     }
   };
@@ -2129,7 +2163,7 @@ class FileExplorer extends Component {
           ignoreHidden: false,
         },
         deviceType,
-        resolve
+        ({ success }) => resolve({ success })
       );
     });
   };
@@ -3053,7 +3087,7 @@ const mapDispatchToProps = (dispatch, _) =>
               analyticsService.sendEvent(EVENT_TYPE.FILE_TRANSFER_ERROR, {});
 
               if (onSingleFileComplete) {
-                onSingleFileComplete();
+                onSingleFileComplete({ success: false });
               }
             };
 
@@ -3071,7 +3105,7 @@ const mapDispatchToProps = (dispatch, _) =>
                   'Is files preprocessing enabled':
                     filesPreprocessingBeforeTransfer[sessionTransferDirection],
                 });
-                onSingleFileComplete();
+                onSingleFileComplete({ success: true });
 
                 return;
               }
