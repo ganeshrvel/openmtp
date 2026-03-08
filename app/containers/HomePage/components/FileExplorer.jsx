@@ -1850,6 +1850,11 @@ class FileExplorer extends Component {
             sourcePath: child.path,
             destPath: `${destPath}/${child.name}`,
             fileName: child.name,
+            sourceMeta: {
+              size: child.size ?? null,
+              dateAdded: child.dateAdded ?? null,
+              isFolder: child.isFolder ?? false,
+            },
           }));
 
           // eslint-disable-next-line no-await-in-loop
@@ -1898,7 +1903,12 @@ class FileExplorer extends Component {
     const { deviceType, storageId } = this.props;
 
     for (let i = 0; i < sourceDestMap.length; i += 1) {
-      const { sourcePath, destPath, fileName } = sourceDestMap[i];
+      const {
+        sourcePath,
+        destPath,
+        fileName,
+        sourceMeta: entrySourceMeta,
+      } = sourceDestMap[i];
 
       // eslint-disable-next-line no-await-in-loop
       const destMeta = await fileExplorerController.fileExistsWithMetadata({
@@ -1908,12 +1918,15 @@ class FileExplorer extends Component {
       });
 
       if (!destMeta.exists) {
+        this._updateTransferProgress(fileName, i, sourceDestMap.length);
         // eslint-disable-next-line no-await-in-loop
         await this._transferSingleFile(sourcePath, destinationFolder);
         continue; // eslint-disable-line no-continue
       }
 
-      const sourceMeta = this._getSourceFileMetadata(sourcePath);
+      // Use metadata from the parent listing (not Redux state)
+      const sourceMeta =
+        entrySourceMeta || this._getSourceFileMetadata(sourcePath);
       const isDirectory = destMeta.isFolder || sourceMeta.isFolder;
 
       if (isDirectory) {
@@ -1941,6 +1954,11 @@ class FileExplorer extends Component {
             sourcePath: child.path,
             destPath: `${destPath}/${child.name}`,
             fileName: child.name,
+            sourceMeta: {
+              size: child.size ?? null,
+              dateAdded: child.dateAdded ?? null,
+              isFolder: child.isFolder ?? false,
+            },
           }));
 
           // eslint-disable-next-line no-await-in-loop
@@ -1968,6 +1986,7 @@ class FileExplorer extends Component {
           continue; // eslint-disable-line no-continue
         }
 
+        this._updateTransferProgress(fileName, i, sourceDestMap.length);
         // eslint-disable-next-line no-await-in-loop
         await this._transferSingleFile(sourcePath, destinationFolder);
       }
