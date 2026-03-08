@@ -97,6 +97,8 @@ import {
 } from '../../../templates/socialMediaShareBtns';
 import { baseName, pathInfo, pathUp, sanitizePath } from '../../../utils/files';
 import {
+  CONFLICT_ACTION,
+  CONFLICT_TYPE,
   DEVICE_TYPE,
   FILE_EXPLORER_VIEW_TYPE,
   FILE_TRANSFER_DIRECTION,
@@ -184,7 +186,7 @@ class FileExplorer extends Component {
     this.initialState = {
       conflictDialog: {
         open: false,
-        conflictType: 'file', // 'file' | 'directory'
+        conflictType: CONFLICT_TYPE.file,
         fileName: '',
         sourceSize: null,
         destSize: null,
@@ -1703,22 +1705,21 @@ class FileExplorer extends Component {
     this._handleClearEditDialog(targetAction);
   };
 
-  _getSourceFileMetadata = (sourcePath) => {
+  _buildSourceMetadataMap = () => {
     const { directoryLists, fileTransferClipboard } = this.props;
     const sourceDeviceType = fileTransferClipboard.source;
     const sourceNodes = directoryLists[sourceDeviceType]?.nodes ?? [];
+    const map = {};
 
-    const matched = sourceNodes.find((node) => node.path === sourcePath);
-
-    if (matched) {
-      return {
-        size: matched.size ?? null,
-        dateAdded: matched.dateAdded ?? null,
-        isFolder: matched.isFolder ?? false,
+    sourceNodes.forEach((node) => {
+      map[node.path] = {
+        size: node.size ?? null,
+        dateAdded: node.dateAdded ?? null,
+        isFolder: node.isFolder ?? false,
       };
-    }
+    });
 
-    return { size: null, dateAdded: null, isFolder: false };
+    return map;
   };
 
   _handlePaste = async () => {
@@ -1791,17 +1792,21 @@ class FileExplorer extends Component {
 
     // Reset conflict memory for this paste operation
     const conflictMemory = {
-      sameSize: null, // null | 'skip' | 'replace'
-      differentSize: null, // null | 'skip' | 'replace'
-      directory: null, // null | 'skip' | 'merge'
+      sameSize: null,
+      differentSize: null,
+      directory: null,
     };
+
+    // Build O(1) lookup map for source file metadata from Redux state
+    const sourceMetadataMap = this._buildSourceMetadataMap();
 
     try {
       await this._processFileQueue(
         sourceDestMap,
         destinationFolder,
         conflictMemory,
-        progressState
+        progressState,
+        sourceMetadataMap
       );
     } finally {
       // Always clean up — refresh directory listing even if an error occurred
@@ -1813,9 +1818,12 @@ class FileExplorer extends Component {
     sourceDestMap,
     destinationFolder,
     conflictMemory,
-    progressState
+    progressState,
+    sourceMetadataMap
   ) => {
-    // Pre-fetch destination directory listing once (avoids N MTP calls)
+    // Pre-fetch destination directory listing once (avoids N MTP calls).
+    // This cache may become stale as files are transferred, but the trade-off
+    // is acceptable — re-listing per file would be too slow on MTP devices.
     const destFilesMap = await this._getDestinationFilesMap(destinationFolder);
 
     for (let i = 0; i < sourceDestMap.length; i += 1) {
@@ -1850,8 +1858,9 @@ class FileExplorer extends Component {
       }
 
       // Conflict detected — determine type
+      const defaultMeta = { size: null, dateAdded: null, isFolder: false };
       const sourceMeta =
-        entrySourceMeta || this._getSourceFileMetadata(sourcePath);
+        entrySourceMeta || sourceMetadataMap[sourcePath] || defaultMeta;
       const isDirectory = destMeta.isFolder || sourceMeta.isFolder;
 
       if (isDirectory) {
@@ -1859,13 +1868,13 @@ class FileExplorer extends Component {
         const action = await this._resolveConflict({
           conflictMemory,
           memoryKey: 'directory',
-          conflictType: 'directory',
+          conflictType: CONFLICT_TYPE.directory,
           fileName,
           sourceMeta,
           destMeta,
         });
 
-        if (action === 'skip') {
+        if (action === CONFLICT_ACTION.skip) {
           progressState.skipped += 1; // eslint-disable-line no-param-reassign
           this._updateTransferProgress(fileName, progressState);
           continue; // eslint-disable-line no-continue
@@ -1897,7 +1906,8 @@ class FileExplorer extends Component {
             nestedMap,
             destPath,
             conflictMemory,
-            progressState
+            progressState,
+            sourceMetadataMap
           );
         }
       } else {
@@ -1909,13 +1919,13 @@ class FileExplorer extends Component {
         const action = await this._resolveConflict({
           conflictMemory,
           memoryKey,
-          conflictType: 'file',
+          conflictType: CONFLICT_TYPE.file,
           fileName,
           sourceMeta,
           destMeta,
         });
 
-        if (action === 'skip') {
+        if (action === CONFLICT_ACTION.skip) {
           progressState.skipped += 1; // eslint-disable-line no-param-reassign
           this._updateTransferProgress(fileName, progressState);
           continue; // eslint-disable-line no-continue

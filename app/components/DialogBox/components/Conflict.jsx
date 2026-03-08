@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react';
-import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -12,6 +11,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import { styles } from '../styles/Conflict';
 import { niceBytes } from '../../../utils/funcs';
 import { appDateFormat } from '../../../utils/date';
+import { CONFLICT_TYPE, CONFLICT_ACTION } from '../../../enums';
 
 class Conflict extends PureComponent {
   constructor(props) {
@@ -21,6 +21,7 @@ class Conflict extends PureComponent {
     };
   }
 
+  // applyToAll is captured before setState reset (intentional — setState is batched)
   _handleAction = (action) => {
     const { onAction } = this.props;
     const { applyToAll } = this.state;
@@ -46,7 +47,7 @@ class Conflict extends PureComponent {
     } = this.props;
     const { applyToAll } = this.state;
 
-    const isDirectory = conflictType === 'directory';
+    const isDirectory = conflictType === CONFLICT_TYPE.directory;
     const sizesMatch = sourceSize === destSize;
     const titleText = isDirectory
       ? 'Folder Already Exists'
@@ -108,18 +109,20 @@ class Conflict extends PureComponent {
         </DialogContent>
         <DialogActions>
           <Button
-            onClick={() => this._handleAction('skip')}
+            onClick={() => this._handleAction(CONFLICT_ACTION.skip)}
             color="secondary"
-            className={classNames(styles.btnNegative)}
+            className={styles.btnNegative}
           >
             Skip
           </Button>
           <Button
             onClick={() =>
-              this._handleAction(isDirectory ? 'merge' : 'replace')
+              this._handleAction(
+                isDirectory ? CONFLICT_ACTION.merge : CONFLICT_ACTION.replace
+              )
             }
             color="primary"
-            className={classNames(styles.btnPositive)}
+            className={styles.btnPositive}
           >
             {isDirectory ? 'Merge' : 'Replace'}
           </Button>

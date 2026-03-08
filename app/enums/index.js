@@ -33,3 +33,14 @@ export const USB_HOTPLUG_EVENTS = {
   attach: 'attach',
   detach: 'detach',
 };
+
+export const CONFLICT_TYPE = {
+  file: 'file',
+  directory: 'directory',
+};
+
+export const CONFLICT_ACTION = {
+  skip: 'skip',
+  replace: 'replace',
+  merge: 'merge',
+};
