@@ -100,8 +100,6 @@ class Conflict extends PureComponent {
                 <Checkbox
                   checked={applyToAll}
                   onChange={this._handleApplyToAllChange}
-                  color="primary"
-                  size="small"
                 />
               }
               label={applyToAllLabel}
