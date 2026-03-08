@@ -1762,12 +1762,8 @@ class FileExplorer extends Component {
   };
 
   _handleTransferWithConflicts = async (sourceDestMap) => {
-    const {
-      deviceType,
-      currentBrowsePath,
-      storageId,
-      actionSetFileTransferProgress,
-    } = this.props;
+    const { deviceType, currentBrowsePath, actionSetFileTransferProgress } =
+      this.props;
 
     const destinationFolder = currentBrowsePath[deviceType];
     const totalFiles = sourceDestMap.length;
@@ -1801,16 +1797,18 @@ class FileExplorer extends Component {
     };
 
     try {
+      // Pre-fetch destination directory listing once (avoids N MTP calls)
+      const destFilesMap = await this._getDestinationFilesMap(
+        destinationFolder
+      );
+
       for (let i = 0; i < sourceDestMap.length; i += 1) {
         const { sourcePath, destPath, fileName } = sourceDestMap[i];
 
-        // Check if destination file/directory exists
-        // eslint-disable-next-line no-await-in-loop
-        const destMeta = await fileExplorerController.fileExistsWithMetadata({
-          deviceType,
-          filePath: destPath,
-          storageId,
-        });
+        // Look up destination file from cached listing
+        const destMeta = destFilesMap[fileName]
+          ? { ...destFilesMap[fileName] }
+          : { exists: false, size: null, dateAdded: null, isFolder: null };
 
         if (!destMeta.exists) {
           // No conflict — transfer directly
@@ -1912,7 +1910,8 @@ class FileExplorer extends Component {
     conflictMemory,
     progressState
   ) => {
-    const { deviceType, storageId } = this.props;
+    // Pre-fetch destination directory listing once
+    const destFilesMap = await this._getDestinationFilesMap(destinationFolder);
 
     for (let i = 0; i < sourceDestMap.length; i += 1) {
       const {
@@ -1922,12 +1921,10 @@ class FileExplorer extends Component {
         sourceMeta: entrySourceMeta,
       } = sourceDestMap[i];
 
-      // eslint-disable-next-line no-await-in-loop
-      const destMeta = await fileExplorerController.fileExistsWithMetadata({
-        deviceType,
-        filePath: destPath,
-        storageId,
-      });
+      // Look up destination file from cached listing
+      const destMeta = destFilesMap[fileName]
+        ? { ...destFilesMap[fileName] }
+        : { exists: false, size: null, dateAdded: null, isFolder: null };
 
       if (!destMeta.exists) {
         this._updateTransferProgress(fileName, progressState);
@@ -2065,6 +2062,34 @@ class FileExplorer extends Component {
       this._conflictResolveCallback({ action, applyToAll });
       this._conflictResolveCallback = null;
     }
+  };
+
+  _getDestinationFilesMap = async (dirPath) => {
+    const { deviceType, storageId } = this.props;
+
+    const result = await fileExplorerController.listFiles({
+      deviceType,
+      filePath: dirPath,
+      ignoreHidden: false,
+      storageId,
+    });
+
+    if (result?.error || !result?.data) {
+      return {};
+    }
+
+    const map = {};
+
+    result.data.forEach((file) => {
+      map[file.name] = {
+        exists: true,
+        size: file.size ?? null,
+        dateAdded: file.dateAdded ?? null,
+        isFolder: file.isFolder ?? false,
+      };
+    });
+
+    return map;
   };
 
   _listSourceDirectoryContents = async (sourcePath) => {
