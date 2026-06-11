@@ -4,6 +4,8 @@
   "version": "3.2.25",
   "description": "OpenMTP | Android File Transfer for macOS",
   "scripts": {
+    "mtp-cli": "cross-env NODE_ENV=production node -r @babel/register ./ffi/kalam/cli/index.js",
+    "test": "cross-env NODE_ENV=test jest",
     "build": "yarn lint && concurrently \"yarn build-main\" \"yarn build-renderer\"",
     "build-no-verify": "concurrently \"yarn build-main\" \"yarn build-renderer\"",
     "build-dll": "cross-env NODE_ENV=development webpack --config ./webpack/config.renderer.dev.dll.babel.js --color",
@@ -37,6 +39,9 @@
     "postinstall": "yarn build-dll && electron-builder install-app-deps"
   },
   "main": "./app/main.prod.js",
+  "bin": {
+    "openmtp-cli": "./ffi/kalam/cli/index.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ganeshrvel/openmtp.git"
@@ -58,6 +63,15 @@
     "mtp"
   ],
   "homepage": "https://openmtp.ganeshrvel.com/",
+  "jest": {
+    "testEnvironment": "node",
+    "testMatch": [
+      "<rootDir>/ffi/kalam/cli/__tests__/**/*.test.js"
+    ],
+    "transform": {
+      "^.+\\.(js|jsx)$": "babel-jest"
+    }
+  },
   "browserslist": {
     "production": [
       "last 2 Chrome versions"
@@ -159,6 +173,7 @@
     "axios": "^1.6.8",
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "^10.1.0",
+    "babel-jest": "29.5.0",
     "babel-loader": "^8.2.2",
     "babel-plugin-dev-expression": "^0.2.3",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
@@ -189,6 +204,7 @@
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.5.0",
     "husky": "^4.3.8",
+    "jest": "29.5.0",
     "js-yaml": "^4.1.0",
     "lint-staged": "^13.0.3",
     "mini-css-extract-plugin": "^2.6.1",
