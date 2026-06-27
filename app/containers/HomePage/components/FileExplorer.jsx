@@ -211,8 +211,11 @@ class FileExplorer extends Component {
     this.electronMenu = new Menu();
 
     this.keyedAcceleratorList = {
+      meta: false,
       shift: false,
     };
+
+    this.selectionAnchor = null;
 
     this.usbHotplug = {
       attempts: 0,
@@ -257,6 +260,7 @@ class FileExplorer extends Component {
     const { nodes: nextDirectoryNodes } = nextDirectoryLists[deviceType];
 
     if (nextDirectoryNodes !== prevDirectoryNodes) {
+      this.selectionAnchor = null;
       this._handleDirectoryGeneratedTime();
     }
 
@@ -516,11 +520,16 @@ class FileExplorer extends Component {
     switch (event.key) {
       case 'Shift':
       case 'shift':
+        this.keyedAcceleratorList = {
+          ...this.keyedAcceleratorList,
+          shift: pressed,
+        };
+        break;
       case 'Meta':
       case 'meta':
         this.keyedAcceleratorList = {
           ...this.keyedAcceleratorList,
-          shift: pressed,
+          meta: pressed,
         };
         break;
       default:
@@ -1854,31 +1863,70 @@ class FileExplorer extends Component {
     }
 
     const { directoryLists, actionCreateTableClick } = this.props;
-    const { selected } = directoryLists[deviceType].queue;
+    const { nodes, order, orderBy, queue } = directoryLists[deviceType];
+    const { selected } = queue;
     const selectedIndex = selected.indexOf(path);
+    const isRangeSelection =
+      event?.shiftKey ||
+      (shiftKeyAcceleratorEnable && this.keyedAcceleratorList.shift);
+    const isAppendSelection =
+      event?.metaKey ||
+      event?.ctrlKey ||
+      (shiftKeyAcceleratorEnable && this.keyedAcceleratorList.meta);
     let _dontAppend = dontAppend;
     let newSelected = [];
 
-    if (shiftKeyAcceleratorEnable && this.keyedAcceleratorList.shift) {
+    if (isRangeSelection) {
+      const sortedNodes = this.tableSort({ nodes, order, orderBy });
+      const anchorPath = this.selectionAnchor ?? selected[0] ?? path;
+      const anchorIndex = sortedNodes.findIndex(
+        (item) => item.path === anchorPath
+      );
+      const pathIndex = sortedNodes.findIndex((item) => item.path === path);
+
+      if (anchorIndex >= 0 && pathIndex >= 0) {
+        const startIndex = Math.min(anchorIndex, pathIndex);
+        const endIndex = Math.max(anchorIndex, pathIndex);
+
+        newSelected = sortedNodes
+          .slice(startIndex, endIndex + 1)
+          .map((item) => item.path);
+      } else {
+        newSelected = [path];
+      }
+    } else if (isAppendSelection) {
       _dontAppend = false;
     }
 
-    if (_dontAppend) {
+    if (!isRangeSelection && _dontAppend) {
       newSelected = [path];
-    } else if (selectedIndex === -1) {
+    } else if (!isRangeSelection && selectedIndex === -1) {
       newSelected = newSelected.concat(selected, path);
-    } else if (selectedIndex === 0) {
+    } else if (!isRangeSelection && selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
+    } else if (!isRangeSelection && selectedIndex === selected.length - 1) {
       newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
+    } else if (!isRangeSelection && selectedIndex > 0) {
       newSelected = newSelected.concat(
         selected.slice(0, selectedIndex),
         selected.slice(selectedIndex + 1)
       );
     }
 
+    if (!isRangeSelection) {
+      this.selectionAnchor = newSelected.includes(path)
+        ? path
+        : newSelected[newSelected.length - 1] ?? null;
+    }
+
     actionCreateTableClick({ selected: newSelected }, deviceType);
+  };
+
+  _handleSelectionChange = (selected, deviceType) => {
+    const { actionCreateTableClick } = this.props;
+
+    this.selectionAnchor = selected[0] ?? null;
+    actionCreateTableClick({ selected }, deviceType);
   };
 
   _handleTableDoubleClick = (item, deviceType) => {
@@ -2175,6 +2223,7 @@ class FileExplorer extends Component {
           onContextMenuClick={this._handleContextMenuClick}
           onTableDoubleClick={this._handleTableDoubleClick}
           onTableClick={this._handleTableClick}
+          onSelectionChange={this._handleSelectionChange}
           onIsDraggable={this._handleIsDraggable}
           onExternalFileDragLeave={this._handleExternalFileDragLeave}
           onFocussedFileExplorerDeviceType={

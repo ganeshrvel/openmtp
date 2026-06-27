@@ -68,6 +68,8 @@ class FileExplorerTableBodyListRender extends PureComponent {
     return (
       <TableRow
         draggable
+        data-file-item
+        data-file-path={item.path}
         hover
         role="checkbox"
         aria-checked={isSelected}

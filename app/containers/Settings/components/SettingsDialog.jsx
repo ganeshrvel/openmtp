@@ -20,7 +20,6 @@ import { DEVICES_LABEL } from '../../../constants';
 import SettingsDialogTabContainer from './SettingsDialogTabContainer';
 import {
   DEVICE_TYPE,
-  FILE_EXPLORER_VIEW_TYPE,
   APP_THEME_MODE_TYPE,
   MTP_MODE,
   FILE_TRANSFER_DIRECTION,
@@ -69,7 +68,6 @@ export default class SettingsDialog extends PureComponent {
       open,
       freshInstall,
       hideHiddenFiles,
-      fileExplorerListingType,
       appThemeMode,
       styles,
       enableAutoUpdateCheck,
@@ -84,7 +82,6 @@ export default class SettingsDialog extends PureComponent {
       filesPreprocessingBeforeTransfer,
       onAnalyticsChange,
       onHiddenFilesChange,
-      onFileExplorerListingType,
       onDialogBoxCloseBtnClick,
       onAutoUpdateCheckChange,
       onEnableBackgroundAutoUpdateChange,
@@ -104,12 +101,6 @@ export default class SettingsDialog extends PureComponent {
 
     const hideHiddenFilesLocal = hideHiddenFiles[DEVICE_TYPE.local];
     const hideHiddenFilesMtp = hideHiddenFiles[DEVICE_TYPE.mtp];
-
-    const fileExplorerListingTypeLocalGrid =
-      fileExplorerListingType[DEVICE_TYPE.local] ===
-      FILE_EXPLORER_VIEW_TYPE.grid;
-    const fileExplorerListingTypeMtpGrid =
-      fileExplorerListingType[DEVICE_TYPE.mtp] === FILE_EXPLORER_VIEW_TYPE.grid;
 
     const showMtpModeSelection = isKalamModeSupported();
 
@@ -271,49 +262,6 @@ export default class SettingsDialog extends PureComponent {
                             onHiddenFilesChange(
                               e,
                               !hideHiddenFilesMtp,
-                              DEVICE_TYPE.mtp
-                            )
-                          }
-                        />
-                      }
-                      label={DEVICES_LABEL[DEVICE_TYPE.mtp]}
-                    />
-
-                    <Typography
-                      variant="subtitle2"
-                      className={`${styles.subtitle} ${styles.fmSettingsStylesFix}`}
-                    >
-                      View as grid
-                    </Typography>
-                    <FormControlLabel
-                      className={styles.switch}
-                      control={
-                        <Switch
-                          checked={fileExplorerListingTypeLocalGrid}
-                          onChange={(e) =>
-                            onFileExplorerListingType(
-                              e,
-                              fileExplorerListingTypeLocalGrid
-                                ? FILE_EXPLORER_VIEW_TYPE.list
-                                : FILE_EXPLORER_VIEW_TYPE.grid,
-                              DEVICE_TYPE.local
-                            )
-                          }
-                        />
-                      }
-                      label={DEVICES_LABEL[DEVICE_TYPE.local]}
-                    />
-                    <FormControlLabel
-                      className={styles.switch}
-                      control={
-                        <Switch
-                          checked={fileExplorerListingTypeMtpGrid}
-                          onChange={(e) =>
-                            onFileExplorerListingType(
-                              e,
-                              fileExplorerListingTypeMtpGrid
-                                ? FILE_EXPLORER_VIEW_TYPE.list
-                                : FILE_EXPLORER_VIEW_TYPE.grid,
                               DEVICE_TYPE.mtp
                             )
                           }

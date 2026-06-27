@@ -11,6 +11,8 @@ import {
   faSdCard,
   faBolt,
   faTerminal,
+  faList,
+  faThLarge,
 } from '@fortawesome/free-solid-svg-icons';
 import SidebarAreaPaneLists from './SidebarAreaPaneLists';
 import { LazyLoaderOverlay } from '../styles/ToolbarAreaPane';
@@ -19,7 +21,7 @@ import {
   Confirm as ConfirmDialog,
   Selection as SelectionDialog,
 } from '../../../components/DialogBox';
-import { DEVICE_TYPE, MTP_MODE } from '../../../enums';
+import { DEVICE_TYPE, FILE_EXPLORER_VIEW_TYPE, MTP_MODE } from '../../../enums';
 import { capitalize, isEmpty } from '../../../utils/funcs';
 import { imgsrc } from '../../../utils/imgsrc';
 import { isKalamModeSupported } from '../../../helpers/binaries';
@@ -34,6 +36,7 @@ export default class ToolbarAreaPane extends PureComponent {
       mtpStoragesList,
       mtpDevice,
       mtpMode,
+      fileExplorerListingType,
     } = args;
 
     const _directoryLists = directoryLists[deviceType];
@@ -64,6 +67,19 @@ export default class ToolbarAreaPane extends PureComponent {
             enabled,
           };
           break;
+
+        case 'view': {
+          const isGrid =
+            fileExplorerListingType[deviceType] ===
+            FILE_EXPLORER_VIEW_TYPE.grid;
+
+          _activeToolbarList[a] = {
+            ...item,
+            label: isGrid ? 'List View' : 'Icon View',
+            icon: isGrid ? faList : faThLarge,
+          };
+          break;
+        }
 
         case 'delete':
           _activeToolbarList[a] = {
@@ -130,6 +146,7 @@ export default class ToolbarAreaPane extends PureComponent {
       onToolbarAction,
       showLocalPaneOnLeftSide,
       mtpMode,
+      fileExplorerListingType,
     } = this.props;
 
     const _toolbarList = this.activeToolbarList({
@@ -140,6 +157,7 @@ export default class ToolbarAreaPane extends PureComponent {
       mtpStoragesList,
       mtpDevice,
       mtpMode,
+      fileExplorerListingType,
     });
 
     const RenderLazyLoaderOverlay = LazyLoaderOverlay({ appThemeMode });

@@ -6,6 +6,7 @@ import {
   faPlug,
   faArrowLeft,
   faQuestionCircle,
+  faThLarge,
 } from '@fortawesome/free-solid-svg-icons';
 import { faGithub, faPaypal } from '@fortawesome/free-brands-svg-icons';
 import { actionTypes } from './actions';
@@ -76,6 +77,11 @@ export const initialState = {
         label: 'Refresh',
         icon: faSync,
       },
+      view: {
+        enabled: true,
+        label: 'List View',
+        icon: faThLarge,
+      },
       delete: {
         enabled: true,
         label: 'Delete',
@@ -107,6 +113,11 @@ export const initialState = {
         enabled: true,
         label: 'Refresh',
         icon: faSync,
+      },
+      view: {
+        enabled: true,
+        label: 'List View',
+        icon: faThLarge,
       },
       delete: {
         enabled: true,

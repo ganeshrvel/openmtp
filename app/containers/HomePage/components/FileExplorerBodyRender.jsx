@@ -26,6 +26,12 @@ class FileExplorerBodyRender extends PureComponent {
       FILE_EXPLORER_DEFAULT_FOCUSSED_DEVICE_TYPE;
     this.fileExplorerBodyWrapperId = `${FILE_EXPLORER_BODY_WRAPPER_ID}-${deviceType}`;
     this.acceleratorIgnoreList = ['multipleSelectClick'];
+    this.marqueeStart = null;
+    this.marqueeBaseSelection = [];
+    this.marqueeSelectionKey = null;
+    this.state = {
+      selectionBox: null,
+    };
   }
 
   componentDidMount() {
@@ -39,7 +45,97 @@ class FileExplorerBodyRender extends PureComponent {
 
   componentWillUnmount() {
     hotkeys.unbind(this.fileExplorerKeymapString);
+    window.removeEventListener('mousemove', this._handleMarqueeMove);
+    window.removeEventListener('mouseup', this._handleMarqueeEnd);
   }
+
+  _handleMarqueeStart = (event) => {
+    if (
+      event.button !== 0 ||
+      event.target.closest('[data-file-item]') ||
+      event.target.closest('thead')
+    ) {
+      return;
+    }
+
+    const { deviceType, directoryLists } = this.props;
+
+    this.marqueeStart = {
+      x: event.clientX,
+      y: event.clientY,
+    };
+    this.marqueeBaseSelection =
+      event.metaKey || event.ctrlKey
+        ? directoryLists[deviceType].queue.selected
+        : [];
+    this.marqueeSelectionKey = null;
+
+    window.addEventListener('mousemove', this._handleMarqueeMove);
+    window.addEventListener('mouseup', this._handleMarqueeEnd);
+  };
+
+  _handleMarqueeMove = (event) => {
+    if (!this.marqueeStart || !this.fileExplorerBodyWrapper) {
+      return;
+    }
+
+    const distanceX = event.clientX - this.marqueeStart.x;
+    const distanceY = event.clientY - this.marqueeStart.y;
+
+    if (Math.abs(distanceX) < 4 && Math.abs(distanceY) < 4) {
+      return;
+    }
+
+    event.preventDefault();
+
+    const { deviceType, onSelectionChange } = this.props;
+    const wrapperRect = this.fileExplorerBodyWrapper.getBoundingClientRect();
+    const left = Math.min(this.marqueeStart.x, event.clientX);
+    const right = Math.max(this.marqueeStart.x, event.clientX);
+    const top = Math.min(this.marqueeStart.y, event.clientY);
+    const bottom = Math.max(this.marqueeStart.y, event.clientY);
+    const selectedPaths = Array.from(
+      this.fileExplorerBodyWrapper.querySelectorAll('[data-file-item]')
+    )
+      .filter((item) => {
+        const itemRect = item.getBoundingClientRect();
+
+        return !(
+          itemRect.right < left ||
+          itemRect.left > right ||
+          itemRect.bottom < top ||
+          itemRect.top > bottom
+        );
+      })
+      .map((item) => item.dataset.filePath);
+    const selected = Array.from(
+      new Set([...this.marqueeBaseSelection, ...selectedPaths])
+    );
+    const selectionKey = selected.join('\0');
+
+    if (selectionKey !== this.marqueeSelectionKey) {
+      this.marqueeSelectionKey = selectionKey;
+      onSelectionChange(selected, deviceType);
+    }
+
+    this.setState({
+      selectionBox: {
+        height: bottom - top,
+        left: left - wrapperRect.left + this.fileExplorerBodyWrapper.scrollLeft,
+        top: top - wrapperRect.top + this.fileExplorerBodyWrapper.scrollTop,
+        width: right - left,
+      },
+    });
+  };
+
+  _handleMarqueeEnd = () => {
+    this.marqueeStart = null;
+    this.marqueeBaseSelection = [];
+    this.marqueeSelectionKey = null;
+    window.removeEventListener('mousemove', this._handleMarqueeMove);
+    window.removeEventListener('mouseup', this._handleMarqueeEnd);
+    this.setState({ selectionBox: null });
+  };
 
   focusItem = () => {
     const { deviceType } = this.props;
@@ -284,6 +380,7 @@ class FileExplorerBodyRender extends PureComponent {
       ...parentProps
     } = this.props;
     const { directoryLists } = this.props;
+    const { selectionBox } = this.state;
 
     const _eventTarget = 'tableWrapperTarget';
 
@@ -314,6 +411,7 @@ class FileExplorerBodyRender extends PureComponent {
           onDragEnd={this._handleOnDragEnd}
           onDrop={this._handleOnDrop}
           onDragLeave={this._handleExternalFileDragLeave}
+          onMouseDown={this._handleMarqueeStart}
         >
           <FileExplorerTableBodyRender
             tableData={this.tableData()}
@@ -323,6 +421,9 @@ class FileExplorerBodyRender extends PureComponent {
             mtpDevice={mtpDevice}
             {...parentProps}
           />
+          {selectionBox && (
+            <div className={styles.selectionBox} style={selectionBox} />
+          )}
         </div>
         <FileExplorerTableFooterRender
           deviceType={deviceType}

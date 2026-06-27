@@ -8,7 +8,6 @@ import reducers from './reducers';
 import { makeCommonSettings, makeEnablePrereleaseUpdates } from './selectors';
 import {
   setFilesPreprocessingBeforeTransfer,
-  fileExplorerListingType,
   freshInstall,
   hideHiddenFiles,
   selectMtpMode,
@@ -60,12 +59,6 @@ class Settings extends Component {
       ignoreHidden: value,
       deviceType,
     });
-  };
-
-  _handleFileExplorerListingType = (event, value, deviceType) => {
-    const { actionCreateFileExplorerListingType } = this.props;
-
-    actionCreateFileExplorerListingType({ value }, deviceType);
   };
 
   _handleEnableBackgroundAutoUpdateChange = (event, value, deviceType) => {
@@ -208,7 +201,6 @@ class Settings extends Component {
         enablePrereleaseUpdates={enablePrereleaseUpdates}
         onAnalyticsChange={this._handleAnalyticsChange}
         onHiddenFilesChange={this._handleHiddenFilesChange}
-        onFileExplorerListingType={this._handleFileExplorerListingType}
         onDialogBoxCloseBtnClick={this._handleDialogBoxCloseBtnClick}
         onAutoUpdateCheckChange={this._handleAutoUpdateCheckChange}
         onEnableBackgroundAutoUpdateChange={
@@ -254,12 +246,6 @@ const mapDispatchToProps = (dispatch, _) =>
         ({ ...data }) =>
         (_, getState) => {
           dispatch(setFilesPreprocessingBeforeTransfer({ ...data }, getState));
-        },
-
-      actionCreateFileExplorerListingType:
-        ({ ...data }, deviceType) =>
-        (_, getState) => {
-          dispatch(fileExplorerListingType({ ...data }, deviceType, getState));
         },
 
       actionCreateSelectMtpMode:

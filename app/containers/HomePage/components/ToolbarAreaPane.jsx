@@ -29,6 +29,7 @@ import {
 } from '../selectors';
 import {
   makeAppThemeMode,
+  makeFileExplorerListingType,
   makeHideHiddenFiles,
   makeMtpMode,
   makeShowLocalPaneOnLeftSide,
@@ -38,13 +39,17 @@ import {
   DEVICES_DEFAULT_PATH,
   SUPPORT_PAYPAL_URL,
 } from '../../../constants';
-import { selectMtpMode, toggleSettings } from '../../Settings/actions';
+import {
+  fileExplorerListingType,
+  selectMtpMode,
+  toggleSettings,
+} from '../../Settings/actions';
 import { toggleWindowSizeOnDoubleClick } from '../../../helpers/titlebarDoubleClick';
 import ToolbarBody from './ToolbarBody';
 import { openExternalUrl } from '../../../utils/url';
 import { APP_GITHUB_URL } from '../../../constants/meta';
 import { pathUp } from '../../../utils/files';
-import { DEVICE_TYPE } from '../../../enums';
+import { DEVICE_TYPE, FILE_EXPLORER_VIEW_TYPE } from '../../../enums';
 import { log } from '../../../utils/log';
 import fileExplorerController from '../../../data/file-explorer/controllers/FileExplorerController';
 import { checkIf } from '../../../utils/checkIf';
@@ -217,6 +222,20 @@ class ToolbarAreaPane extends PureComponent {
     actionCreateToggleSettings(true);
   };
 
+  _handleToggleFileExplorerView = () => {
+    const {
+      actionCreateFileExplorerListingType,
+      deviceType,
+      fileExplorerListingType: listingType,
+    } = this.props;
+    const value =
+      listingType[deviceType] === FILE_EXPLORER_VIEW_TYPE.grid
+        ? FILE_EXPLORER_VIEW_TYPE.list
+        : FILE_EXPLORER_VIEW_TYPE.grid;
+
+    actionCreateFileExplorerListingType({ value }, deviceType);
+  };
+
   _handleOpenGitHubRepo = () => {
     openExternalUrl(APP_GITHUB_URL);
   };
@@ -272,6 +291,11 @@ class ToolbarAreaPane extends PureComponent {
 
       case 'delete':
         this._handleToggleDeleteConfirmDialog(true);
+
+        break;
+
+      case 'view':
+        this._handleToggleFileExplorerView();
 
         break;
 
@@ -571,6 +595,11 @@ const mapDispatchToProps = (dispatch, _) =>
       actionCreateToggleSettings: (data) => (_, __) => {
         dispatch(toggleSettings(data));
       },
+      actionCreateFileExplorerListingType:
+        ({ ...data }, deviceType) =>
+        (_, getState) => {
+          dispatch(fileExplorerListingType({ ...data }, deviceType, getState));
+        },
     },
     dispatch
   );
@@ -586,6 +615,7 @@ const mapStateToProps = (state, __) => {
     mtpStoragesList: makeMtpStoragesList(state),
     focussedFileExplorerDeviceType: makeFocussedFileExplorerDeviceType(state),
     appThemeMode: makeAppThemeMode(state),
+    fileExplorerListingType: makeFileExplorerListingType(state),
     mtpMode: makeMtpMode(state),
     showLocalPaneOnLeftSide: makeShowLocalPaneOnLeftSide(state),
   };
