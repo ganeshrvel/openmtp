@@ -66,16 +66,17 @@ class App extends Component {
   }
 
   componentWillUnmount() {
-    this.deregisterAccelerators();
     ipcRenderer.removeListener(
       'nativeThemeUpdated',
       this.nativeThemeUpdatedEvent,
     );
 
-    this.mainWindowRendererProcess.webContents.removeListener(
-      'nativeThemeUpdated',
-      () => {},
-    );
+    if (this.mainWindowRendererProcess) {
+      this.mainWindowRendererProcess.webContents.removeListener(
+        'nativeThemeUpdated',
+        this.nativeThemeUpdatedEvent,
+      );
+    }
   }
 
   nativeThemeUpdatedEvent = () => {
