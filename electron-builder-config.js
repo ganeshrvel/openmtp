@@ -15,29 +15,11 @@ module.exports = () => {
   const getExtraFiles = () => {
     const currentSystemArch = getBinariesSupportedSystemArchitecture();
 
-    let macResourceBinFilter;
-
-    switch (currentSystemArch) {
-      case OS_ARCH_TYPE.arm64:
-        macResourceBinFilter = [`${OS_ARCH_TYPE.arm64}/**/*`, `mtp-cli`];
-        break;
-
-      case OS_ARCH_TYPE.amd64:
-      default:
-        macResourceBinFilter = [
-          `${OS_ARCH_TYPE.amd64}/**/*`,
-          `medieval/${OS_ARCH_TYPE.amd64}/**/*`,
-          `mtp-cli`,
-        ];
-
-        break;
-    }
-
     return [
       {
         from: 'build/mac/bin',
         to: 'Resources/bin',
-        filter: macResourceBinFilter,
+        filter: [`${currentSystemArch}/**/*`],
       },
     ];
   };
@@ -93,7 +75,6 @@ module.exports = () => {
       category: 'public.app-category.productivity',
       entitlements: 'build/entitlements.mas.plist',
       icon: 'build/icon.icns',
-      binaries: ['dist/mas/OpenMTP.app/Contents/Resources/bin/mtp-cli'],
     },
     dmg: {
       contents: [
