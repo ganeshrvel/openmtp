@@ -22,7 +22,6 @@ import {
 import { DEVICE_TYPE, MTP_MODE } from '../../../enums';
 import { capitalize, isEmpty } from '../../../utils/funcs';
 import { imgsrc } from '../../../utils/imgsrc';
-import { isKalamModeSupported } from '../../../helpers/binaries';
 
 export default class ToolbarAreaPane extends PureComponent {
   activeToolbarList = ({ ...args }) => {
@@ -165,17 +164,7 @@ export default class ToolbarAreaPane extends PureComponent {
         selected: mtpMode === MTP_MODE.kalam,
         hint: 'The all new and powerful MTP kernel — named after Dr. A. P. J. Abdul Kalam - Statesman, Scientist and Poet',
       },
-      {
-        value: MTP_MODE.legacy,
-        name: `${capitalize(MTP_MODE.legacy)} Mode`,
-        icon: faTerminal,
-        selected: mtpMode === MTP_MODE.legacy,
-        hint: `Previous generation MTP Kernel. Use this if Kalam mode doesn't detect your phone`,
-      },
     ];
-
-    // We have now officially retired the support for `Kalam` Kernel on macOS 10.13 (OS X El High Sierra) and lower. Only the "Legacy" MTP mode will continue working on these outdated machines.
-    const showMtpModeSelection = isKalamModeSupported();
 
     return (
       <div className={styles.root}>
@@ -197,18 +186,14 @@ export default class ToolbarAreaPane extends PureComponent {
           onClose={onMtpStoragesListClick}
         />
 
-        {showMtpModeSelection && (
-          <SelectionDialog
-            titleText="Select MTP Mode"
-            list={mtpModeList}
-            id="selectionDialog"
-            showAvatar
-            open={
-              deviceType === DEVICE_TYPE.mtp && toggleMtpModeSelectionDialog
-            }
-            onClose={onMtpModeSelectionDialogClick}
-          />
-        )}
+        <SelectionDialog
+          titleText="Select MTP Mode"
+          list={mtpModeList}
+          id="selectionDialog"
+          showAvatar
+          open={deviceType === DEVICE_TYPE.mtp && toggleMtpModeSelectionDialog}
+          onClose={onMtpModeSelectionDialogClick}
+        />
         <Drawer
           open={toggleDrawer}
           onClose={onToggleDrawer(false)}

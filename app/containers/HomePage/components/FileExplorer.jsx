@@ -2361,29 +2361,7 @@ const mapDispatchToProps = (dispatch, _) =>
               sessionTotalFiles = totalFiles;
               sessionTransferDirection = direction;
 
-              /// file transfer progress on legacy mode
-              if (mtpMode === MTP_MODE.legacy) {
-                bodyText1 = `${Math.floor(activeFileProgress)}% complete of "${
-                  springTruncate(currentFile, 45).truncatedText
-                }"`;
-                progressText = `${niceBytes(activeFileSizeSent)} / ${niceBytes(
-                  activeFileSize,
-                )}`;
-                windowProgressBar = activeFileProgress / 100;
-
-                sessionTransferSpeeds.push(parseFloat(speed) / 1000 / 1000);
-
-                const _speed = speed ? `${niceBytes(speed)}` : `--`;
-
-                progressInfo = [
-                  {
-                    bodyText1,
-                    bodyText2: `Elapsed: ${elapsedTime} | Progress: ${progressText} @ ${_speed}/sec`,
-                    variant: `determinate`,
-                    percentage: activeFileProgress,
-                  },
-                ];
-              } else {
+              {
                 checkIf(direction, 'string');
                 checkIf(direction, 'inObjectValues', FILE_TRANSFER_DIRECTION);
 

@@ -6,9 +6,8 @@ import FileExplorer from './components/FileExplorer';
 import ToolbarAreaPane from './components/ToolbarAreaPane';
 import { styles } from './styles';
 import Onboarding from '../Onboarding';
-import { DEVICE_TYPE, MTP_MODE } from '../../enums';
+import { DEVICE_TYPE } from '../../enums';
 import {
-  makeMtpMode,
   makeShowLocalPane,
   makeShowLocalPaneOnLeftSide,
 } from '../Settings/selectors';
@@ -26,7 +25,7 @@ class Home extends PureComponent {
   };
 
   RenderMtpPane = () => {
-    const { classes: styles, showLocalPane, mtpMode } = this.props;
+    const { classes: styles, showLocalPane } = this.props;
 
     return (
       <div
@@ -35,10 +34,7 @@ class Home extends PureComponent {
         })}
       >
         <ToolbarAreaPane showMenu={false} deviceType={DEVICE_TYPE.mtp} />
-        <FileExplorer
-          hideColList={mtpMode === MTP_MODE.legacy ? ['size'] : []}
-          deviceType={DEVICE_TYPE.mtp}
-        />
+        <FileExplorer hideColList={[]} deviceType={DEVICE_TYPE.mtp} />
       </div>
     );
   };
@@ -78,7 +74,6 @@ class Home extends PureComponent {
 const mapStateToProps = (state) => {
   return {
     showLocalPane: makeShowLocalPane(state),
-    mtpMode: makeMtpMode(state),
     showLocalPaneOnLeftSide: makeShowLocalPaneOnLeftSide(state),
   };
 };

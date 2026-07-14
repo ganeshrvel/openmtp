@@ -26,7 +26,6 @@ import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import PowerIcon from '@material-ui/icons/Power';
 import ReplayIcon from '@material-ui/icons/Replay';
-import SystemUpdate from '@material-ui/icons/SystemUpdate';
 import { styles } from '../styles/HelpPhoneNotRecognized';
 import { openExternalUrl } from '../../../utils/url';
 import {
@@ -41,7 +40,7 @@ import {
   DEVICES_LABEL,
   SUPPORT_PAYPAL_URL,
 } from '../../../constants';
-import { DEVICE_TYPE, MTP_MODE } from '../../../enums';
+import { DEVICE_TYPE } from '../../../enums';
 import {
   localErrorDictionary,
   mtpErrors,
@@ -49,7 +48,6 @@ import {
 import { MTP_ERROR } from '../../../enums/mtpError';
 import { imgsrc } from '../../../utils/imgsrc';
 import { helpPhoneNotConnecting } from '../../../templates/fileExplorer';
-import { isKalamModeSupported } from '../../../helpers/binaries';
 
 const hotplugSettingText = `Check if 'Enable auto device detection (USB Hotplug)' is enabled under Settings > General Tab`;
 const deviceLabel = DEVICES_LABEL[DEVICE_TYPE.mtp];
@@ -249,7 +247,6 @@ class HelpPhoneNotRecognized extends PureComponent {
   render() {
     const { classes: styles, showPhoneNotRecognizedNote } = this.props;
     const { RenderBasicConnection, RenderRefreshButtonIsStuck } = this;
-    const isKalamModeDisabled = !isKalamModeSupported();
 
     return (
       <div className={styles.root}>
@@ -323,39 +320,6 @@ class HelpPhoneNotRecognized extends PureComponent {
                 FAQs
               </Typography>
             </>
-          )}
-
-          {isKalamModeDisabled && (
-            <Accordion className={styles.expansionRoot}>
-              {/* <----- Kalam Mode is disabled -----> */}
-
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography className={styles.heading}>
-                  {`Upgrade your macOS version for better app experience`}
-                </Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <List component="div" disablePadding>
-                  <ListItem>
-                    <ListItemIcon>
-                      <SystemUpdate />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={`We have now officially retired the support for '${MTP_MODE.kalam}' Kernel on 'macOS 10.13' (OS X El High Sierra) and lower. Only the '${MTP_MODE.legacy}' MTP mode will continue working on these outdated machines.`}
-                    />
-                  </ListItem>
-
-                  <ListItem>
-                    <ListItemIcon>
-                      <SystemUpdate />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={`Only the latest 3 versions of macOS will receive the '${MTP_MODE.kalam}' Kernel updates, which includes new devices support, fixes, stability improvements`}
-                    />
-                  </ListItem>
-                </List>
-              </AccordionDetails>
-            </Accordion>
           )}
 
           <Accordion className={styles.expansionRoot}>

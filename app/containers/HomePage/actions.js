@@ -142,20 +142,6 @@ export function initializeMtp(
             ),
           );
 
-        case MTP_MODE.legacy:
-          return dispatch(
-            initLegacyMtp(
-              {
-                filePath,
-                ignoreHidden,
-                deviceType,
-                mtpStoragesList,
-                changeLegacyMtpStorageOnlyOnDeviceChange,
-              },
-              getState,
-            ),
-          );
-
         default:
           return;
       }
@@ -735,19 +721,6 @@ export function reloadDirList(
 
       case DEVICE_TYPE.mtp:
         switch (mtpMode) {
-          case MTP_MODE.legacy:
-            return dispatch(
-              initializeMtp(
-                {
-                  filePath,
-                  ignoreHidden,
-                  changeLegacyMtpStorageOnlyOnDeviceChange: true,
-                  deviceType,
-                },
-                getState,
-              ),
-            );
-
           case MTP_MODE.kalam:
           default:
             dispatch(
