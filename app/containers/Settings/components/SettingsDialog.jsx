@@ -75,14 +75,12 @@ export default class SettingsDialog extends PureComponent {
       enableAutoUpdateCheck,
       enableBackgroundAutoUpdate,
       enablePrereleaseUpdates,
-      enableAnalytics,
       enableStatusBar,
       showLocalPane,
       showLocalPaneOnLeftSide,
       showDirectoriesFirst,
       mtpMode,
       filesPreprocessingBeforeTransfer,
-      onAnalyticsChange,
       onHiddenFilesChange,
       onFileExplorerListingType,
       onDialogBoxCloseBtnClick,
@@ -255,7 +253,7 @@ export default class SettingsDialog extends PureComponent {
                             onHiddenFilesChange(
                               e,
                               !hideHiddenFilesLocal,
-                              DEVICE_TYPE.local
+                              DEVICE_TYPE.local,
                             )
                           }
                         />
@@ -271,7 +269,7 @@ export default class SettingsDialog extends PureComponent {
                             onHiddenFilesChange(
                               e,
                               !hideHiddenFilesMtp,
-                              DEVICE_TYPE.mtp
+                              DEVICE_TYPE.mtp,
                             )
                           }
                         />
@@ -296,7 +294,7 @@ export default class SettingsDialog extends PureComponent {
                               fileExplorerListingTypeLocalGrid
                                 ? FILE_EXPLORER_VIEW_TYPE.list
                                 : FILE_EXPLORER_VIEW_TYPE.grid,
-                              DEVICE_TYPE.local
+                              DEVICE_TYPE.local,
                             )
                           }
                         />
@@ -314,7 +312,7 @@ export default class SettingsDialog extends PureComponent {
                               fileExplorerListingTypeMtpGrid
                                 ? FILE_EXPLORER_VIEW_TYPE.list
                                 : FILE_EXPLORER_VIEW_TYPE.grid,
-                              DEVICE_TYPE.mtp
+                              DEVICE_TYPE.mtp,
                             )
                           }
                         />
@@ -343,7 +341,7 @@ export default class SettingsDialog extends PureComponent {
                               !filesPreprocessingBeforeTransfer[
                                 FILE_TRANSFER_DIRECTION.download
                               ],
-                              FILE_TRANSFER_DIRECTION.download
+                              FILE_TRANSFER_DIRECTION.download,
                             )
                           }
                         />
@@ -365,7 +363,7 @@ export default class SettingsDialog extends PureComponent {
                               !filesPreprocessingBeforeTransfer[
                                 FILE_TRANSFER_DIRECTION.upload
                               ],
-                              FILE_TRANSFER_DIRECTION.upload
+                              FILE_TRANSFER_DIRECTION.upload,
                             )
                           }
                         />
@@ -414,7 +412,7 @@ export default class SettingsDialog extends PureComponent {
                           onChange={(e) =>
                             onShowDirectoriesFirstChange(
                               e,
-                              !showDirectoriesFirst
+                              !showDirectoriesFirst,
                             )
                           }
                         />
@@ -478,7 +476,7 @@ export default class SettingsDialog extends PureComponent {
                           onChange={(e) =>
                             onShowLocalPaneOnLeftSideChange(
                               e,
-                              !showLocalPaneOnLeftSide
+                              !showLocalPaneOnLeftSide,
                             )
                           }
                         />
@@ -529,7 +527,7 @@ export default class SettingsDialog extends PureComponent {
                           onChange={(e) =>
                             onEnableBackgroundAutoUpdateChange(
                               e,
-                              !enableBackgroundAutoUpdate
+                              !enableBackgroundAutoUpdate,
                             )
                           }
                         />
@@ -557,7 +555,7 @@ export default class SettingsDialog extends PureComponent {
                           onChange={(e) =>
                             onPrereleaseUpdatesChange(
                               e,
-                              !enablePrereleaseUpdates
+                              !enablePrereleaseUpdates,
                             )
                           }
                         />
@@ -576,43 +574,7 @@ export default class SettingsDialog extends PureComponent {
             {/* ----- Privacy Tab ----- */}
 
             {tabIndex === this.tabBodyRenderTabIndex(3) && (
-              <SettingsDialogTabContainer>
-                <div className={styles.tabContainer}>
-                  <FormGroup>
-                    <Typography variant="subtitle2" className={styles.subtitle}>
-                      Enable anonymous usage statistics gathering
-                    </Typography>
-
-                    <FormControlLabel
-                      className={styles.switch}
-                      control={
-                        <Switch
-                          checked={enableAnalytics}
-                          onChange={(e) =>
-                            onAnalyticsChange(e, !enableAnalytics)
-                          }
-                        />
-                      }
-                      label={enableAnalytics ? `Enabled` : `Disabled`}
-                    />
-                    <Typography variant="caption">
-                      We do not gather any kind of personal information and
-                      neither do we sell your data. We use this information only
-                      to improve the User Experience and squash some bugs.&nbsp;
-                      <a
-                        className={styles.a}
-                        onClick={() => {
-                          ipcRenderer.send(
-                            IpcEvents.OPEN_HELP_PRIVACY_POLICY_WINDOW
-                          );
-                        }}
-                      >
-                        Learn more...
-                      </a>
-                    </Typography>
-                  </FormGroup>
-                </div>
-              </SettingsDialogTabContainer>
+              <SettingsDialogTabContainer></SettingsDialogTabContainer>
             )}
           </FormControl>
 

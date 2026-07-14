@@ -10,22 +10,16 @@ const isDebug = process.env.DEBUG_PROD === 'true';
 const config = {
   dev: {
     reportToSenty: false,
-    enableGoogleAnalytics: false,
-    enableMixpanelAnalytics: false,
     disableReactWarnings: true,
     allowDevelopmentEnvironment: true,
   },
   prod: {
     reportToSenty: true,
-    enableGoogleAnalytics: true,
-    enableMixpanelAnalytics: true,
     disableReactWarnings: false,
     allowDevelopmentEnvironment: false,
   },
   debug: {
     reportToSenty: true,
-    enableGoogleAnalytics: true,
-    enableMixPanelAnalytics: true,
     disableReactWarnings: false,
     allowDevelopmentEnvironment: true,
   },

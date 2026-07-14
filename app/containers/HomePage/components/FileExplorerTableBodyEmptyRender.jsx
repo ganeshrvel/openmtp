@@ -29,8 +29,6 @@ import { styles } from '../styles/FileExplorerTableBodyEmptyRender';
 import KeyboadShortcuts from '../../KeyboardShortcutsPage/components/KeyboadShortcuts';
 import Features from '../../Onboarding/components/Features';
 import { helpPhoneNotConnecting } from '../../../templates/fileExplorer';
-import { analyticsService } from '../../../services/analytics';
-import { EVENT_TYPE } from '../../../enums/events';
 import { IpcEvents } from '../../../services/ipc-events/IpcEventType';
 import { APP_NAME } from '../../../constants/meta';
 import { openExternalUrl } from '../../../utils/url';
@@ -61,11 +59,6 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
 
   _handleHelpPhoneNotRecognizedBtn = () => {
     ipcRenderer.send(IpcEvents.OPEN_HELP_PHONE_NOT_CONNECTING_WINDOW);
-
-    analyticsService.sendEvent(
-      EVENT_TYPE.MTP_HELP_PHONE_NOT_CONNECTED_DIALOG_OPEN,
-      {},
-    );
   };
 
   render() {

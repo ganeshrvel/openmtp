@@ -29,7 +29,6 @@ import { getAppThemeMode } from '../../helpers/theme';
 import { getMainWindowRendererProcess } from '../../helpers/windowHelper';
 import { log } from '../../utils/log';
 import { makeMtpDevice, makeMtpStoragesList } from '../HomePage/selectors';
-import { analyticsService } from '../../services/analytics';
 
 class App extends Component {
   constructor(props) {
@@ -47,9 +46,6 @@ class App extends Component {
       if (this.allowWritingJsonToSettings) {
         this.writeJsonToSettings();
       }
-
-      this.migrateAnalyticsOptIn();
-      this.runAnalytics();
     } catch (e) {
       log.error(e, `App -> componentWillMount`);
     }
@@ -135,22 +131,6 @@ class App extends Component {
     } catch (e) {
       log.error(e, `App -> writeJsonToSettings`);
     }
-  }
-
-  migrateAnalyticsOptIn() {
-    try {
-      const settings = settingsStorage.getItems(['enableAnalytics']);
-
-      if (settings.enableAnalytics === true) {
-        settingsStorage.setItems({ enableAnalytics: false });
-      }
-    } catch (e) {
-      log.error(e, `App -> migrateAnalyticsOptIn`);
-    }
-  }
-
-  async runAnalytics() {
-    await analyticsService.init();
   }
 
   render() {

@@ -6,33 +6,33 @@ import { isPrereleaseVersion } from '../../utils/funcs';
 const make = (state, _) => (state ? state.Settings : {});
 
 export const makeFreshInstall = createSelector(make, (state) =>
-  state ? state.freshInstall : initialState.freshInstall
+  state ? state.freshInstall : initialState.freshInstall,
 );
 
 export const makeOnboarding = createSelector(make, (state) =>
-  state ? state.onboarding : initialState.onboarding
+  state ? state.onboarding : initialState.onboarding,
 );
 
 export const makeToggleSettings = createSelector(make, (state) =>
-  state ? state.toggleSettings : initialState.toggleSettings
+  state ? state.toggleSettings : initialState.toggleSettings,
 );
 
 export const makeHideHiddenFiles = createSelector(make, (state) =>
-  state ? state.hideHiddenFiles : initialState.hideHiddenFiles
+  state ? state.hideHiddenFiles : initialState.hideHiddenFiles,
 );
 
 export const makeFileExplorerListingType = createSelector(make, (state) =>
-  state ? state.fileExplorerListingType : initialState.fileExplorerListingType
+  state ? state.fileExplorerListingType : initialState.fileExplorerListingType,
 );
 
 export const makeEnableAutoUpdateCheck = createSelector(make, (state) =>
-  state ? state.enableAutoUpdateCheck : initialState.enableAutoUpdateCheck
+  state ? state.enableAutoUpdateCheck : initialState.enableAutoUpdateCheck,
 );
 
 export const makeEnableBackgroundAutoUpdate = createSelector(make, (state) =>
   state
     ? state.enableBackgroundAutoUpdate
-    : initialState.enableBackgroundAutoUpdate
+    : initialState.enableBackgroundAutoUpdate,
 );
 
 export const makeEnablePrereleaseUpdates = createSelector(make, (state) => {
@@ -47,17 +47,13 @@ export const makeEnablePrereleaseUpdates = createSelector(make, (state) => {
     : initialState.enablePrereleaseUpdates;
 });
 
-export const makeEnableAnalytics = createSelector(make, (state) =>
-  state ? state.enableAnalytics : initialState.enableAnalytics
-);
-
 export const makeEnableStatusBar = createSelector(make, (state) =>
-  state ? state.enableStatusBar : initialState.enableStatusBar
+  state ? state.enableStatusBar : initialState.enableStatusBar,
 );
 
 // returns the app theme mode setting value (light, dark, auto)
 export const makeAppThemeModeSettings = createSelector(make, (state) =>
-  state ? state.appThemeMode : initialState.appThemeMode
+  state ? state.appThemeMode : initialState.appThemeMode,
 );
 
 // returns the app theme mode (light, dark)
@@ -69,12 +65,12 @@ export const makeAppThemeMode = createSelector(make, (state) => {
 
 // returns the selected mtp mode
 export const makeMtpMode = createSelector(make, (state) =>
-  state ? state.mtpMode : initialState.mtpMode
+  state ? state.mtpMode : initialState.mtpMode,
 );
 
 // returns whether USB hotplug is enabled or not
 export const makeEnableUsbHotplug = createSelector(make, (state) =>
-  state ? state.enableUsbHotplug : initialState.enableUsbHotplug
+  state ? state.enableUsbHotplug : initialState.enableUsbHotplug,
 );
 
 // returns the preprocessing before transfer state
@@ -83,19 +79,19 @@ export const makeFilesPreprocessingBeforeTransfer = createSelector(
   (state) =>
     state
       ? state.filesPreprocessingBeforeTransfer
-      : initialState.filesPreprocessingBeforeTransfer
+      : initialState.filesPreprocessingBeforeTransfer,
 );
 
 export const makeShowLocalPane = createSelector(make, (state) =>
-  state ? state.showLocalPane : initialState.showLocalPane
+  state ? state.showLocalPane : initialState.showLocalPane,
 );
 
 export const makeShowLocalPaneOnLeftSide = createSelector(make, (state) =>
-  state ? state.showLocalPaneOnLeftSide : initialState.showLocalPaneOnLeftSide
+  state ? state.showLocalPaneOnLeftSide : initialState.showLocalPaneOnLeftSide,
 );
 
 export const makeShowDirectoriesFirst = createSelector(make, (state) =>
-  state ? state.showDirectoriesFirst : initialState.showDirectoriesFirst
+  state ? state.showDirectoriesFirst : initialState.showDirectoriesFirst,
 );
 
 // returns the settings key-value pair

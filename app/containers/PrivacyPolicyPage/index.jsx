@@ -328,60 +328,7 @@ class PrivacyPolicyPage extends Component {
               the use of our Service.`}
             </span>
           </p>
-          <p>
-            <span>Google Analytics</span>
-          </p>
-          <p>
-            <span>
-              Google Analytics is a web analytics service offered by Google that
-              tracks and reports website/app traffic. Google uses the data
-              collected to track and monitor the use of our Service. We respect
-              the privacy of our users and we have chosen to &quot;Opt-Out&quot;
-              of sharing the data with other Google products &amp; services. We
-              will never allow Google to remarket or use your data for its
-              advertising, benchmarking and other internal services.
-            </span>
-          </p>
-          <p>
-            <span>
-              For more information visit:&nbsp;
-              <a
-                onClick={(events) => {
-                  openExternalUrl(
-                    'https://policies.google.com/privacy?hl=en',
-                    events
-                  );
-                }}
-              >
-                https://policies.google.com/privacy?hl=en
-              </a>
-            </span>
-          </p>
-          <p>
-            <span>Mixpanel</span>
-          </p>
-          <p>
-            <span>
-              Mixpanel is a web analytics service offered by Mixpanel Inc. that
-              tracks and reports website/app traffic. Mixpanel uses the data
-              collected to track and monitor the use of our Service.
-            </span>
-          </p>
-          <p>
-            <span>
-              For more information visit:&nbsp;
-              <a
-                onClick={(events) => {
-                  openExternalUrl(
-                    'https://mixpanel.com/legal/privacy-policy/',
-                    events
-                  );
-                }}
-              >
-                https://mixpanel.com/legal/privacy-policy/
-              </a>
-            </span>
-          </p>
+
           <p>
             <span>Sentry</span>
           </p>
@@ -449,7 +396,7 @@ class PrivacyPolicyPage extends Component {
                 onClick={(events) => {
                   openExternalUrl(
                     'https://help.github.com/articles/github-privacy-statement/',
-                    events
+                    events,
                   );
                 }}
               >
@@ -458,17 +405,7 @@ class PrivacyPolicyPage extends Component {
               &nbsp;for more information.
             </span>
           </p>
-          <p>
-            <span>
-              <strong>Plugins or Add-ons</strong>
-            </span>
-          </p>
-          <p>
-            <span>
-              We have used &quot;google-ga&quot; npm package to facilitate the
-              Google analytics feature inside the app.
-            </span>
-          </p>
+
           <p>
             <span>
               <strong>Crash Reports</strong>
@@ -575,5 +512,5 @@ const mapStateToProps = (_, __) => {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(withStyles(styles)(PrivacyPolicyPage));

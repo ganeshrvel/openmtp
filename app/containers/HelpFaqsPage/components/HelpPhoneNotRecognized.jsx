@@ -35,8 +35,6 @@ import {
   APP_VERSION,
   AUTHOR_EMAIL,
 } from '../../../constants/meta';
-import { analyticsService } from '../../../services/analytics';
-import { EVENT_TYPE } from '../../../enums/events';
 import {
   BUY_ME_A_COFFEE_URL,
   DELETE_KEIS_SMARTSWITCH_URL,
@@ -59,11 +57,6 @@ const deviceLabel = DEVICES_LABEL[DEVICE_TYPE.mtp];
 class HelpPhoneNotRecognized extends PureComponent {
   _handleGithubThreadTap = (events) => {
     openExternalUrl(`${APP_GITHUB_ISSUES_URL}8`, events);
-
-    analyticsService.sendEvent(
-      EVENT_TYPE.MTP_HELP_PHONE_NOT_CONNECTED_GITHUB_THREAD_TAP,
-      {},
-    );
   };
 
   RenderFileTransfer = () => {

@@ -58,7 +58,7 @@ export const log = {
    * @param title - Title
    * @param logError - should log the error to the log file
    * @param allowInProd - display the error in production
-   * @param report - should report the error to crashanalytics services
+   * @param report - should report the error
    */
   error(e, title = `Log`, logError = true, allowInProd = false, report = true) {
     this.doLog(e, title, null, logError, report, true);
@@ -86,7 +86,7 @@ export const log = {
    * @param {any} e - error
    * @param {boolean} logError - should log the error to the log file
    * @param {string|null}  customError
-   * @param {any} report - should report the error to crashanalytics services
+   * @param {any} report - should report the error
    * @param {string|null} title
    * @param {boolean} isError - is an error or info
    */ async doLog(
@@ -95,7 +95,7 @@ export const log = {
     customError = null,
     logError = true,
     report = true,
-    isError = true
+    isError = true,
   ) {
     if (logError === false) {
       return null;

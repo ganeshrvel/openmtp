@@ -11,7 +11,6 @@ import fileExplorerController from '../../data/file-explorer/controllers/FileExp
 import { checkIf } from '../../utils/checkIf';
 import { MTP_ERROR } from '../../enums/mtpError';
 import { DEVICES_DEFAULT_PATH } from '../../constants';
-import { analyticsService } from '../../services/analytics';
 
 const prefix = '@@Home';
 const actionTypesList = [
@@ -117,7 +116,7 @@ export function initializeMtp(
     changeLegacyMtpStorageOnlyOnDeviceChange,
     deviceType,
   },
-  getState
+  getState,
 ) {
   checkIf(deviceType, 'string');
   checkIf(filePath, 'string');
@@ -139,8 +138,8 @@ export function initializeMtp(
                 ignoreHidden,
                 deviceType,
               },
-              getState
-            )
+              getState,
+            ),
           );
 
         case MTP_MODE.legacy:
@@ -153,8 +152,8 @@ export function initializeMtp(
                 mtpStoragesList,
                 changeLegacyMtpStorageOnlyOnDeviceChange,
               },
-              getState
-            )
+              getState,
+            ),
           );
 
         default:
@@ -193,11 +192,11 @@ export function disposeMtp({ deviceType, onSuccess, onError }, getState) {
                 mtpMode,
                 onSuccess: ({ _, __, data }) => {
                   dispatch(
-                    actionSetMtpStatus({ info: {}, isAvailable: false })
+                    actionSetMtpStatus({ info: {}, isAvailable: false }),
                   );
                   dispatch(actionListDirectory([], deviceType));
                   dispatch(
-                    actionSetSelectedDirLists({ selected: [] }, deviceType)
+                    actionSetSelectedDirLists({ selected: [] }, deviceType),
                   );
                   dispatch(actionChangeMtpStorage({}));
 
@@ -222,7 +221,7 @@ export function disposeMtp({ deviceType, onSuccess, onError }, getState) {
 
                   return resolve(_return);
                 },
-              })
+              }),
             );
           });
 
@@ -252,7 +251,7 @@ function initKalamMtp({ filePath, ignoreHidden, deviceType }, getState) {
       dispatch(
         actionSetMtpStatus({
           isLoading: true,
-        })
+        }),
       );
 
       // if the app was expecting the user to allow access to mtp storage
@@ -272,8 +271,6 @@ function initKalamMtp({ filePath, ignoreHidden, deviceType }, getState) {
             onSuccess: ({ _, __, data }) => {
               dispatch(actionSetMtpStatus({ info: data }));
 
-              analyticsService.sendDeviceInfo();
-
               return resolve({
                 error: null,
                 stderr: null,
@@ -287,7 +284,7 @@ function initKalamMtp({ filePath, ignoreHidden, deviceType }, getState) {
                 data: null,
               });
             },
-          })
+          }),
         );
       });
 
@@ -304,7 +301,7 @@ function initKalamMtp({ filePath, ignoreHidden, deviceType }, getState) {
       if (
         !undefinedOrNull(preInitMtpDevice?.info?.mtpDeviceInfo?.SerialNumber) &&
         !undefinedOrNull(
-          postInitMtpDevice?.info?.mtpDeviceInfo?.SerialNumber
+          postInitMtpDevice?.info?.mtpDeviceInfo?.SerialNumber,
         ) &&
         preInitMtpDevice?.info?.mtpDeviceInfo?.SerialNumber !==
           postInitMtpDevice?.info?.mtpDeviceInfo?.SerialNumber
@@ -316,7 +313,7 @@ function initKalamMtp({ filePath, ignoreHidden, deviceType }, getState) {
       dispatch(
         actionSetMtpStatus({
           isLoading: true,
-        })
+        }),
       );
 
       await new Promise((resolve) => {
@@ -333,8 +330,8 @@ function initKalamMtp({ filePath, ignoreHidden, deviceType }, getState) {
                 resolve();
               },
             },
-            getState
-          )
+            getState,
+          ),
         );
       });
 
@@ -349,14 +346,14 @@ function initKalamMtp({ filePath, ignoreHidden, deviceType }, getState) {
       dispatch(
         actionSetMtpStatus({
           isLoading: true,
-        })
+        }),
       );
 
       dispatch(
         reloadDirList(
           { filePath: _filePath, ignoreHidden, deviceType },
-          getState
-        )
+          getState,
+        ),
       );
     } catch (e) {
       log.error(e);
@@ -366,7 +363,7 @@ function initKalamMtp({ filePath, ignoreHidden, deviceType }, getState) {
 
 function listKalamStorages(
   { filePath, ignoreHidden, deviceType, onSuccess, onError },
-  getState
+  getState,
 ) {
   return async (dispatch) => {
     checkIf(filePath, 'string');
@@ -383,7 +380,7 @@ function listKalamStorages(
       const { error, stderr, data } = await fileExplorerController.listStorages(
         {
           deviceType,
-        }
+        },
       );
 
       return new Promise((resolve) => {
@@ -414,7 +411,7 @@ function listKalamStorages(
                 data: null,
               });
             },
-          })
+          }),
         );
       });
     } catch (e) {
@@ -431,7 +428,7 @@ function initLegacyMtp(
     mtpStoragesList,
     changeLegacyMtpStorageOnlyOnDeviceChange,
   },
-  getState
+  getState,
 ) {
   return async (dispatch) => {
     checkIf(filePath, 'string');
@@ -446,7 +443,7 @@ function initLegacyMtp(
       const { error, stderr, data } = await fileExplorerController.listStorages(
         {
           deviceType,
-        }
+        },
       );
 
       dispatch(
@@ -478,11 +475,11 @@ function initLegacyMtp(
                   ignoreHidden,
                 },
                 deviceType,
-                getState
-              )
+                getState,
+              ),
             );
           },
-        })
+        }),
       );
     } catch (e) {
       log.error(e);
@@ -538,7 +535,7 @@ export function churnMtpBuffer({
           isAvailable: mtpStatus,
           error: mtpMode === MTP_MODE.kalam ? stderr : error,
           isLoading: false,
-        })
+        }),
       );
 
       if (!mtpStatus) {
@@ -557,7 +554,7 @@ export function churnMtpBuffer({
           mtpLogError,
           true,
           mtpReportError === true,
-          false
+          false,
         );
         log.error(error, 'churnMtpBuffer.error', true, true, false);
         log.error(stderr, 'churnMtpBuffer.stderr', true, true, false);
@@ -620,7 +617,7 @@ export function churnLocalBuffer({
 export function listDirectory(
   { filePath, ignoreHidden, onError, onSuccess },
   deviceType,
-  getState
+  getState,
 ) {
   checkIf(filePath, 'string');
   checkIf(ignoreHidden, 'boolean');
@@ -653,7 +650,7 @@ export function listDirectory(
                 stderr: localStderr,
                 data: localData,
                 onSuccess: () => {},
-              })
+              }),
             );
 
             return;
@@ -690,7 +687,7 @@ export function listDirectory(
               onSuccess: ({ error, stderr, data }) => {
                 dispatch(actionListDirectory(data, deviceType), getState);
                 dispatch(
-                  actionSetSelectedDirLists({ selected: [] }, deviceType)
+                  actionSetSelectedDirLists({ selected: [] }, deviceType),
                 );
                 dispatch(setCurrentBrowsePath(filePath, deviceType));
 
@@ -704,7 +701,7 @@ export function listDirectory(
                   onError({ error, stderr, data });
                 }
               },
-            })
+            }),
           );
         };
 
@@ -718,7 +715,7 @@ export function listDirectory(
 
 export function reloadDirList(
   { filePath, ignoreHidden, deviceType },
-  getState
+  getState,
 ) {
   checkIf(deviceType, 'inObjectValues', DEVICE_TYPE);
   checkIf(filePath, 'string');
@@ -733,7 +730,7 @@ export function reloadDirList(
     switch (deviceType) {
       case DEVICE_TYPE.local:
         return dispatch(
-          listDirectory({ filePath, ignoreHidden }, deviceType, getState)
+          listDirectory({ filePath, ignoreHidden }, deviceType, getState),
         );
 
       case DEVICE_TYPE.mtp:
@@ -747,8 +744,8 @@ export function reloadDirList(
                   changeLegacyMtpStorageOnlyOnDeviceChange: true,
                   deviceType,
                 },
-                getState
-              )
+                getState,
+              ),
             );
 
           case MTP_MODE.kalam:
@@ -756,7 +753,7 @@ export function reloadDirList(
             dispatch(
               actionSetMtpStatus({
                 isLoading: true,
-              })
+              }),
             );
 
             // if mtpdevice is available then list directory
@@ -777,16 +774,16 @@ export function reloadDirList(
                               changeLegacyMtpStorageOnlyOnDeviceChange: true,
                               deviceType,
                             },
-                            getState
-                          )
+                            getState,
+                          ),
                         );
                       }
                     },
                     onSuccess: () => {},
                   },
                   deviceType,
-                  getState
-                )
+                  getState,
+                ),
               );
             }
 
@@ -799,8 +796,8 @@ export function reloadDirList(
                   changeLegacyMtpStorageOnlyOnDeviceChange: true,
                   deviceType,
                 },
-                getState
-              )
+                getState,
+              ),
             );
         }
 

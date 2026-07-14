@@ -6,8 +6,6 @@ import { initialState } from './reducers';
 import { checkIf } from '../../utils/checkIf';
 import { MTP_MODE } from '../../enums';
 import { DEVICES_DEFAULT_PATH } from '../../constants';
-import { analyticsService } from '../../services/analytics';
-import { EVENT_TYPE } from '../../enums/events';
 
 const prefix = '@@Settings';
 const actionTypesList = [
@@ -26,13 +24,6 @@ const excludeItemsFromSettingsFile = ['toggleSettings'];
 export const actionTypes = prefixer(prefix, actionTypesList);
 
 export function toggleSettings(data) {
-  const dialogStatus = data ? 'OPEN' : 'CLOSE';
-
-  analyticsService.sendEvent(
-    EVENT_TYPE[`TOOLBAR_SETTINGS_DIALOG_${dialogStatus}`],
-    {}
-  );
-
   return {
     type: actionTypes.TOGGLE_SETTINGS,
     payload: data,
@@ -49,11 +40,6 @@ export function freshInstall({ ...data }, getState) {
     });
 
     dispatch(copySettingsToJsonFile(getState));
-
-    analyticsService.sendEvent(EVENT_TYPE.TOOLBAR_SETTINGS_CHANGE, {
-      key: 'isFreshInstall',
-      value: isFreshInstall,
-    });
   };
 }
 
@@ -65,11 +51,6 @@ export function setOnboarding({ ...data }, getState) {
     });
 
     dispatch(copySettingsToJsonFile(getState));
-
-    analyticsService.sendEvent(EVENT_TYPE.TOOLBAR_SETTINGS_CHANGE, {
-      key: 'onboarding',
-      value: data,
-    });
   };
 }
 
@@ -84,12 +65,6 @@ export function hideHiddenFiles({ ...data }, deviceType, getState) {
     });
 
     dispatch(copySettingsToJsonFile(getState));
-
-    analyticsService.sendEvent(EVENT_TYPE.TOOLBAR_SETTINGS_CHANGE, {
-      key: 'hideHiddenFiles',
-      value,
-      deviceType,
-    });
   };
 }
 
@@ -104,12 +79,6 @@ export function setFilesPreprocessingBeforeTransfer({ ...data }, getState) {
     });
 
     dispatch(copySettingsToJsonFile(getState));
-
-    analyticsService.sendEvent(EVENT_TYPE.TOOLBAR_SETTINGS_CHANGE, {
-      key: 'filesPreprocessingBeforeTransfer',
-      value,
-      direction,
-    });
   };
 }
 
@@ -124,19 +93,13 @@ export function fileExplorerListingType({ ...data }, deviceType, getState) {
     });
 
     dispatch(copySettingsToJsonFile(getState));
-
-    analyticsService.sendEvent(EVENT_TYPE.TOOLBAR_SETTINGS_CHANGE, {
-      key: 'fileExplorerListingType',
-      value,
-      deviceType,
-    });
   };
 }
 
 export function selectMtpMode(
   { value, reportEvent = true },
   deviceType,
-  getState
+  getState,
 ) {
   const { hideHiddenFiles, mtpMode } = getState().Settings;
 
@@ -146,13 +109,6 @@ export function selectMtpMode(
   checkIf(mtpMode, 'string');
 
   const key = 'mtpMode';
-
-  if (reportEvent) {
-    analyticsService.sendEvent(EVENT_TYPE.MTP_MODE_SELECTED, {
-      'Current MTP Mode': mtpMode,
-      'Selected MTP Mode': value,
-    });
-  }
 
   return async (dispatch) => {
     // dont proceed if the mtp wasn't changed
@@ -174,8 +130,8 @@ export function selectMtpMode(
                 resolve({ error, stderr, data });
               },
             },
-            getState
-          )
+            getState,
+          ),
         );
       });
 
@@ -195,8 +151,8 @@ export function selectMtpMode(
             },
           },
           deviceType,
-          getState
-        )
+          getState,
+        ),
       );
     });
 
@@ -208,8 +164,8 @@ export function selectMtpMode(
           ignoreHidden: hideHiddenFiles[deviceType],
           changeLegacyMtpStorageOnlyOnDeviceChange: true,
         },
-        getState
-      )
+        getState,
+      ),
     );
   };
 }
@@ -219,7 +175,7 @@ export function selectMtpMode(
 export function setCommonSettings(
   { key, value, onSuccess },
   deviceType,
-  getState
+  getState,
 ) {
   if (typeof initialState[key] === 'undefined') {
     // eslint-disable-next-line no-throw-literal
@@ -227,19 +183,6 @@ export function setCommonSettings(
   }
 
   return async (dispatch) => {
-    // key == [mtpMode] is handled separately, so skip it
-    if (key !== 'mtpMode') {
-      if (key === 'enableAnalytics' && !value) {
-        // if the [key] == [enableAnalytics] and it is toggled on, report it
-        analyticsService.sendEvent(EVENT_TYPE.TOOLBAR_SETTINGS_CHANGE, {
-          key,
-          value,
-          isCommonSettings: true,
-          deviceType,
-        });
-      }
-    }
-
     dispatch({
       type: actionTypes.COMMON_SETTINGS,
       deviceType,
@@ -254,23 +197,8 @@ export function setCommonSettings(
         if (onSuccess) {
           onSuccess();
         }
-      })
+      }),
     );
-
-    // key == [mtpMode] is handled separately, so skip it
-    if (key !== 'mtpMode') {
-      // if the [key] == [enableAnalytics] and it is toggled off, report it
-      // log for all other keys
-      // note: if [enableAnalytics] is false then reporting is automatically disabled by [AnalyticsService] itself.
-      if (key !== 'enableAnalytics' || (key === 'enableAnalytics' && value)) {
-        analyticsService.sendEvent(EVENT_TYPE.TOOLBAR_SETTINGS_CHANGE, {
-          key,
-          value,
-          isCommonSettings: true,
-          deviceType,
-        });
-      }
-    }
   };
 }
 
@@ -279,7 +207,7 @@ export function copySettingsToJsonFile(getState, onSuccess) {
     const settingsState = getState().Settings ? getState().Settings : {};
     const filteredSettings = omitLodash(
       settingsState,
-      excludeItemsFromSettingsFile
+      excludeItemsFromSettingsFile,
     );
 
     settingsStorage.setAll({ ...filteredSettings });
