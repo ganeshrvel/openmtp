@@ -9,7 +9,6 @@ export const DEVICE_TYPE = {
 };
 
 export const MTP_MODE = {
-  legacy: 'legacy',
   kalam: 'kalam',
 };
 
