@@ -49,14 +49,12 @@ export default class Storage {
         return _return;
       }
 
-      keys.map((a) => {
+      keys.forEach((a) => {
         if (typeof allItem[a] === 'undefined' || allItem[a] === null) {
-          return null;
+          return;
         }
 
         _return[a] = allItem[a];
-
-        return a;
       });
 
       return _return;

@@ -31,4 +31,9 @@ export const styles = (_) => ({
   childrenWrapper: {
     padding: '0px 0 5px 0',
   },
+  linearProgress: {
+    '& .MuiLinearProgress-bar': {
+      transition: 'none',
+    },
+  },
 });

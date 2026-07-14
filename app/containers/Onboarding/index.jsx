@@ -10,8 +10,6 @@ import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import { styles } from './styles';
 import { setOnboarding } from '../Settings/actions';
-import { withReducer } from '../../store/reducers/withReducer';
-import reducers from '../Alerts/reducers';
 import { makeFreshInstall, makeOnboarding } from '../Settings/selectors';
 import WhatsNew from './components/WhatsNew';
 import Features from './components/Features';
@@ -92,7 +90,7 @@ const mapDispatchToProps = (dispatch, __) =>
           dispatch(setOnboarding({ ...data }, getState));
         },
     },
-    dispatch
+    dispatch,
   );
 
 const mapStateToProps = (state, __) => {
@@ -102,7 +100,7 @@ const mapStateToProps = (state, __) => {
   };
 };
 
-export default withReducer(
-  'App',
-  reducers
-)(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Onboarding)));
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(withStyles(styles)(Onboarding));

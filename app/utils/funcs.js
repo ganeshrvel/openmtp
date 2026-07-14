@@ -150,7 +150,7 @@ export const springTruncate = (str, minChars = 10, ellipsis = '...') => {
     return {
       text: _str,
       truncatedText: `${str.substr(0, center - count)}${ellipsis}${str.substr(
-        strLength - center + count
+        strLength - center + count,
       )}`,
       isTruncated: true,
     };
@@ -217,28 +217,14 @@ export const arrayIntersection = (array1, array2) => {
 };
 
 export const keymapSearch = (keymap, keyedList) => {
-  let matchedWith = null;
-
-  Object.keys(keymap).map((a) => {
-    const item = keymap[a];
-
-    if (matchedWith !== null) {
-      return null;
-    }
-
-    if (arrayEquality(item, keyedList)) {
-      matchedWith = a;
-    }
-
-    return true;
-  });
-
-  return matchedWith;
+  return (
+    Object.keys(keymap).find((a) => arrayEquality(keymap[a], keyedList)) ?? null
+  );
 };
 
 export const toggleFileExplorerDeviceType = (
   currentDeviceType,
-  DEVICE_TYPE
+  DEVICE_TYPE,
 ) => {
   return currentDeviceType === DEVICE_TYPE.local
     ? DEVICE_TYPE.mtp
