@@ -70,3 +70,4 @@ tmp/*
 *.js.map
 *.js.LICENSE.txt
 *.prod.js.LICENSE.txt
+.trash/
