@@ -62,7 +62,7 @@ class HelpPhoneNotRecognized extends PureComponent {
 
     analyticsService.sendEvent(
       EVENT_TYPE.MTP_HELP_PHONE_NOT_CONNECTED_GITHUB_THREAD_TAP,
-      {}
+      {},
     );
   };
 
@@ -307,8 +307,8 @@ class HelpPhoneNotRecognized extends PureComponent {
                 !
               </Typography>
               <Typography component="p" variant="body2" paragraph>
-                If you&apos;d like to support my work or buy me up a cup of
-                coffee, you can contribute via&nbsp;Paypal:&nbsp;
+                If you&apos;d like to support my work or buy me a cup of coffee,
+                you can contribute via&nbsp;PayPal:&nbsp;
                 <a
                   onClick={(events) => {
                     openExternalUrl(SUPPORT_PAYPAL_URL, events);
@@ -334,11 +334,11 @@ class HelpPhoneNotRecognized extends PureComponent {
 
           {isKalamModeDisabled && (
             <Accordion className={styles.expansionRoot}>
-              {/* <----- Kalam Mode is disabed -----> */}
+              {/* <----- Kalam Mode is disabled -----> */}
 
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <Typography className={styles.heading}>
-                  {`Upgrade you mac's OS version for better app experience`}
+                  {`Upgrade your macOS version for better app experience`}
                 </Typography>
               </AccordionSummary>
               <AccordionDetails>
@@ -380,19 +380,19 @@ class HelpPhoneNotRecognized extends PureComponent {
                     <CloseIcon />
                   </ListItemIcon>
                   <ListItemText
-                    primary={`Quit Google drive, Android File Transfer, Dropbox, OneDrive, Preview (for macOS ventura) or any other app that might be reading USB`}
+                    primary={`Quit Google Drive, Android File Transfer, Dropbox, OneDrive, Preview (for macOS Ventura) or any other app that might be reading USB`}
                     secondary={
                       <span>
                         {`Uninstall 'Android File Transfer' by Google if it
-                              keeps popping up everytime you connect your
+                              keeps popping up every time you connect your
                               Android device. The most recent versions of Google
-                              drive and Dropbox are known to interfere with ${APP_NAME}. Completely quiting these apps may fix
+                                                             Drive and Dropbox are known to interfere with ${APP_NAME}. Completely quitting these apps may fix
                               this issue. `}
                         <a
                           onClick={(events) => {
                             openExternalUrl(
                               'https://github.com/ganeshrvel/openmtp/issues/276',
-                              events
+                              events,
                             );
                           }}
                         >
@@ -418,11 +418,11 @@ class HelpPhoneNotRecognized extends PureComponent {
             </AccordionDetails>
           </Accordion>
 
-          {/* <----- Google drive is interfering with OpenMTP-----> */}
+          {/* <----- Google Drive is interfering with OpenMTP-----> */}
           <Accordion className={styles.expansionRoot}>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography className={styles.heading}>
-                {`I have Google drive installed on my ${
+                {`I have Google Drive installed on my ${
                   DEVICES_LABEL[DEVICE_TYPE.local]
                 }`}
               </Typography>
@@ -435,7 +435,7 @@ class HelpPhoneNotRecognized extends PureComponent {
                     <DeleteIcon />
                   </ListItemIcon>
                   <ListItemText
-                    primary={`The most recent versions of Google drive is known to interfere with ${APP_NAME}. Simply quiting Google drive may fix this issue`}
+                    primary={`The most recent versions of Google Drive are known to interfere with ${APP_NAME}. Simply quitting Google Drive may fix this issue`}
                     secondary={
                       <img
                         src={imgsrc(`help/google-drive-not-connecting.png`)}
@@ -451,7 +451,7 @@ class HelpPhoneNotRecognized extends PureComponent {
             </AccordionDetails>
           </Accordion>
 
-          {/* <----- Dropbox is interfering with OpenMTP-----> */}
+          {/* <----- Dropbox is interfering with OpenMTP -----> */}
           <Accordion className={styles.expansionRoot}>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography className={styles.heading}>
@@ -468,7 +468,7 @@ class HelpPhoneNotRecognized extends PureComponent {
                     <DeleteIcon />
                   </ListItemIcon>
                   <ListItemText
-                    primary={`The most recent versions of Dropbox is known to interfere with ${APP_NAME}. Simply quiting Dropbox may fix this issue`}
+                    primary={`The most recent versions of Dropbox are known to interfere with ${APP_NAME}. Simply quitting Dropbox may fix this issue`}
                   />
                 </ListItem>
 
@@ -648,11 +648,11 @@ class HelpPhoneNotRecognized extends PureComponent {
             </AccordionDetails>
           </Accordion>
 
-          {/* <----- phone gets disconnected everytime screen goes into sleep -----> */}
+          {/* <----- phone gets disconnected every time screen goes into sleep -----> */}
           <Accordion className={styles.expansionRoot}>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography className={styles.heading}>
-                {`My ${deviceLabel.toLowerCase()} gets disconnected everytime the display goes into sleep`}
+                {`My ${deviceLabel.toLowerCase()} gets disconnected every time the display goes into sleep`}
               </Typography>
             </AccordionSummary>
 
@@ -831,7 +831,7 @@ class HelpPhoneNotRecognized extends PureComponent {
                     secondary={
                       <img
                         src={imgsrc(
-                          `help/privacy-restricted-folder-access.png`
+                          `help/privacy-restricted-folder-access.png`,
                         )}
                         alt="Files and Folders"
                         className={styles.imagePlaceholder}

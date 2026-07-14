@@ -64,7 +64,7 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
 
     analyticsService.sendEvent(
       EVENT_TYPE.MTP_HELP_PHONE_NOT_CONNECTED_DIALOG_OPEN,
-      {}
+      {},
     );
   };
 
@@ -140,19 +140,19 @@ class FileExplorerTableBodyEmptyRender extends PureComponent {
                           <CloseIcon />
                         </ListItemIcon>
                         <ListItemText
-                          primary="Quit Google drive, Android File Transfer, Dropbox, OneDrive, Preview (for macOS ventura) or any other app that might be reading USB"
+                          primary="Quit Google Drive, Android File Transfer, Dropbox, OneDrive, Preview (for macOS Ventura) or any other app that might be reading USB"
                           secondary={
                             <span>
                               {`Uninstall 'Android File Transfer' by Google if it
-                              keeps popping up everytime you connect your
+                              keeps popping up every time you connect your
                               Android device. The most recent versions of Google
-                              drive and Dropbox are known to interfere with ${APP_NAME}. Completely quiting these apps may fix
+                              Drive and Dropbox are known to interfere with ${APP_NAME}. Completely quitting these apps may fix
                               this issue. `}
                               <a
                                 onClick={(events) => {
                                   openExternalUrl(
                                     'https://github.com/ganeshrvel/openmtp/issues/276',
-                                    events
+                                    events,
                                   );
                                 }}
                               >

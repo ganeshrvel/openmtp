@@ -48,6 +48,7 @@ class App extends Component {
         this.writeJsonToSettings();
       }
 
+      this.migrateAnalyticsOptIn();
       this.runAnalytics();
     } catch (e) {
       log.error(e, `App -> componentWillMount`);
@@ -68,12 +69,12 @@ class App extends Component {
     this.deregisterAccelerators();
     ipcRenderer.removeListener(
       'nativeThemeUpdated',
-      this.nativeThemeUpdatedEvent
+      this.nativeThemeUpdatedEvent,
     );
 
     this.mainWindowRendererProcess.webContents.removeListener(
       'nativeThemeUpdated',
-      () => {}
+      () => {},
     );
   }
 
@@ -135,6 +136,18 @@ class App extends Component {
     }
   }
 
+  migrateAnalyticsOptIn() {
+    try {
+      const settings = settingsStorage.getItems(['enableAnalytics']);
+
+      if (settings.enableAnalytics === true) {
+        settingsStorage.setItems({ enableAnalytics: false });
+      }
+    } catch (e) {
+      log.error(e, `App -> migrateAnalyticsOptIn`);
+    }
+  }
+
   async runAnalytics() {
     await analyticsService.init();
   }
@@ -178,7 +191,7 @@ const mapDispatchToProps = (dispatch) =>
           dispatch(freshInstall({ ...data }, getState));
         },
     },
-    dispatch
+    dispatch,
   );
 
 const mapStateToProps = (state) => {
@@ -193,5 +206,5 @@ const mapStateToProps = (state) => {
 
 export default withReducer(
   'App',
-  reducers
+  reducers,
 )(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(hot(App))));
