@@ -117,8 +117,8 @@ async function installExtensions() {
   }).catch((err) =>
     log.error(
       `An extension error occurred: ${err}`,
-      `main.dev -> installExtensions`
-    )
+      `main.dev -> installExtensions`,
+    ),
   );
 }
 
@@ -207,9 +207,9 @@ if (!isDeviceBootable) {
 
     ipcMain.removeAllListeners('ELECTRON_BROWSER_WINDOW_ALERT');
     ipcMain.on('ELECTRON_BROWSER_WINDOW_ALERT', (event, message, title) => {
-      ipcMain.error(
+      log.error(
         message,
-        `main.dev -> ipcMain -> on ELECTRON_BROWSER_WINDOW_ALERT -> ${title}`
+        `main.dev -> ipcMain -> on ELECTRON_BROWSER_WINDOW_ALERT -> ${title}`,
       );
       // eslint-disable-next-line no-param-reassign
       event.returnValue = 0;

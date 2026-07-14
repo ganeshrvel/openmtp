@@ -29,6 +29,8 @@ export default class Storage {
       } else {
         log.error(e, `Storage -> getAll`);
       }
+
+      return {};
     }
   }
 
@@ -64,8 +66,11 @@ export default class Storage {
       } else {
         log.error(e, `Storage -> getItems`);
       }
+      return {};
     }
   }
+
+  setAll({ ...data }) {
 
   setAll({ ...data }) {
     try {
@@ -85,7 +90,7 @@ export default class Storage {
 
       writeFileSync(
         this.filePath,
-        JSON.stringify({ ...currentSettings, ...data })
+        JSON.stringify({ ...currentSettings, ...data }),
       );
     } catch (e) {
       if (this.doNotLog) {

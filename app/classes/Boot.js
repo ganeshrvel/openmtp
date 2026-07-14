@@ -63,7 +63,7 @@ export default class Boot {
 
   async verify() {
     try {
-      for (let i = 0; i < this.verifyFileList.length; i += 1) {
+      for (let i = 0; i < this.verifyDirList.length; i += 1) {
         const item = this.verifyDirList[i];
 
         if (!(await this.verifyDir(item))) {
@@ -94,8 +94,12 @@ export default class Boot {
           return false;
         }
       }
+
+      return true;
     } catch (e) {
       console.error(e);
+
+      return false;
     }
   }
 
