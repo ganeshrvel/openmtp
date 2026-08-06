@@ -28,6 +28,7 @@ function makeEngine(overrides = {}) {
       ])
     ),
     transferFiles: jest.fn().mockResolvedValue(ok()),
+    deleteFile: jest.fn().mockResolvedValue(ok()),
     ...overrides,
   };
 }
@@ -236,6 +237,73 @@ describe('run() dispatch', () => {
           destination: '/local/dest',
         })
       );
+    });
+  });
+
+  describe('move-download', () => {
+    it('downloads from the device and deletes the source', async () => {
+      const { io } = makeIo();
+      const engine = makeEngine();
+      const code = await run(
+        ['move-download', '/Download/openmtp-cli-test.txt', '/local/dest'],
+        { io, createEngine: () => engine }
+      );
+
+      expect(code).toBe(0);
+      expect(engine.transferFiles).toHaveBeenCalledWith(
+        expect.objectContaining({
+          direction: 'download',
+          sources: ['/Download/openmtp-cli-test.txt'],
+          destination: '/local/dest',
+        })
+      );
+      expect(engine.deleteFile).toHaveBeenCalledWith({
+        storageId: 65537,
+        files: ['/Download/openmtp-cli-test.txt'],
+      });
+    });
+
+    it('does not delete the source if download fails', async () => {
+      const { io, err } = makeIo();
+      const engine = makeEngine({
+        transferFiles: jest.fn().mockResolvedValue({
+          error: 'download failed',
+          data: null,
+        }),
+      });
+      const code = await run(['move-download', '/a', '/b'], {
+        io,
+        createEngine: () => engine,
+      });
+
+      expect(code).toBe(1);
+      expect(engine.deleteFile).not.toHaveBeenCalled();
+      expect(err.join('\n')).toMatch(/Transfer failed: download failed/);
+    });
+  });
+
+  describe('delete', () => {
+    it('deletes a file from the device', async () => {
+      const { io } = makeIo();
+      const engine = makeEngine();
+      const code = await run(['delete', '/Download/openmtp-cli-test.txt'], {
+        io,
+        createEngine: () => engine,
+      });
+
+      expect(code).toBe(0);
+      expect(engine.deleteFile).toHaveBeenCalledWith({
+        storageId: 65537,
+        files: ['/Download/openmtp-cli-test.txt'],
+      });
+    });
+
+    it('requires a device-path argument', async () => {
+      const { io, err } = makeIo();
+      const code = await run(['delete'], { io, createEngine: makeEngine });
+
+      expect(code).toBe(2);
+      expect(err.join('\n')).toMatch(/delete requires a <device-path>/);
     });
   });
 

@@ -45,6 +45,12 @@ yarn mtp-cli upload ./watchface.fit /GARMIN/NEWFILES
 # Copy a file FROM the device to a local folder
 yarn mtp-cli download /DCIM/Camera/IMG_0001.jpg ./downloads
 
+# Move a file FROM the device to a local folder
+yarn mtp-cli move-download /DCIM/Camera/IMG_0001.jpg ./downloads
+
+# Delete a file on the device
+yarn mtp-cli delete /Download/old-file.txt
+
 # Machine-readable output
 yarn mtp-cli list-devices --json
 ```

@@ -12,6 +12,8 @@ Commands:
   ls <device-path>                   List a directory on the device
   upload <local-path> <device-path>  Copy a file/folder TO the device
   download <device-path> <local-path> Copy a file/folder FROM the device
+  move-download <device-path> <local-path> Download from device, then delete source
+  delete <device-path>               Delete a file/folder on the device
 
 Options:
   --storage <id>     Storage id to operate on. Defaults to the first storage.
@@ -157,7 +159,14 @@ export async function run(argv, deps = {}) {
     return command === null && !options.help ? 1 : 0;
   }
 
-  const knownCommands = ['list-devices', 'ls', 'upload', 'download'];
+  const knownCommands = [
+    'list-devices',
+    'ls',
+    'upload',
+    'download',
+    'move-download',
+    'delete',
+  ];
 
   if (!knownCommands.includes(command)) {
     io.error(`Unknown command: ${command}`);
@@ -273,7 +282,8 @@ export async function run(argv, deps = {}) {
       }
 
       case 'upload':
-      case 'download': {
+      case 'download':
+      case 'move-download': {
         const direction =
           command === 'upload'
             ? FILE_TRANSFER_DIRECTION.upload
@@ -336,10 +346,76 @@ export async function run(argv, deps = {}) {
           return 1;
         }
 
-        emit({ direction, storageId, source, destination, ok: true });
+        if (command !== 'move-download') {
+          emit({ direction, storageId, source, destination, ok: true });
+        }
+
+        if (!options.json && command !== 'move-download') {
+          io.log(`${command} complete: ${source} -> ${destination}`);
+        }
+
+        if (command === 'move-download') {
+          const deleteRes = await engine.deleteFile({
+            storageId,
+            files: [source],
+          });
+
+          if (deleteRes.error) {
+            fail(`Downloaded, but failed to delete source: ${deleteRes.error}`);
+
+            return 1;
+          }
+
+          emit({
+            direction: 'move-download',
+            storageId,
+            source,
+            destination,
+            ok: true,
+          });
+
+          if (!options.json) {
+            io.log(`deleted source: ${source}`);
+          }
+        }
+
+        return 0;
+      }
+
+      case 'delete': {
+        const [devicePath] = positionals;
+
+        if (!devicePath) {
+          fail('delete requires a <device-path> argument.');
+
+          return 2;
+        }
+
+        const storagesRes = await engine.listStorages();
+
+        if (storagesRes.error) {
+          fail(`Failed to list storages: ${storagesRes.error}`);
+
+          return 1;
+        }
+
+        const storages = toStorageList(storagesRes.data);
+        const storageId = resolveStorageId(storages, options.storage);
+        const res = await engine.deleteFile({
+          storageId,
+          files: [devicePath],
+        });
+
+        if (res.error) {
+          fail(`Delete failed: ${res.error}`);
+
+          return 1;
+        }
+
+        emit({ storageId, path: devicePath, ok: true });
 
         if (!options.json) {
-          io.log(`${command} complete: ${source} -> ${destination}`);
+          io.log(`delete complete: ${devicePath}`);
         }
 
         return 0;
