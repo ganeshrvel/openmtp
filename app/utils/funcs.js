@@ -217,23 +217,11 @@ export const arrayIntersection = (array1, array2) => {
 };
 
 export const keymapSearch = (keymap, keyedList) => {
-  let matchedWith = null;
-
-  Object.keys(keymap).map((a) => {
+  return Object.keys(keymap).find((a) => {
     const item = keymap[a];
 
-    if (matchedWith !== null) {
-      return null;
-    }
-
-    if (arrayEquality(item, keyedList)) {
-      matchedWith = a;
-    }
-
-    return true;
+    return arrayEquality(item, keyedList);
   });
-
-  return matchedWith;
 };
 
 export const toggleFileExplorerDeviceType = (
