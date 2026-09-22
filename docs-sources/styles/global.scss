@@ -917,6 +917,16 @@ img {
 
   .feature-card-text {
     color: #a8b0b8;
+
+    a {
+      color: #4da3ff;
+      text-decoration: underline;
+
+      &:hover,
+      &:focus {
+        color: #7dbbff;
+      }
+    }
   }
 
   .feature-stat-value {
@@ -1704,7 +1714,11 @@ $aboutLinkColor: #0062c4;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 28px;
+  gap: 48px;
+
+  @include mobile {
+    gap: 36px;
+  }
 }
 
 .about-window {
@@ -1876,13 +1890,146 @@ $aboutLinkColor: #0062c4;
   }
 }
 
-.footer-legal {
+/*
+ * supported devices cloud: four tiers, from the major brands down to single
+ * models, so the big names read first and the long model list stays quiet
+ */
+// the divider sits midway: 58 / 48 / 38px below the About window and the same
+// above the heading. the margin tops up the 48 / 48 / 36px footer-inner gap
+.footer-devices {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+  width: 100%;
+  margin-top: 10px;
+  padding-top: 58px;
+  border-top: 1px solid #c6d9ef;
+  text-align: center;
+
+  @include tablet {
+    margin-top: 0;
+    padding-top: 48px;
+  }
+
+  @include mobile {
+    gap: 22px;
+    margin-top: 2px;
+    padding-top: 38px;
+  }
+}
+
+.footer-devices-title {
+  margin-bottom: 10px;
+  color: #3d5775;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.device-cloud {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 16px;
+  align-items: center;
+  gap: 12px 10px;
+  max-width: 1100px;
+
+  @include mobile {
+    gap: 8px 6px;
+  }
+}
+
+.device-chip {
+  margin: 0;
+  border-radius: 999px;
+  color: #3d5775;
+  line-height: 1.2;
+
+  // major brands
+  &.device-chip-xl {
+    padding: 12px 22px;
+    background: $whiteColor;
+    box-shadow: 0 2px 6px rgba(15, 47, 87, 0.08);
+    color: #0f2f57;
+    font-size: 24px;
+    font-weight: 500;
+
+    @include mobile {
+      padding: 9px 16px;
+      font-size: 18px;
+    }
+  }
+
+  // well-known brands
+  &.device-chip-lg {
+    padding: 10px 18px;
+    background: rgba(255, 255, 255, 0.7);
+    color: #1f3f66;
+    font-size: 19px;
+    font-weight: 500;
+
+    @include mobile {
+      padding: 7px 13px;
+      font-size: 15px;
+    }
+  }
+
+  // niche brands
+  &.device-chip-md {
+    padding: 8px 16px;
+    border: 1px solid #b8cfea;
+    font-size: 16px;
+
+    @include mobile {
+      padding: 6px 12px;
+      font-size: 14px;
+    }
+  }
+
+  // individual models
+  &.device-chip-sm {
+    padding: 6px 13px;
+    background: rgba(255, 255, 255, 0.45);
+    font-size: 14px;
+
+    @include mobile {
+      padding: 5px 10px;
+      font-size: 12px;
+    }
+  }
+}
+
+.footer-devices-text {
+  max-width: 820px;
   color: #3d5775;
   font-size: 14px;
+  line-height: 22px;
+
+  @include mobile {
+    font-size: 13px;
+    line-height: 20px;
+  }
+}
+
+// copyright on the left, privacy policy on the right
+.footer-legal {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px 24px;
+  width: 100%;
+  padding-top: 24px;
+  border-top: 1px solid #c6d9ef;
+  color: #3d5775;
+  font-size: 14px;
+
+  @include mobile {
+    justify-content: center;
+  }
 
   a {
     color: #0f2f57;
