@@ -656,49 +656,252 @@ img {
   line-height: 20px;
 }
 
-/* Features */
-.feature-list {
+/*
+ * Features: white Mac-window cards. Every grid here stays symmetric:
+ * desktop  - screenshot (2 cols) + 3 stacked stats (1 col), then a 3x3 grid
+ * tablet   - screenshot full width, stats 3 across, then a 3x3 grid
+ * phone    - everything in a single column
+ */
+.features-header {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 6px;
-  margin-top: 24px;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 56px;
+  text-align: center;
 
-  li {
-    position: relative;
-    max-width: 100%;
-    box-sizing: border-box;
-    padding: 6px 60px 6px 26px;
-    border-radius: 0 8px 8px 0;
-    background: $docsAppSecondaryColor;
-    box-shadow: 0 0 2px $boxShadowColor1;
-    color: $whiteColor;
-    font-size: 15px;
-    font-weight: 400;
-    line-height: 20px;
-    cursor: default;
-    transition: background-color 1.5s ease;
+  @include mobile {
+    margin-bottom: 36px;
+  }
+}
 
-    &::before {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 6px;
-      width: 10px;
-      height: 10px;
-      border-radius: 5px;
-      background: $whiteColor;
-      box-shadow: -1px -1px 2px $boxShadowColor1;
-      transform: translateY(-50%);
+.features-eyebrow {
+  color: #8cc2ff;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.features-title {
+  color: $whiteColor;
+  font-size: 44px;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  line-height: 1.18;
+
+  @include tablet {
+    font-size: 36px;
+  }
+
+  @include mobile {
+    font-size: 28px;
+  }
+}
+
+.features-subtitle {
+  color: #c5d0da;
+  font-size: 18px;
+  line-height: 28px;
+
+  @include mobile {
+    font-size: 16px;
+    line-height: 25px;
+  }
+}
+
+.features-top {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  margin-bottom: 24px;
+
+  @include tablet {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  @include mobile {
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+}
+
+// fills the two columns and matches the height of the stacked stats beside it
+.features-screenshot {
+  grid-column: span 2;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: left top;
+  border-radius: 8px;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.45);
+
+  @include tablet {
+    grid-column: auto;
+    height: auto;
+  }
+}
+
+.features-stats {
+  display: grid;
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+
+  @include tablet {
+    grid-template-rows: none;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  @include mobile {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+
+  @include mobile {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+}
+
+/* white Mac-window card */
+.card-window {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 8px;
+  background: $whiteColor;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+}
+
+.card-titlebar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  height: 40px;
+  padding: 0 16px;
+  border-bottom: 1px solid #e4e7ea;
+  background: #f5f6f7;
+}
+
+.card-dots {
+  display: flex;
+  gap: 8px;
+
+  span {
+    width: 12px;
+    height: 12px;
+    border-radius: 6px;
+    background: #ff5f56;
+
+    &:nth-child(2) {
+      background: #ffbd2e;
     }
 
-    &:hover {
-      background: #555;
+    &:nth-child(3) {
+      background: #27c93f;
     }
+  }
+}
 
-    @include mobile {
-      padding-right: 24px;
-    }
+// centred in the bar; the right margin offsets the width of the dots
+.card-titlebar-title {
+  flex-grow: 1;
+  margin-right: 52px;
+  color: #8a949d;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.card-body {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  gap: 10px;
+  padding: 24px 28px 28px;
+
+  @include tablet {
+    padding: 20px 20px 24px;
+  }
+}
+
+.feature-stat-value {
+  color: $docsAppSecondaryColor;
+  font-size: 56px;
+  font-weight: 300;
+  letter-spacing: -0.03em;
+  line-height: 1;
+
+  @include tablet {
+    font-size: 40px;
+  }
+}
+
+.feature-stat-label {
+  color: $textColor;
+  font-size: 16px;
+  line-height: 22px;
+}
+
+.feature-card-title {
+  margin-top: 8px;
+  color: $headingColor;
+  font-size: 19px;
+  font-weight: 500;
+  line-height: 1.3;
+
+  @include tablet {
+    font-size: 17px;
+  }
+}
+
+.feature-card-text {
+  color: $textColor;
+  font-size: 15px;
+  line-height: 23px;
+}
+
+/*
+ * the feature and stat cards are dark, in the same colours as the app's dark
+ * mode in the screenshot: #161616 window chrome, #1f1f1f panes
+ */
+.features-stats,
+.features-grid {
+  .card-window {
+    border: 1px solid #2f2f2f;
+    background: #1f1f1f;
+  }
+
+  .card-titlebar {
+    border-bottom-color: #2f2f2f;
+    background: #161616;
+  }
+
+  .card-body svg {
+    stroke: #4da3ff;
+  }
+
+  .feature-card-title {
+    color: #f0f2f4;
+  }
+
+  .feature-card-text {
+    color: #a8b0b8;
+  }
+
+  .feature-stat-value {
+    color: #4da3ff;
+  }
+
+  .feature-stat-label {
+    color: #a8b0b8;
   }
 }
 
@@ -762,7 +965,80 @@ img {
   }
 }
 
-/* Devices */
+/* Devices and shortcuts */
+$keycapBgColor: #f5f6f7;
+$keycapBorderColor: #d5dade;
+
+.shortcuts-card {
+  display: flex;
+  flex-direction: column;
+
+  .body-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.shortcut-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 32px;
+  margin: 0;
+
+  @include mobile {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.shortcut-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 46px;
+  border-bottom: 1px solid $borderColor;
+
+  dt {
+    color: $headingColor;
+    font-size: 15px;
+    font-weight: 400;
+  }
+
+  dd {
+    display: flex;
+    flex-shrink: 0;
+    gap: 4px;
+    margin: 0;
+  }
+}
+
+kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 30px;
+  height: 30px;
+  box-sizing: border-box;
+  padding: 0 8px;
+  border: 1px solid $keycapBorderColor;
+  border-bottom-width: 2px;
+  border-radius: 6px;
+  background: $keycapBgColor;
+  color: $headingColor;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+// the "/" between ⌘ and ⇧ in "⌘ / ⇧ Click"
+.shortcut-or {
+  align-self: center;
+  color: $textColor;
+  font-size: 13px;
+}
+
 .device-list {
   display: flex;
   flex-direction: column;
