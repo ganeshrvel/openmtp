@@ -28,6 +28,7 @@ $syntaxHighlighterStringColor: #ffeb3b;
 $boxShadowColor1: #004977;
 $blueGradient: linear-gradient(45deg, $docsAppSecondaryColor 0%, #0080ff 100%);
 $slateGradient: linear-gradient(45deg, #263238 0%, #435b71 100%);
+$skyGradient: linear-gradient(45deg, #d6e7fb 0%, #eaf3fe 100%);
 $boxShadow2: 0 0 0 0 rgba(0, 0, 0, 0.3), 0 23px 38px 0 rgba(0, 0, 0, 0.43),
   0 25px 65px 0 rgba(0, 0, 0, 0.1);
 $monoFont: Menlo, Monaco, Consolas, 'Courier New', monospace;
@@ -59,7 +60,7 @@ html {
 body {
   font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   color: $textColor;
-  background: $coralColor;
+  background: #eaf3fe;
   overflow-x: hidden;
   text-rendering: optimizeLegibility;
 }
@@ -137,8 +138,8 @@ img {
     background: $slateGradient;
   }
 
-  &.section-coral {
-    background: $coralColor;
+  &.section-sky {
+    background: $skyGradient;
   }
 }
 
@@ -541,12 +542,12 @@ img {
   .hero-title-name {
     display: block;
     color: $docsAppSecondaryColor;
-    font-size: 56px;
+    font-size: 52px;
     font-weight: 500;
     letter-spacing: -0.02em;
 
     @include mobile {
-      font-size: 42px;
+      font-size: 40px;
     }
   }
 
@@ -1659,16 +1660,218 @@ $faqStepsBgColor: #f6f8fa;
   }
 }
 
-/* Footer */
-.site-footer .mac-window {
-  max-width: 1100px;
-}
+/* Footer: an "About OpenMTP" window on a sky tint */
+$aboutWindowBgColor: #ececec;
+$aboutTextColor: #1f2d3a;
+$aboutMutedColor: #7a848e;
+$aboutLinkColor: #0062c4;
 
-.site-footer .syntax-highlighter {
-  padding: 16px 40px 40px;
+.site-footer {
+  padding: 88px 80px 48px;
+
+  @include tablet {
+    padding: 64px 40px 40px;
+  }
 
   @include mobile {
-    padding: 16px 20px 24px;
+    padding: 48px 20px 32px;
+  }
+}
+
+.footer-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+}
+
+.about-window {
+  width: 100%;
+  max-width: 560px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: $aboutWindowBgColor;
+  box-shadow: 0 24px 50px rgba(15, 47, 87, 0.22);
+}
+
+// a macOS window title bar: light grey, slightly darker at the bottom, with a
+// hairline separating it from the window body
+.about-titlebar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  height: 40px;
+  padding: 0 16px;
+  border-bottom: 1px solid #c8c8c8;
+  background: linear-gradient(180deg, #f0f0f0 0%, #e2e2e2 100%);
+}
+
+// centred in the bar; the right margin offsets the width of the dots
+.about-titlebar-title {
+  flex-grow: 1;
+  margin-right: 52px;
+  color: #6b7580;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.about-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 20px 40px 26px;
+
+  @include mobile {
+    padding: 18px 20px 22px;
+  }
+}
+
+.about-icon {
+  display: block;
+  width: 52px;
+  height: 52px;
+}
+
+// tight line heights here: the inherited 1.6 leaves a wide band between the
+// name and the version
+.about-name {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.about-app {
+  color: $aboutTextColor;
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.about-version {
+  color: $aboutMutedColor;
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.about-specs {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  margin: 0;
+}
+
+.about-spec {
+  display: grid;
+  grid-template-columns: 170px minmax(0, 1fr);
+  gap: 16px;
+  font-size: 14px;
+  line-height: 21px;
+
+  @include mobile {
+    grid-template-columns: 96px minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  // milligram gives dt/dd a 1rem bottom margin, which stacks up between rows
+  dt {
+    margin: 0;
+    color: $aboutMutedColor;
+    text-align: right;
+  }
+
+  dd {
+    min-width: 0;
+    margin: 0;
+    color: $aboutTextColor;
+    overflow-wrap: break-word;
+  }
+
+  a {
+    color: $aboutLinkColor;
+    text-decoration: none;
+
+    &:hover,
+    &:focus {
+      text-decoration: underline;
+    }
+  }
+
+  code {
+    padding: 0;
+    background: transparent;
+    font-family: $monoFont;
+    font-size: 13px;
+  }
+}
+
+.about-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+// an AppKit push button: system font at 13px, 6px radius, white-to-grey
+// gradient, a border a shade darker along the bottom, and a pressed state
+.about-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 28px;
+  padding: 0 12px;
+  border: 1px solid #c6c6c6;
+  border-bottom-color: #b0b0b0;
+  border-radius: 6px;
+  background: linear-gradient(180deg, #fff 0%, #f5f5f5 100%);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+  color: #1d1d1f;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Roboto',
+    sans-serif;
+  font-size: 13px;
+  line-height: 1;
+  text-decoration: none;
+
+  &:hover,
+  &:focus {
+    border-color: #b8b8b8;
+    border-bottom-color: #a3a3a3;
+    background: linear-gradient(180deg, #fafafa 0%, #efefef 100%);
+    color: #1d1d1f;
+  }
+
+  &:active {
+    background: linear-gradient(180deg, #e6e6e6 0%, #dcdcdc 100%);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.12);
+  }
+
+  svg {
+    flex-shrink: 0;
+    opacity: 0.75;
+  }
+}
+
+.footer-legal {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  color: #3d5775;
+  font-size: 14px;
+
+  a {
+    color: #0f2f57;
+    font-weight: 500;
+    text-decoration: none;
+
+    &:hover,
+    &:focus {
+      color: #0f2f57;
+      text-decoration: underline;
+    }
   }
 }
 

@@ -2,6 +2,7 @@ import './styles/global.scss';
 // emitted to docs/images/, which is where the <img> tags in the markup point
 import './images/file-explorer.png';
 import './images/file-transfer.png';
+import './images/logo-small.png';
 import { undefinedOrNull, fetchUrl, urls } from './utils/funcs';
 import {
   APP_GITHUB_API_URL,
@@ -19,6 +20,7 @@ class Docs {
         x64: `#download-btn-github-x64`,
       },
       gitHubLatestVersionWrapper: `.github-latest-version-wrapper`,
+      gitHubLatestVersionTag: `.github-latest-version-tag`,
       gitHubStarsWrapper: `.github-stars-wrapper`,
     };
 
@@ -29,6 +31,9 @@ class Docs {
       },
       gitHubLatestVersionWrapper: document.querySelectorAll(
         this.selectors.gitHubLatestVersionWrapper
+      ),
+      gitHubLatestVersionTag: document.querySelectorAll(
+        this.selectors.gitHubLatestVersionTag
       ),
       gitHubStarsWrapper: document.querySelectorAll(
         this.selectors.gitHubStarsWrapper
@@ -147,6 +152,17 @@ class Docs {
     if (!undefinedOrNull(latestVersion)) {
       for (let i = 0; i < this.$el.gitHubLatestVersionWrapper.length; i += 1) {
         this.$el.gitHubLatestVersionWrapper[i].textContent = latestVersion;
+      }
+
+      // "OpenMTP-3.3.0" -> "v3.3.0"
+      const versionNumber = latestVersion.match(/\d+(\.\d+)*/);
+
+      if (versionNumber) {
+        for (let i = 0; i < this.$el.gitHubLatestVersionTag.length; i += 1) {
+          this.$el.gitHubLatestVersionTag[i].textContent = `v${
+            versionNumber[0]
+          }`;
+        }
       }
     }
 
