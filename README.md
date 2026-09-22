@@ -43,12 +43,6 @@ The next generation of OpenMTP is in active development and coming soon. It's a 
 - Use Keyboard Shortcuts to navigate through your files.
 - No collection of personally identifiable information.
 
-### Kalam Kernel
-
-OpenMTP 3.0 features a new MTP kernel and it was written from scratch. It promises a file copy speed of 30 to 40 MB/s on low and mid-range devices and 100 to 120 MB/s on higher end devices. The all-new and powerful MTP kernel is named after [Dr. A. P. J. Abdul Kalam](https://en.wikipedia.org/wiki/A._P._J._Abdul_Kalam 'Dr. A. P. J. Abdul Kalam')
-
-Do check out the Go package which I've written to build Kalam Kernel: [github.com/ganeshrvel/go-mtpx](https://github.com/ganeshrvel/go-mtpx 'https://github.com/ganeshrvel/go-mtpx'). Feel free to raise PRs.
-
 ### Installation
 
 > ⚠️ **Only download OpenMTP from the official sources below.** There are copycat websites that use the OpenMTP name, logo and content, redirect to various other pages. The only official sources are the official website [openmtp.ganeshrvel.com](https://openmtp.ganeshrvel.com/ 'https://openmtp.ganeshrvel.com'), this Github repository [github.com/ganeshrvel/openmtp](https://github.com/ganeshrvel/openmtp 'https://github.com/ganeshrvel/openmtp'), and [Homebrew](https://formulae.brew.sh/cask/openmtp 'Homebrew Cask').
@@ -115,6 +109,12 @@ If the latest OpenMTP doesn't launch or doesn't work on your older Mac, use [Ope
 | Select Multiple Items Forward **(in List View)**  | <kbd>shift</kbd>+<kbd>up</kbd>                                               |
 | Select Multiple Items Backward **(in List View)** | <kbd>shift</kbd>+<kbd>down</kbd>                                             |
 | Select Multiple Items **(with mouse)**            | <kbd>command (⌘)</kbd>+<kbd>click</kbd> or <kbd>shift</kbd>+<kbd>click</kbd> |
+
+### Kalam Kernel
+
+OpenMTP 3.0 features a new MTP kernel and it was written from scratch. It promises a file copy speed of 30 to 40 MB/s on low and mid-range devices and 100 to 120 MB/s on higher end devices. The all-new and powerful MTP kernel is named after [Dr. A. P. J. Abdul Kalam](https://en.wikipedia.org/wiki/A._P._J._Abdul_Kalam 'Dr. A. P. J. Abdul Kalam')
+
+Do check out the Go package which I've written to build Kalam Kernel: [github.com/ganeshrvel/go-mtpx](https://github.com/ganeshrvel/go-mtpx 'https://github.com/ganeshrvel/go-mtpx'). Feel free to raise PRs.
 
 ## Development
 
