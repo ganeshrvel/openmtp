@@ -279,10 +279,13 @@ img {
   }
 }
 
+// margin-left: auto keeps the links on the right, including when a narrow
+// screen wraps them onto their own line under the logo
 .site-nav-links {
   display: flex;
   align-items: center;
   gap: 32px;
+  margin-left: auto;
 
   @include mobile {
     gap: 16px;
