@@ -12,6 +12,21 @@
   <priority>1.00</priority>
 </url>
 <url>
+  <loc>https://openmtp.ganeshrvel.com/how-to-connect-devices.html</loc>
+  <lastmod>2026-09-22T00:00:00+00:00</lastmod>
+  <priority>0.90</priority>
+</url>
+<url>
+  <loc>https://openmtp.ganeshrvel.com/about-us.html</loc>
+  <lastmod>2026-09-22T00:00:00+00:00</lastmod>
+  <priority>0.70</priority>
+</url>
+<url>
+  <loc>https://openmtp.ganeshrvel.com/contact-us.html</loc>
+  <lastmod>2026-09-22T00:00:00+00:00</lastmod>
+  <priority>0.60</priority>
+</url>
+<url>
   <loc>https://openmtp.ganeshrvel.com/privacy.html</loc>
   <lastmod>2026-09-22T00:00:00+00:00</lastmod>
   <priority>0.80</priority>

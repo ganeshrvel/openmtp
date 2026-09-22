@@ -1,6 +1,7 @@
 # OpenMTP | Android File Transfer for macOS
 
 - Author: [Ganesh Rathinavel](https://www.linkedin.com/in/ganeshrvel 'Ganesh Rathinavel')
+- Author's Website: [ganeshrvel.com](https://www.ganeshrvel.com 'ganeshrvel.com')
 - License: [MIT](https://github.com/ganeshrvel/openmtp/blob/master/LICENSE 'MIT')
 - System Requirements: macOS 10.14 (Mojave) or higher. macOS 10.13 and earlier have limited support and require OpenMTP v3.1.15 with Legacy MTP mode.
 - Website URL: [https://openmtp.ganeshrvel.com](https://openmtp.ganeshrvel.com/ 'https://openmtp.ganeshrvel.com')
@@ -45,7 +46,7 @@ The next generation of OpenMTP is in active development and coming soon. It's a 
 
 ### Installation
 
-> ⚠️ **Only download OpenMTP from the official sources below.** There are copycat websites that use the OpenMTP name, logo and content, redirect to various other pages. The only official sources are the official website [openmtp.ganeshrvel.com](https://openmtp.ganeshrvel.com/ 'https://openmtp.ganeshrvel.com'), this Github repository [github.com/ganeshrvel/openmtp](https://github.com/ganeshrvel/openmtp 'https://github.com/ganeshrvel/openmtp'), and [Homebrew](https://formulae.brew.sh/cask/openmtp 'Homebrew Cask').
+> ⚠️ **Only download OpenMTP from the official sources below.** There are copycat websites that use the OpenMTP name, logo and content, redirect to various other pages. The only official sources are the official website [openmtp.ganeshrvel.com](https://openmtp.ganeshrvel.com/ 'https://openmtp.ganeshrvel.com'), this Github repository [github.com/ganeshrvel/openmtp](https://github.com/ganeshrvel/openmtp 'https://github.com/ganeshrvel/openmtp'), and [formulae.brew.sh/cask/openmtp](https://formulae.brew.sh/cask/openmtp 'Homebrew Cask').
 
 - Download the [Mac Apple Silicon](https://openmtp.ganeshrvel.com/?downloadApp=github&release=stable&platform=mac&arch=arm64 'Mac Apple Silicon') version
 - Download the [Mac Intel](https://openmtp.ganeshrvel.com/?downloadApp=github&release=stable&platform=mac&arch=x64 'Mac Intel') version
@@ -62,7 +63,7 @@ The next generation of OpenMTP is in active development and coming soon. It's a 
 
 ### System Requirements and Support
 
-- To support macOS version below Big Sur the Kalam kernel needs to be compiled on an older macOS machine every time there is an update, which is practically very difficult
+- To support macOS version below Big Sur the Kalam Kernel needs to be compiled on an older macOS machine every time there is an update, which is practically very difficult
 - Only the latest 3 versions of macOS will receive the `Kalam` Kernel updates, which include new device support, fixes, and stability improvements. macOS Big Sur (11.0) or above will receive the above-mentioned updates
 - We have now officially retired the support for `Kalam` Kernel on macOS 10.13 (OS X High Sierra) and lower. Only the "Legacy" MTP mode will continue working on these outdated machines.
 - We will continue releasing the updates for both `Intel` and `ARM64` machines

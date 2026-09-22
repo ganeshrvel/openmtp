@@ -3,6 +3,7 @@ import './styles/global.scss';
 import './images/file-explorer.png';
 import './images/file-transfer.png';
 import './images/logo-small.png';
+import './images/ganesh-pic.jpeg';
 import { undefinedOrNull, fetchUrl, urls } from './utils/funcs';
 import {
   APP_GITHUB_API_URL,
@@ -22,6 +23,9 @@ class Docs {
       gitHubLatestVersionWrapper: `.github-latest-version-wrapper`,
       gitHubLatestVersionTag: `.github-latest-version-tag`,
       gitHubStarsWrapper: `.github-stars-wrapper`,
+      guideToc: `.guide-toc`,
+      guideTocLinks: `.guide-toc a[href^="#"]`,
+      guideSection: `.guide-section[id]`,
     };
 
     this.$el = {
@@ -38,6 +42,9 @@ class Docs {
       gitHubStarsWrapper: document.querySelectorAll(
         this.selectors.gitHubStarsWrapper
       ),
+      guideToc: document.querySelector(this.selectors.guideToc),
+      guideTocLinks: document.querySelectorAll(this.selectors.guideTocLinks),
+      guideSection: document.querySelectorAll(this.selectors.guideSection),
     };
 
     this.gitHubLatestReleaseData = null;
@@ -51,10 +58,16 @@ class Docs {
 
     this._checkDownloadRequestUrl(releasePromise);
     this._fetchGitHubStars();
+    this._initGuideTocScrollSpy();
   }
 
-  // on 403 (rate limit) or any failure the placeholder is left untouched
+  // on 403 (rate limit) or any failure the placeholder is left untouched.
+  // skipped on pages that don't show a star count
   _fetchGitHubStars = () => {
+    if (!this.$el.gitHubStarsWrapper.length) {
+      return;
+    }
+
     fetchUrl({ url: APP_GITHUB_REPO_API_URL })
       .then((res) => {
         if (undefinedOrNull(res) || res.status !== 200) {
@@ -215,6 +228,61 @@ class Docs {
     arm64.classList.add('btn-outline');
     x64.classList.remove('btn-outline');
     x64.classList.add('btn-primary');
+  };
+
+  // highlights the matching "On this page" link as its section scrolls
+  // through the top band of the viewport, on scroll and on click
+  _initGuideTocScrollSpy = () => {
+    if (!this.$el.guideToc || !this.$el.guideSection.length) {
+      return;
+    }
+
+    const linkByTargetId = {};
+
+    this.$el.guideTocLinks.forEach((link) => {
+      linkByTargetId[link.getAttribute('href').slice(1)] = link;
+    });
+
+    const setActive = (id) => {
+      this.$el.guideTocLinks.forEach((link) => {
+        link.classList.remove('is-active');
+      });
+
+      const activeLink = linkByTargetId[id];
+
+      if (activeLink) {
+        activeLink.classList.add('is-active');
+      }
+    };
+
+    this.$el.guideTocLinks.forEach((link) => {
+      link.addEventListener('click', () => {
+        setActive(link.getAttribute('href').slice(1));
+      });
+    });
+
+    if (typeof IntersectionObserver === 'undefined') {
+      return;
+    }
+
+    // a section counts as "current" once it has scrolled past the sticky
+    // nav and into the top 30% of the viewport
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort(
+            (a, b) => a.boundingClientRect.top - b.boundingClientRect.top
+          );
+
+        if (visible.length) {
+          setActive(visible[0].target.id);
+        }
+      },
+      { rootMargin: '-96px 0px -70% 0px', threshold: 0 }
+    );
+
+    this.$el.guideSection.forEach((section) => observer.observe(section));
   };
 
   _detectMacArch = () => {
