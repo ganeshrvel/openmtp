@@ -93,7 +93,7 @@
         "alternateName": "OpenMTP - Android File Transfer for macOS",
         "url": "https://openmtp.ganeshrvel.com/",
         "applicationCategory": "UtilitiesApplication",
-        "operatingSystem": "macOS 10.15 or later",
+        "operatingSystem": "macOS 10.14 (Mojave) or higher",
         "description": "Free and open-source Android File Transfer app for macOS. Transfer files larger than 4GB between Android devices and Macs over USB, on Apple Silicon and Intel.",
         "image": "https://raw.githubusercontent.com/ganeshrvel/openmtp/master/blobs/images/file-transfer-large.png?ver=3",
         "screenshot": [
@@ -152,10 +152,34 @@
           },
           {
             "@type": "Question",
-            "name": "Is OpenMTP free?",
+            "name": "Which Macs does OpenMTP support?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Yes, completely free and open source, with no ads. If you'd like to support its development: <a href=\"https://paypal.me/ganeshrvel\">PayPal</a>, <a href=\"https://buymeacoffee.com/ganeshrvel\">Buy Me A Coffee</a>."
+              "text": "Requires macOS 10.14 (Mojave) or higher. macOS 10.13 and earlier have limited support and require OpenMTP v3.1.15 with Legacy MTP mode."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "I'm on macOS 10.13 or earlier. What should I do?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Use OpenMTP v3.1.15 on older Macs, in Legacy MTP mode. <a href=\"https://github.com/ganeshrvel/openmtp/releases/download/v3.1.15/OpenMTP-3.1.15.dmg\">Download v3.1.15</a>, then: <ol><li>Drag the app into the Applications folder.</li><li>Turn off the internet.</li><li>Launch v3.1.15 of the app.</li><li>Go to Settings.</li><li>In the Update tab, turn off auto-update.</li><li>Turn the internet back on.</li></ol> Turning off auto-update keeps the app from replacing itself with a newer version your Mac can't run."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Which macOS versions get Kalam kernel updates?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The Kalam kernel brings new device support, fixes and stability improvements. Those updates go to macOS 11 (Big Sur) and later, covering the latest three macOS versions. Kalam has to be compiled on a machine running the oldest macOS it supports, which isn't practical for versions below Big Sur. On macOS 10.14, OpenMTP still runs, and macOS 10.13 and earlier keep working through Legacy MTP mode in v3.1.15. Releases keep coming for both Intel and Apple Silicon."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "My phone isn't connecting, or I see a blank screen. What should I do?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Try these steps in order: <ol><li>Quit any app that might be reading USB devices, such as Preview, Google Drive, Dropbox, OneDrive, Android File Transfer, Garmin Express, iMovie or Lightroom.</li><li>If Android File Transfer opens every time you connect your phone, uninstall it.</li></ol> Still stuck? See the <a href=\"https://github.com/ganeshrvel/openmtp/issues/276\">troubleshooting guide</a>."
             }
           },
           {
@@ -168,10 +192,10 @@
           },
           {
             "@type": "Question",
-            "name": "My phone isn't connecting, or I see a blank screen. What should I do?",
+            "name": "Is OpenMTP free?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Try these steps in order: <ol><li>Quit any app that might be reading USB devices, such as Preview, Google Drive, Dropbox, OneDrive, Android File Transfer, Garmin Express, iMovie or Lightroom.</li><li>If Android File Transfer opens every time you connect your phone, uninstall it.</li></ol> Still stuck? See the <a href=\"https://github.com/ganeshrvel/openmtp/issues/276\">troubleshooting guide</a>."
+              "text": "Yes, completely free and open source, with no ads. If you'd like to support its development: <a href=\"https://paypal.me/ganeshrvel\">PayPal</a>, <a href=\"https://buymeacoffee.com/ganeshrvel\">Buy Me A Coffee</a>."
             }
           },
           {
@@ -196,14 +220,6 @@
             "acceptedAnswer": {
               "@type": "Answer",
               "text": "No. OpenMTP connects over a USB cable using MTP, which is much faster and more reliable than transferring over Wi-Fi."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Which Macs does OpenMTP support?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "OpenMTP runs on macOS 10.15 or later, with native builds for both Apple Silicon and Intel Macs."
             }
           },
           {
@@ -330,8 +346,10 @@
                 <strong class="github-latest-version-wrapper">Fetching....</strong>
               </p>
               <p class="hero-requirements">
-                Requires macOS 10.15 or later, on Apple Silicon or
-                Intel.
+                System requirements:
+                <strong>macOS 10.14 (Mojave) or higher</strong>. macOS 10.13 and
+                earlier have limited support and require OpenMTP v3.1.15 with
+                Legacy MTP mode.
               </p>
               <div class="btn-stack">
                 <a
@@ -361,6 +379,17 @@
               </div>
               <p class="homebrew-label">Or install with Homebrew:</p>
               <pre class="code-box">brew install openmtp --cask</pre>
+              <p class="hero-legacy">
+                On macOS 10.13 or earlier?
+                <a
+                  href="https://github.com/ganeshrvel/openmtp/releases/download/v3.1.15/OpenMTP-3.1.15.dmg"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >Download v3.1.15</a
+                >
+                and see the
+                <a href="#faq">setup steps</a>.
+              </p>
             </div>
           </div>
         </div>
@@ -432,7 +461,7 @@
                 <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#007af5" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>
                 <h3 class="feature-card-title">Apple Silicon and Intel</h3>
                 <p class="feature-card-text">
-                  Native builds for every modern Mac.
+                  Builds for every modern Mac, Apple Silicon or Intel.
                 </p>
               </div>
             </li>
@@ -900,49 +929,76 @@
               </div>
 
               <div class="faq-item">
-                <span class="faq-icon faq-icon-pink">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                <span class="faq-icon faq-icon-grey">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 16V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9m16 0H4m16 0 1.28 2.55a1 1 0 0 1-.9 1.45H3.62a1 1 0 0 1-.9-1.45L4 16"></path></svg>
                 </span>
                 <div class="faq-content">
-                  <h3 class="faq-question">Is OpenMTP free?</h3>
+                  <h3 class="faq-question">Which Macs does OpenMTP support?</h3>
                   <p class="faq-answer">
-                    Yes, <strong>completely free</strong> and open source, with
-                    <strong>no ads</strong>. If you'd like to support its
-                    development:
+                    Requires <strong>macOS 10.14 (Mojave) or higher</strong>.
+                    macOS 10.13 and earlier have limited support and require
+                    OpenMTP v3.1.15 with Legacy MTP mode.
                   </p>
-                  <div class="faq-links">
+                </div>
+              </div>
+
+              <div class="faq-item">
+                <span class="faq-icon faq-icon-grey">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                </span>
+                <div class="faq-content">
+                  <h3 class="faq-question">
+                    I'm on macOS 10.13 or earlier. What should I do?
+                  </h3>
+                  <p class="faq-answer">
+                    Use <strong>OpenMTP v3.1.15</strong> on older Macs, in
+                    <strong>Legacy MTP mode</strong>.
                     <a
-                      class="faq-link"
-                      href="https://paypal.me/ganeshrvel"
+                      href="https://github.com/ganeshrvel/openmtp/releases/download/v3.1.15/OpenMTP-3.1.15.dmg"
                       target="_blank"
                       rel="noopener noreferrer"
-                      >PayPal</a
-                    >
-                    <a
-                      class="faq-link"
-                      href="https://buymeacoffee.com/ganeshrvel"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      >Buy Me A Coffee</a
-                    >
-                  </div>
+                      >Download v3.1.15</a
+                    >, then:
+                  </p>
+                  <ol class="faq-steps">
+                    <li>Drag the app into the Applications folder.</li>
+                    <li>Turn off the internet.</li>
+                    <li>Launch v3.1.15 of the app.</li>
+                    <li>Go to Settings.</li>
+                    <li>
+                      In the Update tab, turn off <strong>auto-update</strong>.
+                    </li>
+                    <li>Turn the internet back on.</li>
+                  </ol>
+                  <p class="faq-answer">
+                    Turning off auto-update keeps the app from replacing itself
+                    with a newer version your Mac can't run.
+                  </p>
                 </div>
               </div>
 
               <div class="faq-item">
                 <span class="faq-icon faq-icon-purple">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path></svg>
                 </span>
                 <div class="faq-content">
                   <h3 class="faq-question">
-                    Is OpenMTP a free alternative to Google's Android File
-                    Transfer?
+                    Which macOS versions get Kalam kernel updates?
                   </h3>
                   <p class="faq-answer">
-                    Yes. <strong>Google</strong> has <strong>discontinued</strong> its Android
-                    File Transfer app for Mac, and the popular alternatives are
-                    paid or come with restrictions. <strong>OpenMTP</strong> is
-                    <strong>free</strong> and open source, with no limits.
+                    The <strong>Kalam kernel</strong> brings new device support,
+                    fixes and stability improvements. Those updates go to
+                    <strong>macOS 11 (Big Sur) and later</strong>, covering the
+                    latest three macOS versions. Kalam has to be compiled on a
+                    machine running the oldest macOS it supports, which isn't
+                    practical for versions below Big Sur.
+                  </p>
+                  <p class="faq-answer">
+                    On <strong>macOS 10.14</strong>, OpenMTP still runs, and
+                    <strong>macOS 10.13 and earlier</strong> keep working
+                    through <strong>Legacy MTP mode</strong> in v3.1.15.
+                    Releases keep coming for both
+                    <strong>Intel</strong> and <strong>Apple Silicon</strong>.
                   </p>
                 </div>
               </div>
@@ -981,6 +1037,54 @@
                       >troubleshooting guide</a
                     >.
                   </p>
+                </div>
+              </div>
+
+              <div class="faq-item">
+                <span class="faq-icon faq-icon-purple">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>
+                </span>
+                <div class="faq-content">
+                  <h3 class="faq-question">
+                    Is OpenMTP a free alternative to Google's Android File
+                    Transfer?
+                  </h3>
+                  <p class="faq-answer">
+                    Yes. <strong>Google</strong> has <strong>discontinued</strong> its Android
+                    File Transfer app for Mac, and the popular alternatives are
+                    paid or come with restrictions. <strong>OpenMTP</strong> is
+                    <strong>free</strong> and open source, with no limits.
+                  </p>
+                </div>
+              </div>
+
+              <div class="faq-item">
+                <span class="faq-icon faq-icon-pink">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                </span>
+                <div class="faq-content">
+                  <h3 class="faq-question">Is OpenMTP free?</h3>
+                  <p class="faq-answer">
+                    Yes, <strong>completely free</strong> and open source, with
+                    <strong>no ads</strong>. If you'd like to support its
+                    development:
+                  </p>
+                  <div class="faq-links">
+                    <a
+                      class="faq-link"
+                      href="https://paypal.me/ganeshrvel"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      >PayPal</a
+                    >
+                    <a
+                      class="faq-link"
+                      href="https://buymeacoffee.com/ganeshrvel"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      >Buy Me A Coffee</a
+                    >
+                  </div>
                 </div>
               </div>
 
@@ -1029,20 +1133,6 @@
                     No. OpenMTP connects over a <strong>USB cable</strong> using
                     MTP, which is <strong>much faster and more reliable</strong>
                     than transferring over Wi-Fi.
-                  </p>
-                </div>
-              </div>
-
-              <div class="faq-item">
-                <span class="faq-icon faq-icon-grey">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 16V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9m16 0H4m16 0 1.28 2.55a1 1 0 0 1-.9 1.45H3.62a1 1 0 0 1-.9-1.45L4 16"></path></svg>
-                </span>
-                <div class="faq-content">
-                  <h3 class="faq-question">Which Macs does OpenMTP support?</h3>
-                  <p class="faq-answer">
-                    OpenMTP runs on <strong>macOS 10.15 or later</strong>, with
-                    native builds for both <strong>Apple Silicon</strong> and
-                    <strong>Intel</strong> Macs.
                   </p>
                 </div>
               </div>
@@ -1119,8 +1209,8 @@
                 <dd>Free</dd>
               </div>
               <div class="about-spec">
-                <dt>Requires</dt>
-                <dd>macOS 10.15 or later</dd>
+                <dt>System requirement</dt>
+                <dd>macOS 10.14 (Mojave) or higher</dd>
               </div>
               <div class="about-spec">
                 <dt>Contact</dt>

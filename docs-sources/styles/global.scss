@@ -649,12 +649,27 @@ img {
   margin: 2px 0 20px;
   font-size: 14px;
   line-height: 22px;
+
+  // same treatment as the version line above it
+  strong {
+    color: $headingColor;
+  }
 }
 
 .homebrew-label {
   margin: 18px 0 6px;
   font-size: 14px;
   line-height: 20px;
+}
+
+.hero-legacy {
+  margin-top: 14px;
+  font-size: 14px;
+  line-height: 21px;
+
+  a {
+    text-decoration: underline;
+  }
 }
 
 /*
