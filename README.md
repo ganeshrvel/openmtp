@@ -49,6 +49,23 @@ OpenMTP 3.0 features a new MTP kernel and it was written from scratch. It promis
 
 Do check out the Go package which I've written to build Kalam Kernel: [github.com/ganeshrvel/go-mtpx](https://github.com/ganeshrvel/go-mtpx 'https://github.com/ganeshrvel/go-mtpx'). Feel free to raise PRs.
 
+### Installation
+
+> ⚠️ **Only download OpenMTP from the official sources below.** There are copycat websites that use the OpenMTP name, logo and content, redirect to various other pages. The only official sources are the official website [openmtp.ganeshrvel.com](https://openmtp.ganeshrvel.com/ 'https://openmtp.ganeshrvel.com'), this Github repository [github.com/ganeshrvel/openmtp](https://github.com/ganeshrvel/openmtp 'https://github.com/ganeshrvel/openmtp'), and [Homebrew](https://formulae.brew.sh/cask/openmtp 'Homebrew Cask').
+
+- Download the [Mac Apple Silicon](https://openmtp.ganeshrvel.com/?downloadApp=github&release=stable&platform=mac&arch=arm64 'Mac Apple Silicon') version
+- Download the [Mac Intel](https://openmtp.ganeshrvel.com/?downloadApp=github&release=stable&platform=mac&arch=x64 'Mac Intel') version
+- Using Homebrew Cask
+
+```shell
+  # newer versions:
+  brew install openmtp --cask
+  # older versions:
+  brew cask install openmtp
+```
+
+- Find the latest _dmg_ file from [GitHub Releases](https://github.com/ganeshrvel/openmtp/releases 'GitHub Releases')
+
 ### System Requirements and Support
 
 - To support macOS version below Big Sur the Kalam kernel needs to be compiled on an older macOS machine every time there is an update, which is practically very difficult
@@ -67,23 +84,6 @@ If the latest OpenMTP doesn't launch or doesn't work on your older Mac, use [Ope
 5. Go to Settings
 6. In the Update tab, turn off auto-update
 7. Turn the internet back on
-
-### Installation
-
-> ⚠️ **Only download OpenMTP from the official sources below.** There are copycat websites that use the OpenMTP name, logo and content, redirect to various other pages. The only official sources are the official website [openmtp.ganeshrvel.com](https://openmtp.ganeshrvel.com/ 'https://openmtp.ganeshrvel.com'), this Github repository [github.com/ganeshrvel/openmtp](https://github.com/ganeshrvel/openmtp 'https://github.com/ganeshrvel/openmtp'), and [Homebrew](https://formulae.brew.sh/cask/openmtp 'Homebrew Cask').
-
-- Download the [Mac Apple Silicon](https://openmtp.ganeshrvel.com/?downloadApp=github&release=stable&platform=mac&arch=arm64 'Mac Apple Silicon') version
-- Download the [Mac Intel](https://openmtp.ganeshrvel.com/?downloadApp=github&release=stable&platform=mac&arch=x64 'Mac Intel') version
-- Using Homebrew Cask
-
-```shell
-  # newer versions:
-  brew install openmtp --cask
-  # older versions:
-  brew cask install openmtp
-```
-
-- Find the latest _dmg_ file from [GitHub Releases](https://github.com/ganeshrvel/openmtp/releases 'GitHub Releases')
 
 ### Screengrabs
 
