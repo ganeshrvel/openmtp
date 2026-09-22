@@ -45,7 +45,7 @@ The next generation of OpenMTP is in active development and coming soon. It's a 
 
 ### Installation
 
-> ⚠️ **Only download OpenMTP from the official sources below.** There are copycat websites that use the OpenMTP name, logo and content, redirect to various other pages. The only official sources are the official website [openmtp.ganeshrvel.com](https://openmtp.ganeshrvel.com/ 'https://openmtp.ganeshrvel.com'), this Github repository [github.com/ganeshrvel/openmtp](https://github.com/ganeshrvel/openmtp 'https://github.com/ganeshrvel/openmtp'), and [Homebrew](https://formulae.brew.sh/cask/openmtp 'Homebrew Cask').
+> ⚠️ **Only download OpenMTP from the official sources below.** There are copycat websites that use the OpenMTP name, logo and content, redirect to various other pages. The only official sources are the official website [openmtp.ganeshrvel.com](https://openmtp.ganeshrvel.com/ 'https://openmtp.ganeshrvel.com'), this Github repository [github.com/ganeshrvel/openmtp](https://github.com/ganeshrvel/openmtp 'https://github.com/ganeshrvel/openmtp'), and [formulae.brew.sh/cask/openmtp](https://formulae.brew.sh/cask/openmtp 'Homebrew Cask').
 
 - Download the [Mac Apple Silicon](https://openmtp.ganeshrvel.com/?downloadApp=github&release=stable&platform=mac&arch=arm64 'Mac Apple Silicon') version
 - Download the [Mac Intel](https://openmtp.ganeshrvel.com/?downloadApp=github&release=stable&platform=mac&arch=x64 'Mac Intel') version
