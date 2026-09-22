@@ -1151,145 +1151,360 @@ kbd {
   }
 }
 
-/*
- * FAQ: a narrow intro column on the left, and one window on the right holding a
- * single list of questions divided by hairlines. One column of answers means
- * no ragged gaps, whatever length the answers run to.
- */
+/* FAQ */
+$faqQuestionColor: #1f2d3a;
+$faqAnswerColor: #5b6772;
+$faqDividerColor: #edf0f2;
+$faqStepsBgColor: #f6f8fa;
+
 .faq-layout {
-  display: flex;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: 320px minmax(0, 720px);
   justify-content: center;
-  gap: $columnGap;
+  gap: 72px;
+  align-items: start;
 
   @include tablet {
-    flex-direction: column;
+    grid-template-columns: minmax(0, 1fr);
     gap: 40px;
   }
 }
 
-.faq-intro {
-  width: 380px;
-  flex-shrink: 0;
-  padding-top: 40px;
+// sticks below the nav while the answers scroll on desktop
+.faq-aside {
+  position: sticky;
+  top: $navHeight + 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 
   @include tablet {
-    width: 100%;
-    padding-top: 0;
+    position: static;
   }
 }
 
-.faq-intro-copy {
-  margin-top: 16px;
+.faq-aside-lead {
+  color: #c5d0da;
+  font-size: 17px;
+  line-height: 26px;
+}
+
+.faq-help {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 24px;
+  padding: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+
+  @include tablet {
+    margin-top: 8px;
+  }
+
+  .btn {
+    align-self: flex-start;
+    margin-top: 4px;
+  }
+}
+
+.faq-help-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  color: $whiteColor;
+}
+
+.faq-help-title {
   color: $whiteColor;
   font-size: 17px;
-  font-weight: 300;
-  line-height: 28px;
-}
-
-.faq-ask {
-  margin-top: 40px;
-  padding-top: 32px;
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
-
-  @include tablet {
-    margin-top: 28px;
-    padding-top: 24px;
-  }
-}
-
-.faq-ask-title {
-  color: $whiteColor;
-  font-size: 18px;
   font-weight: 500;
-  line-height: 26px;
 }
 
-.faq-ask-copy {
-  margin: 8px 0 20px;
-  color: $whiteColor;
-  font-size: 16px;
-  font-weight: 300;
-  line-height: 26px;
+.faq-help-text {
+  color: #c5d0da;
+  font-size: 15px;
+  line-height: 23px;
 }
 
-.faq-ask .btn {
-  display: inline-flex;
+.btn-light {
+  min-height: 44px;
+  padding: 0 18px;
+  border-color: $whiteColor;
+  background: $whiteColor;
+  color: $faqQuestionColor;
+
+  &:hover,
+  &:focus {
+    background: #e8edf2;
+    border-color: #e8edf2;
+    color: $faqQuestionColor;
+  }
 }
 
 .faq-window {
-  flex-grow: 1;
-  min-width: 0;
-  max-width: 640px;
+  border-radius: 10px;
 
-  @include tablet {
-    width: 100%;
-  }
-}
+  .body-wrapper {
+    padding: 4px 48px 20px;
 
-.faq-list {
-  padding: 0 48px 16px;
-
-  @include tablet {
-    padding: 0 32px 12px;
-  }
-
-  @include mobile {
-    padding: 0 20px 8px;
+    @include mobile {
+      padding: 0 20px 12px;
+    }
   }
 }
 
 .faq-item {
-  padding: 16px 0;
-  border-top: 1px solid $borderColor;
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  column-gap: 20px;
+  padding: 28px 0;
 
-  &:first-child {
-    padding-top: 8px;
-    border-top: 0;
+  & + & {
+    border-top: 1px solid $faqDividerColor;
   }
 
   @include mobile {
-    padding: 14px 0;
+    grid-template-columns: 36px minmax(0, 1fr);
+    column-gap: 14px;
+    padding: 22px 0;
   }
 }
 
+.faq-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+
+  @include mobile {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  &.faq-icon-green {
+    background: #e6f4ea;
+    color: #1a8a3a;
+  }
+
+  &.faq-icon-pink {
+    background: #fdecf2;
+    color: #d6336c;
+  }
+
+  &.faq-icon-purple {
+    background: #f0ecfd;
+    color: #7048e8;
+  }
+
+  &.faq-icon-orange {
+    background: #fff0e6;
+    color: #d9480f;
+  }
+
+  &.faq-icon-blue {
+    background: $tintColor;
+    color: #0062c4;
+  }
+
+  &.faq-icon-grey {
+    background: #f1f3f5;
+    color: $faqAnswerColor;
+  }
+
+  &.faq-icon-amber {
+    background: #fff6e0;
+    color: #b45309;
+  }
+}
+
+.faq-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  padding-top: 2px;
+}
+
 .faq-question {
-  margin-bottom: 4px;
-  color: $docsAppSecondaryColor;
+  color: $faqQuestionColor;
   font-size: 19px;
   font-weight: 500;
-  letter-spacing: -0.01em;
-  line-height: 26px;
+  letter-spacing: 0;
+  line-height: 1.4;
+
+  @include mobile {
+    font-size: 17px;
+  }
 }
 
 .faq-answer {
+  color: $faqAnswerColor;
   font-size: 16px;
   line-height: 26px;
 
   a {
-    font-weight: 400;
     text-decoration: underline;
-  }
-
-  &.faq-answer-after-steps {
-    margin-top: 12px;
   }
 }
 
+.faq-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.faq-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: $tintColor;
+  color: #0062c4;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+
+  &:hover,
+  &:focus {
+    background: darken($tintColor, 4%);
+    color: #004f9e;
+  }
+}
+
+// a real <ol>; the numbered circles come from a CSS counter
 .faq-steps {
-  margin-top: 8px;
-  padding-left: 22px;
-  list-style: decimal;
-  font-size: 16px;
-  line-height: 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 18px;
+  border-radius: 10px;
+  background: $faqStepsBgColor;
+  counter-reset: faq-step;
 
   li {
-    margin-bottom: 6px;
-    padding-left: 4px;
+    position: relative;
+    padding-left: 36px;
+    color: #3b4550;
+    font-size: 15px;
+    line-height: 24px;
+    counter-increment: faq-step;
+
+    &::before {
+      content: counter(faq-step);
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 12px;
+      background: $docsAppSecondaryColor;
+      color: $whiteColor;
+      font-size: 13px;
+      font-weight: 500;
+    }
+  }
+}
+
+/*
+ * dark FAQ window, same palette as the feature cards (#1f1f1f panes,
+ * #2f2f2f borders). the icon tiles switch from pastel fills to translucent
+ * tints so they still read on the dark background.
+ */
+.faq-window {
+  border: 1px solid #2f2f2f;
+  background: #1f1f1f;
+
+  .faq-item + .faq-item {
+    border-top-color: #2f2f2f;
   }
 
-  li:last-child {
-    margin-bottom: 0;
+  .faq-question {
+    color: #f0f2f4;
+  }
+
+  .faq-answer {
+    color: #a8b0b8;
+
+    a {
+      color: #4da3ff;
+    }
+  }
+
+  strong {
+    color: #f0f2f4;
+  }
+
+  .faq-link {
+    background: rgba(77, 163, 255, 0.15);
+    color: #4da3ff;
+
+    &:hover,
+    &:focus {
+      background: rgba(77, 163, 255, 0.25);
+      color: #7dbbff;
+    }
+  }
+
+  .faq-steps {
+    background: #161616;
+
+    li {
+      color: #c5ccd3;
+    }
+  }
+
+  .faq-icon {
+    &.faq-icon-green {
+      background: rgba(46, 160, 67, 0.18);
+      color: #4cc26b;
+    }
+
+    &.faq-icon-pink {
+      background: rgba(214, 51, 108, 0.18);
+      color: #f06595;
+    }
+
+    &.faq-icon-purple {
+      background: rgba(112, 72, 232, 0.2);
+      color: #9775fa;
+    }
+
+    &.faq-icon-orange {
+      background: rgba(217, 72, 15, 0.2);
+      color: #ff8a4c;
+    }
+
+    &.faq-icon-blue {
+      background: rgba(77, 163, 255, 0.16);
+      color: #4da3ff;
+    }
+
+    &.faq-icon-grey {
+      background: rgba(255, 255, 255, 0.08);
+      color: #a8b0b8;
+    }
+
+    &.faq-icon-amber {
+      background: rgba(245, 159, 0, 0.18);
+      color: #fcc419;
+    }
   }
 }
 
