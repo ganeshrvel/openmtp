@@ -965,6 +965,103 @@ img {
   }
 }
 
+/* "How long does a 4GB copy take?" card */
+.kalam-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 12px 36px 36px;
+
+  @include mobile {
+    padding: 8px 20px 24px;
+  }
+}
+
+.kalam-card-head {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.kalam-eyebrow {
+  color: #9cc6ff;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.kalam-card-title {
+  color: $whiteColor;
+  font-size: 22px;
+  font-weight: 500;
+}
+
+.kalam-row {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.kalam-row-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.kalam-row-label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.kalam-device {
+  color: $whiteColor;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.kalam-speed {
+  color: #9aa0a6;
+  font-size: 13px;
+}
+
+.kalam-time {
+  flex-shrink: 0;
+  color: $whiteColor;
+  font-size: 30px;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+
+  @include mobile {
+    font-size: 24px;
+  }
+}
+
+.kalam-bar {
+  height: 10px;
+  overflow: hidden;
+  border-radius: 5px;
+  background: #3a3b3d;
+}
+
+// ~40 sec is about a third of ~2 min
+.kalam-bar-fill {
+  display: block;
+  height: 100%;
+  border-radius: 5px;
+  background: #3d9bff;
+
+  &.kalam-bar-fast {
+    width: 32%;
+  }
+
+  &.kalam-bar-slow {
+    width: 100%;
+  }
+}
+
 /* Devices and shortcuts */
 $keycapBgColor: #f5f6f7;
 $keycapBorderColor: #d5dade;
@@ -980,6 +1077,8 @@ $keycapBorderColor: #d5dade;
   }
 }
 
+// always two columns (one on phones); when a column is narrow, the keys in
+// each row wrap under the label instead of the columns collapsing
 .shortcut-list {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -991,12 +1090,13 @@ $keycapBorderColor: #d5dade;
   }
 }
 
+// label on the first line, keys on the second
 .shortcut-row {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  min-height: 46px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 10px 0;
   border-bottom: 1px solid $borderColor;
 
   dt {
@@ -1007,9 +1107,52 @@ $keycapBorderColor: #d5dade;
 
   dd {
     display: flex;
-    flex-shrink: 0;
+    flex-wrap: wrap;
     gap: 4px;
     margin: 0;
+  }
+}
+
+/*
+ * desktop: the comparison card beside this one sets the row height. size
+ * containment stops the shortcuts card from adding its own height to the row,
+ * so it is stretched to match, and the list scrolls inside it with a thin
+ * blue scrollbar. tablet and phone stack the cards, so the list shows in full.
+ */
+@media (min-width: #{$tabletMaxWidth + 1}px) {
+  .shortcuts-card {
+    contain: size;
+
+    .body-wrapper {
+      min-height: 0;
+    }
+  }
+
+  .shortcut-list {
+    flex: 1;
+    min-height: 0;
+    align-content: start;
+    // pull the list 20px into the card's 36px right padding: the 6px scrollbar
+    // sits 16px from the edge, and 14px padding brings the content back to
+    // 36px, the same as the left side
+    margin-right: -20px;
+    padding-right: 14px;
+    overflow-y: auto;
+    scrollbar-color: $docsAppSecondaryColor transparent;
+    scrollbar-width: thin;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border-radius: 3px;
+      background: $docsAppSecondaryColor;
+    }
   }
 }
 
@@ -1030,6 +1173,14 @@ kbd {
   font-size: 14px;
   font-weight: 500;
   line-height: 1;
+  white-space: nowrap;
+}
+
+// the key name after a modifier symbol, e.g. "⌘ cmd"
+.kbd-label {
+  margin-left: 4px;
+  font-size: 12px;
+  font-weight: 400;
 }
 
 // the "/" between ⌘ and ⇧ in "⌘ / ⇧ Click"
