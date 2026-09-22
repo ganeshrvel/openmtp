@@ -1,571 +1,1036 @@
 @import 'base/base';
 
-/* Paddings */
-$paddingNonFlex: 50px 0;
+/* Breakpoints */
 $mobileMaxWidth: 639;
 $nonMobileMinWidth: 640;
-$minHeightFor100vh: 480;
+$tabletMaxWidth: 959;
+
+/* Layout */
+$containerWidth: 1400px;
+$columnWidth: 660px;
+$columnGap: 72px;
+$navHeight: 72px;
 
 /* Colors */
 $docsAppSecondaryColor: #007af5 !default;
 $whiteColor: #fff;
 $blackColor: #000;
+$textColor: #606c76;
+$headingColor: #3b4550;
+$borderColor: #e1e5e8;
+$tintColor: #e8f2fe;
+$crossColor: #c9372c;
+$coralColor: #ff5d50;
 $macWindowDarkBgColor: #292a2b;
 $syntaxHighlighterColor: rgb(221, 221, 221);
+$syntaxHighlighterKeywordColor: rgb(249, 38, 114);
 $syntaxHighlighterStringColor: #ffeb3b;
 $boxShadowColor1: #004977;
+$blueGradient: linear-gradient(45deg, $docsAppSecondaryColor 0%, #0080ff 100%);
+$slateGradient: linear-gradient(45deg, #263238 0%, #435b71 100%);
 $boxShadow2: 0 0 0 0 rgba(0, 0, 0, 0.3), 0 23px 38px 0 rgba(0, 0, 0, 0.43),
   0 25px 65px 0 rgba(0, 0, 0, 0.1);
-$boxShadowMacWindow: rgba(0, 0, 0, 0.55) 0 20px 68px;
+$monoFont: Menlo, Monaco, Consolas, 'Courier New', monospace;
 
-/* Btns */
-$btn-names-list: download-btn navigate-to-github;
+@mixin tablet {
+  @media (max-width: #{$tabletMaxWidth}px) {
+    @content;
+  }
+}
 
-//btns for light mode
-$background-color-list: transparent transparent;
-$color-list: $docsAppSecondaryColor $blackColor;
-$border-color-list: $docsAppSecondaryColor $blackColor;
+@mixin mobile {
+  @media (max-width: #{$mobileMaxWidth}px) {
+    @content;
+  }
+}
 
-$background-color-active-hover-list: transparent transparent;
-$border-color-active-hover-list: #606c76 #606c76;
-$color-active-hover-list: #606c76 #606c76;
+/* Base */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: $navHeight;
+}
 
-//btns for dark mode
-$background-color-list-dark: $docsAppSecondaryColor $whiteColor;
-$color-list-dark: $whiteColor $docsAppSecondaryColor;
-$border-color-list-dark: $docsAppSecondaryColor $whiteColor;
-
-$background-color-active-hover-list-dark: rgba(255, 255, 255, 0.32)
-  rgba(255, 255, 255, 0.32);
-$border-color-active-hover-list-dark: $whiteColor $whiteColor;
-$color-active-hover-list-dark: $whiteColor $whiteColor;
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
 
 body {
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  color: $textColor;
+  background: $coralColor;
   overflow-x: hidden;
   text-rendering: optimizeLegibility;
 }
 
 a {
   color: $docsAppSecondaryColor;
-}
 
-pre {
-  background: unset;
-  border-left: unset;
-}
-
-@mixin item-align() {
-  min-height: 400px;
-  height: 100vh;
-}
-
-@mixin create-download-buttons(
-  $btn-names-list,
-  $background-color-list,
-  $color-list,
-  $border-color-list,
-  $background-color-active-hover-list,
-  $border-color-active-hover-list,
-  $color-active-hover-list
-) {
-  @for $i from 1 through length($btn-names-list) {
-    &.#{nth($btn-names-list, $i)} {
-      background-color: nth($background-color-list, $i);
-      color: nth($color-list, $i);
-      border-color: nth($border-color-list, $i);
-    }
-
-    &.#{nth($btn-names-list, $i)}:focus,
-    &.#{nth($btn-names-list, $i)}:hover {
-      background-color: nth($background-color-active-hover-list, $i);
-      border-color: nth($border-color-active-hover-list, $i);
-      color: nth($color-active-hover-list, $i);
-    }
+  &:hover,
+  &:focus {
+    color: darken($docsAppSecondaryColor, 10%);
   }
 }
 
-@media (max-width: #{$mobileMaxWidth}px) {
-  .hidden-mobile {
-    display: none;
+a:focus-visible {
+  outline: 2px solid $syntaxHighlighterStringColor;
+  outline-offset: 3px;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    margin: 0;
   }
 }
 
-@media (min-width: #{$nonMobileMinWidth}px) {
-  .hidden-nonmobile {
-    display: none;
-  }
+img {
+  max-width: 100%;
 }
 
-.spinner,
-.spinner::after {
-  border-radius: 50%;
-  width: 10em;
-  height: 10em;
-}
-
-.spinner {
-  $spinnerBorderColor: 1.1em solid rgba(255, 255, 255, 0.2);
-
-  margin-left: auto;
-  margin-right: auto;
-  font-size: 5px;
-  position: relative;
-  text-indent: -9999em;
-  border-top: $spinnerBorderColor;
-  border-right: $spinnerBorderColor;
-  border-bottom: $spinnerBorderColor;
-  border-left: 1.1em solid $whiteColor;
-  @include transform-1(translateZ(0));
-  @include animation(spinner-animation 1.1s infinite linear);
-
-  @-webkit-keyframes spinner-animation {
-    0% {
-      @include transform-1(rotate(0deg));
-    }
-    100% {
-      @include transform-1(rotate(360deg));
-    }
-  }
-  @keyframes spinner-animation {
-    0% {
-      @include transform-1(rotate(0deg));
-    }
-    100% {
-      @include transform-1(rotate(360deg));
-    }
-  }
-}
-
-.divider {
-  margin: 0 50px 0 50px;
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
   border: 0;
-  border-top: 0.1rem solid rgba(0, 0, 0, 0.25);
 }
 
-.syntax-highlighter {
-  pre.syntax-highlighter-wrapper {
-    display: block;
-    overflow-x: auto;
-    padding: 0.5em;
-    color: $syntaxHighlighterColor;
+/* Layout */
+.container {
+  max-width: $containerWidth;
+  margin: 0 auto;
+}
 
-    .syntax-highlighter-keyword {
-      color: rgb(249, 38, 114);
-      font-weight: 700;
+.section {
+  padding: 104px 80px;
+
+  @include tablet {
+    padding: 80px 40px;
+  }
+
+  @include mobile {
+    padding: 56px 20px;
+  }
+
+  &.section-blue {
+    background: $blueGradient;
+  }
+
+  &.section-slate {
+    background: $slateGradient;
+  }
+
+  &.section-coral {
+    background: $coralColor;
+  }
+}
+
+.section-hero {
+  padding-top: 96px;
+
+  @include tablet {
+    padding-top: 64px;
+  }
+
+  @include mobile {
+    padding-top: 40px;
+  }
+}
+
+.split {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $columnGap;
+
+  &.split-stretch {
+    align-items: stretch;
+  }
+
+  @include tablet {
+    flex-direction: column;
+    gap: 40px;
+
+    &,
+    &.split-stretch {
+      align-items: center;
     }
 
-    a,
-    .syntax-highlighter-string {
-      color: $syntaxHighlighterStringColor;
+    &.split-reverse-on-tablet {
+      flex-direction: column-reverse;
     }
+  }
+}
 
-    a {
+.split-col {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: $columnWidth;
+
+  @include tablet {
+    flex: none;
+    width: 100%;
+  }
+}
+
+.section-title {
+  color: $whiteColor;
+  font-size: 36px;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+
+  @include mobile {
+    font-size: 28px;
+  }
+
+  &.centered {
+    text-align: center;
+  }
+}
+
+.section-subtitle {
+  margin: 12px 0 48px;
+  color: $whiteColor;
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 26px;
+  text-align: center;
+
+  @include mobile {
+    margin-bottom: 32px;
+  }
+}
+
+.screenshot {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 5px;
+  box-shadow: $boxShadow2;
+}
+
+/* Nav */
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding: 14px 80px;
+  background: $blueGradient;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08);
+
+  @include tablet {
+    padding: 14px 40px;
+  }
+
+  @include mobile {
+    padding: 14px 20px;
+  }
+}
+
+.site-nav-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 32px;
+
+  @include mobile {
+    column-gap: 16px;
+  }
+}
+
+.site-nav-logo {
+  color: $whiteColor;
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 44px;
+  text-decoration: none;
+
+  &:hover,
+  &:focus {
+    color: $whiteColor;
+  }
+}
+
+.site-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+
+  @include mobile {
+    gap: 16px;
+  }
+
+  a:not(.btn) {
+    color: $whiteColor;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 44px;
+    text-decoration: none;
+
+    &:hover,
+    &:focus {
+      color: $whiteColor;
       text-decoration: underline;
     }
   }
 }
 
-.mac-window {
-  @include box-shadow-1($boxShadow2);
+/* Buttons */
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 46px;
+  box-sizing: border-box;
+  padding: 10px 16px;
+  border: 1px solid $docsAppSecondaryColor;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.1em;
+  text-align: center;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background-color 0.15s ease, color 0.15s ease;
 
-  position: relative;
-  height: auto;
-  min-width: inherit;
-  font-size: 14px;
-  padding: 0;
+  &:focus-visible {
+    outline: 2px solid $syntaxHighlighterStringColor;
+    outline-offset: 3px;
+  }
+
+  .btn-icon {
+    flex-shrink: 0;
+  }
+}
+
+.btn-primary {
+  background: $docsAppSecondaryColor;
+  color: $whiteColor;
+
+  &:hover,
+  &:focus {
+    background: darken($docsAppSecondaryColor, 8%);
+    border-color: darken($docsAppSecondaryColor, 8%);
+    color: $whiteColor;
+  }
+}
+
+.btn-outline {
+  background: transparent;
+  color: $docsAppSecondaryColor;
+
+  .btn-icon {
+    display: none;
+  }
+
+  &:hover,
+  &:focus {
+    background: $tintColor;
+    color: $docsAppSecondaryColor;
+  }
+}
+
+.btn-dark {
+  border-color: $blackColor;
+  color: $blackColor;
+
+  &:hover,
+  &:focus {
+    background: #f1f3f5;
+    color: $blackColor;
+  }
+}
+
+.btn-nav {
+  min-height: 44px;
+  padding: 0 20px;
+  border-color: $whiteColor;
+  background: transparent;
+  color: $whiteColor;
+
+  &:hover,
+  &:focus {
+    background: rgba(255, 255, 255, 0.16);
+    color: $whiteColor;
+  }
+
+  @include mobile {
+    padding: 0 14px;
+  }
+}
+
+.btn-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  // whichever download button is recommended for this Mac goes first
+  .btn-primary {
+    order: -1;
+  }
+}
+
+/* Mac window */
+.mac-window {
+  background: $whiteColor;
   border-radius: 5px;
   overflow: hidden;
-  background: $whiteColor;
-  min-height: 300px;
+  box-shadow: $boxShadow2;
 
   &.dark {
-    background: $macWindowDarkBgColor !important;
+    background: $macWindowDarkBgColor;
+  }
 
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6,
-    p,
-    a {
+  .titlebar-wrapper {
+    padding: 12px 6px 8px 15px;
+    line-height: 0;
+    user-select: none;
+
+    svg {
+      display: block;
+    }
+  }
+
+  .body-wrapper {
+    padding: 8px 36px 36px;
+
+    @include mobile {
+      padding: 8px 20px 24px;
+    }
+  }
+}
+
+.window-title {
+  margin-bottom: 8px;
+  color: $docsAppSecondaryColor;
+  font-size: 26px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+
+  @include mobile {
+    font-size: 22px;
+  }
+}
+
+.window-lead {
+  margin-bottom: 10px;
+  line-height: 24px;
+}
+
+.code-box {
+  margin: 0;
+  padding: 12px 16px;
+  border: 0;
+  border-radius: 4px;
+  background: $macWindowDarkBgColor;
+  color: $syntaxHighlighterColor;
+  font-family: $monoFont;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0;
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.syntax-highlighter {
+  margin: 0;
+  padding: 16px 32px 32px;
+  border: 0;
+  background: transparent;
+  color: $syntaxHighlighterColor;
+  font-family: $monoFont;
+  font-size: 15px;
+  line-height: 30px;
+  letter-spacing: 0;
+  white-space: pre;
+  overflow-x: auto;
+
+  @include mobile {
+    padding: 16px 20px 24px;
+    font-size: 13px;
+  }
+
+  .keyword {
+    color: $syntaxHighlighterKeywordColor;
+    font-weight: 700;
+  }
+
+  .string,
+  .string a {
+    color: $syntaxHighlighterStringColor;
+  }
+
+  a {
+    text-decoration: underline;
+
+    &:hover,
+    &:focus {
       color: $whiteColor;
     }
+  }
+}
 
-    a:hover,
-    a:active {
+/* Hero */
+.mac-window .body-wrapper.hero-body {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 48px 48px;
+
+  @include tablet {
+    padding: 8px 36px 36px;
+  }
+
+  @include mobile {
+    padding: 8px 20px 24px;
+  }
+
+  .btn-stack .btn {
+    min-height: 52px;
+    font-size: 13px;
+  }
+
+  .code-box {
+    padding: 14px 16px;
+    background: #2d2e30;
+    font-size: 15px;
+  }
+}
+
+.badge {
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border: 1px solid $docsAppSecondaryColor;
+  border-radius: 4px;
+  color: $docsAppSecondaryColor;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0;
+}
+
+.hero-title {
+  margin: 16px 0 0;
+  line-height: 1.1;
+
+  .hero-title-name {
+    display: block;
+    color: $docsAppSecondaryColor;
+    font-size: 56px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+
+    @include mobile {
+      font-size: 42px;
+    }
+  }
+
+  .hero-title-tagline {
+    display: block;
+    margin-top: 8px;
+    color: $headingColor;
+    font-size: 22px;
+    font-weight: 300;
+    letter-spacing: -0.01em;
+    line-height: 1.35;
+
+    @include mobile {
+      font-size: 19px;
+    }
+  }
+}
+
+/* stats band under the title: 1x4 from 1400px up, 2x2 below */
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 28px;
+
+  @media (max-width: 1399px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.hero-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px;
+  border-radius: 8px;
+  background: #eef5fe;
+}
+
+.hero-stat-value {
+  color: #0b3f7a;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.hero-stat-label {
+  color: #4a5561;
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.hero-thanks {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+  padding: 12px 16px;
+  border: 1px solid #d6e6fb;
+  border-radius: 8px;
+
+  svg {
+    flex-shrink: 0;
+  }
+
+  p {
+    color: $headingColor;
+    font-size: 14px;
+    line-height: 21px;
+  }
+
+}
+
+.hero-copy {
+  margin-top: 10px;
+  font-size: 16px;
+  line-height: 25px;
+
+  strong {
+    color: $headingColor;
+  }
+}
+
+.hero-thanks + .hero-copy {
+  margin-top: 28px;
+}
+
+.hero-version {
+  margin-top: 24px;
+  line-height: 24px;
+
+  strong {
+    color: $headingColor;
+  }
+}
+
+.hero-requirements {
+  margin: 2px 0 20px;
+  font-size: 14px;
+  line-height: 22px;
+}
+
+.homebrew-label {
+  margin: 18px 0 6px;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+/* Features */
+.feature-list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  margin-top: 24px;
+
+  li {
+    position: relative;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 6px 60px 6px 26px;
+    border-radius: 0 8px 8px 0;
+    background: $docsAppSecondaryColor;
+    box-shadow: 0 0 2px $boxShadowColor1;
+    color: $whiteColor;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 20px;
+    cursor: default;
+    transition: background-color 1.5s ease;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 6px;
+      width: 10px;
+      height: 10px;
+      border-radius: 5px;
+      background: $whiteColor;
+      box-shadow: -1px -1px 2px $boxShadowColor1;
+      transform: translateY(-50%);
+    }
+
+    &:hover {
+      background: #555;
+    }
+
+    @include mobile {
+      padding-right: 24px;
+    }
+  }
+}
+
+/* How it works */
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 40px;
+
+  @include tablet {
+    grid-template-columns: minmax(0, 1fr);
+    max-width: $columnWidth;
+    margin: 0 auto;
+    gap: 24px;
+  }
+
+  .body-wrapper {
+    padding: 8px 28px 32px;
+
+    @include mobile {
+      padding: 8px 20px 24px;
+    }
+  }
+}
+
+.step-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 18px;
+  background: $docsAppSecondaryColor;
+  color: $whiteColor;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.step-title {
+  margin: 16px 0 8px;
+  color: $headingColor;
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
+
+.step-text {
+  line-height: 24px;
+}
+
+/* Kalam Kernel */
+.kalam-text p {
+  margin-top: 16px;
+  color: $whiteColor;
+  font-size: 17px;
+  line-height: 28px;
+
+  &:first-of-type {
+    margin-top: 20px;
+  }
+}
+
+/* Devices */
+.device-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+}
+
+.device-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 5px;
+  background: $tintColor;
+  color: $docsAppSecondaryColor;
+}
+
+.device-name {
+  display: block;
+  color: $headingColor;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 24px;
+}
+
+.device-detail {
+  display: block;
+  font-size: 15px;
+  line-height: 22px;
+}
+
+.compare-table {
+  width: 100%;
+  margin: 0;
+  border-collapse: collapse;
+  font-size: 15px;
+  line-height: 22px;
+
+  th,
+  td {
+    padding: 12px;
+    border-bottom: 1px solid $borderColor;
+    text-align: left;
+    vertical-align: middle;
+
+    &:first-child {
+      padding-left: 0;
+    }
+
+    &:last-child {
+      padding-right: 0;
+    }
+  }
+
+  thead th {
+    padding-top: 2px;
+    padding-bottom: 10px;
+    border-bottom-width: 2px;
+    color: $headingColor;
+    font-weight: 500;
+
+    &.is-openmtp {
       color: $docsAppSecondaryColor;
     }
   }
 
-  .titlebar-wrapper {
-    user-select: none;
-    padding: 12px 6px 8px 15px;
+  tbody th {
+    color: $headingColor;
+    font-weight: 400;
   }
 
-  .body-wrapper {
+  tbody tr:last-child th,
+  tbody tr:last-child td {
+    border-bottom: 0;
+  }
+
+  .yes,
+  .no {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    svg {
+      flex-shrink: 0;
+    }
+  }
+
+  .yes svg {
+    color: $docsAppSecondaryColor;
+  }
+
+  .no svg {
+    color: $crossColor;
+  }
+
+  @include mobile {
+    font-size: 14px;
+
+    th,
+    td {
+      padding: 10px 8px;
+    }
+  }
+}
+
+/*
+ * FAQ: a narrow intro column on the left, and one window on the right holding a
+ * single list of questions divided by hairlines. One column of answers means
+ * no ragged gaps, whatever length the answers run to.
+ */
+.faq-layout {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: $columnGap;
+
+  @include tablet {
+    flex-direction: column;
+    gap: 40px;
+  }
+}
+
+.faq-intro {
+  width: 380px;
+  flex-shrink: 0;
+  padding-top: 40px;
+
+  @include tablet {
     width: 100%;
-    height: 100%;
-    padding: 8px 10px 10px 18px;
+    padding-top: 0;
   }
 }
 
-section.first {
-  background: linear-gradient(45deg, $docsAppSecondaryColor 0%, #0080ff 100%);
+.faq-intro-copy {
+  margin-top: 16px;
+  color: $whiteColor;
+  font-size: 17px;
+  font-weight: 300;
+  line-height: 28px;
+}
 
-  .item-left {
-    position: relative;
+.faq-ask {
+  margin-top: 40px;
+  padding-top: 32px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
 
-    //for mobile devices
-    @media (max-width: #{$mobileMaxWidth}px) {
-      @include item-align();
-      @include horz-vert-center();
-
-      h1.heading {
-        margin-bottom: 45px;
-        font-weight: 400;
-        color: #fff;
-      }
-      p.latest-version-link {
-        margin-top: 45px;
-        color: $whiteColor;
-      }
-
-      .github-latest-version-wrapper {
-        a {
-          color: $whiteColor;
-          text-decoration: underline;
-        }
-      }
-    }
-
-    //for non-mobile devices
-    @media (min-width: #{$nonMobileMinWidth}px) {
-      //only use 100vh when min-height of vp is greater than a certain value
-      @media (min-height: #{$minHeightFor100vh}px) {
-        @include item-align();
-      }
-      @include horz-vert-center(false);
-
-      h1.heading,
-      p.latest-version-link {
-        display: none;
-      }
-    }
-
-    .image-wrapper {
-      text-align: center;
-
-      #app-screenshot-file-explorer {
-        max-width: 400px;
-        width: 80%;
-        height: auto;
-        @include box-shadow-1($boxShadow2);
-        @include border-radius(5px);
-      }
-    }
-  }
-
-  .item-right {
-    @include horz-vert-center();
-
-    //for mobile devices
-    @media (max-width: #{$mobileMaxWidth}px) {
-      padding: $paddingNonFlex;
-    }
-
-    //for non-mobile devices
-    @media (min-width: #{$nonMobileMinWidth}px) {
-      //only use 100vh when min-height of vp is greater than a certain value
-      @media (min-height: #{$minHeightFor100vh}px) {
-        @include item-align();
-      }
-
-      @media (max-height: #{$minHeightFor100vh - 1}px) {
-        padding: $paddingNonFlex;
-      }
-    }
-
-    .mac-window {
-      @include box-shadow-1($boxShadow2);
-
-      width: 90%;
-      max-width: 500px;
-
-      .desc-wrapper {
-        padding: 0 10px 0 10px;
-        line-height: 20px;
-        max-width: 500px;
-
-        h1.heading {
-          margin-bottom: 10px;
-          font-weight: 500;
-          color: $docsAppSecondaryColor;
-        }
-
-        p.latest-version-link {
-          margin-bottom: 25px;
-
-          &.first-item {
-            margin-bottom: 17px;
-          }
-
-          .title {
-            margin-bottom: 5px;
-          }
-
-          a {
-            text-decoration: underline;
-          }
-
-          .github-latest-version-wrapper {
-            a {
-              text-decoration: underline;
-            }
-          }
-
-          .block {
-            display: block;
-            margin-bottom: 3px;
-          }
-        }
-
-        @media (max-width: #{$mobileMaxWidth}px) {
-          text-align: left;
-
-          h1.heading {
-            margin-bottom: 10px;
-            font-size: 3rem;
-            font-weight: 500;
-          }
-        }
-
-        .line-1 {
-          margin-bottom: 10px;
-        }
-
-        .line-2 {
-          margin-bottom: 10px;
-        }
-      }
-
-      .btn-wrapper {
-        margin-bottom: 16px;
-        text-align: center;
-
-        .button {
-          @media (max-width: #{$mobileMaxWidth}px) {
-            display: block;
-            width: 100%;
-          }
-          @media (min-width: #{$nonMobileMinWidth}px) {
-            display: block;
-            width: 100%;
-          }
-        }
-      }
-
-      &.light {
-        .btn-wrapper {
-          .button {
-            @include create-download-buttons(
-              $btn-names-list,
-              $background-color-list,
-              $color-list,
-              $border-color-list,
-              $background-color-active-hover-list,
-              $border-color-active-hover-list,
-              $color-active-hover-list
-            );
-          }
-        }
-      }
-
-      &.dark {
-        .btn-wrapper {
-          .button {
-            @include create-download-buttons(
-              $btn-names-list,
-              $background-color-list-dark,
-              $color-list-dark,
-              $border-color-list-dark,
-              $background-color-active-hover-list-dark,
-              $border-color-active-hover-list-dark,
-              $color-active-hover-list-dark
-            );
-          }
-        }
-      }
-    }
+  @include tablet {
+    margin-top: 28px;
+    padding-top: 24px;
   }
 }
 
-section.second {
-  background: linear-gradient(45deg, #263238 0%, #435b71 100%);
+.faq-ask-title {
+  color: $whiteColor;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 26px;
+}
 
-  .divider {
-    @media (max-width: #{$mobileMaxWidth}px) {
-      order: 2;
-    }
+.faq-ask-copy {
+  margin: 8px 0 20px;
+  color: $whiteColor;
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 26px;
+}
 
-    border-top: 0.1rem solid rgba(255, 255, 255, 0.25);
-  }
+.faq-ask .btn {
+  display: inline-flex;
+}
 
-  .item-left {
-    @media (max-width: #{$mobileMaxWidth}px) {
-      order: 3;
-    }
+.faq-window {
+  flex-grow: 1;
+  min-width: 0;
+  max-width: 640px;
 
-    position: relative;
-    @include horz-vert-center();
-
-    //for mobile devices
-    @media (max-width: #{$mobileMaxWidth}px) {
-      padding: $paddingNonFlex;
-    }
-
-    //for non-mobile devices
-    @media (min-width: #{$nonMobileMinWidth}px) {
-      @include item-align();
-    }
-
-    .image-wrapper {
-      text-align: center;
-
-      #app-screenshot-file-transfer {
-        @include box-shadow-1($boxShadow2);
-        @include border-radius(5px);
-
-        max-width: 400px;
-        width: 80%;
-        height: auto;
-      }
-    }
-  }
-
-  .item-right {
-    @media (max-width: #{$mobileMaxWidth}px) {
-      order: 1;
-    }
-    @include horz-vert-center();
-
-    //for mobile devices
-    @media (max-width: #{$mobileMaxWidth}px) {
-      padding: $paddingNonFlex;
-    }
-
-    //for non-mobile devices
-    @media (min-width: #{$nonMobileMinWidth}px) {
-      //only use 100vh when min-height of vp is greater than a certain value
-      @media (min-height: #{$minHeightFor100vh}px) {
-        @include item-align();
-      }
-
-      @media (max-height: #{$minHeightFor100vh - 1}px) {
-        padding: $paddingNonFlex;
-      }
-    }
-
-    .desc-wrapper {
-      padding: 0 20px 0 20px;
-      line-height: 20px;
-      max-width: 500px;
-
-      .feature-lists {
-        cursor: default;
-
-        ul {
-          display: grid;
-        }
-
-        li {
-          display: inline-block;
-        }
-
-        li,
-        span {
-          float: left;
-          line-height: 24px;
-          position: relative;
-          font-size: 15px;
-          transition: background-color 1.5s ease;
-          margin-bottom: 0;
-        }
-
-        span {
-          padding: 6px 60px 6px 20px;
-          line-height: 20px;
-          background: $docsAppSecondaryColor;
-          color: $whiteColor;
-          text-decoration: none;
-          @include border-radius(0 8px 8px 0);
-          @include box-shadow-1(0 0 2px $boxShadowColor1);
-
-          &::after {
-            @include border-radius(5px);
-            @include box-shadow-1(-1px -1px 2px $boxShadowColor1);
-
-            top: 50%;
-            right: 0;
-            transform: translateY(-50%);
-            content: '';
-            position: absolute;
-            left: 4px;
-            float: left;
-            width: 10px;
-            height: 10px;
-            background: $whiteColor;
-          }
-
-          &:hover {
-            background: #555;
-          }
-
-          &:hover::before {
-            border-color: transparent $docsAppSecondaryColor transparent
-              transparent;
-          }
-        }
-      }
-    }
+  @include tablet {
+    width: 100%;
   }
 }
 
-footer {
-  background: linear-gradient(45deg, #ff5d50 0%, #ff5d50 100%);
+.faq-list {
+  padding: 0 48px 16px;
 
-  //for mobile devices
-  @media (max-width: #{$mobileMaxWidth}px) {
-    @include item-align();
+  @include tablet {
+    padding: 0 32px 12px;
   }
 
-  //for non-mobile devices
-  @media (min-width: #{$nonMobileMinWidth}px) {
-    //only use 100vh when min-height of vp is greater than a certain value
-    @media (min-height: #{$minHeightFor100vh}px) {
-      @include item-align();
-    }
-
-    @media (max-height: #{$minHeightFor100vh - 1}px) {
-      padding: $paddingNonFlex;
-    }
-  }
-
-  @include horz-vert-center();
-
-  .footer-wrapper {
-    height: 70%;
-    width: 90%;
-    max-width: 900px;
-    max-height: 500px;
-
-    .mac-window {
-      height: 100%;
-    }
+  @include mobile {
+    padding: 0 20px 8px;
   }
 }
 
+.faq-item {
+  padding: 16px 0;
+  border-top: 1px solid $borderColor;
+
+  &:first-child {
+    padding-top: 8px;
+    border-top: 0;
+  }
+
+  @include mobile {
+    padding: 14px 0;
+  }
+}
+
+.faq-question {
+  margin-bottom: 4px;
+  color: $docsAppSecondaryColor;
+  font-size: 19px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 26px;
+}
+
+.faq-answer {
+  font-size: 16px;
+  line-height: 26px;
+
+  a {
+    font-weight: 400;
+    text-decoration: underline;
+  }
+
+  &.faq-answer-after-steps {
+    margin-top: 12px;
+  }
+}
+
+.faq-steps {
+  margin-top: 8px;
+  padding-left: 22px;
+  list-style: decimal;
+  font-size: 16px;
+  line-height: 26px;
+
+  li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+  }
+
+  li:last-child {
+    margin-bottom: 0;
+  }
+}
+
+/* Footer */
+.site-footer .mac-window {
+  max-width: 1100px;
+}
+
+.site-footer .syntax-highlighter {
+  padding: 16px 40px 40px;
+
+  @include mobile {
+    padding: 16px 20px 24px;
+  }
+}
+
+/* Code window scrollbars */
 pre::-webkit-scrollbar-track {
   border-radius: 0;
   background-color: $macWindowDarkBgColor;

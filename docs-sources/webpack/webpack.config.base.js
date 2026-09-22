@@ -68,6 +68,11 @@ const baseConfig = {
       {
         test: /\.(?:ico|jpe?g|png|gif|webp)$/i,
         type: 'asset/resource',
+        // the page markup references these by a stable path, so they are
+        // emitted to docs/images/<name> instead of a hashed bundle/ file
+        generator: {
+          filename: 'images/[name][ext]',
+        },
       },
     ],
   },

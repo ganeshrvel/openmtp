@@ -1,272 +1,235 @@
 import './styles/global.scss';
+// emitted to docs/images/, which is where the <img> tags in the markup point
+import './images/file-explorer.png';
+import './images/file-transfer.png';
+import { undefinedOrNull, fetchUrl, urls } from './utils/funcs';
 import {
-  imgsrc,
-  undefinedOrNull,
-  fetchUrl,
-  imageLoaded,
-  urls,
-  setStyle,
-} from './utils/funcs';
-import { APP_GITHUB_API_URL, APP_GITHUB_URL } from './utils/consts';
+  APP_GITHUB_API_URL,
+  APP_GITHUB_RELEASES_URL,
+  APP_GITHUB_REPO_API_URL,
+} from './utils/consts';
+
+const DOWNLOAD_ARCHS = ['arm64', 'x64'];
 
 class Docs {
   constructor() {
     this.selectors = {
-      spinner: `.spinner`,
-      appScreenshotFileExplorerImageWrapper: `#app-screenshot-file-explorer-wrapper`,
-      appScreenshotFileTransferImageWrapper: `#app-screenshot-file-transfer-wrapper`,
-      appScreenshotFileExplorerId: `app-screenshot-file-explorer`,
-      appScreenshotFileTransferId: `app-screenshot-file-transfer`,
-      downloadBtnGitHubArm64: `#download-btn-github-arm64`,
-      downloadBtnGitHubX64: `#download-btn-github-x64`,
-      navigateToGitHub: `#navigate-to-github`,
+      downloadBtn: {
+        arm64: `#download-btn-github-arm64`,
+        x64: `#download-btn-github-x64`,
+      },
       gitHubLatestVersionWrapper: `.github-latest-version-wrapper`,
+      gitHubStarsWrapper: `.github-stars-wrapper`,
     };
 
     this.$el = {
-      appScreenshotFileExplorerImageWrapper: document.querySelector(
-        this.selectors.appScreenshotFileExplorerImageWrapper
-      ),
-      appScreenshotFileTransferImageWrapper: document.querySelector(
-        this.selectors.appScreenshotFileTransferImageWrapper
-      ),
-      downloadBtnGitHubArm64: document.querySelector(
-        this.selectors.downloadBtnGitHubArm64
-      ),
-      downloadBtnGitHubX64: document.querySelector(
-        this.selectors.downloadBtnGitHubX64
-      ),
-      navigateToGitHub: document.querySelector(this.selectors.navigateToGitHub),
+      downloadBtn: {
+        arm64: document.querySelector(this.selectors.downloadBtn.arm64),
+        x64: document.querySelector(this.selectors.downloadBtn.x64),
+      },
       gitHubLatestVersionWrapper: document.querySelectorAll(
         this.selectors.gitHubLatestVersionWrapper
+      ),
+      gitHubStarsWrapper: document.querySelectorAll(
+        this.selectors.gitHubStarsWrapper
       ),
     };
 
     this.gitHubLatestReleaseData = null;
-    this.lazyLoadImages = {
-      fileExplorer: {
-        imgSrc: 'file-explorer.png',
-        parentSelector: this.$el.appScreenshotFileExplorerImageWrapper,
-        id: this.selectors.appScreenshotFileExplorerId,
-        loader: this.selectors.spinner,
-      },
-      fileTransfer: {
-        imgSrc: 'file-transfer.png',
-        parentSelector: this.$el.appScreenshotFileTransferImageWrapper,
-        id: this.selectors.appScreenshotFileTransferId,
-        loader: this.selectors.spinner,
-      },
-    };
+    this.gitHubLatestReleasePromise = null;
   }
 
   init() {
-    this._checkLatestGitHubRelease();
-    this._setHighlightDownloadBtnColor();
-    this._checkDownloadRequestUrl();
-    this._appScreenshotsLazyLoad();
-    this._downloadBtnEvents();
-    this._navigateToGithuBtnEvents();
+    this._highlightDownloadBtnForThisMac();
+
+    const releasePromise = this._fetchLatestGitHubRelease();
+
+    this._checkDownloadRequestUrl(releasePromise);
+    this._fetchGitHubStars();
   }
 
-  _checkLatestGitHubRelease = () => {
-    return fetchUrl({
-      url: APP_GITHUB_API_URL,
-    }).then((res) => {
-      if (undefinedOrNull(res)) {
-        return null;
-      }
+  // on 403 (rate limit) or any failure the placeholder is left untouched
+  _fetchGitHubStars = () => {
+    fetchUrl({ url: APP_GITHUB_REPO_API_URL })
+      .then((res) => {
+        if (undefinedOrNull(res) || res.status !== 200) {
+          return null;
+        }
 
-      const { json, status } = res;
+        return res.json.then((data) => {
+          const stars = data && data.stargazers_count;
 
-      return json.then((data) => {
-        this.gitHubLatestReleaseData =
-          this._generateDownloadLatestGitHubReleaseUrl(data, status);
+          if (typeof stars !== 'number') {
+            return null;
+          }
 
-        return this._releaseInformationSet({ ...this.gitHubLatestReleaseData });
-      });
-    });
+          const formatted = this._formatCount(stars);
+
+          for (let i = 0; i < this.$el.gitHubStarsWrapper.length; i += 1) {
+            this.$el.gitHubStarsWrapper[i].textContent = formatted;
+          }
+
+          return formatted;
+        });
+      })
+      .catch(() => null);
   };
 
-  _generateDownloadLatestGitHubReleaseUrl = (data, status) => {
-    const downloadableAssets = {
-      latest: data ? data.name : `OpenMTP`,
+  // 7412 -> 7.4K, 12000 -> 12K, 950 -> 950
+  _formatCount = (count) => {
+    if (count < 1000) {
+      return `${count}`;
+    }
+
+    const thousands = (count / 1000).toFixed(1).replace(/\.0$/, '');
+
+    return `${thousands}K`;
+  };
+
+  // fetched once; every caller shares the same promise
+  _fetchLatestGitHubRelease = () => {
+    if (!undefinedOrNull(this.gitHubLatestReleasePromise)) {
+      return this.gitHubLatestReleasePromise;
+    }
+
+    this.gitHubLatestReleasePromise = fetchUrl({ url: APP_GITHUB_API_URL })
+      .then((res) => {
+        if (undefinedOrNull(res)) {
+          return null;
+        }
+
+        const { json, status } = res;
+
+        return json.then((data) => {
+          this.gitHubLatestReleaseData = this._parseGitHubRelease(data, status);
+          this._applyReleaseData(this.gitHubLatestReleaseData);
+
+          return this.gitHubLatestReleaseData;
+        });
+      })
+      .catch(() => null);
+
+    return this.gitHubLatestReleasePromise;
+  };
+
+  // on 403 (rate limit) or 404 the links stay on the releases page and the version placeholder is left untouched
+  _parseGitHubRelease = (data, status) => {
+    const release = {
+      latestVersion: null,
       downloadUrls: {
-        [`mac-arm64`]: {
-          desc: `Apple Silicon`,
-          url: `https://github.com/ganeshrvel/openmtp/releases/`,
-        },
-        [`mac-x64`]: {
-          desc: `Intel Silicon`,
-          url: `https://github.com/ganeshrvel/openmtp/releases/`,
-        },
+        arm64: APP_GITHUB_RELEASES_URL,
+        x64: APP_GITHUB_RELEASES_URL,
       },
     };
 
-    if (status === 200) {
-      if (data && data.assets && data.assets.length > 0) {
-        data.assets.forEach((a) => {
-          const match = a.name.match(/\.yml|\.yaml|\.zip$/);
+    if (status !== 200 || undefinedOrNull(data)) {
+      return release;
+    }
 
-          if (match) {
-            return null;
-          }
+    if (typeof data.name === 'string' && data.name !== '') {
+      release.latestVersion = data.name;
+    }
 
-          const macX64Match = a.browser_download_url.match(/mac-x64\.dmg$/);
-          const macArm64Match = a.browser_download_url.match(/mac-arm64\.dmg$/);
+    (data.assets || []).forEach((asset) => {
+      const url = asset.browser_download_url || '';
 
-          if (macX64Match) {
-            downloadableAssets.downloadUrls[`mac-x64`].url = macX64Match.input;
-          } else if (macArm64Match) {
-            downloadableAssets.downloadUrls[`mac-arm64`].url =
-              macArm64Match.input;
-          }
-        });
+      if (/mac-arm64\.dmg$/.test(url)) {
+        release.downloadUrls.arm64 = url;
+      } else if (/mac-x64\.dmg$/.test(url)) {
+        release.downloadUrls.x64 = url;
+      }
+    });
+
+    return release;
+  };
+
+  _applyReleaseData = ({ latestVersion, downloadUrls }) => {
+    if (!undefinedOrNull(latestVersion)) {
+      for (let i = 0; i < this.$el.gitHubLatestVersionWrapper.length; i += 1) {
+        this.$el.gitHubLatestVersionWrapper[i].textContent = latestVersion;
       }
     }
 
-    // if api request limit gets exhausted or api is not found, then forward the url to github releases page
-    return downloadableAssets;
+    DOWNLOAD_ARCHS.forEach((arch) => {
+      const btn = this.$el.downloadBtn[arch];
+
+      if (btn) {
+        btn.href = downloadUrls[arch];
+      }
+    });
   };
 
-  // if the github releases api has already been resolved then return it else wait for the the github release api fetch to complete and redirect to the appropriate download url
-  _forceDownloadLatestGitHubRelease = ({ platform, arch }) => {
-    if (!undefinedOrNull(this.gitHubLatestReleaseData)) {
-      return this.gitHubLatestReleaseData;
-    }
-
-    this._checkLatestGitHubRelease()
-      .then(() => {
-        if (undefinedOrNull(this.gitHubLatestReleaseData)) {
-          return null;
-        }
-
-        window.location.href =
-          this.gitHubLatestReleaseData.downloadUrls[`${platform}-${arch}`].url;
-
-        return true;
-      })
-      .catch(() => {});
-
-    return null;
-  };
-
-  // used for handling the download requests originating from OpenMTP's README file
-  _checkDownloadRequestUrl = () => {
+  // handles download links from OpenMTP's README:
+  // ?downloadApp=github&release=stable&platform=mac&arch=arm64
+  _checkDownloadRequestUrl = (releasePromise) => {
     const { downloadApp, release, platform, arch } = urls.get({});
 
-    if (
-      undefinedOrNull(downloadApp) ||
-      undefinedOrNull(arch) ||
-      undefinedOrNull(release) ||
-      undefinedOrNull(platform)
-    ) {
+    if ([downloadApp, release, platform, arch].some(undefinedOrNull)) {
+      return;
+    }
+
+    if (platform !== 'mac' || DOWNLOAD_ARCHS.indexOf(arch) === -1) {
+      return;
+    }
+
+    releasePromise
+      .then((releaseData) => {
+        window.location.href = undefinedOrNull(releaseData)
+          ? APP_GITHUB_RELEASES_URL
+          : releaseData.downloadUrls[arch];
+
+        return null;
+      })
+      .catch(() => {});
+  };
+
+  // arm64 is the default recommendation in the html; switch only when the GPU clearly belongs to an Intel Mac
+  _highlightDownloadBtnForThisMac = () => {
+    if (this._detectMacArch() !== 'x64') {
+      return;
+    }
+
+    const { arm64, x64 } = this.$el.downloadBtn;
+
+    if (!arm64 || !x64) {
+      return;
+    }
+
+    arm64.classList.remove('btn-primary');
+    arm64.classList.add('btn-outline');
+    x64.classList.remove('btn-outline');
+    x64.classList.add('btn-primary');
+  };
+
+  _detectMacArch = () => {
+    if (!/Macintosh|Mac OS X/.test(navigator.userAgent)) {
       return null;
     }
 
-    switch (downloadApp) {
-      case 'github':
-      default:
-        if (!this._forceDownloadLatestGitHubRelease({ platform, arch })) {
-          return null;
-        }
+    try {
+      const gl = document.createElement('canvas').getContext('webgl');
 
-        window.location.href =
-          this.gitHubLatestReleaseData.downloadUrls[`${platform}-${arch}`].url;
-        break;
-    }
-  };
-
-  _appScreenshotsLazyLoad = () => {
-    Object.keys(this.lazyLoadImages).map((a) => {
-      const item = this.lazyLoadImages[a];
-      const imgLoad = imgsrc(item.imgSrc);
-
-      return imageLoaded(imgLoad)
-        .then((res) => {
-          if (!res.status) {
-            return null;
-          }
-
-          if (!undefinedOrNull(item.loader)) {
-            const loader = item.parentSelector.querySelector(item.loader);
-
-            item.parentSelector.removeChild(loader);
-          }
-
-          this._createImg(res.src, item.parentSelector, item.id);
-
-          return true;
-        })
-        .catch(() => {});
-    });
-  };
-
-  _createImg = (src, parentSelector, id) => {
-    const img = document.createElement('img');
-
-    img.src = src;
-    img.id = id;
-    parentSelector.appendChild(img);
-  };
-
-  _downloadBtnEvents = () => {
-    this.$el.downloadBtnGitHubArm64.addEventListener('click', (e) => {
-      e.preventDefault();
-      const platform = 'mac';
-      const arch = 'arm64';
-
-      if (!this._forceDownloadLatestGitHubRelease({ platform, arch })) {
+      if (!gl) {
         return null;
       }
 
-      window.location.href =
-        this.gitHubLatestReleaseData.downloadUrls[`${platform}-${arch}`].url;
-    });
-    this.$el.downloadBtnGitHubX64.addEventListener('click', (e) => {
-      e.preventDefault();
-      const platform = 'mac';
-      const arch = 'x64';
+      const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+      const renderer =
+        (debugInfo && gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL)) || '';
 
-      if (!this._forceDownloadLatestGitHubRelease({ platform, arch })) {
-        return null;
+      if (/Apple M\d/.test(renderer)) {
+        return 'arm64';
       }
 
-      window.location.href =
-        this.gitHubLatestReleaseData.downloadUrls[`${platform}-${arch}`].url;
-    });
-  };
+      if (/Intel|AMD|Radeon|NVIDIA|GeForce/i.test(renderer)) {
+        return 'x64';
+      }
 
-  _navigateToGithuBtnEvents = () => {
-    this.$el.navigateToGitHub.addEventListener('click', (events) => {
-      events.preventDefault();
-
-      window.location.href = APP_GITHUB_URL;
-    });
-  };
-
-  _releaseInformationSet = ({ latest, url: _ }) => {
-    for (let i = 0; i < this.$el.gitHubLatestVersionWrapper.length; i += 1) {
-      this.$el.gitHubLatestVersionWrapper[i].innerHTML = latest;
+      // Safari reports "Apple GPU" on every Mac, so it can't tell
+      return null;
+    } catch (e) {
+      return null;
     }
-  };
-
-  // highlight the download button according to the architecture of the OS
-  _setHighlightDownloadBtnColor = () => {
-    if (this._isMacArm64Machine()) {
-      setStyle(this.$el.downloadBtnGitHubArm64, {
-        [`background-color`]: `transparent`,
-        color: `var(--fbc-blue-60)`,
-        [`border-color`]: `var(--fbc-blue-60)`,
-      });
-    }
-  };
-
-  _isMacArm64Machine = () => {
-    const w = document.createElement('canvas').getContext('webgl');
-    const d = w.getExtension('WEBGL_debug_renderer_info');
-    const g = (d && w.getParameter(d.UNMASKED_RENDERER_WEBGL)) || '';
-
-    return g.match(/Apple/) && !g.match(/Apple GPU/);
   };
 }
 
