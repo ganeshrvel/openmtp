@@ -1,6 +1,7 @@
 # OpenMTP | Android File Transfer for macOS
 
 - Author: [Ganesh Rathinavel](https://www.linkedin.com/in/ganeshrvel 'Ganesh Rathinavel')
+- Author's Website: [ganeshrvel.com](https://www.ganeshrvel.com 'ganeshrvel.com')
 - License: [MIT](https://github.com/ganeshrvel/openmtp/blob/master/LICENSE 'MIT')
 - System Requirements: macOS 10.14 (Mojave) or higher. macOS 10.13 and earlier have limited support and require OpenMTP v3.1.15 with Legacy MTP mode.
 - Website URL: [https://openmtp.ganeshrvel.com](https://openmtp.ganeshrvel.com/ 'https://openmtp.ganeshrvel.com')
@@ -62,7 +63,7 @@ The next generation of OpenMTP is in active development and coming soon. It's a 
 
 ### System Requirements and Support
 
-- To support macOS version below Big Sur the Kalam kernel needs to be compiled on an older macOS machine every time there is an update, which is practically very difficult
+- To support macOS version below Big Sur the Kalam Kernel needs to be compiled on an older macOS machine every time there is an update, which is practically very difficult
 - Only the latest 3 versions of macOS will receive the `Kalam` Kernel updates, which include new device support, fixes, and stability improvements. macOS Big Sur (11.0) or above will receive the above-mentioned updates
 - We have now officially retired the support for `Kalam` Kernel on macOS 10.13 (OS X High Sierra) and lower. Only the "Legacy" MTP mode will continue working on these outdated machines.
 - We will continue releasing the updates for both `Intel` and `ARM64` machines

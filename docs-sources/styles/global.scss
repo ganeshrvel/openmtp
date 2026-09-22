@@ -527,7 +527,8 @@ img {
 
 .window-lead {
   margin-bottom: 10px;
-  line-height: 24px;
+  font-size: 14px;
+  line-height: 21px;
 }
 
 .code-box {
@@ -713,8 +714,8 @@ img {
 
 .hero-copy {
   margin-top: 10px;
-  font-size: 16px;
-  line-height: 25px;
+  font-size: 14px;
+  line-height: 22px;
 
   strong {
     color: $headingColor;
@@ -727,7 +728,8 @@ img {
 
 .hero-version {
   margin-top: 24px;
-  line-height: 24px;
+  font-size: 13px;
+  line-height: 19px;
 
   strong {
     color: $headingColor;
@@ -736,8 +738,8 @@ img {
 
 .hero-requirements {
   margin: 2px 0 20px;
-  font-size: 14px;
-  line-height: 22px;
+  font-size: 13px;
+  line-height: 19px;
 
   // same treatment as the version line above it
   strong {
@@ -747,14 +749,14 @@ img {
 
 .homebrew-label {
   margin: 18px 0 6px;
-  font-size: 14px;
-  line-height: 20px;
+  font-size: 13px;
+  line-height: 19px;
 }
 
 .hero-legacy {
   margin-top: 14px;
-  font-size: 14px;
-  line-height: 21px;
+  font-size: 13px;
+  line-height: 19px;
 
   a {
     @include animated-underline;
@@ -1066,7 +1068,8 @@ img {
 }
 
 .step-text {
-  line-height: 24px;
+  font-size: 14px;
+  line-height: 21px;
 }
 
 /* Kalam Kernel */
@@ -1997,9 +2000,9 @@ $aboutLinkColor: #0062c4;
   width: 100%;
   text-align: center;
 
-  // the divider only makes sense when the About window sits above it, which
-  // is home-page only
-  .site-footer-home & {
+  // the divider only makes sense when the About window sits above the
+  // device cloud, which is home-page only
+  .site-footer-with-about & {
     margin-top: 10px;
     padding-top: 58px;
     border-top: 1px solid #c6d9ef;
@@ -2131,8 +2134,8 @@ $aboutLinkColor: #0062c4;
   font-size: 14px;
 
   // the divider only makes sense when there's footer content above it to
-  // separate from (the About window + device cloud on the home page)
-  .site-footer-home & {
+  // separate from (the About window and/or device cloud)
+  .site-footer-with-devices & {
     padding-top: 24px;
     border-top: 1px solid #c6d9ef;
   }
@@ -2157,6 +2160,7 @@ $aboutLinkColor: #0062c4;
 .footer-legal-links {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   align-items: center;
   gap: 8px 12px;
 }
@@ -2569,8 +2573,8 @@ body.page-light {
 
 .contact-text {
   color: $pageTextColor;
-  font-size: 16px;
-  line-height: 25px;
+  font-size: 14px;
+  line-height: 22px;
 }
 
 // pinned to the bottom so the buttons line up across the three cards

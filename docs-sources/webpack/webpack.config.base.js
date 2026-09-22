@@ -26,14 +26,38 @@ const FOOTER_PARTS = {
   'how-to-connect-devices': ['device-cloud', 'footer-legal'],
 };
 
+// linking back to the connect guide only makes sense from other pages; on
+// the guide itself the link would just point back to the page you're on
+const HOW_TO_CONNECT_LINK =
+  ' <a href="/how-to-connect-devices.html">How to connect your device to OpenMTP</a>.';
+
+const buildDeviceCloud = (name) =>
+  readPartial('device-cloud').replace(
+    '{{HOW_TO_CONNECT_LINK}}',
+    name === 'how-to-connect-devices' ? '' : HOW_TO_CONNECT_LINK
+  );
+
 const buildFooter = (name) => {
-  const parts = (FOOTER_PARTS[name] || ['footer-legal']).map(readPartial);
-  // the legal row's divider only makes sense when the About window + device
-  // cloud sit above it, which is home-page only
-  const footerClass =
-    name === 'index'
-      ? 'section section-sky site-footer site-footer-home'
-      : 'section section-sky site-footer';
+  const parts = (FOOTER_PARTS[name] || ['footer-legal']).map((part) =>
+    part === 'device-cloud' ? buildDeviceCloud(name) : readPartial(part)
+  );
+  // the legal row's divider only makes sense when there's an About window
+  // and/or device cloud sitting above it to separate from; the device
+  // cloud's own divider only makes sense when the About window specifically
+  // sits above it (home page only) - the connect guide has device-cloud as
+  // its first footer piece, so it gets no divider there
+  const footerParts = FOOTER_PARTS[name] || [];
+  const footerClasses = ['section', 'section-sky', 'site-footer'];
+
+  if (footerParts.length > 1) {
+    footerClasses.push('site-footer-with-devices');
+  }
+
+  if (footerParts.includes('about-window')) {
+    footerClasses.push('site-footer-with-about');
+  }
+
+  const footerClass = footerClasses.join(' ');
 
   return [
     `    <footer class="${footerClass}">`,
