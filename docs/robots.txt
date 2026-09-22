@@ -1,5 +1,9 @@
 User-agent: *
-Disallow:
-Disallow: /styles/
-Disallow: /images/
-Disallow: /bundle/
+Allow: /
+
+# Googlebot must be able to fetch CSS, JS and images to render the page.
+Allow: /bundle/
+Allow: /styles/
+Allow: /images/
+
+Sitemap: https://openmtp.ganeshrvel.com/sitemap.xml
