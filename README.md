@@ -5,6 +5,8 @@
 - License: [MIT](https://github.com/ganeshrvel/openmtp/blob/master/LICENSE 'MIT')
 - System Requirements: macOS 10.14 (Mojave) or higher. macOS 10.13 and earlier have limited support and require OpenMTP v3.1.15 with Legacy MTP mode.
 - Website URL: [https://openmtp.ganeshrvel.com](https://openmtp.ganeshrvel.com/ 'https://openmtp.ganeshrvel.com')
+- Guide: [How to Transfer Files Between Mac and Android or Other MTP Devices using OpenMTP](https://openmtp.ganeshrvel.com/how-to-connect-devices.html 'How to Transfer Files Between Mac and Android or Other MTP Devices using OpenMTP')
+- FAQ: [https://openmtp.ganeshrvel.com/#faq](https://openmtp.ganeshrvel.com/#faq 'https://openmtp.ganeshrvel.com/#faq')
 - Repo URL: [https://github.com/ganeshrvel/openmtp](https://github.com/ganeshrvel/openmtp/ 'https://github.com/ganeshrvel/openmtp')
 - Contacts: ganeshrvel@outlook.com
 
