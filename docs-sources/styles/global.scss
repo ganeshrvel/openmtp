@@ -288,6 +288,13 @@ img {
     gap: 16px;
   }
 
+  // dropped on phones so the nav fits on one line
+  .site-nav-hide-mobile {
+    @include mobile {
+      display: none;
+    }
+  }
+
   a:not(.btn) {
     color: $whiteColor;
     font-size: 15px;
