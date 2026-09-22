@@ -117,17 +117,24 @@ img {
 .container {
   max-width: $containerWidth;
   margin: 0 auto;
+
+  // milligram gives .container 20px side padding, which stacked on top of the
+  // section padding below and kept the cards away from the screen edge
+  @include tablet {
+    padding: 0;
+  }
 }
 
+// on tablet and phone the cards and screenshots run to 16px from the screen edge
 .section {
   padding: 104px 80px;
 
   @include tablet {
-    padding: 80px 40px;
+    padding: 80px 16px;
   }
 
   @include mobile {
-    padding: 56px 20px;
+    padding: 56px 16px;
   }
 
   &.section-blue {
@@ -1062,7 +1069,7 @@ img {
   background: #3a3b3d;
 }
 
-// ~40 sec is about a third of ~2 min
+// ~40 sec is about a fifth of ~3 min
 .kalam-bar-fill {
   display: block;
   height: 100%;
@@ -1070,7 +1077,7 @@ img {
   background: #3d9bff;
 
   &.kalam-bar-fast {
-    width: 32%;
+    width: 22%;
   }
 
   &.kalam-bar-slow {
@@ -1685,11 +1692,11 @@ $aboutLinkColor: #0062c4;
   padding: 88px 80px 48px;
 
   @include tablet {
-    padding: 64px 40px 40px;
+    padding: 64px 16px 40px;
   }
 
   @include mobile {
-    padding: 48px 20px 32px;
+    padding: 48px 16px 32px;
   }
 }
 
