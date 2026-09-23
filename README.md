@@ -20,12 +20,12 @@ Countless searches to find an app to solve these problems and failing to find on
 
 ### Thank you 🎉
 
-OpenMTP has crossed **1.4 million downloads**, from users in **170+ countries**, and the repo has picked up **7.4K+ stars** along the way. It is the **#1 open-source MTP app for Mac**, and it stays free, open-source and ad-free.
+OpenMTP has crossed **1.4 million downloads**, from users in **180+ countries**, and the repo has picked up **7.4K+ stars** along the way. It is the **#1 open-source MTP app for Mac**, and it stays free, open-source and ad-free.
 
 | Milestone                     | Value        |
 | ----------------------------- | ------------ |
 | Downloads                     | 1.4 million+ |
-| Countries                     | 170+         |
+| Countries                     | 180+         |
 | GitHub stars                  | 7.4K+        |
 | Open-source MTP app for macOS | #1           |
 

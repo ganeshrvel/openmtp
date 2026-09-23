@@ -392,6 +392,8 @@ img {
   justify-content: center;
   gap: 10px;
   min-height: 46px;
+  -webkit-user-select: none;
+  user-select: none;
   box-sizing: border-box;
   padding: 10px 16px;
   border: 1px solid $docsAppSecondaryColor;
@@ -1643,6 +1645,8 @@ $faqStepsBgColor: #f6f8fa;
   padding: 6px 12px;
   border-radius: 999px;
   background: $tintColor;
+  -webkit-user-select: none;
+  user-select: none;
   color: #0062c4;
   font-size: 14px;
   font-weight: 500;
@@ -1961,6 +1965,8 @@ $aboutLinkColor: #0062c4;
   background: linear-gradient(180deg, #fff 0%, #f5f5f5 100%);
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
   color: #1d1d1f;
+  -webkit-user-select: none;
+  user-select: none;
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Roboto',
     sans-serif;
   font-size: 13px;
@@ -2439,6 +2445,8 @@ body.page-light {
   justify-content: center;
   gap: 8px;
   min-height: 44px;
+  -webkit-user-select: none;
+  user-select: none;
   border: 1px solid #d5dde5;
   border-radius: 6px;
   color: $pageHeadingColor;
@@ -2598,6 +2606,8 @@ body.page-light {
   justify-content: center;
   min-height: 46px;
   margin-top: auto;
+  -webkit-user-select: none;
+  user-select: none;
   border: 1px solid #b8cfea;
   border-radius: 4px;
   background: $whiteColor;
