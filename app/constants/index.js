@@ -62,3 +62,9 @@ export const DELETE_KEIS_SMARTSWITCH_URL = `https://farazfazli.medium.com/how-i-
 export const USB_HOTPLUG_MAX_ATTEMPTS = 6;
 
 export const USB_HOTPLUG_MAX_ATTEMPTS_TIMEOUT = 15000; // in ms
+
+// each retry releases the macOS Image Capture daemons and handshakes
+// immediately. launchd brings them straight back, so this is a race that can
+// be lost; a few attempts make winning it very likely. There is no delay
+// between attempts, so the cost when no device is attached stays negligible.
+export const MTP_INIT_RETRY_MAX_ATTEMPTS = 3;
