@@ -4,9 +4,10 @@ import { faMobile, faLaptop } from '@fortawesome/free-solid-svg-icons';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import { styles } from '../styles/FileExplorerTableFooterStatusBarRender';
-import { getPluralText } from '../../../utils/funcs';
+import { getPluralText, niceBytes } from '../../../utils/funcs';
 import { DEVICE_TYPE } from '../../../enums';
 import { DEVICES_LABEL } from '../../../constants';
+import { calculateFolderSize } from '../../../utils/files';
 
 class FileExplorerTableFooterStatusBarRender extends PureComponent {
   getDirectoryListStats = () => {
@@ -14,12 +15,14 @@ class FileExplorerTableFooterStatusBarRender extends PureComponent {
 
     let directories = 0;
     let files = 0;
+    let totalSize = 0;
 
     (directoryLists.nodes || []).map((a) => {
       if (a.isFolder) {
         directories += 1;
       } else {
         files += 1;
+        totalSize += a.size;
       }
 
       return a;
@@ -27,15 +30,28 @@ class FileExplorerTableFooterStatusBarRender extends PureComponent {
 
     const total = directories + files;
 
-    return { total, directories, files };
+    return { total, directories, files, totalSize };
   };
 
-  getSelectedDirectoryStats = () => {
+  getSelectedDirectoryStats = async () => {
     const { directoryLists } = this.props;
 
-    const total = directoryLists.queue.selected.length;
+    const selected = directoryLists.queue.selected;
+    const total = selected.length;
+    let totalSize = 0;
 
-    return { total };
+    for (const path of selected) {
+      const node = directoryLists.nodes.find((n) => n.path === path);
+      if (node) {
+        if (node.isFolder) {
+          totalSize += await calculateFolderSize(node.path);
+        } else {
+          totalSize += node.size;
+        }
+      }
+    }
+
+    return { total, totalSize };
   };
 
   RenderDeviceName = () => {
@@ -69,8 +85,8 @@ class FileExplorerTableFooterStatusBarRender extends PureComponent {
   render() {
     const { classes: styles, fileTransferClipboard } = this.props;
 
-    const { directories, files, total } = this.getDirectoryListStats();
-    const { total: selectedTotal } = this.getSelectedDirectoryStats();
+    const { directories, files, total, totalSize } = this.getDirectoryListStats();
+    const { total: selectedTotal, totalSize: selectedTotalSize } = this.getSelectedDirectoryStats();
     const fileTransferClipboardLength = fileTransferClipboard.queue.length;
     const { RenderDeviceName } = this;
 
@@ -80,7 +96,7 @@ class FileExplorerTableFooterStatusBarRender extends PureComponent {
           <RenderDeviceName />
 
           {selectedTotal > 0 ? (
-            <Fragment>{`${selectedTotal} of ${total} selected`}</Fragment>
+            <Fragment>{`${selectedTotal} of ${total} selected, ${niceBytes(selectedTotalSize)}`}</Fragment>
           ) : (
             <Fragment>{`${total} ${getPluralText(
               'item',
@@ -89,7 +105,7 @@ class FileExplorerTableFooterStatusBarRender extends PureComponent {
               'directory',
               directories,
               'directories'
-            )}, ${files} ${getPluralText('file', files)})`}</Fragment>
+            )}, ${files} ${getPluralText('file', files)}, ${niceBytes(totalSize)})`}</Fragment>
           )}
           {`, ${fileTransferClipboardLength} ${getPluralText(
             'item',
