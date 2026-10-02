@@ -28,6 +28,7 @@ const actionTypesList = [
   'CLEAR_FILE_TRANSFER',
   'SET_FILES_DRAG',
   'CLEAR_FILES_DRAG',
+  'SET_ADB_DEVICE',
 ];
 
 export const actionTypes = prefixer(prefix, actionTypesList);
@@ -664,6 +665,43 @@ export function listDirectory(
           dispatch(actionSetSelectedDirLists({ selected: [] }, deviceType));
         };
 
+      case DEVICE_TYPE.adb:
+        // ADB directory listing flows through the same controller path as
+        // local, using the AdbDataSource registered in the repository.
+        return async (dispatch) => {
+          const { error: adbError, data: adbData } =
+            await fileExplorerController.listFiles({
+              deviceType,
+              filePath,
+              ignoreHidden,
+              storageId: null,
+            });
+
+          if (adbError) {
+            log.error(adbError, 'listDirectory -> adb -> listFiles');
+            // Surface error via throwAlert handled by churnLocalBuffer pattern.
+            dispatch(
+              churnLocalBuffer({
+                deviceType,
+                error: adbError,
+                stderr: null,
+                data: null,
+                onSuccess: () => {},
+              })
+            );
+
+            return;
+          }
+
+          dispatch(actionListDirectory(adbData, deviceType));
+          dispatch(setCurrentBrowsePath(filePath, deviceType));
+          dispatch(actionSetSelectedDirLists({ selected: [] }, deviceType));
+
+          if (onSuccess) {
+            onSuccess({ error: null, stderr: null, data: adbData });
+          }
+        };
+
       case DEVICE_TYPE.mtp:
         return async (dispatch) => {
           const storageId = getSelectedStorageIdFromState(getState().Home);
@@ -732,6 +770,14 @@ export function reloadDirList(
   return (dispatch) => {
     switch (deviceType) {
       case DEVICE_TYPE.local:
+        return dispatch(
+          listDirectory({ filePath, ignoreHidden }, deviceType, getState)
+        );
+
+      case DEVICE_TYPE.adb:
+        // The ADB pane manages its own state inside AdbFileExplorerPane;
+        // reloadDirList for adb just refreshes the Redux directory listing
+        // which is used by the toolbar breadcrumb / file count etc.
         return dispatch(
           listDirectory({ filePath, ignoreHidden }, deviceType, getState)
         );
@@ -846,5 +892,12 @@ export function setFilesDrag({ ...data }) {
 export function clearFilesDrag() {
   return {
     type: actionTypes.CLEAR_FILES_DRAG,
+  };
+}
+
+export function setAdbDevice(data) {
+  return {
+    type: actionTypes.SET_ADB_DEVICE,
+    payload: data,
   };
 }

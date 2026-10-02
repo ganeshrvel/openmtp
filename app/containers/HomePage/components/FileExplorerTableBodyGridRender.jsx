@@ -4,6 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Checkbox from '@material-ui/core/Checkbox';
 import Typography from '@material-ui/core/Typography';
 import Tooltip from '@material-ui/core/Tooltip';
+import CircularProgress from '@material-ui/core/CircularProgress';
 // eslint-disable-next-line import/no-relative-packages
 import prettyFileIcons from '../../../vendors/pretty-file-icons';
 import { springTruncate } from '../../../utils/funcs';
@@ -81,8 +82,11 @@ class FileExplorerTableBodyGridRender extends PureComponent {
       onContextMenuClick,
       onTableClick,
       onTableDoubleClick,
+      openingFiles,
     } = this.props;
     const { RenderFileIcon, RenderFolderIcon } = this;
+
+    const isOpening = openingFiles && openingFiles[item.path];
 
     const fileName = springTruncate(
       item.name,
@@ -127,6 +131,12 @@ class FileExplorerTableBodyGridRender extends PureComponent {
                 )
               }
             >
+              {isOpening ? (
+                <CircularProgress
+                  size={12}
+                  style={{ marginRight: 6, verticalAlign: 'middle' }}
+                />
+              ) : null}
               {fileName.isTruncated ? (
                 <Tooltip title={fileName.text}>
                   <div className={styles.truncate}>

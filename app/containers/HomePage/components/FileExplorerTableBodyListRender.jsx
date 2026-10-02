@@ -4,6 +4,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import Checkbox from '@material-ui/core/Checkbox';
 import Tooltip from '@material-ui/core/Tooltip';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import classNames from 'classnames';
 import { niceBytes, springTruncate } from '../../../utils/funcs';
 import { FILE_EXPLORER_TABLE_TRUNCATE_MAX_CHARS } from '../../../constants';
@@ -56,9 +57,11 @@ class FileExplorerTableBodyListRender extends PureComponent {
       onContextMenuClick,
       onTableClick,
       onTableDoubleClick,
+      openingFiles,
     } = this.props;
 
     const { RenderFileIcon, RenderFolderIcon } = this;
+    const isOpening = openingFiles && openingFiles[item.path];
 
     const fileName = springTruncate(
       item.name,
@@ -118,6 +121,12 @@ class FileExplorerTableBodyListRender extends PureComponent {
           >
             {item.isFolder ? <RenderFolderIcon /> : <RenderFileIcon />}
             &nbsp;&nbsp;
+            {isOpening ? (
+              <CircularProgress
+                size={14}
+                style={{ marginRight: 8, verticalAlign: 'middle' }}
+              />
+            ) : null}
             {fileName.isTruncated ? (
               <Tooltip title={fileName.text}>
                 <div className={styles.truncate}>{fileName.truncatedText}</div>

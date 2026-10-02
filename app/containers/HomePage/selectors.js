@@ -55,3 +55,7 @@ export const makeFileTransferProgess = createSelector(make, (state) =>
 export const makeFilesDrag = createSelector(make, (state) =>
   state ? state.filesDrag : initialState.filesDrag
 );
+
+export const makeAdbDevice = createSelector(make, (state) =>
+  state ? state.adbDevice : initialState.adbDevice
+);

@@ -1,6 +1,7 @@
 import { FileExplorerLegacyDataSource } from '../data-sources/FileExplorerLegacyDataSource';
 import { FileExplorerLocalDataSource } from '../data-sources/FileExplorerLocalDataSource';
 import { FileExplorerKalamDataSource } from '../data-sources/FileExplorerKalamDataSource';
+import { FileExplorerAdbDataSource } from '../data-sources/FileExplorerAdbDataSource';
 import { DEVICE_TYPE, MTP_MODE } from '../../../enums';
 import { checkIf } from '../../../utils/checkIf';
 import { getMtpModeSetting } from '../../../helpers/settings';
@@ -10,6 +11,7 @@ export class FileExplorerRepository {
     this.legacyMtpDataSource = new FileExplorerLegacyDataSource();
     this.localDataSource = new FileExplorerLocalDataSource();
     this.kalamMtpDataSource = new FileExplorerKalamDataSource();
+    this.adbDataSource = new FileExplorerAdbDataSource();
   }
 
   /**
@@ -17,7 +19,7 @@ export class FileExplorerRepository {
    *
    * @return {Promise<{data: object, error: string|null, stderr: string|null}>}
    */
-  async initialize({ deviceType }) {
+  async initialize({ deviceType, serial }) {
     const selectedMtpMode = getMtpModeSetting();
 
     checkIf(deviceType, 'string');
@@ -31,6 +33,10 @@ export class FileExplorerRepository {
         default:
           return this.kalamMtpDataSource.initialize();
       }
+    }
+
+    if (deviceType === DEVICE_TYPE.adb) {
+      return this.adbDataSource.initialize({ serial });
     }
 
     throw `initialize for deviceType=DEVICE_TYPE.local is unimplemented`;
@@ -57,6 +63,8 @@ export class FileExplorerRepository {
       }
     }
 
+    if (deviceType === DEVICE_TYPE.adb) return this.adbDataSource.dispose();
+
     throw `dispose for deviceType=DEVICE_TYPE.local is unimplemented`;
   }
 
@@ -79,6 +87,9 @@ export class FileExplorerRepository {
       }
     }
 
+    if (deviceType === DEVICE_TYPE.adb)
+      return this.adbDataSource.listStorages();
+
     throw `listStorages for deviceType=DEVICE_TYPE.local is unimplemented`;
   }
 
@@ -92,6 +103,14 @@ export class FileExplorerRepository {
    * @return {Promise<{data: array|null, error: string|null, stderr: string|null}>}
    */
   async listFiles({ deviceType, filePath, ignoreHidden, storageId }) {
+    if (deviceType === DEVICE_TYPE.adb) {
+      return this.adbDataSource.listFiles({
+        filePath,
+        ignoreHidden,
+        storageId,
+      });
+    }
+
     if (deviceType === DEVICE_TYPE.mtp) {
       checkIf(storageId, 'number');
 
@@ -131,6 +150,14 @@ export class FileExplorerRepository {
    * @return {Promise<{data: null|boolean, error: string|null, stderr: string|null}>}
    */
   async renameFile({ deviceType, filePath, newFilename, storageId }) {
+    if (deviceType === DEVICE_TYPE.adb) {
+      return this.adbDataSource.renameFile({
+        filePath,
+        newFilename,
+        storageId,
+      });
+    }
+
     if (deviceType === DEVICE_TYPE.mtp) {
       checkIf(storageId, 'number');
 
@@ -169,6 +196,10 @@ export class FileExplorerRepository {
    * @return {Promise<{data: null|boolean, error: string|null, stderr: string|null}>}
    */
   async deleteFiles({ deviceType, fileList, storageId }) {
+    if (deviceType === DEVICE_TYPE.adb) {
+      return this.adbDataSource.deleteFiles({ fileList, storageId });
+    }
+
     if (deviceType === DEVICE_TYPE.mtp) {
       checkIf(storageId, 'number');
 
@@ -204,6 +235,10 @@ export class FileExplorerRepository {
    * @return {Promise<{data: null|boolean, error: string|null, stderr: string|null}>}
    */
   async makeDirectory({ deviceType, filePath, storageId }) {
+    if (deviceType === DEVICE_TYPE.adb) {
+      return this.adbDataSource.makeDirectory({ filePath, storageId });
+    }
+
     if (deviceType === DEVICE_TYPE.mtp) {
       checkIf(storageId, 'number');
 
@@ -239,6 +274,10 @@ export class FileExplorerRepository {
    * @return {Promise<boolean>}
    */
   async filesExist({ deviceType, fileList, storageId }) {
+    if (deviceType === DEVICE_TYPE.adb) {
+      return this.adbDataSource.filesExist({ fileList, storageId });
+    }
+
     if (deviceType === DEVICE_TYPE.mtp) {
       checkIf(storageId, 'number');
 
@@ -291,6 +330,19 @@ export class FileExplorerRepository {
     onProgress,
     onCompleted,
   }) {
+    if (deviceType === DEVICE_TYPE.adb) {
+      return this.adbDataSource.transferFiles({
+        destination,
+        fileList,
+        direction,
+        storageId,
+        onError,
+        onProgress,
+        onCompleted,
+        onPreprocess,
+      });
+    }
+
     if (deviceType === DEVICE_TYPE.mtp) {
       checkIf(storageId, 'number');
       checkIf(onPreprocess, 'function');
@@ -328,6 +380,22 @@ export class FileExplorerRepository {
 
     // eslint-disable-next-line no-throw-literal
     throw `transferFiles for deviceType=DEVICE_TYPE.local is unimplemented`;
+  }
+
+  async discoverAdbDevices() {
+    return this.adbDataSource.transport.discover();
+  }
+
+  async pairAdbDevice({ host, port, code }) {
+    return this.adbDataSource.transport.pair({ host, port, code });
+  }
+
+  async connectAdbDevice({ host, port }) {
+    return this.adbDataSource.transport.connect({ host, port });
+  }
+
+  cancelAdbTransfer(operationId) {
+    return this.adbDataSource.cancel(operationId);
   }
 
   /**

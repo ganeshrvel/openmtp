@@ -6,9 +6,12 @@ import { app, BrowserWindow, ipcMain, nativeTheme } from 'electron';
 import electronIs from 'electron-is';
 import usbDetect from 'usb-detection';
 import process from 'process';
+import os from 'os';
+import path from 'path';
+import fs from 'fs';
 import MenuBuilder from './menu';
 import { log } from './utils/log';
-import { DEBUG_PROD, ENV_FLAVOR, IS_DEV, IS_PROD } from './constants/env';
+import { DEBUG_PROD, IS_DEV, IS_PROD } from './constants/env';
 import AppUpdate from './classes/AppUpdate';
 import { PATHS } from './constants/paths';
 import { settingsStorage } from './helpers/storageHelper';
@@ -102,31 +105,11 @@ function fixSettings() {
   }
 }
 
-async function installExtensions() {
-  const {
-    default: installExtension,
-    REDUX_DEVTOOLS,
-    REACT_DEVELOPER_TOOLS,
-  } = await import('electron-devtools-installer');
-
-  const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
-  const extensions = [REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS];
-
-  return installExtension(extensions, {
-    forceDownload,
-  }).catch((err) =>
-    log.error(
-      `An extension error occurred: ${err}`,
-      `main.dev -> installExtensions`
-    )
-  );
-}
-
 async function createWindow() {
   try {
-    if (ENV_FLAVOR.allowDevelopmentEnvironment) {
-      await installExtensions();
-    }
+    // if (ENV_FLAVOR.allowDevelopmentEnvironment) {
+    //   await installExtensions();
+    // }
 
     mainWindow = new BrowserWindow({
       title: `${APP_TITLE}`,
@@ -169,6 +152,7 @@ async function createWindow() {
       mainWindow = null;
     });
   } catch (e) {
+    console.error('CREATE WINDOW ERROR:', e);
     log.error(e, `main.dev -> createWindow`);
   }
 }
@@ -236,8 +220,24 @@ if (!isDeviceBootable) {
     }
   }
 
+  const cleanupTempFiles = () => {
+    try {
+      const tempDir = path.join(os.tmpdir(), 'OpenMTP_Temp');
+
+      if (fs.existsSync(tempDir)) {
+        fs.rmSync(tempDir, { recursive: true, force: true });
+      }
+    } catch (e) {
+      log.error(e, 'main.dev -> cleanupTempFiles');
+    }
+  };
+
+  cleanupTempFiles();
+
   app.on('window-all-closed', () => {
     try {
+      cleanupTempFiles();
+
       if (process.platform === 'darwin') {
         return;
       }
@@ -326,6 +326,7 @@ if (!isDeviceBootable) {
           }
         });
       } catch (e) {
+        console.error('ORIGINAL STARTUP ERROR:', e);
         log.error(e, `main.dev -> whenReady`);
       }
 
@@ -342,6 +343,7 @@ if (!isDeviceBootable) {
       });
     })
     .catch((e) => {
+      console.error('STARTUP ERROR:', e);
       log.error(e, `main.dev -> whenReady`);
     });
 

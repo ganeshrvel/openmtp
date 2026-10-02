@@ -205,7 +205,7 @@ export function selectMtpMode(
         {
           deviceType,
           filePath: DEVICES_DEFAULT_PATH[deviceType],
-          ignoreHidden: hideHiddenFiles[deviceType],
+          ignoreHidden: hideHiddenFiles[deviceType] ?? true,
           changeLegacyMtpStorageOnlyOnDeviceChange: true,
         },
         getState

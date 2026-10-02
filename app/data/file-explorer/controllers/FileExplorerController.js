@@ -126,10 +126,10 @@ class FileExplorerController {
    *
    * @return {Promise<{data: object, error: string|null, stderr: string|null}>}
    */
-  async initialize({ deviceType }) {
+  async initialize({ deviceType, serial }) {
     checkIf(deviceType, 'string');
 
-    const result = await this.repository.initialize({ deviceType });
+    const result = await this.repository.initialize({ deviceType, serial });
 
     this._sentEvent({ result, deviceType, eventKey: 'INITIALIZE' });
 
@@ -343,6 +343,22 @@ class FileExplorerController {
 
     return result;
   };
+
+  async discoverAdbDevices() {
+    return this.repository.discoverAdbDevices();
+  }
+
+  async pairAdbDevice({ host, port, code }) {
+    return this.repository.pairAdbDevice({ host, port, code });
+  }
+
+  async connectAdbDevice({ host, port }) {
+    return this.repository.connectAdbDevice({ host, port });
+  }
+
+  cancelAdbTransfer(operationId) {
+    return this.repository.cancelAdbTransfer(operationId);
+  }
 
   /**
    * description: fetch the data for generating bug/error reports

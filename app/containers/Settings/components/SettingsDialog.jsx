@@ -104,12 +104,16 @@ export default class SettingsDialog extends PureComponent {
 
     const hideHiddenFilesLocal = hideHiddenFiles[DEVICE_TYPE.local];
     const hideHiddenFilesMtp = hideHiddenFiles[DEVICE_TYPE.mtp];
+    const hideHiddenFilesAdb = hideHiddenFiles[DEVICE_TYPE.adb] ?? true;
 
     const fileExplorerListingTypeLocalGrid =
       fileExplorerListingType[DEVICE_TYPE.local] ===
       FILE_EXPLORER_VIEW_TYPE.grid;
     const fileExplorerListingTypeMtpGrid =
       fileExplorerListingType[DEVICE_TYPE.mtp] === FILE_EXPLORER_VIEW_TYPE.grid;
+    const fileExplorerListingTypeAdbGrid =
+      (fileExplorerListingType[DEVICE_TYPE.adb] ??
+        FILE_EXPLORER_VIEW_TYPE.grid) === FILE_EXPLORER_VIEW_TYPE.grid;
 
     const showMtpModeSelection = isKalamModeSupported();
 
@@ -278,6 +282,22 @@ export default class SettingsDialog extends PureComponent {
                       }
                       label={DEVICES_LABEL[DEVICE_TYPE.mtp]}
                     />
+                    <FormControlLabel
+                      className={styles.switch}
+                      control={
+                        <Switch
+                          checked={!hideHiddenFilesAdb}
+                          onChange={(e) =>
+                            onHiddenFilesChange(
+                              e,
+                              !hideHiddenFilesAdb,
+                              DEVICE_TYPE.adb
+                            )
+                          }
+                        />
+                      }
+                      label={DEVICES_LABEL[DEVICE_TYPE.adb]}
+                    />
 
                     <Typography
                       variant="subtitle2"
@@ -320,6 +340,24 @@ export default class SettingsDialog extends PureComponent {
                         />
                       }
                       label={DEVICES_LABEL[DEVICE_TYPE.mtp]}
+                    />
+                    <FormControlLabel
+                      className={styles.switch}
+                      control={
+                        <Switch
+                          checked={fileExplorerListingTypeAdbGrid}
+                          onChange={(e) =>
+                            onFileExplorerListingType(
+                              e,
+                              fileExplorerListingTypeAdbGrid
+                                ? FILE_EXPLORER_VIEW_TYPE.list
+                                : FILE_EXPLORER_VIEW_TYPE.grid,
+                              DEVICE_TYPE.adb
+                            )
+                          }
+                        />
+                      }
+                      label={DEVICES_LABEL[DEVICE_TYPE.adb]}
                     />
 
                     <Typography

@@ -26,6 +26,7 @@ import {
   makeToolbarList,
   makeCurrentBrowsePath,
   makeFocussedFileExplorerDeviceType,
+  makeAdbDevice,
 } from '../selectors';
 import {
   makeAppThemeMode,
@@ -174,7 +175,7 @@ class ToolbarAreaPane extends PureComponent {
       { selectedValue, mtpStoragesList },
       {
         filePath: DEVICES_DEFAULT_PATH.mtp,
-        ignoreHidden: hideHiddenFiles[deviceType],
+        ignoreHidden: hideHiddenFiles[deviceType] ?? true,
       },
       deviceType
     );
@@ -259,7 +260,7 @@ class ToolbarAreaPane extends PureComponent {
         filePath = currentBrowsePath[deviceType];
         actionCreateReloadDirList({
           filePath,
-          ignoreHidden: hideHiddenFiles[deviceType],
+          ignoreHidden: hideHiddenFiles[deviceType] ?? true,
           deviceType,
         });
 
@@ -327,7 +328,7 @@ class ToolbarAreaPane extends PureComponent {
     actionCreateListDirectory(
       {
         filePath,
-        ignoreHidden: hideHiddenFiles[deviceType],
+        ignoreHidden: hideHiddenFiles[deviceType] ?? true,
       },
       deviceType
     );
@@ -351,7 +352,7 @@ class ToolbarAreaPane extends PureComponent {
       },
       {
         filePath: currentBrowsePath[deviceType],
-        ignoreHidden: hideHiddenFiles[deviceType],
+        ignoreHidden: hideHiddenFiles[deviceType] ?? true,
       }
     );
   };
@@ -579,6 +580,7 @@ const mapStateToProps = (state, __) => {
   return {
     sidebarFavouriteList: makeSidebarFavouriteList(state),
     mtpDevice: makeMtpDevice(state),
+    adbDevice: makeAdbDevice(state),
     toolbarList: makeToolbarList(state),
     currentBrowsePath: makeCurrentBrowsePath(state),
     hideHiddenFiles: makeHideHiddenFiles(state),

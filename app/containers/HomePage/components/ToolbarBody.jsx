@@ -33,6 +33,7 @@ export default class ToolbarAreaPane extends PureComponent {
       deviceType,
       mtpStoragesList,
       mtpDevice,
+      adbDevice,
       mtpMode,
     } = args;
 
@@ -40,11 +41,16 @@ export default class ToolbarAreaPane extends PureComponent {
     const _currentBrowsePath = currentBrowsePath[deviceType];
     const _activeToolbarList = toolbarList[deviceType];
     const isMtp = deviceType === DEVICE_TYPE.mtp;
+    const isAdb = deviceType === DEVICE_TYPE.adb;
 
     let enabled = true;
 
     if (isMtp && mtpMode === MTP_MODE.kalam) {
       enabled = !mtpDevice.isLoading;
+    }
+
+    if (isAdb) {
+      enabled = !!adbDevice?.selected;
     }
 
     Object.keys(_activeToolbarList).map((a) => {
@@ -108,6 +114,7 @@ export default class ToolbarAreaPane extends PureComponent {
     const {
       directoryLists,
       mtpDevice,
+      adbDevice,
       styles,
       sidebarFavouriteList,
       deviceType,
@@ -139,8 +146,16 @@ export default class ToolbarAreaPane extends PureComponent {
       deviceType,
       mtpStoragesList,
       mtpDevice,
+      adbDevice,
       mtpMode,
     });
+
+    // Build ADB device label shown in the AppBar title area.
+    const adbDeviceLabel = adbDevice?.selected
+      ? `${adbDevice.selected.model} · ${
+          adbDevice.selected.transport === 'wifi' ? 'Wi\u2011Fi' : 'USB'
+        } / ADB`
+      : 'No Android Device Connected';
 
     const RenderLazyLoaderOverlay = LazyLoaderOverlay({ appThemeMode });
     let _mtpStoragesList = [];
@@ -282,6 +297,42 @@ export default class ToolbarAreaPane extends PureComponent {
                 );
               })}
             </div>
+
+            {/* ADB: device name + connection type badge */}
+            {deviceType === DEVICE_TYPE.adb && (
+              <div
+                style={{
+                  marginLeft: 'auto',
+                  paddingRight: 12,
+                  display: 'flex',
+                  alignItems: 'center',
+                  flexShrink: 0,
+                  maxWidth: '50%',
+                  overflow: 'hidden',
+                }}
+              >
+                <span
+                  title={adbDeviceLabel}
+                  style={{
+                    fontSize: 11,
+                    fontWeight: 600,
+                    letterSpacing: '0.03em',
+                    opacity: adbDevice && adbDevice.selected ? 0.92 : 0.45,
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    padding: '2px 8px',
+                    borderRadius: 4,
+                    border:
+                      adbDevice && adbDevice.selected
+                        ? '1px solid rgba(255,255,255,0.30)'
+                        : '1px dashed rgba(255,255,255,0.25)',
+                  }}
+                >
+                  {adbDeviceLabel}
+                </span>
+              </div>
+            )}
           </Toolbar>
         </AppBar>
       </div>

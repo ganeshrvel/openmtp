@@ -1,11 +1,11 @@
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import {
   faSync,
-  faSdCard,
   faCog,
   faPlug,
   faArrowLeft,
   faQuestionCircle,
+  faMobile,
 } from '@fortawesome/free-solid-svg-icons';
 import { faGithub, faPaypal } from '@fortawesome/free-brands-svg-icons';
 import { actionTypes } from './actions';
@@ -116,7 +116,7 @@ export const initialState = {
       storage: {
         enabled: true,
         label: 'Storage',
-        icon: faSdCard,
+        icon: faMobile,
       },
       mtpMode: {
         enabled: isKalamModeSupported(),
@@ -140,6 +140,33 @@ export const initialState = {
         icon: faCog,
       },
     },
+    [DEVICE_TYPE.adb]: {
+      up: {
+        enabled: true,
+        label: 'Folder Up',
+        icon: faArrowLeft,
+      },
+      refresh: {
+        enabled: true,
+        label: 'Refresh',
+        icon: faSync,
+      },
+      delete: {
+        enabled: true,
+        label: 'Delete',
+        icon: faTrashAlt,
+      },
+      settings: {
+        enabled: true,
+        label: 'Settings',
+        icon: faCog,
+      },
+      faqs: {
+        enabled: true,
+        label: 'Help - FAQs',
+        icon: faQuestionCircle,
+      },
+    },
   },
 
   directoryLists: {
@@ -161,11 +188,21 @@ export const initialState = {
       nodes: [],
       isLoaded: false,
     },
+    [DEVICE_TYPE.adb]: {
+      order: 'asc',
+      orderBy: 'name',
+      queue: {
+        selected: [],
+      },
+      nodes: [],
+      isLoaded: false,
+    },
   },
 
   currentBrowsePath: {
     [DEVICE_TYPE.local]: DEVICES_DEFAULT_PATH.local,
     [DEVICE_TYPE.mtp]: DEVICES_DEFAULT_PATH.mtp,
+    [DEVICE_TYPE.adb]: DEVICES_DEFAULT_PATH.adb,
   },
 
   mtpDevice: {
@@ -240,6 +277,20 @@ export const initialState = {
         data: {},
       },
     },
+    // ADB context menu: read-only actions only (no queue-based paste; file
+    // operations go through the AdbFileExplorerPane dialog).
+    [DEVICE_TYPE.adb]: {
+      copy: {
+        enabled: true,
+        label: 'Copy',
+        data: {},
+      },
+      copyToQueue: {
+        enabled: true,
+        label: 'Copy to Queue',
+        data: {},
+      },
+    },
   },
 
   /**
@@ -284,6 +335,14 @@ export const initialState = {
     enter: false,
     lock: false,
     sameSourceDestinationLock: false,
+  },
+
+  adbDevice: {
+    selected: null,
+    remembered: null,
+    devices: [],
+    error: null,
+    isLoading: false,
   },
 };
 
@@ -410,6 +469,15 @@ export default function Home(state = initialState, action) {
         ...state,
         filesDrag: {
           ...initialState.filesDrag,
+        },
+      };
+
+    case actionTypes.SET_ADB_DEVICE:
+      return {
+        ...state,
+        adbDevice: {
+          ...state.adbDevice,
+          ...payload,
         },
       };
 

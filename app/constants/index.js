@@ -35,11 +35,13 @@ export const KALAM_SEG5_MACOS_VERSION_RANGE = `>=26`;
 
 export const DEVICES_DEFAULT_PATH = {
   [DEVICE_TYPE.mtp]: '/',
+  [DEVICE_TYPE.adb]: '/storage/emulated/0',
   [DEVICE_TYPE.local]: PATHS.homeDir,
 };
 
 export const DEVICES_LABEL = {
   [DEVICE_TYPE.mtp]: `Phone`,
+  [DEVICE_TYPE.adb]: `Android device`,
   [DEVICE_TYPE.local]: `Computer`,
 };
 

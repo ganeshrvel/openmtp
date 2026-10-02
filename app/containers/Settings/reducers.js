@@ -25,10 +25,12 @@ export const initialState = {
   hideHiddenFiles: {
     [DEVICE_TYPE.local]: true,
     [DEVICE_TYPE.mtp]: true,
+    [DEVICE_TYPE.adb]: true,
   },
   fileExplorerListingType: {
     [DEVICE_TYPE.local]: FILE_EXPLORER_VIEW_TYPE.grid,
     [DEVICE_TYPE.mtp]: FILE_EXPLORER_VIEW_TYPE.grid,
+    [DEVICE_TYPE.adb]: FILE_EXPLORER_VIEW_TYPE.grid,
   },
   appThemeMode: APP_THEME_MODE_TYPE.auto,
   showLocalPane: true,

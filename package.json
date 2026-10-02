@@ -77,6 +77,8 @@
     "@material-ui/icons": "^4.5.1",
     "@sentry/electron": "^3.0.7",
     "@sindresorhus/is": "^4.4.0",
+    "baseline-browser-mapping": "^2.11.27",
+    "caniuse-lite": "^1.0.30001814",
     "classnames": "^2.3.1",
     "console-log-plus": "^1.0.8",
     "dayjs": "^1.10.7",

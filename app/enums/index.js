@@ -5,6 +5,7 @@
  * */
 export const DEVICE_TYPE = {
   mtp: 'mtp',
+  adb: 'adb',
   local: 'local',
 };
 

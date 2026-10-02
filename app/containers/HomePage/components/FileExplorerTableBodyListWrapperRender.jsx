@@ -33,8 +33,13 @@ export default class FileExplorerTableBodyListWrapperRender extends PureComponen
     directoryLists: nextDirectoryLists,
     ...nextParentProps
   }) {
-    const { directoryGeneratedTime, directoryLists, deviceType, isSelected } =
-      this.props;
+    const {
+      directoryGeneratedTime,
+      directoryLists,
+      deviceType,
+      isSelected,
+      openingFiles,
+    } = this.props;
     const prevSelectedDirectoryLists =
       directoryLists[deviceType].queue.selected;
     const nextSelectedDirectoryLists =
@@ -45,6 +50,43 @@ export default class FileExplorerTableBodyListWrapperRender extends PureComponen
 
       this.prevInQueueList = [];
       this.recursiveFilesFetch(nextTableSort);
+    } else if (openingFiles !== nextParentProps.openingFiles) {
+      const nextOpeningFiles = nextParentProps.openingFiles;
+
+      const changedPaths = [
+        ...Object.keys(openingFiles || {}),
+        ...Object.keys(nextOpeningFiles || {}),
+      ];
+
+      const nextInQueueList = [];
+
+      nextTableSort.forEach((item, index) => {
+        if (changedPaths.includes(item.path)) {
+          nextInQueueList.push(index);
+        }
+      });
+
+      nextInQueueList.forEach((index) => {
+        this.setState(({ items }) => {
+          const _items = items;
+          const item = nextTableSort[index];
+
+          if (item) {
+            _items[index] = (
+              <FileExplorerTableRowsRender
+                {...nextParentProps}
+                key={quickHash(item.path)}
+                item={item}
+                isSelected={isSelected(item.path)}
+              />
+            );
+          }
+
+          return {
+            items: _items,
+          };
+        });
+      });
     } else if (prevSelectedDirectoryLists !== nextSelectedDirectoryLists) {
       const nextInQueueList = [];
 

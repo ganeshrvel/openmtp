@@ -49,6 +49,7 @@ const configureStore = (initialState) => {
 
   store.asyncReducers = {};
   store.injectReducer = (key, reducer) => {
+    if (store.asyncReducers[key] === reducer) return store;
     store.asyncReducers[key] = reducer;
     store.replaceReducer(rootReducer(store.asyncReducers));
 

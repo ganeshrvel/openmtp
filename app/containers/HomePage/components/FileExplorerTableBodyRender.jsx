@@ -106,7 +106,10 @@ class FileExplorerTableBodyRender extends PureComponent {
               onContextMenuClick={onContextMenuClick}
             />
           ) : (
-            this.ListingSwitcher(fileExplorerListingType[deviceType])
+            this.ListingSwitcher(
+              fileExplorerListingType[deviceType] ??
+                FILE_EXPLORER_VIEW_TYPE.grid
+            )
           )}
         </TableBody>
       </Table>

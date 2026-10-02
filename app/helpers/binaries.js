@@ -83,6 +83,14 @@ export const mtpCliPath = path.resolve(
   path.join(binariesPath({ includeArchDirectory: false }), './mtp-cli')
 );
 
+// OPENMTP_ADB_PATH is intentionally an explicit development override. Release
+// builds use the platform-tools binary shipped in Resources/bin, never PATH.
+export const adbPath = process.env.OPENMTP_ADB_PATH
+  ? path.resolve(process.env.OPENMTP_ADB_PATH)
+  : path.resolve(
+      path.join(binariesPath({ includeArchDirectory: false }), './adb')
+    );
+
 export const kalamDebugReportCli = path.resolve(
   path.join(
     binariesPath({ includeArchDirectory: true }),

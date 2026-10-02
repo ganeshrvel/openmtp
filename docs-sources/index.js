@@ -172,9 +172,9 @@ class Docs {
 
       if (versionNumber) {
         for (let i = 0; i < this.$el.gitHubLatestVersionTag.length; i += 1) {
-          this.$el.gitHubLatestVersionTag[i].textContent = `v${
-            versionNumber[0]
-          }`;
+          this.$el.gitHubLatestVersionTag[
+            i
+          ].textContent = `v${versionNumber[0]}`;
         }
       }
     }
@@ -271,9 +271,7 @@ class Docs {
       (entries) => {
         const visible = entries
           .filter((entry) => entry.isIntersecting)
-          .sort(
-            (a, b) => a.boundingClientRect.top - b.boundingClientRect.top
-          );
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
 
         if (visible.length) {
           setActive(visible[0].target.id);

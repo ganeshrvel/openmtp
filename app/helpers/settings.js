@@ -67,3 +67,28 @@ export const getEnablePrereleaseUpdatesSetting = () => {
 
   return value;
 };
+
+// This is deliberately limited to display and selection metadata. Pairing
+// codes, private keys, and other ADB credentials are never persisted.
+export const getAdbSelectedDeviceSetting = () => {
+  const setting = settingsStorage.getItems(['adbSelectedDevice']);
+
+  return setting.adbSelectedDevice || null;
+};
+
+export const setAdbSelectedDeviceSetting = (device) => {
+  if (!device) {
+    settingsStorage.setItems({ adbSelectedDevice: null });
+
+    return;
+  }
+
+  settingsStorage.setItems({
+    adbSelectedDevice: {
+      serial: device.serial,
+      model: device.model,
+      transport: device.transport,
+      address: device.address || null,
+    },
+  });
+};
