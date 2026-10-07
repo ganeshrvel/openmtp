@@ -501,7 +501,10 @@ export class FileExplorerLegacyDataSource {
         }
 
         const fullPath = path.resolve(filePath, matchedFileName);
-        const isFolder = filePropsList[mtpCmdChopIndex.type] === '3001';
+        // aft-mtp-cli 4.x prints the object format as a name instead of the hex code
+        const isFolder = ['3001', 'Association'].includes(
+          filePropsList[mtpCmdChopIndex.type]
+        );
         const dateTime = `${filePropsList[mtpCmdChopIndex.dateAdded]} ${
           filePropsList[mtpCmdChopIndex.timeAdded]
         }`;
