@@ -158,6 +158,16 @@ class Settings extends Component {
     );
   };
 
+  _handleUseAdbForDownloadsChange = (event, value, deviceType) => {
+    this._handleSetCommonSettingsChange(
+      {
+        key: 'useAdbForDownloads',
+        value,
+      },
+      deviceType
+    );
+  };
+
   _handleEnableUsbHotplug = (event, value, deviceType) => {
     this._handleSetCommonSettingsChange(
       {
@@ -227,6 +237,7 @@ class Settings extends Component {
         }
         onMtpModeChange={this._handleMtpModeChange}
         onEnableUsbHotplug={this._handleEnableUsbHotplug}
+        onUseAdbForDownloadsChange={this._handleUseAdbForDownloadsChange}
         {...parentProps}
       />
     );

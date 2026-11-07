@@ -40,6 +40,8 @@ export const initialState = {
     [FILE_TRANSFER_DIRECTION.upload]: true,
     [FILE_TRANSFER_DIRECTION.download]: true,
   },
+  // download over adb (much faster than MTP) when USB debugging is enabled on the phone
+  useAdbForDownloads: false,
 };
 
 export default function Settings(state = initialState, action) {

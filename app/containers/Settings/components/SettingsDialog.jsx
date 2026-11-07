@@ -98,6 +98,8 @@ export default class SettingsDialog extends PureComponent {
       onFilesPreprocessingBeforeTransferChange,
       onEnableUsbHotplug,
       enableUsbHotplug,
+      useAdbForDownloads,
+      onUseAdbForDownloadsChange,
     } = this.props;
 
     const { tabIndex } = this.state;
@@ -372,6 +374,36 @@ export default class SettingsDialog extends PureComponent {
                       }
                       label={`To ${DEVICES_LABEL[DEVICE_TYPE.mtp]}`}
                     />
+
+                    {/* the Mac App Store sandbox can't run an external adb binary */}
+                    {!isMas && (
+                      <>
+                        <Typography
+                          variant="subtitle2"
+                          className={`${styles.subtitle} ${styles.fmSettingsStylesFix}`}
+                        >
+                          Faster downloads over ADB (needs USB debugging and adb
+                          installed, e.g. `brew install android-platform-tools`;
+                          falls back to MTP otherwise)
+                        </Typography>
+                        <FormControlLabel
+                          className={styles.switch}
+                          control={
+                            <Switch
+                              checked={useAdbForDownloads}
+                              onChange={(e) =>
+                                onUseAdbForDownloadsChange(
+                                  e,
+                                  !useAdbForDownloads,
+                                  DEVICE_TYPE.mtp
+                                )
+                              }
+                            />
+                          }
+                          label={useAdbForDownloads ? `Enabled` : `Disabled`}
+                        />
+                      </>
+                    )}
 
                     {freshInstall ? (
                       <Paper

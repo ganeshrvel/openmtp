@@ -419,7 +419,7 @@ func DownloadFiles(downloadFilesInputJson *C.char, onPreprocessPtr, onProgressPt
 		}
 	}()
 
-	err = _downloadFiles(i.StorageId, i.Sources, i.Destination, i.PreprocessFiles,
+	err = _downloadFiles(i.StorageId, i.Sources, i.Destination, i.PreprocessFiles, i.UseAdb,
 		func(fi *mtpx.FileInfo, err error) error {
 			if err != nil {
 				return err

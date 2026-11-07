@@ -4,7 +4,11 @@ import { log } from '../../../utils/log';
 import { Kalam } from '../../../../ffi/kalam/src/Kalam';
 import { checkIf } from '../../../utils/checkIf';
 import { isArray, isEmpty } from '../../../utils/funcs';
-import { getFilesPreprocessingBeforeTransferSetting } from '../../../helpers/settings';
+import {
+  getFilesPreprocessingBeforeTransferSetting,
+  getUseAdbForDownloadsSetting,
+} from '../../../helpers/settings';
+import { FILE_TRANSFER_DIRECTION } from '../../../enums';
 import { msToTime } from '../../../utils/date';
 import { kalamDebugReportCli } from '../../../helpers/binaries';
 
@@ -296,6 +300,7 @@ export class FileExplorerKalamDataSource {
    * @property {string} currentFile - current file (full path)
    * @property {int} speed - speed in MBs
    * @property {string} elapsedTime - elapsed time
+   * @property {string|null} timeLeft - estimated time left. note: this value will be null if pre-processing is false
    *
    * @property {'upload'|'download'} direction - direction of file transfer
    */
@@ -368,6 +373,10 @@ export class FileExplorerKalamDataSource {
         preprocessFiles: getFilesPreprocessingBeforeTransferSetting({
           direction,
         }),
+        // ponytail: downloads only; uploads over adb (tar into the device) can follow the same path if wanted
+        useAdb:
+          direction === FILE_TRANSFER_DIRECTION.download &&
+          getUseAdbForDownloadsSetting(),
         sources: fileList,
         onPreprocess,
         onProgress: ({
@@ -380,9 +389,16 @@ export class FileExplorerKalamDataSource {
           activeFileSize,
           bulkFileSize,
         }) => {
+          const bytesLeft = bulkFileSize.total - bulkFileSize.sent;
+
           onProgress({
             currentFile: fullPath,
             elapsedTime: msToTime(elapsedTime),
+            // extrapolated from the average speed so far; totals keep growing while the device is still being walked
+            timeLeft:
+              bulkFileSize.sent > 0 && bytesLeft > 0
+                ? msToTime((elapsedTime * bytesLeft) / bulkFileSize.sent)
+                : null,
             speed,
             totalFiles,
             filesSent,

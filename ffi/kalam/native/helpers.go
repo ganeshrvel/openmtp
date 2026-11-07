@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"github.com/ganeshrvel/go-mtpfs/mtp"
 	"github.com/ganeshrvel/go-mtpx"
@@ -165,9 +166,23 @@ func _uploadFiles(storageId uint32, sources []string, destination string, prepro
 	return nil
 }
 
-func _downloadFiles(storageId uint32, sources []string, destination string, preprocessFiles bool, preprocessCb mtpx.MtpPreprocessCb, progressCb mtpx.ProgressCb) (err error) {
+func _downloadFiles(storageId uint32, sources []string, destination string, preprocessFiles, useAdb bool, preprocessCb mtpx.MtpPreprocessCb, progressCb mtpx.ProgressCb) (err error) {
 	if err := verifyMtpSession(verifyMtpSessionMode{}); err != nil {
 		return err
+	}
+
+	if useAdb {
+		serial := ""
+		if container.deviceInfo != nil {
+			serial = container.deviceInfo.SerialNumber
+		}
+
+		err := adbDownloadFiles(storageId, sources, destination, serial, progressCb)
+		if !errors.Is(err, errAdbUnavailable) {
+			return err
+		}
+
+		log.Printf("downloading over MTP: %v", err)
 	}
 
 	_, _, err = mtpx.DownloadFiles(container.dev, storageId, sources, destination, preprocessFiles, preprocessCb, progressCb)

@@ -57,6 +57,8 @@ type DownloadFilesInput struct {
 	Sources         []string `json:"sources"`
 	Destination     string   `json:"destination"`
 	PreprocessFiles bool     `json:"preprocessFiles"`
+	// download over adb when the phone allows it (USB debugging), else over MTP
+	UseAdb bool `json:"useAdb"`
 }
 
 type UploadPreprocessContainer struct {

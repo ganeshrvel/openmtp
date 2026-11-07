@@ -18,3 +18,7 @@ require (
 ///##### Use a local package
 // replace github.com/ganeshrvel/go-mtpfs vxxxxxx-xxxxxxxxxx
 // with ../go-mtpfs
+
+replace github.com/ganeshrvel/go-mtpx => /Users/dransy/Documents/go-mtpx
+
+replace github.com/ganeshrvel/go-mtpfs => /Users/dransy/Documents/go-mtpfs

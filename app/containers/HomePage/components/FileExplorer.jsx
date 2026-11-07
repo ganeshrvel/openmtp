@@ -106,6 +106,7 @@ import {
 import { log } from '../../../utils/log';
 import fileExplorerController from '../../../data/file-explorer/controllers/FileExplorerController';
 import { checkIf } from '../../../utils/checkIf';
+import { rangeSelection } from '../../../utils/rangeSelection';
 import { analyticsService } from '../../../services/analytics';
 import { EVENT_TYPE } from '../../../enums/events';
 import {
@@ -1859,6 +1860,22 @@ class FileExplorer extends Component {
     let _dontAppend = dontAppend;
     let newSelected = [];
 
+    // Shift+click selects a range; Cmd+click keeps toggling single items
+    if (event?.shiftKey) {
+      const { nodes, order, orderBy } = directoryLists[deviceType];
+      const ranged = rangeSelection(
+        this.tableSort({ nodes, order, orderBy }).map((item) => item.path),
+        selected,
+        path
+      );
+
+      if (ranged) {
+        actionCreateTableClick({ selected: ranged }, deviceType);
+
+        return null;
+      }
+    }
+
     if (shiftKeyAcceleratorEnable && this.keyedAcceleratorList.shift) {
       _dontAppend = false;
     }
@@ -2518,6 +2535,7 @@ const mapDispatchToProps = (dispatch, _) =>
             // on progress callback for file transfer
             const onProgress = ({
               elapsedTime,
+              timeLeft,
               speed,
               activeFileProgress,
               currentFile,
@@ -2607,7 +2625,9 @@ const mapDispatchToProps = (dispatch, _) =>
 
                   progressInfo.push({
                     bodyText1,
-                    bodyText2: `${elapsedTimeText}Progress: ${progressText}`,
+                    bodyText2: `${elapsedTimeText}Progress: ${progressText}${
+                      timeLeft ? ` | ${timeLeft} left` : ''
+                    }`,
                     variant: `determinate`,
                     percentage: totalFileProgress,
                   });

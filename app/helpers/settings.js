@@ -29,6 +29,12 @@ export const getMtpModeSetting = () => {
   return value;
 };
 
+export const getUseAdbForDownloadsSetting = () => {
+  const setting = settingsStorage.getItems(['useAdbForDownloads']);
+
+  return setting.useAdbForDownloads ?? initialState.useAdbForDownloads;
+};
+
 export const getFilesPreprocessingBeforeTransferSetting = ({ direction }) => {
   checkIf(direction, 'string');
   checkIf(direction, 'inObjectValues', FILE_TRANSFER_DIRECTION);

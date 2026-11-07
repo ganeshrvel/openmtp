@@ -366,6 +366,7 @@ export class Kalam {
     sources,
     destination,
     preprocessFiles,
+    useAdb = false,
     onError,
     onPreprocess,
     onProgress,
@@ -376,6 +377,7 @@ export class Kalam {
     checkIf(sources, 'array');
     checkIf(destination, 'string');
     checkIf(preprocessFiles, 'boolean');
+    checkIf(useAdb, 'boolean');
     checkIf(onError, 'function');
     checkIf(onPreprocess, 'function');
     checkIf(onProgress, 'function');
@@ -455,6 +457,7 @@ export class Kalam {
           sources,
           destination,
           preprocessFiles,
+          useAdb,
         };
         const json = JSON.stringify(args);
 

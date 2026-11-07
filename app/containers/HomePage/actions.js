@@ -10,7 +10,11 @@ import { log } from '../../utils/log';
 import fileExplorerController from '../../data/file-explorer/controllers/FileExplorerController';
 import { checkIf } from '../../utils/checkIf';
 import { MTP_ERROR } from '../../enums/mtpError';
-import { DEVICES_DEFAULT_PATH } from '../../constants';
+import {
+  DEVICES_DEFAULT_PATH,
+  MTP_INIT_RETRY_MAX_ATTEMPTS,
+} from '../../constants';
+import { releaseMtpInterfaceClaimants } from '../../helpers/releaseMtpClaimants';
 import { analyticsService } from '../../services/analytics';
 
 const prefix = '@@Home';
@@ -237,6 +241,63 @@ export function disposeMtp({ deviceType, onSuccess, onError }, getState) {
   };
 }
 
+// a handshake that fails this way is worth another attempt once the interface
+// has been handed back. Anything else is a real error.
+const MTP_INIT_RETRYABLE_ERRORS = [
+  MTP_ERROR.ErrorMtpDetectFailed,
+  MTP_ERROR.ErrorDeviceSetup,
+];
+
+/**
+ * description - Open a Kalam MTP session, retrying a handshake that failed
+ * because macOS was holding the MTP interface.
+ *
+ * `ptpcamerad` and `mscamerad-xpc` are started on demand for any device
+ * exposing an MTP/PTP interface and hold it exclusively, so `ClaimInterface`
+ * returns `LIBUSB_ERROR_ACCESS` and the first transfer then fails with
+ * `LIBUSB_ERROR_NOT_FOUND`. That reaches the UI as `ErrorDeviceSetup`.
+ *
+ * The device stays visible to `adb` throughout, because adb speaks to a
+ * different interface on the same device, which is what makes the symptom so
+ * confusing to diagnose.
+ *
+ * @param deviceType
+ * @return {Promise<{data: object, error: string|null, stderr: string|null}>}
+ */
+async function initializeKalamWithRetry({ deviceType }) {
+  checkIf(deviceType, 'string');
+
+  let result = null;
+
+  /* eslint-disable no-await-in-loop */
+  for (let attempt = 0; attempt <= MTP_INIT_RETRY_MAX_ATTEMPTS; attempt += 1) {
+    // drop any handle left over from an earlier session. Done before the
+    // release below, because everything between the release and the handshake
+    // is time the daemons can use to come back.
+    try {
+      await fileExplorerController.dispose({ deviceType });
+    } catch (e) {
+      log.error(e, 'initializeKalamWithRetry.dispose');
+    }
+
+    if (attempt > 0) {
+      // launchd restarts these daemons within milliseconds of being killed and
+      // they reclaim the interface as soon as they are back, so the handshake
+      // has to follow immediately, with nothing awaited in between.
+      await releaseMtpInterfaceClaimants();
+    }
+
+    result = await fileExplorerController.initialize({ deviceType });
+
+    if (!MTP_INIT_RETRYABLE_ERRORS.includes(result?.stderr)) {
+      return result;
+    }
+  }
+  /* eslint-enable no-await-in-loop */
+
+  return result;
+}
+
 function initKalamMtp({ filePath, ignoreHidden, deviceType }, getState) {
   return async (dispatch) => {
     checkIf(filePath, 'string');
@@ -257,7 +318,7 @@ function initKalamMtp({ filePath, ignoreHidden, deviceType }, getState) {
 
       // if the app was expecting the user to allow access to mtp storage
       // then don't reinitialize mtp
-      const { error, stderr, data } = await fileExplorerController.initialize({
+      const { error, stderr, data } = await initializeKalamWithRetry({
         deviceType,
       });
 
