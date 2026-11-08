@@ -15,6 +15,29 @@ import { getMachineId } from '../helpers/identifiers';
 
 const { logFile } = PATHS;
 
+/**
+ * console-log-plus only works inside a browser window (it calls
+ * `parent.window.console`). In the Electron main process it throws
+ * "parent is not defined", which used to escape every main-process
+ * `log.error` call; in dev mode that aborted window creation entirely.
+ * Fall back to the plain console there.
+ */
+const printStyled = ({ message, color, background, isError = false }) => {
+  if (typeof window !== 'undefined' && window.parent) {
+    clp({ message, color, background });
+
+    return;
+  }
+
+  if (isError) {
+    console.error(message);
+
+    return;
+  }
+
+  console.info(message);
+};
+
 export const log = {
   printBoundary(char = '═', length = 70, allowInProd = false) {
     if (IS_PROD && !allowInProd) {
@@ -37,7 +60,7 @@ export const log = {
     }
 
     if (!isEmpty(title)) {
-      clp({
+      printStyled({
         color: 'white',
         background: 'green',
         message: title,
@@ -45,7 +68,7 @@ export const log = {
     }
 
     if (!isEmpty(e)) {
-      clp({
+      printStyled({
         color: 'blue',
         message: e,
       });
@@ -68,16 +91,18 @@ export const log = {
     }
 
     if (!isEmpty(title)) {
-      clp({
+      printStyled({
         color: 'white',
         background: 'red',
         message: title,
+        isError: true,
       });
     }
 
-    clp({
+    printStyled({
       color: 'red',
       message: e,
+      isError: true,
     });
   },
 
