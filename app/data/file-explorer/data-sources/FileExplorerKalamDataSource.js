@@ -37,13 +37,39 @@ export class FileExplorerKalamDataSource {
   }
 
   /**
+   * Helper to release macOS exclusive USB interface lock by ptpcamerad
+   * @private
+   */
+  async _releaseMacOsMtpClaim() {
+    if (process.platform === 'darwin') {
+      try {
+        await this._exec('killall -9 ptpcamerad 2>/dev/null');
+        await new Promise((resolve) => setTimeout(resolve, 150));
+      } catch (e) {
+        // Ignore if ptpcamerad is not running
+      }
+    }
+  }
+
+  /**
    * description - Initialize Kalam MTP
    *
    * @return {Promise<{data: object, error: string|null, stderr: string|null}>}
    */
   async initialize() {
     try {
-      return this.kalamFfi.initialize();
+      await this._releaseMacOsMtpClaim();
+
+      let result = await this.kalamFfi.initialize();
+
+      // Retry once if interface was blocked or exclusive access was held by ptpcamerad
+      if (result?.error && process.platform === 'darwin') {
+        log.info('Retrying Kalam MTP initialization after releasing macOS USB interface lock...');
+        await this._releaseMacOsMtpClaim();
+        result = await this.kalamFfi.initialize();
+      }
+
+      return result;
     } catch (e) {
       log.error(e);
 
@@ -413,6 +439,7 @@ export class FileExplorerKalamDataSource {
    */
   async fetchDebugReport() {
     try {
+      await this._releaseMacOsMtpClaim();
       const { data, error, stderr } = await this._exec(kalamDebugReportCli);
 
       if (error) {

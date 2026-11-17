@@ -351,6 +351,17 @@ export class FileExplorerLegacyDataSource {
     }
   }
 
+  async _releaseMacOsMtpClaim() {
+    if (process.platform === 'darwin') {
+      try {
+        await this._exec('killall -9 ptpcamerad 2>/dev/null');
+        await new Promise((resolve) => setTimeout(resolve, 150));
+      } catch (e) {
+        // Ignore if ptpcamerad is not running
+      }
+    }
+  }
+
   /**
    * description - Fetch MTP storages
    *
@@ -358,6 +369,7 @@ export class FileExplorerLegacyDataSource {
    */
   async listStorages() {
     try {
+      await this._releaseMacOsMtpClaim();
       const { data, error, stderr } = await this._exec(
         `${this.mtpCli} "storage-list"`
       );
